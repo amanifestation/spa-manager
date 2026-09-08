@@ -411,7 +411,8 @@ async function seedDemo(){
 const TABS=[{id:'home',ic:'home',label:'Overview',perm:null},{id:'book',ic:'calendar',label:'Calendar',perm:'booking'},
  {id:'cust',ic:'users',label:'Clients',perm:'customer'},{id:'pkg',ic:'package',label:'Packages',perm:'customer'},
  {id:'pos',ic:'card',label:'Checkout',perm:'pos'},{id:'inv',ic:'stock',label:'Stock',perm:'inventory'},
- {id:'rep',ic:'chart',label:'Reports',perm:'report'},{id:'set',ic:'gear',label:'Settings',perm:null}];
+ {id:'rep',ic:'chart',label:'Reports',perm:'report'},{id:'cat',ic:'list',label:'Catalogue',perm:'admin'},
+ {id:'set',ic:'gear',label:'Settings',perm:null}];
 window.go=t=>{TAB=t;window.closeModal();render();window.scrollTo(0,0);};
 window.setCal=(m)=>{calMode=m;const need=needsWindow();render();if(need)watchAppointments();};
 function needsWindow(){
@@ -434,7 +435,7 @@ function render(){
   '<div class="wrap" id="app"></div>'+
   '<div class="nav">'+TABS.filter(t=>!t.perm||can(t.perm)).map(t=>
    '<button class="'+(TAB===t.id?'on':'')+'" onclick="go(\''+t.id+'\')">'+ic(t.ic,19)+t.label+'</button>').join('')+'</div>';
- const V={home:vHome,book:vBook,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,set:vSet};
+ const V={home:vHome,book:vBook,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,cat:vCat,set:vSet};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -454,7 +455,8 @@ function vHome(){
  const mx=Math.max(...last7.map(x=>x.v),1);
  let h='';
  if(!D.services.length)h+='<div class="warnbox"><b>'+ic('alert',14)+' Your project is empty</b><br>'+
-  'No services or products found. Go to <b>Settings</b> and tap <b>Load demo data</b> to fill it, then edit from there.</div>';
+  'No treatments yet. Open <b>Catalogue</b> to enter your own, or <b>Settings → Load demo data</b> '+
+  'to start from a sample list you can edit.</div>';
  h+='<div class="grid g3" style="margin-bottom:12px">'+
   (boss()?kpi('Sales today',rm(rev),ts.length+' bills','card'):'')+
   kpi('Appointments',ap.length,ap.filter(a=>a.status==='done').length+' completed','calendar')+
@@ -571,7 +573,8 @@ window.newAppt=async(pre)=>{
  if(!CUSTS.length)await loadCustomers('');
  const cs=CUSTS.map(c=>'<option value="'+c.id+'"'+(pre.customerId===c.id?' selected':'')+'>'+esc(c.name)+' — '+
   esc(c.phone||'')+'</option>').join('');
- const ss=D.services.map(s=>'<option value="'+s.id+'">'+esc(s.name)+' ('+s.dur+' min · '+rm(s.price)+')</option>').join('');
+ const ss=D.services.filter(s=>s.active!==false)
+  .map(s=>'<option value="'+s.id+'">'+esc(s.name)+' ('+s.dur+' min · '+rm(s.price)+')</option>').join('');
  const st=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes)
   .map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('');
  modal('New booking','<div class="card"><label>Client</label><select class="f" id="n-c">'+cs+'</select>'+
@@ -833,8 +836,8 @@ window.sellPkg=async customerId=>{
  if(!D.packages.length){toast('No packages in the catalogue yet');return;}
  modal('Sell package','<div class="card"><label>Client</label><select class="f" id="sp-c">'+
   CUSTS.map(c=>'<option value="'+c.id+'"'+(customerId===c.id?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select>'+
-  '<label>Package</label><select class="f" id="sp-p">'+D.packages.map(p=>'<option value="'+p.id+'">'+esc(p.name)+
-   ' — '+rm(p.price)+'</option>').join('')+'</select>'+
+  '<label>Package</label><select class="f" id="sp-p">'+D.packages.filter(p=>p.active!==false)
+   .map(p=>'<option value="'+p.id+'">'+esc(p.name)+' — '+rm(p.price)+'</option>').join('')+'</select>'+
   '<label>Payment method</label><select class="f" id="sp-m"><option>Cash</option><option>Card</option>'+
    '<option>DuitNow QR</option><option>Transfer</option></select>'+
   '<button class="btn" style="width:100%;justify-content:center" id="sp-go">Sell and record payment</button>'+
@@ -913,7 +916,8 @@ window.rerender=()=>{render();};
 window.dropItem=i=>{cart.items.splice(i,1);render();};
 window.dropPay=i=>{cart.payments.splice(i,1);render();};
 window.pickItem=kind=>{
- const list=kind==='service'?D.services:D.products.filter(p=>p.type==='retail');
+ const list=(kind==='service'?D.services:D.products.filter(p=>p.type==='retail'))
+  .filter(x=>x.active!==false);
  if(!list.length){toast('Nothing in the catalogue yet');return;}
  modal(kind==='service'?'Add treatment':'Add product','<div class="card"><label>Item</label>'+
   '<select class="f" id="pi-i">'+list.map(i=>'<option value="'+i.id+'">'+esc(i.name)+' — '+rm(i.price)+
@@ -1134,6 +1138,311 @@ window.csvSales=()=>{
  const a=document.createElement('a');
  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\ufeff'+txt);
  a.download='sales-'+today()+'.csv';a.click();toast('CSV downloaded');};
+
+/* ============ catalogue ============ */
+let catTab='services';
+window.setCatTab=t=>{catTab=t;render();};
+const ROOMTYPES=()=>{
+ const set=new Set(D.rooms.map(r=>r.type).filter(Boolean));
+ ['facial','massage','machine'].forEach(t=>set.add(t));
+ return [...set];};
+async function catSave(col,id,data,label,action){
+ try{
+  if(id)await setDoc(doc(db,col,id),data,{merge:true});
+  else await addDoc(collection(db,col),data);
+  await loadStatic();
+  await audit(action||'Catalogue updated',label);
+  window.closeModal();render();toast('Saved');
+ }catch(e){toast(friendly(e));}
+}
+window.catDelete=async(col,id,label)=>{
+ if(!confirm('Delete "'+label+'"? Past bookings and bills keep their own copy of the name, so history stays intact.'))return;
+ try{await deleteDoc(doc(db,col,id));await loadStatic();
+  await audit('Catalogue item deleted',col+' · '+label);window.closeModal();render();toast('Deleted');}
+ catch(e){toast(friendly(e));}};
+window.catToggle=async(col,id,on,label)=>{
+ try{await setDoc(doc(db,col,id),{active:on},{merge:true});await loadStatic();
+  await audit(on?'Catalogue item enabled':'Catalogue item hidden',label);render();
+  toast(on?'Now visible':'Hidden from booking and checkout');}
+ catch(e){toast(friendly(e));}};
+
+function vCat(){
+ const tabs=[['services','Treatments','spark'],['products','Products','stock'],['packages','Packages','package'],
+  ['rooms','Rooms','room'],['branches','Branches','home'],['vouchers','Vouchers','tag']];
+ let h='<div class="card"><div class="tabs">'+tabs.map(t=>'<button class="'+(catTab===t[0]?'on':'')+
+  '" onclick="setCatTab(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+'</button>').join('')+'</div>'+
+  ({services:catServices,products:catProducts,packages:catPackages,rooms:catRooms,
+    branches:catBranches,vouchers:catVouchers}[catTab])()+'</div>';
+ return h;}
+const offTag=x=>x.active===false?' <span class="pill">hidden</span>':'';
+
+function catServices(){
+ return '<div class="sec-h"><h2>Treatments</h2><button class="btn sm" onclick="editService()">'+
+  ic('plus',15)+'New</button></div>'+
+  (D.services.length?D.services.map(s=>'<div class="item" onclick="editService(\''+s.id+'\')">'+
+   '<div class="spread"><b>'+esc(s.name)+offTag(s)+'</b><span>'+rm(s.price)+'</span></div>'+
+   '<div class="tiny muted">'+esc(s.cat||'Uncategorised')+' · '+s.dur+' min +'+(s.buffer||0)+
+   ' buffer · '+esc(s.room||'any')+' room · commission '+(s.comm||0)+'%'+
+   ((s.use||[]).length?' · uses '+s.use.map(u=>u.qty+' '+(prod(u.sku).unit||'')+' '+
+    (prod(u.sku).name||u.sku)).join(', '):'')+'</div></div>').join('')
+  :'<div class="empty">No treatments yet. Add your first one.</div>');}
+window.editService=id=>{
+ const s=id?svc(id):{name:'',cat:'',price:0,dur:60,buffer:15,room:'facial',comm:8,use:[],active:true};
+ const rt=ROOMTYPES();
+ modal(id?'Edit treatment':'New treatment','<div class="card">'+
+  '<label>Name</label><input class="f" id="sv-n" value="'+esc(s.name)+'">'+
+  '<div class="grid g2"><div><label>Category</label><input class="f" id="sv-cat" value="'+esc(s.cat||'')+
+   '" placeholder="Facial, Body, Aesthetic"></div>'+
+  '<div><label>Price (RM)</label><input class="f" type="number" step="0.01" id="sv-p" value="'+(s.price||0)+'"></div></div>'+
+  '<div class="grid g3"><div><label>Duration (min)</label><input class="f" type="number" id="sv-d" value="'+(s.dur||60)+'"></div>'+
+  '<div><label>Buffer (min)</label><input class="f" type="number" id="sv-b" value="'+(s.buffer||0)+'"></div>'+
+  '<div><label>Commission %</label><input class="f" type="number" id="sv-c" value="'+(s.comm||0)+'"></div></div>'+
+  '<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
+   (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
+  '<label>Backbar used per session <span class="muted">— deducted automatically when the treatment is completed</span></label>'+
+  '<div id="sv-use"></div>'+
+  '<button class="btn ghost sm" id="sv-add" style="margin-bottom:10px">'+ic('plus',14)+'Add item</button>'+
+  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="sv-a"'+
+   (s.active===false?'':' checked')+'> Available for booking and checkout</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="sv-go">Save treatment</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="catDelete(\'services\',\''+id+'\',\''+esc(s.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+  '</div>',()=>{
+   const box=$('#sv-use');
+   const backbar=D.products.filter(p=>p.type==='backbar');
+   const rowHtml=(sku,qty)=>'<div class="row" style="margin-bottom:6px" data-use>'+
+    '<select class="f" style="margin:0;flex:1" data-sku>'+(backbar.length?backbar.map(p=>'<option value="'+
+     esc(p.id)+'"'+(sku===p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')
+     :'<option value="">No backbar products yet</option>')+'</select>'+
+    '<input class="f" style="margin:0;width:78px" type="number" step="0.1" data-qty value="'+(qty||1)+'">'+
+    '<button class="iconbtn" data-del>'+ic('close',14)+'</button></div>';
+   const paint=list=>{box.innerHTML=list.map(u=>rowHtml(u.sku,u.qty)).join('');};
+   paint(s.use||[]);
+   $('#sv-add').onclick=()=>{box.innerHTML+=rowHtml(backbar[0]?backbar[0].id:'',1);};
+   box.onclick=e=>{const b=e.target.closest?e.target.closest('[data-del]'):null;
+    if(b){b.parentElement.remove();}};
+   $('#sv-go').onclick=()=>{
+    const name=$('#sv-n').value.trim();
+    if(!name){toast('Name is required');return;}
+    const use=[...box.querySelectorAll('[data-use]')].map(r=>({
+      sku:r.querySelector('[data-sku]').value,qty:+r.querySelector('[data-qty]').value||0}))
+      .filter(u=>u.sku&&u.qty>0);
+    catSave('services',id,{name,cat:$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
+     dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
+     room:$('#sv-r').value,use,active:$('#sv-a').checked},name,id?'Treatment updated':'Treatment added');};
+  });};
+
+function catProducts(){
+ return '<div class="sec-h"><h2>Products</h2><button class="btn sm" onclick="editProduct()">'+
+  ic('plus',15)+'New</button></div>'+
+  (D.products.length?D.products.map(p=>'<div class="item" onclick="editProduct(\''+p.id+'\')">'+
+   '<div class="spread"><b>'+esc(p.name)+offTag(p)+'</b><span>'+(p.type==='retail'?rm(p.price):
+    '<span class="pill">backbar</span>')+'</span></div>'+
+   '<div class="tiny muted">'+esc(p.id)+' · '+esc(p.type||'')+' · '+(p.size||1)+' '+esc(p.unit||'')+
+   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+'</div></div>').join('')
+  :'<div class="empty">No products yet.</div>')+
+  '<p class="tiny muted" style="margin-top:8px">'+ic('shield',13)+
+  ' Backbar items are consumed by treatments. Retail items are sold at checkout.</p>';}
+window.editProduct=id=>{
+ const p=id?prod(id):{name:'',type:'retail',price:0,cost:0,unit:'pcs',size:1,active:true};
+ modal(id?'Edit product':'New product','<div class="card">'+
+  (id?'':'<label>Code / SKU <span class="muted">— short, no spaces</span></label>'+
+   '<input class="f" id="pr-id" placeholder="RT05">')+
+  '<label>Name</label><input class="f" id="pr-n" value="'+esc(p.name)+'">'+
+  '<label>Type</label><select class="f" id="pr-t"><option value="retail"'+(p.type==='retail'?' selected':'')+
+   '>Retail — sold to clients</option><option value="backbar"'+(p.type==='backbar'?' selected':'')+
+   '>Backbar — used during treatments</option></select>'+
+  '<div class="grid g2"><div><label>Selling price (RM)</label><input class="f" type="number" step="0.01" id="pr-p" value="'+
+   (p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
+   (p.cost||0)+'"></div></div>'+
+  '<div class="grid g2"><div><label>Unit</label><input class="f" id="pr-u" value="'+esc(p.unit||'pcs')+
+   '" placeholder="pcs, ml, g"></div><div><label>Size per unit</label><input class="f" type="number" id="pr-s" value="'+
+   (p.size||1)+'"></div></div>'+
+  (id?'':'<label>Opening stock at every branch</label><input class="f" type="number" id="pr-q" value="0">'+
+   '<label>Reorder level</label><input class="f" type="number" id="pr-r" value="5">')+
+  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="pr-a"'+
+   (p.active===false?'':' checked')+'> Active</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="pr-go">Save product</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="catDelete(\'products\',\''+id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+  '</div>',()=>{
+   $('#pr-go').onclick=async()=>{
+    const name=$('#pr-n').value.trim();
+    if(!name){toast('Name is required');return;}
+    let sku=id;
+    if(!sku){
+     sku=($('#pr-id').value||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'');
+     if(!sku){toast('Give the product a short code, e.g. RT05');return;}
+     if(prod(sku).name){toast('That code is already used');return;}
+    }
+    const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
+     unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked};
+    try{
+     await setDoc(doc(db,'products',sku),data,{merge:true});
+     if(!id){
+      const qty=+$('#pr-q').value||0,reorder=+$('#pr-r').value||0;
+      for(const b of D.branches){
+       await setDoc(doc(db,'stock',b.id+'_'+sku),{branchId:b.id,sku,qty,reorder,expiry:''},{merge:true});
+      }
+     }
+     await loadStatic();
+     await audit(id?'Product updated':'Product added',name+' ('+sku+')');
+     window.closeModal();render();toast('Saved');
+    }catch(e){toast(friendly(e));}
+   };});};
+
+function catPackages(){
+ return '<div class="sec-h"><h2>Packages</h2><button class="btn sm" onclick="editPackage()">'+
+  ic('plus',15)+'New</button></div>'+
+  (D.packages.length?D.packages.map(p=>{
+   const val=(p.items||[]).reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0);
+   return '<div class="item" onclick="editPackage(\''+p.id+'\')"><div class="spread"><b>'+esc(p.name)+offTag(p)+
+    '</b><span>'+rm(p.price)+'</span></div><div class="tiny muted">'+
+    ((p.items||[]).map(i=>i.n+'× '+(svc(i.serviceId).name||'?')).join(' + ')||'no sessions set')+
+    ' · worth '+rm(val)+(val?' (saves '+Math.round((1-p.price/val)*100)+'%)':'')+
+    ' · valid '+(p.days||0)+' days</div></div>';}).join('')
+  :'<div class="empty">No packages yet.</div>');}
+window.editPackage=id=>{
+ const p=id?(D.packages.find(x=>x.id===id)||{}):{name:'',price:0,days:365,items:[],active:true};
+ modal(id?'Edit package':'New package','<div class="card">'+
+  '<label>Package name</label><input class="f" id="pk-n" value="'+esc(p.name||'')+'">'+
+  '<div class="grid g2"><div><label>Price (RM)</label><input class="f" type="number" step="0.01" id="pk-p" value="'+
+   (p.price||0)+'"></div><div><label>Valid for (days)</label><input class="f" type="number" id="pk-d" value="'+
+   (p.days||365)+'"></div></div>'+
+  '<label>Sessions included</label><div id="pk-items"></div>'+
+  '<button class="btn ghost sm" id="pk-add" style="margin-bottom:10px">'+ic('plus',14)+'Add treatment</button>'+
+  '<div class="tiny muted" id="pk-val" style="margin-bottom:10px"></div>'+
+  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="pk-a"'+
+   (p.active===false?'':' checked')+'> Available to sell</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="pk-go">Save package</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="catDelete(\'packages\',\''+id+'\',\''+esc(p.name||'').replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+  '</div>',()=>{
+   const box=$('#pk-items');
+   const rowHtml=(sid,n)=>'<div class="row" style="margin-bottom:6px" data-it>'+
+    '<select class="f" style="margin:0;flex:1" data-sid>'+(D.services.length?D.services.map(s=>'<option value="'+
+     s.id+'"'+(sid===s.id?' selected':'')+'>'+esc(s.name)+' — '+rm(s.price)+'</option>').join('')
+     :'<option value="">Add treatments first</option>')+'</select>'+
+    '<input class="f" style="margin:0;width:70px" type="number" min="1" data-n value="'+(n||1)+'">'+
+    '<button class="iconbtn" data-del>'+ic('close',14)+'</button></div>';
+   const readItems=()=>[...box.querySelectorAll('[data-it]')].map(r=>({
+     serviceId:r.querySelector('[data-sid]').value,n:+r.querySelector('[data-n]').value||0}))
+     .filter(i=>i.serviceId&&i.n>0);
+   const showVal=()=>{const items=readItems();
+    const val=items.reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0);
+    const price=+$('#pk-p').value||0;
+    $('#pk-val').innerHTML='Sessions are worth <b>'+rm(val)+'</b>'+
+     (val&&price?' — this package saves the client '+Math.round((1-price/val)*100)+'%':'');};
+   box.innerHTML=(p.items||[]).map(i=>rowHtml(i.serviceId,i.n)).join('');
+   showVal();
+   $('#pk-add').onclick=()=>{box.innerHTML+=rowHtml(D.services[0]?D.services[0].id:'',1);showVal();};
+   box.onclick=e=>{const b=e.target.closest?e.target.closest('[data-del]'):null;
+    if(b){b.parentElement.remove();showVal();}};
+   box.onchange=showVal;$('#pk-p').onchange=showVal;
+   $('#pk-go').onclick=()=>{
+    const name=$('#pk-n').value.trim();
+    if(!name){toast('Name is required');return;}
+    const items=readItems();
+    if(!items.length){toast('Add at least one treatment');return;}
+    catSave('packages',id,{name,price:+$('#pk-p').value||0,days:+$('#pk-d').value||365,
+     items,active:$('#pk-a').checked},name,id?'Package updated':'Package added');};
+  });};
+
+function catRooms(){
+ return '<div class="sec-h"><h2>Rooms and machines</h2><button class="btn sm" onclick="editRoom()">'+
+  ic('plus',15)+'New</button></div>'+
+  (D.rooms.length?D.branches.map(b=>{
+   const rs=D.rooms.filter(r=>r.branchId===b.id);
+   return rs.length?'<h3 class="muted" style="margin:10px 0 6px">'+esc(b.name)+'</h3>'+rs.map(r=>
+    '<div class="item" onclick="editRoom(\''+r.id+'\')"><div class="spread"><b>'+esc(r.name)+'</b>'+
+    '<span class="pill">'+esc(r.type||'')+'</span></div></div>').join(''):'';}).join('')
+  :'<div class="empty">No rooms yet. The calendar needs at least one.</div>')+
+  '<p class="tiny muted" style="margin-top:8px">A treatment can only be booked into a room whose type matches it.</p>';}
+window.editRoom=id=>{
+ const r=id?room(id):{name:'',type:'facial',branchId:ME.branchId};
+ const rt=ROOMTYPES();
+ modal(id?'Edit room':'New room','<div class="card">'+
+  '<label>Name</label><input class="f" id="rm-n" value="'+esc(r.name||'')+'" placeholder="Facial 1">'+
+  '<label>Branch</label><select class="f" id="rm-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
+   (r.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>'+
+  '<label>Type</label><input class="f" id="rm-t" list="rtlist" value="'+esc(r.type||'')+'">'+
+  '<datalist id="rtlist">'+rt.map(t=>'<option value="'+esc(t)+'">').join('')+'</datalist>'+
+  '<p class="tiny muted">Treatments are matched to rooms by this word. Keep it consistent — '+
+  'a facial room and a facial treatment must both say <code>facial</code>.</p>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="rm-go">Save room</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="catDelete(\'rooms\',\''+id+'\',\''+esc(r.name||'').replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+  '</div>',()=>{$('#rm-go').onclick=()=>{
+   const name=$('#rm-n').value.trim();
+   if(!name){toast('Name is required');return;}
+   catSave('rooms',id,{name,branchId:$('#rm-b').value,type:($('#rm-t').value||'facial').trim().toLowerCase()},
+    name,id?'Room updated':'Room added');};});};
+
+function catBranches(){
+ return '<div class="sec-h"><h2>Branches</h2><button class="btn sm" onclick="editBranch()">'+
+  ic('plus',15)+'New</button></div>'+
+  D.branches.map(b=>'<div class="item" onclick="editBranch(\''+b.id+'\')"><div class="spread"><b>'+
+   esc(b.name)+'</b><span class="pill">'+esc(b.code||'')+'</span></div>'+
+   '<div class="tiny muted">'+D.rooms.filter(r=>r.branchId===b.id).length+' rooms · '+
+   D.staff.filter(s=>s.branchId===b.id).length+' team members</div></div>').join('')+
+  '<p class="tiny muted" style="margin-top:8px">Adding a branch does not create stock rows for existing products. '+
+  'Add them from the Stock screen as you receive the first delivery.</p>';}
+window.editBranch=id=>{
+ const b=id?(D.branches.find(x=>x.id===id)||{}):{name:'',code:''};
+ modal(id?'Edit branch':'New branch','<div class="card">'+
+  (id?'':'<label>Short ID <span class="muted">— no spaces, cannot be changed later</span></label>'+
+   '<input class="f" id="br-id" placeholder="b3">')+
+  '<label>Name</label><input class="f" id="br-n" value="'+esc(b.name||'')+'">'+
+  '<label>Code <span class="muted">— shown on reports</span></label>'+
+  '<input class="f" id="br-c" value="'+esc(b.code||'')+'" placeholder="BBK">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="br-go">Save branch</button></div>',
+ ()=>{$('#br-go').onclick=()=>{
+  const name=$('#br-n').value.trim();
+  if(!name){toast('Name is required');return;}
+  let bid=id;
+  if(!bid){bid=($('#br-id').value||'').trim().toLowerCase().replace(/[^a-z0-9_-]/g,'');
+   if(!bid){toast('Give the branch a short ID, e.g. b3');return;}
+   if(D.branches.find(x=>x.id===bid)){toast('That ID is already used');return;}}
+  catSave('branches',bid,{name,code:($('#br-c').value||'').toUpperCase()},name,
+   id?'Branch updated':'Branch added');};});};
+
+function catVouchers(){
+ return '<div class="sec-h"><h2>Vouchers</h2><button class="btn sm" onclick="editVoucher()">'+
+  ic('plus',15)+'New</button></div>'+
+  (D.vouchers.length?D.vouchers.map(v=>{const exp=v.expiry<today();
+   return '<div class="item" onclick="editVoucher(\''+v.id+'\')"><div class="spread"><b>'+ic('tag',14)+' '+
+    esc(v.id)+'</b>'+(exp?'<span class="pill r">Expired</span>':'<span class="pill g">Active</span>')+'</div>'+
+    '<div class="tiny muted">'+(v.type==='pct'?v.value+'% off':rm(v.value)+' off')+
+    (v.min?' · min spend '+rm(v.min):'')+(v.firstOnly?' · first-timers only':'')+
+    ' · ends '+dstr(v.expiry)+' · used '+(v.used||0)+(v.cap?' of '+v.cap:'')+'</div></div>';}).join('')
+  :'<div class="empty">No vouchers yet.</div>');}
+window.editVoucher=id=>{
+ const v=id?(D.vouchers.find(x=>x.id===id)||{}):{type:'pct',value:10,min:0,firstOnly:false,
+  expiry:ymd(addDays(new Date(),30)),used:0,cap:0};
+ modal(id?'Edit voucher '+id:'New voucher','<div class="card">'+
+  (id?'':'<label>Code</label><input class="f" id="vo-c" placeholder="MERDEKA30">')+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="vo-t">'+
+   '<option value="pct"'+(v.type==='pct'?' selected':'')+'>Percentage off</option>'+
+   '<option value="rm"'+(v.type==='rm'?' selected':'')+'>Fixed RM off</option></select></div>'+
+  '<div><label>Value</label><input class="f" type="number" step="0.01" id="vo-v" value="'+(v.value||0)+'"></div></div>'+
+  '<div class="grid g2"><div><label>Minimum spend</label><input class="f" type="number" id="vo-m" value="'+
+   (v.min||0)+'"></div><div><label>Ends on</label><input class="f" type="date" id="vo-e" value="'+
+   esc(v.expiry||'')+'"></div></div>'+
+  '<label>Usage cap <span class="muted">— 0 means unlimited</span></label>'+
+  '<input class="f" type="number" id="vo-cap" value="'+(v.cap||0)+'">'+
+  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="vo-f"'+
+   (v.firstOnly?' checked':'')+'> First-time clients only</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="vo-go">Save voucher</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="catDelete(\'vouchers\',\''+id+'\',\''+esc(id)+'\')">Delete</button>':'')+
+  '</div>',()=>{$('#vo-go').onclick=()=>{
+   let code=id;
+   if(!code){code=($('#vo-c').value||'').trim().toUpperCase().replace(/\s/g,'');
+    if(!code){toast('Enter a code');return;}
+    if(D.vouchers.find(x=>x.id===code)){toast('That code already exists');return;}}
+   catSave('vouchers',code,{type:$('#vo-t').value,value:+$('#vo-v').value||0,min:+$('#vo-m').value||0,
+    firstOnly:$('#vo-f').checked,expiry:$('#vo-e').value,cap:+$('#vo-cap').value||0,used:v.used||0},
+    code,id?'Voucher updated':'Voucher created');};});};
 
 /* ============ settings ============ */
 function vSet(){
