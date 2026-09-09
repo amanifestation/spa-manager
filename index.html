@@ -287,7 +287,7 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .imgprev img{width:84px;height:84px;object-fit:cover;border-radius:var(--r-sm);flex:none;
   background:var(--line-2)}
 .imgmeta{flex:1;min-width:0}
-.noteimg{width:100%;max-height:230px;object-fit:cover;border-radius:var(--r-md);margin-top:9px;
+.noteimg{max-width:100%;width:auto;height:auto;display:block;border-radius:var(--r-md);margin-top:9px;
   cursor:zoom-in;border:1px solid var(--line);animation:fadeIn .4s var(--ease)}
 .zoomwrap{text-align:center}
 .zoomwrap img{max-width:100%;border-radius:var(--r-md);border:1px solid var(--line)}
@@ -330,6 +330,48 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
     animation:none;overflow:visible}
   .sheet-h{display:none}
 }
+
+.swatches{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.sw{width:34px;height:34px;border-radius:11px;border:2px solid transparent;cursor:pointer;
+  transition:transform .16s var(--ease),box-shadow .2s;position:relative}
+.sw:active{transform:scale(.9)}
+.sw.on{box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--ink)}
+.sw.auto::after{content:'A';position:absolute;inset:0;display:grid;place-items:center;
+  font-size:10px;font-weight:700;color:rgba(255,255,255,.8)}
+
+/* ---------- home launcher ---------- */
+.hero{background:var(--ink);color:var(--cream);border-radius:var(--r-lg);padding:18px 17px 15px;
+  margin-bottom:12px;box-shadow:var(--shadow-lift);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-40px;top:-60px;width:170px;height:170px;
+  border-radius:99px;background:radial-gradient(circle,rgba(166,124,61,.42),transparent 70%)}
+.hgreet{font-size:19px;font-weight:650;letter-spacing:-.02em}
+.hsub{font-size:11.5px;color:#A8A092;margin-top:2px}
+.hstats{display:flex;gap:22px;margin-top:14px;position:relative}
+.hstats div{display:flex;flex-direction:column}
+.hstats b{font-size:20px;font-weight:660;letter-spacing:-.03em}
+.hstats span{font-size:10px;color:#A8A092;text-transform:uppercase;letter-spacing:.07em}
+.quick{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:13px;padding-bottom:3px}
+.quick::-webkit-scrollbar{display:none}
+.qbtn{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:11px 13px;display:grid;justify-items:center;gap:6px;cursor:pointer;color:var(--ink);
+  font-size:11px;font-weight:530;min-width:84px;box-shadow:var(--shadow);
+  transition:transform .16s var(--ease),background .2s,color .2s}
+.qbtn:active{transform:scale(.94);background:var(--ink);color:var(--cream)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin-bottom:12px}
+@media(min-width:700px){.tiles{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+.tile{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:14px 12px 12px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;
+  box-shadow:var(--shadow);animation:fadeUp .4s var(--ease) both;
+  transition:transform .18s var(--ease),box-shadow .24s var(--ease),border-color .2s}
+.tile:active{transform:scale(.955);box-shadow:var(--shadow-lift);border-color:var(--ink-3)}
+.tico{width:38px;height:38px;border-radius:12px;background:var(--ink);color:var(--cream);
+  display:grid;place-items:center;margin-bottom:6px}
+.tile:active .tico{background:var(--brass)}
+.tname{font-size:13.5px;font-weight:600;letter-spacing:-.015em;color:var(--ink)}
+.tdesc{font-size:10.5px;color:var(--ink-3);line-height:1.4}
+.tbadge{position:absolute;top:11px;right:11px;background:var(--brass-soft);color:var(--brass);
+  font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:99px;text-transform:uppercase;
+  letter-spacing:.04em}
 
 @media print{.nav,.topbar,.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
@@ -389,6 +431,12 @@ const ICONS={
  phone:'M7.4 3.8l2.4 3.4-2 2c1 2 2.6 3.6 4.6 4.6l2-2 3.4 2.4v3.2c0 .9-.8 1.6-1.7 1.5C9.2 18.2 5.8 14.8 4.3 6.9c-.2-.9.6-1.7 1.5-1.7z',
  history:'M12 20.6a8.6 8.6 0 10-8.4-10.4M12 7.4V12l3 1.9M3.4 5v4.4h4.4',
  money:'M12 6.4v11.2M9.4 9.2c0-1 1.2-1.8 2.6-1.8s2.6.8 2.6 1.8-1.2 1.8-2.6 1.8-2.6.8-2.6 1.8 1.2 1.8 2.6 1.8 2.6-.8 2.6-1.8',
+ award:'M12 14.4a5 5 0 100-10 5 5 0 000 10zM8.4 13.6L6.6 21l5.4-2.6L17.4 21l-1.8-7.4',
+ wallet:'M3.6 7.4h13.2v11.2H3.6zM3.6 7.4V5.6h11.2M17 11.4h3.4v3.6H17a1.8 1.8 0 010-3.6z',
+ tool:'M14.6 6.4a3.8 3.8 0 015 5l-3-3-2 2zM13.6 9.4L5 18a2 2 0 002.8 2.8l8.6-8.6',
+ flag:'M5.4 20.6V4.2M5.4 5.2h12l-2.2 3.6 2.2 3.6h-12',
+ grid:'M4 4.4h6.4v6.4H4zM13.6 4.4H20v6.4h-6.4zM4 13.2h6.4v6.4H4zM13.6 13.2H20v6.4h-6.4z',
+ palette:'M12 20.6a8.6 8.6 0 110-17.2c4.8 0 8.6 3.2 8.6 7.2 0 2.4-2 3.6-3.8 3.6h-1.4c-1.2 0-2 .8-2 1.8 0 .5.2.9.5 1.3.3.4.5.8.5 1.3 0 1.1-.9 2-2.4 2zM7.6 11.4v.02M10.4 7.8v.02M14.6 7.8v.02',
  staff:'M10.2 11.6a3.6 3.6 0 100-7.2 3.6 3.6 0 000 7.2zM3.4 20.8c0-3.5 3-6.4 6.8-6.4 1.3 0 2.5.3 3.5.9M15.6 18.4l1.8 1.8 3.4-3.6',
  image:'M3.6 5.4h16.8v13.2H3.6zM3.6 15.4l4.6-4.2 3.4 3 3.6-3.4 5.2 4.6M8.6 9.6a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4',
  upload:'M12 16.4V4.8M8 8.8l4-4 4 4M4.2 19.6h15.6',
@@ -644,13 +692,20 @@ async function seedDemo(){
 }
 
 /* ============ shell ============ */
-const TABS=[{id:'home',ic:'home',label:'Overview',perm:null},{id:'book',ic:'calendar',label:'Calendar',perm:'booking'},
- {id:'board',ic:'mega',label:'Board',perm:null},
- {id:'cust',ic:'users',label:'Clients',perm:'customer'},{id:'pkg',ic:'package',label:'Packages',perm:'customer'},
- {id:'pos',ic:'card',label:'Checkout',perm:'pos'},{id:'inv',ic:'stock',label:'Stock',perm:'inventory'},
- {id:'rep',ic:'chart',label:'Reports',perm:'report'},{id:'team',ic:'staff',label:'Team',perm:'staff'},
- {id:'cat',ic:'list',label:'Catalogue',perm:'admin'},
- {id:'set',ic:'gear',label:'Settings',perm:null}];
+const TABS=[
+ {id:'home',ic:'grid',  label:'Home',     perm:null,       core:1,desc:'Everything, one tap away'},
+ {id:'book',ic:'calendar',label:'Calendar',perm:'booking', core:1,desc:'Day, week and month view'},
+ {id:'cust',ic:'users', label:'Clients',  perm:'customer', core:1,desc:'Records and full history'},
+ {id:'pos', ic:'card',  label:'Checkout', perm:'pos',      core:1,desc:'Bills, payments, receipts'},
+ {id:'shift',ic:'wallet',label:'Day',     perm:'pos',      core:1,desc:'Open, close, cash and issues'},
+ {id:'board',ic:'mega', label:'Board',    perm:null,              desc:'Notices for the team'},
+ {id:'pkg', ic:'package',label:'Packages',perm:'customer',        desc:'Sell and track balances'},
+ {id:'loy', ic:'award', label:'Loyalty',  perm:'customer',        desc:'Points, tiers and rewards'},
+ {id:'inv', ic:'stock', label:'Stock',    perm:'inventory',       desc:'Backbar and retail levels'},
+ {id:'rep', ic:'chart', label:'Reports',  perm:'report',          desc:'Revenue and commission'},
+ {id:'team',ic:'staff', label:'Team',     perm:'staff',           desc:'People and attendance'},
+ {id:'cat', ic:'list',  label:'Catalogue',perm:'admin',           desc:'Treatments, products, prices'},
+ {id:'set', ic:'gear',  label:'Settings', perm:null,              desc:'Business details and data'}];
 window.go=t=>{TAB=t;window.closeModal();render();window.scrollTo(0,0);};
 window.setCal=(m)=>{calMode=m;const need=needsWindow();render();if(need)watchAppointments();};
 function needsWindow(){
@@ -671,9 +726,9 @@ function render(){
   '<div class="tiny" style="color:#9CB1B6">'+esc(branch().name)+' · '+dstr(new Date())+'</div></div>'+
   '<div class="who"><div style="color:#fff;font-weight:560">'+esc(ME.name)+'</div><div>'+(ROLE[ME.role]||ME.role)+'</div></div></div>'+
   '<div class="wrap" id="app"></div>'+
-  '<div class="nav">'+TABS.filter(t=>!t.perm||can(t.perm)).map(t=>
+  '<div class="nav">'+TABS.filter(t=>t.core&&(!t.perm||can(t.perm))).map(t=>
    '<button class="'+(TAB===t.id?'on':'')+'" onclick="go(\''+t.id+'\')">'+ic(t.ic,19)+t.label+'</button>').join('')+'</div>';
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -681,40 +736,78 @@ function render(){
 const kpi=(l,v,s,icon)=>'<div class="kpi"><div class="lab">'+(icon?ic(icon,13):'')+l+'</div><div class="big">'+v+
  '</div><div class="tiny muted">'+(s||'')+'</div></div>';
 
-/* ============ overview ============ */
+/* ============ home launcher ============ */
+function greet(){
+ const h=new Date().getHours();
+ return h<12?'Good morning':(h<18?'Good afternoon':'Good evening');
+}
+function tileBadge(t){
+ if(t.id==='book'){const n=onDay(today()).length;return n?n+' today':'';}
+ if(t.id==='board'){const n=NOTES.filter(noteLive).length;return n?n+' live':'';}
+ if(t.id==='inv'){const n=D.stock.filter(x=>x.branchId===ME.branchId&&x.qty<=x.reorder).length;
+  return n?n+' low':'';}
+ if(t.id==='shift')return SHIFT?(SHIFT.closedAt?'closed':'open'):'not opened';
+ if(t.id==='loy')return loy().on?'':'off';
+ if(t.id==='pkg'){const n=HELD.filter(p=>(p.balances||[]).some(b=>b.left>0)).length;
+  return n?n+' active':'';}
+ if(t.id==='team'){const n=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
+  .filter(x=>{const a=attToday(x.id);return a&&a.clockIn&&!a.clockOut;}).length;
+  return n?n+' on shift':'';}
+ return '';
+}
 function vHome(){
- const t=today();
- const ap=APPTS.filter(a=>a.date===t&&a.status!=='cancel').sort((a,b)=>a.start.localeCompare(b.start));
- const ts=SALES.filter(s=>s.date===t&&!s.voided&&s.branchId===ME.branchId);
- const rev=ts.reduce((a,s)=>a+s.total,0);
- const low=D.stock.filter(s=>s.branchId===ME.branchId&&s.qty<=s.reorder);
- const last7=[...Array(7)].map((_,i)=>{const d=ymd(addDays(new Date(),-(6-i)));
-  return{d,v:SALES.filter(s=>s.date===d&&!s.voided&&s.branchId===ME.branchId).reduce((a,s)=>a+s.total,0)};});
- const mx=Math.max(...last7.map(x=>x.v),1);
- let h='';
- const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).slice(0,2);
+ const f=dayFigures();
+ const tiles=TABS.filter(t=>t.id!=='home'&&(!t.perm||can(t.perm)));
+ let h='<div class="hero"><div class="hgreet">'+greet()+', '+esc((ME.name||'').split(' ')[0])+'</div>'+
+  '<div class="hsub">'+esc(branch().name)+' · '+new Date().toLocaleDateString('en-MY',
+   {weekday:'long',day:'numeric',month:'long'})+'</div>'+
+  '<div class="hstats">'+
+   '<div><b>'+f.booked+'</b><span>booked</span></div>'+
+   '<div><b>'+f.showed+'</b><span>showed</span></div>'+
+   (can('pos')?'<div><b>'+rm(f.revenue).replace('RM','')+'</b><span>taken</span></div>':
+    '<div><b>'+f.noShow+'</b><span>no-show</span></div>')+
+  '</div></div>';
+
+ h+='<div class="quick">'+
+  (can('booking')?'<button class="qbtn" onclick="newAppt()">'+ic('plus',20)+'<span>New booking</span></button>':'')+
+  (can('pos')?'<button class="qbtn" onclick="go(\'pos\')">'+ic('card',20)+'<span>Take payment</span></button>':'')+
+  (can('customer')?'<button class="qbtn" onclick="newCust()">'+ic('user',20)+'<span>Add client</span></button>':'')+
+  (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="qbtn" onclick="addExpense()">'+ic('wallet',20)+
+   '<span>Cash out</span></button>':'')+
+  '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report issue</span></button>'+
+  '</div>';
+
+ const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).slice(0,1);
  if(live.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('mega',16)+' Notice board</h2>'+
   '<button class="btn sm ghost" onclick="go(\'board\')">'+ic('right',14)+'All</button></div>'+
   live.map(noteCard).join('')+'</div>';
+
  h+=myClockCard();
- if(!D.services.length)h+='<div class="warnbox"><b>'+ic('alert',14)+' Your project is empty</b><br>'+
-  'No treatments yet. Open <b>Catalogue</b> to enter your own, or <b>Settings → Load demo data</b> '+
-  'to start from a sample list you can edit.</div>';
- h+='<div class="grid g3" style="margin-bottom:12px">'+
-  (boss()?kpi('Sales today',rm(rev),ts.length+' bills','card'):'')+
-  kpi('Appointments',ap.length,ap.filter(a=>a.status==='done').length+' completed','calendar')+
-  (boss()?kpi('Low stock',low.length,'below reorder','alert'):'')+'</div>';
- if(boss()&&low.length)h+='<div class="warnbox">'+ic('alert',14)+' '+low.length+' items below reorder level: '+
-  low.slice(0,3).map(s=>esc(prod(s.sku).name)).join(', ')+'</div>';
- if(boss())h+='<div class="card"><div class="sec-h"><h2>Sales, last 7 days</h2><span class="tiny muted">'+
-  esc(branch().code)+'</span></div><div class="chart">'+last7.map(x=>'<div><div class="tiny muted">'+
-  (x.v?Math.round(x.v/100)/10+'k':'')+'</div><div class="b" style="height:'+(x.v/mx*82)+'px"></div>'+
-  '<div class="tiny muted">'+new Date(x.d).toLocaleDateString('en-MY',{weekday:'short'}).slice(0,2)+'</div></div>').join('')+
-  '</div></div>';
+
+ if(!D.services.length)h+='<div class="warnbox">'+ic('alert',14)+
+  ' <b>Your project is empty.</b> Open Catalogue to enter your treatments, or Settings to load '+
+  'sample data you can edit.</div>';
+ if(can('pos')&&!SHIFT)h+='<div class="warnbox">'+ic('alert',14)+
+  ' The day has not been opened. Tap <b>Day</b> to record your starting cash float.</div>';
+
+ h+='<div class="tiles">'+tiles.map((t,i)=>{
+  const b=tileBadge(t);
+  return '<button class="tile" style="animation-delay:'+(i*35)+'ms" onclick="go(\''+t.id+'\')">'+
+   '<span class="tico">'+ic(t.ic,21)+'</span>'+
+   (b?'<span class="tbadge">'+esc(b)+'</span>':'')+
+   '<span class="tname">'+t.label+'</span>'+
+   '<span class="tdesc">'+esc(t.desc||'')+'</span></button>';}).join('')+'</div>';
+
+ const ap=onDay(today());
  h+='<div class="card"><div class="sec-h"><h2>Today\'s schedule</h2>'+
   '<button class="btn sm ghost" onclick="go(\'book\')">'+ic('calendar',15)+'Calendar</button></div>'+
-  (ap.length?ap.map(apptRow).join(''):'<div class="empty">Nothing booked today.</div>')+'</div>';
- return h;}
+  (ap.length?ap.slice(0,6).map(apptRow).join('')+
+   (ap.length>6?'<button class="btn ghost sm" style="width:100%;justify-content:center" '+
+    'onclick="go(\'book\')">See all '+ap.length+'</button>':'')
+   :'<div class="empty">'+ic('calendar',26)+'<div>Nothing booked today.</div></div>')+'</div>';
+ return h;
+}
+
 const STATUS={booked:['Booked',''],confirm:['Confirmed','g'],in:['In treatment','a'],done:['Completed','g'],
  no:['No-show','r'],cancel:['Cancelled','']};
 function apptRow(a){
@@ -770,15 +863,23 @@ function calDay(){
    (calDate===today()&&nowMin>0&&nowMin<hrs*60?'<div class="nowline" style="top:'+(nowMin*px)+'px"></div>':'');
   ap.filter(a=>colOf(a)===c.id).forEach(a=>{
    const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px,hh=Math.max((a.duration||30)*px,26);
-   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':a.status==='in'?'in':'')+
-    '" style="top:'+top+'px;height:'+hh+'px" onclick="openAppt(\''+a.id+'\')">'+
-    '<b>'+esc(a.customerName||'')+'</b><small>'+tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
-    (hh>52?'<small>'+esc(calBy==='staff'?(room(a.roomId).name||''):(a.staffName||''))+'</small>':'')+'</div>'+
+   const P=apptPal(a);
+   const plain=['done','no'].includes(a.status);
+   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
+    '" style="top:'+top+'px;height:'+hh+'px'+(plain?'':';background:'+P.bg+';color:'+P.fg+
+     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+
+    '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+     tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
+    (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+     esc(calBy==='staff'?(room(a.roomId).name||''):(a.staffName||''))+
+     ((visitOf(a.visitType)||{}).label?' · '+visitOf(a.visitType).label:'')+'</small>':'')+'</div>'+
     (a.buffer?'<div class="buf" style="top:'+(top+(a.duration||0)*px)+'px;height:'+(a.buffer*px)+'px"></div>':'');});
   h+='</div>';});
- h+='</div></div><div class="legend">'+[['var(--jade-soft)','Booked'],['var(--amber-soft)','In treatment'],
-  ['var(--line-2)','Completed'],['var(--rose-soft)','No-show']].map(l=>'<span><i style="background:'+l[0]+'"></i>'+l[1]+
-  '</span>').join('')+'<span><i style="background:repeating-linear-gradient(45deg,var(--line-2),var(--line-2) 3px,transparent 3px,transparent 6px)"></i>Buffer</span></div>';
+ h+='</div></div><div class="legend">'+VISITS.map(v=>'<span><i style="background:'+pal(v.color).bg+
+  '"></i>'+v.label+'</span>').join('')+
+  '<span><i style="background:var(--line-2)"></i>Completed</span>'+
+  '<span><i style="background:var(--rose-soft)"></i>No-show</span>'+
+  '<span><i style="background:repeating-linear-gradient(45deg,var(--line-2),var(--line-2) 3px,transparent 3px,transparent 6px)"></i>Buffer</span></div>';
  return h;}
 function calWeek(){
  const base=new Date(calDate),dow=(base.getDay()+6)%7,mon=addDays(base,-dow);
@@ -796,9 +897,13 @@ function calWeek(){
   h+='<div class="tlcol'+(di===0?' first':'')+'">'+
    [...Array(hrs)].map((_,i)=>'<div class="hline" style="top:'+(i*ROW)+'px"></div>').join('');
   onDay(d).forEach(a=>{const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px;
-   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':a.status==='in'?'in':'')+
-    '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px" onclick="openAppt(\''+a.id+'\')">'+
-    '<b>'+tstr(a.start)+'</b><small>'+esc((a.customerName||'').split(' ')[0])+'</small></div>';});
+   const P=apptPal(a),plain=['done','no'].includes(a.status);
+   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
+    '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+
+    (plain?'':';background:'+P.bg+';color:'+P.fg+';border-left-color:'+P.bd)+
+    '" onclick="openAppt(\''+a.id+'\')">'+
+    '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+    esc((a.customerName||'').split(' ')[0])+'</small></div>';});
   h+='</div>';});
  return h+'</div></div>';}
 function calMonthView(){
@@ -811,7 +916,8 @@ function calMonthView(){
   const ap=onDay(d),off=new Date(d).getMonth()!==m;
   return '<div class="mcell'+(off?' off':'')+(d===today()?' today':'')+(d===calDate?' sel':'')+
    '" onclick="pickDate(\''+d+'\')"><div class="d">'+new Date(d).getDate()+'</div><div class="dots">'+
-   ap.slice(0,6).map(a=>'<span class="dot '+(a.status==='no'?'n':a.status==='done'?'f':'')+'"></span>').join('')+
+   ap.slice(0,6).map(a=>'<span class="dot '+(a.status==='no'?'n':a.status==='done'?'f':'')+
+    '" style="background:'+(['done','no'].includes(a.status)?'':apptPal(a).bg)+'"></span>').join('')+
    '</div>'+(ap.length?'<div class="cnt">'+ap.length+'</div>':'')+'</div>';}).join('')+'</div>';
  const sel=onDay(calDate);
  h+='<div style="margin-top:12px"><div class="sec-h"><h3>'+dstr(calDate)+'</h3><span class="tiny muted">'+
@@ -834,6 +940,12 @@ window.newAppt=async(pre)=>{
   '<div><label>Start</label><input class="f" type="time" id="n-t" value="10:00"></div></div>'+
   '<label>Therapist</label><select class="f" id="n-st">'+(st||'<option value="">No bookable staff</option>')+'</select>'+
   '<label>Room</label><select class="f" id="n-r"></select>'+
+  '<label>Visit type</label><select class="f" id="n-vt" onchange="syncSwatch()">'+
+   VISITS.map(v=>'<option value="'+v.id+'"'+(pre.visitType===v.id?' selected':'')+'>'+
+    v.label+'</option>').join('')+'</select>'+
+  '<label>Colour on the calendar</label>'+
+  '<div class="swatches" id="n-sw">'+PALETTE.map(c=>'<button type="button" class="sw" data-c="'+c.id+
+   '" style="background:'+c.bg+';border-color:'+c.bd+'" title="'+c.name+'"></button>').join('')+'</div>'+
   '<label>Deposit (RM)</label><input class="f" type="number" id="n-dep" value="0">'+
   '<label>Notes</label><textarea class="f" id="n-n" rows="2"></textarea>'+
   '<div id="n-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
@@ -843,8 +955,23 @@ window.newAppt=async(pre)=>{
    $('#n-r').innerHTML=D.rooms.filter(r=>r.branchId===ME.branchId&&r.type===s.room)
     .map(r=>'<option value="'+r.id+'">'+esc(r.name)+'</option>').join('')||'<option value="">No suitable room</option>';};
   $('#n-s').onchange=sync;sync();
+  NEWCOLOR=pre.color||'';
+  const box=document.getElementById('n-sw');
+  if(box)box.onclick=e=>{const b=e.target.closest&&e.target.closest('.sw');if(!b)return;
+   NEWCOLOR=(NEWCOLOR===b.dataset.c)?'':b.dataset.c;paintSwatches();};
+  window.syncSwatch=()=>{NEWCOLOR='';paintSwatches();};
+  paintSwatches();
   $('#n-go').onclick=saveAppt;});
 };
+let NEWCOLOR='';
+function paintSwatches(){
+ const box=document.getElementById('n-sw');if(!box)return;
+ const vt=($('#n-vt')||{}).value;
+ const auto=(visitOf(vt)||{}).color||'ink';
+ [...(box.querySelectorAll?box.querySelectorAll('.sw'):[])].forEach(b=>{
+  const chosen=NEWCOLOR?b.dataset.c===NEWCOLOR:b.dataset.c===auto;
+  b.className='sw'+(chosen?' on':'')+(!NEWCOLOR&&b.dataset.c===auto?' auto':'');});
+}
 async function saveAppt(){
  const btn=$('#n-go');btn.disabled=true;
  try{
@@ -868,7 +995,8 @@ async function saveAppt(){
     if(a.roomId===roomId)throw new Error(room(roomId).name+' is occupied at '+tstr(a.start));
    }}
   const c=cust($('#n-c').value)||{};
-  await addDoc(collection(db,'appointments'),{branchId:ME.branchId,customerId:$('#n-c').value,customerName:c.name||'',
+  await addDoc(collection(db,'appointments'),{visitType:($('#n-vt')||{}).value||'return',
+   color:NEWCOLOR||'',branchId:ME.branchId,customerId:$('#n-c').value,customerName:c.name||'',
    staffId,staffName:stf(staffId).name,serviceId:s.id,serviceName:s.name,roomId,date,
    start:start.toISOString(),finish:finish.toISOString(),duration:s.dur,buffer:s.buffer,status:'booked',
    deposit:+$('#n-dep').value||0,notes:$('#n-n').value||'',createdBy:UID,createdAt:new Date().toISOString()});
@@ -884,7 +1012,10 @@ window.openAppt=id=>{
  modal('Appointment','<div class="card"><div class="spread"><h3>'+esc(a.customerName||'')+'</h3>'+
   (c&&c.phone?'<span class="pill">'+ic('user',12)+esc(c.phone)+'</span>':'')+'</div>'+
   '<div class="tiny muted" style="margin:8px 0 10px;line-height:1.7">'+
-  ic('spark',13)+' '+esc(a.serviceName||'')+'<br>'+ic('clock',13)+' '+dstr(a.start)+', '+tstr(a.start)+'–'+tstr(a.finish)+
+  ic('spark',13)+' '+esc(a.serviceName||'')+
+  ((visitOf(a.visitType)||{}).label?'  <span class="pill" style="background:'+apptPal(a).bg+
+   ';color:'+apptPal(a).fg+'">'+visitOf(a.visitType).label+'</span>':'')+
+  '<br>'+ic('clock',13)+' '+dstr(a.start)+', '+tstr(a.start)+'–'+tstr(a.finish)+
   (a.buffer?' <span class="muted">(+'+a.buffer+' min buffer)</span>':'')+'<br>'+
   ic('user',13)+' '+esc(a.staffName||'')+'<br>'+ic('room',13)+' '+esc(room(a.roomId).name||'—')+
   (a.deposit?'<br>'+ic('card',13)+' Deposit '+rm(a.deposit):'')+
@@ -957,6 +1088,25 @@ function bindCustSearch(){
  el.oninput=()=>{custQ=el.value;clearTimeout(t);t=setTimeout(async()=>{
   await loadCustomers(custQ);render();bindCustSearch();
   const e2=$('#cq');if(e2){e2.focus();e2.setSelectionRange(e2.value.length,e2.value.length);}},350);};}
+const PALETTE=[
+ {id:'ink',   name:'Default',  bg:'#14120F', fg:'#F4F0E7', bd:'#A67C3D'},
+ {id:'brass', name:'Brass',    bg:'#A67C3D', fg:'#FFFFFF', bd:'#6E4E1E'},
+ {id:'jade',  name:'Jade',     bg:'#2E6B52', fg:'#FFFFFF', bd:'#17402F'},
+ {id:'plum',  name:'Plum',     bg:'#6B3F63', fg:'#FFFFFF', bd:'#40243C'},
+ {id:'ocean', name:'Ocean',    bg:'#2C5A7A', fg:'#FFFFFF', bd:'#173445'},
+ {id:'clay',  name:'Clay',     bg:'#9B4A4A', fg:'#FFFFFF', bd:'#5E2B2B'},
+ {id:'sand',  name:'Sand',     bg:'#E7DCC5', fg:'#3B3427', bd:'#A67C3D'},
+ {id:'sage',  name:'Sage',     bg:'#CBD8CB', fg:'#25352A', bd:'#2E6B52'}];
+const pal=id=>PALETTE.find(p=>p.id===id)||PALETTE[0];
+const VISITS=[
+ {id:'new',      label:'New client',  color:'brass', icon:'star'},
+ {id:'followup', label:'Follow-up',   color:'ocean', icon:'refresh'},
+ {id:'return',   label:'Returning',   color:'jade',  icon:'users'},
+ {id:'consult',  label:'Consultation',color:'plum',  icon:'note'},
+ {id:'vip',      label:'VIP',         color:'sand',  icon:'award'},
+ {id:'package',  label:'Package session',color:'sage',icon:'package'}];
+const visitOf=id=>VISITS.find(v=>v.id===id);
+const apptPal=a=>pal(a.color||(visitOf(a.visitType)||{}).color||'ink');
 const GENDERS=['Female','Male','Prefer not to say'];
 const SOURCES=['Instagram','TikTok','Facebook','Google Maps','Walk-in','Friend referral','Returning client','Other'];
 const SKINS=['Normal','Oily','Dry','Combination','Sensitive','Acne-prone','Mature'];
@@ -1360,14 +1510,15 @@ async function loadHeld(){
 }
 
 /* ============ checkout ============ */
-let cart={customerId:'',items:[],discount:0,voucher:null,payments:[]};
+let cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0};
 function cartTotals(){
  const sub=cart.items.reduce((a,i)=>a+i.price*i.qty,0);
  const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
- const net=Math.max(0,sub-cart.discount-v);
+ const pd=pointsWorth(cart.points||0);
+ const net=Math.max(0,sub-cart.discount-v-pd);
  const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
  const total=net+sst,paid=cart.payments.reduce((a,p)=>a+p.amount,0);
- return{sub,v,net,sst,total,paid,balance:total-paid};}
+ return{sub,v,pd,net,sst,total,paid,balance:total-paid};}
 function vPos(){
  const t=cartTotals();
  let h='<div class="card"><label>Client</label><select class="f" onchange="cart.customerId=this.value">'+
@@ -1375,7 +1526,14 @@ function vPos(){
    (cart.customerId===c.id?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select>'+
   '<div class="row wrap2"><button class="btn sm" onclick="pickItem(\'service\')">'+ic('plus',14)+'Treatment</button>'+
   '<button class="btn sm" onclick="pickItem(\'product\')">'+ic('plus',14)+'Product</button>'+
-  '<button class="btn sm ghost" onclick="applyVoucher()">'+ic('tag',14)+'Voucher</button></div></div>';
+  '<button class="btn sm ghost" onclick="applyVoucher()">'+ic('tag',14)+'Voucher</button>'+
+  (loy().on&&cart.customerId?'<button class="btn sm ghost" onclick="usePoints()">'+ic('award',14)+
+   'Points</button>':'')+'</div>'+
+  (loy().on&&cart.customerId&&cust(cart.customerId)?'<div class="tiny muted" style="margin-top:8px">'+
+   ic('award',12)+' '+esc(cust(cart.customerId).name)+' has '+
+   ((cust(cart.customerId).points)||0).toLocaleString()+' points ('+
+   rm(pointsWorth((cust(cart.customerId).points)||0))+') · '+esc(tierOf(
+    cust(cart.customerId).pointsEarned||cust(cart.customerId).points||0))+'</div>':'')+'</div>';
  h+='<div class="card"><h3>Items</h3>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
   '<tr><td>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+'</div></td>'+
   '<td class="num">'+i.qty+'×'+rm(i.price)+'</td><td class="num">'+
@@ -1385,6 +1543,9 @@ function vPos(){
   (boss()?'<tr><td>Manual discount</td><td class="num"><input class="f" style="margin:0;text-align:right;padding:4px 6px;'+
    'width:90px" type="number" value="'+cart.discount+'" onchange="cart.discount=+this.value||0;rerender()"></td></tr>':'')+
   (cart.voucher?'<tr><td>Voucher '+esc(cart.voucher.id)+'</td><td class="num">-'+rm(t.v)+'</td></tr>':'')+
+  (cart.points?'<tr><td>'+cart.points+' loyalty points'+
+   ' <button class="iconbtn" style="padding:2px;display:inline-grid" onclick="cart.points=0;rerender()">'+
+   ic('close',12)+'</button></td><td class="num">-'+rm(t.pd)+'</td></tr>':'')+
   (D.meta.biz.sst?'<tr><td>SST</td><td class="num">'+rm(t.sst)+'</td></tr>':'')+
   '<tr><td><b>Total</b></td><td class="num"><b>'+rm(t.total)+'</b></td></tr>'+
   cart.payments.map((p,i)=>'<tr><td class="muted">'+esc(p.method)+'</td><td class="num muted">'+rm(p.amount)+
@@ -1441,6 +1602,32 @@ window.applyVoucher=()=>{
   if(t.sub<(v.min||0)){toast('Minimum spend is '+rm(v.min));return;}
   if(v.cap&&v.used>=v.cap){toast('Voucher quota used up');return;}
   cart.voucher=v;window.closeModal();render();toast('Voucher applied');};});};
+window.usePoints=()=>{
+ const L=loy(),c=cust(cart.customerId);
+ if(!c){toast('Pick a client first');return;}
+ const have=c.points||0,t=cartTotals();
+ const affordable=Math.floor((t.sub-cart.discount-t.v)/(L.ringgitPerPoint||0.1));
+ const max=Math.max(0,Math.min(have,affordable));
+ if(have<L.minRedeem){toast('Needs at least '+L.minRedeem+' points — '+esc(c.name)+' has '+have);return;}
+ modal('Redeem points','<div class="card">'+
+  '<div class="grid g2" style="margin-bottom:11px">'+
+  kpi('Available',have.toLocaleString(),'worth '+rm(pointsWorth(have)),'award')+
+  kpi('Most usable',max.toLocaleString(),'on this bill','tag')+'</div>'+
+  '<label>Points to redeem</label>'+
+  '<input class="f" type="number" id="up-n" value="'+max+'" min="0" max="'+max+
+   '" style="font-size:20px;text-align:center" oninput="upWorth()">'+
+  '<div id="up-w" class="tiny" style="text-align:center;margin-bottom:11px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="up-go">'+ic('check',16)+
+  'Apply to this bill</button>'+
+  '<p class="tiny muted" style="margin-top:9px">Points come off before SST. They are only deducted '+
+  'from the client once the payment is completed.</p></div>',
+ ()=>{window.upWorth();$('#up-go').onclick=()=>{
+  const n=Math.max(0,Math.min(max,Math.floor(+$('#up-n').value||0)));
+  cart.points=n;window.closeModal();render();
+  toast(n?n+' points applied':'Points cleared');};});};
+window.upWorth=()=>{const el=$('#up-w');if(!el)return;
+ const n=Math.floor(+($('#up-n')||{}).value||0);
+ el.innerHTML='Worth <b>'+rm(pointsWorth(n))+'</b> off this bill';};
 window.addPay=m=>{
  const t=cartTotals();
  const a=prompt(m+' amount (RM):',Math.max(0,t.balance).toFixed(2));
@@ -1456,12 +1643,14 @@ window.checkout=async()=>{
    return{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId};});
   const sub=items.reduce((a,i)=>a+i.price*i.qty,0);
   const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
-  const net=Math.max(0,sub-cart.discount-v);
+  const pd=pointsWorth(cart.points||0);
+  const net=Math.max(0,sub-cart.discount-v-pd);
   const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
   const total=net+sst;
   const c=cust(cart.customerId);
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
-   customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,discount:cart.discount+v,
+   customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,
+   discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',sst,total,date:today(),at:new Date().toISOString(),
    voided:false,payments:cart.payments.slice(),createdBy:UID,
    invoiceNo:'INV-'+Date.now().toString().slice(-8)});
@@ -1471,9 +1660,16 @@ window.checkout=async()=>{
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
   if(cart.voucher){try{await updateDoc(doc(db,'vouchers',cart.voucher.id),{used:increment(1)});}catch(e){}}
+  let earned=0;
+  if(cart.customerId){
+   const inv=(await getDoc(ref)).data();
+   if(cart.points>0)await spendPoints(cart.customerId,c?c.name:'',cart.points,(inv||{}).invoiceNo||'');
+   earned=await awardPoints(cart.customerId,c?c.name:'',net,(inv||{}).invoiceNo||'');
+  }
   await audit('Bill completed',rm(total)+' · '+(c?c.name:'Walk-in'));
-  cart={customerId:'',items:[],discount:0,voucher:null,payments:[]};
+  cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0};
   await loadRecentSales();render();
+  if(earned)toast('Bill saved · '+earned+' loyalty points earned');
   window.openSale(ref.id);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
 /* ---- deleting a client, with a mandatory reason ---- */
@@ -1634,6 +1830,7 @@ function receiptHTML(s){
    '<tr><td>Subtotal</td><td class="num">'+rm(sub)+'</td></tr>'+
    (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+
     rm(s.discount)+'</td></tr>':'')+
+   (s.pointsUsed?'<tr><td>Loyalty points used</td><td class="num">'+s.pointsUsed+'</td></tr>':'')+
    (s.sst?'<tr><td>SST '+((D.meta.biz||{}).sstRate||8)+'%</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
    '<tr class="grand"><td>Total</td><td class="num">'+rm(s.total)+'</td></tr>'+
    (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+'</td><td class="num">'+
@@ -2159,7 +2356,7 @@ function pickImage(kind){
 }
 function compressImage(file,kind){
  const budget=IMG_BUDGET[kind]||200000;
- const maxPx=kind==='logo'?420:(kind==='product'?720:1280);
+ const maxPx=kind==='logo'?420:(kind==='product'?720:1600);
  return new Promise((resolve,reject)=>{
   const fr=new FileReader();
   fr.onerror=()=>reject(new Error('read failed'));
@@ -2566,6 +2763,423 @@ function myClockCard(){
     ic('out',14)+'Clock out</button>':'<span class="pill g">'+ic('check',11)+'Done</span>'))+
   '</div></div>';}
 
+/* ============ loyalty ============ */
+const LOY_DEFAULT={on:false,earnPer:10,pointsPer:1,ringgitPerPoint:0.10,minRedeem:50,
+ expireMonths:12,tiers:[{name:'Member',at:0},{name:'Silver',at:1000},{name:'Gold',at:3000},
+ {name:'Platinum',at:8000}]};
+const loy=()=>({...LOY_DEFAULT,...(D.meta.loyalty||{})});
+const tierOf=pts=>{const t=loy().tiers.slice().sort((a,b)=>b.at-a.at).find(x=>pts>=x.at);
+ return t?t.name:'Member';};
+const nextTier=pts=>{const up=loy().tiers.slice().sort((a,b)=>a.at-b.at).find(x=>pts<x.at);
+ return up?{name:up.name,need:up.at-pts}:null;};
+const pointsFor=amount=>{const L=loy();
+ return L.on?Math.floor((amount||0)/(L.earnPer||10))*(L.pointsPer||1):0;};
+const pointsWorth=p=>(p||0)*(loy().ringgitPerPoint||0);
+let LOYLIST=[],LOYLEDGER=[],loyView='members';
+window.setLoyView=v=>{loyView=v;render();};
+async function loadLoyalty(){
+ try{const s=await getDocs(query(collection(db,'customers'),orderBy('points','desc'),limit(50)));
+  LOYLIST=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.active!==false&&(c.points||0)>0);}
+ catch(e){LOYLIST=[];}
+ try{const s=await getDocs(query(collection(db,'loyalty'),orderBy('at','desc'),limit(60)));
+  LOYLEDGER=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){LOYLEDGER=[];}
+}
+async function awardPoints(customerId,customerName,amount,ref){
+ const L=loy();if(!L.on||!customerId)return 0;
+ const pts=pointsFor(amount);if(pts<=0)return 0;
+ try{
+  await updateDoc(doc(db,'customers',customerId),
+   {points:increment(pts),pointsEarned:increment(pts),lastPointsAt:new Date().toISOString()});
+  await addDoc(collection(db,'loyalty'),{customerId,customerName,kind:'earn',points:pts,
+   amount,ref:ref||'',branchId:ME.branchId,staffId:UID,staffName:ME.name,
+   at:new Date().toISOString(),date:today()});
+  const c=cust(customerId);if(c)c.points=(c.points||0)+pts;
+  return pts;
+ }catch(e){console.warn('points',e);return 0;}
+}
+async function spendPoints(customerId,customerName,pts,ref){
+ if(!(pts>0))return;
+ await updateDoc(doc(db,'customers',customerId),
+  {points:increment(-pts),pointsRedeemed:increment(pts)});
+ await addDoc(collection(db,'loyalty'),{customerId,customerName,kind:'redeem',points:-pts,
+  amount:pointsWorth(pts),ref:ref||'',branchId:ME.branchId,staffId:UID,staffName:ME.name,
+  at:new Date().toISOString(),date:today()});
+ const c=cust(customerId);if(c)c.points=Math.max(0,(c.points||0)-pts);
+}
+function vLoyalty(){
+ const L=loy();
+ if(!L.on&&!boss())return '<div class="card"><div class="empty">'+ic('award',26)+
+  '<div>The loyalty programme is switched off.</div></div></div>';
+ let h='<div class="card"><div class="seg">'+
+  '<button class="'+(loyView==='members'?'on':'')+'" onclick="setLoyView(\'members\')">'+
+   ic('users',14)+'Members</button>'+
+  '<button class="'+(loyView==='ledger'?'on':'')+'" onclick="setLoyView(\'ledger\')">'+
+   ic('history',14)+'Activity</button>'+
+  (boss()?'<button class="'+(loyView==='rules'?'on':'')+'" onclick="setLoyView(\'rules\')">'+
+   ic('gear',14)+'Rules</button>':'')+'</div>'+
+  ({members:loyMembers,ledger:loyLedger,rules:loyRules}[loyView]||loyMembers)()+'</div>';
+ return h;}
+function loyMembers(){
+ const L=loy();
+ const owed=LOYLIST.reduce((a,c)=>a+pointsWorth(c.points||0),0);
+ return (!L.on?'<div class="warnbox">'+ic('alert',14)+
+   ' The programme is off, so no new points are being earned. Turn it on under Rules.</div>':'')+
+  '<div class="grid g3" style="margin-bottom:12px">'+
+  kpi('Members',LOYLIST.length,'holding points','users')+
+  kpi('Points held',LOYLIST.reduce((a,c)=>a+(c.points||0),0).toLocaleString(),'','award')+
+  (boss()?kpi('Value owed',rm(owed),'if all redeemed','money'):'')+'</div>'+
+  '<div class="sec-h"><h2>Top members</h2><span class="tiny muted">by points</span></div>'+
+  (LOYLIST.length?LOYLIST.map(c=>{
+   const pts=c.points||0,nx=nextTier(c.pointsEarned||pts);
+   return '<div class="item" onclick="loyCard(\''+c.id+'\')"><div class="row">'+
+    '<div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:13px">'+
+    esc(initials(c.name))+'</div><div style="flex:1;min-width:0">'+
+    '<div class="spread"><b>'+esc(c.name)+'</b><span class="pill b">'+
+     esc(tierOf(c.pointsEarned||pts))+'</span></div>'+
+    '<div class="tiny muted">'+pts.toLocaleString()+' points · worth '+rm(pointsWorth(pts))+
+    (nx?' · '+nx.need+' to '+nx.name:'')+'</div></div>'+ic('right',16)+'</div></div>';}).join('')
+   :'<div class="empty">'+ic('award',26)+'<div>Nobody has earned points yet.</div></div>');}
+function loyLedger(){
+ return '<div class="sec-h"><h2>Recent activity</h2>'+
+  (boss()?'<button class="btn sm ghost" onclick="csvLoyalty()">'+ic('download',14)+'CSV</button>':'')+'</div>'+
+  (LOYLEDGER.length?LOYLEDGER.map(l=>'<div class="item" style="cursor:default">'+
+   '<div class="spread"><b>'+esc(l.customerName||'')+'</b>'+
+   '<span class="pill '+(l.points>0?'g':'a')+'">'+(l.points>0?'+':'')+l.points+'</span></div>'+
+   '<div class="tiny muted">'+({earn:'Earned on '+rm(l.amount||0),redeem:'Redeemed for '+rm(l.amount||0),
+    adjust:'Manual adjustment'}[l.kind]||l.kind)+(l.ref?' · '+esc(l.ref):'')+
+   ' · '+dstr(l.at)+' · '+esc(l.staffName||'')+
+   (l.reason?'<br>'+ic('note',11)+' '+esc(l.reason):'')+'</div></div>').join('')
+   :'<div class="empty">'+ic('history',26)+'<div>No points activity yet.</div></div>');}
+function loyRules(){
+ const L=loy();
+ return '<div class="fieldset"><h3>'+ic('award',13)+'How points are earned</h3>'+
+  '<label class="row" style="gap:9px"><input type="checkbox" id="ly-on"'+(L.on?' checked':'')+
+   '> Loyalty programme is running</label>'+
+  '<div class="grid g2"><div><label>Spend needed (RM)</label>'+
+   '<input class="f" type="number" id="ly-per" value="'+L.earnPer+'"></div>'+
+  '<div><label>Points given</label><input class="f" type="number" id="ly-pts" value="'+L.pointsPer+'"></div></div>'+
+  '<div class="grid g2"><div><label>Each point is worth (RM)</label>'+
+   '<input class="f" type="number" step="0.01" id="ly-val" value="'+L.ringgitPerPoint+'"></div>'+
+  '<div><label>Minimum points to redeem</label><input class="f" type="number" id="ly-min" value="'+
+   L.minRedeem+'"></div></div>'+
+  '<div class="tiny muted" id="ly-eg"></div></div>'+
+  '<div class="fieldset"><h3>'+ic('star',13)+'Tiers</h3>'+
+  '<div class="tiny muted" style="margin-bottom:9px">Based on points earned over the client\'s lifetime, '+
+  'so spending them does not drop a client down a tier.</div>'+
+  L.tiers.map((t,i)=>'<div class="row" style="margin-bottom:7px">'+
+   '<input class="f" style="margin:0;flex:1" data-tname value="'+esc(t.name)+'">'+
+   '<input class="f" style="margin:0;width:110px" type="number" data-tat value="'+t.at+'">'+
+   '</div>').join('')+
+  '</div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ly-go">'+ic('check',16)+
+  'Save loyalty rules</button>';}
+function bindLoyalty(){
+ const eg=$('#ly-eg');
+ const paint=()=>{if(!eg)return;
+  const per=+($('#ly-per')||{}).value||10,pts=+($('#ly-pts')||{}).value||1,
+   val=+($('#ly-val')||{}).value||0;
+  eg.innerHTML='A RM200 bill earns <b>'+(Math.floor(200/per)*pts)+' points</b>, worth <b>'+
+   rm(Math.floor(200/per)*pts*val)+'</b> off a future visit.';};
+ ['ly-per','ly-pts','ly-val'].forEach(id=>{const el=$('#'+id);if(el)el.oninput=paint;});
+ paint();
+ const go=$('#ly-go');
+ if(go)go.onclick=async()=>{
+  const names=[...document.querySelectorAll('[data-tname]')].map(e=>e.value.trim());
+  const ats=[...document.querySelectorAll('[data-tat]')].map(e=>+e.value||0);
+  const tiers=names.map((n,i)=>({name:n||('Tier '+(i+1)),at:ats[i]||0}));
+  const L={on:$('#ly-on').checked,earnPer:+$('#ly-per').value||10,pointsPer:+$('#ly-pts').value||1,
+   ringgitPerPoint:+$('#ly-val').value||0,minRedeem:+$('#ly-min').value||0,
+   expireMonths:loy().expireMonths,tiers:tiers.length?tiers:LOY_DEFAULT.tiers};
+  try{await setDoc(doc(db,'meta','settings'),{loyalty:L},{merge:true});
+   D.meta.loyalty=L;await audit('Loyalty rules updated',L.on?'programme on':'programme off');
+   render();toast('Saved');}catch(e){toast(friendly(e));}};
+}
+window.loyCard=async id=>{
+ const c=cust(id)||LOYLIST.find(x=>x.id===id);if(!c)return;
+ const pts=c.points||0,earned=c.pointsEarned||pts,nx=nextTier(earned);
+ let mine=[];
+ try{const s=await getDocs(query(collection(db,'loyalty'),where('customerId','==',id),limit(60)));
+  mine=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}
+ catch(e){}
+ modal(c.name,'<div class="card"><div class="chead"><div class="avatar">'+esc(initials(c.name))+'</div>'+
+  '<div><h2 style="margin-bottom:2px">'+esc(c.name)+'</h2>'+
+  '<span class="pill b">'+ic('award',12)+esc(tierOf(earned))+'</span></div></div>'+
+  '<div class="grid g3">'+
+  '<div class="kpi dark"><div class="lab">Points</div><div class="big">'+pts.toLocaleString()+'</div>'+
+   '<div class="tiny" style="color:#9A9285">worth '+rm(pointsWorth(pts))+'</div></div>'+
+  kpi('Earned ever',earned.toLocaleString(),'','star')+
+  kpi('Redeemed',(c.pointsRedeemed||0).toLocaleString(),'','tag')+'</div>'+
+  (nx?'<div style="margin-top:11px"><div class="spread tiny"><span>Towards '+esc(nx.name)+'</span>'+
+   '<span>'+nx.need+' points to go</span></div><div class="bar"><i class="brass" style="width:'+
+   Math.min(100,earned/(earned+nx.need)*100)+'%"></i></div></div>':'')+
+  (boss()?'<div class="fabrow"><button class="btn sm ghost" onclick="adjustPoints(\''+id+
+   '\')">'+ic('edit',14)+'Adjust points</button></div>':'')+'</div>'+
+  '<div class="card"><h3 style="margin-bottom:9px">Points history</h3>'+
+  (mine.length?mine.map(l=>'<div class="item" style="cursor:default"><div class="spread">'+
+   '<span class="tiny">'+({earn:'Earned',redeem:'Redeemed',adjust:'Adjusted'}[l.kind]||l.kind)+
+   (l.ref?' · '+esc(l.ref):'')+'</span><b>'+(l.points>0?'+':'')+l.points+'</b></div>'+
+   '<div class="tiny muted">'+dstr(l.at)+' · '+esc(l.staffName||'')+
+   (l.reason?' · '+esc(l.reason):'')+'</div></div>').join('')
+   :'<div class="empty">Nothing yet.</div>')+'</div>');};
+window.adjustPoints=id=>{
+ const c=cust(id)||LOYLIST.find(x=>x.id===id);
+ modal('Adjust points · '+c.name,'<div class="card">'+
+  '<label>Points to add or take away</label>'+
+  '<input class="f" type="number" id="ap-n" placeholder="e.g. 100 or -50">'+
+  '<label>Reason * <span class="muted">— recorded in the ledger</span></label>'+
+  '<input class="f" id="ap-r" placeholder="Goodwill after a late appointment">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ap-go">Save adjustment</button></div>',
+ ()=>{$('#ap-go').onclick=async()=>{
+  const n=+$('#ap-n').value,why=$('#ap-r').value.trim();
+  if(!n){toast('Enter a number');return;}
+  if(why.length<3){toast('Please give a reason');return;}
+  try{await updateDoc(doc(db,'customers',id),{points:increment(n),
+    ...(n>0?{pointsEarned:increment(n)}:{})});
+   await addDoc(collection(db,'loyalty'),{customerId:id,customerName:c.name,kind:'adjust',
+    points:n,amount:0,reason:why,branchId:ME.branchId,staffId:UID,staffName:ME.name,
+    at:new Date().toISOString(),date:today()});
+   c.points=(c.points||0)+n;
+   await audit('Loyalty points adjusted',c.name+' '+(n>0?'+':'')+n+' — '+why);
+   await loadLoyalty();window.closeModal();render();toast('Adjusted');}
+  catch(e){toast(friendly(e));}};});};
+window.csvLoyalty=()=>{
+ const rows=[['Date','Client','Type','Points','Value','Reference','Reason','Staff']];
+ LOYLEDGER.forEach(l=>rows.push([l.date||'',l.customerName||'',l.kind,l.points,l.amount||0,
+  l.ref||'',l.reason||'',l.staffName||'']));
+ const txt=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+ const a=document.createElement('a');
+ a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\ufeff'+txt);
+ a.download='loyalty-'+today()+'.csv';a.click();toast('CSV downloaded');};
+
+/* ============ daily shift ============ */
+let SHIFT=null,shiftView='summary';
+const shiftId=(d,b)=>(b||ME.branchId)+'_'+(d||today());
+window.setShiftView=v=>{shiftView=v;render();};
+async function loadShift(d){
+ try{const r=await getDoc(doc(db,'shifts',shiftId(d)));
+  SHIFT=r.exists()?{id:r.id,...r.data()}:null;}catch(e){SHIFT=null;console.warn('shift',e);}
+}
+function dayFigures(d){
+ d=d||today();
+ const sales=SALES.filter(s=>s.date===d&&s.branchId===ME.branchId);
+ const live=sales.filter(s=>!s.voided);
+ const byMethod={};let cash=0;
+ live.forEach(s=>(s.payments||[]).forEach(p=>{
+  byMethod[p.method]=(byMethod[p.method]||0)+p.amount;
+  if(/cash/i.test(p.method))cash+=p.amount;}));
+ const ap=APPTS.filter(a=>a.date===d);
+ const cats={};ap.forEach(a=>{const k=(visitOf(a.visitType)||{}).label||'Unspecified';
+  cats[k]=(cats[k]||0)+1;});
+ const items={service:0,product:0,package:0};
+ live.forEach(s=>(s.items||[]).forEach(i=>{if(items[i.kind]!==undefined)items[i.kind]+=i.price*i.qty;}));
+ return{sales:live,voided:sales.filter(s=>s.voided),revenue:live.reduce((a,s)=>a+s.total,0),
+  bills:live.length,byMethod,cash,items,
+  booked:ap.length,showed:ap.filter(a=>a.status==='done').length,
+  inTreatment:ap.filter(a=>a.status==='in').length,
+  noShow:ap.filter(a=>a.status==='no').length,
+  cancelled:ap.filter(a=>a.status==='cancel').length,
+  cats,deposits:ap.reduce((a,x)=>a+(x.deposit||0),0)};
+}
+const expTotal=()=>((SHIFT&&SHIFT.expenses)||[]).reduce((a,e)=>a+(e.amount||0),0);
+const expectedCash=f=>((SHIFT&&SHIFT.openingFloat)||0)+f.cash-expTotal();
+function vShift(){
+ const f=dayFigures();
+ let h='<div class="card"><div class="seg">'+
+  '<button class="'+(shiftView==='summary'?'on':'')+'" onclick="setShiftView(\'summary\')">'+
+   ic('chart',14)+'Summary</button>'+
+  '<button class="'+(shiftView==='cash'?'on':'')+'" onclick="setShiftView(\'cash\')">'+
+   ic('wallet',14)+'Cash</button>'+
+  '<button class="'+(shiftView==='issues'?'on':'')+'" onclick="setShiftView(\'issues\')">'+
+   ic('tool',14)+'Issues</button></div>'+shiftHeader()+
+  ({summary:shiftSummary,cash:shiftCash,issues:shiftIssues}[shiftView]||shiftSummary)(f)+'</div>';
+ return h;}
+function shiftHeader(){
+ if(!SHIFT)return '<div class="warnbox">'+ic('alert',14)+' The day has not been opened yet. '+
+  'Open it to record the cash float you are starting with.</div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-bottom:12px" onclick="openShift()">'+
+  ic('login',16)+'Open the day</button>';
+ const closed=!!SHIFT.closedAt;
+ return '<div class="item" style="cursor:default;border-left:3px solid '+
+  (closed?'var(--ink-3)':'var(--jade)')+'">'+
+  '<div class="spread"><b>'+(closed?'Day closed':'Day open')+'</b>'+
+  '<span class="pill '+(closed?'':'g')+'">'+dstr(today())+'</span></div>'+
+  '<div class="tiny muted" style="margin-top:4px">Opened '+tstr(SHIFT.openedAt)+' by '+
+  esc(SHIFT.openedByName||'')+' · float '+rm(SHIFT.openingFloat||0)+
+  (closed?'<br>Closed '+tstr(SHIFT.closedAt)+' by '+esc(SHIFT.closedByName||''):'')+'</div></div>';}
+window.openShift=()=>{
+ modal('Open the day','<div class="card">'+
+  '<label>Opening cash float (RM)</label>'+
+  '<input class="f" type="number" step="0.01" id="os-f" value="0" '+
+   'style="font-size:20px;text-align:center">'+
+  '<label>Note <span class="muted">— optional</span></label>'+
+  '<input class="f" id="os-n" placeholder="Counted with Nurul">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="os-go">'+ic('login',16)+
+  'Open the day</button>'+
+  '<p class="tiny muted" style="margin-top:9px">The float is the cash already in the drawer before '+
+  'trading starts. Closing compares it against takings and anything paid out.</p></div>',
+ ()=>{$('#os-go').onclick=async()=>{
+  const data={branchId:ME.branchId,date:today(),openingFloat:+$('#os-f').value||0,
+   openNote:$('#os-n').value||'',openedAt:new Date().toISOString(),openedBy:UID,
+   openedByName:ME.name,expenses:[],issues:[],closedAt:''};
+  try{await setDoc(doc(db,'shifts',shiftId()),data,{merge:true});
+   await loadShift();await audit('Day opened','Float '+rm(data.openingFloat));
+   window.closeModal();render();toast('Day opened');}catch(e){toast(friendly(e));}};});};
+function shiftSummary(f){
+ const cs=Object.keys(f.cats);
+ return '<div class="grid g3" style="margin-bottom:12px">'+
+  (can('pos')?'<div class="kpi dark"><div class="lab">'+ic('money',12)+'Takings</div>'+
+   '<div class="big">'+rm(f.revenue)+'</div><div class="tiny" style="color:#9A9285">'+
+   f.bills+' bills</div></div>':'')+
+  kpi('Showed up',f.showed+' / '+f.booked,f.inTreatment?f.inTreatment+' in treatment':'','check')+
+  kpi('No-shows',f.noShow,f.cancelled+' cancelled','alert')+'</div>'+
+  (can('pos')?'<div class="card" style="box-shadow:none;margin:0 0 12px"><h3 style="margin-bottom:9px">'+
+   ic('card',14)+' Payments taken</h3><table>'+
+   (Object.keys(f.byMethod).length?Object.keys(f.byMethod).map(m=>'<tr><td>'+esc(m)+
+    '</td><td class="num">'+rm(f.byMethod[m])+'</td></tr>').join('')
+    :'<tr><td class="muted">Nothing taken yet</td><td></td></tr>')+
+   (f.deposits?'<tr><td class="muted">Deposits on bookings</td><td class="num muted">'+
+    rm(f.deposits)+'</td></tr>':'')+
+   '<tr><td><b>Total</b></td><td class="num"><b>'+rm(f.revenue)+'</b></td></tr></table>'+
+   '<h3 style="margin:13px 0 9px">'+ic('chart',14)+' Where it came from</h3>'+
+   ['service','product','package'].map(k=>{
+    const v=f.items[k],pc=f.revenue?v/f.revenue*100:0;
+    return '<div style="margin:8px 0"><div class="spread tiny"><span>'+
+     ({service:'Treatments',product:'Retail',package:'Packages'}[k])+'</span><span>'+rm(v)+'</span></div>'+
+     '<div class="bar"><i style="width:'+pc+'%"></i></div></div>';}).join('')+
+   (f.voided.length?'<div class="tiny muted" style="margin-top:9px">'+ic('alert',12)+' '+
+    f.voided.length+' bill'+(f.voided.length>1?'s':'')+' voided today</div>':'')+'</div>':'')+
+  '<div class="card" style="box-shadow:none;margin:0 0 12px"><h3 style="margin-bottom:9px">'+
+   ic('users',14)+' Who came in</h3>'+
+   (cs.length?cs.map(k=>'<div class="spread tiny" style="padding:5px 0;border-bottom:1px solid var(--line-2)">'+
+    '<span>'+esc(k)+'</span><b>'+f.cats[k]+'</b></div>').join('')
+    :'<div class="tiny muted">No appointments today.</div>')+'</div>'+
+  '<div class="fabrow">'+
+  '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print summary</button>'+
+  (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="btn sm" onclick="closeShift()">'+
+   ic('out',14)+'Close the day</button>':'')+'</div>';}
+function shiftCash(f){
+ if(!SHIFT)return '<div class="empty">Open the day first.</div>';
+ const exp=SHIFT.expenses||[];
+ return '<div class="grid g2" style="margin-bottom:12px">'+
+  kpi('Opening float',rm(SHIFT.openingFloat||0),'','wallet')+
+  kpi('Cash taken',rm(f.cash),'from bills today','money')+
+  kpi('Paid out',rm(expTotal()),exp.length+' entries','out')+
+  kpi('Should be in drawer',rm(expectedCash(f)),'float + cash − paid out','check')+'</div>'+
+  '<div class="sec-h"><h3>Money paid out</h3><button class="btn sm" onclick="addExpense()">'+
+   ic('plus',14)+'Add</button></div>'+
+  (exp.length?exp.slice().reverse().map(e=>'<div class="item" style="cursor:default">'+
+   '<div class="spread"><b>'+esc(e.category||'')+'</b><span>'+rm(e.amount)+'</span></div>'+
+   '<div class="tiny muted">'+esc(e.note||'')+' · '+tstr(e.at)+' · '+esc(e.byName||'')+'</div></div>').join('')
+   :'<div class="empty">'+ic('wallet',24)+'<div>Nothing paid out of the drawer today.</div></div>')+
+  (SHIFT.closedAt?'<div class="card" style="box-shadow:none;margin-top:12px"><h3 style="margin-bottom:9px">'+
+   'Closing count</h3><table>'+
+   '<tr><td>Counted</td><td class="num">'+rm(SHIFT.countedCash||0)+'</td></tr>'+
+   '<tr><td>Expected</td><td class="num">'+rm(SHIFT.expectedCash||0)+'</td></tr>'+
+   '<tr><td><b>Difference</b></td><td class="num"><b style="color:'+
+    (Math.abs(SHIFT.variance||0)<0.01?'var(--jade)':'var(--rose)')+'">'+
+    rm(SHIFT.variance||0)+'</b></td></tr></table>'+
+   (SHIFT.closeNote?'<div class="tiny muted" style="margin-top:8px">'+ic('note',12)+' '+
+    esc(SHIFT.closeNote)+'</div>':'')+'</div>':'');}
+window.addExpense=()=>{
+ const cats=['Supplies','Petty cash','Staff meal','Transport','Repairs','Utilities','Refund','Other'];
+ modal('Money out of the drawer','<div class="card">'+
+  '<label>Category</label><select class="f" id="ex-c">'+cats.map(c=>'<option>'+c+'</option>').join('')+'</select>'+
+  '<label>Amount (RM)</label><input class="f" type="number" step="0.01" id="ex-a" '+
+   'style="font-size:20px;text-align:center">'+
+  '<label>What was it for *</label><input class="f" id="ex-n" placeholder="Cotton pads from the pharmacy">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ex-go">'+ic('check',16)+
+  'Record</button></div>',
+ ()=>{$('#ex-go').onclick=async()=>{
+  const amt=+$('#ex-a').value,note=$('#ex-n').value.trim();
+  if(!(amt>0)){toast('Enter an amount');return;}
+  if(note.length<3){toast('Say what it was for');return;}
+  const e={id:uidLite(),category:$('#ex-c').value,amount:amt,note,at:new Date().toISOString(),
+   by:UID,byName:ME.name};
+  try{await updateDoc(doc(db,'shifts',shiftId()),{expenses:[...(SHIFT.expenses||[]),e]});
+   SHIFT.expenses=[...(SHIFT.expenses||[]),e];
+   await audit('Cash paid out',e.category+' '+rm(amt)+' — '+note);
+   window.closeModal();render();toast('Recorded');}catch(err){toast(friendly(err));}};});};
+const uidLite=()=>Math.random().toString(36).slice(2,10);
+function shiftIssues(){
+ if(!SHIFT)return '<div class="empty">Open the day first.</div>';
+ const iss=SHIFT.issues||[];
+ const open=iss.filter(i=>i.status!=='done');
+ return '<div class="sec-h"><h3>Maintenance and operations</h3>'+
+  '<button class="btn sm" onclick="addIssue()">'+ic('plus',14)+'Report</button></div>'+
+  (open.length?'<div class="warnbox">'+ic('alert',14)+' '+open.length+' still open</div>':'')+
+  (iss.length?iss.slice().reverse().map(i=>'<div class="item" onclick="toggleIssue(\''+i.id+'\')">'+
+   '<div class="spread"><b>'+ic(i.type==='maintenance'?'tool':'flag',13)+' '+esc(i.title)+'</b>'+
+   '<span class="pill '+({low:'',medium:'a',high:'r'}[i.severity]||'')+'">'+
+    esc(i.severity||'')+'</span></div>'+
+   '<div class="tiny muted" style="margin-top:4px">'+esc(i.detail||'')+'</div>'+
+   '<div class="tiny muted" style="margin-top:5px">'+tstr(i.at)+' · '+esc(i.byName||'')+' · '+
+   (i.status==='done'?'<span style="color:var(--jade)">'+ic('check',11)+' resolved</span>':
+    '<span style="color:var(--amber)">open — tap to resolve</span>')+'</div></div>').join('')
+   :'<div class="empty">'+ic('tool',24)+'<div>Nothing reported today. That is a good day.</div></div>');}
+window.addIssue=()=>{
+ modal('Report an issue','<div class="card">'+
+  '<label>Type</label><select class="f" id="is-t">'+
+   '<option value="maintenance">Maintenance — equipment, room, building</option>'+
+   '<option value="operation">Operations — process, stock, staffing, client</option></select>'+
+  '<label>Severity</label><select class="f" id="is-s">'+
+   '<option value="low">Low — can wait</option><option value="medium" selected>Medium — this week</option>'+
+   '<option value="high">High — blocking work today</option></select>'+
+  '<label>Short title</label><input class="f" id="is-ti" placeholder="HIFU handpiece overheating">'+
+  '<label>What happened</label><textarea class="f" id="is-d" rows="3"></textarea>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="is-go">'+ic('check',16)+
+  'Submit report</button></div>',
+ ()=>{$('#is-go').onclick=async()=>{
+  const title=$('#is-ti').value.trim();
+  if(title.length<3){toast('Give it a short title');return;}
+  const i={id:uidLite(),type:$('#is-t').value,severity:$('#is-s').value,title,
+   detail:$('#is-d').value.trim(),status:'open',at:new Date().toISOString(),by:UID,byName:ME.name};
+  try{await updateDoc(doc(db,'shifts',shiftId()),{issues:[...(SHIFT.issues||[]),i]});
+   SHIFT.issues=[...(SHIFT.issues||[]),i];
+   await audit('Issue reported',i.type+' · '+title);
+   window.closeModal();render();toast('Reported');}catch(e){toast(friendly(e));}};});};
+window.toggleIssue=async id=>{
+ const iss=(SHIFT.issues||[]).map(i=>i.id===id
+  ?{...i,status:i.status==='done'?'open':'done',
+    resolvedAt:i.status==='done'?'':new Date().toISOString(),
+    resolvedByName:i.status==='done'?'':ME.name}:i);
+ try{await updateDoc(doc(db,'shifts',shiftId()),{issues:iss});SHIFT.issues=iss;
+  render();toast('Updated');}catch(e){toast(friendly(e));}};
+window.closeShift=()=>{
+ const f=dayFigures();
+ const expect=expectedCash(f);
+ modal('Close the day','<div class="card">'+
+  '<table><tr><td>Opening float</td><td class="num">'+rm(SHIFT.openingFloat||0)+'</td></tr>'+
+  '<tr><td>Cash taken today</td><td class="num">'+rm(f.cash)+'</td></tr>'+
+  '<tr><td>Paid out</td><td class="num">-'+rm(expTotal())+'</td></tr>'+
+  '<tr><td><b>Should be in the drawer</b></td><td class="num"><b>'+rm(expect)+'</b></td></tr></table>'+
+  '<label style="margin-top:12px">Cash actually counted (RM)</label>'+
+  '<input class="f" type="number" step="0.01" id="cs-c" value="'+expect.toFixed(2)+
+   '" style="font-size:22px;text-align:center" oninput="cshDiff('+expect+')">'+
+  '<div id="cs-d" class="tiny" style="text-align:center;margin-bottom:11px"></div>'+
+  '<label>Notes on the day</label><textarea class="f" id="cs-n" rows="3" '+
+   'placeholder="Anything the owner should know tomorrow"></textarea>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="cs-go">'+ic('check',16)+
+  'Close the day</button>'+
+  '<p class="tiny muted" style="margin-top:9px">Once closed the figures are locked for the day. '+
+  'A difference is not an accusation — record it honestly so patterns can be spotted.</p></div>',
+ ()=>{window.cshDiff(expect);
+  $('#cs-go').onclick=async()=>{
+   const counted=+$('#cs-c').value||0;
+   try{await updateDoc(doc(db,'shifts',shiftId()),{closedAt:new Date().toISOString(),
+     closedBy:UID,closedByName:ME.name,countedCash:counted,expectedCash:expect,
+     variance:counted-expect,closeNote:$('#cs-n').value||'',
+     revenue:f.revenue,bills:f.bills,cashTaken:f.cash,paidOut:expTotal(),
+     showed:f.showed,booked:f.booked,noShow:f.noShow});
+    await loadShift();
+    await audit('Day closed','Counted '+rm(counted)+', difference '+rm(counted-expect));
+    window.closeModal();render();toast('Day closed');}
+   catch(e){toast(friendly(e));}};});};
+window.cshDiff=expect=>{
+ const el=$('#cs-d');if(!el)return;
+ const d=(+($('#cs-c')||{}).value||0)-expect;
+ el.innerHTML=Math.abs(d)<0.01?'<span style="color:var(--jade)">'+ic('check',12)+' Balances exactly</span>'
+  :'<span style="color:var(--rose)">'+(d>0?'Over by ':'Short by ')+rm(Math.abs(d))+'</span>';};
+
 /* ============ settings ============ */
 function vSet(){
  const b=D.meta.biz||{};
@@ -2635,7 +3249,7 @@ window.openStaff=id=>{
 
 /* ============ after-render bindings ============ */
 const _render=render;
-render=function(){_render();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();};
+render=function(){_render();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();};
 window.render=render;
 
 /* ============ boot ============ */
@@ -2663,7 +3277,7 @@ window.render=render;
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
