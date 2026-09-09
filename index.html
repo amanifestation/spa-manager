@@ -287,8 +287,10 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .imgprev img{width:84px;height:84px;object-fit:cover;border-radius:var(--r-sm);flex:none;
   background:var(--line-2)}
 .imgmeta{flex:1;min-width:0}
-.noteimg{max-width:100%;width:auto;height:auto;display:block;border-radius:var(--r-md);margin-top:9px;
-  cursor:zoom-in;border:1px solid var(--line);animation:fadeIn .4s var(--ease)}
+.noteimg{max-width:min(100%,240px);max-height:140px;width:auto;height:auto;display:block;
+  object-fit:contain;border-radius:var(--r-sm);margin-top:9px;cursor:zoom-in;
+  border:1px solid var(--line);background:var(--surface-2);animation:fadeIn .4s var(--ease)}
+.imghint{font-size:10px;color:var(--ink-3);margin-top:3px;display:flex;align-items:center;gap:4px}
 .zoomwrap{text-align:center}
 .zoomwrap img{max-width:100%;border-radius:var(--r-md);border:1px solid var(--line)}
 .pthumb{width:44px;height:44px;border-radius:11px;object-fit:cover;flex:none;background:var(--line-2);
@@ -373,6 +375,67 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   font-size:9.5px;font-weight:600;padding:3px 7px;border-radius:99px;text-transform:uppercase;
   letter-spacing:.04em}
 
+
+/* ---------- A4 report ---------- */
+#reportwrap:empty{display:none}
+.rptveil{position:fixed;inset:0;z-index:120;background:var(--cream);overflow:auto;
+  padding:0 0 30px;animation:fadeIn .2s var(--ease)}
+.rptbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;padding:10px 13px;background:var(--ink);color:var(--cream)}
+.rptbar .btn.ghost{color:var(--cream);border-color:rgba(255,255,255,.25)}
+.a4{width:210mm;min-height:297mm;margin:16px auto;background:#fff;color:#14120F;
+  padding:15mm 14mm;box-shadow:0 18px 50px -22px rgba(0,0,0,.5);font-size:10.5pt;line-height:1.45}
+@media(max-width:840px){.a4{width:auto;min-height:auto;margin:12px;padding:16px;font-size:12px}}
+.rhd{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.rhd-l{display:flex;gap:12px;align-items:flex-start}
+.rhd-l img{max-width:74px;max-height:56px;object-fit:contain}
+.rbiz{font-size:14pt;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.rsm{font-size:8pt;color:#5A5347;line-height:1.5}
+.rhd-r{text-align:right}
+.rtitle{font-size:13pt;font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.rrule{border-top:2px solid #14120F;margin:9px 0 12px}
+.rkpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.rkpis>div{border:1px solid #DCD6C8;border-radius:7px;padding:7px 8px;text-align:center}
+.rkpis span{display:block;font-size:7pt;text-transform:uppercase;letter-spacing:.06em;color:#5A5347}
+.rkpis b{font-size:12pt;font-weight:700;letter-spacing:-.02em}
+@media(max-width:600px){.rkpis{grid-template-columns:repeat(2,1fr)}}
+.rsec{margin-bottom:13px;break-inside:avoid;page-break-inside:avoid}
+.rsec h2{font-size:9.5pt;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
+  padding-bottom:4px;border-bottom:1px solid #14120F;display:flex;align-items:center;gap:7px}
+.rnum{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:99px;
+  background:#14120F;color:#fff;font-size:7.5pt;font-weight:700}
+.rextra{margin-left:auto;font-size:7.5pt;font-weight:400;text-transform:none;letter-spacing:0;color:#5A5347}
+.rt{width:100%;border-collapse:collapse;font-size:9pt}
+.rt th{text-align:left;font-size:7.5pt;text-transform:uppercase;letter-spacing:.05em;color:#5A5347;
+  padding:4px 5px;border-bottom:1px solid #DCD6C8}
+.rt td{padding:4px 5px;border-bottom:1px solid #EFEBE0;vertical-align:top}
+.rt .n{text-align:right}
+.rt .rtot2 td{font-weight:700;border-top:1px solid #14120F;border-bottom:1px solid #14120F}
+.rt .rbad{color:#9B4A4A}
+.rwarn{color:#9C6B15;font-size:8.5pt}
+.rnone{color:#8C8577;font-size:8.5pt;font-style:italic;margin:2px 0}
+.rnote{font-size:8.5pt;margin:6px 0 0}
+.rgrid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+.rgrid5>div{border:1px solid #EFEBE0;border-radius:6px;padding:5px;text-align:center}
+.rgrid5 span{display:block;font-size:7pt;color:#5A5347}
+.rgrid5 b{font-size:11pt}
+.rsign{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px;
+  break-inside:avoid;page-break-inside:avoid}
+.rline2{border-bottom:1px solid #14120F;height:26px}
+.rsign span{font-size:7.5pt;color:#5A5347;display:block;margin-top:4px}
+.rfoot2{margin-top:16px;padding-top:7px;border-top:1px solid #DCD6C8;font-size:7pt;color:#8C8577;
+  text-align:center}
+@media print{
+  @page{size:A4;margin:12mm}
+  body>*{display:none!important}
+  body>#reportwrap{display:block!important}
+  body{padding:0;background:#fff}
+  .rptveil{position:static;overflow:visible;padding:0;background:#fff;animation:none}
+  .rptbar{display:none!important}
+  .a4{width:auto;min-height:0;margin:0;padding:0;box-shadow:none;font-size:9.5pt}
+  .rsec{margin-bottom:11px}
+}
+
 @media print{.nav,.topbar,.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -380,6 +443,7 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
 <div id="modal"></div>
+<div id="reportwrap"></div>
 
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
@@ -755,6 +819,20 @@ function tileBadge(t){
   return n?n+' on shift':'';}
  return '';
 }
+function attendQuick(){
+ const me=stf(UID)||{};
+ const a=attToday(UID);
+ if(!me.attCode)return can('staff')
+  ?'<button class="qbtn" onclick="editStaff(\''+UID+'\')">'+ic('idcard',20)+
+   '<span>Set my code</span></button>'
+  :'';
+ if(!a)return '<button class="qbtn" onclick="clockPrompt(\''+UID+'\',\'in\')">'+ic('login',20)+
+  '<span>Clock in</span></button>';
+ if(!a.clockOut)return '<button class="qbtn" onclick="clockPrompt(\''+UID+'\',\'out\')">'+ic('out',20)+
+  '<span>Clock out</span></button>';
+ return '<button class="qbtn" onclick="go(\'team\')">'+ic('check',20)+
+  '<span>'+worked(a)+' today</span></button>';
+}
 function vHome(){
  const f=dayFigures();
  const tiles=TABS.filter(t=>t.id!=='home'&&(!t.perm||can(t.perm)));
@@ -775,6 +853,9 @@ function vHome(){
   (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="qbtn" onclick="addExpense()">'+ic('wallet',20)+
    '<span>Cash out</span></button>':'')+
   '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report issue</span></button>'+
+  attendQuick()+
+  (can('pos')?'<button class="qbtn" onclick="openDailyReport()">'+ic('receipt',20)+
+   '<span>Daily report</span></button>':'')+
   '</div>';
 
  const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).slice(0,1);
@@ -1027,14 +1108,95 @@ window.openAppt=id=>{
   '<button class="btn sm ghost" onclick="waLink(\''+id+'\')">'+ic('msg',14)+'Reminder</button>'+
   (['done','cancel','no'].includes(a.status)?'':
    '<button class="btn sm ghost" onclick="setStat(\''+id+'\',\'no\')">No-show</button>'+
-   '<button class="btn sm ghost" onclick="setStat(\''+id+'\',\'cancel\')">Cancel</button>')+'</div></div>');
+   '<button class="btn sm ghost" onclick="setStat(\''+id+'\',\'cancel\')">Cancel</button>')+
+  ((a.statusLog||[]).length?'<button class="btn sm ghost" onclick="revertStat(\''+id+
+   '\')">'+ic('refresh',14)+'Undo last change</button>':'')+
+  (boss()?'<button class="btn sm ghost" style="color:var(--rose)" onclick="deleteAppt(\''+id+
+   '\')">'+ic('trash',14)+'Delete</button>':'')+'</div>'+
+  ((a.statusLog||[]).length?'<div class="tiny muted" style="margin-top:11px">'+ic('history',12)+
+   ' History<br>'+(a.statusLog||[]).slice(-4).map(l=>
+    ((STATUS[l.from]||[l.from||'new'])[0])+' → '+((STATUS[l.to]||[l.to])[0])+
+    ' · '+dshort(l.at)+' '+tstr(l.at)+' · '+esc(l.byName||'')+
+    (l.reverted?' <span style="color:var(--amber)">(undo)</span>':'')).join('<br>')+'</div>':'')+
+  '</div>');
 };
 window.setStat=async(id,st)=>{
  const a=APPTS.find(x=>x.id===id);
- try{await updateDoc(doc(db,'appointments',id),{status:st,updatedBy:UID,updatedAt:new Date().toISOString()});
+ const entry={from:a.status,to:st,at:new Date().toISOString(),by:UID,byName:ME.name};
+ try{await updateDoc(doc(db,'appointments',id),{status:st,updatedBy:UID,
+   updatedAt:new Date().toISOString(),statusLog:[...(a.statusLog||[]),entry]});
   await audit('Booking status',(a.customerName||'')+' → '+(STATUS[st]||[st])[0]);
   window.closeModal();toast('Status updated');}
  catch(e){toast(friendly(e));}};
+
+/* step the status back to whatever it was before the last change */
+window.revertStat=async id=>{
+ const a=APPTS.find(x=>x.id===id);
+ const log=a.statusLog||[];
+ if(!log.length){toast('No earlier status to go back to');return;}
+ const last=log[log.length-1];
+ const wasDone=a.status==='done';
+ const svcUsed=svc(a.serviceId).use||[];
+ modal('Undo the last change','<div class="card">'+
+  '<div class="kv"><div class="k">'+ic('history',12)+' Changed</div><div class="v">'+
+   dstr(last.at)+' '+tstr(last.at)+'</div>'+
+  '<div class="k">'+ic('user',12)+' By</div><div class="v">'+esc(last.byName||'')+'</div>'+
+  '<div class="k">'+ic('refresh',12)+' Going back to</div><div class="v"><b>'+
+   ((STATUS[last.from]||[last.from])[0])+'</b> <span class="muted">(from '+
+   ((STATUS[last.to]||[last.to])[0])+')</span></div></div>'+
+  (wasDone&&svcUsed.length?'<div class="warnbox" style="margin-top:11px">'+ic('alert',13)+
+   ' Completing this treatment took backbar stock out. Undoing it will put '+
+   svcUsed.map(u=>u.qty+' '+(prod(u.sku).unit||'')+' '+(prod(u.sku).name||u.sku)).join(', ')+
+   ' back on the shelf.</div>':'')+
+  '<label style="margin-top:11px">Reason * <span class="muted">— recorded in the audit trail</span></label>'+
+  '<input class="f" id="rv-r" placeholder="Marked complete by mistake">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="rv-go">'+ic('refresh',16)+
+  'Undo the change</button></div>',
+ ()=>{$('#rv-go').onclick=async()=>{
+  const why=($('#rv-r').value||'').trim();
+  if(why.length<3){toast('Please give a reason');return;}
+  try{
+   await updateDoc(doc(db,'appointments',id),{status:last.from,
+    statusLog:[...log,{from:a.status,to:last.from,at:new Date().toISOString(),
+      by:UID,byName:ME.name,reverted:true,reason:why}],
+    updatedBy:UID,updatedAt:new Date().toISOString()});
+   if(wasDone){
+    for(const u of svcUsed){const st=stockOf(u.sku,a.branchId);
+     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(u.qty)});st.qty+=u.qty;}}
+   }
+   await audit('Booking status reverted',(a.customerName||'')+' → '+
+    ((STATUS[last.from]||[last.from])[0])+' — '+why);
+   window.closeModal();render();
+   toast(wasDone&&svcUsed.length?'Reverted and stock returned':'Reverted');
+  }catch(e){toast(friendly(e));}};});};
+
+window.deleteAppt=id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ modal('Delete this booking','<div class="card">'+
+  '<div class="errbox">'+ic('alert',14)+' Deleting removes the booking from the calendar entirely. '+
+  'If the client simply did not come, <b>Cancel</b> or <b>No-show</b> is the better record — '+
+  'those keep the slot in your history and in the no-show rate.</div>'+
+  '<div class="kv" style="margin-bottom:11px">'+
+  '<div class="k">'+ic('user',12)+' Client</div><div class="v">'+esc(a.customerName||'')+'</div>'+
+  '<div class="k">'+ic('spark',12)+' Treatment</div><div class="v">'+esc(a.serviceName||'')+'</div>'+
+  '<div class="k">'+ic('clock',12)+' When</div><div class="v">'+dstr(a.start)+' '+tstr(a.start)+'</div>'+
+  (a.deposit?'<div class="k">'+ic('card',12)+' Deposit</div><div class="v" style="color:var(--rose)">'+
+   rm(a.deposit)+' taken — refund it separately</div>':'')+'</div>'+
+  '<label>Reason * <span class="muted">— recorded in the audit trail</span></label>'+
+  '<input class="f" id="da-r" placeholder="Duplicate entry, booked on the wrong day">'+
+  '<button class="btn warn" style="width:100%;justify-content:center" id="da-go">'+ic('trash',16)+
+  'Delete permanently</button></div>',
+ ()=>{$('#da-go').onclick=async()=>{
+  const why=($('#da-r').value||'').trim();
+  if(why.length<4){toast('Please give a reason');return;}
+  if(!confirm('Delete the booking for '+(a.customerName||'')+'? This cannot be undone.'))return;
+  try{
+   await addDoc(collection(db,'audit'),{action:'Booking deleted',
+    detail:(a.customerName||'')+' · '+(a.serviceName||'')+' · '+dstr(a.start)+' '+tstr(a.start)+
+     ' — '+why,uid:UID,userName:ME.name,branchId:ME.branchId,at:new Date().toISOString()});
+   await deleteDoc(doc(db,'appointments',id));
+   window.closeModal();render();toast('Booking deleted and logged');
+  }catch(e){toast(friendly(e));}};});};
 window.finishAppt=async id=>{
  const a=APPTS.find(x=>x.id===id);const s=svc(a.serviceId);const warn=[];
  try{
@@ -2472,7 +2634,7 @@ function noteCard(n){
   '<span class="pill '+p[1]+'">'+p[0]+'</span></div>'+
   '<div class="tiny dim" style="white-space:pre-wrap">'+esc(n.body||'')+'</div>'+
   (n.image?'<img class="noteimg" src="'+n.image+'" alt="" onclick="event.stopPropagation();zoomImg(\''+
-   n.id+'\')">':'')+
+   n.id+'\')"><div class="imghint">'+ic('search',10)+'Tap the picture to see it full size</div>':'')+
   (n.url?'<a class="btn sm ghost" style="margin-top:8px;text-decoration:none" target="_blank" '+
    'onclick="event.stopPropagation()" href="'+esc(n.url)+'">'+ic('right',13)+'Open link</a>':'')+
   '<div class="tiny muted" style="margin-top:7px">'+ic('user',11)+' '+esc(n.authorName||'')+' · '+
@@ -2762,6 +2924,203 @@ function myClockCard(){
    (!a.clockOut?'<button class="btn sm ghost" onclick="clockPrompt(\''+UID+'\',\'out\')">'+
     ic('out',14)+'Clock out</button>':'<span class="pill g">'+ic('check',11)+'Done</span>'))+
   '</div></div>';}
+
+/* ============ A4 daily report ============ */
+window.openDailyReport=async d=>{
+ d=d||today();
+ const wrap=document.getElementById('reportwrap');
+ wrap.innerHTML='<div class="rptveil"><div class="rptbar">'+
+  '<button class="btn sm ghost" onclick="closeReport()">'+ic('close',14)+'Close</button>'+
+  '<div class="tiny muted">Daily summary · '+dstr(d)+'</div>'+
+  '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
+  '</div><div class="a4"><div class="skel" style="width:50%"></div><div class="skel"></div>'+
+  '<div class="skel" style="width:70%"></div></div></div>';
+ let shift=SHIFT;
+ if(d!==today()){try{const r=await getDoc(doc(db,'shifts',shiftId(d)));
+  shift=r.exists()?{id:r.id,...r.data()}:null;}catch(e){shift=null;}}
+ wrap.querySelector('.a4').innerHTML=dailyReportBody(d,shift);
+};
+window.closeReport=()=>{document.getElementById('reportwrap').innerHTML='';};
+function dailyReportBody(d,shift){
+ const b=D.meta.biz||{};
+ const L=bizLines(b,branch().name);
+ const f=dayFiguresFor(d);
+ const att=ATT.filter(a=>a.date===d&&a.branchId===ME.branchId);
+ const exp=(shift&&shift.expenses)||[];
+ const iss=(shift&&shift.issues)||[];
+ const pts=LOYLEDGER.filter(l=>l.date===d);
+ const earned=pts.filter(l=>l.points>0).reduce((a,l)=>a+l.points,0);
+ const spent=pts.filter(l=>l.points<0).reduce((a,l)=>a-l.points,0);
+ const expTot=exp.reduce((a,e)=>a+(e.amount||0),0);
+ const expect=((shift&&shift.openingFloat)||0)+f.cash-expTot;
+ const counted=shift&&shift.closedAt?(shift.countedCash||0):null;
+
+ /* per-therapist performance for the day */
+ const perf={};
+ f.sales.forEach(s=>(s.items||[]).forEach(i=>{
+  const who=i.staffId||s.staffId;const u=stf(who);if(!u.id)return;
+  perf[who]=perf[who]||{name:u.name,svc:0,prod:0,pkg:0,total:0};
+  const line=i.price*i.qty;
+  if(i.kind==='service')perf[who].svc+=line;
+  else if(i.kind==='product')perf[who].prod+=line;
+  else if(i.kind==='package')perf[who].pkg+=line;
+  perf[who].total+=line;}));
+ f.appts.filter(a=>a.status==='done').forEach(a=>{
+  const u=stf(a.staffId);if(!u.id)return;
+  perf[a.staffId]=perf[a.staffId]||{name:u.name,svc:0,prod:0,pkg:0,total:0};
+  perf[a.staffId].done=(perf[a.staffId].done||0)+1;});
+
+ const treat={};
+ f.sales.forEach(s=>(s.items||[]).forEach(i=>{if(i.kind!=='service')return;
+  treat[i.name]=treat[i.name]||{n:0,v:0};treat[i.name].n+=i.qty;treat[i.name].v+=i.price*i.qty;}));
+
+ const sec=(n,title,body,extra)=>'<section class="rsec"><h2><span class="rnum">'+n+'</span>'+title+
+  (extra?'<span class="rextra">'+extra+'</span>':'')+'</h2>'+body+'</section>';
+ const none='<p class="rnone">Nothing recorded.</p>';
+ const money=v=>rm(v);
+
+ return ''+
+ /* letterhead */
+ '<header class="rhd">'+
+  '<div class="rhd-l">'+(b.logo?'<img src="'+b.logo+'" alt="">':'')+
+   '<div><div class="rbiz">'+esc(b.name||'')+'</div>'+
+   (L.addr?'<div class="rsm">'+esc(L.addr)+'</div>':'')+
+   (L.contact?'<div class="rsm">'+esc(L.contact)+'</div>':'')+
+   (L.reg?'<div class="rsm">'+esc(L.reg)+'</div>':'')+'</div></div>'+
+  '<div class="rhd-r"><div class="rtitle">Daily Summary</div>'+
+   '<div class="rsm">'+esc(branch().name)+'</div>'+
+   '<div class="rsm"><b>'+dstr(d)+'</b></div>'+
+   '<div class="rsm">'+new Date(d).toLocaleDateString('en-MY',{weekday:'long'})+'</div></div>'+
+ '</header>'+
+ '<div class="rrule"></div>'+
+
+ /* headline numbers */
+ '<div class="rkpis">'+
+  '<div><span>Takings</span><b>'+money(f.revenue)+'</b></div>'+
+  '<div><span>Bills</span><b>'+f.bills+'</b></div>'+
+  '<div><span>Average bill</span><b>'+money(f.bills?f.revenue/f.bills:0)+'</b></div>'+
+  '<div><span>Showed up</span><b>'+f.showed+' / '+f.booked+'</b></div>'+
+  '<div><span>No-shows</span><b>'+f.noShow+'</b></div>'+
+ '</div>'+
+
+ sec(1,'Trading summary',
+  '<table class="rt"><tr><th>Line</th><th class="n">Amount</th><th class="n">Share</th></tr>'+
+  ['service','product','package'].map(k=>{
+   const v=f.items[k];
+   return '<tr><td>'+({service:'Treatments',product:'Retail products',package:'Packages sold'}[k])+
+    '</td><td class="n">'+money(v)+'</td><td class="n">'+
+    (f.revenue?Math.round(v/f.revenue*100):0)+'%</td></tr>';}).join('')+
+  '<tr class="rtot2"><td>Total takings</td><td class="n">'+money(f.revenue)+'</td><td class="n">100%</td></tr>'+
+  (f.voided.length?'<tr><td colspan="3" class="rwarn">'+f.voided.length+
+   ' bill(s) voided today, excluded from the figures above</td></tr>':'')+
+  '</table>')+
+
+ sec(2,'Payments received',
+  '<table class="rt"><tr><th>Method</th><th class="n">Amount</th><th class="n">Share</th></tr>'+
+  (Object.keys(f.byMethod).length?Object.keys(f.byMethod).map(m=>
+   '<tr><td>'+esc(m)+'</td><td class="n">'+money(f.byMethod[m])+'</td><td class="n">'+
+   (f.revenue?Math.round(f.byMethod[m]/f.revenue*100):0)+'%</td></tr>').join('')
+   :'<tr><td colspan="3" class="rnone">No payments taken.</td></tr>')+
+  (f.deposits?'<tr><td>Deposits held on bookings</td><td class="n">'+money(f.deposits)+
+   '</td><td class="n">—</td></tr>':'')+
+  '</table>')+
+
+ sec(3,'Cash reconciliation',
+  shift?'<table class="rt">'+
+   '<tr><td>Opening float</td><td class="n">'+money(shift.openingFloat||0)+'</td></tr>'+
+   '<tr><td>Cash takings</td><td class="n">'+money(f.cash)+'</td></tr>'+
+   '<tr><td>Paid out of the drawer</td><td class="n">('+money(expTot)+')</td></tr>'+
+   '<tr class="rtot2"><td>Expected in drawer</td><td class="n">'+money(expect)+'</td></tr>'+
+   (counted!==null?'<tr><td>Counted at close</td><td class="n">'+money(counted)+'</td></tr>'+
+    '<tr class="rtot2"><td>Difference</td><td class="n'+
+     (Math.abs(counted-expect)>=0.01?' rbad':'')+'">'+money(counted-expect)+'</td></tr>'
+    :'<tr><td colspan="2" class="rwarn">The day has not been closed yet.</td></tr>')+
+   '</table>'+
+   (shift.closeNote?'<p class="rnote"><b>Closing note:</b> '+esc(shift.closeNote)+'</p>':'')
+  :'<p class="rwarn">The day was never opened, so no cash float was recorded.</p>',
+  shift&&shift.closedAt?'closed '+tstr(shift.closedAt):'open')+
+
+ sec(4,'Money paid out',
+  exp.length?'<table class="rt"><tr><th>Time</th><th>Category</th><th>Details</th>'+
+   '<th>By</th><th class="n">Amount</th></tr>'+
+   exp.map(e=>'<tr><td>'+tstr(e.at)+'</td><td>'+esc(e.category||'')+'</td><td>'+
+    esc(e.note||'')+'</td><td>'+esc(e.byName||'')+'</td><td class="n">'+money(e.amount)+
+    '</td></tr>').join('')+
+   '<tr class="rtot2"><td colspan="4">Total</td><td class="n">'+money(expTot)+'</td></tr></table>'
+  :none)+
+
+ sec(5,'Appointments',
+  '<div class="rgrid5">'+
+   [['Booked',f.booked],['Completed',f.showed],['In treatment',f.inTreatment],
+    ['No-show',f.noShow],['Cancelled',f.cancelled]].map(x=>
+    '<div><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('')+'</div>'+
+  (Object.keys(f.cats).length?'<table class="rt" style="margin-top:6px">'+
+   '<tr><th>Client type</th><th class="n">Appointments</th></tr>'+
+   Object.keys(f.cats).map(k=>'<tr><td>'+esc(k)+'</td><td class="n">'+f.cats[k]+
+    '</td></tr>').join('')+'</table>':'')+
+  (f.appts.length?'<table class="rt" style="margin-top:6px"><tr><th>Time</th><th>Client</th>'+
+   '<th>Treatment</th><th>Therapist</th><th>Type</th><th>Status</th></tr>'+
+   f.appts.slice().sort((a,x)=>a.start.localeCompare(x.start)).map(a=>
+    '<tr><td>'+tstr(a.start)+'</td><td>'+esc(a.customerName||'')+'</td><td>'+
+    esc(a.serviceName||'')+'</td><td>'+esc(a.staffName||'')+'</td><td>'+
+    esc((visitOf(a.visitType)||{}).label||'—')+'</td><td>'+
+    ((STATUS[a.status]||[a.status])[0])+'</td></tr>').join('')+'</table>':none))+
+
+ sec(6,'Therapist performance',
+  Object.keys(perf).length?'<table class="rt"><tr><th>Team member</th><th class="n">Treatments</th>'+
+   '<th class="n">Services</th><th class="n">Retail</th><th class="n">Packages</th>'+
+   '<th class="n">Total</th></tr>'+
+   Object.values(perf).sort((a,b)=>b.total-a.total).map(p=>
+    '<tr><td>'+esc(p.name)+'</td><td class="n">'+(p.done||0)+'</td><td class="n">'+money(p.svc)+
+    '</td><td class="n">'+money(p.prod)+'</td><td class="n">'+money(p.pkg)+
+    '</td><td class="n"><b>'+money(p.total)+'</b></td></tr>').join('')+'</table>':none)+
+
+ sec(7,'Treatments sold',
+  Object.keys(treat).length?'<table class="rt"><tr><th>Treatment</th><th class="n">Qty</th>'+
+   '<th class="n">Value</th></tr>'+
+   Object.entries(treat).sort((a,b)=>b[1].v-a[1].v).map(([n,v])=>
+    '<tr><td>'+esc(n)+'</td><td class="n">'+v.n+'</td><td class="n">'+money(v.v)+
+    '</td></tr>').join('')+'</table>':none)+
+
+ sec(8,'Attendance',
+  att.length?'<table class="rt"><tr><th>Team member</th><th>Clock in</th><th>Clock out</th>'+
+   '<th class="n">Hours</th><th>Notes</th></tr>'+
+   att.map(a=>{const w=worked(a);
+    return '<tr><td>'+esc(a.staffName||'')+'</td><td>'+(a.clockIn?tstr(a.clockIn):'—')+
+    '</td><td>'+(a.clockOut?tstr(a.clockOut):'—')+'</td><td class="n">'+(w||'open')+
+    '</td><td>'+(a.adjusted?'Adjusted: '+esc(a.adjustReason||''):'')+'</td></tr>';}).join('')+
+   '</table>':none)+
+
+ sec(9,'Maintenance and operations',
+  iss.length?'<table class="rt"><tr><th>Time</th><th>Type</th><th>Severity</th><th>Issue</th>'+
+   '<th>Raised by</th><th>Status</th></tr>'+
+   iss.map(i=>'<tr><td>'+tstr(i.at)+'</td><td>'+esc(i.type||'')+'</td><td>'+
+    esc(i.severity||'')+'</td><td><b>'+esc(i.title||'')+'</b>'+
+    (i.detail?'<br><span class="rsm">'+esc(i.detail)+'</span>':'')+'</td><td>'+
+    esc(i.byName||'')+'</td><td>'+(i.status==='done'?'Resolved':'Open')+'</td></tr>').join('')+
+   '</table>':'<p class="rnone">No issues raised today.</p>')+
+
+ (loy().on?sec(10,'Loyalty',
+  '<table class="rt"><tr><td>Points issued today</td><td class="n">'+earned+'</td></tr>'+
+  '<tr><td>Points redeemed today</td><td class="n">'+spent+'</td></tr>'+
+  '<tr><td>Value of points redeemed</td><td class="n">'+money(pointsWorth(spent))+'</td></tr>'+
+  '</table>'):'')+
+
+ /* sign-off */
+ '<div class="rsign">'+
+  '<div><div class="rline2"></div><span>Prepared by · '+esc((shift&&shift.closedByName)||ME.name)+'</span></div>'+
+  '<div><div class="rline2"></div><span>Checked by</span></div>'+
+  '<div><div class="rline2"></div><span>Date</span></div>'+
+ '</div>'+
+ '<footer class="rfoot2">'+esc(b.name||'')+' · '+esc(branch().name)+' · Daily Summary for '+dstr(d)+
+  ' · generated by Spatify on '+dstr(new Date())+' at '+tstr(new Date())+'</footer>';
+}
+/* the same figures as the Day tab, but for any date */
+function dayFiguresFor(d){
+ const f=dayFigures(d);
+ f.appts=APPTS.filter(a=>a.date===d&&a.branchId===ME.branchId);
+ return f;
+}
 
 /* ============ loyalty ============ */
 const LOY_DEFAULT={on:false,earnPer:10,pointsPer:1,ringgitPerPoint:0.10,minRedeem:50,
@@ -3054,7 +3413,7 @@ function shiftSummary(f){
     '<span>'+esc(k)+'</span><b>'+f.cats[k]+'</b></div>').join('')
     :'<div class="tiny muted">No appointments today.</div>')+'</div>'+
   '<div class="fabrow">'+
-  '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print summary</button>'+
+  '<button class="btn sm" onclick="openDailyReport()">'+ic('receipt',14)+'Daily report (A4)</button>'+
   (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="btn sm" onclick="closeShift()">'+
    ic('out',14)+'Close the day</button>':'')+'</div>';}
 function shiftCash(f){
