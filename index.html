@@ -339,6 +339,10 @@ const ICONS={
  phone:'M7.4 3.8l2.4 3.4-2 2c1 2 2.6 3.6 4.6 4.6l2-2 3.4 2.4v3.2c0 .9-.8 1.6-1.7 1.5C9.2 18.2 5.8 14.8 4.3 6.9c-.2-.9.6-1.7 1.5-1.7z',
  history:'M12 20.6a8.6 8.6 0 10-8.4-10.4M12 7.4V12l3 1.9M3.4 5v4.4h4.4',
  money:'M12 6.4v11.2M9.4 9.2c0-1 1.2-1.8 2.6-1.8s2.6.8 2.6 1.8-1.2 1.8-2.6 1.8-2.6.8-2.6 1.8 1.2 1.8 2.6 1.8 2.6-.8 2.6-1.8',
+ mega:'M4 10.4v3.2h3.2L14 18.6V5.4L7.2 10.4zM17.2 9.4a3.6 3.6 0 010 5.2M19.4 6.8a7 7 0 010 10.4',
+ trash:'M4.2 6.8h15.6M9.4 6.8V4.2h5.2v2.6M6.4 6.8l1 13.4h9.2l1-13.4M10 10.6v6M14 10.6v6',
+ login:'M9 5.4H5v13.2h4M11 12h9M16.4 8.6L19.8 12l-3.4 3.4',
+ receipt:'M5.6 3.4h12.8v17.2l-2.1-1.4-2.1 1.4-2.2-1.4-2.1 1.4-2.2-1.4V3.4zM9 8h6M9 11.6h6M9 15.2h3.4',
  signature:'M3.6 16.4c3-.4 4.2-9 6.2-9s1.4 9 3.6 9c1.6 0 2-3.4 3.4-3.4 1 0 1.4 3.4 3.6 3.4M4 20.4h16'};
 const ic=(n,s,st)=>'<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
  'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"'+(st?' style="'+st+'"':'')+
@@ -475,10 +479,17 @@ function watchAppointments(){
  const anchor=calMode==='month'?new Date(new Date(calDate).getFullYear(),new Date(calDate).getMonth(),1):new Date(calDate);
  const from=ymd(addDays(anchor,-10)),to=ymd(addDays(anchor,45));
  calWin={from,to};
- const q=query(collection(db,'appointments'),
-   where('branchId','==',ME.branchId),where('date','>=',from),where('date','<=',to));
- unsub.push(onSnapshot(q,s=>{APPTS=s.docs.map(d=>({id:d.id,...d.data()}));if(TAB==='home'||TAB==='book')render();},
-   e=>{console.warn(e);toast(friendly(e));}));
+ // Range on one field only. Adding branchId as a second condition would need a
+ // composite index in Firestore, and until that index exists the listener fails
+ // silently — which is exactly how bookings went missing. Filter branch in memory instead.
+ const q=query(collection(db,'appointments'),where('date','>=',from),where('date','<=',to));
+ unsub.push(onSnapshot(q,s=>{
+   APPTS=s.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.branchId===ME.branchId);
+   if(TAB==='home'||TAB==='book')render();},
+   e=>{console.warn(e);
+     toast(String(e.code||'').includes('failed-precondition')
+       ?'Firestore needs an index for this query — open the console link in the browser log.'
+       :friendly(e));}));
 }
 async function loadCustomers(term){
  let q1;
@@ -495,7 +506,7 @@ async function loadCustomers(term){
   q1=query(collection(db,'customers'),orderBy('createdAt','desc'),limit(30));
  }
  const s=await getDocs(q1);
- const found=s.docs.map(d=>({id:d.id,...d.data()}));
+ const found=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.active!==false);
  const seen=new Set(found.map(c=>c.id));
  CUSTS=found.concat(CUSTS.filter(c=>!seen.has(c.id)));
 }
@@ -576,9 +587,11 @@ async function seedDemo(){
 
 /* ============ shell ============ */
 const TABS=[{id:'home',ic:'home',label:'Overview',perm:null},{id:'book',ic:'calendar',label:'Calendar',perm:'booking'},
+ {id:'board',ic:'mega',label:'Board',perm:null},
  {id:'cust',ic:'users',label:'Clients',perm:'customer'},{id:'pkg',ic:'package',label:'Packages',perm:'customer'},
  {id:'pos',ic:'card',label:'Checkout',perm:'pos'},{id:'inv',ic:'stock',label:'Stock',perm:'inventory'},
- {id:'rep',ic:'chart',label:'Reports',perm:'report'},{id:'cat',ic:'list',label:'Catalogue',perm:'admin'},
+ {id:'rep',ic:'chart',label:'Reports',perm:'report'},{id:'team',ic:'staff',label:'Team',perm:'staff'},
+ {id:'cat',ic:'list',label:'Catalogue',perm:'admin'},
  {id:'set',ic:'gear',label:'Settings',perm:null}];
 window.go=t=>{TAB=t;window.closeModal();render();window.scrollTo(0,0);};
 window.setCal=(m)=>{calMode=m;const need=needsWindow();render();if(need)watchAppointments();};
@@ -602,7 +615,7 @@ function render(){
   '<div class="wrap" id="app"></div>'+
   '<div class="nav">'+TABS.filter(t=>!t.perm||can(t.perm)).map(t=>
    '<button class="'+(TAB===t.id?'on':'')+'" onclick="go(\''+t.id+'\')">'+ic(t.ic,19)+t.label+'</button>').join('')+'</div>';
- const V={home:vHome,book:vBook,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,cat:vCat,set:vSet};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -621,6 +634,11 @@ function vHome(){
   return{d,v:SALES.filter(s=>s.date===d&&!s.voided&&s.branchId===ME.branchId).reduce((a,s)=>a+s.total,0)};});
  const mx=Math.max(...last7.map(x=>x.v),1);
  let h='';
+ const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).slice(0,2);
+ if(live.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('mega',16)+' Notice board</h2>'+
+  '<button class="btn sm ghost" onclick="go(\'board\')">'+ic('right',14)+'All</button></div>'+
+  live.map(noteCard).join('')+'</div>';
+ h+=myClockCard();
  if(!D.services.length)h+='<div class="warnbox"><b>'+ic('alert',14)+' Your project is empty</b><br>'+
   'No treatments yet. Open <b>Catalogue</b> to enter your own, or <b>Settings → Load demo data</b> '+
   'to start from a sample list you can edit.</div>';
@@ -663,19 +681,27 @@ const calNav=(label,step)=>'<div class="calbar"><button class="iconbtn" onclick=
  '</button><div class="title">'+label+'</div><button class="iconbtn" onclick="shiftCal('+step+')">'+ic('right',17)+'</button></div>';
 function calDay(){
  const ap=onDay(calDate);
- const cols=calBy==='staff'?D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes)
+ const key=calBy==='staff'?'staffId':'roomId';
+ let cols=calBy==='staff'?D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes)
   :D.rooms.filter(r=>r.branchId===ME.branchId);
+ // Anything booked against a therapist who is not marked bookable, or a room that
+ // belongs to another branch, would otherwise render into thin air. Give it a home.
+ const orphan=ap.filter(a=>!cols.some(c=>c.id===a[key]));
+ if(orphan.length)cols=cols.concat([{id:'__none',name:'Unassigned'}]);
+ const colOf=a=>cols.some(c=>c.id===a[key])?a[key]:'__none';
  const O=D.meta.open,C=D.meta.close,hrs=C-O,ROW=58,px=ROW/60;
  let h=calNav(new Date(calDate).toLocaleDateString('en-MY',{weekday:'long',day:'numeric',month:'long'}),1);
  h+='<div class="tabs">'+[['staff','By therapist','user'],['room','By room','room']].map(x=>
   '<button class="'+(calBy===x[0]?'on':'')+'" onclick="setCalBy(\''+x[0]+'\')">'+ic(x[2],14)+x[1]+'</button>').join('')+
   '<span class="pill" style="align-self:center">'+ap.length+' booked</span></div>';
- if(!cols.length)return h+'<div class="empty">No bookable '+(calBy==='staff'?'therapists':'rooms')+
-  ' for this branch yet. Add them in Settings.</div>';
- const key=calBy==='staff'?'staffId':'roomId';
+ if(!cols.length)return h+'<div class="empty">'+ic('room',26)+'<div>No bookable '+
+  (calBy==='staff'?'therapists':'rooms')+' for this branch yet. Add them under Catalogue.</div></div>';
+ if(orphan.length)h+='<div class="warnbox">'+ic('alert',14)+' '+orphan.length+
+  ' booking'+(orphan.length>1?'s are':' is')+' shown under <b>Unassigned</b> — the therapist is not '+
+  'marked bookable, or the room belongs to another branch. Open Catalogue to fix it.</div>';
  h+='<div class="tl"><div class="tlg" style="grid-template-columns:46px repeat('+cols.length+
   ',minmax(132px,1fr));grid-template-rows:auto '+(hrs*ROW)+'px"><div class="tlh first"></div>'+
-  cols.map(c=>{const mins=ap.filter(a=>a[key]===c.id).reduce((t,a)=>t+(a.duration||0),0);
+  cols.map(c=>{const mins=ap.filter(a=>colOf(a)===c.id).reduce((t,a)=>t+(a.duration||0),0);
    return '<div class="tlh">'+esc(c.name)+'<small>'+Math.round(mins/(hrs*60)*100)+'% booked</small></div>';}).join('')+
   '<div class="tlgut">'+[...Array(hrs+1)].map((_,i)=>'<span style="top:'+(i*ROW)+'px">'+
    String(O+i).padStart(2,'0')+':00</span>').join('')+'</div>';
@@ -684,7 +710,7 @@ function calDay(){
   h+='<div class="tlcol'+(ci===0?' first':'')+'">'+
    [...Array(hrs*2)].map((_,i)=>'<div class="hline'+(i%2?' half':'')+'" style="top:'+(i*ROW/2)+'px"></div>').join('')+
    (calDate===today()&&nowMin>0&&nowMin<hrs*60?'<div class="nowline" style="top:'+(nowMin*px)+'px"></div>':'');
-  ap.filter(a=>a[key]===c.id).forEach(a=>{
+  ap.filter(a=>colOf(a)===c.id).forEach(a=>{
    const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px,hh=Math.max((a.duration||30)*px,26);
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':a.status==='in'?'in':'')+
     '" style="top:'+top+'px;height:'+hh+'px" onclick="openAppt(\''+a.id+'\')">'+
@@ -772,10 +798,11 @@ async function saveAppt(){
   if(!staffId)throw new Error('No therapist selected.');
   if(!roomId)throw new Error('No room available for this treatment type.');
   const date=ymd(start);
-  const day=await getDocs(query(collection(db,'appointments'),where('branchId','==',ME.branchId),where('date','==',date)));
+  const day=await getDocs(query(collection(db,'appointments'),where('date','==',date)));
   const s0=+start,e0=+finish+s.buffer*6e4;
   for(const dd of day.docs){
    const a=dd.data();
+   if(a.branchId!==ME.branchId)continue;
    if(a.status==='cancel'||a.status==='no')continue;
    const as=+new Date(a.start),ae=+new Date(a.finish)+(a.buffer||0)*6e4;
    if(!(e0<=as||s0>=ae)){
@@ -1040,6 +1067,8 @@ function custProfile(c){
    '<button class="btn sm ghost" onclick="soapNote(\''+c.id+'\')">'+ic('note',14)+'Treatment note</button>'+
    (c.phone?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/6'+
     digits(c.phone)+'">'+ic('msg',14)+'WhatsApp</a>':'')+
+   '<button class="btn sm ghost" style="color:var(--rose)" onclick="deleteCust(\''+c.id+
+    '\')">'+ic('trash',14)+'Remove</button>'+
   '</div></div>'+
   (c.notes?'<div class="card"><h3 style="margin-bottom:9px">Clinical notes</h3>'+
    '<div class="tiny dim" style="white-space:pre-wrap">'+esc(c.notes)+'</div></div>':'');
@@ -1070,7 +1099,7 @@ function custHistory(c){
   title:a.serviceName||'Appointment',
   meta:(a.staffName||'')+(a.roomId?' · '+(room(a.roomId).name||''):''),
   tag:(STATUS[a.status]||[a.status])[0]}));
- paid.forEach(s=>events.push({at:s.at,kind:'sale',icon:'card',
+ paid.forEach(s=>events.push({at:s.at,kind:'sale',icon:'receipt',open:"showReceipt('"+s.id+"')",
   title:'Bill '+(s.invoiceNo||''),amount:s.total,
   meta:(s.items||[]).map(i=>i.name+(i.qty>1?' ×'+i.qty:'')).join(', '),
   tag:(s.payments||[]).map(p=>p.method).join(' + ')}));
@@ -1081,9 +1110,37 @@ function custHistory(c){
    amount:p.price,meta:'Valid until '+dstr(p.expiry),
    tag:(p.balances||[]).reduce((a,b)=>a+b.total,0)+' sessions'});});
  H.redemptions.forEach(r=>events.push({at:r.at,kind:'redeem',icon:'check',
+  open:"redeemDetail('"+r.id+"')",
   title:'Redeemed '+(r.serviceName||'session'),meta:(r.staffName||'')+
   (r.remaining!==undefined?' · '+r.remaining+' left after this':''),tag:'Package'}));
  events.sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')));
+ const pkgCard=H.packages.length?'<div class="card"><div class="sec-h"><h3>'+ic('package',15)+
+  ' Packages and balances</h3><span class="pill">'+H.packages.length+'</span></div>'+
+  H.packages.map(p=>{
+   const pk=D.packages.find(x=>x.id===p.packageId)||{};
+   const tot=(p.balances||[]).reduce((a,b)=>a+b.total,0);
+   const left=(p.balances||[]).reduce((a,b)=>a+b.left,0);
+   const d=daysBetween(new Date(),p.expiry);
+   const reds=H.redemptions.filter(r=>r.customerPackageId===p.id)
+     .sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+   return '<div class="item" style="cursor:default"><div class="spread"><b>'+esc(pk.name||'Package')+'</b>'+
+    (d<0?'<span class="pill r">Expired '+dshort(p.expiry)+'</span>':
+     '<span class="pill '+(d<=45?'a':'g')+'">'+d+' days left</span>')+'</div>'+
+    '<div class="tiny muted" style="margin:6px 0">Bought '+dstr(p.soldAt)+' for '+rm(p.price)+
+    ' · value still owed '+rm(tot?p.price*left/tot:0)+'</div>'+
+    (p.balances||[]).map(b=>'<div style="margin:7px 0">'+
+     '<div class="spread tiny"><span>'+esc(svc(b.serviceId).name||b.serviceId)+'</span>'+
+     '<span><b>'+b.left+'</b> of '+b.total+' left</span></div>'+
+     '<div class="bar"><i class="brass" style="width:'+(b.total?(b.total-b.left)/b.total*100:0)+
+     '%"></i></div></div>').join('')+
+    (reds.length?'<div class="tiny muted" style="margin-top:9px">'+ic('history',12)+' Sessions used</div>'+
+     reds.map(r=>'<div class="item" style="margin:6px 0 0;padding:8px 10px" onclick="redeemDetail(\''+
+      r.id+'\')"><div class="spread"><span class="tiny">'+esc(r.serviceName||'')+'</span>'+
+      '<span class="tiny muted">'+dshort(r.at)+' · '+tstr(r.at)+'</span></div>'+
+      '<div class="tiny muted">'+esc(r.staffName||'')+
+      (r.remaining!==undefined?' · '+r.remaining+' left after':'')+'</div></div>').join('')
+     :'<div class="tiny muted" style="margin-top:8px">No sessions used yet.</div>')+
+    '</div>';}).join('')+'</div>':'';
  let h='<div class="grid g3" style="margin-bottom:12px">'+
   '<div class="kpi dark"><div class="lab">'+ic('money',12)+'Lifetime spend</div><div class="big">'+
    rm(spend)+'</div><div class="tiny" style="color:#9A9285">'+paid.length+' bills</div></div>'+
@@ -1100,6 +1157,7 @@ function custHistory(c){
   '<div class="k">'+ic('package',12)+' Packages</div><div class="v">'+H.packages.length+' bought · '+
    H.redemptions.length+' sessions redeemed</div>'+
   '</div></div>';
+ h+=pkgCard;
  if(!events.length)return h+'<div class="card"><div class="empty">'+ic('history',26)+
   '<div>Nothing recorded for this client yet.</div></div></div>';
  let last='';
@@ -1111,7 +1169,8 @@ function custHistory(c){
   h+='<div class="tev '+e.kind+'" style="animation-delay:'+Math.min(i*30,400)+'ms">'+
    '<div class="dot">'+ic(e.icon,12)+'</div>'+
    '<div class="when">'+(e.at?dshort(e.at)+' · '+tstr(e.at):'')+'</div>'+
-   '<div class="body"><div class="spread"><b>'+esc(e.title)+'</b>'+
+   '<div class="body"'+(e.open?' onclick="'+e.open+'" style="cursor:pointer"':'')+
+   '><div class="spread"><b>'+esc(e.title)+(e.open?' '+ic('right',12):'')+'</b>'+
     (e.amount!==undefined?'<span>'+rm(e.amount)+'</span>':
      (e.tag?'<span class="pill">'+esc(e.tag)+'</span>':''))+'</div>'+
    (e.meta?'<div class="tiny muted" style="margin-top:2px">'+esc(e.meta)+'</div>':'')+
@@ -1354,26 +1413,90 @@ window.checkout=async()=>{
   await loadRecentSales();render();
   window.openSale(ref.id);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
-window.openSale=id=>{
- const s=SALES.find(x=>x.id===id);if(!s)return;
+/* ---- deleting a client, with a mandatory reason ---- */
+window.deleteCust=id=>{
+ const c=cust(id);if(!c)return;
+ modal('Remove '+c.name,'<div class="card">'+
+  '<div class="warnbox">'+ic('alert',14)+' Bills, appointments and package records keep their own copy of '+
+  'the name, so your accounts and history stay complete either way.</div>'+
+  '<label>Reason * <span class="muted">— recorded in the audit trail</span></label>'+
+  '<textarea class="f" id="dc-r" rows="3" placeholder="Duplicate record, client asked to be removed, entered by mistake"></textarea>'+
+  '<label>What should happen</label>'+
+  '<label class="row" style="gap:9px"><input type="radio" name="dcmode" value="archive" checked> '+
+   '<span><b>Archive</b> — hidden from lists and search, record kept</span></label>'+
+  (ME.role==='owner'?'<label class="row" style="gap:9px;margin-top:6px"><input type="radio" name="dcmode" '+
+   'value="erase"> <span><b>Erase permanently</b> — the client record is destroyed and cannot be recovered</span></label>':
+   '<p class="tiny muted" style="margin-top:6px">Only the owner can erase a record permanently.</p>')+
+  '<div id="dc-err" class="tiny" style="color:var(--rose);margin:8px 0"></div>'+
+  '<button class="btn warn" style="width:100%;justify-content:center;margin-top:10px" id="dc-go">'+
+   ic('trash',16)+'Continue</button></div>',
+ ()=>{$('#dc-go').onclick=async()=>{
+  const why=($('#dc-r').value||'').trim();
+  if(why.length<5){$('#dc-err').textContent='Please write a reason of at least five characters.';return;}
+  const mode=(document.querySelector('input[name=dcmode]:checked')||{value:'archive'}).value;
+  if(mode==='erase'&&!confirm('Erase '+c.name+' permanently? This cannot be undone.'))return;
+  $('#dc-go').disabled=true;
+  try{
+   if(mode==='erase'){
+    await addDoc(collection(db,'audit'),{action:'Client erased',
+     detail:c.name+' ('+(c.phone||'no phone')+') — '+why,uid:UID,userName:ME.name,
+     branchId:ME.branchId,at:new Date().toISOString()});
+    await deleteDoc(doc(db,'customers',id));
+   }else{
+    await updateDoc(doc(db,'customers',id),{active:false,archivedAt:new Date().toISOString(),
+     archivedBy:UID,archivedByName:ME.name,archiveReason:why});
+    await audit('Client archived',c.name+' — '+why);
+   }
+   CUSTS=CUSTS.filter(x=>x.id!==id);
+   window.closeModal();TAB='cust';render();bindCustSearch();
+   toast(mode==='erase'?'Record erased and logged':'Client archived');
+  }catch(e){$('#dc-err').textContent=friendly(e);$('#dc-go').disabled=false;}};});};
+
+/* ---- receipt opened from anywhere, including client history ---- */
+window.showReceipt=id=>{
+ let s=SALES.find(x=>x.id===id);
+ if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
+ if(!s){toast('Could not find that bill');return;}
  const b=D.meta.biz||{};
- modal('Receipt','<div class="card" id="rcpt"><div style="text-align:center;margin-bottom:10px">'+
-  '<b>'+esc(b.name||'')+'</b><br><span class="tiny muted">'+esc(branch().name)+
-  (b.phone?' · '+esc(b.phone):'')+(b.ssm?'<br>SSM '+esc(b.ssm):'')+(b.tin?' · TIN '+esc(b.tin):'')+'</span></div>'+
+ modal('Receipt','<div class="card" id="rcpt"><div style="text-align:center;margin-bottom:11px">'+
+  '<b style="font-size:15px">'+esc(b.name||'')+'</b><br><span class="tiny muted">'+
+  esc((D.branches.find(x=>x.id===s.branchId)||{}).name||'')+(b.phone?' · '+esc(b.phone):'')+
+  (b.ssm?'<br>SSM '+esc(b.ssm):'')+(b.tin?' · TIN '+esc(b.tin):'')+'</span></div>'+
   '<div class="tiny muted">'+esc(s.invoiceNo||'')+' · '+dstr(s.at)+' '+tstr(s.at)+' · '+
   esc(s.customerName||'Walk-in')+' · served by '+esc(s.staffName||'')+'</div>'+
-  '<hr style="border:0;border-top:1px solid var(--line);margin:9px 0"><table>'+
-  (s.items||[]).map(i=>'<tr><td>'+esc(i.name)+' ×'+i.qty+'</td><td class="num">'+rm(i.price*i.qty)+'</td></tr>').join('')+
-  (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+rm(s.discount)+'</td></tr>':'')+
+  '<hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><table>'+
+  (s.items||[]).map(i=>'<tr><td>'+esc(i.name)+' ×'+i.qty+'</td><td class="num">'+
+   rm(i.price*i.qty)+'</td></tr>').join('')+
+  (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+
+   rm(s.discount)+'</td></tr>':'')+
   (s.sst?'<tr><td>SST</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
   '<tr><td><b>Total</b></td><td class="num"><b>'+rm(s.total)+'</b></td></tr>'+
-  (s.payments||[]).map(p=>'<tr><td class="muted">'+esc(p.method)+'</td><td class="num muted">'+rm(p.amount)+
-   '</td></tr>').join('')+'</table>'+
-  (s.voided?'<div class="warnbox" style="margin-top:10px">Voided — '+esc(s.voidReason||'')+'</div>':'')+
-  '<div class="row wrap2 noprint" style="margin-top:10px">'+
+  (s.payments||[]).map(p=>'<tr><td class="muted">'+esc(p.method)+'</td><td class="num muted">'+
+   rm(p.amount)+'</td></tr>').join('')+'</table>'+
+  (s.voided?'<div class="warnbox" style="margin-top:11px">'+ic('alert',13)+' Voided — '+
+   esc(s.voidReason||'')+'</div>':'')+
+  '<div class="fabrow noprint">'+
   '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
-  (!s.voided&&boss()?'<button class="btn sm warn" onclick="voidSale(\''+id+'\')">Void bill</button>':'')+
-  '</div></div>');};
+  (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
+   '\')">Void bill</button>':'')+'</div></div>');};
+window.openSale=id=>window.showReceipt(id);
+
+/* ---- one redeemed session, in detail ---- */
+window.redeemDetail=id=>{
+ const r=((HIST||{}).redemptions||[]).find(x=>x.id===id);if(!r)return;
+ const pk=D.packages.find(p=>p.id===r.packageId)||{};
+ modal('Session redeemed','<div class="card"><div class="kv">'+
+  '<div class="k">'+ic('spark',12)+' Treatment</div><div class="v">'+esc(r.serviceName||'')+'</div>'+
+  '<div class="k">'+ic('package',12)+' From package</div><div class="v">'+esc(pk.name||r.packageId||'')+'</div>'+
+  '<div class="k">'+ic('clock',12)+' When</div><div class="v">'+dstr(r.at)+' at '+tstr(r.at)+'</div>'+
+  '<div class="k">'+ic('user',12)+' Recorded by</div><div class="v">'+esc(r.staffName||'')+'</div>'+
+  '<div class="k">'+ic('home',12)+' Branch</div><div class="v">'+
+   esc((D.branches.find(b=>b.id===r.branchId)||{}).name||'')+'</div>'+
+  '<div class="k">'+ic('list',12)+' Left after</div><div class="v">'+
+   (r.remaining!==undefined?r.remaining+' session'+(r.remaining===1?'':'s'):'—')+'</div>'+
+  '</div><p class="tiny muted" style="margin-top:10px">Redemption records cannot be edited or deleted, '+
+  'so the count of sessions used always matches what the client was given.</p></div>');};
+
 window.voidSale=async id=>{
  const why=prompt('Reason for voiding (required for the audit trail):');
  if(!why)return;
@@ -1819,6 +1942,316 @@ window.editVoucher=id=>{
     firstOnly:$('#vo-f').checked,expiry:$('#vo-e').value,cap:+$('#vo-cap').value||0,used:v.used||0},
     code,id?'Voucher updated':'Voucher created');};});};
 
+/* ============ announcements ============ */
+let NOTES=[],noteFilter='live';
+window.setNoteFilter=v=>{noteFilter=v;render();};
+async function loadNotes(){
+ try{const s=await getDocs(query(collection(db,'announcements'),orderBy('createdAt','desc'),limit(80)));
+  NOTES=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){NOTES=[];console.warn('notes',e);}
+}
+const noteLive=n=>n.active!==false&&(!n.expiry||n.expiry>=today())&&
+ (!n.branchId||n.branchId==='all'||n.branchId===ME.branchId);
+const PRIO={normal:['Notice',''],good:['Good news','g'],action:['Action needed','a'],urgent:['Urgent','r']};
+function vBoard(){
+ const live=NOTES.filter(noteLive);
+ const list=noteFilter==='live'?live:NOTES;
+ let h='<div class="card"><div class="sec-h"><h2>'+ic('mega',17)+' Notice board</h2>'+
+  (boss()?'<button class="btn sm" onclick="editNote()">'+ic('plus',15)+'Post</button>':'')+'</div>'+
+  (boss()?'<div class="seg"><button class="'+(noteFilter==='live'?'on':'')+
+   '" onclick="setNoteFilter(\'live\')">'+ic('bell',14)+'Live ('+live.length+')</button>'+
+   '<button class="'+(noteFilter==='all'?'on':'')+'" onclick="setNoteFilter(\'all\')">'+
+   ic('list',14)+'All ('+NOTES.length+')</button></div>':'')+
+  (list.length?list.slice().sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).map(noteCard).join('')
+   :'<div class="empty">'+ic('mega',26)+'<div>Nothing posted yet.'+
+    (boss()?' Use Post to write the first notice.':'')+'</div></div>')+'</div>';
+ return h;}
+function noteCard(n){
+ const p=PRIO[n.priority||'normal']||PRIO.normal;
+ const stale=!noteLive(n);
+ return '<div class="item"'+(boss()?' onclick="editNote(\''+n.id+'\')"':' style="cursor:default"')+
+  ' '+(stale?'style="opacity:.55"':'')+'>'+
+  '<div class="spread" style="margin-bottom:5px"><b>'+(n.pinned?ic('star',13)+' ':'')+esc(n.title||'')+'</b>'+
+  '<span class="pill '+p[1]+'">'+p[0]+'</span></div>'+
+  '<div class="tiny dim" style="white-space:pre-wrap">'+esc(n.body||'')+'</div>'+
+  '<div class="tiny muted" style="margin-top:7px">'+ic('user',11)+' '+esc(n.authorName||'')+' · '+
+  dstr(n.createdAt)+(n.branchId&&n.branchId!=='all'?' · '+esc((D.branches.find(b=>b.id===n.branchId)||{}).name||''):
+   ' · all branches')+(n.expiry?' · until '+dstr(n.expiry):'')+
+  (n.active===false?' · <span style="color:var(--rose)">withdrawn</span>':'')+'</div></div>';}
+window.editNote=id=>{
+ const n=id?(NOTES.find(x=>x.id===id)||{}):{priority:'normal',branchId:'all',pinned:false,active:true};
+ modal(id?'Edit notice':'New notice','<div class="card">'+
+  '<label>Title</label><input class="f" id="an-t" value="'+esc(n.title||'')+'">'+
+  '<label>Message</label><textarea class="f" id="an-b" rows="5">'+esc(n.body||'')+'</textarea>'+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="an-p">'+
+   Object.keys(PRIO).map(k=>'<option value="'+k+'"'+((n.priority||'normal')===k?' selected':'')+'>'+
+    PRIO[k][0]+'</option>').join('')+'</select></div>'+
+  '<div><label>Show until <span class="muted">— optional</span></label>'+
+   '<input class="f" type="date" id="an-e" value="'+esc(n.expiry||'')+'"></div></div>'+
+  '<label>Who sees it</label><select class="f" id="an-br"><option value="all"'+
+   ((n.branchId||'all')==='all'?' selected':'')+'>Everyone, all branches</option>'+
+   D.branches.map(b=>'<option value="'+b.id+'"'+(n.branchId===b.id?' selected':'')+'>'+
+    esc(b.name)+' only</option>').join('')+'</select>'+
+  '<label class="row" style="gap:9px"><input type="checkbox" id="an-pin"'+(n.pinned?' checked':'')+
+   '> Pin to the top</label>'+
+  '<label class="row" style="gap:9px;margin-bottom:12px"><input type="checkbox" id="an-a"'+
+   (n.active!==false?' checked':'')+'> Currently live</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="an-go">'+ic('check',16)+
+   (id?'Save notice':'Post notice')+'</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
+   'onclick="deleteNote(\''+id+'\')">'+ic('trash',14)+'Delete permanently</button>':'')+
+  '</div>',()=>{$('#an-go').onclick=async()=>{
+   const title=$('#an-t').value.trim();
+   if(!title){toast('Give the notice a title');return;}
+   const data={title,body:$('#an-b').value,priority:$('#an-p').value,expiry:$('#an-e').value||'',
+    branchId:$('#an-br').value,pinned:$('#an-pin').checked,active:$('#an-a').checked,
+    authorName:ME.name,authorId:UID,updatedAt:new Date().toISOString()};
+   try{
+    if(id)await updateDoc(doc(db,'announcements',id),data);
+    else{data.createdAt=new Date().toISOString();await addDoc(collection(db,'announcements'),data);}
+    await loadNotes();await audit(id?'Notice updated':'Notice posted',title);
+    window.closeModal();render();toast('Saved');
+   }catch(e){toast(friendly(e));}};});};
+window.deleteNote=async id=>{
+ const n=NOTES.find(x=>x.id===id)||{};
+ if(!confirm('Delete "'+(n.title||'')+'" permanently?'))return;
+ try{await deleteDoc(doc(db,'announcements',id));await loadNotes();
+  await audit('Notice deleted',n.title||'');window.closeModal();render();toast('Deleted');}
+ catch(e){toast(friendly(e));}};
+
+/* ============ staff and attendance ============ */
+let ATT=[],teamView='people';
+window.setTeamView=v=>{teamView=v;render();};
+async function hashCode(code,salt){
+ const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode((salt||'')+'::'+code));
+ return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}
+async function loadAttendance(days){
+ try{const from=ymd(addDays(new Date(),-(days||45)));
+  const s=await getDocs(query(collection(db,'attendance'),where('date','>=',from),limit(600)));
+  ATT=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.date).localeCompare(String(a.date)));}
+ catch(e){ATT=[];console.warn('attendance',e);}}
+const attToday=sid=>ATT.find(a=>a.staffId===sid&&a.date===today()&&a.branchId===ME.branchId);
+const hhmm=iso=>iso?tstr(iso):'—';
+function worked(a){
+ if(!a||!a.clockIn||!a.clockOut)return null;
+ const m=Math.round((new Date(a.clockOut)-new Date(a.clockIn))/6e4);
+ return Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';}
+
+function vTeam(){
+ const list=D.staff.filter(s=>s.active!==false||teamView==='people');
+ let h='<div class="card"><div class="seg">'+
+  '<button class="'+(teamView==='people'?'on':'')+'" onclick="setTeamView(\'people\')">'+
+   ic('users',14)+'People</button>'+
+  '<button class="'+(teamView==='today'?'on':'')+'" onclick="setTeamView(\'today\')">'+
+   ic('clock',14)+'Today</button>'+
+  '<button class="'+(teamView==='sheet'?'on':'')+'" onclick="setTeamView(\'sheet\')">'+
+   ic('list',14)+'Timesheet</button></div>'+
+  ({people:teamPeople,today:teamToday,sheet:teamSheet}[teamView])()+'</div>';
+ return h;}
+function teamPeople(){
+ return '<div class="sec-h"><h2>Team</h2><button class="btn sm" onclick="editStaff()">'+
+  ic('plus',15)+'Add</button></div>'+
+  D.branches.map(b=>{
+   const rs=D.staff.filter(s=>s.branchId===b.id);
+   return rs.length?'<h3 class="muted" style="margin:12px 0 7px">'+esc(b.name)+'</h3>'+rs.map(s=>
+    '<div class="item" onclick="editStaff(\''+s.id+'\')"><div class="row">'+
+    '<div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:13px">'+
+    esc(initials(s.name))+'</div><div style="flex:1;min-width:0">'+
+    '<div class="spread"><b>'+esc(s.name)+(s.active===false?' <span class="pill r">inactive</span>':'')+
+    '</b></div><div class="tiny muted">'+(ROLE[s.role]||s.role)+
+    ' · service '+(s.commSvc||0)+'% · retail '+(s.commProd||0)+'%'+
+    (s.takes?' · bookable':'')+(s.attCode?' · '+ic('idcard',11)+' code set':'')+'</div></div>'+
+    ic('right',16)+'</div></div>').join(''):'';}).join('')+
+  '<p class="tiny muted" style="margin-top:10px">'+ic('shield',13)+
+  ' A person can only sign in once you also create their login in Firebase console → Authentication → Users, '+
+  'using the same user ID.</p>';}
+window.editStaff=id=>{
+ const s=id?stf(id):{role:'therapist',branchId:ME.branchId,commSvc:8,commProd:10,takes:true,active:true};
+ modal(id?s.name:'Add team member','<div class="card">'+
+  (id?'':'<label>User ID <span class="muted">— copy from Firebase Authentication</span></label>'+
+   '<input class="f" id="ts-id" placeholder="paste the UID here">')+
+  '<div class="fieldset"><h3>'+ic('user',13)+'Details</h3>'+
+  '<label>Name</label><input class="f" id="ts-n" value="'+esc(s.name||'')+'">'+
+  '<div class="grid g2"><div><label>Phone</label><input class="f" id="ts-ph" value="'+esc(s.phone||'')+'"></div>'+
+  '<div><label>Email</label><input class="f" id="ts-em" value="'+esc(s.email||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>ID / passport no.</label><input class="f" id="ts-ic" value="'+
+   esc(s.idNo||'')+'"></div>'+
+  '<div><label>Date joined</label><input class="f" type="date" id="ts-jd" value="'+esc(s.joined||'')+'"></div></div>'+
+  '<label>Emergency contact</label><input class="f" id="ts-emg" value="'+esc(s.emergency||'')+'">'+
+  '<label>Notes</label><textarea class="f" id="ts-note" rows="2">'+esc(s.note||'')+'</textarea></div>'+
+  '<div class="fieldset"><h3>'+ic('work',13)+'Role and pay</h3>'+
+  '<div class="grid g2"><div><label>Role</label><select class="f" id="ts-r">'+
+   ['therapist','frontdesk','manager','doctor','owner'].map(r=>'<option value="'+r+'"'+
+    (s.role===r?' selected':'')+'>'+ROLE[r]+'</option>').join('')+'</select></div>'+
+  '<div><label>Branch</label><select class="f" id="ts-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
+   (s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
+  '<div class="grid g2"><div><label>Service commission %</label>'+
+   '<input class="f" type="number" id="ts-cs" value="'+(s.commSvc||0)+'"></div>'+
+  '<div><label>Retail commission %</label><input class="f" type="number" id="ts-cp" value="'+
+   (s.commProd||0)+'"></div></div>'+
+  '<label class="row" style="gap:9px"><input type="checkbox" id="ts-t"'+(s.takes?' checked':'')+
+   '> Bookable column in the calendar</label>'+
+  '<label class="row" style="gap:9px;margin-bottom:0"><input type="checkbox" id="ts-a"'+
+   (s.active!==false?' checked':'')+'> Currently employed</label></div>'+
+  '<div class="fieldset"><h3>'+ic('idcard',13)+'Attendance code</h3>'+
+  '<label>Personal code <span class="muted">— 4 to 8 digits, used to clock in and out</span></label>'+
+  '<input class="f" type="password" inputmode="numeric" id="ts-pin" placeholder="'+
+   (s.attCode?'Set — leave blank to keep it':'Not set yet')+'">'+
+  '<p class="tiny muted" style="margin:0">Stored as a one-way hash, never as the digits themselves. '+
+  'It stops a colleague clocking in for someone on a whim; it is not a replacement for a biometric clock.</p></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ts-go">'+ic('check',16)+'Save</button>'+
+  '</div>',()=>{$('#ts-go').onclick=()=>saveStaffForm(id);});};
+async function saveStaffForm(id){
+ const name=$('#ts-n').value.trim();
+ if(!name){toast('Name is required');return;}
+ let uid=id;
+ if(!uid){uid=($('#ts-id').value||'').trim();
+  if(uid.length<10){toast('Paste the user ID from Firebase Authentication');return;}
+  if(D.staff.find(x=>x.id===uid)){toast('That user already has a profile');return;}}
+ const role=$('#ts-r').value;
+ const data={name,phone:$('#ts-ph').value.trim(),email:$('#ts-em').value.trim(),
+  idNo:$('#ts-ic').value.trim(),joined:$('#ts-jd').value,emergency:$('#ts-emg').value.trim(),
+  note:$('#ts-note').value.trim(),role,branchId:$('#ts-b').value,
+  commSvc:+$('#ts-cs').value||0,commProd:+$('#ts-cp').value||0,
+  takes:$('#ts-t').checked,active:$('#ts-a').checked,
+  perms:['therapist','frontdesk'].includes(role)?['booking','pos','customer']:[]};
+ const pin=($('#ts-pin').value||'').trim();
+ if(pin){
+  if(!/^\d{4,8}$/.test(pin)){toast('The code must be 4 to 8 digits');return;}
+  const salt=uid+':'+Math.random().toString(36).slice(2,10);
+  data.attSalt=salt;data.attCode=await hashCode(pin,salt);
+ }
+ try{await setDoc(doc(db,'users',uid),data,{merge:true});
+  await loadStatic();await audit(id?'Team member updated':'Team member added',name);
+  window.closeModal();render();toast('Saved');}
+ catch(e){toast(friendly(e));}}
+
+function teamToday(){
+ const list=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false);
+ const inNow=list.filter(s=>{const a=attToday(s.id);return a&&a.clockIn&&!a.clockOut;});
+ return '<div class="sec-h"><h2>'+dstr(new Date())+'</h2>'+
+  '<span class="pill '+(inNow.length?'g':'')+'">'+inNow.length+' on shift</span></div>'+
+  (list.length?list.map(s=>{
+   const a=attToday(s.id);
+   const state=!a?'<span class="pill">Not in</span>':
+    (a.clockOut?'<span class="pill g">'+ic('check',11)+worked(a)+'</span>':
+     '<span class="pill a">'+ic('clock',11)+'Since '+hhmm(a.clockIn)+'</span>');
+   return '<div class="item" style="cursor:default"><div class="spread"><b>'+esc(s.name)+'</b>'+state+'</div>'+
+    '<div class="tiny muted" style="margin:5px 0 8px">'+(ROLE[s.role]||s.role)+
+    (a?' · in '+hhmm(a.clockIn)+' · out '+hhmm(a.clockOut):'')+'</div>'+
+    '<div class="fabrow" style="margin:0">'+
+    (!a?'<button class="btn sm" onclick="clockPrompt(\''+s.id+'\',\'in\')">'+ic('login',14)+'Clock in</button>':'')+
+    (a&&!a.clockOut?'<button class="btn sm ghost" onclick="clockPrompt(\''+s.id+'\',\'out\')">'+
+     ic('out',14)+'Clock out</button>':'')+
+    (a&&a.clockOut?'<span class="tiny muted">Shift closed</span>':'')+
+    (boss()&&a?'<button class="btn sm ghost" onclick="fixAtt(\''+a.id+'\')">'+ic('edit',14)+
+     'Adjust</button>':'')+'</div></div>';}).join('')
+   :'<div class="empty">'+ic('users',26)+'<div>No active team members at this branch.</div></div>');}
+window.clockPrompt=(sid,dir)=>{
+ const s=stf(sid);
+ if(!s.attCode){toast('No attendance code set for '+s.name+' yet');
+  if(boss())window.editStaff(sid);return;}
+ modal((dir==='in'?'Clock in':'Clock out')+' · '+s.name,'<div class="card">'+
+  '<div class="chead"><div class="avatar">'+esc(initials(s.name))+'</div><div>'+
+  '<h3>'+esc(s.name)+'</h3><div class="tiny muted">'+dstr(new Date())+' · '+tstr(new Date())+'</div></div></div>'+
+  '<label>Enter your personal code</label>'+
+  '<input class="f" id="ck-p" type="password" inputmode="numeric" autocomplete="off" '+
+   'style="font-size:22px;letter-spacing:.35em;text-align:center">'+
+  '<div id="ck-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ck-go">'+
+   ic(dir==='in'?'login':'out',16)+(dir==='in'?'Confirm clock in':'Confirm clock out')+'</button>'+
+  '<p class="tiny muted" style="margin-top:9px">Only this person should enter this code. '+
+  'Every entry is written to the audit trail with the time and who was signed in.</p></div>',
+ ()=>{
+  const go=async()=>{
+   const code=($('#ck-p').value||'').trim();
+   if(!code){$('#ck-err').textContent='Enter your code.';return;}
+   $('#ck-go').disabled=true;
+   const h=await hashCode(code,s.attSalt||'');
+   if(h!==s.attCode){$('#ck-err').textContent='That code does not match.';
+    $('#ck-p').value='';$('#ck-go').disabled=false;return;}
+   try{
+    if(dir==='in'){
+     await addDoc(collection(db,'attendance'),{staffId:sid,staffName:s.name,branchId:ME.branchId,
+      date:today(),clockIn:new Date().toISOString(),clockOut:'',verified:true,
+      recordedBy:UID,recordedByName:ME.name});
+    }else{
+     const a=attToday(sid);
+     await updateDoc(doc(db,'attendance',a.id),{clockOut:new Date().toISOString(),
+      closedBy:UID,closedByName:ME.name});
+    }
+    await loadAttendance();
+    await audit(dir==='in'?'Clock in':'Clock out',s.name+' at '+tstr(new Date()));
+    window.closeModal();render();toast(s.name+(dir==='in'?' clocked in':' clocked out'));
+   }catch(e){$('#ck-err').textContent=friendly(e);$('#ck-go').disabled=false;}
+  };
+  $('#ck-go').onclick=go;
+  $('#ck-p').onkeydown=e=>{if(e.key==='Enter')go();};});};
+window.fixAtt=id=>{
+ const a=ATT.find(x=>x.id===id);if(!a)return;
+ const t=iso=>iso?new Date(iso).toTimeString().slice(0,5):'';
+ modal('Adjust attendance · '+esc(a.staffName||''),'<div class="card">'+
+  '<div class="grid g2"><div><label>Clock in</label><input class="f" type="time" id="fa-i" value="'+
+   t(a.clockIn)+'"></div><div><label>Clock out</label><input class="f" type="time" id="fa-o" value="'+
+   t(a.clockOut)+'"></div></div>'+
+  '<label>Reason for the change *</label><input class="f" id="fa-r" placeholder="Forgot to clock out">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="fa-go">'+ic('check',16)+
+  'Save adjustment</button>'+
+  '<p class="tiny muted" style="margin-top:9px">Adjustments are recorded separately from the original '+
+  'clock times, so payroll can always see what was changed and why.</p></div>',
+ ()=>{$('#fa-go').onclick=async()=>{
+  const why=$('#fa-r').value.trim();
+  if(why.length<3){toast('Please give a reason');return;}
+  const mk=v=>v?new Date(a.date+'T'+v+':00').toISOString():'';
+  try{await updateDoc(doc(db,'attendance',id),{clockIn:mk($('#fa-i').value),clockOut:mk($('#fa-o').value),
+    adjusted:true,adjustReason:why,adjustedBy:UID,adjustedByName:ME.name,
+    adjustedAt:new Date().toISOString()});
+   await loadAttendance();await audit('Attendance adjusted',(a.staffName||'')+' — '+why);
+   window.closeModal();render();toast('Adjusted and logged');}
+  catch(e){toast(friendly(e));}};});};
+function teamSheet(){
+ const days=30,from=ymd(addDays(new Date(),-days));
+ const rows=D.staff.filter(s=>s.branchId===ME.branchId).map(s=>{
+  const mine=ATT.filter(a=>a.staffId===s.id&&a.date>=from);
+  const mins=mine.reduce((t,a)=>t+(a.clockIn&&a.clockOut?
+   Math.round((new Date(a.clockOut)-new Date(a.clockIn))/6e4):0),0);
+  const open=mine.filter(a=>a.clockIn&&!a.clockOut).length;
+  return{s,days:mine.length,mins,open,adj:mine.filter(a=>a.adjusted).length};});
+ return '<div class="sec-h"><h2>Last '+days+' days</h2>'+
+  '<button class="btn sm ghost" onclick="csvAttendance()">'+ic('download',14)+'CSV</button></div>'+
+  '<div class="scroll"><table><tr><th>Team member</th><th class="num">Days</th><th class="num">Hours</th>'+
+  '<th class="num">Flags</th></tr>'+
+  rows.map(r=>'<tr><td><b>'+esc(r.s.name)+'</b><div class="tiny muted">'+(ROLE[r.s.role]||r.s.role)+
+   '</div></td><td class="num">'+r.days+'</td><td class="num">'+(r.mins/60).toFixed(1)+'</td>'+
+   '<td class="num tiny">'+(r.open?'<span class="pill a">'+r.open+' open</span> ':'')+
+   (r.adj?'<span class="pill">'+r.adj+' adjusted</span>':'')+(!r.open&&!r.adj?'—':'')+
+   '</td></tr>').join('')+'</table></div>'+
+  '<p class="tiny muted" style="margin-top:9px">“Open” means someone clocked in and never clocked out. '+
+  'Fix those under Today before running payroll.</p>';}
+window.csvAttendance=()=>{
+ const rows=[['Date','Staff','Branch','Clock in','Clock out','Minutes','Adjusted','Reason','Recorded by']];
+ ATT.forEach(a=>rows.push([a.date,a.staffName||'',(D.branches.find(b=>b.id===a.branchId)||{}).code||'',
+  a.clockIn?tstr(a.clockIn):'',a.clockOut?tstr(a.clockOut):'',
+  a.clockIn&&a.clockOut?Math.round((new Date(a.clockOut)-new Date(a.clockIn))/6e4):'',
+  a.adjusted?'Yes':'No',a.adjustReason||'',a.recordedByName||'']));
+ const txt=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+ const el=document.createElement('a');
+ el.href='data:text/csv;charset=utf-8,'+encodeURIComponent('\ufeff'+txt);
+ el.download='attendance-'+today()+'.csv';el.click();toast('CSV downloaded');};
+
+/* my own clock card, shown on the overview for everyone */
+function myClockCard(){
+ const s=stf(UID);if(!s||!s.attCode)return '';
+ const a=attToday(UID);
+ return '<div class="card"><div class="spread"><div class="row">'+
+  '<div class="avatar" style="width:40px;height:40px;border-radius:13px;font-size:14px">'+
+  esc(initials(ME.name))+'</div><div><b>'+esc(ME.name)+'</b>'+
+  '<div class="tiny muted">'+(!a?'Not clocked in yet':
+   (a.clockOut?'Worked '+worked(a)+' today':'On shift since '+hhmm(a.clockIn)))+'</div></div></div>'+
+  (!a?'<button class="btn sm" onclick="clockPrompt(\''+UID+'\',\'in\')">'+ic('login',14)+'Clock in</button>':
+   (!a.clockOut?'<button class="btn sm ghost" onclick="clockPrompt(\''+UID+'\',\'out\')">'+
+    ic('out',14)+'Clock out</button>':'<span class="pill g">'+ic('check',11)+'Done</span>'))+
+  '</div></div>';}
+
 /* ============ settings ============ */
 function vSet(){
  const b=D.meta.biz||{};
@@ -1933,7 +2366,7 @@ window.render=render;
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
