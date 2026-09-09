@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SpaAtur Cloud</title>
+<title>Spatify Cloud</title>
 <style>
 :root{
   --cream:#F4F0E7; --surface:#FFFDF8; --surface-2:#FAF7F0;
@@ -281,6 +281,56 @@ code{background:var(--line-2);padding:2px 6px;border-radius:6px;font-size:12px;w
   background:linear-gradient(90deg,var(--line-2) 25%,var(--surface-2) 50%,var(--line-2) 75%);
   background-size:640px 100%;animation:shimmer 1.3s linear infinite}
 canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--surface);width:100%;touch-action:none}
+.imgfield{margin-bottom:11px}
+.imgprev{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);
+  border-radius:var(--r-md);padding:9px;background:var(--surface)}
+.imgprev img{width:84px;height:84px;object-fit:cover;border-radius:var(--r-sm);flex:none;
+  background:var(--line-2)}
+.imgmeta{flex:1;min-width:0}
+.noteimg{width:100%;max-height:230px;object-fit:cover;border-radius:var(--r-md);margin-top:9px;
+  cursor:zoom-in;border:1px solid var(--line);animation:fadeIn .4s var(--ease)}
+.zoomwrap{text-align:center}
+.zoomwrap img{max-width:100%;border-radius:var(--r-md);border:1px solid var(--line)}
+.pthumb{width:44px;height:44px;border-radius:11px;object-fit:cover;flex:none;background:var(--line-2);
+  border:1px solid var(--line)}
+.pthumb.ph{display:grid;place-items:center;color:var(--ink-3)}
+
+/* ---------- receipt ---------- */
+.rcpt{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:20px 18px;font-size:12.5px;color:var(--ink)}
+.rhead{text-align:center;margin-bottom:13px}
+.rlogo{max-width:132px;max-height:74px;object-fit:contain;margin:0 auto 10px;display:block}
+.rname{font-size:17px;font-weight:650;letter-spacing:-.02em}
+.rtag{font-size:11.5px;color:var(--brass);font-style:italic;margin-top:2px}
+.rline{font-size:11px;color:var(--ink-3);line-height:1.6}
+.rdiv{border-top:1px dashed var(--line);margin:13px 0}
+.rmeta{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-bottom:13px}
+.rmeta div{display:flex;justify-content:space-between;gap:8px;font-size:11.5px}
+.rmeta span{color:var(--ink-3)}
+.rmeta b{font-weight:560;text-align:right}
+.rtab{width:100%;border-collapse:collapse;font-size:12.5px}
+.rtab th{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;
+  padding:6px 4px;border-bottom:1px solid var(--line)}
+.rtab td{padding:8px 4px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.rtot{width:100%;border-collapse:collapse;font-size:12.5px}
+.rtot td{padding:4px 4px;border:0}
+.rtot .grand td{font-size:15px;font-weight:660;border-top:1px solid var(--ink);
+  border-bottom:2px solid var(--ink);padding:8px 4px}
+.rtot .pay td{color:var(--ink-3);font-size:11.5px}
+.rvoid{margin-top:12px;text-align:center;color:var(--rose);border:1px dashed var(--rose);
+  border-radius:var(--r-sm);padding:8px;font-weight:600;letter-spacing:.08em}
+.rthanks{text-align:center;font-weight:560;margin-bottom:5px}
+.rterms{margin-top:13px;padding:11px 12px;background:var(--surface-2);border:1px solid var(--line-2);
+  border-radius:var(--r-sm);font-size:10.5px;color:var(--ink-2);line-height:1.65}
+.rfoot{margin-top:11px;text-align:center;font-size:10px;color:var(--ink-3)}
+@media print{
+  .rcpt{border:0;padding:0;font-size:11.5px}
+  .veil{position:static;background:none;backdrop-filter:none;display:block}
+  .sheet{max-width:none;max-height:none;box-shadow:none;background:#fff;padding:0;border-radius:0;
+    animation:none;overflow:visible}
+  .sheet-h{display:none}
+}
+
 @media print{.nav,.topbar,.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -339,14 +389,21 @@ const ICONS={
  phone:'M7.4 3.8l2.4 3.4-2 2c1 2 2.6 3.6 4.6 4.6l2-2 3.4 2.4v3.2c0 .9-.8 1.6-1.7 1.5C9.2 18.2 5.8 14.8 4.3 6.9c-.2-.9.6-1.7 1.5-1.7z',
  history:'M12 20.6a8.6 8.6 0 10-8.4-10.4M12 7.4V12l3 1.9M3.4 5v4.4h4.4',
  money:'M12 6.4v11.2M9.4 9.2c0-1 1.2-1.8 2.6-1.8s2.6.8 2.6 1.8-1.2 1.8-2.6 1.8-2.6.8-2.6 1.8 1.2 1.8 2.6 1.8 2.6-.8 2.6-1.8',
+ staff:'M10.2 11.6a3.6 3.6 0 100-7.2 3.6 3.6 0 000 7.2zM3.4 20.8c0-3.5 3-6.4 6.8-6.4 1.3 0 2.5.3 3.5.9M15.6 18.4l1.8 1.8 3.4-3.6',
+ image:'M3.6 5.4h16.8v13.2H3.6zM3.6 15.4l4.6-4.2 3.4 3 3.6-3.4 5.2 4.6M8.6 9.6a1.2 1.2 0 100-2.4 1.2 1.2 0 000 2.4',
+ upload:'M12 16.4V4.8M8 8.8l4-4 4 4M4.2 19.6h15.6',
  mega:'M4 10.4v3.2h3.2L14 18.6V5.4L7.2 10.4zM17.2 9.4a3.6 3.6 0 010 5.2M19.4 6.8a7 7 0 010 10.4',
  trash:'M4.2 6.8h15.6M9.4 6.8V4.2h5.2v2.6M6.4 6.8l1 13.4h9.2l1-13.4M10 10.6v6M14 10.6v6',
  login:'M9 5.4H5v13.2h4M11 12h9M16.4 8.6L19.8 12l-3.4 3.4',
  receipt:'M5.6 3.4h12.8v17.2l-2.1-1.4-2.1 1.4-2.2-1.4-2.1 1.4-2.2-1.4V3.4zM9 8h6M9 11.6h6M9 15.2h3.4',
  signature:'M3.6 16.4c3-.4 4.2-9 6.2-9s1.4 9 3.6 9c1.6 0 2-3.4 3.4-3.4 1 0 1.4 3.4 3.6 3.4M4 20.4h16'};
-const ic=(n,s,st)=>'<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
- 'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"'+(st?' style="'+st+'"':'')+
- '><path d="'+ICONS[n]+'"/></svg></span>';
+const ic=(n,s,st)=>{
+ const d=ICONS[n];
+ if(!d)console.warn('icon not defined:',n);
+ return '<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
+  'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"'+
+  (st?' style="'+st+'"':'')+'><path d="'+(d||'M12 5.6a6.4 6.4 0 100 12.8 6.4 6.4 0 000-12.8')+
+  '"/></svg></span>';};
 
 /* ============ helpers ============ */
 const $=s=>document.querySelector(s);
@@ -369,7 +426,8 @@ function modal(title,html,onMount){
 window.closeModal=()=>{$('#modal').innerHTML='';};
 
 /* ============ state ============ */
-const CFGKEY='spaatur:firebase';
+const CFGKEY='spatify:firebase';
+const CFGKEY_OLD='spaatur:firebase';
 let app,auth,db,ME=null,UID=null;
 const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock:[],vouchers:[],meta:{}};
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
@@ -419,7 +477,7 @@ function setupScreen(err){
 }
 function loginScreen(err){
  $('#root').innerHTML='<div class="center"><div class="card">'+
-  '<div class="row" style="margin-bottom:12px"><div class="mark">'+ic('spark',17,'color:#fff')+'</div><h1>SpaAtur</h1></div>'+
+  '<div class="row" style="margin-bottom:12px"><div class="mark">'+ic('spark',17,'color:#fff')+'</div><h1>Spatify</h1></div>'+
   (err?'<div class="errbox">'+esc(err)+'</div>':'')+
   '<label>Email</label><input class="f" id="li-e" type="email" autocomplete="username">'+
   '<label>Password</label><input class="f" id="li-p" type="password" autocomplete="current-password">'+
@@ -609,7 +667,7 @@ window.setCalBy=v=>{calBy=v;render();};
 function render(){
  if(!ME)return;
  $('#root').innerHTML='<div class="topbar"><div class="mark">'+ic('spark',17,'color:#fff')+'</div>'+
-  '<div><div style="font-weight:620;font-size:14px">SpaAtur</div>'+
+  '<div><div style="font-weight:620;font-size:14px">Spatify</div>'+
   '<div class="tiny" style="color:#9CB1B6">'+esc(branch().name)+' · '+dstr(new Date())+'</div></div>'+
   '<div class="who"><div style="color:#fff;font-weight:560">'+esc(ME.name)+'</div><div>'+(ROLE[ME.role]||ME.role)+'</div></div></div>'+
   '<div class="wrap" id="app"></div>'+
@@ -1355,7 +1413,12 @@ window.pickItem=kind=>{
  if(!list.length){toast('Nothing in the catalogue yet');return;}
  modal(kind==='service'?'Add treatment':'Add product','<div class="card"><label>Item</label>'+
   '<select class="f" id="pi-i">'+list.map(i=>'<option value="'+i.id+'">'+esc(i.name)+' — '+rm(i.price)+
-   '</option>').join('')+'</select><label>Quantity</label><input class="f" type="number" id="pi-q" value="1" min="1">'+
+   '</option>').join('')+'</select>'+
+  (kind==='product'?'<div class="row" style="gap:7px;flex-wrap:wrap;margin-bottom:11px">'+
+   list.filter(i=>i.image).slice(0,8).map(i=>'<img class="pthumb" src="'+i.image+
+   '" title="'+esc(i.name)+'" onclick="document.getElementById(\'pi-i\').value=\''+i.id+
+   '\'">').join('')+'</div>':'')+
+  '<label>Quantity</label><input class="f" type="number" id="pi-q" value="1" min="1">'+
   '<label>Credited to</label><select class="f" id="pi-s">'+D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false)
    .map(s=>'<option value="'+s.id+'"'+(s.id===UID?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
   '<button class="btn" style="width:100%;justify-content:center" id="pi-go">Add to cart</button></div>',
@@ -1452,33 +1515,159 @@ window.deleteCust=id=>{
    toast(mode==='erase'?'Record erased and logged':'Client archived');
   }catch(e){$('#dc-err').textContent=friendly(e);$('#dc-go').disabled=false;}};});};
 
-/* ---- receipt opened from anywhere, including client history ---- */
+/* ============ business details ============ */
+function bizPanel(){
+ const b=D.meta.biz||{};
+ return '<div class="card"><h2 style="margin-bottom:11px">'+ic('home',16)+' Business details</h2>'+
+  '<div class="fieldset"><h3>'+ic('image',13)+'Brand</h3>'+
+  imageField('bz-logo',b.logo||'','logo','Logo')+
+  '<label>Business name</label><input class="f" id="bz-n" value="'+esc(b.name||'')+'">'+
+  '<label>Tagline <span class="muted">— printed under the name on receipts</span></label>'+
+  '<input class="f" id="bz-tag" value="'+esc(b.tagline||'')+'"></div>'+
+
+  '<div class="fieldset"><h3>'+ic('pin',13)+'Address and contact</h3>'+
+  '<label>Street address</label><input class="f" id="bz-a1" value="'+esc(b.address||'')+'">'+
+  '<div class="grid g3"><div><label>Postcode</label><input class="f" id="bz-pc" value="'+
+   esc(b.postcode||'')+'"></div><div><label>City</label><input class="f" id="bz-city" value="'+
+   esc(b.city||'')+'"></div><div><label>State</label><input class="f" id="bz-state" value="'+
+   esc(b.state||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>Phone</label><input class="f" id="bz-p" value="'+esc(b.phone||'')+
+   '"></div><div><label>WhatsApp</label><input class="f" id="bz-wa" value="'+esc(b.whatsapp||'')+
+   '"></div></div>'+
+  '<div class="grid g2"><div><label>Email</label><input class="f" id="bz-em" value="'+esc(b.email||'')+
+   '"></div><div><label>Instagram</label><input class="f" id="bz-ig" value="'+esc(b.instagram||'')+
+   '" placeholder="@yourspa"></div></div>'+
+  '<label>Website</label><input class="f" id="bz-web" value="'+esc(b.website||'')+'"></div>'+
+
+  '<div class="fieldset"><h3>'+ic('idcard',13)+'Registration and tax</h3>'+
+  '<div class="grid g2"><div><label>SSM number</label><input class="f" id="bz-s" value="'+
+   esc(b.ssm||'')+'"></div><div><label>TIN</label><input class="f" id="bz-t" value="'+
+   esc(b.tin||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>SST number</label><input class="f" id="bz-sstno" value="'+
+   esc(b.sstNo||'')+'"></div><div><label>SST rate %</label><input class="f" type="number" id="bz-sstr" value="'+
+   (b.sstRate||8)+'"></div></div>'+
+  '<label class="row" style="gap:9px;margin-bottom:0"><input type="checkbox" id="bz-sst"'+
+   (b.sst?' checked':'')+'> Charge SST on every bill</label></div>'+
+
+  '<div class="fieldset"><h3>'+ic('clock',13)+'Opening hours</h3>'+
+  '<div class="grid g2"><div><label>Opens at</label><input class="f" type="number" id="bz-o" value="'+
+   (D.meta.open||9)+'"></div><div><label>Closes at</label><input class="f" type="number" id="bz-c" value="'+
+   (D.meta.close||20)+'"></div></div>'+
+  '<label>Days open <span class="muted">— printed on the receipt</span></label>'+
+  '<input class="f" id="bz-days" value="'+esc(b.days||'')+'" placeholder="Monday to Sunday, closed public holidays"></div>'+
+
+  '<div class="fieldset"><h3>'+ic('receipt',13)+'Receipt wording</h3>'+
+  '<label>Thank-you line</label><input class="f" id="bz-thanks" value="'+
+   esc(b.thanks||'Thank you for visiting us')+'">'+
+  '<label>Terms printed at the bottom</label>'+
+  '<textarea class="f" id="bz-terms" rows="4">'+esc(b.terms||DEFAULT_TERMS)+'</textarea>'+
+  '<button type="button" class="btn ghost sm" onclick="resetTerms()">'+ic('refresh',14)+
+   'Restore the standard wording</button></div>'+
+
+  '<button class="btn" style="width:100%;justify-content:center" id="bz-go">'+ic('check',16)+
+  'Save business details</button>'+
+  '<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" '+
+  'onclick="previewReceipt()">'+ic('receipt',14)+'Preview a sample receipt</button></div>';
+}
+const DEFAULT_TERMS='All treatments and packages are non-refundable once purchased. '+
+ 'Package sessions are valid until the expiry date shown and cannot be exchanged for cash. '+
+ 'Please give at least 24 hours notice to reschedule. Goods sold are not returnable except for '+
+ 'manufacturing defects reported within 7 days with this receipt.';
+window.resetTerms=()=>{const t=$('#bz-terms');if(t)t.value=DEFAULT_TERMS;};
+async function saveBiz(){
+ const m={open:+$('#bz-o').value||9,close:+$('#bz-c').value||20,
+  biz:{...(D.meta.biz||{}),
+   logo:imgValue('bz-logo',(D.meta.biz||{}).logo||''),
+   name:$('#bz-n').value,tagline:$('#bz-tag').value,
+   address:$('#bz-a1').value,postcode:$('#bz-pc').value,city:$('#bz-city').value,state:$('#bz-state').value,
+   phone:$('#bz-p').value,whatsapp:$('#bz-wa').value,email:$('#bz-em').value,
+   instagram:$('#bz-ig').value,website:$('#bz-web').value,
+   ssm:$('#bz-s').value,tin:$('#bz-t').value,sstNo:$('#bz-sstno').value,
+   sstRate:+$('#bz-sstr').value||8,sst:$('#bz-sst').checked?1:0,
+   days:$('#bz-days').value,thanks:$('#bz-thanks').value,terms:$('#bz-terms').value}};
+ try{await setDoc(doc(db,'meta','settings'),m,{merge:true});
+  D.meta={...D.meta,...m};await audit('Business details updated',m.biz.name);
+  render();bindSettings();toast('Saved');}
+ catch(e){toast(friendly(e));}
+}
+
+/* ============ receipt ============ */
+function bizLines(b,branchName){
+ const addr=[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', ');
+ const contact=[b.phone&&'Tel '+b.phone,b.whatsapp&&'WA '+b.whatsapp,b.email,b.instagram,b.website]
+  .filter(Boolean).join(' · ');
+ const reg=[b.ssm&&'SSM '+b.ssm,b.tin&&'TIN '+b.tin,b.sst&&b.sstNo&&'SST '+b.sstNo].filter(Boolean).join(' · ');
+ return{addr,contact,reg,branchName};
+}
+function receiptHTML(s){
+ const b=D.meta.biz||{};
+ const br=(D.branches.find(x=>x.id===s.branchId)||{}).name||'';
+ const L=bizLines(b,br);
+ const sub=(s.items||[]).reduce((a,i)=>a+i.price*i.qty,0);
+ const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
+  (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
+  (i.price===0?'<div class="tiny muted">Package session — no charge</div>':'')+
+  '</td><td class="num">'+i.qty+'</td><td class="num">'+rm(i.price)+'</td>'+
+  '<td class="num">'+rm(i.price*i.qty)+'</td></tr>').join('');
+ const paid=(s.payments||[]).reduce((a,p)=>a+p.amount,0);
+ return '<div class="rcpt" id="rcpt">'+
+  '<div class="rhead">'+
+   (b.logo?'<img class="rlogo" src="'+b.logo+'" alt="">':'')+
+   '<div class="rname">'+esc(b.name||'')+'</div>'+
+   (b.tagline?'<div class="rtag">'+esc(b.tagline)+'</div>':'')+
+   (br?'<div class="rline">'+esc(br)+'</div>':'')+
+   (L.addr?'<div class="rline">'+esc(L.addr)+'</div>':'')+
+   (L.contact?'<div class="rline">'+esc(L.contact)+'</div>':'')+
+   (L.reg?'<div class="rline">'+esc(L.reg)+'</div>':'')+
+  '</div>'+
+  '<div class="rdiv"></div>'+
+  '<div class="rmeta">'+
+   '<div><span>Receipt</span><b>'+esc(s.invoiceNo||'')+'</b></div>'+
+   '<div><span>Date</span><b>'+dstr(s.at)+' '+tstr(s.at)+'</b></div>'+
+   '<div><span>Client</span><b>'+esc(s.customerName||'Walk-in')+'</b></div>'+
+   '<div><span>Served by</span><b>'+esc(s.staffName||'')+'</b></div>'+
+  '</div>'+
+  '<table class="rtab"><tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th>'+
+   '<th class="num">Amount</th></tr>'+rows+'</table>'+
+  '<div class="rdiv"></div>'+
+  '<table class="rtot">'+
+   '<tr><td>Subtotal</td><td class="num">'+rm(sub)+'</td></tr>'+
+   (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+
+    rm(s.discount)+'</td></tr>':'')+
+   (s.sst?'<tr><td>SST '+((D.meta.biz||{}).sstRate||8)+'%</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
+   '<tr class="grand"><td>Total</td><td class="num">'+rm(s.total)+'</td></tr>'+
+   (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+'</td><td class="num">'+
+    rm(p.amount)+'</td></tr>').join('')+
+   (paid-s.total>0.009?'<tr class="pay"><td>Change</td><td class="num">'+rm(paid-s.total)+'</td></tr>':'')+
+  '</table>'+
+  (s.voided?'<div class="rvoid">VOIDED — '+esc(s.voidReason||'')+'</div>':'')+
+  '<div class="rdiv"></div>'+
+  '<div class="rthanks">'+esc(b.thanks||'Thank you for visiting us')+'</div>'+
+  (b.days?'<div class="rline" style="text-align:center">'+esc(b.days)+'</div>':'')+
+  '<div class="rterms"><b>Terms</b><br>'+esc(b.terms||DEFAULT_TERMS)+'</div>'+
+  '<div class="rfoot">This receipt was generated by Spatify · '+dstr(new Date())+'</div>'+
+  '</div>';
+}
+window.previewReceipt=()=>{
+ const sample={invoiceNo:'INV-SAMPLE',at:new Date().toISOString(),branchId:ME.branchId,
+  customerName:'Sample Client',staffName:ME.name,
+  items:[{kind:'service',name:'Hydra Glow Facial',price:180,qty:1},
+   {kind:'product',name:'Sunscreen SPF50',price:129,qty:2}],
+  discount:20,sst:0,total:418,payments:[{method:'Cash',amount:450}]};
+ modal('Sample receipt',receiptHTML(sample)+
+  '<div class="fabrow noprint"><button class="btn sm ghost" onclick="window.print()">'+
+  ic('print',14)+'Print / save PDF</button></div>');
+};
 window.showReceipt=id=>{
  let s=SALES.find(x=>x.id===id);
  if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
  if(!s){toast('Could not find that bill');return;}
- const b=D.meta.biz||{};
- modal('Receipt','<div class="card" id="rcpt"><div style="text-align:center;margin-bottom:11px">'+
-  '<b style="font-size:15px">'+esc(b.name||'')+'</b><br><span class="tiny muted">'+
-  esc((D.branches.find(x=>x.id===s.branchId)||{}).name||'')+(b.phone?' · '+esc(b.phone):'')+
-  (b.ssm?'<br>SSM '+esc(b.ssm):'')+(b.tin?' · TIN '+esc(b.tin):'')+'</span></div>'+
-  '<div class="tiny muted">'+esc(s.invoiceNo||'')+' · '+dstr(s.at)+' '+tstr(s.at)+' · '+
-  esc(s.customerName||'Walk-in')+' · served by '+esc(s.staffName||'')+'</div>'+
-  '<hr style="border:0;border-top:1px solid var(--line);margin:10px 0"><table>'+
-  (s.items||[]).map(i=>'<tr><td>'+esc(i.name)+' ×'+i.qty+'</td><td class="num">'+
-   rm(i.price*i.qty)+'</td></tr>').join('')+
-  (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+
-   rm(s.discount)+'</td></tr>':'')+
-  (s.sst?'<tr><td>SST</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
-  '<tr><td><b>Total</b></td><td class="num"><b>'+rm(s.total)+'</b></td></tr>'+
-  (s.payments||[]).map(p=>'<tr><td class="muted">'+esc(p.method)+'</td><td class="num muted">'+
-   rm(p.amount)+'</td></tr>').join('')+'</table>'+
-  (s.voided?'<div class="warnbox" style="margin-top:11px">'+ic('alert',13)+' Voided — '+
-   esc(s.voidReason||'')+'</div>':'')+
+ modal('Receipt '+(s.invoiceNo||''),receiptHTML(s)+
   '<div class="fabrow noprint">'+
-  '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
+  '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
   (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
-   '\')">Void bill</button>':'')+'</div></div>');};
+   '\')">'+ic('close',14)+'Void bill</button>':'')+'</div>');
+};
 window.openSale=id=>window.showReceipt(id);
 
 /* ---- one redeemed session, in detail ---- */
@@ -1734,10 +1923,13 @@ function catProducts(){
  return '<div class="sec-h"><h2>Products</h2><button class="btn sm" onclick="editProduct()">'+
   ic('plus',15)+'New</button></div>'+
   (D.products.length?D.products.map(p=>'<div class="item" onclick="editProduct(\''+p.id+'\')">'+
+   '<div class="row">'+(p.image?'<img class="pthumb" src="'+p.image+'" alt="">'
+    :'<div class="pthumb ph">'+ic('image',18)+'</div>')+
+   '<div style="flex:1;min-width:0">'+
    '<div class="spread"><b>'+esc(p.name)+offTag(p)+'</b><span>'+(p.type==='retail'?rm(p.price):
     '<span class="pill">backbar</span>')+'</span></div>'+
    '<div class="tiny muted">'+esc(p.id)+' · '+esc(p.type||'')+' · '+(p.size||1)+' '+esc(p.unit||'')+
-   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+'</div></div>').join('')
+   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+'</div></div>'+ic('right',16)+'</div></div>').join('')
   :'<div class="empty">No products yet.</div>')+
   '<p class="tiny muted" style="margin-top:8px">'+ic('shield',13)+
   ' Backbar items are consumed by treatments. Retail items are sold at checkout.</p>';}
@@ -1747,6 +1939,7 @@ window.editProduct=id=>{
   (id?'':'<label>Code / SKU <span class="muted">— short, no spaces</span></label>'+
    '<input class="f" id="pr-id" placeholder="RT05">')+
   '<label>Name</label><input class="f" id="pr-n" value="'+esc(p.name)+'">'+
+  imageField('pr-img',p.image||'','product','Product photo')+
   '<label>Type</label><select class="f" id="pr-t"><option value="retail"'+(p.type==='retail'?' selected':'')+
    '>Retail — sold to clients</option><option value="backbar"'+(p.type==='backbar'?' selected':'')+
    '>Backbar — used during treatments</option></select>'+
@@ -1764,6 +1957,7 @@ window.editProduct=id=>{
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
    'onclick="catDelete(\'products\',\''+id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
   '</div>',()=>{
+   imgReset('pr-img',p.image||'');
    $('#pr-go').onclick=async()=>{
     const name=$('#pr-n').value.trim();
     if(!name){toast('Name is required');return;}
@@ -1774,7 +1968,8 @@ window.editProduct=id=>{
      if(prod(sku).name){toast('That code is already used');return;}
     }
     const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
-     unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked};
+     unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked,
+     image:imgValue('pr-img',p.image||'')};
     try{
      await setDoc(doc(db,'products',sku),data,{merge:true});
      if(!id){
@@ -1942,6 +2137,112 @@ window.editVoucher=id=>{
     firstOnly:$('#vo-f').checked,expiry:$('#vo-e').value,cap:+$('#vo-cap').value||0,used:v.used||0},
     code,id?'Voucher updated':'Voucher created');};});};
 
+/* ============ images ============ */
+/* Firebase Cloud Storage needs the paid Blaze plan, so pictures are shrunk in the
+   browser and stored inline in the Firestore document. A document can hold 1 MB in
+   total, so every picture is squeezed under a strict budget before it is saved. */
+const IMG_BUDGET={logo:150000,product:110000,notice:420000};
+function pickImage(kind){
+ return new Promise(resolve=>{
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=async e=>{
+   const file=e.target.files&&e.target.files[0];
+   if(!file)return resolve(null);
+   if(!/^image\//.test(file.type)){toast('That file is not an image');return resolve(null);}
+   toast('Preparing the image…');
+   try{resolve(await compressImage(file,kind));}
+   catch(err){console.warn(err);toast('Could not read that image');resolve(null);}
+  };
+  inp.click();
+ });
+}
+function compressImage(file,kind){
+ const budget=IMG_BUDGET[kind]||200000;
+ const maxPx=kind==='logo'?420:(kind==='product'?720:1280);
+ return new Promise((resolve,reject)=>{
+  const fr=new FileReader();
+  fr.onerror=()=>reject(new Error('read failed'));
+  fr.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error('decode failed'));
+   img.onload=()=>{
+    let w=img.width,h=img.height;
+    const scale=Math.min(1,maxPx/Math.max(w,h));
+    w=Math.round(w*scale);h=Math.round(h*scale);
+    const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    const cx=cv.getContext('2d');
+    const alpha=kind==='logo'&&/png|webp|svg/i.test(file.type);
+    if(!alpha){cx.fillStyle='#ffffff';cx.fillRect(0,0,w,h);}
+    cx.drawImage(img,0,0,w,h);
+    // A logo is usually placed on a light receipt, so transparency is worth keeping.
+    // Try PNG at full size, then at two thirds, before giving up and flattening to JPEG.
+    if(alpha){
+     const png=cv.toDataURL('image/png');
+     if(png.length<=budget)return resolve(png);
+     const cvS=document.createElement('canvas');
+     cvS.width=Math.round(w*0.66);cvS.height=Math.round(h*0.66);
+     cvS.getContext('2d').drawImage(img,0,0,cvS.width,cvS.height);
+     const small=cvS.toDataURL('image/png');
+     if(small.length<=budget)return resolve(small);
+     // flattening loses transparency, so paint white behind it first
+     cx.globalCompositeOperation='destination-over';
+     cx.fillStyle='#ffffff';cx.fillRect(0,0,w,h);
+     cx.globalCompositeOperation='source-over';
+    }
+    let q=0.86,out=cv.toDataURL('image/jpeg',q);
+    while(out.length>budget&&q>0.36){q-=0.1;out=cv.toDataURL('image/jpeg',q);}
+    if(out.length>budget){
+     // still too heavy: shrink the pixels and try once more
+     const cv2=document.createElement('canvas');
+     cv2.width=Math.round(w*0.7);cv2.height=Math.round(h*0.7);
+     const c2=cv2.getContext('2d');c2.fillStyle='#fff';c2.fillRect(0,0,cv2.width,cv2.height);
+     c2.drawImage(img,0,0,cv2.width,cv2.height);
+     out=cv2.toDataURL('image/jpeg',0.6);
+    }
+    if(out.length>budget)return reject(new Error('too large'));
+    resolve(out);
+   };
+   img.src=fr.result;
+  };
+  fr.readAsDataURL(file);
+ });
+}
+const kb=d=>Math.round((d||'').length/1024)+' KB';
+/* a reusable image field: preview, replace, remove */
+function imageField(id,current,kind,label){
+ return '<label>'+(label||'Image')+' <span class="muted">— stored inside the record, kept small automatically</span></label>'+
+  '<div class="imgfield" id="'+id+'-wrap">'+imageFieldInner(id,current,kind)+'</div>';
+}
+function imageFieldInner(id,current,kind){
+ return current
+  ?'<div class="imgprev"><img src="'+current+'" alt=""><div class="imgmeta">'+
+   '<div class="tiny muted">'+kb(current)+'</div>'+
+   '<div class="fabrow" style="margin:6px 0 0">'+
+   '<button type="button" class="btn sm ghost" onclick="imgPick(\''+id+'\',\''+kind+'\')">'+
+    ic('refresh',14)+'Replace</button>'+
+   '<button type="button" class="btn sm ghost" style="color:var(--rose)" onclick="imgClear(\''+id+'\',\''+
+    kind+'\')">'+ic('trash',14)+'Remove</button></div></div></div>'
+  :'<button type="button" class="btn ghost" style="width:100%;justify-content:center" '+
+   'onclick="imgPick(\''+id+'\',\''+kind+'\')">'+ic('upload',16)+'Choose a picture</button>';
+}
+const IMGVAL={};
+window.imgPick=async(id,kind)=>{
+ const d=await pickImage(kind);
+ if(!d)return;
+ IMGVAL[id]=d;
+ const w=document.getElementById(id+'-wrap');
+ if(w)w.innerHTML=imageFieldInner(id,d,kind);
+ toast('Picture ready · '+kb(d));
+};
+window.imgClear=(id,kind)=>{
+ IMGVAL[id]='';
+ const w=document.getElementById(id+'-wrap');
+ if(w)w.innerHTML=imageFieldInner(id,'',kind);
+};
+const imgValue=(id,fallback)=>IMGVAL[id]!==undefined?IMGVAL[id]:(fallback||'');
+const imgReset=(id,initial)=>{IMGVAL[id]=initial||'';};
+
 /* ============ announcements ============ */
 let NOTES=[],noteFilter='live';
 window.setNoteFilter=v=>{noteFilter=v;render();};
@@ -1973,6 +2274,10 @@ function noteCard(n){
   '<div class="spread" style="margin-bottom:5px"><b>'+(n.pinned?ic('star',13)+' ':'')+esc(n.title||'')+'</b>'+
   '<span class="pill '+p[1]+'">'+p[0]+'</span></div>'+
   '<div class="tiny dim" style="white-space:pre-wrap">'+esc(n.body||'')+'</div>'+
+  (n.image?'<img class="noteimg" src="'+n.image+'" alt="" onclick="event.stopPropagation();zoomImg(\''+
+   n.id+'\')">':'')+
+  (n.url?'<a class="btn sm ghost" style="margin-top:8px;text-decoration:none" target="_blank" '+
+   'onclick="event.stopPropagation()" href="'+esc(n.url)+'">'+ic('right',13)+'Open link</a>':'')+
   '<div class="tiny muted" style="margin-top:7px">'+ic('user',11)+' '+esc(n.authorName||'')+' · '+
   dstr(n.createdAt)+(n.branchId&&n.branchId!=='all'?' · '+esc((D.branches.find(b=>b.id===n.branchId)||{}).name||''):
    ' · all branches')+(n.expiry?' · until '+dstr(n.expiry):'')+
@@ -1982,6 +2287,9 @@ window.editNote=id=>{
  modal(id?'Edit notice':'New notice','<div class="card">'+
   '<label>Title</label><input class="f" id="an-t" value="'+esc(n.title||'')+'">'+
   '<label>Message</label><textarea class="f" id="an-b" rows="5">'+esc(n.body||'')+'</textarea>'+
+  imageField('an-img',n.image||'','notice','Attachment')+
+  '<label>Link <span class="muted">— optional, e.g. a form or price list</span></label>'+
+  '<input class="f" id="an-url" value="'+esc(n.url||'')+'" placeholder="https://">'+
   '<div class="grid g2"><div><label>Type</label><select class="f" id="an-p">'+
    Object.keys(PRIO).map(k=>'<option value="'+k+'"'+((n.priority||'normal')===k?' selected':'')+'>'+
     PRIO[k][0]+'</option>').join('')+'</select></div>'+
@@ -1999,10 +2307,11 @@ window.editNote=id=>{
    (id?'Save notice':'Post notice')+'</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
    'onclick="deleteNote(\''+id+'\')">'+ic('trash',14)+'Delete permanently</button>':'')+
-  '</div>',()=>{$('#an-go').onclick=async()=>{
+  '</div>',()=>{imgReset('an-img',n.image||'');$('#an-go').onclick=async()=>{
    const title=$('#an-t').value.trim();
    if(!title){toast('Give the notice a title');return;}
-   const data={title,body:$('#an-b').value,priority:$('#an-p').value,expiry:$('#an-e').value||'',
+   const data={title,body:$('#an-b').value,image:imgValue('an-img',n.image||''),
+    url:($('#an-url').value||'').trim(),priority:$('#an-p').value,expiry:$('#an-e').value||'',
     branchId:$('#an-br').value,pinned:$('#an-pin').checked,active:$('#an-a').checked,
     authorName:ME.name,authorId:UID,updatedAt:new Date().toISOString()};
    try{
@@ -2011,6 +2320,11 @@ window.editNote=id=>{
     await loadNotes();await audit(id?'Notice updated':'Notice posted',title);
     window.closeModal();render();toast('Saved');
    }catch(e){toast(friendly(e));}};});};
+window.zoomImg=id=>{
+ const n=NOTES.find(x=>x.id===id);if(!n||!n.image)return;
+ modal(n.title||'Attachment','<div class="card zoomwrap"><img src="'+n.image+'" alt="">'+
+  '<div class="fabrow noprint" style="justify-content:center"><button class="btn sm ghost" '+
+  'onclick="window.print()">'+ic('print',14)+'Print</button></div></div>');};
 window.deleteNote=async id=>{
  const n=NOTES.find(x=>x.id===id)||{};
  if(!confirm('Delete "'+(n.title||'')+'" permanently?'))return;
@@ -2264,24 +2578,7 @@ function vSet(){
    '</select>':'')+
   '<button class="btn ghost sm" id="signout">'+ic('out',14)+'Sign out</button></div>';
  if(boss()){
-  h+='<div class="card"><h2 style="margin-bottom:10px">Business details</h2>'+
-   '<label>Name</label><input class="f" id="bz-n" value="'+esc(b.name||'')+'">'+
-   '<div class="grid g2"><div><label>SSM</label><input class="f" id="bz-s" value="'+esc(b.ssm||'')+'"></div>'+
-   '<div><label>TIN</label><input class="f" id="bz-t" value="'+esc(b.tin||'')+'"></div></div>'+
-   '<label>Phone</label><input class="f" id="bz-p" value="'+esc(b.phone||'')+'">'+
-   '<div class="grid g2"><div><label>Opens at</label><input class="f" type="number" id="bz-o" value="'+
-    (D.meta.open||9)+'"></div><div><label>Closes at</label><input class="f" type="number" id="bz-c" value="'+
-    (D.meta.close||20)+'"></div></div>'+
-   '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="bz-sst"'+(b.sst?' checked':'')+
-    '> Charge SST</label>'+
-   '<button class="btn" style="width:100%;justify-content:center" id="bz-go">Save settings</button></div>';
-  h+='<div class="card"><h2 style="margin-bottom:10px">Team</h2>'+
-   D.staff.map(s=>'<div class="item" onclick="openStaff(\''+s.id+'\')"><div class="spread"><b>'+esc(s.name)+
-   '</b><span class="pill">'+(ROLE[s.role]||s.role)+'</span></div>'+
-   '<div class="tiny muted">'+esc((D.branches.find(x=>x.id===s.branchId)||{}).name||'')+
-   ' · service '+(s.commSvc||0)+'% · retail '+(s.commProd||0)+'%'+(s.takes?' · bookable':'')+'</div></div>').join('')+
-   '<p class="tiny muted">'+ic('shield',13)+' To add a member: create their login in Firebase console → '+
-   'Authentication → Users, then add a matching document in the <code>users</code> collection using their user ID.</p></div>';
+  h+=bizPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" id="bk">'+ic('download',14)+'Export backup JSON</button></div>'+
@@ -2294,12 +2591,8 @@ function bindSettings(){
  const sw=$('#sw-b');if(sw)sw.onchange=async()=>{
   try{await updateDoc(doc(db,'users',UID),{branchId:sw.value});ME.branchId=sw.value;
    watchAppointments();render();bindSettings();toast('Branch switched');}catch(e){toast(friendly(e));}};
- const bg=$('#bz-go');if(bg)bg.onclick=async()=>{
-  const m={open:+$('#bz-o').value||9,close:+$('#bz-c').value||20,
-   biz:{...(D.meta.biz||{}),name:$('#bz-n').value,ssm:$('#bz-s').value,tin:$('#bz-t').value,
-    phone:$('#bz-p').value,sst:$('#bz-sst').checked?1:0,sstRate:(D.meta.biz||{}).sstRate||8}};
-  try{await setDoc(doc(db,'meta','settings'),m,{merge:true});D.meta={...D.meta,...m};
-   await audit('Settings updated',m.biz.name);toast('Saved');}catch(e){toast(friendly(e));}};
+ imgReset('bz-logo',(D.meta.biz||{}).logo||'');
+ const bg=$('#bz-go');if(bg)bg.onclick=saveBiz;
  const sd=$('#seed');if(sd)sd.onclick=seedDemo;
  const bk=$('#bk');if(bk)bk.onclick=async()=>{
   toast('Building backup…');
@@ -2310,7 +2603,7 @@ function bindSettings(){
     out[n]=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){out[n]='blocked: '+e.code;}}
   const a=document.createElement('a');
   a.href='data:application/json,'+encodeURIComponent(JSON.stringify(out));
-  a.download='spaatur-backup-'+today()+'.json';a.click();toast('Backup downloaded');};
+  a.download='spatify-backup-'+today()+'.json';a.click();toast('Backup downloaded');};
  const ab=$('#auditbox');
  if(ab)getDocs(query(collection(db,'audit'),orderBy('at','desc'),limit(40)))
   .then(s=>{ab.innerHTML=s.docs.map(d=>{const a=d.data();
@@ -2347,7 +2640,11 @@ window.render=render;
 
 /* ============ boot ============ */
 (async()=>{
- const raw=localStorage.getItem(CFGKEY);
+ let raw=localStorage.getItem(CFGKEY);
+ if(!raw){ // carry over a config saved under the previous name
+  const legacy=localStorage.getItem(CFGKEY_OLD);
+  if(legacy){localStorage.setItem(CFGKEY,legacy);raw=legacy;}
+ }
  if(!raw){setupScreen();return;}
  let cfg;try{cfg=JSON.parse(raw);}catch(e){localStorage.removeItem(CFGKEY);setupScreen('Saved config was unreadable.');return;}
  try{app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);}
