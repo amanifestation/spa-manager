@@ -538,8 +538,20 @@ function modal(title,html,onMount){
 window.closeModal=()=>{$('#modal').innerHTML='';};
 
 /* ============ state ============ */
+/* This project's Firebase config is built in, so nobody has to paste anything.
+   A Firebase web config is public by design — it identifies the project, it does not
+   grant access. What actually protects the data is the security rules. */
+const BUILTIN_CFG={
+  apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
+  authDomain: "spa-manager-c586b.firebaseapp.com",
+  projectId: "spa-manager-c586b",
+  storageBucket: "spa-manager-c586b.firebasestorage.app",
+  messagingSenderId: "831790596457",
+  appId: "1:831790596457:web:118cca653fb5ecb448bdf8"
+};
 const CFGKEY='spatify:firebase';
 const CFGKEY_OLD='spaatur:firebase';
+const FORCEKEY='spatify:setup';
 let app,auth,db,ME=null,UID=null;
 const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock:[],vouchers:[],meta:{}};
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
@@ -573,8 +585,13 @@ function setupScreen(err){
   '<code>const firebaseConfig = {</code>. Copy it and paste the whole thing below.</div></div>'+
   '<textarea class="f" id="cfg" rows="9" placeholder="const firebaseConfig = {&#10;  apiKey: ...&#10;};"></textarea>'+
   '<button class="btn" style="width:100%;justify-content:center" id="cfgsave">'+ic('check',16)+'Connect</button>'+
+  '<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" id="cfgback">'+
+  ic('refresh',14)+'Go back to the built-in project</button>'+
   '<p class="tiny muted" style="margin-top:10px">'+ic('shield',13)+' These values are safe to paste. A Firebase web config is '+
   'public by design — your data is protected by the security rules, not by hiding this.</p></div></div>';
+ const back=$('#cfgback');
+ if(back)back.onclick=()=>{localStorage.removeItem(FORCEKEY);localStorage.removeItem(CFGKEY);
+  localStorage.removeItem(CFGKEY_OLD);location.reload();};
  $('#cfgsave').onclick=()=>{
   const raw=$('#cfg').value.trim();
   let cfg=null;
@@ -585,6 +602,7 @@ function setupScreen(err){
   }catch(e){setupScreen('That does not look like a Firebase config. '+e.message);return;}
   if(!cfg||!cfg.apiKey||!cfg.projectId){setupScreen('The config is missing apiKey or projectId. Copy the whole block.');return;}
   localStorage.setItem(CFGKEY,JSON.stringify(cfg));
+  localStorage.removeItem(FORCEKEY);
   location.reload();};
 }
 function loginScreen(err){
@@ -597,13 +615,16 @@ function loginScreen(err){
   '<p class="tiny muted" style="margin-top:10px">Staff accounts are created by the owner in the Firebase console under '+
   '<b>Authentication → Users</b>.</p>'+
   '<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" id="li-reset">'+
-  'Connect a different Firebase project</button></div></div>';
+  ic('cloud',14)+'Use a different Firebase project</button></div></div>';
  $('#li-go').onclick=async()=>{
   $('#li-go').disabled=true;
   try{await signInWithEmailAndPassword(auth,$('#li-e').value.trim(),$('#li-p').value);}
   catch(e){loginScreen(friendly(e));}};
  $('#li-p').onkeydown=e=>{if(e.key==='Enter')$('#li-go').click();};
- $('#li-reset').onclick=()=>{localStorage.removeItem(CFGKEY);location.reload();};
+ $('#li-reset').onclick=()=>{
+  if(!confirm('Point this device at a different Firebase project? You will need that project\'s config.'))return;
+  localStorage.removeItem(CFGKEY);localStorage.removeItem(CFGKEY_OLD);
+  localStorage.setItem(FORCEKEY,'1');location.reload();};
 }
 function friendly(e){
  const c=(e&&e.code)||'';
@@ -3613,13 +3634,12 @@ window.render=render;
 
 /* ============ boot ============ */
 (async()=>{
- let raw=localStorage.getItem(CFGKEY);
- if(!raw){ // carry over a config saved under the previous name
-  const legacy=localStorage.getItem(CFGKEY_OLD);
-  if(legacy){localStorage.setItem(CFGKEY,legacy);raw=legacy;}
- }
- if(!raw){setupScreen();return;}
- let cfg;try{cfg=JSON.parse(raw);}catch(e){localStorage.removeItem(CFGKEY);setupScreen('Saved config was unreadable.');return;}
+ let cfg=null;
+ const forced=localStorage.getItem(FORCEKEY)==='1';
+ let raw=localStorage.getItem(CFGKEY)||localStorage.getItem(CFGKEY_OLD);
+ if(raw){try{cfg=JSON.parse(raw);}catch(e){cfg=null;}}
+ if(!cfg&&!forced)cfg=BUILTIN_CFG;      // the normal path: nothing to set up
+ if(!cfg){setupScreen();return;}
  try{app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);}
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
  onAuthStateChanged(auth,async user=>{
