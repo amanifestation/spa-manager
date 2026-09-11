@@ -351,16 +351,14 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   font-size:10px;font-weight:700;color:rgba(255,255,255,.8)}
 
 /* ---------- home launcher ---------- */
-.hero{background:var(--ink);color:var(--cream);border-radius:var(--r-lg);padding:18px 17px 15px;
-  margin-bottom:12px;box-shadow:var(--shadow-lift);position:relative;overflow:hidden}
-.hero::after{content:'';position:absolute;right:-40px;top:-60px;width:170px;height:170px;
-  border-radius:99px;background:radial-gradient(circle,rgba(166,124,61,.42),transparent 70%)}
-.hgreet{font-size:19px;font-weight:650;letter-spacing:-.02em}
-.hsub{font-size:11.5px;color:#A8A092;margin-top:2px}
-.hstats{display:flex;gap:22px;margin-top:14px;position:relative}
-.hstats div{display:flex;flex-direction:column}
-.hstats b{font-size:20px;font-weight:660;letter-spacing:-.03em}
-.hstats span{font-size:10px;color:#A8A092;text-transform:uppercase;letter-spacing:.07em}
+
+
+
+
+
+
+
+
 .quick{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin-bottom:13px;padding-bottom:3px}
 .quick::-webkit-scrollbar{display:none}
 .qbtn{flex:0 0 auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
@@ -548,6 +546,71 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 }
 @media print{.side,.navveil,.topbar{display:none!important}.main{margin-left:0}}
 
+
+/* ---------- home dashboard ---------- */
+.hero{background:rgba(20,18,15,.94);backdrop-filter:blur(22px) saturate(160%);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);
+  color:var(--cream);border-radius:22px;margin-bottom:12px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);box-shadow:var(--shadow-lift);position:relative}
+.hero::after{content:'';position:absolute;right:-70px;top:-90px;width:240px;height:240px;
+  border-radius:99px;background:radial-gradient(circle,rgba(166,124,61,.34),transparent 68%);
+  pointer-events:none}
+.heroTop{display:flex;align-items:flex-start;gap:14px;padding:17px 17px 13px;position:relative}
+.heroWho{flex:1;min-width:0}
+.hgreet{font-size:19px;font-weight:650;letter-spacing:-.025em}
+.hsub{font-size:11.5px;color:#A8A092;margin-top:2px}
+.heroChips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.hchip{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;padding:4px 9px;
+  border-radius:99px;background:rgba(255,255,255,.08);color:#CFC8BA;
+  border:1px solid rgba(255,255,255,.08)}
+.hchip.live{background:rgba(46,107,82,.32);color:#BFE0CE;border-color:rgba(46,107,82,.5)}
+.hchip.warn{background:rgba(156,107,21,.3);color:#F0DCB6;border-color:rgba(156,107,21,.5)}
+.heroClock{flex:none;display:grid;justify-items:center;gap:5px}
+.clockface{width:78px;height:78px;display:block}
+.clockface line{transition:transform .25s var(--ease)}
+.clockface #ck-s{transition:transform .12s linear}
+.ckdigital{font-size:12.5px;font-weight:600;letter-spacing:.04em;color:var(--cream);
+  font-variant-numeric:tabular-nums}
+.heroStats{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.08);position:relative}
+.heroStats>div{flex:1;padding:11px 8px;text-align:center;
+  border-left:1px solid rgba(255,255,255,.07)}
+.heroStats>div:first-child{border-left:0}
+.heroStats b{display:block;font-size:17px;font-weight:660;letter-spacing:-.03em}
+.heroStats span{font-size:9.5px;color:#A8A092;text-transform:uppercase;letter-spacing:.07em}
+.noteStrip{width:100%;display:flex;align-items:center;gap:10px;padding:12px 15px;
+  background:rgba(166,124,61,.16);border:0;border-top:1px solid rgba(255,255,255,.08);
+  color:var(--cream);cursor:pointer;text-align:left;position:relative;
+  transition:background .22s var(--ease)}
+.noteStrip:active{background:rgba(166,124,61,.3)}
+.noteStrip.empty{background:rgba(255,255,255,.04);color:#A8A092}
+.nsdot{width:8px;height:8px;border-radius:99px;background:#C79A55;flex:none;
+  box-shadow:0 0 0 4px rgba(199,154,85,.2)}
+.nsdot.g{background:#7FBFA0;box-shadow:0 0 0 4px rgba(127,191,160,.18)}
+.nsdot.a{background:#E0B463;box-shadow:0 0 0 4px rgba(224,180,99,.18)}
+.nsdot.r{background:#D08585;box-shadow:0 0 0 4px rgba(208,133,133,.18)}
+.nstext{flex:1;min-width:0;display:grid}
+.nstext b{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nstext span{font-size:11px;color:#A8A092;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nscount{font-size:10px;color:#A8A092;flex:none}
+
+.alertrow{width:100%;display:flex;align-items:center;gap:11px;padding:11px 10px;border:0;
+  border-bottom:1px solid var(--line-2);background:transparent;cursor:pointer;text-align:left;
+  color:var(--ink);transition:background .2s var(--ease)}
+.alertrow:last-child{border-bottom:0}
+.alertrow:active{background:var(--surface-2)}
+.aico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;
+  background:var(--amber-soft);color:var(--amber)}
+.atext{flex:1;min-width:0;display:grid;gap:2px}
+.atext b{font-size:13px;font-weight:600}
+.atext span{font-size:11px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap}
+
+@media(min-width:760px){
+  .heroTop{padding:20px 20px 15px}
+  .clockface{width:92px;height:92px}
+  .hgreet{font-size:22px}
+}
+
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -654,7 +717,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-11c';
+const BUILD='2026-09-11d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -972,7 +1035,7 @@ function render(){
 const kpi=(l,v,s,icon)=>'<div class="kpi"><div class="lab">'+(icon?ic(icon,13):'')+l+'</div><div class="big">'+v+
  '</div><div class="tiny muted">'+(s||'')+'</div></div>';
 
-/* ============ home launcher ============ */
+/* ============ home dashboard ============ */
 function greet(){
  const h=new Date().getHours();
  return h<12?'Good morning':(h<18?'Good afternoon':'Good evening');
@@ -986,11 +1049,70 @@ function tileBadge(t){
  if(t.id==='loy')return loy().on?'':'off';
  if(t.id==='pkg'){const n=HELD.filter(p=>(p.balances||[]).some(b=>b.left>0)).length;
   return n?n+' active':'';}
+ if(t.id==='prog')return PROGS.length?PROGS.length+' saved':'';
  if(t.id==='team'){const n=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
   .filter(x=>{const a=attToday(x.id);return a&&a.clockIn&&!a.clockOut;}).length;
   return n?n+' on shift':'';}
  return '';
 }
+
+/* --- the analog clock, drawn once and then only its hands move --- */
+function clockSVG(){
+ const ticks=[...Array(12)].map((_,i)=>{
+  const a=i*30*Math.PI/180,r1=i%3===0?31:34,r2=38;
+  return '<line x1="'+(50+r1*Math.sin(a))+'" y1="'+(50-r1*Math.cos(a))+
+   '" x2="'+(50+r2*Math.sin(a))+'" y2="'+(50-r2*Math.cos(a))+
+   '" stroke="'+(i%3===0?'rgba(244,240,231,.85)':'rgba(244,240,231,.35)')+
+   '" stroke-width="'+(i%3===0?2.2:1.2)+'" stroke-linecap="round"/>';}).join('');
+ return '<svg class="clockface" viewBox="0 0 100 100" aria-hidden="true">'+
+  '<circle cx="50" cy="50" r="45" fill="rgba(255,255,255,.05)" '+
+   'stroke="rgba(244,240,231,.18)" stroke-width="1"/>'+ticks+
+  '<line id="ck-h" x1="50" y1="50" x2="50" y2="27" stroke="var(--cream)" stroke-width="3.4" '+
+   'stroke-linecap="round" transform="rotate(0 50 50)"/>'+
+  '<line id="ck-m" x1="50" y1="50" x2="50" y2="18" stroke="var(--cream)" stroke-width="2.4" '+
+   'stroke-linecap="round" transform="rotate(0 50 50)"/>'+
+  '<line id="ck-s" x1="50" y1="56" x2="50" y2="15" stroke="#C79A55" stroke-width="1.2" '+
+   'stroke-linecap="round" transform="rotate(0 50 50)"/>'+
+  '<circle cx="50" cy="50" r="3" fill="#C79A55"/>'+
+  '<circle cx="50" cy="50" r="1.3" fill="var(--ink)"/></svg>';
+}
+let NOTEIDX=0,tickBound=false;
+function tickClock(){
+ const d=new Date();
+ const s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;
+ const set=(id,deg)=>{const el=document.getElementById(id);
+  if(el&&typeof el.setAttribute==='function')
+   el.setAttribute('transform','rotate('+deg+' 50 50)');};
+ set('ck-h',h*30);set('ck-m',m*6);set('ck-s',s*6);
+ const dig=document.getElementById('ck-digital');
+ if(dig)dig.textContent=d.toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit',hour12:false});
+}
+function startClock(){
+ if(tickBound)return;tickBound=true;
+ setInterval(()=>{
+  if(TAB!=='home')return;
+  tickClock();
+  /* the notice strip cycles slowly so a second notice is not missed */
+  const live=NOTES.filter(noteLive);
+  if(live.length>1&&new Date().getSeconds()%8===0){
+   NOTEIDX=(NOTEIDX+1)%live.length;paintNoteStrip();
+  }
+ },1000);
+}
+function paintNoteStrip(){
+ const box=document.getElementById('noteStrip');
+ if(!box)return;
+ const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0));
+ if(!live.length)return;
+ const n=live[NOTEIDX%live.length];
+ const p=PRIO[n.priority||'normal']||PRIO.normal;
+ box.innerHTML='<span class="nsdot '+(p[1]||'n')+'"></span>'+
+  '<div class="nstext"><b>'+esc(n.title||'')+'</b>'+
+  (n.body?'<span>'+esc(String(n.body).slice(0,90))+(String(n.body).length>90?'…':'')+'</span>':'')+
+  '</div>'+(live.length>1?'<span class="nscount">'+((NOTEIDX%live.length)+1)+'/'+live.length+
+  '</span>':'')+ic('right',15);
+}
+
 function attendQuick(){
  const me=stf(UID)||{};
  const a=attToday(UID);
@@ -1007,61 +1129,119 @@ function attendQuick(){
 }
 function vHome(){
  const f=dayFigures();
- const tiles=TABS.filter(t=>t.id!=='home'&&(!t.perm||can(t.perm)));
- let h='<div class="hero"><div class="hgreet">'+greet()+', '+esc((ME.name||'').split(' ')[0])+'</div>'+
-  '<div class="hsub">'+esc(branch().name)+' · '+new Date().toLocaleDateString('en-MY',
-   {weekday:'long',day:'numeric',month:'long'})+'</div>'+
-  '<div class="hstats">'+
-   '<div><b>'+f.booked+'</b><span>booked</span></div>'+
-   '<div><b>'+f.showed+'</b><span>showed</span></div>'+
-   (can('pos')?'<div><b>'+rm(f.revenue).replace('RM','')+'</b><span>taken</span></div>':
-    '<div><b>'+f.noShow+'</b><span>no-show</span></div>')+
-  '</div></div>';
+ const live=NOTES.filter(noteLive);
+ const low=D.stock.filter(x=>x.branchId===ME.branchId&&x.qty<=x.reorder);
+ const openIssues=((SHIFT&&SHIFT.issues)||[]).filter(i=>i.status!=='done');
+ const onShift=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
+  .filter(x=>{const a=attToday(x.id);return a&&a.clockIn&&!a.clockOut;});
+ const expiring=HELD.filter(p=>{const d=daysBetween(new Date(),p.expiry);
+  return d>0&&d<=30&&(p.balances||[]).some(b=>b.left>0);});
+ const upcoming=onDay(today()).filter(a=>['booked','confirm','in'].includes(a.status)&&
+  new Date(a.start)>=new Date()).slice(0,4);
+ const last7=[...Array(7)].map((_,i)=>{const d=ymd(addDays(new Date(),-(6-i)));
+  return{d,v:SALES.filter(s=>s.date===d&&!s.voided&&s.branchId===ME.branchId)
+   .reduce((a,s)=>a+s.total,0)};});
+ const mx=Math.max(...last7.map(x=>x.v),1);
+ const ptsToday=LOYLEDGER.filter(l=>l.date===today()&&l.points>0)
+  .reduce((a,l)=>a+l.points,0);
 
+ /* ---- dark header: greeting, clock, day figures, notices ---- */
+ let h='<section class="hero">'+
+  '<div class="heroTop">'+
+   '<div class="heroWho"><div class="hgreet">'+greet()+', '+
+    esc((ME.name||'').split(' ')[0])+'</div>'+
+    '<div class="hsub">'+esc(branch().name)+' · '+new Date().toLocaleDateString('en-MY',
+     {weekday:'long',day:'numeric',month:'long'})+'</div>'+
+    '<div class="heroChips">'+
+     '<span class="hchip">'+ic('users',12)+onShift.length+' on shift</span>'+
+     '<span class="hchip">'+ic('calendar',12)+f.booked+' booked</span>'+
+     (SHIFT?'<span class="hchip'+(SHIFT.closedAt?'':' live')+'">'+ic('wallet',12)+
+      (SHIFT.closedAt?'day closed':'day open')+'</span>'
+      :'<span class="hchip warn">'+ic('alert',12)+'day not opened</span>')+
+    '</div></div>'+
+   '<div class="heroClock">'+clockSVG()+
+    '<div class="ckdigital" id="ck-digital">'+tstr(new Date())+'</div></div>'+
+  '</div>'+
+  '<div class="heroStats">'+
+   (can('pos')?'<div><b>'+rm(f.revenue).replace('RM','')+'</b><span>taken</span></div>':'')+
+   '<div><b>'+f.showed+'</b><span>showed</span></div>'+
+   '<div><b>'+f.noShow+'</b><span>no-show</span></div>'+
+   (can('pos')?'<div><b>'+f.bills+'</b><span>bills</span></div>':
+    '<div><b>'+f.booked+'</b><span>booked</span></div>')+
+  '</div>'+
+  (live.length?'<button class="noteStrip" id="noteStrip" onclick="go(\'board\')"></button>'
+   :'<button class="noteStrip empty" onclick="go(\'board\')">'+ic('mega',15)+
+    '<div class="nstext"><b>Notice board</b><span>Nothing posted right now</span></div>'+
+    ic('right',15)+'</button>')+
+ '</section>';
+
+ /* ---- quick actions ---- */
  h+='<div class="quick">'+
-  (can('booking')?'<button class="qbtn" onclick="newAppt()">'+ic('plus',20)+'<span>New booking</span></button>':'')+
-  (can('pos')?'<button class="qbtn" onclick="go(\'pos\')">'+ic('card',20)+'<span>Take payment</span></button>':'')+
-  (can('customer')?'<button class="qbtn" onclick="newCust()">'+ic('user',20)+'<span>Add client</span></button>':'')+
-  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+
-   '<span>Build programme</span></button>':'')+
-  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+
-   '<span>Build program</span></button>':'')+
+  (can('booking')?'<button class="qbtn" onclick="newAppt()">'+ic('plus',20)+'<span>Booking</span></button>':'')+
+  (can('pos')?'<button class="qbtn" onclick="go(\'pos\')">'+ic('card',20)+'<span>Payment</span></button>':'')+
+  (can('customer')?'<button class="qbtn" onclick="newCust()">'+ic('user',20)+'<span>New client</span></button>':'')+
+  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+'<span>Programme</span></button>':'')+
+  attendQuick()+
   (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="qbtn" onclick="addExpense()">'+ic('wallet',20)+
    '<span>Cash out</span></button>':'')+
-  '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report issue</span></button>'+
-  attendQuick()+
+  '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report</span></button>'+
   (can('pos')?'<button class="qbtn" onclick="openDailyReport()">'+ic('receipt',20)+
-   '<span>Daily report</span></button>':'')+
+   '<span>Day report</span></button>':'')+
+ '</div>';
+
+ /* ---- things that need a decision ---- */
+ const alerts=[];
+ if(!D.services.length)alerts.push({i:'alert',t:'Your catalogue is empty',
+  d:'Add your treatments before booking anything.',go:"go('cat')"});
+ if(can('pos')&&!SHIFT)alerts.push({i:'wallet',t:'The day has not been opened',
+  d:'Record the cash float you are starting with.',go:"openShift()"});
+ if(low.length)alerts.push({i:'stock',t:low.length+' item'+(low.length>1?'s':'')+' below reorder',
+  d:low.slice(0,3).map(x=>prod(x.sku).name).join(', '),go:"go('inv')"});
+ if(openIssues.length)alerts.push({i:'tool',t:openIssues.length+' issue'+
+  (openIssues.length>1?'s':'')+' still open',d:openIssues.map(x=>x.title).slice(0,2).join(' · '),
+  go:"go('shift')"});
+ if(expiring.length)alerts.push({i:'package',t:expiring.length+' package'+
+  (expiring.length>1?'s':'')+' expiring within 30 days',
+  d:'Worth a call before the sessions are lost.',go:"go('pkg')"});
+ if(f.noShow)alerts.push({i:'alert',t:f.noShow+' no-show'+(f.noShow>1?'s':'')+' today',
+  d:'Follow up while it is still fresh.',go:"go('book')"});
+ if(alerts.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('bell',16)+
+  ' Needs attention</h2><span class="pill">'+alerts.length+'</span></div>'+
+  alerts.map(a=>'<button class="alertrow" onclick="'+a.go+'">'+
+   '<span class="aico">'+ic(a.i,17)+'</span><span class="atext"><b>'+esc(a.t)+'</b>'+
+   '<span>'+esc(a.d)+'</span></span>'+ic('right',15)+'</button>').join('')+'</div>';
+
+ /* ---- figures ---- */
+ if(can('pos')){
+  h+='<div class="grid g3" style="margin-bottom:12px">'+
+   kpi('Average bill',rm(f.bills?f.revenue/f.bills:0),f.bills+' today','chart')+
+   kpi('Cash in drawer',SHIFT?rm(expectedCash(f)):'—',SHIFT?'expected':'day not opened','wallet')+
+   (loy().on?kpi('Points issued',ptsToday,'today','award'):
+    kpi('Deposits held',rm(f.deposits),'on bookings','card'))+'</div>';
+  h+='<div class="card"><div class="sec-h"><h2>Takings, last 7 days</h2>'+
+   '<span class="tiny muted">'+esc(branch().code)+'</span></div><div class="chart">'+
+   last7.map(x=>'<div><div class="tiny muted">'+(x.v?Math.round(x.v/100)/10+'k':'')+'</div>'+
+    '<div class="b" style="height:'+(x.v/mx*82)+'px"></div>'+
+    '<div class="tiny muted">'+new Date(x.d).toLocaleDateString('en-MY',{weekday:'short'})
+     .slice(0,2)+'</div></div>').join('')+'</div></div>';
+ }
+
+ /* ---- what happens next ---- */
+ h+='<div class="card"><div class="sec-h"><h2>'+ic('clock',16)+' Coming up</h2>'+
+  '<button class="btn sm ghost" onclick="go(\'book\')">'+ic('calendar',14)+'Calendar</button></div>'+
+  (upcoming.length?upcoming.map(apptRow).join('')
+   :'<div class="empty">'+ic('calendar',24)+'<div>Nothing left on today\'s schedule.</div></div>')+
   '</div>';
 
- const live=NOTES.filter(noteLive).sort((a,b)=>(b.pinned?1:0)-(a.pinned?1:0)).slice(0,1);
- if(live.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('mega',16)+' Notice board</h2>'+
-  '<button class="btn sm ghost" onclick="go(\'board\')">'+ic('right',14)+'All</button></div>'+
-  live.map(noteCard).join('')+'</div>';
-
- h+=myClockCard();
-
- if(!D.services.length)h+='<div class="warnbox">'+ic('alert',14)+
-  ' <b>Your project is empty.</b> Open Catalogue to enter your treatments, or Settings to load '+
-  'sample data you can edit.</div>';
- if(can('pos')&&!SHIFT)h+='<div class="warnbox">'+ic('alert',14)+
-  ' The day has not been opened. Tap <b>Day</b> to record your starting cash float.</div>';
-
- h+='<div class="tiles">'+tiles.map((t,i)=>{
-  const b=tileBadge(t);
-  return '<button class="tile" style="animation-delay:'+(i*35)+'ms" onclick="go(\''+t.id+'\')">'+
-   '<span class="tico">'+ic(t.ic,21)+'</span>'+
-   (b?'<span class="tbadge">'+esc(b)+'</span>':'')+
-   '<span class="tname">'+t.label+'</span>'+
-   '<span class="tdesc">'+esc(t.desc||'')+'</span></button>';}).join('')+'</div>';
-
- const ap=onDay(today());
- h+='<div class="card"><div class="sec-h"><h2>Today\'s schedule</h2>'+
-  '<button class="btn sm ghost" onclick="go(\'book\')">'+ic('calendar',15)+'Calendar</button></div>'+
-  (ap.length?ap.slice(0,6).map(apptRow).join('')+
-   (ap.length>6?'<button class="btn ghost sm" style="width:100%;justify-content:center" '+
-    'onclick="go(\'book\')">See all '+ap.length+'</button>':'')
-   :'<div class="empty">'+ic('calendar',26)+'<div>Nothing booked today.</div></div>')+'</div>';
+ /* ---- jump to any module ---- */
+ const tiles=TABS.filter(t=>t.id!=='home'&&(!t.perm||can(t.perm)));
+ h+='<div class="card"><h2 style="margin-bottom:11px">'+ic('grid',16)+' Jump to</h2>'+
+  '<div class="tiles">'+tiles.map((t,i)=>{
+   const b=tileBadge(t);
+   return '<button class="tile" style="animation-delay:'+(i*25)+'ms" onclick="go(\''+t.id+'\')">'+
+    '<span class="tico">'+ic(t.ic,19)+'</span>'+
+    (b?'<span class="tbadge">'+esc(b)+'</span>':'')+
+    '<span class="tname">'+t.label+'</span></button>';}).join('')+'</div></div>';
  return h;
 }
 
@@ -4240,7 +4420,9 @@ window.openStaff=id=>{
 
 /* ============ after-render bindings ============ */
 const _render=render;
-render=function(){_render();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();if(TAB==='prog'&&!PROG)bindProgram();};
+render=function(){_render();
+ if(TAB==='home'){tickClock();paintNoteStrip();}
+ if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();};
 window.render=render;
 
 /* ============ boot ============ */
@@ -4267,6 +4449,7 @@ window.render=render;
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
    bindNavAutoHide();
+   startClock();
    watchAppointments();
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms()]);
    render();
