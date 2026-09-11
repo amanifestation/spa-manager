@@ -436,6 +436,45 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   .rsec{margin-bottom:11px}
 }
 
+
+/* ---------- chips and program phases ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 11px;
+  font-size:12px;color:var(--ink-2);cursor:pointer;
+  transition:background .2s var(--ease),color .2s,border-color .2s,transform .15s var(--ease)}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.phase{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);
+  border-radius:var(--r-md);padding:11px 12px;margin-bottom:8px;background:var(--surface);
+  animation:fadeUp .35s var(--ease) both}
+.phase:nth-child(2){animation-delay:.06s}
+.phase:nth-child(3){animation-delay:.12s}
+.pnum{width:26px;height:26px;border-radius:99px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--brass),#7E5B26);color:#fff;font-size:12px;font-weight:700}
+
+
+/* ---------- chips and program builder ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 11px;
+  font-size:11.5px;color:var(--ink-2);cursor:pointer;
+  transition:background .2s var(--ease),color .2s,border-color .2s,transform .14s var(--ease)}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink);font-weight:530}
+.tagrow{display:flex;gap:4px;flex-wrap:wrap;margin:5px 0}
+.phase{display:flex;gap:11px;margin-bottom:12px}
+.pnum{width:26px;height:26px;border-radius:99px;background:var(--ink);color:var(--cream);
+  display:grid;place-items:center;font-size:12px;font-weight:650;flex:none;margin-top:2px}
+.pbody{flex:1;min-width:0;border-left:1px solid var(--line);padding-left:12px}
+
+
+/* ---------- chip multi-select ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:99px;
+  padding:6px 11px;font-size:12px;color:var(--ink-2);cursor:pointer;
+  transition:background .2s var(--ease),color .2s,border-color .2s,transform .14s var(--ease)}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink);font-weight:530}
+
 @media print{.nav,.topbar,.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -495,6 +534,7 @@ const ICONS={
  phone:'M7.4 3.8l2.4 3.4-2 2c1 2 2.6 3.6 4.6 4.6l2-2 3.4 2.4v3.2c0 .9-.8 1.6-1.7 1.5C9.2 18.2 5.8 14.8 4.3 6.9c-.2-.9.6-1.7 1.5-1.7z',
  history:'M12 20.6a8.6 8.6 0 10-8.4-10.4M12 7.4V12l3 1.9M3.4 5v4.4h4.4',
  money:'M12 6.4v11.2M9.4 9.2c0-1 1.2-1.8 2.6-1.8s2.6.8 2.6 1.8-1.2 1.8-2.6 1.8-2.6.8-2.6 1.8 1.2 1.8 2.6 1.8 2.6-.8 2.6-1.8',
+ plan:'M6.4 3.6h11.2v16.8H6.4zM9.6 8h4.8M9.6 11.6h4.8M9.6 15.2h2.8M17.6 15.6l2.6 2.6-2.6 2.6',
  award:'M12 14.4a5 5 0 100-10 5 5 0 000 10zM8.4 13.6L6.6 21l5.4-2.6L17.4 21l-1.8-7.4',
  wallet:'M3.6 7.4h13.2v11.2H3.6zM3.6 7.4V5.6h11.2M17 11.4h3.4v3.6H17a1.8 1.8 0 010-3.6z',
  tool:'M14.6 6.4a3.8 3.8 0 015 5l-3-3-2 2zM13.6 9.4L5 18a2 2 0 002.8 2.8l8.6-8.6',
@@ -785,6 +825,7 @@ const TABS=[
  {id:'shift',ic:'wallet',label:'Day',     perm:'pos',      core:1,desc:'Open, close, cash and issues'},
  {id:'board',ic:'mega', label:'Board',    perm:null,              desc:'Notices for the team'},
  {id:'pkg', ic:'package',label:'Packages',perm:'customer',        desc:'Sell and track balances'},
+ {id:'prog',ic:'spark', label:'Programs', perm:'customer',       desc:'Match treatments to concerns'},
  {id:'loy', ic:'award', label:'Loyalty',  perm:'customer',        desc:'Points, tiers and rewards'},
  {id:'inv', ic:'stock', label:'Stock',    perm:'inventory',       desc:'Backbar and retail levels'},
  {id:'rep', ic:'chart', label:'Reports',  perm:'report',          desc:'Revenue and commission'},
@@ -813,7 +854,7 @@ function render(){
   '<div class="wrap" id="app"></div>'+
   '<div class="nav">'+TABS.filter(t=>t.core&&(!t.perm||can(t.perm))).map(t=>
    '<button class="'+(TAB===t.id?'on':'')+'" onclick="go(\''+t.id+'\')">'+ic(t.ic,19)+t.label+'</button>').join('')+'</div>';
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -871,6 +912,10 @@ function vHome(){
   (can('booking')?'<button class="qbtn" onclick="newAppt()">'+ic('plus',20)+'<span>New booking</span></button>':'')+
   (can('pos')?'<button class="qbtn" onclick="go(\'pos\')">'+ic('card',20)+'<span>Take payment</span></button>':'')+
   (can('customer')?'<button class="qbtn" onclick="newCust()">'+ic('user',20)+'<span>Add client</span></button>':'')+
+  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+
+   '<span>Build programme</span></button>':'')+
+  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+
+   '<span>Build program</span></button>':'')+
   (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="qbtn" onclick="addExpense()">'+ic('wallet',20)+
    '<span>Cash out</span></button>':'')+
   '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report issue</span></button>'+
@@ -2251,7 +2296,13 @@ function catServices(){
    '<div class="tiny muted">'+esc(s.cat||'Uncategorised')+' · '+s.dur+' min +'+(s.buffer||0)+
    ' buffer · '+esc(s.room||'any')+' room · commission '+(s.comm||0)+'%'+
    ((s.use||[]).length?' · uses '+s.use.map(u=>u.qty+' '+(prod(u.sku).unit||'')+' '+
-    (prod(u.sku).name||u.sku)).join(', '):'')+'</div></div>').join('')
+    (prod(u.sku).name||u.sku)).join(', '):'')+'</div>'+
+   ((s.concerns||[]).length?'<div class="tagrow">'+s.concerns.slice(0,4).map(c=>
+     '<span class="pill b">'+esc(concernLabel(c))+'</span>').join('')+
+     (s.concerns.length>4?'<span class="pill">+'+(s.concerns.length-4)+'</span>':'')+'</div>'
+    :'<div class="tiny" style="color:var(--amber);margin-top:5px">'+ic('alert',11)+
+     ' not tagged — will not appear in programmes</div>')+
+   '</div>').join('')
   :'<div class="empty">No treatments yet. Add your first one.</div>');}
 window.editService=id=>{
  const s=id?svc(id):{name:'',cat:'',price:0,dur:60,buffer:15,room:'facial',comm:8,use:[],active:true};
@@ -2266,6 +2317,19 @@ window.editService=id=>{
   '<div><label>Commission %</label><input class="f" type="number" id="sv-c" value="'+(s.comm||0)+'"></div></div>'+
   '<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
    (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
+  '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
+  chipField('sv-con',CONCERNS,s.concerns||[],'This treats','used by the programme builder')+
+  chipField('sv-skin',SKINS.map(x=>[x,x]),s.skins||[],'Best for skin types','leave empty for any')+
+  chipField('sv-avoid',FLAGS,s.avoid||[],'Do not use when','the builder removes it automatically')+
+  '<div class="grid g3"><div><label>Repeat every</label>'+
+   '<input class="f" type="number" id="sv-int" value="'+(s.intervalDays||14)+'"></div>'+
+  '<div><label>Course length</label><input class="f" type="number" id="sv-crs" value="'+
+   (s.courseSessions||4)+'"></div>'+
+  '<div><label>Intensity</label><select class="f" id="sv-ity">'+
+   ['gentle','medium','high'].map(x=>'<option value="'+x+'"'+((s.intensity||'medium')===x?' selected':'')+
+    '>'+x+'</option>').join('')+'</select></div></div>'+
+  '<p class="tiny muted" style="margin:0">Repeat every = days between sessions. '+
+  'Course length = how many sessions a full course normally runs.</p></div>'+
   '<label>Backbar used per session <span class="muted">— deducted automatically when the treatment is completed</span></label>'+
   '<div id="sv-use"></div>'+
   '<button class="btn ghost sm" id="sv-add" style="margin-bottom:10px">'+ic('plus',14)+'Add item</button>'+
@@ -2285,6 +2349,9 @@ window.editService=id=>{
     '<button class="iconbtn" data-del>'+ic('close',14)+'</button></div>';
    const paint=list=>{box.innerHTML=list.map(u=>rowHtml(u.sku,u.qty)).join('');};
    paint(s.use||[]);
+   const cb=document.getElementById('sv-con'),tb=document.getElementById('sv-tr');
+   const tg=e=>{const b=e.target.closest&&e.target.closest('.chip');if(b)b.classList.toggle('on');};
+   if(cb)cb.onclick=tg; if(tb)tb.onclick=tg;
    $('#sv-add').onclick=()=>{box.innerHTML+=rowHtml(backbar[0]?backbar[0].id:'',1);};
    box.onclick=e=>{const b=e.target.closest?e.target.closest('[data-del]'):null;
     if(b){b.parentElement.remove();}};
@@ -2296,7 +2363,11 @@ window.editService=id=>{
       .filter(u=>u.sku&&u.qty>0);
     catSave('services',id,{name,cat:$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
      dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
-     room:$('#sv-r').value,use,active:$('#sv-a').checked},name,id?'Treatment updated':'Treatment added');};
+     room:$('#sv-r').value,use,active:$('#sv-a').checked,
+     concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
+     intervalDays:+$('#sv-int').value||14,courseSessions:+$('#sv-crs').value||4,
+     intensity:$('#sv-ity').value},
+     name,id?'Treatment updated':'Treatment added');};
   });};
 
 function catProducts(){
@@ -2309,7 +2380,10 @@ function catProducts(){
    '<div class="spread"><b>'+esc(p.name)+offTag(p)+'</b><span>'+(p.type==='retail'?rm(p.price):
     '<span class="pill">backbar</span>')+'</span></div>'+
    '<div class="tiny muted">'+esc(p.id)+' · '+esc(p.type||'')+' · '+(p.size||1)+' '+esc(p.unit||'')+
-   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+'</div></div>'+ic('right',16)+'</div></div>').join('')
+   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+
+   ((p.concerns||[]).length?'<div class="tiny" style="color:var(--brass);margin-top:2px">'+
+    ic('spark',10)+' '+p.concerns.map(concernLabel).join(', ')+'</div>':'')+
+   '</div>'+ic('right',16)+'</div></div>').join('')
   :'<div class="empty">No products yet.</div>')+
   '<p class="tiny muted" style="margin-top:8px">'+ic('shield',13)+
   ' Backbar items are consumed by treatments. Retail items are sold at checkout.</p>';}
@@ -2331,7 +2405,12 @@ window.editProduct=id=>{
    (p.size||1)+'"></div></div>'+
   (id?'':'<label>Opening stock at every branch</label><input class="f" type="number" id="pr-q" value="0">'+
    '<label>Reorder level</label><input class="f" type="number" id="pr-r" value="5">')+
-  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="pr-a"'+
+  '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
+  chipField('pr-con',CONCERNS,p.concerns||[],'This helps with','suggested as homecare')+
+  '<label>Homecare step</label><select class="f" id="pr-step"><option value="">— none —</option>'+
+   HOMECARE.map(x=>'<option value="'+x[1]+'"'+(p.step===x[1]?' selected':'')+'>'+x[1]+
+    '</option>').join('')+'</select></div>'+
+  '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="pr-a"'+
    (p.active===false?'':' checked')+'> Active</label>'+
   '<button class="btn" style="width:100%;justify-content:center" id="pr-go">Save product</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
@@ -2349,7 +2428,8 @@ window.editProduct=id=>{
     }
     const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
      unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked,
-     image:imgValue('pr-img',p.image||'')};
+     image:imgValue('pr-img',p.image||''),concerns:chipVals('pr-con'),
+     step:$('#pr-step').value};
     try{
      await setDoc(doc(db,'products',sku),data,{merge:true});
      if(!id){
@@ -3143,6 +3223,407 @@ function dayFiguresFor(d){
  return f;
 }
 
+/* ============ treatment program builder ============ */
+/* A rules engine over your own catalogue. It only knows what you tag, and it is a
+   planning and selling aid — not a clinical assessment. Every proposal says so in
+   print, because a printed plan looks authoritative whether or not it is. */
+const CONCERNS=[
+ {id:'acne',      label:'Acne and breakouts'},
+ {id:'scarring',  label:'Acne scarring and texture'},
+ {id:'pigment',   label:'Pigmentation and melasma'},
+ {id:'dull',      label:'Dullness and uneven tone'},
+ {id:'dehydrated',label:'Dehydration and tightness'},
+ {id:'lines',     label:'Fine lines and wrinkles'},
+ {id:'sagging',   label:'Sagging and loss of firmness'},
+ {id:'pores',     label:'Enlarged pores'},
+ {id:'congestion',label:'Blackheads and congestion'},
+ {id:'redness',   label:'Redness and sensitivity'},
+ {id:'oily',      label:'Excess oil'},
+ {id:'eyes',      label:'Under-eye concerns'},
+ {id:'slimming',  label:'Body shaping and slimming'},
+ {id:'cellulite', label:'Cellulite and stretch marks'},
+ {id:'tension',   label:'Muscle tension and aches'},
+ {id:'postnatal', label:'Post-natal recovery'},
+ {id:'hair',      label:'Unwanted hair'},
+ {id:'wellness',  label:'Relaxation and wellbeing'}];
+const concernLabel=id=>(CONCERNS.find(c=>c.id===id)||{label:id}).label;
+const FLAGS=[
+ {id:'pregnant',  label:'Pregnant or breastfeeding'},
+ {id:'accutane',  label:'Oral acne medication in the last 6 months'},
+ {id:'activeacne',label:'Actively inflamed or infected skin'},
+ {id:'sunburn',   label:'Recent sunburn or heavy tanning'},
+ {id:'keloid',    label:'Scars badly or keloid-prone'},
+ {id:'implant',   label:'Pacemaker, metal implant or filler in the area'},
+ {id:'photosens', label:'On photosensitising medication'},
+ {id:'eczema',    label:'Open wound or eczema flare in the area'},
+ {id:'diabetes',  label:'Diabetic'},
+ {id:'allergy',   label:'Known product allergy'}];
+const flagLabel=id=>(FLAGS.find(f=>f.id===id)||{label:id}).label;
+const HOMECARE=[['cleanse','Cleanse'],['treat','Treat'],['hydrate','Hydrate'],['protect','Protect']];
+
+/* --- reusable chip multi-select --- */
+const CHIPS={};
+function chipField(id,options,selected,label,hint){
+ CHIPS[id]=new Set(selected||[]);
+ return '<label>'+label+(hint?' <span class="muted">— '+hint+'</span>':'')+'</label>'+
+  '<div class="chips" id="'+id+'">'+options.map(o=>{
+   const v=o.id||o[0],t=o.label||o[1];
+   return '<button type="button" class="chip'+(CHIPS[id].has(v)?' on':'')+'" data-v="'+v+
+    '" onclick="chipTap(\''+id+'\',\''+v+'\',this)">'+esc(t)+'</button>';}).join('')+'</div>';
+}
+window.chipTap=(id,v,el)=>{
+ const set=CHIPS[id]||(CHIPS[id]=new Set());
+ if(set.has(v)){set.delete(v);el.className='chip';}else{set.add(v);el.className='chip on';}
+};
+const chipVals=id=>[...(CHIPS[id]||[])];
+
+/* ============ the matching engine ============ */
+function buildProgram(p){
+ const weeks=p.weeks||12;
+ const scored=[],blocked=[];
+ D.services.filter(s=>s.active!==false).forEach(s=>{
+  const hit=(s.concerns||[]).filter(c=>p.concerns.includes(c));
+  if(!hit.length)return;
+  const clash=(s.avoid||[]).filter(f=>p.flags.includes(f));
+  if(clash.length){blocked.push({s,clash});return;}
+  let score=hit.length*4;
+  if((s.skins||[]).length)score+=(s.skins||[]).includes(p.skin)?3:-2;
+  if(p.sensitive&&s.intensity==='high')score-=3;
+  if(p.minutes&&s.dur>p.minutes)score-=4;
+  scored.push({s,hit,score});
+ });
+ scored.sort((a,b)=>b.score-a.score||a.s.price-b.s.price);
+
+ /* one core treatment per concern, then up to two supporting ones */
+ const core=[];
+ p.concerns.forEach(c=>{
+  const pick=scored.find(x=>x.hit.includes(c)&&!core.some(y=>y.s.id===x.s.id));
+  if(pick)core.push(pick);
+ });
+ const support=scored.filter(x=>!core.some(y=>y.s.id===x.s.id)).slice(0,2);
+
+ const plan=[];
+ const addLine=(x,tier)=>{
+  const interval=x.s.intervalDays||14;
+  /* the first session is on day zero, so a 24-week window at 90-day spacing
+     fits two sessions (day 0 and day 90), not one */
+  const days=weeks*7;
+  const capacity=Math.max(1,Math.floor((days-1)/interval)+1);
+  const wanted=x.s.courseSessions||4;
+  const n=Math.max(1,Math.min(wanted,capacity));
+  plan.push({id:x.s.id,name:x.s.name,tier,sessions:n,interval,price:x.s.price,
+   dur:x.s.dur,subtotal:n*x.s.price,treats:x.hit,score:x.score});
+ };
+ core.forEach(x=>addLine(x,'core'));
+ support.forEach(x=>addLine(x,'support'));
+
+ /* trim to budget: shave sessions first, drop the weakest line only as a last resort */
+ const total=()=>plan.reduce((a,l)=>a+l.subtotal,0);
+ const trimmed=[];
+ if(p.budget>0){
+  let guard=0;
+  while(total()>p.budget&&guard++<80){
+   const cand=plan.filter(l=>l.sessions>1).sort((a,b)=>a.score-b.score)[0];
+   if(cand){cand.sessions--;cand.subtotal=cand.sessions*cand.price;continue;}
+   if(plan.length<=1)break;
+   const drop=plan.filter(l=>l.tier==='support').sort((a,b)=>a.score-b.score)[0]
+     ||plan.slice().sort((a,b)=>a.score-b.score)[0];
+   trimmed.push(drop.name);plan.splice(plan.indexOf(drop),1);
+  }
+ }
+
+ const home=D.products.filter(x=>x.type==='retail'&&x.active!==false)
+  .map(x=>({x,hit:(x.concerns||[]).filter(c=>p.concerns.includes(c))}))
+  .filter(o=>o.hit.length)
+  .sort((a,b)=>b.hit.length-a.hit.length)
+  .slice(0,4)
+  .map(o=>({sku:o.x.id,name:o.x.name,price:o.x.price,step:o.x.step||'',treats:o.hit}));
+
+ const start=new Date(p.start||today());
+ const visits=[];
+ plan.forEach(l=>{for(let i=0;i<l.sessions;i++)
+  visits.push({at:addDays(start,i*l.interval),name:l.name,tier:l.tier});});
+ visits.sort((a,b)=>a.at-b.at);
+
+ const sub=total();
+ const homeTotal=home.reduce((a,h)=>a+h.price,0);
+ const bundle=Math.round(sub*(1-(p.bundleOff||0)/100));
+ const sessions=plan.reduce((a,l)=>a+l.sessions,0);
+ const warn=[];
+ if(p.flags.includes('pregnant'))warn.push('Client is pregnant or breastfeeding. '+
+  'Machine-based and chemical treatments need the doctor to clear them first.');
+ if(p.flags.includes('accutane'))warn.push('Recent oral acne medication. Resurfacing and peels '+
+  'are normally deferred — confirm with the doctor before booking.');
+ if(p.sensitive)warn.push('Sensitivity noted. Start at the lowest setting and patch test first.');
+ if(!plan.length)warn.push('Nothing in the catalogue is tagged for these concerns yet.');
+
+ return{plan,home,visits,blocked,trimmed,sub,homeTotal,bundle,sessions,weeks,warn,params:p};
+}
+
+/* ============ builder screen ============ */
+let PROG=null,progView='build',PROGS=[];
+window.setProgView=v=>{progView=v;render();};
+async function loadPrograms(){
+ try{const s=await getDocs(query(collection(db,'programs'),orderBy('at','desc'),limit(40)));
+  PROGS=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){PROGS=[];}
+}
+function vProgram(){
+ const tagged=D.services.filter(s=>(s.concerns||[]).length).length;
+ let h='<div class="card"><div class="seg">'+
+  '<button class="'+(progView==='build'?'on':'')+'" onclick="setProgView(\'build\')">'+
+   ic('spark',14)+'Build</button>'+
+  '<button class="'+(progView==='saved'?'on':'')+'" onclick="setProgView(\'saved\')">'+
+   ic('history',14)+'Saved ('+PROGS.length+')</button></div>';
+ if(progView==='saved')return h+progSaved()+'</div>';
+ if(!tagged)h+='<div class="warnbox">'+ic('alert',14)+
+  ' <b>No treatments are tagged yet.</b> Open Catalogue, edit a treatment, and tick the concerns '+
+  'it addresses. The builder can only suggest what you have tagged.</div>';
+ h+=progForm();
+ return h+'</div>'+(PROG?progResult():'');
+}
+function progForm(){
+ const p=(PROG&&PROG.params)||{};
+ return '<div class="fieldset"><h3>'+ic('user',13)+'Client</h3>'+
+  '<label>Who is this for</label><select class="f" id="pg-c" onchange="progClient()">'+
+   '<option value="">— not registered yet —</option>'+
+   CUSTS.map(c=>'<option value="'+c.id+'"'+(p.customerId===c.id?' selected':'')+'>'+
+    esc(c.name)+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>Skin type</label><select class="f" id="pg-skin">'+
+   SKINS.map(s=>'<option'+(p.skin===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
+  '<div><label>Starting on</label><input class="f" type="date" id="pg-start" value="'+
+   esc(p.start||today())+'"></div></div>'+
+  '<label class="row" style="gap:9px;margin-bottom:0"><input type="checkbox" id="pg-sens"'+
+   (p.sensitive?' checked':'')+'> Skin reacts easily — keep the intensity low</label></div>'+
+
+  '<div class="fieldset"><h3>'+ic('alert',13)+'What they want to work on</h3>'+
+   chipField('pg-con',CONCERNS,p.concerns||[],'Concerns','tap as many as apply')+'</div>'+
+
+  '<div class="fieldset"><h3>'+ic('shield',13)+'Safety checks</h3>'+
+   chipField('pg-flag',FLAGS,p.flags||[],'Anything that applies',
+    'clashing treatments are removed and listed')+'</div>'+
+
+  '<div class="fieldset"><h3>'+ic('wallet',13)+'Practical limits</h3>'+
+  '<div class="grid g3"><div><label>Length</label><select class="f" id="pg-wk">'+
+   [4,8,12,16,24].map(w=>'<option value="'+w+'"'+((p.weeks||12)===w?' selected':'')+'>'+w+
+    ' weeks</option>').join('')+'</select></div>'+
+  '<div><label>Budget (RM)</label><input class="f" type="number" id="pg-bud" value="'+
+   (p.budget||0)+'" placeholder="0 = none"></div>'+
+  '<div><label>Time per visit</label><select class="f" id="pg-min">'+
+   [0,30,45,60,90,120].map(m=>'<option value="'+m+'"'+((p.minutes||0)===m?' selected':'')+'>'+
+    (m?m+' min':'No limit')+'</option>').join('')+'</select></div></div>'+
+  '<label>Discount if they commit to the whole programme (%)</label>'+
+  '<input class="f" type="number" id="pg-off" value="'+(p.bundleOff===undefined?10:p.bundleOff)+'"></div>'+
+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="runProgram()">'+
+  ic('spark',16)+'Build the programme</button>';
+}
+window.progClient=()=>{
+ const c=cust($('#pg-c').value);
+ if(!c)return;
+ if(c.skin)$('#pg-skin').value=c.skin;
+ if(c.allergy)toast('Allergy on file: '+c.allergy);
+};
+window.runProgram=()=>{
+ const concerns=chipVals('pg-con');
+ if(!concerns.length){toast('Pick at least one concern');return;}
+ const cid=$('#pg-c').value,c=cust(cid);
+ PROG=buildProgram({customerId:cid,customerName:c?c.name:'',skin:$('#pg-skin').value,
+  start:$('#pg-start').value||today(),sensitive:$('#pg-sens').checked,
+  concerns,flags:chipVals('pg-flag'),weeks:+$('#pg-wk').value||12,
+  budget:+$('#pg-bud').value||0,minutes:+$('#pg-min').value||0,
+  bundleOff:+$('#pg-off').value||0});
+ render();
+ toast(PROG.plan.length?PROG.plan.length+' treatments suggested':'Nothing matched — tag the catalogue first');
+};
+function progResult(){
+ const R=PROG,p=R.params;
+ let h='<div class="card"><div class="sec-h"><h2>'+ic('spark',16)+' Suggested programme</h2>'+
+  '<span class="pill">'+R.weeks+' weeks</span></div>'+
+  '<div class="tiny muted" style="margin-bottom:11px">For '+
+  esc(p.customerName||'an unregistered client')+' · '+esc(p.skin)+' skin · '+
+  p.concerns.map(c=>esc(concernLabel(c))).join(', ')+'</div>';
+ R.warn.forEach(w=>h+='<div class="warnbox">'+ic('alert',13)+' '+esc(w)+'</div>');
+ if(R.blocked.length)h+='<div class="errbox">'+ic('shield',13)+' <b>Removed for safety:</b> '+
+  R.blocked.map(b=>esc(b.s.name)+' ('+b.clash.map(f=>esc(flagLabel(f))).join(', ')+')').join('; ')+'</div>';
+ if(R.trimmed.length)h+='<div class="warnbox">'+ic('wallet',13)+' Trimmed to fit the budget: '+
+  R.trimmed.map(esc).join(', ')+'</div>';
+ if(!R.plan.length)return h+'<div class="empty">'+ic('search',26)+
+  '<div>No treatment in your catalogue is tagged for these concerns.</div></div></div>';
+
+ h+='<div class="grid g3" style="margin-bottom:12px">'+
+  '<div class="kpi dark"><div class="lab">'+ic('money',12)+'Programme</div><div class="big">'+
+   rm(R.bundle)+'</div><div class="tiny" style="color:#9A9285">'+
+   (R.sub>R.bundle?'was '+rm(R.sub):'no discount')+'</div></div>'+
+  kpi('Sessions',R.sessions,'over '+R.weeks+' weeks','calendar')+
+  kpi('Per session',rm(R.sessions?R.bundle/R.sessions:0),'','chart')+'</div>';
+
+ h+='<div class="scroll"><table><tr><th>Treatment</th><th class="num">Sessions</th>'+
+  '<th class="num">Every</th><th class="num">Subtotal</th></tr>'+
+  R.plan.map(l=>'<tr><td><b>'+esc(l.name)+'</b>'+
+   (l.tier==='support'?' <span class="pill">supporting</span>':'')+
+   '<div class="tiny muted">'+l.treats.map(t=>esc(concernLabel(t))).join(', ')+' · '+l.dur+
+   ' min</div></td><td class="num">'+l.sessions+'</td><td class="num tiny">'+l.interval+'d</td>'+
+   '<td class="num">'+rm(l.subtotal)+'</td></tr>').join('')+
+  '<tr><td colspan="3"><b>Treatment total</b></td><td class="num"><b>'+rm(R.sub)+'</b></td></tr>'+
+  '</table></div>';
+
+ if(R.home.length)h+='<h3 style="margin:14px 0 8px">'+ic('stock',14)+' Homecare to support it</h3>'+
+  R.home.map(x=>'<div class="item" style="cursor:default"><div class="spread"><b>'+esc(x.name)+
+   '</b><span>'+rm(x.price)+'</span></div><div class="tiny muted">'+
+   (x.step?esc(x.step)+' · ':'')+x.treats.map(t=>esc(concernLabel(t))).join(', ')+'</div></div>').join('')+
+  '<div class="spread tiny" style="padding:4px 2px"><span>Homecare total</span><b>'+
+  rm(R.homeTotal)+'</b></div>';
+
+ h+='<h3 style="margin:14px 0 8px">'+ic('calendar',14)+' First six visits</h3>'+
+  R.visits.slice(0,6).map(v=>'<div class="item" style="cursor:default"><div class="spread">'+
+   '<span class="tiny">'+esc(v.name)+'</span><span class="tiny muted">'+dstr(v.at)+
+   '</span></div></div>').join('')+
+  (R.visits.length>6?'<div class="tiny muted">and '+(R.visits.length-6)+' more</div>':'');
+
+ h+='<div class="fabrow">'+
+  '<button class="btn sm" onclick="openProposal()">'+ic('receipt',14)+'Proposal (A4)</button>'+
+  '<button class="btn sm ghost" onclick="saveProgram()">'+ic('check',14)+'Save to client</button>'+
+  (boss()?'<button class="btn sm ghost" onclick="programToPackage()">'+ic('package',14)+
+   'Turn into a package</button>':'')+
+  (p.customerId?'<button class="btn sm ghost" onclick="newAppt({customerId:\''+p.customerId+
+   '\'})">'+ic('calendar',14)+'Book first session</button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin-top:10px">'+ic('shield',13)+
+  ' A planning suggestion built from your own catalogue tags. It does not replace a consultation, '+
+  'and anything medical still needs the doctor\'s assessment.</p></div>';
+ return h;
+}
+function progSaved(){
+ return PROGS.length?PROGS.map(p=>'<div class="item" onclick="openSavedProg(\''+p.id+'\')">'+
+  '<div class="spread"><b>'+esc(p.customerName||'Unregistered')+'</b><span>'+rm(p.bundle||0)+
+  '</span></div><div class="tiny muted">'+(p.concerns||[]).map(c=>esc(concernLabel(c))).join(', ')+
+  ' · '+(p.sessions||0)+' sessions · '+dstr(p.at)+' · '+esc(p.byName||'')+'</div></div>').join('')
+  :'<div class="empty">'+ic('history',26)+'<div>No programmes saved yet.</div></div>';
+}
+window.openSavedProg=id=>{
+ const p=PROGS.find(x=>x.id===id);if(!p)return;
+ PROG={plan:p.plan||[],home:p.home||[],
+  visits:(p.visits||[]).map(v=>({...v,at:new Date(v.at)})),
+  blocked:[],trimmed:[],sub:p.sub||0,homeTotal:p.homeTotal||0,bundle:p.bundle||0,
+  sessions:p.sessions||0,weeks:p.weeks||12,warn:[],
+  params:p.params||{concerns:p.concerns||[],customerName:p.customerName,skin:p.skin,
+   customerId:p.customerId,start:p.date}};
+ progView='build';render();toast('Loaded');};
+window.saveProgram=async()=>{
+ if(!PROG)return;
+ const R=PROG,p=R.params;
+ try{
+  await addDoc(collection(db,'programs'),{customerId:p.customerId||'',
+   customerName:p.customerName||'',skin:p.skin||'',concerns:p.concerns||[],flags:p.flags||[],
+   weeks:R.weeks,plan:R.plan,home:R.home,
+   visits:R.visits.map(v=>({name:v.name,tier:v.tier,at:new Date(v.at).toISOString()})),
+   sub:R.sub,homeTotal:R.homeTotal,bundle:R.bundle,sessions:R.sessions,params:p,
+   status:'draft',branchId:ME.branchId,by:UID,byName:ME.name,
+   at:new Date().toISOString(),date:today()});
+  await audit('Treatment programme saved',(p.customerName||'unregistered')+' — '+rm(R.bundle));
+  await loadPrograms();render();toast('Saved to the client');
+ }catch(e){toast(friendly(e));}};
+window.programToPackage=()=>{
+ if(!PROG)return;
+ const R=PROG;
+ const suggested=(R.params.concerns.map(concernLabel)[0]||'Programme')+' · '+R.weeks+' weeks';
+ modal('Create a package','<div class="card">'+
+  '<p class="tiny dim">This adds a package to your catalogue with the same sessions, '+
+  'priced at the programme total.</p>'+
+  '<label>Package name</label><input class="f" id="p2p-n" value="'+esc(suggested)+'">'+
+  '<div class="kv"><div class="k">Price</div><div class="v">'+rm(R.bundle)+'</div>'+
+  '<div class="k">Sessions</div><div class="v">'+R.sessions+'</div>'+
+  '<div class="k">Valid for</div><div class="v">'+(R.weeks*7+60)+' days</div></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:11px" id="p2p">'+
+  ic('check',16)+'Add to catalogue</button></div>',
+ ()=>{$('#p2p').onclick=async()=>{
+  const name=($('#p2p-n').value||'').trim()||suggested;
+  try{await addDoc(collection(db,'packages'),{name,price:R.bundle,days:R.weeks*7+60,
+    items:R.plan.map(l=>({serviceId:l.id,n:l.sessions})),active:true});
+   await loadStatic();await audit('Package created from a programme',name);
+   window.closeModal();render();toast('Added to the catalogue');}
+  catch(e){toast(friendly(e));}};});};
+
+/* ============ A4 proposal ============ */
+window.openProposal=()=>{
+ if(!PROG)return;
+ document.getElementById('reportwrap').innerHTML='<div class="rptveil"><div class="rptbar">'+
+  '<button class="btn sm ghost" onclick="closeReport()">'+ic('close',14)+'Close</button>'+
+  '<div class="tiny muted">Treatment proposal</div>'+
+  '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
+  '</div><div class="a4">'+proposalBody(PROG)+'</div></div>';
+};
+function proposalBody(R){
+ const b=D.meta.biz||{},p=R.params,L=bizLines(b,branch().name);
+ const sec=(n,t,body)=>'<section class="rsec"><h2><span class="rnum">'+n+'</span>'+t+'</h2>'+body+'</section>';
+ let n=0;
+ return '<header class="rhd"><div class="rhd-l">'+
+  (b.logo?'<img src="'+b.logo+'" alt="">':'')+'<div><div class="rbiz">'+esc(b.name||'')+'</div>'+
+  (L.addr?'<div class="rsm">'+esc(L.addr)+'</div>':'')+
+  (L.contact?'<div class="rsm">'+esc(L.contact)+'</div>':'')+'</div></div>'+
+  '<div class="rhd-r"><div class="rtitle">Treatment Proposal</div>'+
+  '<div class="rsm">'+esc(branch().name)+'</div>'+
+  '<div class="rsm"><b>'+dstr(new Date())+'</b></div></div></header><div class="rrule"></div>'+
+
+  sec(++n,'Prepared for',
+   '<table class="rt"><tr><td style="width:34%">Client</td><td><b>'+
+   esc(p.customerName||'—')+'</b></td></tr>'+
+   '<tr><td>Skin type</td><td>'+esc(p.skin||'—')+'</td></tr>'+
+   '<tr><td>Concerns discussed</td><td>'+p.concerns.map(c=>esc(concernLabel(c))).join(', ')+'</td></tr>'+
+   ((p.flags||[]).length?'<tr><td>Noted at consultation</td><td>'+
+    p.flags.map(f=>esc(flagLabel(f))).join(', ')+'</td></tr>':'')+
+   '<tr><td>Programme length</td><td>'+R.weeks+' weeks from '+dstr(p.start)+'</td></tr>'+
+   '<tr><td>Prepared by</td><td>'+esc(ME.name)+'</td></tr></table>')+
+
+  sec(++n,'Recommended treatments',
+   '<table class="rt"><tr><th>Treatment</th><th>Addresses</th><th class="n">Sessions</th>'+
+   '<th class="n">Interval</th><th class="n">Each</th><th class="n">Subtotal</th></tr>'+
+   R.plan.map(l=>'<tr><td><b>'+esc(l.name)+'</b><br><span class="rsm">'+l.dur+' minutes'+
+    (l.tier==='support'?' · supporting':'')+'</span></td>'+
+    '<td class="rsm">'+l.treats.map(t=>esc(concernLabel(t))).join(', ')+'</td>'+
+    '<td class="n">'+l.sessions+'</td><td class="n">'+l.interval+' days</td>'+
+    '<td class="n">'+rm(l.price)+'</td><td class="n">'+rm(l.subtotal)+'</td></tr>').join('')+
+   '<tr class="rtot2"><td colspan="5">Treatment total</td><td class="n">'+rm(R.sub)+
+   '</td></tr></table>')+
+
+  (R.home.length?sec(++n,'Homecare',
+   '<table class="rt"><tr><th>Product</th><th>Step</th><th>Supports</th><th class="n">Price</th></tr>'+
+   R.home.map(x=>'<tr><td>'+esc(x.name)+'</td><td>'+esc(x.step||'—')+'</td><td class="rsm">'+
+    x.treats.map(t=>esc(concernLabel(t))).join(', ')+'</td><td class="n">'+rm(x.price)+
+    '</td></tr>').join('')+
+   '<tr class="rtot2"><td colspan="3">Homecare total</td><td class="n">'+rm(R.homeTotal)+
+   '</td></tr></table>'):'')+
+
+  sec(++n,'Your investment',
+   '<table class="rt"><tr><td>Treatments taken one by one</td><td class="n">'+rm(R.sub)+'</td></tr>'+
+   (R.sub>R.bundle?'<tr><td>Saving on the full programme</td><td class="n">-'+
+    rm(R.sub-R.bundle)+'</td></tr>':'')+
+   '<tr class="rtot2"><td>Programme price</td><td class="n">'+rm(R.bundle)+'</td></tr>'+
+   '<tr><td>Works out per session</td><td class="n">'+rm(R.sessions?R.bundle/R.sessions:0)+'</td></tr>'+
+   (R.home.length?'<tr><td>With homecare</td><td class="n">'+rm(R.bundle+R.homeTotal)+
+    '</td></tr>':'')+'</table>')+
+
+  sec(++n,'Suggested schedule',
+   '<table class="rt"><tr><th class="n">#</th><th>Date</th><th>Treatment</th></tr>'+
+   R.visits.map((v,i)=>'<tr><td class="n">'+(i+1)+'</td><td>'+dstr(v.at)+' · '+
+    new Date(v.at).toLocaleDateString('en-MY',{weekday:'short'})+'</td><td>'+esc(v.name)+
+    '</td></tr>').join('')+'</table>'+
+   '<p class="rsm">Dates are a guide. Each appointment is confirmed with you individually.</p>')+
+
+  '<section class="rsec"><h2><span class="rnum">'+(++n)+'</span>Please read</h2>'+
+   '<p class="rsm">This plan is a recommendation based on the concerns discussed today. '+
+   'It is not a medical diagnosis. Results differ between individuals and no specific outcome '+
+   'is guaranteed. Any treatment involving medical devices or prescription products is subject '+
+   'to assessment by our doctor, who may change or decline part of this plan. Please tell us '+
+   'straight away about any change to your medication, pregnancy status or medical condition. '+
+   esc((b.terms||'').slice(0,280))+'</p></section>'+
+
+  '<div class="rsign"><div><div class="rline2"></div><span>Client signature</span></div>'+
+  '<div><div class="rline2"></div><span>Consultant · '+esc(ME.name)+'</span></div>'+
+  '<div><div class="rline2"></div><span>Date</span></div></div>'+
+  '<footer class="rfoot2">'+esc(b.name||'')+' · Treatment proposal · quoted '+dstr(new Date())+
+  ' · valid 30 days · generated by Spatify</footer>';
+}
+
 /* ============ loyalty ============ */
 const LOY_DEFAULT={on:false,earnPer:10,pointsPer:1,ringgitPerPoint:0.10,minRedeem:50,
  expireMonths:12,tiers:[{name:'Member',at:0},{name:'Silver',at:1000},{name:'Gold',at:3000},
@@ -3629,7 +4110,7 @@ window.openStaff=id=>{
 
 /* ============ after-render bindings ============ */
 const _render=render;
-render=function(){_render();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();};
+render=function(){_render();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();if(TAB==='prog'&&!PROG)bindProgram();};
 window.render=render;
 
 /* ============ boot ============ */
@@ -3656,7 +4137,7 @@ window.render=render;
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
