@@ -581,6 +581,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
+const BUILD='2026-09-11a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2262,10 +2263,17 @@ async function catSave(col,id,data,label,action){
  try{
   if(id)await setDoc(doc(db,col,id),data,{merge:true});
   else await addDoc(collection(db,col),data);
-  await loadStatic();
-  await audit(action||'Catalogue updated',label);
-  window.closeModal();render();toast('Saved');
- }catch(e){toast(friendly(e));}
+ }catch(e){
+  /* keep the form open so nothing typed is lost, and say exactly what went wrong */
+  console.error('catalogue save failed',col,id,data,e);
+  const box=document.getElementById('cat-err');
+  const msg=(e&&e.code?e.code+' — ':'')+((e&&e.message)||'unknown error');
+  if(box)box.textContent='Could not save: '+msg;
+  toast('Not saved: '+friendly(e));
+  return;
+ }
+ try{await loadStatic();await audit(action||'Catalogue updated',label);}catch(e){console.warn(e);}
+ window.closeModal();render();toast('Saved');
 }
 window.catDelete=async(col,id,label)=>{
  if(!confirm('Delete "'+label+'"? Past bookings and bills keep their own copy of the name, so history stays intact.'))return;
@@ -2335,6 +2343,7 @@ window.editService=id=>{
   '<button class="btn ghost sm" id="sv-add" style="margin-bottom:10px">'+ic('plus',14)+'Add item</button>'+
   '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="sv-a"'+
    (s.active===false?'':' checked')+'> Available for booking and checkout</label>'+
+  '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="sv-go">Save treatment</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
    'onclick="catDelete(\'services\',\''+id+'\',\''+esc(s.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
@@ -2412,6 +2421,7 @@ window.editProduct=id=>{
     '</option>').join('')+'</select></div>'+
   '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="pr-a"'+
    (p.active===false?'':' checked')+'> Active</label>'+
+  '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="pr-go">Save product</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
    'onclick="catDelete(\'products\',\''+id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
@@ -3275,7 +3285,15 @@ window.chipTap=(id,v,el)=>{
  const set=CHIPS[id]||(CHIPS[id]=new Set());
  if(set.has(v)){set.delete(v);el.className='chip';}else{set.add(v);el.className='chip on';}
 };
-const chipVals=id=>[...(CHIPS[id]||[])];
+function chipVals(id){
+ /* the DOM is the truth while the form is open; the map is only a fallback */
+ const box=document.getElementById(id);
+ if(box&&box.querySelectorAll){
+  const on=[...box.querySelectorAll('.chip.on')].map(b=>b.dataset?b.dataset.v:b.getAttribute('data-v'));
+  if(on.length||box.querySelectorAll('.chip').length)return on.filter(Boolean);
+ }
+ return [...(CHIPS[id]||[])];
+}
 
 /* ============ the matching engine ============ */
 function buildProgram(p){
@@ -4051,7 +4069,10 @@ function vSet(){
   (D.branches.length>1?'<label style="margin-top:10px">Switch branch</label><select class="f" id="sw-b">'+
    D.branches.map(x=>'<option value="'+x.id+'"'+(ME.branchId===x.id?' selected':'')+'>'+esc(x.name)+'</option>').join('')+
    '</select>':'')+
-  '<button class="btn ghost sm" id="signout">'+ic('out',14)+'Sign out</button></div>';
+  '<button class="btn ghost sm" id="signout">'+ic('out',14)+'Sign out</button>'+
+  '<div class="tiny muted" style="margin-top:10px">'+ic('cloud',12)+' Build '+BUILD+
+  ' · if this does not match the file you uploaded, the browser is showing a cached copy — '+
+  'open the site once in a private tab to check.</div></div>';
  if(boss()){
   h+=bizPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
