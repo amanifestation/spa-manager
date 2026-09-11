@@ -611,6 +611,182 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   .hgreet{font-size:22px}
 }
 
+
+/* ==========================================================================
+   Light, flat design pass — inspired by the clean booking-software look:
+   white cards on a soft grey field, near-black controls, colour-coded
+   appointments in soft tints, and very restrained depth.
+   This layer comes last, so it overrides the earlier styling.
+   ========================================================================== */
+:root{
+  --cream:#F6F6F7; --surface:#FFFFFF; --surface-2:#F2F2F4;
+  --ink:#0D0D0F; --ink-2:#56565E; --ink-3:#8A8A93;
+  --line:#E6E6EA; --line-2:#F0F0F3;
+  --accent:#6B4EFF; --accent-soft:#EFEBFF;
+  --brass:#6B4EFF; --brass-soft:#EFEBFF;
+  --jade:#15794F; --jade-soft:#E6F4EC;
+  --amber:#8A6100; --amber-soft:#FBF1DE;
+  --rose:#B3261E; --rose-soft:#FCEBEA;
+  --r-lg:16px; --r-md:12px; --r-sm:10px;
+  --shadow:0 1px 2px rgba(13,13,15,.04);
+  --shadow-lift:0 10px 30px -14px rgba(13,13,15,.22);
+}
+body{background:var(--cream);color:var(--ink);letter-spacing:-.005em}
+h1{font-size:22px;font-weight:700;letter-spacing:-.03em}
+h2{font-size:17px;font-weight:660;letter-spacing:-.025em}
+h3{font-size:14px;font-weight:640;letter-spacing:-.02em}
+.big{font-size:26px;font-weight:700;letter-spacing:-.04em}
+
+/* ---- surfaces ---- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:16px;box-shadow:none}
+.item{border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);
+  padding:12px;box-shadow:none}
+.item:active{transform:none;border-color:var(--ink-3);background:var(--surface-2)}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  padding:14px;box-shadow:none}
+.kpi:active{transform:none}
+.kpi .lab{letter-spacing:.02em;text-transform:none;font-size:11.5px;color:var(--ink-3)}
+.kpi.dark{background:var(--ink);border-color:var(--ink)}
+.kpi.dark .lab{color:#9C9CA6}
+
+/* ---- controls ---- */
+.btn{border-radius:var(--r-sm);padding:11px 16px;font-weight:620;font-size:13.5px;
+  box-shadow:none;background:var(--ink);color:#fff;gap:8px}
+.btn:active{transform:scale(.982);box-shadow:none;opacity:.9}
+.btn.sm{border-radius:999px;padding:8px 14px;font-size:12.5px}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);
+  backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+.btn.ghost:active{background:var(--surface-2);color:var(--ink)}
+.btn.brass{background:var(--accent);color:#fff}
+.btn.warn{background:var(--rose)}
+.iconbtn{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);
+  padding:9px;color:var(--ink-2);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+.iconbtn:active{transform:scale(.94);background:var(--surface-2);color:var(--ink);box-shadow:none}
+.menubtn{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:none}
+.menubtn:active{background:#26262C;color:#fff}
+.x{background:var(--surface-2);border:1px solid var(--line);backdrop-filter:none;
+  -webkit-backdrop-filter:none;color:var(--ink-2)}
+.qbtn{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);
+  backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;min-width:90px;
+  padding:13px 12px;color:var(--ink);font-weight:550}
+.qbtn:active{background:var(--ink);color:#fff;transform:scale(.96)}
+
+/* ---- form fields ---- */
+label{font-size:12px;color:var(--ink-2);font-weight:550}
+.f{border:1px solid var(--line);border-radius:var(--r-sm);padding:11px 12px;background:var(--surface)}
+.f:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.fieldset{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:14px}
+.fieldset>h3{text-transform:none;letter-spacing:-.01em;font-size:12.5px;color:var(--ink-2)}
+
+/* ---- pills, chips, tabs ---- */
+.pill{background:var(--surface-2);color:var(--ink-2);border-radius:999px;padding:4px 10px;
+  font-size:11.5px;font-weight:560}
+.pill.g{background:var(--jade-soft);color:var(--jade)}
+.pill.a{background:var(--amber-soft);color:var(--amber)}
+.pill.r{background:var(--rose-soft);color:var(--rose)}
+.pill.b{background:var(--accent-soft);color:var(--accent)}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:8px 13px;font-size:12.5px;color:var(--ink-2)}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tabs button{background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:8px 14px;font-size:13px;color:var(--ink-2)}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.seg{background:var(--surface-2);border:1px solid var(--line);padding:4px;border-radius:999px}
+.seg button{border-radius:999px;font-size:13px;padding:9px 12px}
+.seg button.on{background:var(--surface);box-shadow:0 1px 2px rgba(13,13,15,.08)}
+
+/* ---- tables ---- */
+th{text-transform:none;letter-spacing:0;font-size:11.5px;color:var(--ink-3);font-weight:560;
+  padding:8px;border-bottom:1px solid var(--line)}
+td{padding:11px 8px;border-bottom:1px solid var(--line-2)}
+
+/* ---- app shell ---- */
+.topbar{background:rgba(246,246,247,.82);border-bottom:1px solid var(--line);color:var(--ink);
+  padding:12px 15px}
+.ttitle{font-size:17px;font-weight:680;letter-spacing:-.03em}
+.side{background:var(--surface);border:1px solid var(--line);color:var(--ink);
+  backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:18px;
+  box-shadow:0 24px 60px -28px rgba(13,13,15,.4)}
+.side.open{box-shadow:0 24px 60px -24px rgba(13,13,15,.45)}
+.sbrand{border-bottom:1px solid var(--line);padding:16px 15px 14px}
+.sbrand .brand{color:var(--ink)}
+.sclose{background:var(--surface-2);border-color:var(--line);color:var(--ink-2)}
+.suser{border-bottom:1px solid var(--line);padding:14px 15px}
+.suser .avatar{background:var(--ink)}
+.snav::-webkit-scrollbar-thumb{background:var(--line)}
+.sgroup{color:var(--ink-3);font-size:11px;text-transform:none;letter-spacing:.01em;
+  font-weight:600;padding:14px 10px 6px}
+.slink{color:var(--ink-2);font-size:14px;padding:11px 11px;border-radius:10px;font-weight:520}
+.slink:hover{background:var(--surface-2);color:var(--ink)}
+.slink.on{background:var(--surface-2);color:var(--ink);font-weight:650}
+.slink.on .sico{color:var(--accent)}
+.sbadge{background:var(--surface-2);color:var(--ink-3);font-size:10.5px;font-weight:600}
+.slink.on .sbadge{background:var(--accent-soft);color:var(--accent)}
+.sfoot{border-top:1px solid var(--line)}
+.navveil{background:rgba(13,13,15,.32);backdrop-filter:none}
+
+/* ---- dashboard ---- */
+.hero{background:var(--ink);border:1px solid var(--ink);border-radius:var(--r-lg);
+  backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;color:#fff}
+.hero::after{display:none}
+.hgreet{font-size:21px;font-weight:680;letter-spacing:-.03em}
+.hsub{color:#9C9CA6}
+.hchip{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.10);color:#D6D6DC}
+.hchip.live{background:rgba(21,121,79,.3);color:#A9DCC3;border-color:rgba(21,121,79,.45)}
+.hchip.warn{background:rgba(138,97,0,.3);color:#F0DBAC;border-color:rgba(138,97,0,.45)}
+.heroStats>div{border-left-color:rgba(255,255,255,.09)}
+.heroStats span{color:#9C9CA6;text-transform:none;letter-spacing:.01em;font-size:11px}
+.heroStats b{font-size:19px}
+.clockface #ck-s{stroke:var(--accent)}
+.noteStrip{background:rgba(107,78,255,.18);border-top-color:rgba(255,255,255,.09)}
+.noteStrip:active{background:rgba(107,78,255,.3)}
+.noteStrip.empty{background:rgba(255,255,255,.05)}
+.nsdot{background:#A392FF;box-shadow:0 0 0 4px rgba(163,146,255,.18)}
+.nstext span,.nscount{color:#9C9CA6}
+.alertrow{padding:13px 8px}
+.aico{background:var(--surface-2);color:var(--ink-2);border-radius:10px}
+.tiles{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px}
+.tile{border-radius:var(--r-md);box-shadow:none;padding:14px 12px 13px}
+.tile:active{transform:scale(.97);box-shadow:none;background:var(--surface-2)}
+.tico{background:var(--surface-2);color:var(--ink);border-radius:11px;width:36px;height:36px}
+.tile:active .tico{background:var(--ink);color:#fff}
+.tbadge{background:var(--surface-2);color:var(--ink-3);text-transform:none;letter-spacing:0}
+.chart .b{background:var(--ink);border-radius:6px 6px 2px 2px}
+.bar>i{background:var(--ink)}
+.bar>i.brass{background:var(--accent)}
+
+/* ---- calendar: colour-coded but light ---- */
+.blk{border-radius:9px;padding:6px 8px;box-shadow:none;border-left-width:3px;
+  border-left-style:solid;font-size:11.5px}
+.blk:active{transform:scale(.98)}
+.blk.done{background:var(--surface-2);color:var(--ink-3);border-left-color:var(--ink-3)}
+.blk.no{background:var(--rose-soft);color:var(--rose);border-left-color:var(--rose)}
+.mcell{border-radius:10px}
+.mcell.today{box-shadow:inset 0 0 0 1.5px var(--accent);border-color:var(--accent)}
+.mcell.sel{background:var(--ink);border-color:var(--ink)}
+.nowline{border-top-color:var(--accent)}
+.nowline::before{background:var(--accent)}
+.tlh{background:var(--surface);border-bottom-color:var(--line)}
+.tlgut{background:var(--surface-2)}
+.slot{border-radius:var(--r-md);border-left-width:3px}
+
+/* ---- modals ---- */
+.veil{background:rgba(13,13,15,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.sheet{background:var(--surface);border:1px solid var(--line);backdrop-filter:none;
+  -webkit-backdrop-filter:none;border-radius:20px 20px 0 0;box-shadow:0 -8px 40px -16px rgba(13,13,15,.4)}
+@media(min-width:700px){.sheet{border-radius:18px}}
+.toast{background:var(--ink);border-radius:10px;box-shadow:0 10px 30px -12px rgba(13,13,15,.5)}
+.avatar{background:var(--ink);border-radius:12px;box-shadow:none}
+.warnbox{background:var(--amber-soft);border-color:#EFE0C2;border-radius:var(--r-md)}
+.errbox{background:var(--rose-soft);border-color:#F3D5D2;border-radius:var(--r-md)}
+.empty{color:var(--ink-3)}
+.mark{background:var(--ink);border-radius:9px;box-shadow:none}
+.sw{border:0;border-radius:12px;width:36px;height:36px}
+.sw.on{outline:2px solid var(--ink);outline-offset:2px;box-shadow:none}
+.sw.auto::after{color:var(--ink-2);opacity:.75}
+.legend i{border-radius:4px}
+
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -689,7 +865,7 @@ const ic=(n,s,st)=>{
  const d=ICONS[n];
  if(!d)console.warn('icon not defined:',n);
  return '<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
-  'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"'+
+  'stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"'+
   (st?' style="'+st+'"':'')+'><path d="'+(d||'M12 5.6a6.4 6.4 0 100 12.8 6.4 6.4 0 000-12.8')+
   '"/></svg></span>';};
 
@@ -717,7 +893,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-11d';
+const BUILD='2026-09-11e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1303,11 +1479,11 @@ function calDay(){
    const P=apptPal(a);
    const plain=['done','no'].includes(a.status);
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
-    '" style="top:'+top+'px;height:'+hh+'px'+(plain?'':';background:'+P.bg+';color:'+P.fg+
-     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+
-    '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+    '" style="top:'+top+'px;height:'+hh+'px'+(plain?'':';background:'+P.soft+';color:'+P.fg+
+     ';border-left-color:'+P.bg)+'" onclick="openAppt(\''+a.id+'\')">'+
+    '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.72"')+'>'+
      tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
-    (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+    (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.6"')+'>'+
      esc(calBy==='staff'?(room(a.roomId).name||''):(a.staffName||''))+
      ((visitOf(a.visitType)||{}).label?' · '+visitOf(a.visitType).label:'')+'</small>':'')+'</div>'+
     (a.buffer?'<div class="buf" style="top:'+(top+(a.duration||0)*px)+'px;height:'+(a.buffer*px)+'px"></div>':'');});
@@ -1337,9 +1513,9 @@ function calWeek(){
    const P=apptPal(a),plain=['done','no'].includes(a.status);
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
     '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+
-    (plain?'':';background:'+P.bg+';color:'+P.fg+';border-left-color:'+P.bd)+
+    (plain?'':';background:'+P.soft+';color:'+P.fg+';border-left-color:'+P.bg)+
     '" onclick="openAppt(\''+a.id+'\')">'+
-    '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
+    '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.72"')+'>'+
     esc((a.customerName||'').split(' ')[0])+'</small></div>';});
   h+='</div>';});
  return h+'</div></div>';}
@@ -1382,7 +1558,7 @@ window.newAppt=async(pre)=>{
     v.label+'</option>').join('')+'</select>'+
   '<label>Colour on the calendar</label>'+
   '<div class="swatches" id="n-sw">'+PALETTE.map(c=>'<button type="button" class="sw" data-c="'+c.id+
-   '" style="background:'+c.bg+';border-color:'+c.bd+'" title="'+c.name+'"></button>').join('')+'</div>'+
+   '" style="background:'+c.soft+';box-shadow:inset 0 0 0 3px '+c.bg+'" title="'+c.name+'"></button>').join('')+'</div>'+
   '<label>Deposit (RM)</label><input class="f" type="number" id="n-dep" value="0">'+
   '<label>Notes</label><textarea class="f" id="n-n" rows="2"></textarea>'+
   '<div id="n-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
@@ -1450,7 +1626,7 @@ window.openAppt=id=>{
   (c&&c.phone?'<span class="pill">'+ic('user',12)+esc(c.phone)+'</span>':'')+'</div>'+
   '<div class="tiny muted" style="margin:8px 0 10px;line-height:1.7">'+
   ic('spark',13)+' '+esc(a.serviceName||'')+
-  ((visitOf(a.visitType)||{}).label?'  <span class="pill" style="background:'+apptPal(a).bg+
+  ((visitOf(a.visitType)||{}).label?'  <span class="pill" style="background:'+apptPal(a).soft+
    ';color:'+apptPal(a).fg+'">'+visitOf(a.visitType).label+'</span>':'')+
   '<br>'+ic('clock',13)+' '+dstr(a.start)+', '+tstr(a.start)+'–'+tstr(a.finish)+
   (a.buffer?' <span class="muted">(+'+a.buffer+' min buffer)</span>':'')+'<br>'+
@@ -1607,21 +1783,21 @@ function bindCustSearch(){
   await loadCustomers(custQ);render();bindCustSearch();
   const e2=$('#cq');if(e2){e2.focus();e2.setSelectionRange(e2.value.length,e2.value.length);}},350);};}
 const PALETTE=[
- {id:'ink',   name:'Default',  bg:'#14120F', fg:'#F4F0E7', bd:'#A67C3D'},
- {id:'brass', name:'Brass',    bg:'#A67C3D', fg:'#FFFFFF', bd:'#6E4E1E'},
- {id:'jade',  name:'Jade',     bg:'#2E6B52', fg:'#FFFFFF', bd:'#17402F'},
- {id:'plum',  name:'Plum',     bg:'#6B3F63', fg:'#FFFFFF', bd:'#40243C'},
- {id:'ocean', name:'Ocean',    bg:'#2C5A7A', fg:'#FFFFFF', bd:'#173445'},
- {id:'clay',  name:'Clay',     bg:'#9B4A4A', fg:'#FFFFFF', bd:'#5E2B2B'},
- {id:'sand',  name:'Sand',     bg:'#E7DCC5', fg:'#3B3427', bd:'#A67C3D'},
- {id:'sage',  name:'Sage',     bg:'#CBD8CB', fg:'#25352A', bd:'#2E6B52'}];
+ {id:'ink',   name:'Default', bg:'#0D0D0F', soft:'#EDEDF0', fg:'#0D0D0F'},
+ {id:'violet',name:'Violet',  bg:'#6B4EFF', soft:'#EFEBFF', fg:'#3A2A99'},
+ {id:'jade',  name:'Jade',    bg:'#15794F', soft:'#E6F4EC', fg:'#0E5537'},
+ {id:'ocean', name:'Ocean',   bg:'#1F6FA8', soft:'#E6F1F8', fg:'#134A70'},
+ {id:'plum',  name:'Plum',    bg:'#8E3B77', soft:'#F7EAF4', fg:'#5F2750'},
+ {id:'clay',  name:'Clay',    bg:'#B3261E', soft:'#FCEBEA', fg:'#7C1A15'},
+ {id:'amber', name:'Amber',   bg:'#8A6100', soft:'#FBF1DE', fg:'#5E4200'},
+ {id:'sage',  name:'Sage',    bg:'#4F7A5B', soft:'#EBF3ED', fg:'#33523C'}];
 const pal=id=>PALETTE.find(p=>p.id===id)||PALETTE[0];
 const VISITS=[
- {id:'new',      label:'New client',  color:'brass', icon:'star'},
+ {id:'new',      label:'New client',  color:'violet',icon:'star'},
  {id:'followup', label:'Follow-up',   color:'ocean', icon:'refresh'},
  {id:'return',   label:'Returning',   color:'jade',  icon:'users'},
  {id:'consult',  label:'Consultation',color:'plum',  icon:'note'},
- {id:'vip',      label:'VIP',         color:'sand',  icon:'award'},
+ {id:'vip',      label:'VIP',         color:'amber', icon:'award'},
  {id:'package',  label:'Package session',color:'sage',icon:'package'}];
 const visitOf=id=>VISITS.find(v=>v.id===id);
 const apptPal=a=>pal(a.color||(visitOf(a.visitType)||{}).color||'ink');
