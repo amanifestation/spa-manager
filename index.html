@@ -640,6 +640,30 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   background:var(--surface-2);animation:fadeUp .3s var(--ease)}
 
 /* ---------- checkout item picker ---------- */
+.libempty{opacity:.62}
+.libpage h2{font-size:21px}
+.libimg{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none}
+.libsec{padding:12px 0;border-bottom:1px solid var(--line-2)}
+.libsec:last-child{border-bottom:0}
+.libsec h3{display:flex;align-items:center;gap:7px;font-size:14px;margin:0 0 8px;color:var(--brass)}
+.libsec h4{font-size:13.5px;margin:12px 0 5px}
+.libsec p{margin:0 0 7px;line-height:1.6}
+.libsec ul,.libsec ol{margin:0 0 6px;padding-left:20px;line-height:1.6}
+.libsec li{margin-bottom:3px}
+.libsec.warn{background:var(--rose-soft);border:1px solid var(--rose);border-radius:var(--r-md);padding:11px 13px;margin:6px 0}
+.libsec.warn h3{color:var(--rose)}
+.libsteps{list-style:none;counter-reset:st;padding-left:0!important}
+.libsteps li{counter-increment:st;position:relative;padding:6px 0 6px 36px;border-bottom:1px dashed var(--line-2)}
+.libsteps li:before{content:counter(st);position:absolute;left:0;top:5px;width:25px;height:25px;border-radius:50%;
+ background:var(--ink);color:var(--cream);font-size:12px;font-weight:600;display:grid;place-items:center}
+.libqa{border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:6px;background:var(--surface)}
+.libqa summary{cursor:pointer;font-weight:600}
+.libqa div{margin-top:6px;line-height:1.6;color:var(--ink-2)}
+.libmsg{background:var(--brass-soft);border-radius:12px;padding:11px 13px;line-height:1.6;font-size:13.5px}
+.lelinks{max-height:160px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;
+ display:grid;gap:5px;font-size:13px}
+.chip.warnchip{border-color:var(--rose);color:var(--rose)}
+#lib-list mark{background:var(--brass-soft);color:inherit;border-radius:3px;padding:0 2px}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -816,7 +840,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20j';
+const BUILD='2026-09-20k';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1065,6 +1089,7 @@ const TABS=[
  {id:'book',ic:'calendar',label:'Calendar',perm:'booking', group:'Today',  desc:'Day, week and month view'},
  {id:'shift',ic:'wallet',label:'Day',      perm:'pos',     group:'Today',  desc:'Open, close, cash and issues'},
  {id:'board',ic:'mega',  label:'Board',    perm:null,      group:'Today',  desc:'Notices for the team'},
+ {id:'lib', ic:'note',   label:'Library',  perm:null,      group:'Today',  desc:'Guides, SOPs, aftercare, product notes'},
  {id:'cust',ic:'users',  label:'Clients',  perm:'customer',group:'Clients',desc:'Records and full history'},
  {id:'prog',ic:'spark',  label:'Programs', perm:'customer',group:'Clients',desc:'Match treatments to concerns'},
  {id:'pkg', ic:'package',label:'Packages', perm:'customer',group:'Clients',desc:'Sell and track balances'},
@@ -1133,7 +1158,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>';
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -1149,6 +1174,7 @@ function greet(){
 function tileBadge(t){
  if(t.id==='book'){const n=onDay(today()).length;return n?n+' today':'';}
  if(t.id==='board'){const n=NOTES.filter(noteLive).length;return n?n+' live':'';}
+ if(t.id==='lib'){const n=libUnreadCount();return n?n+' to read':'';}
  if(t.id==='inv'){const n=D.stock.filter(x=>x.branchId===ME.branchId&&x.qty<=x.reorder).length;
   return n?n+' low':'';}
  if(t.id==='shift')return SHIFT?(SHIFT.closedAt?'closed':'open'):'not opened';
@@ -1587,6 +1613,11 @@ window.openAppt=id=>{
   (['booked','confirm'].includes(a.status)?'<button class="btn sm" onclick="setStat(\''+id+'\',\'in\')">'+ic('clock',14)+'Start</button>':'')+
   (a.status==='in'?'<button class="btn sm" onclick="finishAppt(\''+id+'\')">'+ic('check',14)+'Complete</button>':'')+
   '<button class="btn sm ghost" onclick="waLink(\''+id+'\')">'+ic('msg',14)+'Reminder</button>'+
+  '<button class="btn sm ghost" onclick="openLib(\'svc_'+esc(a.serviceId)+'\',{customerId:\''+esc(a.customerId||'')+'\'})">'+
+   ic('note',14)+'Guide</button>'+
+  (['in','done'].includes(a.status)&&String(((libDoc('svc_'+a.serviceId)||{}).sections||{}).aftercareMsg||'').trim()?
+   '<button class="btn sm ghost" onclick="LIBCTX={customerId:\''+esc(a.customerId||'')+'\'};libSendAftercare(\'svc_'+
+   esc(a.serviceId)+'\')">'+ic('shield',14)+'Aftercare</button>':'')+
   (['done','cancel','no'].includes(a.status)?'':
    '<button class="btn sm ghost" onclick="setStat(\''+id+'\',\'no\')">No-show</button>'+
    '<button class="btn sm ghost" onclick="setStat(\''+id+'\',\'cancel\')">Cancel</button>')+
@@ -2419,6 +2450,8 @@ function vPos(){
   '<td class="num"><div class="qty"><button onclick="cartQty('+x+',-1)">−</button><span>'+i.qty+
   '</span><button onclick="cartQty('+x+',1)">+</button></div><div class="tiny muted" style="margin-top:3px">'+
   rm(i.price*i.qty)+'</div></td><td class="num">'+
+  (['service','product','redeem'].includes(i.kind)?'<button class="iconbtn" style="padding:4px" title="Guide" '+
+   'onclick="openLib(\''+(i.kind==='product'?'prd_':'svc_')+esc(i.id)+'\',{customerId:cart.customerId})">'+ic('note',14)+'</button>':'')+
   '<button class="iconbtn" style="padding:4px" onclick="dropItem('+x+')">'+ic('close',14)+'</button></td></tr>').join('')+
   '</table>':'<div class="empty">Cart is empty.</div>');
  h+='<table style="margin-top:8px"><tr><td>Subtotal</td><td class="num">'+rm(t.sub)+'</td></tr>'+
@@ -3054,6 +3087,408 @@ window.rvSave=async()=>{
    ' · earn from '+rm(R.minBill)+' · '+R.validDays+' days');
   render();toast('Voucher settings saved');}
  catch(err){e.textContent=friendly(err);}
+};
+
+/* ============ library: treatment guides, product notes, SOPs ============ */
+/* One place the team looks things up mid-shift. Every treatment and retail product in
+   the catalogue has a guide page (written by the owner or manager); general articles
+   hold SOPs, aftercare sheets, skin knowledge and sales scripts. Therapists read,
+   search and send aftercare; only the boss writes. Articles marked "must read" ask each
+   person to confirm they have read the latest version. */
+let LIB=[],LIBREADS={},LIBCAT='all',LIBOPEN='',LIBCTX={};
+const LIB_SVC=[
+ ['summary','What it is','spark','What the treatment does and the result the client can expect.'],
+ ['suits','Suitable for','user','Skin types, concerns and goals this treatment is right for.'],
+ ['contra','Do not perform if','alert','Contraindications — one per line. e.g.\n- Pregnant or breastfeeding\n- Active cold sores or open wounds\n- On isotretinoin in the last 6 months'],
+ ['prep','Before starting','clock','Room set-up, consultation questions, patch test, consent.'],
+ ['steps','SOP — step by step','list','One step per line, in order. They are numbered automatically.\nDouble cleanse\nSkin analysis under the lamp\n…'],
+ ['aftercare','Aftercare','shield','What to tell the client before they leave — one point per line.'],
+ ['aftercareMsg','Aftercare message to client','msg','The WhatsApp message sent after the visit. {name} becomes the client\'s first name.'],
+ ['selling','Selling points','star','Why this treatment — benefits in the client\'s words, one per line.'],
+ ['faq','Questions clients ask','note','Q: Sakit tak?\nA: …\nQ: Berapa kali perlu buat?\nA: …'],
+ ['upsell','Pairs well with','gift','Home care, add-ons and the next treatment to suggest.']];
+const LIB_PRD=[
+ ['summary','What it is','spark','What the product is and the main result.'],
+ ['selling','Selling points','star','The three or four reasons a client should take it home — one per line.'],
+ ['howto','How to use','list','When, how much, and the order in the routine — one step per line.'],
+ ['suits','Suitable for','user','Skin types and concerns.'],
+ ['ingredients','Key ingredients','spark','Main actives and what each does.'],
+ ['caution','Cautions','alert','Who should not use it, what not to combine it with, patch test advice.'],
+ ['objections','When the client says…','msg','Q: Mahal la…\nA: …\nQ: Saya dah ada serum lain\nA: …'],
+ ['faq','Questions clients ask','note','Q: …\nA: …'],
+ ['upsell','Pairs well with','gift','Treatments and other products that go with it.']];
+const LIB_CATS=[['sop','SOP','list'],['aftercare','Aftercare','shield'],['knowledge','Knowledge','spark'],
+ ['script','Scripts','msg'],['policy','Policy','flag']];
+const libCat=k=>(LIB_CATS.find(c=>c[0]===k)||['','Article','note']);
+
+async function loadLibrary(){
+ try{const s=await getDocs(collection(db,'library'));LIB=s.docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){LIB=[];console.warn('library',e);}
+ try{const r=await getDocs(query(collection(db,'libReads'),where('uid','==',UID)));
+  LIBREADS={};r.docs.forEach(d=>{const x=d.data();LIBREADS[x.docId]=x;});}
+ catch(e){LIBREADS={};}
+}
+const libDoc=id=>LIB.find(x=>x.id===id);
+/* every page the library can show: catalogue guides (written or not) and articles */
+function libEntries(){
+ const out=[];
+ D.services.filter(s=>s.active!==false).forEach(s=>{const d=libDoc('svc_'+s.id)||{};
+  out.push({id:'svc_'+s.id,kind:'service',refId:s.id,title:s.name,sub:(s.cat||'Treatment')+' · '+(s.dur||0)+' min',
+   doc:d,filled:LIB_SVC.filter(f=>String((d.sections||{})[f[0]]||'').trim()).length,of:LIB_SVC.length});});
+ D.products.filter(p=>p.type==='retail'&&p.active!==false).forEach(p=>{const d=libDoc('prd_'+p.id)||{};
+  out.push({id:'prd_'+p.id,kind:'product',refId:p.id,title:p.name,sub:'Retail · '+rm(p.price||0),doc:d,
+   filled:LIB_PRD.filter(f=>String((d.sections||{})[f[0]]||'').trim()).length,of:LIB_PRD.length,image:p.image});});
+ LIB.filter(x=>x.kind==='article').forEach(a=>out.push({id:a.id,kind:'article',cat:a.cat,title:a.title||'Untitled',
+  sub:libCat(a.cat)[1],doc:a,filled:String(a.body||'').trim()?1:0,of:1}));
+ return out;
+}
+const libText=e=>[e.title,e.sub,e.doc.title,e.doc.body,(e.doc.tags||[]).join(' '),
+ ...Object.values(e.doc.sections||{})].join('\n');
+const libUnread=d=>!!d&&!!d.mustRead&&(!LIBREADS[d.id]||(LIBREADS[d.id].version||0)<(d.version||1));
+const libUnreadCount=()=>LIB.filter(libUnread).length;
+
+/* ---------- a small, safe text format: ## heading, - bullet, 1. numbered, **bold** ---------- */
+function libInline(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');}
+function libMd(t){
+ const lines=String(t||'').replace(/\r/g,'').split('\n');
+ let h='',list='';
+ const close=()=>{if(list){h+='</'+list+'>';list='';}};
+ for(const raw of lines){
+  const l=raw.trim();
+  if(!l){close();continue;}
+  let m;
+  if((m=l.match(/^#{1,3}\s+(.*)/))){close();h+='<h4>'+libInline(m[1])+'</h4>';}
+  else if((m=l.match(/^[-•*]\s+(.*)/))){if(list!=='ul'){close();h+='<ul>';list='ul';}h+='<li>'+libInline(m[1])+'</li>';}
+  else if((m=l.match(/^\d+[.)]\s+(.*)/))){if(list!=='ol'){close();h+='<ol>';list='ol';}h+='<li>'+libInline(m[1])+'</li>';}
+  else{close();h+='<p>'+libInline(l)+'</p>';}
+ }
+ close();return h;
+}
+const libLines=t=>String(t||'').split('\n').map(l=>l.trim().replace(/^([-•*]|\d+[.)])\s+/,'')).filter(Boolean);
+function libSteps(t){
+ const L=libLines(t);
+ return '<ol class="libsteps">'+L.map(l=>'<li>'+libInline(l)+'</li>').join('')+'</ol>';
+}
+function libQA(t){
+ const out=[];let cur=null;
+ String(t||'').split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{
+  const q=l.match(/^(Q|S)\s*[:.]\s*(.*)/i),a=l.match(/^(A|J)\s*[:.]\s*(.*)/i);
+  if(q){cur={q:q[2],a:''};out.push(cur);}
+  else if(a&&cur)cur.a+=(cur.a?' ':'')+a[2];
+  else if(cur)cur.a+=(cur.a?' ':'')+l;
+  else out.push({q:l,a:''});});
+ return out.map(x=>'<details class="libqa"><summary>'+libInline(x.q)+'</summary>'+
+  (x.a?'<div>'+libInline(x.a)+'</div>':'')+'</details>').join('');
+}
+function libSection(key,label,icon,text){
+ if(!String(text||'').trim())return '';
+ let body;
+ if(key==='steps'||key==='howto')body=libSteps(text);
+ else if(key==='faq'||key==='objections')body=libQA(text);
+ else if(key==='aftercareMsg')body='<div class="libmsg">'+esc(text).replace(/\n/g,'<br>')+'</div>';
+ else body=libMd(text);
+ return '<section class="libsec'+(key==='contra'||key==='caution'?' warn':'')+'" id="ls-'+key+'">'+
+  '<h3>'+ic(icon,15)+' '+esc(label)+'</h3>'+body+'</section>';
+}
+
+/* ---------- the tab ---------- */
+function vLib(){
+ if(LIBOPEN)return libPage(LIBOPEN);
+ const all=libEntries();
+ const cats=[['all','All',all.length],['service','Treatments',all.filter(e=>e.kind==='service').length],
+  ['product','Products',all.filter(e=>e.kind==='product').length],
+  ...LIB_CATS.map(c=>[c[0],c[1],all.filter(e=>e.cat===c[0]).length]).filter(c=>c[2]),
+  ...(libUnreadCount()?[['unread','To read',libUnreadCount()]]:[])];
+ return '<div class="card"><div class="sec-h"><h2>'+ic('note',17)+' Library</h2>'+
+  (boss()?'<button class="btn sm" onclick="editArticle()">'+ic('plus',15)+'Article</button>':'')+'</div>'+
+  '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span><input class="f" id="lib-q" '+
+   'placeholder="Search treatments, products, SOPs, aftercare…" autocomplete="off" oninput="libFilter()"></div>'+
+  '<div class="chips">'+cats.map(c=>'<button class="chip'+(LIBCAT===c[0]?' on':'')+'" onclick="setLibCat(\''+
+   c[0]+'\')">'+esc(c[1])+' <span class="muted">'+c[2]+'</span></button>').join('')+'</div>'+
+  '<div id="lib-list">'+libRows('')+'</div>'+
+  (boss()&&!LIB.some(x=>x.kind==='article')?'<div class="warnbox" style="margin-top:12px">'+ic('note',14)+
+   ' No SOPs yet. <button class="btn sm ghost" style="margin-left:6px" onclick="libStarter()">'+ic('plus',13)+
+   'Add starter SOPs</button> — opening and closing, room hygiene, welcoming a client and general facial '+
+   'aftercare, in Bahasa Malaysia, ready to edit.</div>':'')+'</div>';
+}
+window.setLibCat=c=>{LIBCAT=c;const q=(document.getElementById('lib-q')||{}).value||'';render();
+ const i=document.getElementById('lib-q');if(i&&q){i.value=q;window.libFilter();}};
+window.libFilter=()=>{const q=(document.getElementById('lib-q')||{}).value||'';
+ const b=document.getElementById('lib-list');if(b)b.innerHTML=libRows(q);};
+function libSnippet(text,q){
+ const t=String(text).replace(/\s+/g,' '),i=t.toLowerCase().indexOf(q);
+ if(i<0)return '';
+ const a=Math.max(0,i-40),s=t.slice(a,i+q.length+60);
+ const j=s.toLowerCase().indexOf(q);
+ return (a?'…':'')+esc(s.slice(0,j))+'<mark>'+esc(s.slice(j,j+q.length))+'</mark>'+esc(s.slice(j+q.length))+'…';
+}
+function libRows(q){
+ const t=String(q||'').trim().toLowerCase();
+ let list=libEntries().filter(e=>LIBCAT==='all'||e.kind===LIBCAT||e.cat===LIBCAT||
+  (LIBCAT==='unread'&&libUnread(e.doc)));
+ if(t)list=list.filter(e=>libText(e).toLowerCase().includes(t))
+  .sort((a,b)=>(b.title.toLowerCase().includes(t)?1:0)-(a.title.toLowerCase().includes(t)?1:0));
+ if(!boss()&&!t)list=list.sort((a,b)=>(b.filled?1:0)-(a.filled?1:0));
+ if(!list.length)return '<div class="empty">'+ic('search',22)+'<div>'+
+  (t?'Nothing in the library mentions “'+esc(q)+'”.':'Nothing here yet.')+'</div></div>';
+ return list.map(e=>{
+  const icon=e.kind==='service'?ic('spark',18):e.kind==='product'?(e.image?'<img src="'+e.image+'" alt="">':ic('stock',18)):
+   ic(libCat(e.cat)[2],18);
+  const snip=t&&!e.title.toLowerCase().includes(t)?libSnippet(libText(e),t):'';
+  const status=!e.filled?'<span class="pill">No guide yet</span>':
+   libUnread(e.doc)?'<span class="pill a">Please read</span>':
+   (boss()&&e.of>1&&e.filled<e.of?'<span class="pill b">'+e.filled+'/'+e.of+'</span>':'');
+  return '<button type="button" class="pkrow'+(e.filled?'':' libempty')+'" onclick="openLib(\''+esc(e.id)+'\')">'+
+   '<span class="pkico">'+icon+'</span><span class="cpmeta"><b>'+esc(e.title)+'</b><span>'+
+   (snip||esc(e.sub))+'</span></span>'+status+'</button>';}).join('');
+}
+
+/* ---------- one page ---------- */
+window.openLib=(id,ctx)=>{
+ const from=TAB==='lib'?(LIBCTX.from||''):TAB;
+ LIBOPEN=id;LIBCTX={...(ctx||{}),from};TAB='lib';navOpen=false;window.closeModal();render();window.scrollTo(0,0);};
+/* back to wherever the page was opened from (checkout keeps its bill), or the library list */
+window.closeLib=()=>{const f=LIBCTX.from;LIBOPEN='';LIBCTX={};if(f&&f!=='lib')window.go(f);else render();};
+function libMeta(id){
+ const e=libEntries().find(x=>x.id===id);if(e)return e;
+ const d=libDoc(id);if(!d)return null;
+ return{id,kind:d.kind,title:d.title||'',sub:'',doc:d,filled:1,of:1};
+}
+function libPage(id){
+ const e=libMeta(id);
+ if(!e){LIBOPEN='';return vLib();}
+ const d=e.doc||{},S=d.sections||{};
+ const fields=e.kind==='service'?LIB_SVC:e.kind==='product'?LIB_PRD:[];
+ const s=e.kind==='service'?svc(e.refId):null,p=e.kind==='product'?prod(e.refId):null;
+ const c=LIBCTX.customerId?cust(LIBCTX.customerId):null;
+ let h='<div class="card libpage">'+
+  '<button class="btn sm ghost" style="margin-bottom:10px" onclick="closeLib()">'+ic('left',14)+
+   (LIBCTX.from&&LIBCTX.from!=='lib'?'Back to '+esc((TABS.find(t=>t.id===LIBCTX.from)||{label:'Library'}).label):'Library')+'</button>'+
+  '<div class="spread" style="align-items:flex-start"><div><div class="cartkind">'+
+   (e.kind==='service'?'Treatment guide':e.kind==='product'?'Product notes':esc(libCat(d.cat)[1]))+'</div>'+
+   '<h2 style="margin:2px 0 4px">'+esc(e.title)+'</h2>'+
+   '<div class="tiny muted">'+(s?(s.dur||0)+' min · '+rm(s.price||0)+(s.cat?' · '+esc(s.cat):''):'')+
+   (p?rm(p.price||0)+' · '+(stockOf(p.id)?stockOf(p.id).qty+' in stock':'not stocked here'):'')+
+   (d.updatedAt?(s||p?' · ':'')+'updated '+dshort(d.updatedAt)+(d.updatedByName?' by '+esc(d.updatedByName):''):'')+
+   '</div></div>'+(p&&p.image?'<img class="libimg" src="'+p.image+'" alt="">':'')+'</div>';
+ if(c)h+='<div class="tiny" style="margin-top:8px">'+ic('user',12)+' For <b>'+esc(c.name)+'</b>'+
+  (c.allergy?' · <span style="color:var(--rose)">'+ic('alert',12)+' '+esc(c.allergy)+'</span>':'')+'</div>';
+ /* jump links to the sections that exist */
+ const present=fields.filter(f=>String(S[f[0]]||'').trim());
+ if(present.length>3)h+='<div class="chips" style="margin:12px 0 0">'+present.map(f=>
+  '<button class="chip'+(f[0]==='contra'||f[0]==='caution'?' warnchip':'')+'" onclick="libJump(\''+f[0]+'\')">'+
+  esc(f[1])+'</button>').join('')+'</div>';
+ h+='</div>';
+ if(!e.filled){
+  h+='<div class="card"><div class="empty">'+ic('note',22)+'<div>No '+(e.kind==='product'?'notes':'guide')+
+   ' written for '+esc(e.title)+' yet.'+(boss()?'':' Ask your manager to add one.')+'</div></div>'+
+   (boss()?'<button class="btn" style="width:100%;justify-content:center" onclick="editLib(\''+esc(id)+'\')">'+
+    ic('edit',15)+'Write it now</button>':'')+'</div>';
+  return h;
+ }
+ if(e.kind==='article')h+='<div class="card"><section class="libsec">'+libMd(d.body)+'</section></div>';
+ else h+='<div class="card">'+fields.map(f=>libSection(f[0],f[1],f[2],S[f[0]])).join('')+libAuto(e)+'</div>';
+ /* actions */
+ const acts=[];
+ if(e.kind==='service'&&String(S.aftercareMsg||'').trim())acts.push('<button class="btn" onclick="libSendAftercare(\''+
+  esc(id)+'\')">'+ic('msg',15)+'Send aftercare'+(c?' to '+esc(String(c.name).split(' ')[0]):'')+'</button>');
+ if(d.mustRead)acts.push(libUnread(d)?'<button class="btn" onclick="libMarkRead(\''+esc(id)+'\')">'+ic('check',15)+
+  'I have read this</button>':'<span class="pill g">'+ic('check',12)+' Read '+dshort(LIBREADS[id].at)+'</span>');
+ if(boss()){acts.push('<button class="btn ghost" onclick="'+(e.kind==='article'?'editArticle':'editLib')+'(\''+esc(id)+
+  '\')">'+ic('edit',15)+'Edit</button>');
+  if(d.mustRead)acts.push('<button class="btn ghost" onclick="libWhoRead(\''+esc(id)+'\')">'+ic('users',15)+
+   'Who has read it</button>');}
+ if(acts.length)h+='<div class="fabrow">'+acts.join('')+'</div>';
+ return h;
+}
+/* facts the catalogue already knows, so nobody types them twice */
+function libAuto(e){
+ const S=(e.doc||{}).sections||{};let rows=[];
+ if(e.kind==='service'){const s=svc(e.refId);
+  if((s.use||[]).length)rows.push(['Backbar used',(s.use||[]).map(u=>esc(prod(u.sku).name||u.sku)+' × '+u.qty).join(', ')]);
+  if(s.concerns&&s.concerns.length)rows.push(['Concerns',esc(s.concerns.join(', '))]);
+  if(s.interval)rows.push(['Repeat every',s.interval+' days']);}
+ const pairs=(e.doc||{}).pairs||[];
+ if(pairs.length)rows.push(['Linked',pairs.map(x=>{const t=libMeta(x);
+  return t?'<a href="javascript:void 0" onclick="openLib(\''+esc(x)+'\')">'+esc(t.title)+'</a>':'';}).filter(Boolean).join(' · ')]);
+ if(!rows.length)return '';
+ return '<section class="libsec"><h3>'+ic('list',15)+' From the catalogue</h3><div class="kv">'+
+  rows.map(r=>'<div class="k">'+r[0]+'</div><div class="v">'+r[1]+'</div>').join('')+'</div></section>';
+}
+window.libJump=k=>{const el=document.getElementById('ls-'+k);if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'});};
+
+/* ---------- aftercare to the client ---------- */
+window.libSendAftercare=id=>{
+ const e=libMeta(id);if(!e)return;
+ const c=LIBCTX.customerId?cust(LIBCTX.customerId):null;
+ const txt=String(((e.doc||{}).sections||{}).aftercareMsg||'').replace(/\{name\}/g,c?String(c.name).split(' ')[0]:'')
+  .replace(/\{treatment\}/g,e.title).replace(/\{biz\}/g,(D.meta.biz||{}).name||'');
+ const phone=c?String(c.phone||'').replace(/\D/g,''):'';
+ modal('Aftercare · '+e.title,'<div class="card">'+
+  (c?'':'<label>Client</label>'+clientPicker('la-c','',{onPick:libAftercareClient})+'')+
+  '<label>Message</label><textarea class="f" id="la-t" rows="8">'+esc(txt)+'</textarea>'+
+  '<div class="fabrow" style="margin:0" id="la-go">'+libWaBtn(phone,txt)+'</div></div>');
+};
+function libWaBtn(phone,txt){
+ return '<a class="btn" style="text-decoration:none" target="_blank" onclick="this.href=libWaHref(\''+phone+'\')" '+
+  'href="'+libWaHrefFor(phone,txt)+'">'+ic('msg',15)+(phone?'Open WhatsApp':'Choose contact in WhatsApp')+'</a>';
+}
+const libWaHrefFor=(phone,txt)=>'https://wa.me/'+(phone?(phone.startsWith('6')?'':'6')+phone:'')+'?text='+encodeURIComponent(txt);
+window.libWaHref=phone=>libWaHrefFor(phone,(document.getElementById('la-t')||{}).value||'');
+function libAftercareClient(id){
+ const c=cust(id);if(!c)return;
+ const t=document.getElementById('la-t');
+ if(t)t.value=String(t.value).replace(/^(Hi|Hai|Salam)\s*,/i,'$1 '+String(c.name).split(' ')[0]+',');
+ const g=document.getElementById('la-go');
+ if(g)g.innerHTML=libWaBtn(String(c.phone||'').replace(/\D/g,''),t?t.value:'');
+}
+
+/* ---------- confirming an SOP was read ---------- */
+window.libMarkRead=async id=>{
+ const d=libDoc(id);if(!d)return;
+ const r={uid:UID,name:ME.name,docId:id,version:d.version||1,at:new Date().toISOString()};
+ try{await setDoc(doc(db,'libReads',UID+'_'+id),r);LIBREADS[id]=r;render();toast('Marked as read');}
+ catch(e){toast(friendly(e));}
+};
+window.libWhoRead=async id=>{
+ const d=libDoc(id);if(!d)return;
+ modal('Who has read · '+(libMeta(id)||{}).title,'<div class="card" id="lwr"><div class="spin"></div></div>');
+ try{const s=await getDocs(query(collection(db,'libReads'),where('docId','==',id)));
+  const by={};s.docs.forEach(x=>{const r=x.data();by[r.uid]=r;});
+  const team=D.staff.filter(x=>x.active!==false&&x.branchId===ME.branchId);
+  const box=document.getElementById('lwr');if(!box)return;
+  const cur=d.version||1;
+  box.innerHTML='<div class="tiny muted" style="margin-bottom:8px">Version '+cur+' · updated '+dshort(d.updatedAt)+'</div>'+
+   team.map(m=>{const r=by[m.id];const ok=r&&(r.version||0)>=cur;
+    return '<div class="spread" style="padding:7px 0;border-bottom:1px solid var(--line-2)"><span>'+esc(m.name)+
+     '</span>'+(ok?'<span class="pill g">Read '+dshort(r.at)+'</span>':r?'<span class="pill a">Read an older version</span>':
+     '<span class="pill r">Not yet</span>')+'</div>';}).join('');}
+ catch(e){const box=document.getElementById('lwr');if(box)box.innerHTML='<div class="tiny">'+esc(friendly(e))+'</div>';}
+};
+
+/* ---------- writing guides (boss) ---------- */
+window.editLib=id=>{
+ const e=libMeta(id);if(!e||!boss())return;
+ const fields=e.kind==='service'?LIB_SVC:LIB_PRD,S=(e.doc||{}).sections||{};
+ const pairs=(e.doc||{}).pairs||[];
+ const others=libEntries().filter(x=>x.id!==id&&x.kind!=='article');
+ modal((e.filled?'Edit ':'Write ')+(e.kind==='service'?'guide':'notes')+' · '+e.title,'<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 10px">Leave a box empty to hide it. Formatting: a line starting with '+
+  '<b>-</b> is a bullet, <b>**word**</b> is bold, <b>## Title</b> is a heading. Q: and A: lines become tap-to-open answers.</p>'+
+  fields.map(f=>'<label>'+ic(f[2],12)+' '+esc(f[1])+'</label><textarea class="f" rows="'+
+   (['steps','faq','objections','aftercareMsg'].includes(f[0])?6:3)+'" id="le-'+f[0]+'" placeholder="'+esc(f[3])+'">'+
+   esc(S[f[0]]||'')+'</textarea>').join('')+
+  '<label>'+ic('gift',12)+' Link to other pages</label><div class="lelinks">'+others.map(o=>
+   '<label class="row" style="gap:7px"><input type="checkbox" class="le-pair" value="'+esc(o.id)+'"'+
+   (pairs.includes(o.id)?' checked':'')+'> '+esc(o.title)+'</label>').join('')+'</div>'+
+  '<label class="row" style="gap:9px;margin:10px 0"><input type="checkbox" id="le-must"'+
+   ((e.doc||{}).mustRead?' checked':'')+'> Everyone must confirm they have read it</label>'+
+  '<div id="le-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveLib(\''+esc(id)+'\')">'+
+   ic('check',16)+'Save</button></div>');
+};
+window.saveLib=async id=>{
+ const e=libMeta(id);if(!e)return;
+ const fields=e.kind==='service'?LIB_SVC:LIB_PRD;
+ const sections={};fields.forEach(f=>{sections[f[0]]=String((document.getElementById('le-'+f[0])||{}).value||'').trim();});
+ const pairs=[...document.querySelectorAll('.le-pair')].filter(x=>x.checked).map(x=>x.value);
+ const prev=libDoc(id)||{};
+ const data={kind:e.kind,refId:e.refId,title:e.title,sections,pairs,
+  mustRead:!!(document.getElementById('le-must')||{}).checked,version:(prev.version||0)+1,
+  updatedAt:new Date().toISOString(),updatedBy:UID,updatedByName:ME.name};
+ try{await setDoc(doc(db,'library',id),data);
+  const i=LIB.findIndex(x=>x.id===id);if(i>=0)LIB[i]={id,...data};else LIB.push({id,...data});
+  await audit('Library updated',e.title);window.closeModal();LIBOPEN=id;render();toast('Saved to the library');}
+ catch(err){const x=document.getElementById('le-e');if(x)x.textContent=friendly(err);}
+};
+window.editArticle=id=>{
+ if(!boss())return;
+ const d=id?libDoc(id)||{}:{cat:'sop',mustRead:true};
+ modal(id?'Edit article':'New article','<div class="card">'+
+  '<label>Title</label><input class="f" id="la-ti" value="'+esc(d.title||'')+'" placeholder="SOP Buka Kedai">'+
+  '<label>Type</label><select class="f" id="la-ca">'+LIB_CATS.map(c=>'<option value="'+c[0]+'"'+
+   (d.cat===c[0]?' selected':'')+'>'+c[1]+'</option>').join('')+'</select>'+
+  '<label>Content</label><textarea class="f" id="la-bo" rows="14" placeholder="## Langkah\n1. …\n2. …\n\n## Perhatian\n- …">'+
+   esc(d.body||'')+'</textarea>'+
+  '<label>Search words <span class="muted">— optional, comma separated</span></label>'+
+  '<input class="f" id="la-tg" value="'+esc((d.tags||[]).join(', '))+'" placeholder="opening, kunci, cash float">'+
+  '<label class="row" style="gap:9px;margin:10px 0"><input type="checkbox" id="la-mr"'+(d.mustRead?' checked':'')+
+   '> Everyone must confirm they have read it</label>'+
+  '<div id="la-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveArticle(\''+(id||'')+'\')">'+
+   ic('check',16)+'Save</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" onclick="dropArticle(\''+
+   esc(id)+'\')">'+ic('trash',14)+'Delete</button>':'')+'</div>');
+};
+window.saveArticle=async id=>{
+ const g=k=>String((document.getElementById(k)||{}).value||'').trim();
+ const title=g('la-ti'),body=g('la-bo');
+ const err=document.getElementById('la-e');
+ if(title.length<3){err.textContent='Give it a title.';return;}
+ if(!body){err.textContent='Write the content.';return;}
+ const key=id||'kb_'+Date.now().toString(36);
+ const prev=libDoc(key)||{};
+ const data={kind:'article',cat:g('la-ca')||'sop',title,body,
+  tags:g('la-tg').split(',').map(x=>x.trim()).filter(Boolean),
+  mustRead:!!(document.getElementById('la-mr')||{}).checked,version:(prev.version||0)+1,
+  updatedAt:new Date().toISOString(),updatedBy:UID,updatedByName:ME.name,createdAt:prev.createdAt||new Date().toISOString()};
+ try{await setDoc(doc(db,'library',key),data);
+  const i=LIB.findIndex(x=>x.id===key);if(i>=0)LIB[i]={id:key,...data};else LIB.push({id:key,...data});
+  await audit(id?'Article updated':'Article added',title);window.closeModal();LIBOPEN=key;render();toast('Saved');}
+ catch(e){err.textContent=friendly(e);}
+};
+window.dropArticle=async id=>{
+ const d=libDoc(id);if(!d||!confirm('Delete “'+d.title+'”? This cannot be undone.'))return;
+ try{await deleteDoc(doc(db,'library',id));LIB=LIB.filter(x=>x.id!==id);
+  await audit('Article deleted',d.title);window.closeModal();LIBOPEN='';render();toast('Deleted');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- starter SOPs, in BM, for the owner to adapt ---------- */
+const LIB_STARTER=[
+ {cat:'sop',title:'SOP Buka Kedai',tags:['opening','buka','pagi'],body:
+'## 30 minit sebelum buka\n1. Buka pintu, matikan alarm, hidupkan lampu dan aircond\n2. Punch in kehadiran dalam Spatify\n'+
+'3. Buka Day dalam Spatify dan kira cash float — mesti sama dengan catatan semalam\n'+
+'4. Semak Calendar hari ini: siapa datang, bilik mana, terapis mana\n5. Semak Board untuk notis baru\n\n'+
+'## Bilik rawatan\n- Tukar cadar dan tuala bersih untuk setiap katil\n- Hidupkan steamer, towel warmer dan mesin — uji sekali\n'+
+'- Isi semula produk backbar; catat jika ada yang hampir habis\n- Lap semua permukaan dengan disinfektan\n\n'+
+'## Kaunter dan ruang menunggu\n- Susun produk retail, pastikan tanda harga ada\n- Sediakan air minuman untuk klien\n'+
+'- Muzik dan diffuser dihidupkan\n\n## Perhatian\n- Kalau ada peralatan rosak, lapor dalam Day → Issues dan beritahu manager'},
+ {cat:'sop',title:'SOP Tutup Kedai',tags:['closing','tutup','malam','cash up'],body:
+'## Selepas klien terakhir\n1. Pastikan semua bil telah dibuat dan dibayar dalam Checkout\n'+
+'2. Semak bil yang masih berbaki (outstanding) — pastikan tarikh janji bayar direkod\n'+
+'3. Kira cash dalam laci dan tutup Day dalam Spatify\n4. Masukkan duit ke dalam peti besi\n\n'+
+'## Bilik rawatan\n- Buang semua bahan pakai buang\n- Cuci dan sterilkan alatan; simpan dalam UV sterilizer\n'+
+'- Masukkan tuala dan cadar kotor ke dalam bakul laundry\n- Matikan semua mesin dan cabut plag\n\n'+
+'## Sebelum keluar\n- Semak Calendar esok dan hantar reminder WhatsApp kepada klien\n- Tutup aircond, lampu, kunci semua pintu\n'+
+'- Hidupkan alarm dan punch out'},
+ {cat:'sop',title:'Kebersihan & Sanitasi Bilik',tags:['hygiene','sanitasi','bersih','infection'],body:
+'## Antara setiap klien\n1. Cuci tangan dengan sabun sekurang-kurangnya 20 saat\n2. Buang semua bahan pakai buang yang telah digunakan\n'+
+'3. Lap katil, troli dan tombol pintu dengan disinfektan\n4. Tukar cadar, tuala dan penutup kepala\n'+
+'5. Alatan logam: cuci, keringkan, sterilkan sebelum digunakan semula\n\n'+
+'## Peraturan\n- **Satu klien, satu set alatan.** Jangan guna semula spatula yang telah menyentuh kulit ke dalam balang produk\n'+
+'- Pakai sarung tangan untuk extraction dan sebarang rawatan melibatkan kulit terbuka\n'+
+'- Produk yang telah dibuka mesti dilabel tarikh buka\n- Jangan buat rawatan jika terapis sendiri demam atau batuk teruk'},
+ {cat:'script',title:'Skrip Sambut & Konsultasi Klien',tags:['welcome','konsultasi','script','sambut'],body:
+'## Sambutan\n- "Hai Kak/Encik ___, selamat datang ke {biz}! Nama saya ___, saya yang akan jaga akak hari ni."\n'+
+'- Tawarkan air minuman dan persilakan duduk\n\n## Konsultasi (5 minit)\n1. "Apa yang paling akak risau pasal kulit sekarang?"\n'+
+'2. "Ada alahan pada apa-apa produk atau ubat?" — rekod dalam profil klien\n3. "Sekarang guna produk apa di rumah?"\n'+
+'4. "Ada mengandung, menyusu, atau ambil ubat jerawat oral?" — kalau ya, semak bahagian **Do not perform if** dalam guide rawatan\n\n'+
+'## Selepas rawatan\n- Tunjukkan hasil pada cermin\n- Terangkan aftercare dan hantar mesej aftercare melalui WhatsApp\n'+
+'- Cadangkan produk home care yang sesuai (lihat Selling points)\n- Tawarkan booking seterusnya sebelum klien balik'},
+ {cat:'aftercare',title:'Aftercare Umum Facial',tags:['aftercare','facial','selepas'],body:
+'## 24 jam pertama\n- Jangan pakai makeup\n- Jangan bersenam berat, sauna atau mandi air panas\n- Jangan sentuh atau picit muka\n\n'+
+'## 3 hari pertama\n- Guna pencuci muka yang lembut sahaja\n- Elakkan scrub, retinol, AHA/BHA\n- Pakai sunscreen setiap pagi walaupun di dalam rumah\n'+
+'- Minum air secukupnya\n\n## Hubungi kami jika\n- Kemerahan atau pedih berlarutan lebih 48 jam\n- Ada bengkak, gatal teruk atau ruam'}];
+window.libStarter=async()=>{
+ if(!boss())return;
+ try{const b=writeBatch(db),now=new Date().toISOString();let n=0;
+  LIB_STARTER.forEach((a,i)=>{if(LIB.some(x=>x.kind==='article'&&x.title===a.title))return;
+   const id='kb_start'+i;const data={kind:'article',...a,body:a.body.replace(/\{biz\}/g,(D.meta.biz||{}).name||'kami'),mustRead:a.cat==='sop',version:1,createdAt:now,updatedAt:now,
+    updatedBy:UID,updatedByName:ME.name};
+   b.set(doc(db,'library',id),data);LIB.push({id,...data});n++;});
+  await b.commit();await audit('Library starter SOPs added',n+' articles');render();toast(n+' starter articles added — edit them to fit your spa');}
+ catch(e){toast(friendly(e));}
 };
 
 /* ============ hands-on therapist and commission ============ */
@@ -6099,7 +6534,7 @@ function bindSettings(){
   toast('Building backup…');
   const out={exportedAt:new Date().toISOString()};
   for(const n of ['branches','rooms','users','services','products','packages','stock','vouchers',
-   'customers','customerPackages','appointments','sales']){
+   'customers','customerPackages','appointments','sales','library']){
    try{const s=await getDocs(query(collection(db,n),limit(3000)));
     out[n]=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){out[n]='blocked: '+e.code;}}
   const a=document.createElement('a');
@@ -6167,7 +6602,7 @@ window.render=render;
    bindNavAutoHide();
    startClock();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
@@ -6182,7 +6617,7 @@ window.render=render;
  });
  window.firebaseSignOut=()=>signOut(auth);
 })();
-window.go=(t)=>{TAB=t;navOpen=false;window.closeModal();render();window.scrollTo(0,0);
+window.go=(t)=>{if(t==='lib'){LIBOPEN='';LIBCTX={};}TAB=t;navOpen=false;window.closeModal();render();window.scrollTo(0,0);
  if(t==='rep'&&!REPSALES)buildReport();};
 window.toggleNav=()=>{navOpen=!navOpen;render();};
 window.hideNav=()=>{if(navOpen){navOpen=false;render();}};
