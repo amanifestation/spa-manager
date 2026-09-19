@@ -640,6 +640,19 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   background:var(--surface-2);animation:fadeUp .3s var(--ease)}
 
 /* ---------- checkout item picker ---------- */
+.rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
+.rvtix.dim{opacity:.55;background:transparent}
+.rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
+ letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+.rvtop span:first-child{display:inline-flex;align-items:center;gap:5px}
+.rvworth{font-size:22px;font-weight:700;margin:6px 0 2px}
+.rvcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:19px;font-weight:700;letter-spacing:.12em;
+ color:var(--brass);margin-bottom:4px;user-select:all}
+.rvrc{border:1.5px dashed #A67C3D;border-radius:10px;padding:10px 12px;margin:12px 0;text-align:center}
+.rvrl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#A67C3D}
+.rvrv{font-size:20px;font-weight:700;margin-top:3px}
+.rvrcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:20px;font-weight:700;letter-spacing:.14em;
+ color:#A67C3D;margin:2px 0 4px}
 .pkrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
   padding:10px 11px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);
   color:var(--ink);margin-bottom:6px;transition:background .18s var(--ease),transform .14s var(--ease)}
@@ -803,7 +816,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20i';
+const BUILD='2026-09-20j';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1887,7 +1900,7 @@ window.openCust=async(id,keep)=>{
  modal(c.name,head+custHistory(c));
 };
 function custProfile(c){
- const money=memberOweCard(c.id)+memberPkgCard(c.id);
+ const money=memberOweCard(c.id)+memberPkgCard(c.id)+memberVoucherCard(c.id);
  const row=(k,v,icon)=>v?'<div class="k">'+(icon?ic(icon,12)+' ':'')+k+'</div><div class="v">'+v+'</div>':'';
  const age=c.dob?Math.floor(daysBetween(c.dob,new Date())/365.25):null;
  const ref=c.referrerId&&cust(c.referrerId)?cust(c.referrerId).name:'';
@@ -2411,7 +2424,10 @@ function vPos(){
  h+='<table style="margin-top:8px"><tr><td>Subtotal</td><td class="num">'+rm(t.sub)+'</td></tr>'+
   (boss()?'<tr><td>Manual discount</td><td class="num"><input class="f" style="margin:0;text-align:right;padding:4px 6px;'+
    'width:90px" type="number" value="'+cart.discount+'" onchange="setCartDiscount(this.value)"></td></tr>':'')+
-  (cart.voucher?'<tr><td>Voucher '+esc(cart.voucher.id)+'</td><td class="num">-'+rm(t.v)+'</td></tr>':'')+
+  (cart.voucher?'<tr><td>Voucher '+esc(cart.voucher.id)+
+   ' <button class="iconbtn" style="padding:2px;display:inline-grid" onclick="removeVoucher()" aria-label="Remove voucher">'+
+   ic('close',12)+'</button>'+(voucherProblem(cart.voucher,t.sub,cart.customerId)?'<div class="tiny odue">'+
+   esc(voucherProblem(cart.voucher,t.sub,cart.customerId))+'</div>':'')+'</td><td class="num">-'+rm(t.v)+'</td></tr>':'')+
   (cart.points?'<tr><td>'+cart.points+' loyalty points'+
    ' <button class="iconbtn" style="padding:2px;display:inline-grid" onclick="clearCartPoints()">'+
    ic('close',12)+'</button></td><td class="num">-'+rm(t.pd)+'</td></tr>':'')+
@@ -2787,6 +2803,259 @@ function memberOweCard(cid){
   '<span class="pill r">'+rm(owedSum(list))+'</span></div>'+list.map(oweRow).join('')+'</div>';
 }
 
+/* ============ come-back vouchers ============ */
+/* After a bill, the counter can hand the client a voucher for their next visit. The
+   owner sets the offer once in Settings; each voucher gets its own code, belongs to one
+   client, can be used once, and only from a later day, so it brings them back rather
+   than discounting today's bill. */
+const RV_DEFAULT={on:false,mode:'button',type:'rm',value:20,min:100,minBill:100,validDays:60,startDays:1,
+ prefix:'BACK',ownerOnly:true,
+ message:'Hi {name}, terima kasih datang ke {biz}! Ini voucher {worth} untuk lawatan seterusnya. '+
+  'Kod: {code}. Boleh guna dari {from} hingga {expiry}{min}. Jumpa lagi!'};
+const rvSet=()=>({...RV_DEFAULT,...(((D.meta||{}).returnVoucher)||{})});
+const rvWorth=v=>v.type==='pct'?(+v.value||0)+'% off':rm(+v.value||0)+' off';
+const isReturnV=v=>!!v&&v.kind==='return';
+const RV_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';        // no 0/O or 1/I to misread
+function rvCodeFor(saleId,salt){
+ let h=2166136261;const s=String(saleId)+'#'+(salt||0);
+ for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
+ let out='';for(let i=0;i<6;i++){out+=RV_CHARS[h%32];h=Math.floor(h/32);}
+ return out;
+}
+const rvPrefix=p=>String(p||'BACK').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'BACK';
+const rvForSale=id=>D.vouchers.find(v=>isReturnV(v)&&v.saleId===id);
+const rvOf=cid=>D.vouchers.filter(v=>isReturnV(v)&&v.customerId===cid);
+const rvUsed=v=>(v.used||0)>=(v.cap||1);
+const rvState=v=>rvUsed(v)?'used':v.expiry<today()?'expired':(v.validFrom&&v.validFrom>today())?'waiting':'ready';
+/* why a bill cannot earn a voucher, or '' when it can */
+function rvWhyNot(s){
+ const R=rvSet();
+ if(!R.on)return 'Come-back vouchers are switched off in Settings.';
+ if(!s)return 'Bill not found.';
+ if(s.voided)return 'This bill has been voided.';
+ if(!s.customerId)return 'Walk-in bills cannot earn a voucher. Register the client first.';
+ if((+s.total||0)<(+R.minBill||0))return 'Bills from '+rm(R.minBill)+' earn a voucher. This one is '+rm(s.total||0)+'.';
+ if(rvForSale(s.id))return 'A voucher was already issued for this bill.';
+ return '';
+}
+async function issueRV(s){
+ const R=rvSet(),now=new Date();
+ const data={kind:'return',type:R.type==='pct'?'pct':'rm',value:+R.value||0,min:+R.min||0,cap:1,used:0,
+  firstOnly:false,ownerOnly:R.ownerOnly!==false,
+  validFrom:ymd(addDays(now,+R.startDays||0)),expiry:ymd(addDays(now,+R.validDays||60)),
+  customerId:s.customerId,customerName:s.customerName||'',saleId:s.id,invoiceNo:s.invoiceNo||'',
+  branchId:s.branchId||ME.branchId,issuedBy:UID,issuedByName:ME.name,issuedAt:now.toISOString()};
+ let code='',existing=null;
+ await runTransaction(db,async tx=>{
+  for(let salt=0;salt<6;salt++){
+   const c=rvPrefix(R.prefix)+'-'+rvCodeFor(s.id,salt);
+   const snap=await tx.get(doc(db,'vouchers',c));
+   if(!snap.exists()){tx.set(doc(db,'vouchers',c),data);code=c;return;}
+   if(snap.data().saleId===s.id){code=c;existing=snap.data();return;}
+  }
+  throw new Error('Could not make a unique voucher code. Try again.');
+ });
+ const v={id:code,...(existing||data)};
+ if(!D.vouchers.some(x=>x.id===code))D.vouchers.push(v);
+ if(!existing)await audit('Come-back voucher issued',code+' · '+rvWorth(v)+' · '+(s.customerName||'')+
+  ' · '+(s.invoiceNo||''));
+ return v;
+}
+window.issueReturnVoucher=async id=>{
+ const s=findSale(id);
+ const why=rvWhyNot(s);if(why){toast(why);return;}
+ try{const v=await issueRV(s);window.showRV(v.id);}
+ catch(e){toast(friendly(e));}
+};
+function rvMessage(v){
+ const R=rvSet(),c=cust(v.customerId)||{},b=D.meta.biz||{};
+ return String(R.message||RV_DEFAULT.message)
+  .replace(/\{name\}/g,String(c.name||v.customerName||'').split(' ')[0])
+  .replace(/\{biz\}/g,b.name||'kami').replace(/\{code\}/g,v.id)
+  .replace(/\{worth\}/g,rvWorth(v)).replace(/\{from\}/g,dstr(v.validFrom||today()))
+  .replace(/\{expiry\}/g,dstr(v.expiry))
+  .replace(/\{min\}/g,v.min?' (belanja minimum '+rm(v.min)+')':'');
+}
+function rvTicket(v){
+ const st=rvState(v);
+ return '<div class="rvtix'+(st==='used'||st==='expired'?' dim':'')+'">'+
+  '<div class="rvtop"><span>'+ic('tag',13)+' Next-visit voucher</span>'+
+   '<span class="pill '+({ready:'g',waiting:'b',used:'',expired:'r'}[st])+'">'+
+   ({ready:'Ready to use',waiting:'From '+dshort(v.validFrom),used:'Used',expired:'Expired'}[st])+'</span></div>'+
+  '<div class="rvworth">'+rvWorth(v)+'</div>'+
+  '<div class="rvcode">'+esc(v.id)+'</div>'+
+  '<div class="tiny muted">'+esc(v.customerName||'')+(v.ownerOnly!==false?' only':'')+
+   (v.min?' · min spend '+rm(v.min):'')+' · '+dshort(v.validFrom||v.issuedAt)+' – '+dshort(v.expiry)+
+   (st==='used'&&v.usedInvoice?' · used on '+esc(v.usedInvoice):'')+'</div></div>';
+}
+window.showRV=code=>{
+ const v=D.vouchers.find(x=>x.id===code);if(!v)return;
+ const c=cust(v.customerId)||{},msg=rvMessage(v);
+ const phone=String(c.phone||'').replace(/\D/g,'');
+ modal('Come-back voucher','<div class="card">'+rvTicket(v)+
+  '<label style="margin-top:12px">Message</label><textarea class="f" id="rv-msg" rows="5">'+esc(msg)+'</textarea>'+
+  '<div class="fabrow" style="margin:0">'+
+  (phone?'<a class="btn" style="text-decoration:none" target="_blank" href="https://wa.me/'+
+   (phone.startsWith('6')?'':'6')+phone+'?text='+encodeURIComponent(msg)+'">'+ic('msg',15)+'Send by WhatsApp</a>':
+   '<span class="tiny muted">No phone number on file — copy the message instead.</span>')+
+  '<button class="btn ghost" onclick="copyRV()">'+ic('note',15)+'Copy</button></div>'+
+  '<p class="tiny muted" style="margin-top:10px">The code is also printed on the receipt and the PDF. '+
+  'At the next visit, tap Voucher at checkout — the client\'s vouchers are listed there.</p></div>');
+};
+window.copyRV=()=>{
+ const t=($('#rv-msg')||{}).value||'';
+ try{navigator.clipboard.writeText(t).then(()=>toast('Copied'),()=>toast('Could not copy'));}
+ catch(e){toast('Could not copy');}
+};
+
+/* ---------- redeeming any voucher at checkout ---------- */
+/* one place that decides whether a voucher can go on this bill */
+function voucherProblem(v,sub,customerId){
+ if(!v)return 'That code does not exist.';
+ if(v.expiry&&v.expiry<today())return 'This voucher expired on '+dstr(v.expiry)+'.';
+ if(v.validFrom&&v.validFrom>today())return 'This voucher can be used from '+dstr(v.validFrom)+
+  ' — it is for the next visit, not today\'s.';
+ if(v.cap&&(v.used||0)>=v.cap)return isReturnV(v)?'This voucher has already been used'+
+  (v.usedInvoice?' ('+v.usedInvoice+')':'')+'.':'This voucher\'s quota is used up.';
+ if(isReturnV(v)&&v.ownerOnly!==false){
+  if(!customerId)return 'Choose the client first — this voucher belongs to '+(v.customerName||'a client')+'.';
+  if(v.customerId!==customerId)return 'This voucher belongs to '+(v.customerName||'another client')+'.';
+ }
+ if(sub<(+v.min||0))return 'Minimum spend is '+rm(v.min)+'. The bill is '+rm(sub)+'.';
+ return '';
+}
+const findVoucher=code=>{const k=String(code||'').trim().toUpperCase().replace(/\s/g,'');
+ return D.vouchers.find(x=>String(x.id).toUpperCase()===k);};
+window.applyVoucher=()=>{
+ const mine=cart.customerId?rvOf(cart.customerId).filter(v=>rvState(v)!=='used'&&rvState(v)!=='expired'):[];
+ const sub=cartTotals().sub;
+ modal('Apply voucher','<div class="card">'+
+  (mine.length?'<h3 style="margin:0 0 8px">'+esc((cust(cart.customerId)||{}).name||'')+'\'s vouchers</h3>'+
+   mine.map(v=>{const p=voucherProblem(v,sub,cart.customerId);
+    return '<button type="button" class="pkrow"'+(p?' disabled':'')+' onclick="applyVoucherCode(\''+
+     esc(v.id)+'\')"><span class="pkico">'+ic('tag',18)+'</span><span class="cpmeta"><b>'+rvWorth(v)+
+     ' · '+esc(v.id)+'</b><span>'+(p?esc(p):'Until '+dshort(v.expiry)+(v.min?' · min '+rm(v.min):''))+
+     '</span></span><span class="pkprice">'+(p?'':'Use')+'</span></button>';}).join('')+
+   '<div class="tiny muted" style="margin:10px 0 4px">Or type a code</div>':'')+
+  '<label>Code</label><input class="f" id="vc" autocomplete="off" autocapitalize="characters" '+
+   'placeholder="e.g. BACK-7KQ2MX or RAYA50">'+
+  '<div id="vc-e" class="tiny" style="color:var(--rose);margin:-4px 0 8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="applyVoucherCode()">'+
+   ic('check',16)+'Apply</button>'+
+  '<div class="tiny muted" style="margin-top:10px">Campaign codes running: '+
+  (D.vouchers.filter(v=>!isReturnV(v)&&v.expiry>=today()).map(v=>esc(v.id)).join(', ')||'none')+'</div></div>');
+};
+window.applyVoucherCode=code=>{
+ const typed=code||(($('#vc')||{}).value||'');
+ const v=findVoucher(typed);
+ const p=voucherProblem(v,cartTotals().sub,cart.customerId);
+ if(p){const e=$('#vc-e');if(e&&!code)e.textContent=p;toast(p);return;}
+ cart.voucher=v;window.closeModal();render();toast('Voucher '+v.id+' applied · '+rvWorth(v));
+};
+window.removeVoucher=()=>{cart.voucher=null;render();toast('Voucher removed');};
+/* the voucher is spent inside a transaction, so two counters cannot use one code twice */
+async function spendVoucher(v,invoiceNo,customerId){
+ if(!v.cap){try{await updateDoc(doc(db,'vouchers',v.id),{used:increment(1)});}catch(e){}return;}
+ let after=null;
+ await runTransaction(db,async tx=>{
+  const ref=doc(db,'vouchers',v.id);
+  const snap=await tx.get(ref);
+  if(!snap.exists())throw new Error('Voucher '+v.id+' no longer exists. Remove it and try again.');
+  const d=snap.data();
+  if((d.used||0)>=(d.cap||1))throw new Error('Voucher '+v.id+' was just used on another bill. Remove it and try again.');
+  after={used:(d.used||0)+1,usedAt:new Date().toISOString(),usedBy:UID,usedInvoice:invoiceNo,
+   usedCustomerId:customerId||''};
+  tx.update(ref,after);
+ });
+ const local=D.vouchers.find(x=>x.id===v.id);if(local)Object.assign(local,after);
+}
+
+/* ---------- member record ---------- */
+function memberVoucherCard(cid){
+ const list=rvOf(cid).sort((a,b)=>String(b.issuedAt).localeCompare(String(a.issuedAt)));
+ if(!list.length)return '';
+ const live=list.filter(v=>['ready','waiting'].includes(rvState(v)));
+ return '<div class="card"><div class="sec-h"><h3>'+ic('tag',15)+' Vouchers</h3>'+
+  '<span class="pill '+(live.length?'g':'')+'">'+live.length+' to use</span></div>'+
+  list.slice(0,6).map(v=>'<div class="item" onclick="showRV(\''+esc(v.id)+'\')">'+rvTicket(v)+'</div>').join('')+
+  (live.some(v=>rvState(v)==='ready')?'<button class="btn sm" style="margin-top:4px" onclick="checkoutFor(\''+cid+
+   '\')">'+ic('check',14)+'Go to checkout</button>':'')+'</div>';
+}
+
+/* ---------- how well it works ---------- */
+function rvStats(days){
+ const from=ymd(addDays(new Date(),-(days||90)));
+ const list=D.vouchers.filter(v=>isReturnV(v)&&String(v.issuedAt||'').slice(0,10)>=from);
+ const used=list.filter(rvUsed);
+ const worth=used.reduce((a,v)=>a+(v.type==='pct'?0:(+v.value||0)),0);
+ return{issued:list.length,used:used.length,rate:list.length?Math.round(used.length/list.length*100):0,
+  live:list.filter(v=>['ready','waiting'].includes(rvState(v))).length,
+  expired:list.filter(v=>rvState(v)==='expired').length,worth};
+}
+function rvSection(){
+ const R=rvSet(),S=rvStats(90);
+ const recent=D.vouchers.filter(isReturnV).sort((a,b)=>String(b.issuedAt).localeCompare(String(a.issuedAt))).slice(0,25);
+ return '<div class="sec-h" style="margin-top:18px"><h2>Come-back vouchers</h2>'+
+  '<span class="pill '+(R.on?'g':'')+'">'+(R.on?'On · '+rvWorth(R):'Off')+'</span></div>'+
+  '<div class="grid g2" style="margin-bottom:10px">'+kpi('Issued · 90 days',S.issued,S.live+' still open','tag')+
+  kpi('Came back',S.rate+'%',S.used+' used · '+S.expired+' expired','award')+'</div>'+
+  (recent.length?recent.map(v=>'<div class="item" onclick="showRV(\''+esc(v.id)+'\')">'+rvTicket(v)+'</div>').join(''):
+   '<div class="empty">None issued yet. '+(R.on?'Generate one from any receipt after checkout.':
+   'Switch them on in Settings → Come-back vouchers.')+'</div>');
+}
+
+/* ---------- settings ---------- */
+function rvPanel(){
+ if(!boss())return '';
+ const R=rvSet();
+ const num=(id,label,val,step)=>'<div><label>'+label+'</label><input class="f" type="number" min="0" step="'+
+  (step||1)+'" id="'+id+'" value="'+val+'"></div>';
+ return '<div class="card"><div class="sec-h"><h2>'+ic('tag',16)+' Come-back vouchers</h2>'+
+  '<span class="pill '+(R.on?'g':'')+'">'+(R.on?'On':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">A voucher for the client\'s next visit, generated from the '+
+  'receipt after checkout. Each one has its own code, belongs to that client and works once.</p>'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="rv-on"'+(R.on?' checked':'')+
+   '> <b>Offer come-back vouchers</b></label>'+
+  '<label>How it is issued</label><select class="f" id="rv-mode">'+
+   '<option value="button"'+(R.mode!=='auto'?' selected':'')+'>Button on the receipt — staff decide</option>'+
+   '<option value="auto"'+(R.mode==='auto'?' selected':'')+'>Automatically on every bill that qualifies</option></select>'+
+  '<div class="fieldset"><h3>'+ic('tag',13)+'The offer</h3><div class="grid g2">'+
+   '<div><label>Type</label><select class="f" id="rv-t"><option value="rm"'+(R.type!=='pct'?' selected':'')+
+   '>Fixed RM off</option><option value="pct"'+(R.type==='pct'?' selected':'')+'>Percentage off</option></select></div>'+
+   num('rv-v','Value',R.value,'0.01')+num('rv-min','Minimum spend to use it (RM)',R.min)+
+   num('rv-mb','Bill must be at least (RM) to earn one',R.minBill)+'</div></div>'+
+  '<div class="fieldset"><h3>'+ic('calendar',13)+'Timing</h3><div class="grid g2">'+
+   num('rv-sd','Usable from (days after the visit)',R.startDays)+num('rv-vd','Valid for (days)',R.validDays)+
+   '</div><p class="tiny muted" style="margin:0">1 day means it cannot be used on the same visit it was earned.</p></div>'+
+  '<div class="fieldset"><h3>'+ic('shield',13)+'Rules</h3><div class="grid g2">'+
+   '<div><label>Code starts with</label><input class="f" id="rv-px" maxlength="8" value="'+esc(R.prefix)+'"></div>'+
+   '<div><label>&nbsp;</label><label class="row" style="gap:9px;margin-top:9px"><input type="checkbox" id="rv-own"'+
+   (R.ownerOnly!==false?' checked':'')+'> Only that client can use it</label></div></div></div>'+
+  '<label>WhatsApp message <span class="muted">— {name} {biz} {worth} {code} {from} {expiry} {min}</span></label>'+
+  '<textarea class="f" id="rv-msgt" rows="4">'+esc(R.message)+'</textarea>'+
+  '<div id="rv-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="rvSave()">'+ic('check',16)+
+  'Save voucher settings</button></div>';
+}
+window.rvSave=async()=>{
+ const g=id=>($('#'+id)||{});
+ const R={on:!!g('rv-on').checked,mode:g('rv-mode').value==='auto'?'auto':'button',
+  type:g('rv-t').value==='pct'?'pct':'rm',value:r2(g('rv-v').value),min:r2(g('rv-min').value),
+  minBill:r2(g('rv-mb').value),startDays:Math.max(0,Math.round(+g('rv-sd').value||0)),
+  validDays:Math.round(+g('rv-vd').value||0),prefix:rvPrefix(g('rv-px').value),
+  ownerOnly:!!g('rv-own').checked,message:String(g('rv-msgt').value||'').trim()||RV_DEFAULT.message};
+ const e=$('#rv-e');
+ if(!(R.value>0)){e.textContent='Give the voucher a value.';return;}
+ if(R.type==='pct'&&R.value>100){e.textContent='A percentage cannot be more than 100.';return;}
+ if(R.validDays<=R.startDays){e.textContent='It must stay valid for longer than the wait before it can be used.';return;}
+ try{await setDoc(doc(db,'meta','settings'),{returnVoucher:R},{merge:true});
+  D.meta.returnVoucher=R;
+  await audit('Come-back voucher settings',(R.on?'On':'Off')+' · '+rvWorth(R)+' · min '+rm(R.min)+
+   ' · earn from '+rm(R.minBill)+' · '+R.validDays+' days');
+  render();toast('Voucher settings saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -3093,6 +3362,25 @@ function buildReceiptPDF(s,jsPDF){
    'Each payment is receipted with its date.'),CW-tw-12).forEach(l=>{doc.text(l,M,ly);ly+=3.8;});}
  y=Math.max(y,ly)+6;
 
+ /* ---------- come-back voucher, cut-out style ---------- */
+ const rv=!s.voided&&typeof rvForSale==='function'?rvForSale(s.id):null;
+ if(rv){
+  const vh=24;
+  if(y+vh>H-40){doc.addPage();y=M+4;}
+  doc.setDrawColor(...BRASS);doc.setLineWidth(0.5);
+  try{doc.setLineDashPattern([1.6,1.2],0);}catch(e){}
+  doc.roundedRect(M,y,CW,vh,2,2,'S');
+  try{doc.setLineDashPattern([],0);}catch(e){}
+  font(7,'bold',BRASS);T('YOUR NEXT-VISIT VOUCHER',M+5,y+6);
+  font(15,'bold');T(pdfText(rvWorth(rv)),M+5,y+14);
+  font(8,'normal',MUTED);
+  T(pdfText('Use from '+dstr(rv.validFrom)+' until '+dstr(rv.expiry)+(rv.min?' - min spend '+pdfRM(rv.min):'')+
+   ' - one use'+(rv.ownerOnly!==false?' - for '+(rv.customerName||'')+' only':'')),M+5,y+20);
+  font(7,'bold',MUTED);T('CODE',W-M-5,y+6,{align:'right'});
+  font(17,'bold',BRASS);T(rv.id,W-M-5,y+15,{align:'right'});
+  y+=vh+6;
+ }
+
  /* ---------- terms ---------- */
  const terms=doc.splitTextToSize(pdfText(b.terms||DEFAULT_TERMS),CW-8);
  const th=8+terms.length*3.4;
@@ -3293,19 +3581,6 @@ window.cartQty=(x,d)=>{
  i.qty=q;applyHandsOn(i);render();
 };
 
-window.applyVoucher=()=>{
- modal('Apply voucher','<div class="card"><label>Code</label><input class="f" id="vc">'+
-  '<button class="btn" style="width:100%;justify-content:center" id="vc-go">Apply</button>'+
-  '<div class="tiny muted" style="margin-top:10px">Active: '+
-  (D.vouchers.filter(v=>v.expiry>=today()).map(v=>esc(v.id)).join(', ')||'none')+'</div></div>',
- ()=>{$('#vc-go').onclick=()=>{
-  const v=D.vouchers.find(x=>x.id.toUpperCase()===$('#vc').value.trim().toUpperCase());
-  const t=cartTotals();
-  if(!v){toast('That code does not exist');return;}
-  if(v.expiry<today()){toast('Voucher has expired');return;}
-  if(t.sub<(v.min||0)){toast('Minimum spend is '+rm(v.min));return;}
-  if(v.cap&&v.used>=v.cap){toast('Voucher quota used up');return;}
-  cart.voucher=v;window.closeModal();render();toast('Voucher applied');};});};
 window.usePoints=()=>{
  const L=loy(),c=cust(cart.customerId);
  if(!c){toast('Pick a client first');return;}
@@ -3358,6 +3633,10 @@ window.checkout=async()=>{
   if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
   const sub=items.reduce((a,i)=>a+i.price*i.qty,0);
+  if(cart.voucher){const fresh=D.vouchers.find(x=>x.id===cart.voucher.id)||null;
+   const vp=voucherProblem(fresh,sub,cart.customerId);
+   if(vp)throw new Error('Voucher '+cart.voucher.id+': '+vp+' Remove it to continue.');
+   cart.voucher=fresh;}
   const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
   const pd=pointsWorth(cart.points||0);
   const net=Math.max(0,sub-cart.discount-v-pd);
@@ -3404,10 +3683,12 @@ window.checkout=async()=>{
    });
    const local=HELD.find(h=>h.id===cpId);if(local)local.balances=after;
   }
+  if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
    customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
-   voucher:cart.voucher?cart.voucher.id:'',sst,total,date:today(),at:new Date().toISOString(),
+   voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
+   voucherAmt:r2(v),sst,total,date:today(),at:new Date().toISOString(),
    voided:false,payments:pays,createdBy:UID,invoiceNo,
    net:r2(net),paid,balance,status:balance>0?'partial':'paid',
    dueDate:balance>0?(cart.dueDate||''):'',tendered,change,
@@ -3458,7 +3739,6 @@ window.checkout=async()=>{
    if((i.kind==='service'&&!i.later)||i.kind==='redeem'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
-  if(cart.voucher){try{await updateDoc(doc(db,'vouchers',cart.voucher.id),{used:increment(1)});}catch(e){}}
   let earned=0;
   if(cart.customerId){
    if(cart.points>0)await spendPoints(cart.customerId,c?c.name:'',cart.points,invoiceNo);
@@ -3470,6 +3750,13 @@ window.checkout=async()=>{
   cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false,
    instal:false,dueDate:''};
   await loadRecentSales();
+  /* come-back voucher: issued here when the owner chose "automatically" */
+  let autoRV=null;
+  if(rvSet().on&&rvSet().mode==='auto'){
+   const saved=findSale(ref.id)||{id:ref.id,customerId:c?c.id:'',customerName:c?c.name:'',total,invoiceNo,
+    branchId:ME.branchId,voided:false};
+   if(!rvWhyNot(saved)){try{autoRV=await issueRV(saved);}catch(e){}}
+  }
   if(newPkgs.length)await loadHeld();
   render();
   if(balance>0)toast('Saved · '+rm(balance)+' outstanding for '+(c?c.name:'the client'));
@@ -3478,6 +3765,7 @@ window.checkout=async()=>{
   else if(newPkgs.length)toast(newPkgs.length+' balance'+(newPkgs.length>1?'s':'')+' added to '+(c?c.name:'the client')+
    (items.some(x=>x.later)?' — redeem at the visit':''));
   else if(earned)toast('Bill saved · '+earned+' loyalty points earned');
+  if(autoRV)toast('Bill saved · come-back voucher '+autoRV.id+' issued');
   window.openSale(ref.id);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
 /* ---- deleting a client, with a mandatory reason ---- */
@@ -3659,6 +3947,11 @@ function receiptHTML(s){
   (!s.voided&&saleBalance(s)>0?'<div class="rvoid" style="color:var(--amber);border-color:var(--amber)">'+
    'PART PAYMENT — '+rm(saleBalance(s))+' STILL OWING</div>':'')+
   '<div class="rdiv"></div>'+
+  (rvForSale(s.id)&&!s.voided?(v=>'<div class="rvrc"><div class="rvrl">Your next-visit voucher</div>'+
+   '<div class="rvrv">'+rvWorth(v)+'</div><div class="rvrcode">'+esc(v.id)+'</div>'+
+   '<div class="rline" style="text-align:center">Use from '+dshort(v.validFrom)+' until '+dshort(v.expiry)+
+   (v.min?' · min spend '+rm(v.min):'')+(v.ownerOnly!==false?' · for '+esc(v.customerName||'')+' only':'')+
+   ' · one use</div></div>')(rvForSale(s.id)):'')+
   '<div class="rthanks">'+esc(b.thanks||'Thank you for visiting us')+'</div>'+
   (b.days?'<div class="rline" style="text-align:center">'+esc(b.days)+'</div>':'')+
   '<div class="rterms"><b>Terms</b><br>'+esc(b.terms||DEFAULT_TERMS)+'</div>'+
@@ -3685,6 +3978,9 @@ window.showReceipt=id=>{
   (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
    '\',\'share\')">'+ic('msg',14)+'Share PDF</button>':'')+
   '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button>'+
+  (rvForSale(id)?'<button class="btn sm ghost" onclick="showRV(\''+esc(rvForSale(id).id)+'\')">'+ic('gift',14)+
+   'Voucher '+esc(rvForSale(id).id)+'</button>':(rvSet().on&&!rvWhyNot(s)?'<button class="btn sm" '+
+   'onclick="issueReturnVoucher(\''+id+'\')">'+ic('gift',14)+'Generate come-back voucher</button>':''))+
   (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
    ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
   (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
@@ -4186,13 +4482,13 @@ window.editBranch=id=>{
 function catVouchers(){
  return '<div class="sec-h"><h2>Vouchers</h2><button class="btn sm" onclick="editVoucher()">'+
   ic('plus',15)+'New</button></div>'+
-  (D.vouchers.length?D.vouchers.map(v=>{const exp=v.expiry<today();
+  (D.vouchers.filter(v=>!isReturnV(v)).length?D.vouchers.filter(v=>!isReturnV(v)).map(v=>{const exp=v.expiry<today();
    return '<div class="item" onclick="editVoucher(\''+v.id+'\')"><div class="spread"><b>'+ic('tag',14)+' '+
     esc(v.id)+'</b>'+(exp?'<span class="pill r">Expired</span>':'<span class="pill g">Active</span>')+'</div>'+
     '<div class="tiny muted">'+(v.type==='pct'?v.value+'% off':rm(v.value)+' off')+
     (v.min?' · min spend '+rm(v.min):'')+(v.firstOnly?' · first-timers only':'')+
     ' · ends '+dstr(v.expiry)+' · used '+(v.used||0)+(v.cap?' of '+v.cap:'')+'</div></div>';}).join('')
-  :'<div class="empty">No vouchers yet.</div>');}
+  :'<div class="empty">No campaign vouchers yet.</div>')+rvSection();}
 window.editVoucher=id=>{
  const v=id?(D.vouchers.find(x=>x.id===id)||{}):{type:'pct',value:10,min:0,firstOnly:false,
   expiry:ymd(addDays(new Date(),30)),used:0,cap:0};
@@ -5782,6 +6078,7 @@ function vSet(){
  if(boss()){
   h+=bizPanel();
   h+=payPanel();
+  h+=rvPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" onclick="rebuildClientSearch()">'+ic('search',14)+'Rebuild client search</button>'+
