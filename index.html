@@ -669,6 +669,10 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .wkhead{font-size:10.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;
   margin:9px 2px 3px}
 
+
+/* ---------- money owed ---------- */
+.owe{color:var(--rose);font-weight:650;white-space:nowrap}
+.odue{color:var(--rose)}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -775,7 +779,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-19f';
+const BUILD='2026-09-20g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -941,6 +945,12 @@ async function loadRecentSales(days){
  const from=ymd(addDays(new Date(),-(days||45)));
  const s=await getDocs(query(collection(db,'sales'),where('date','>=',from),orderBy('date','desc'),limit(400)));
  SALES=s.docs.map(d=>({id:d.id,...d.data()}));
+ /* older bills that took an instalment recently, so the Day screen counts that money */
+ try{
+  const r=await getDocs(query(collection(db,'sales'),where('lastPaidDate','>=',from),limit(200)));
+  const have=new Set(SALES.map(x=>x.id));
+  r.docs.forEach(d=>{if(!have.has(d.id))SALES.push({id:d.id,...d.data()});});
+ }catch(e){console.warn('recent instalments',e);}
 }
 
 /* ============ seed ============ */
@@ -1109,6 +1119,8 @@ function tileBadge(t){
  if(t.id==='pkg'){const n=HELD.filter(p=>(p.balances||[]).some(b=>b.left>0)).length;
   return n?n+' active':'';}
  if(t.id==='prog')return PROGS.length?PROGS.length+' saved':'';
+ if(t.id==='pos'){const n=OUTSTANDING.filter(s=>s.branchId===ME.branchId&&saleBalance(s)>0).length;
+  return n?n+' owing':'';}
  if(t.id==='team'){const n=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
   .filter(x=>{const a=attToday(x.id);return a&&a.clockIn&&!a.clockOut;}).length;
   return n?n+' on shift':'';}
@@ -1262,6 +1274,9 @@ function vHome(){
  if(expiring.length)alerts.push({i:'package',t:expiring.length+' package'+
   (expiring.length>1?'s':'')+' expiring within 30 days',
   d:'Worth a call before the sessions are lost.',go:"go('pkg')"});
+ const late=OUTSTANDING.filter(s=>s.branchId===ME.branchId&&isOverdue(s)&&saleBalance(s)>0);
+ if(late.length&&can('pos'))alerts.push({i:'wallet',t:late.length+' instalment'+(late.length>1?'s':'')+
+  ' overdue · '+rm(owedSum(late)),d:late.slice(0,3).map(x=>x.customerName).join(', '),go:"go('pos')"});
  if(f.noShow)alerts.push({i:'alert',t:f.noShow+' no-show'+(f.noShow>1?'s':'')+' today',
   d:'Follow up while it is still fresh.',go:"go('book')"});
  if(alerts.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('bell',16)+
@@ -1833,7 +1848,14 @@ window.openCust=async(id,keep)=>{
    '\',\'profile\')">'+ic('user',14)+'Profile</button>'+
   '<button class="'+(custView==='history'?'on':'')+'" onclick="setCustView(\''+id+'\',\'history\')">'+
    ic('history',14)+'History</button></div>';
- if(custView==='profile'){modal(c.name,head+custProfile(c));return;}
+ if(custView==='profile'){
+  modal(c.name,head+custProfile(c));
+  /* fetch this client's packages fresh, then redraw if anything changed */
+  const before=JSON.stringify(HELD.filter(p=>p.customerId===id));
+  loadClientPackages(id).then(()=>{
+   if(custView!=='profile'||HISTFOR!==id)return;
+   if(JSON.stringify(HELD.filter(p=>p.customerId===id))!==before)modal(c.name,head+custProfile(c));});
+  return;}
  if(HIST&&HISTFOR===id){modal(c.name,head+custHistory(c));return;}
  modal(c.name,head+'<div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div>'+
   '<div class="skel" style="width:80%"></div><div class="skel" style="width:45%"></div></div>');
@@ -1841,6 +1863,7 @@ window.openCust=async(id,keep)=>{
  modal(c.name,head+custHistory(c));
 };
 function custProfile(c){
+ const money=memberOweCard(c.id)+memberPkgCard(c.id);
  const row=(k,v,icon)=>v?'<div class="k">'+(icon?ic(icon,12)+' ':'')+k+'</div><div class="v">'+v+'</div>':'';
  const age=c.dob?Math.floor(daysBetween(c.dob,new Date())/365.25):null;
  const ref=c.referrerId&&cust(c.referrerId)?cust(c.referrerId).name:'';
@@ -1874,12 +1897,14 @@ function custProfile(c){
   '<div class="fabrow">'+
    '<button class="btn sm" onclick="newAppt({customerId:\''+c.id+'\'})">'+ic('calendar',14)+'Book</button>'+
    '<button class="btn sm ghost" onclick="sellPkg(\''+c.id+'\')">'+ic('package',14)+'Sell package</button>'+
+   '<button class="btn sm ghost" onclick="checkoutFor(\''+c.id+'\')">'+ic('card',14)+'Checkout</button>'+
    '<button class="btn sm ghost" onclick="soapNote(\''+c.id+'\')">'+ic('note',14)+'Treatment note</button>'+
    (c.phone?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/6'+
     digits(c.phone)+'">'+ic('msg',14)+'WhatsApp</a>':'')+
    '<button class="btn sm ghost" style="color:var(--rose)" onclick="deleteCust(\''+c.id+
     '\')">'+ic('trash',14)+'Remove</button>'+
   '</div></div>'+
+  money+
   (c.notes?'<div class="card"><h3 style="margin-bottom:9px">Clinical notes</h3>'+
    '<div class="tiny dim" style="white-space:pre-wrap">'+esc(c.notes)+'</div></div>':'');
 }
@@ -1897,6 +1922,7 @@ function custHistory(c){
  const H=HIST||{appts:[],sales:[],packages:[],redemptions:[]};
  const paid=H.sales.filter(s=>!s.voided);
  const spend=paid.reduce((a,s)=>a+(s.total||0),0);
+ const owing=paid.reduce((a,s)=>a+saleBalance(s),0);
  const done=H.appts.filter(a=>a.status==='done');
  const noshow=H.appts.filter(a=>a.status==='no');
  const dates=done.map(a=>a.start).sort();
@@ -1910,9 +1936,13 @@ function custHistory(c){
   meta:(a.staffName||'')+(a.roomId?' · '+(room(a.roomId).name||''):''),
   tag:(STATUS[a.status]||[a.status])[0]}));
  paid.forEach(s=>events.push({at:s.at,kind:'sale',icon:'receipt',open:"showReceipt('"+s.id+"')",
-  title:'Bill '+(s.invoiceNo||''),amount:s.total,
+  title:'Bill '+(s.invoiceNo||'')+(saleBalance(s)>0?' · '+rm(saleBalance(s))+' owing':''),amount:s.total,
   meta:(s.items||[]).map(i=>i.name+(i.qty>1?' ×'+i.qty:'')).join(', '),
-  tag:(s.payments||[]).map(p=>p.method).join(' + ')}));
+  tag:(s.payments||[]).filter(p=>!p.date||p.date===s.date).map(p=>p.method).join(' + ')||'Nothing paid on the day'}));
+ paid.forEach(s=>(s.payments||[]).filter(p=>p.date&&p.date!==s.date).forEach(p=>events.push({
+  at:p.at||p.date,kind:'sale',icon:'wallet',open:"showReceipt('"+s.id+"')",
+  title:'Instalment · '+(s.invoiceNo||''),amount:p.amount,
+  meta:(p.byName?'Taken by '+p.byName:''),tag:p.method})));
  H.sales.filter(s=>s.voided).forEach(s=>events.push({at:s.voidedAt||s.at,kind:'no',icon:'close',
   title:'Bill voided '+(s.invoiceNo||''),meta:s.voidReason||'',tag:'Voided'}));
  H.packages.forEach(p=>{const pk=D.packages.find(x=>x.id===p.packageId)||{};
@@ -1955,7 +1985,10 @@ function custHistory(c){
   '<div class="kpi dark"><div class="lab">'+ic('money',12)+'Lifetime spend</div><div class="big">'+
    rm(spend)+'</div><div class="tiny" style="color:#9A9285">'+paid.length+' bills</div></div>'+
   kpi('Visits',done.length,(noshow.length?noshow.length+' no-show':'perfect attendance'),'check')+
-  kpi('Average bill',rm(paid.length?spend/paid.length:0),'','chart')+'</div>';
+  (owing>0?'<div class="kpi" style="border-color:var(--rose)"><div class="lab">'+ic('wallet',12)+
+   'Still owing</div><div class="big" style="color:var(--rose)">'+rm(owing)+'</div>'+
+   '<div class="tiny muted">on '+paid.filter(s=>saleBalance(s)>0).length+' bill(s)</div></div>':
+   kpi('Average bill',rm(paid.length?spend/paid.length:0),'','chart'))+'</div>';
  h+='<div class="card"><div class="kv">'+
   (dates.length?'<div class="k">'+ic('calendar',12)+' First visit</div><div class="v">'+dstr(dates[0])+'</div>'+
    '<div class="k">'+ic('clock',12)+' Last visit</div><div class="v">'+dstr(dates[dates.length-1])+
@@ -2315,7 +2348,7 @@ async function loadHeld(){
 }
 
 /* ============ checkout ============ */
-let cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0};
+let cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false,instal:false,dueDate:''};
 function cartTotals(){
  const sub=cart.items.reduce((a,i)=>a+i.price*i.qty,0);
  const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
@@ -2338,9 +2371,11 @@ function vPos(){
    'Points</button>':'')+'</div>'+
   '</div>';
  h+='<div class="card"><h3>Items</h3>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
-  '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package'}[i.kind]||i.kind)+
+  '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package',
+   redeem:'Package session'}[i.kind]||i.kind)+
   '</div>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
+  (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
   '</div></td>'+
   '<td class="num"><div class="qty"><button onclick="cartQty('+x+',-1)">−</button><span>'+i.qty+
   '</span><button onclick="cartQty('+x+',1)">+</button></div><div class="tiny muted" style="margin-top:3px">'+
@@ -2362,9 +2397,12 @@ function vPos(){
   (cart.payments.length?'<tr><td>Balance due</td><td class="num"><b>'+rm(t.balance)+'</b></td></tr>':'')+'</table>'+
   '<div class="row wrap2" style="margin-top:10px">'+['Cash','Card','DuitNow QR','Transfer'].map(m=>
    '<button class="btn sm ghost" onclick="addPay(\''+m+'\')">'+m+'</button>').join('')+'</div>'+
+  instalBox(t)+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" '+
-  (cart.items.length&&Math.abs(t.balance)<0.01?'':'disabled')+' id="co-go" onclick="checkout()">'+
-  ic('check',16)+'Complete payment</button></div>';
+  (canComplete(t)?'':'disabled')+' id="co-go" onclick="checkout()">'+ic('check',16)+
+  (cart.instal&&t.balance>0.009?'Save bill · '+rm(t.balance)+' outstanding':'Complete payment')+
+  '</button></div>';
+ h+=outstandingCard();
  h+='<div class="card"><div class="sec-h"><h2>Recent bills</h2>'+
   (boss()?'<button class="btn sm ghost" onclick="cashUp()">'+ic('list',15)+'Cash up</button>':'')+'</div>'+
   (SALES.filter(s=>s.branchId===ME.branchId).slice(0,8).map(s=>
@@ -2376,11 +2414,35 @@ function vPos(){
 window.rerender=()=>{render();};
 /* inline handlers run outside this module, so they cannot touch `cart` directly */
 window.setCartDiscount=v=>{cart.discount=Math.max(0,+v||0);render();};
+function canComplete(t){
+ if(!cart.items.length)return false;
+ if(t.balance<0.01)return true;
+ return !!(cart.instal&&cart.customerId);
+}
+function instalBox(t){
+ if(!cart.items.length||t.balance<0.01)return '';
+ if(!cart.customerId)return '<div class="tiny muted" style="margin-top:10px">'+ic('wallet',12)+
+  ' To let the client pay the rest later, choose a registered client above.</div>';
+ const c=cust(cart.customerId)||{};
+ return '<div class="fieldset" style="margin:12px 0 0">'+
+  '<label class="row" style="gap:9px;margin:0"><input type="checkbox"'+(cart.instal?' checked':'')+
+  ' onchange="setInstal(this.checked)"> <b>Pay the rest later (instalment)</b></label>'+
+  (cart.instal?'<div class="tiny dim" style="margin:9px 0">'+rm(t.paid)+' paid today. <b>'+
+   rm(t.balance)+'</b> will be recorded as owed by '+esc(c.name||'the client')+'.</div>'+
+   '<label>Balance due by</label><input class="f" type="date" id="co-due" value="'+esc(cart.dueDate||'')+
+   '" onchange="setDueDate(this.value)" style="margin-bottom:0">':'')+'</div>';
+}
 window.clearCartPoints=()=>{cart.points=0;render();};
 function posPicked(id){
+ const was=cart.customerId;
  cart.walkin=id==='__walkin';
  cart.customerId=(id&&id!=='__walkin')?id:'';
  cart.points=0;
+ if(!cart.customerId)cart.instal=false;
+ /* sessions from one client's packages never travel to another client's bill */
+ if(was!==cart.customerId&&cart.items.some(i=>i.kind==='redeem')){
+  cart.items=cart.items.filter(i=>i.kind!=='redeem');toast('Package sessions removed — they belonged to the previous client');}
+ if(cart.customerId)loadClientPackages(cart.customerId).then(()=>{if(TAB==='pos')render();});
  /* a package cannot stay on a bill that no longer has a client */
  if(!cart.customerId&&cart.items.some(i=>i.kind==='package')){
   cart.items=cart.items.filter(i=>i.kind!=='package');toast('Packages removed — they need a client');}
@@ -2393,6 +2455,12 @@ function posClientNote(){
  const bits=[];
  if(held.length)bits.push(ic('package',12)+' '+held.length+' active package'+(held.length>1?'s':'')+': '+
   held.map(p=>esc(pkgOf(p.packageId).name||'package')+' ('+(p.balances||[]).reduce((a,b)=>a+b.left,0)+' left)').join(', '));
+ const owe=owedBy(c.id);
+ if(owe.length)bits.push('<span class="odue">'+ic('wallet',12)+' Owes '+rm(owedSum(owe))+' on '+owe.length+
+  ' bill'+(owe.length>1?'s':'')+'</span> <button class="btn sm ghost" style="padding:3px 9px" '+
+  'onclick="collectPayment(\''+owe[0].id+'\')">Collect</button>');
+ if(held.length)bits.push('<button class="btn sm ghost" style="padding:3px 9px;justify-self:start" '+
+  'onclick="pickItem(\'redeem\')">'+ic('check',12)+'Redeem a session</button>');
  if(loy().on)bits.push(ic('award',12)+' '+((c.points)||0).toLocaleString()+' points · '+
   esc(tierOf(c.pointsEarned||c.points||0)));
  return bits.length?'<div class="tiny muted" style="margin-top:8px;display:grid;gap:3px">'+
@@ -2400,6 +2468,209 @@ function posClientNote(){
 }
 window.dropItem=i=>{cart.items.splice(i,1);render();};
 window.dropPay=i=>{cart.payments.splice(i,1);render();};
+/* ============ instalments and outstanding balances ============ */
+/* A bill can be saved with part of it still owed, but only against a named client
+   so there is someone to collect from. Every payment carries its own date, which is
+   what the Day screen and the cash drawer count — not the date of the bill. */
+let OUTSTANDING=[],COLLECT_ID='';
+const r2=n=>Math.round((+n||0)*100)/100;
+/* bills from before instalments existed were always paid in full */
+const saleBalance=s=>s&&s.balance!==undefined?r2(s.balance):0;
+const salePaid=s=>s&&s.paid!==undefined?r2(s.paid):r2((s&&s.total)||0);
+const isOverdue=s=>!!(s.dueDate&&s.dueDate<today());
+async function loadOutstanding(){
+ try{
+  const s=await getDocs(query(collection(db,'sales'),where('balance','>',0),limit(400)));
+  OUTSTANDING=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.voided)
+   .sort((a,b)=>String(a.dueDate||a.date).localeCompare(String(b.dueDate||b.date)));
+ }catch(e){OUTSTANDING=[];console.warn('outstanding',e);}
+}
+const owedBy=cid=>OUTSTANDING.filter(s=>s.customerId===cid&&saleBalance(s)>0);
+const owedSum=list=>r2(list.reduce((a,s)=>a+saleBalance(s),0));
+function oweRow(s){
+ const od=isOverdue(s),pc=s.total?Math.min(100,salePaid(s)/s.total*100):0;
+ return '<div class="item" onclick="collectPayment(\''+s.id+'\')">'+
+  '<div class="spread"><b>'+esc(s.customerName||'')+'</b>'+
+  '<span class="owe">'+rm(saleBalance(s))+'</span></div>'+
+  '<div class="tiny muted">'+esc(s.invoiceNo||'')+' · billed '+dshort(s.at)+' · '+rm(salePaid(s))+
+  ' of '+rm(s.total)+' paid'+(s.dueDate?' · <span class="'+(od?'odue':'')+'">'+
+   (od?'overdue since ':'due ')+dshort(s.dueDate)+'</span>':'')+'</div>'+
+  '<div class="bar" style="margin-top:7px"><i style="width:'+pc+'%"></i></div></div>';
+}
+function outstandingCard(){
+ const mine=OUTSTANDING.filter(s=>s.branchId===ME.branchId&&saleBalance(s)>0);
+ if(!mine.length)return '';
+ const od=mine.filter(isOverdue);
+ return '<div class="card"><div class="sec-h"><h2>'+ic('wallet',16)+' Outstanding</h2>'+
+  '<span class="pill r">'+rm(owedSum(mine))+'</span></div>'+
+  '<div class="tiny muted" style="margin-bottom:9px">'+mine.length+' bill'+(mine.length>1?'s':'')+
+  ' part-paid'+(od.length?' · <span class="odue">'+od.length+' overdue</span>':'')+
+  ' · tap one to collect a payment</div>'+
+  mine.slice(0,8).map(oweRow).join('')+
+  (mine.length>8?'<div class="tiny muted">and '+(mine.length-8)+' more</div>':'')+'</div>';
+}
+window.collectPayment=id=>{
+ const s=OUTSTANDING.find(x=>x.id===id)||SALES.find(x=>x.id===id)||
+  (((typeof HIST!=='undefined'&&HIST)||{}).sales||[]).find(x=>x.id===id);
+ if(!s){toast('Bill not found');return;}
+ const bal=saleBalance(s);
+ if(bal<=0||s.voided){window.showReceipt(id);return;}
+ COLLECT_ID=id;
+ const od=isOverdue(s);
+ modal('Collect payment','<div class="card">'+
+  '<div class="chead" style="margin-bottom:10px"><div class="avatar">'+esc(initials(s.customerName||'?'))+
+  '</div><div><h3>'+esc(s.customerName||'')+'</h3><div class="tiny muted">'+esc(s.invoiceNo||'')+
+  ' · billed '+dstr(s.at)+'</div></div></div>'+
+  '<div class="grid g3" style="margin-bottom:11px">'+
+   kpi('Bill total',rm(s.total),'','receipt')+kpi('Paid so far',rm(salePaid(s)),
+    (s.payments||[]).length+' payment'+((s.payments||[]).length===1?'':'s'),'check')+
+   '<div class="kpi dark"><div class="lab">'+ic('wallet',12)+'Still owed</div><div class="big">'+
+    rm(bal)+'</div><div class="tiny" style="color:#9A9285">'+(s.dueDate?(od?'overdue since ':'due ')+
+    dshort(s.dueDate):'no due date')+'</div></div></div>'+
+  '<div class="tiny muted" style="margin-bottom:5px">Items: '+
+   (s.items||[]).map(i=>esc(i.name)+(i.qty>1?' ×'+i.qty:'')).join(', ')+'</div>'+
+  '<h3 style="margin:10px 0 6px">Payments so far</h3>'+
+  ((s.payments||[]).length?(s.payments||[]).map(p=>'<div class="spread tiny" style="padding:5px 0;'+
+    'border-bottom:1px solid var(--line-2)"><span>'+esc(p.method)+' · '+
+    dstr(p.at||s.at)+(p.byName?' · '+esc(p.byName):'')+'</span><b>'+rm(p.amount)+'</b></div>').join('')
+   :'<div class="tiny muted">Nothing paid yet.</div>')+
+  '<div class="fieldset" style="margin-top:13px"><h3>'+ic('card',13)+'This payment</h3>'+
+  '<div class="grid g2"><div><label>Amount (RM)</label><input class="f" type="number" step="0.01" '+
+   'id="cl-a" value="'+bal.toFixed(2)+'" style="font-size:18px"></div>'+
+  '<div><label>Method</label><select class="f" id="cl-m">'+
+   ['Cash','Card','DuitNow QR','Transfer'].map(m=>'<option>'+m+'</option>').join('')+'</select></div></div>'+
+  '<div class="fabrow" style="margin:0">'+[0.25,0.5,1].map(f=>'<button type="button" class="btn sm ghost" '+
+   'onclick="document.getElementById(\'cl-a\').value=\''+r2(bal*f).toFixed(2)+'\'">'+
+   (f===1?'Full '+rm(bal):Math.round(f*100)+'% · '+rm(r2(bal*f)))+'</button>').join('')+'</div></div>'+
+  '<div id="cl-e" class="tiny" style="color:var(--rose);margin:4px 0 8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="cl-go" onclick="saveCollect()">'+
+  ic('check',16)+'Record payment</button>'+
+  '<div class="fabrow"><button class="btn sm ghost" onclick="showReceipt(\''+id+'\')">'+ic('receipt',14)+
+  'View bill</button></div></div>');
+};
+window.saveCollect=async()=>{
+ const id=COLLECT_ID;
+ const amt=r2(($('#cl-a')||{}).value);
+ const method=($('#cl-m')||{}).value||'Cash';
+ const err=$('#cl-e');
+ if(!(amt>0)){err.textContent='Enter the amount being paid.';return;}
+ const btn=$('#cl-go');btn.disabled=true;
+ try{
+  let out=null;
+  /* a transaction, so two front-desk tablets collecting at once cannot both succeed */
+  await runTransaction(db,async tx=>{
+   const ref=doc(db,'sales',id);
+   const snap=await tx.get(ref);
+   if(!snap.exists())throw new Error('This bill no longer exists.');
+   const cur=snap.data();
+   if(cur.voided)throw new Error('This bill has been voided.');
+   const bal=saleBalance(cur);
+   if(bal<=0)throw new Error('This bill is already fully paid.');
+   if(amt>bal+0.001)throw new Error('That is more than the '+rm(bal)+' still owed.');
+   const p={method,amount:amt,at:new Date().toISOString(),date:today(),by:UID,byName:ME.name,instalment:true};
+   const paid=r2(salePaid(cur)+amt),balance=Math.max(0,r2(cur.total-paid));
+   tx.update(ref,{payments:[...(cur.payments||[]),p],paid,balance,
+    status:balance>0?'partial':'paid',lastPaidDate:today(),lastPaidAt:p.at});
+   out={cur,p,paid,balance};
+  });
+  const patch={payments:[...(out.cur.payments||[]),out.p],paid:out.paid,balance:out.balance,
+   status:out.balance>0?'partial':'paid',lastPaidDate:today(),lastPaidAt:out.p.at};
+  [OUTSTANDING,SALES,(((typeof HIST!=='undefined'&&HIST)||{}).sales||[])].forEach(arr=>{
+   const x=arr.find(y=>y.id===id);if(x)Object.assign(x,patch);});
+  if(!SALES.some(x=>x.id===id))SALES.unshift({id,...out.cur,...patch});
+  if(out.balance<=0)OUTSTANDING=OUTSTANDING.filter(x=>x.id!==id);
+  /* points follow the money: earned on what has actually been paid */
+  if(out.cur.customerId&&out.cur.total>0){
+   const base=(out.cur.net!==undefined?out.cur.net:out.cur.total)*amt/out.cur.total;
+   await awardPoints(out.cur.customerId,out.cur.customerName||'',base,(out.cur.invoiceNo||'')+' instalment');
+  }
+  await audit('Instalment collected',(out.cur.invoiceNo||'')+' · '+(out.cur.customerName||'')+' · '+
+   method+' '+rm(amt)+' · '+(out.balance>0?rm(out.balance)+' still owed':'settled'));
+  window.closeModal();render();
+  toast(out.balance>0?rm(amt)+' received · '+rm(out.balance)+' still owed':'Bill fully settled');
+  window.showReceipt(id);
+ }catch(e){err.textContent=friendly(e);btn.disabled=false;}
+};
+window.setInstal=on=>{
+ cart.instal=!!on;
+ if(on&&!cart.dueDate)cart.dueDate=ymd(addDays(new Date(),30));
+ render();
+};
+window.setDueDate=v=>{cart.dueDate=v||'';};
+
+/* ============ client package balances ============ */
+async function loadClientPackages(cid){
+ if(!cid)return;
+ try{
+  const s=await getDocs(query(collection(db,'customerPackages'),where('customerId','==',cid),limit(100)));
+  s.docs.forEach(d=>{
+   const x={id:d.id,...d.data()},i=HELD.findIndex(h=>h.id===x.id);
+   if(i>=0)HELD[i]=x;else HELD.push(x);});
+ }catch(e){console.warn('client packages',e);}
+}
+const pkgExpired=cp=>String(cp.expiry||'').slice(0,10)<today();
+/* every session line still available on a client's packages */
+function redeemLines(cid){
+ const out=[];
+ HELD.filter(p=>p.customerId===cid).forEach(cp=>(cp.balances||[]).forEach((b,i)=>{
+  if(!(b.left>0))return;
+  out.push({key:cp.id+'|'+i,cpId:cp.id,line:i,serviceId:b.serviceId,
+   name:svc(b.serviceId).name||'Session',pkgName:pkgOf(cp.packageId).name||'Package',
+   left:b.left,total:b.total,expiry:cp.expiry,expired:pkgExpired(cp),saleId:cp.saleId||''});}));
+ return out.sort((a,b)=>(a.expired?1:0)-(b.expired?1:0)||String(a.expiry).localeCompare(String(b.expiry)));
+}
+const redeemInCart=(cpId,line)=>cart.items.filter(i=>i.kind==='redeem'&&i.cpId===cpId&&i.line===line)
+ .reduce((a,i)=>a+i.qty,0);
+window.checkoutFor=async cid=>{
+ if(cart.customerId!==cid)cart.items=cart.items.filter(i=>i.kind!=='redeem'&&i.kind!=='package');
+ cart.customerId=cid;cart.walkin=false;cart.points=0;
+ window.closeModal();window.go('pos');
+ await loadClientPackages(cid);render();
+};
+window.redeemAtCheckout=async cid=>{
+ if(cart.customerId!==cid)cart.items=cart.items.filter(i=>i.kind!=='redeem'&&i.kind!=='package');
+ cart.customerId=cid;cart.walkin=false;cart.points=0;
+ window.closeModal();window.go('pos');
+ await loadClientPackages(cid);render();
+ window.pickItem('redeem');
+};
+function memberPkgCard(cid){
+ const list=HELD.filter(p=>p.customerId===cid).sort((a,b)=>{
+  const al=(a.balances||[]).some(x=>x.left>0)&&!pkgExpired(a)?0:1;
+  const bl=(b.balances||[]).some(x=>x.left>0)&&!pkgExpired(b)?0:1;
+  return al-bl||String(a.expiry).localeCompare(String(b.expiry));});
+ if(!list.length)return '<div class="card"><div class="sec-h"><h3>'+ic('package',15)+
+  ' Packages</h3></div><div class="tiny muted">No packages bought yet.</div></div>';
+ const active=list.filter(p=>(p.balances||[]).some(x=>x.left>0)&&!pkgExpired(p));
+ const left=active.reduce((a,p)=>a+(p.balances||[]).reduce((x,b)=>x+b.left,0),0);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('package',15)+' Packages</h3>'+
+  '<span class="pill g">'+left+' session'+(left===1?'':'s')+' left</span></div>'+
+  list.map(p=>{
+   const tot=(p.balances||[]).reduce((a,b)=>a+b.total,0),rem=(p.balances||[]).reduce((a,b)=>a+b.left,0);
+   const d=daysBetween(new Date(),p.expiry),exp=pkgExpired(p);
+   const bill=OUTSTANDING.find(s=>s.id===p.saleId&&saleBalance(s)>0);
+   return '<div class="item" style="cursor:default'+(rem===0||exp?';opacity:.62':'')+'">'+
+    '<div class="spread"><b>'+esc(pkgOf(p.packageId).name||'Package')+'</b>'+
+    (rem===0?'<span class="pill">Used up</span>':exp?'<span class="pill r">Expired '+dshort(p.expiry)+'</span>':
+     '<span class="pill '+(d<=30?'a':'g')+'">'+d+' days left</span>')+'</div>'+
+    '<div class="tiny muted" style="margin:4px 0 6px">Bought '+dstr(p.soldAt)+
+    (p.invoiceNo?' · '+esc(p.invoiceNo):'')+' · '+rem+' of '+tot+' sessions left</div>'+
+    (p.balances||[]).map(b=>'<div style="margin:6px 0"><div class="spread tiny"><span>'+
+     esc(svc(b.serviceId).name||b.serviceId)+'</span><span><b>'+b.left+'</b> of '+b.total+
+     '</span></div><div class="bar"><i class="brass" style="width:'+
+     (b.total?(b.total-b.left)/b.total*100:0)+'%"></i></div></div>').join('')+
+    (bill?'<div class="tiny odue" style="margin-top:6px">'+ic('alert',11)+' Bill '+esc(bill.invoiceNo||'')+
+     ' still has '+rm(saleBalance(bill))+' owing</div>':'')+'</div>';}).join('')+
+  (active.length?'<button class="btn sm" style="margin-top:4px" onclick="redeemAtCheckout(\''+cid+'\')">'+
+   ic('check',14)+'Redeem at checkout</button>':'')+'</div>';
+}
+function memberOweCard(cid){
+ const list=owedBy(cid);
+ if(!list.length)return '';
+ return '<div class="card"><div class="sec-h"><h3>'+ic('wallet',15)+' Owes</h3>'+
+  '<span class="pill r">'+rm(owedSum(list))+'</span></div>'+list.map(oweRow).join('')+'</div>';
+}
+
 /* ============ checkout: item picker with treatments, products and packages ============ */
 const pkgOf=id=>D.packages.find(p=>p.id===id)||{};
 const pkgWorth=p=>(p.items||[]).reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0);
@@ -2414,12 +2685,15 @@ window.pickItem=kind=>{PICKTAB=kind||PICKTAB;PICKSTAFF=PICKSTAFF||UID;paintPicke
 window.setPickTab=k=>{PICKTAB=k;paintPicker();};
 window.setPickStaff=v=>{PICKSTAFF=v;};
 function pickList(kind){
+ if(kind==='redeem')return cart.customerId?redeemLines(cart.customerId):[];
  if(kind==='service')return D.services.filter(x=>x.active!==false);
  if(kind==='package')return D.packages.filter(x=>x.active!==false);
  return D.products.filter(p=>p.type==='retail'&&p.active!==false);
 }
 function paintPicker(){
  const tabs=[['service','Treatments','spark'],['product','Products','stock'],['package','Packages','package']];
+ if(cart.customerId)tabs.push(['redeem','Redeem','check']);
+ if(PICKTAB==='redeem'&&!cart.customerId)PICKTAB='service';
  const staffOpts=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false)
   .map(s=>'<option value="'+s.id+'"'+(s.id===PICKSTAFF?' selected':'')+'>'+esc(s.name)+'</option>').join('');
  modal('Add to bill','<div class="seg">'+tabs.map(t=>
@@ -2427,7 +2701,7 @@ function paintPicker(){
    t[1]+' <span class="muted tiny">'+pickList(t[0]).length+'</span></button>').join('')+'</div>'+
   '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span>'+
   '<input class="f" id="pk-q" placeholder="Search '+
-   ({service:'treatments',product:'products',package:'packages'}[PICKTAB])+'" autocomplete="off" '+
+   ({service:'treatments',product:'products',package:'packages',redeem:'this client\'s packages'}[PICKTAB])+'" autocomplete="off" '+
    'oninput="pickFilter()"></div>'+
   '<label>Credited to</label><select class="f" id="pk-s" onchange="setPickStaff(this.value)">'+
    staffOpts+'</select>'+
@@ -2440,6 +2714,7 @@ window.pickFilter=()=>{
 };
 function pickRows(q){
  const t=String(q||'').trim().toLowerCase();
+ if(PICKTAB==='redeem')return redeemRows(t);
  const list=pickList(PICKTAB).filter(x=>!t||String(x.name||'').toLowerCase().includes(t)||
   String(x.cat||'').toLowerCase().includes(t)||String(x.id||'').toLowerCase().includes(t));
  const needClient=PICKTAB==='package'&&!cart.customerId;
@@ -2465,6 +2740,23 @@ function pickRows(q){
    '<span class="cpmeta"><b>'+esc(x.name)+'</b><span>'+sub+'</span></span>'+
    '<span class="pkprice">'+rm(x.price)+'</span></button>';}).join('');
 }
+function redeemRows(t){
+ const c=cust(cart.customerId)||{};
+ const list=redeemLines(cart.customerId).filter(x=>!t||x.name.toLowerCase().includes(t)||
+  x.pkgName.toLowerCase().includes(t));
+ if(!list.length)return '<div class="empty">'+ic('package',22)+'<div>'+esc(c.name||'This client')+
+  (t?' has nothing matching “'+esc(t)+'”.':' has no package sessions left to redeem.')+'</div></div>';
+ return '<div class="tiny muted" style="margin-bottom:8px">Sessions left on '+esc(c.name||'')+
+  '\'s packages. Tap one to add it to this bill at no charge.</div>'+list.map(x=>{
+  const avail=x.left-redeemInCart(x.cpId,x.line);
+  const bill=OUTSTANDING.find(s=>s.id===x.saleId&&saleBalance(s)>0);
+  return '<button type="button" class="pkrow" id="pk-'+esc(x.key)+'"'+(avail<=0?' disabled':'')+
+   ' onclick="pickAdd(\'redeem\',\''+esc(x.key)+'\')"><span class="pkico">'+ic('package',18)+'</span>'+
+   '<span class="cpmeta"><b>'+esc(x.name)+'</b><span>'+esc(x.pkgName)+' · <b>'+avail+'</b> of '+x.total+
+   ' left'+(x.expired?' · <span class="odue">expired '+dshort(x.expiry)+'</span>':' · until '+dshort(x.expiry))+
+   (bill?' · <span class="odue">bill '+rm(saleBalance(bill))+' unpaid</span>':'')+'</span></span>'+
+   '<span class="pkprice">'+(avail>0?'Redeem':'All added')+'</span></button>';}).join('');
+}
 function pickFoot(){
  const n=cart.items.reduce((a,i)=>a+i.qty,0);
  return '<div style="flex:1"><b>'+n+' item'+(n===1?'':'s')+'</b><div class="tiny muted">'+
@@ -2472,6 +2764,7 @@ function pickFoot(){
   '<button class="btn" onclick="closeModal();render()">'+ic('check',15)+'Done</button>';
 }
 window.pickAdd=(kind,id)=>{
+ if(kind==='redeem')return pickRedeem(id);
  const it=itemSrc(kind,id);if(!it||!it.name)return;
  if(kind==='package'&&!cart.customerId){toast('Choose the client first');return;}
  const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
@@ -2487,11 +2780,29 @@ window.pickAdd=(kind,id)=>{
  if(r&&r.classList){r.classList.add('pkadded');setTimeout(()=>r.classList&&r.classList.remove('pkadded'),450);}
  toast(it.name+(qty>1?' ×'+qty:'')+' added');
 };
+function pickRedeem(key){
+ const x=redeemLines(cart.customerId).find(l=>l.key===key);
+ if(!x){toast('That package session is no longer available');return;}
+ if(x.left-redeemInCart(x.cpId,x.line)<=0){toast('No sessions left on this line');return;}
+ if(x.expired&&!confirm(x.pkgName+' expired on '+dstr(x.expiry)+'. Redeem anyway?'))return;
+ const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
+ const same=cart.items.find(i=>i.kind==='redeem'&&i.cpId===x.cpId&&i.line===x.line&&i.staffId===staffId);
+ if(same)same.qty++;
+ else cart.items.push({kind:'redeem',id:x.serviceId,cpId:x.cpId,line:x.line,name:x.name,
+  pkgName:x.pkgName,price:0,qty:1,staffId});
+ render();
+ const b=document.getElementById('pk-list');if(b)b.innerHTML=pickRows(
+  ((document.getElementById('pk-q')||{}).value)||'');
+ const f=document.getElementById('pk-foot');if(f)f.innerHTML=pickFoot();
+ toast(x.name+' added from '+x.pkgName);
+}
 window.cartQty=(x,d)=>{
  const i=cart.items[x];if(!i)return;
  const q=i.qty+d;
  if(q<1){cart.items.splice(x,1);render();return;}
  if(i.kind==='product'){const st=stockOf(i.id);if(!st||st.qty<q){toast('Not enough stock');return;}}
+ if(i.kind==='redeem'&&d>0){const l=redeemLines(cart.customerId).find(z=>z.cpId===i.cpId&&z.line===i.line);
+  if(!l||redeemInCart(i.cpId,i.line)+d>l.left){toast('No more sessions left on that package');return;}}
  if(i.kind==='package'&&q>1&&!confirm('Sell '+q+' of the same package to one client?'))return;
  i.qty=q;render();
 };
@@ -2546,10 +2857,13 @@ window.checkout=async()=>{
  try{
   // prices are re-read from the catalogue, never trusted from the cart UI
   const items=cart.items.map(i=>{
+   if(i.kind==='redeem'){const sv=svc(i.id);
+    return{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
+     cpId:i.cpId,line:i.line,pkgName:i.pkgName||''};}
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
    return{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId};});
-  if(items.some(i=>i.kind==='package')&&!cart.customerId)
+  if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
   const sub=items.reduce((a,i)=>a+i.price*i.qty,0);
   const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
@@ -2559,11 +2873,66 @@ window.checkout=async()=>{
   const total=net+sst;
   const c=cust(cart.customerId);
   const invoiceNo='INV-'+Date.now().toString().slice(-8);
+  /* what was handed over, what was given back, and what is still owed */
+  const nowIso=new Date().toISOString();
+  const tendered=r2(cart.payments.reduce((a,p)=>a+p.amount,0));
+  const change=Math.max(0,r2(tendered-total));
+  const pays=cart.payments.map(p=>({method:p.method,amount:r2(p.amount),at:nowIso,date:today(),
+   by:UID,byName:ME.name}));
+  if(change>0){ /* the change comes back out of the last cash payment */
+   const cashP=[...pays].reverse().find(p=>/cash/i.test(p.method))||pays[pays.length-1];
+   cashP.amount=r2(cashP.amount-change);cashP.tendered=r2(cashP.amount+change);
+  }
+  const paid=r2(Math.min(tendered,total)),balance=Math.max(0,r2(total-paid));
+  if(balance>0.009){
+   if(!cart.customerId||!cart.instal)throw new Error('The bill is not fully paid. Take the rest, '+
+    'or tick "Pay the rest later" for a registered client.');
+   if(paid<=0&&!confirm('Nothing is being paid today. Record the whole '+rm(total)+' as owed by '+
+    (c?c.name:'the client')+'?'))throw new Error('Cancelled — nothing saved.');
+  }
+  /* package sessions are taken off first, so a bill is never saved for sessions that are gone */
+  const reds=items.filter(i=>i.kind==='redeem');
+  for(const cpId of [...new Set(reds.map(r=>r.cpId))]){
+   const lines=reds.filter(r=>r.cpId===cpId);
+   let after=null;
+   await runTransaction(db,async tx=>{
+    const pref=doc(db,'customerPackages',cpId);
+    const snap=await tx.get(pref);
+    if(!snap.exists())throw new Error('A package on this bill no longer exists.');
+    const d=snap.data();
+    if(d.customerId!==cart.customerId)throw new Error('That package belongs to another client.');
+    const bal=(d.balances||[]).map(b=>({...b}));
+    for(const r of lines){
+     if(!bal[r.line]||bal[r.line].left<r.qty)
+      throw new Error('Not enough sessions left for '+r.name+'. Someone may have just redeemed one.');
+     bal[r.line].left-=r.qty;r.remaining=bal[r.line].left;r.packageId=d.packageId;
+    }
+    tx.update(pref,{balances:bal,lastRedeemedAt:nowIso,lastRedeemedBy:UID});
+    after=bal;
+   });
+   const local=HELD.find(h=>h.id===cpId);if(local)local.balances=after;
+  }
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
    customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',sst,total,date:today(),at:new Date().toISOString(),
-   voided:false,payments:cart.payments.slice(),createdBy:UID,invoiceNo});
+   voided:false,payments:pays,createdBy:UID,invoiceNo,
+   net:r2(net),paid,balance,status:balance>0?'partial':'paid',
+   dueDate:balance>0?(cart.dueDate||''):'',tendered,change,
+   lastPaidDate:paid>0?today():'',lastPaidAt:paid>0?nowIso:''});
+  if(balance>0)OUTSTANDING.unshift({id:ref.id,branchId:ME.branchId,customerId:cart.customerId,
+   customerName:c?c.name:'',items,total,net:r2(net),paid,balance,status:'partial',
+   dueDate:cart.dueDate||'',payments:pays,invoiceNo,date:today(),at:nowIso});
+  /* one redemption record per session used, for the client's history */
+  for(const r of reds){
+   for(let k=0;k<r.qty;k++){
+    await addDoc(collection(db,'redemptions'),{customerId:cart.customerId,customerName:c?c.name:'',
+     customerPackageId:r.cpId,packageId:r.packageId||'',serviceId:r.id,serviceName:r.name,
+     remaining:r.remaining+(r.qty-1-k),branchId:ME.branchId,staffId:UID,staffName:ME.name,
+     therapistId:r.staffId,therapistName:stf(r.staffId).name||'',saleId:ref.id,invoiceNo,
+     at:nowIso,date:today()});
+   }
+  }
   /* each package on the bill becomes a balance on the client's account. Its value is
      what was actually paid for it after bill discounts, so package liability stays true. */
   const share=sub>0?net/sub:1;
@@ -2582,22 +2951,27 @@ window.checkout=async()=>{
   }
   for(const i of items){
    if(i.kind==='product'){const st=stockOf(i.id);if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-i.qty)});st.qty-=i.qty;}}
-   if(i.kind==='service'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
+   if(i.kind==='service'||i.kind==='redeem'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
   if(cart.voucher){try{await updateDoc(doc(db,'vouchers',cart.voucher.id),{used:increment(1)});}catch(e){}}
   let earned=0;
   if(cart.customerId){
    if(cart.points>0)await spendPoints(cart.customerId,c?c.name:'',cart.points,invoiceNo);
-   earned=await awardPoints(cart.customerId,c?c.name:'',net,invoiceNo);
+   /* points on what was paid today; later instalments earn the rest as they come in */
+   earned=await awardPoints(cart.customerId,c?c.name:'',total>0?net*paid/total:0,invoiceNo);
   }
   await audit('Bill completed',invoiceNo+' · '+rm(total)+' · '+(c?c.name:'Walk-in')+
    (newPkgs.length?' · packages: '+newPkgs.join(', '):''));
-  cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false};
+  cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false,
+   instal:false,dueDate:''};
   await loadRecentSales();
   if(newPkgs.length)await loadHeld();
   render();
-  if(newPkgs.length)toast(newPkgs.length+' package'+(newPkgs.length>1?'s':'')+' added to '+(c?c.name:'the client'));
+  if(balance>0)toast('Saved · '+rm(balance)+' outstanding for '+(c?c.name:'the client'));
+  else if(reds.length)toast(reds.reduce((a,r)=>a+r.qty,0)+' package session'+
+   (reds.reduce((a,r)=>a+r.qty,0)>1?'s':'')+' redeemed');
+  else if(newPkgs.length)toast(newPkgs.length+' package'+(newPkgs.length>1?'s':'')+' added to '+(c?c.name:'the client'));
   else if(earned)toast('Bill saved · '+earned+' loyalty points earned');
   window.openSale(ref.id);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
@@ -2731,7 +3105,9 @@ function receiptHTML(s){
  const sub=(s.items||[]).reduce((a,i)=>a+i.price*i.qty,0);
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
   (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
-  (i.price===0?'<div class="tiny muted">Package session — no charge</div>':'')+
+  (i.kind==='redeem'?'<div class="tiny muted">Package session'+(i.pkgName?' · '+esc(i.pkgName):'')+
+   (i.remaining!==undefined?' · '+i.remaining+' left after this':'')+' — no charge</div>':
+   (i.price===0?'<div class="tiny muted">Package session — no charge</div>':''))+
   '</td><td class="num">'+i.qty+'</td><td class="num">'+rm(i.price)+'</td>'+
   '<td class="num">'+rm(i.price*i.qty)+'</td></tr>').join('');
  const paid=(s.payments||[]).reduce((a,p)=>a+p.amount,0);
@@ -2762,11 +3138,19 @@ function receiptHTML(s){
    (s.pointsUsed?'<tr><td>Loyalty points used</td><td class="num">'+s.pointsUsed+'</td></tr>':'')+
    (s.sst?'<tr><td>SST '+((D.meta.biz||{}).sstRate||8)+'%</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
    '<tr class="grand"><td>Total</td><td class="num">'+rm(s.total)+'</td></tr>'+
-   (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+'</td><td class="num">'+
-    rm(p.amount)+'</td></tr>').join('')+
-   (paid-s.total>0.009?'<tr class="pay"><td>Change</td><td class="num">'+rm(paid-s.total)+'</td></tr>':'')+
+   (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+
+    ((p.date&&p.date!==s.date)?' · '+dshort(p.at||p.date):'')+
+    (p.tendered?' · tendered '+rm(p.tendered):'')+'</td><td class="num">'+rm(p.amount)+'</td></tr>').join('')+
+   (s.change?'<tr class="pay"><td>Change</td><td class="num">'+rm(s.change)+'</td></tr>':
+    (s.change===undefined&&paid-s.total>0.009?'<tr class="pay"><td>Change</td><td class="num">'+
+     rm(paid-s.total)+'</td></tr>':''))+
+   (saleBalance(s)>0?'<tr><td>Paid to date</td><td class="num">'+rm(salePaid(s))+'</td></tr>'+
+    '<tr class="grand"><td>Balance owing'+(s.dueDate?' · due '+dshort(s.dueDate):'')+
+    '</td><td class="num">'+rm(saleBalance(s))+'</td></tr>':'')+
   '</table>'+
   (s.voided?'<div class="rvoid">VOIDED — '+esc(s.voidReason||'')+'</div>':'')+
+  (!s.voided&&saleBalance(s)>0?'<div class="rvoid" style="color:var(--amber);border-color:var(--amber)">'+
+   'PART PAYMENT — '+rm(saleBalance(s))+' STILL OWING</div>':'')+
   '<div class="rdiv"></div>'+
   '<div class="rthanks">'+esc(b.thanks||'Thank you for visiting us')+'</div>'+
   (b.days?'<div class="rline" style="text-align:center">'+esc(b.days)+'</div>':'')+
@@ -2785,12 +3169,14 @@ window.previewReceipt=()=>{
   ic('print',14)+'Print / save PDF</button></div>');
 };
 window.showReceipt=id=>{
- let s=SALES.find(x=>x.id===id);
+ let s=SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id);
  if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
  if(!s){toast('Could not find that bill');return;}
  modal('Receipt '+(s.invoiceNo||''),receiptHTML(s)+
   '<div class="fabrow noprint">'+
   '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
+  (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
+   ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
   (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
    '\')">'+ic('close',14)+'Void bill</button>':'')+'</div>');
 };
@@ -2817,6 +3203,7 @@ window.voidSale=async id=>{
  if(!why)return;
  try{await updateDoc(doc(db,'sales',id),{voided:true,voidReason:why,voidedBy:UID,voidedAt:new Date().toISOString()});
   const s=SALES.find(x=>x.id===id);if(s){s.voided=true;s.voidReason=why;}
+  OUTSTANDING=OUTSTANDING.filter(x=>x.id!==id);
   await audit('Bill voided',(s?s.invoiceNo:'')+' — '+why);
   window.closeModal();render();toast('Bill voided and logged');}
  catch(e){toast(friendly(e));}};
@@ -3830,8 +4217,13 @@ function dailyReportBody(d,shift){
   '<table class="rt"><tr><th>Method</th><th class="n">Amount</th><th class="n">Share</th></tr>'+
   (Object.keys(f.byMethod).length?Object.keys(f.byMethod).map(m=>
    '<tr><td>'+esc(m)+'</td><td class="n">'+money(f.byMethod[m])+'</td><td class="n">'+
-   (f.revenue?Math.round(f.byMethod[m]/f.revenue*100):0)+'%</td></tr>').join('')
+   (f.collected?Math.round(f.byMethod[m]/f.collected*100):0)+'%</td></tr>').join('')
    :'<tr><td colspan="3" class="rnone">No payments taken.</td></tr>')+
+  '<tr class="rtot2"><td>Collected today</td><td class="n">'+money(f.collected)+'</td><td class="n">100%</td></tr>'+
+  (f.instalments?'<tr><td>of which instalments on earlier bills</td><td class="n">'+money(f.instalments)+
+   '</td><td class="n">—</td></tr>':'')+
+  (f.owedToday?'<tr><td>Left owing on today\'s bills</td><td class="n rbad">'+money(f.owedToday)+
+   '</td><td class="n">—</td></tr>':'')+
   (f.deposits?'<tr><td>Deposits held on bookings</td><td class="n">'+money(f.deposits)+
    '</td><td class="n">—</td></tr>':'')+
   '</table>')+
@@ -4614,17 +5006,24 @@ function dayFigures(d){
  d=d||today();
  const sales=SALES.filter(s=>s.date===d&&s.branchId===ME.branchId);
  const live=sales.filter(s=>!s.voided);
- const byMethod={};let cash=0;
- live.forEach(s=>(s.payments||[]).forEach(p=>{
+ /* money is counted on the day it was paid, so an instalment collected today on an
+    older bill lands in today's drawer, and the unpaid part of today's bill does not */
+ const byMethod={};let cash=0,collected=0,instalments=0;
+ SALES.filter(s=>s.branchId===ME.branchId&&!s.voided).forEach(s=>(s.payments||[]).forEach(p=>{
+  if((p.date||s.date)!==d)return;
   byMethod[p.method]=(byMethod[p.method]||0)+p.amount;
+  collected+=p.amount;
+  if(s.date!==d)instalments+=p.amount;
   if(/cash/i.test(p.method))cash+=p.amount;}));
+ const owedToday=live.reduce((a,s)=>a+saleBalance(s),0);
  const ap=APPTS.filter(a=>a.date===d);
  const cats={};ap.forEach(a=>{const k=(visitOf(a.visitType)||{}).label||'Unspecified';
   cats[k]=(cats[k]||0)+1;});
  const items={service:0,product:0,package:0};
  live.forEach(s=>(s.items||[]).forEach(i=>{if(items[i.kind]!==undefined)items[i.kind]+=i.price*i.qty;}));
  return{sales:live,voided:sales.filter(s=>s.voided),revenue:live.reduce((a,s)=>a+s.total,0),
-  bills:live.length,byMethod,cash,items,
+  bills:live.length,byMethod,cash,items,collected:r2(collected),instalments:r2(instalments),
+  owedToday:r2(owedToday),
   booked:ap.length,showed:ap.filter(a=>a.status==='done').length,
   inTreatment:ap.filter(a=>a.status==='in').length,
   noShow:ap.filter(a=>a.status==='no').length,
@@ -4690,7 +5089,11 @@ function shiftSummary(f){
     :'<tr><td class="muted">Nothing taken yet</td><td></td></tr>')+
    (f.deposits?'<tr><td class="muted">Deposits on bookings</td><td class="num muted">'+
     rm(f.deposits)+'</td></tr>':'')+
-   '<tr><td><b>Total</b></td><td class="num"><b>'+rm(f.revenue)+'</b></td></tr></table>'+
+   '<tr><td><b>Collected today</b></td><td class="num"><b>'+rm(f.collected)+'</b></td></tr>'+
+   (f.instalments?'<tr><td class="muted">of which instalments on earlier bills</td><td class="num muted">'+
+    rm(f.instalments)+'</td></tr>':'')+
+   (f.owedToday?'<tr><td class="muted">Left owing on today\'s bills</td><td class="num" style="color:var(--rose)">'+
+    rm(f.owedToday)+'</td></tr>':'')+'</table>'+
    '<h3 style="margin:13px 0 9px">'+ic('chart',14)+' Where it came from</h3>'+
    ['service','product','package'].map(k=>{
     const v=f.items[k],pc=f.revenue?v/f.revenue*100:0;
@@ -4935,7 +5338,7 @@ window.render=render;
    bindNavAutoHide();
    startClock();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
