@@ -673,6 +673,23 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 /* ---------- money owed ---------- */
 .owe{color:var(--rose);font-weight:650;white-space:nowrap}
 .odue{color:var(--rose)}
+
+/* ---------- payment methods ---------- */
+.pmrow{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:8px;align-items:center;margin-bottom:7px}
+.pmrow .f{margin:0}
+.pmrow.off .f{opacity:.5;text-decoration:line-through}
+.pmmove{display:flex;flex-direction:column;gap:3px}
+.pmmove .iconbtn{padding:3px}
+.pmmove .iconbtn[disabled]{opacity:.3}
+.pmopt{gap:5px;font-size:11.5px;color:var(--ink-2);margin:0;white-space:nowrap}
+
+/* ---------- hands-on line on the bill ---------- */
+.hoBtn{display:inline-flex;align-items:center;gap:5px;margin-top:5px;padding:4px 9px;border-radius:99px;
+  border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);font-size:11px;cursor:pointer;
+  max-width:100%;text-align:left}
+.hoBtn b{color:var(--ink);font-weight:600}
+.hoBtn.need{border-color:var(--rose);background:var(--rose-soft);color:var(--rose)}
+.hoBtn.need b{color:var(--rose)}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -779,7 +796,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20g';
+const BUILD='2026-09-20h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2318,8 +2335,7 @@ window.sellPkg=async customerId=>{
   CUSTS.map(c=>'<option value="'+c.id+'"'+(customerId===c.id?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select>'+
   '<label>Package</label><select class="f" id="sp-p">'+D.packages.filter(p=>p.active!==false)
    .map(p=>'<option value="'+p.id+'">'+esc(p.name)+' — '+rm(p.price)+'</option>').join('')+'</select>'+
-  '<label>Payment method</label><select class="f" id="sp-m"><option>Cash</option><option>Card</option>'+
-   '<option>DuitNow QR</option><option>Transfer</option></select>'+
+  '<label>Payment method</label><select class="f" id="sp-m">'+payOptions()+'</select>'+
   '<button class="btn" style="width:100%;justify-content:center" id="sp-go">Sell and record payment</button>'+
   '<p class="tiny muted" style="margin-top:8px">The price comes from the catalogue, not from this screen.</p></div>',
  ()=>{$('#sp-go').onclick=doSellPkg;});};
@@ -2370,12 +2386,15 @@ function vPos(){
   (loy().on&&cart.customerId?'<button class="btn sm ghost" onclick="usePoints()">'+ic('award',14)+
    'Points</button>':'')+'</div>'+
   '</div>';
- h+='<div class="card"><h3>Items</h3>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
+ h+='<div class="card"><div class="sec-h"><h3>Items</h3>'+
+  (cart.items.filter(isTreatment).length>1?'<button class="btn sm ghost" onclick="handsOnAll()">'+
+   ic('user',13)+'Hands-on for all</button>':'')+'</div>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
   '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package',
    redeem:'Package session'}[i.kind]||i.kind)+
   '</div>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
   (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
+  '</div>'+handsOnLine(i,x)+'<div>'+
   '</div></td>'+
   '<td class="num"><div class="qty"><button onclick="cartQty('+x+',-1)">−</button><span>'+i.qty+
   '</span><button onclick="cartQty('+x+',1)">+</button></div><div class="tiny muted" style="margin-top:3px">'+
@@ -2395,8 +2414,7 @@ function vPos(){
    ' <button class="iconbtn" style="padding:2px;display:inline-grid" onclick="dropPay('+i+')">'+ic('close',12)+
    '</button></td></tr>').join('')+
   (cart.payments.length?'<tr><td>Balance due</td><td class="num"><b>'+rm(t.balance)+'</b></td></tr>':'')+'</table>'+
-  '<div class="row wrap2" style="margin-top:10px">'+['Cash','Card','DuitNow QR','Transfer'].map(m=>
-   '<button class="btn sm ghost" onclick="addPay(\''+m+'\')">'+m+'</button>').join('')+'</div>'+
+  '<div class="row wrap2" style="margin-top:10px">'+payButtons()+'</div>'+
   instalBox(t)+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" '+
   (canComplete(t)?'':'disabled')+' id="co-go" onclick="checkout()">'+ic('check',16)+
@@ -2468,6 +2486,95 @@ function posClientNote(){
 }
 window.dropItem=i=>{cart.items.splice(i,1);render();};
 window.dropPay=i=>{cart.payments.splice(i,1);render();};
+/* ============ payment methods (managed in Settings) ============ */
+/* The owner decides which ways of paying the counter accepts. A method marked
+   "counts as cash" is what the Day screen expects to find in the drawer. */
+const PAY_DEFAULT=[
+ {id:'cash',name:'Cash',cash:true,active:true},
+ {id:'card',name:'Card',cash:false,active:true},
+ {id:'duitnow',name:'DuitNow QR',cash:false,active:true},
+ {id:'transfer',name:'Transfer',cash:false,active:true}];
+const payMethods=()=>{
+ const list=(D.meta&&Array.isArray(D.meta.payMethods)&&D.meta.payMethods.length)?D.meta.payMethods:PAY_DEFAULT;
+ return list.filter(m=>m&&m.name);
+};
+const activePay=()=>payMethods().filter(m=>m.active!==false);
+/* old bills only carry the method name, so match by name; unknown names fall back to the word "cash" */
+const isCashMethod=name=>{
+ const m=payMethods().find(x=>String(x.name).toLowerCase()===String(name||'').toLowerCase());
+ return m?!!m.cash:/cash/i.test(String(name||''));
+};
+function payButtons(){
+ const list=activePay();
+ if(!list.length)return '<div class="tiny" style="color:var(--rose)">No payment methods are switched on. '+
+  'Turn one on in Settings → Payment methods.</div>';
+ return list.map((m,i)=>'<button class="btn sm ghost" onclick="addPayIdx('+i+')">'+
+  ic(m.cash?'wallet':'card',13)+esc(m.name)+'</button>').join('');
+}
+const payOptions=sel=>activePay().map(m=>'<option'+(m.name===sel?' selected':'')+'>'+esc(m.name)+'</option>').join('');
+window.addPayIdx=i=>{const m=activePay()[i];if(m)window.addPay(m.name);};
+
+let PAYDRAFT=null;
+function payPanel(){
+ if(!boss())return '';
+ PAYDRAFT=PAYDRAFT||payMethods().map(m=>({...m}));
+ return '<div class="card"><div class="sec-h"><h2>'+ic('card',16)+' Payment methods</h2>'+
+  '<span class="pill">'+PAYDRAFT.filter(m=>m.active!==false).length+' on</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">These appear as buttons at checkout and when collecting '+
+  'instalments. Hide a method instead of deleting it — old bills keep their method name either way.</p>'+
+  '<div id="pm-list">'+payRows()+'</div>'+
+  '<div class="fieldset" style="margin-top:10px"><h3>'+ic('plus',13)+'Add a method</h3>'+
+  '<div class="grid g2"><div><label>Name</label><input class="f" id="pm-n" placeholder="e.g. Touch \'n Go, '+
+   'Boost, Atome, Bank-in"></div><div><label>&nbsp;</label><label class="row" style="gap:9px;margin-top:9px">'+
+   '<input type="checkbox" id="pm-c"> Counts as cash in the drawer</label></div></div>'+
+  '<button type="button" class="btn sm ghost" onclick="payAdd()">'+ic('plus',14)+'Add to list</button></div>'+
+  '<div id="pm-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="paySave()">'+ic('check',16)+
+  'Save payment methods</button></div>';
+}
+function payRows(){
+ return PAYDRAFT.map((m,i)=>'<div class="pmrow'+(m.active===false?' off':'')+'">'+
+  '<div class="pmmove"><button type="button" class="iconbtn" '+(i===0?'disabled ':'')+
+   'onclick="payMove('+i+',-1)" aria-label="Up">'+ic('left',13,'transform:rotate(90deg)')+'</button>'+
+  '<button type="button" class="iconbtn" '+(i===PAYDRAFT.length-1?'disabled ':'')+
+   'onclick="payMove('+i+',1)" aria-label="Down">'+ic('left',13,'transform:rotate(-90deg)')+'</button></div>'+
+  '<input class="f" value="'+esc(m.name)+'" onchange="payEdit('+i+',\'name\',this.value)">'+
+  '<label class="row pmopt"><input type="checkbox"'+(m.cash?' checked':'')+
+   ' onchange="payEdit('+i+',\'cash\',this.checked)"> cash</label>'+
+  '<label class="row pmopt"><input type="checkbox"'+(m.active!==false?' checked':'')+
+   ' onchange="payEdit('+i+',\'active\',this.checked)"> on</label>'+
+  (m.custom?'<button type="button" class="iconbtn" onclick="payDrop('+i+')" aria-label="Remove">'+
+   ic('trash',14)+'</button>':'<span style="width:32px"></span>')+'</div>').join('');
+}
+const repaintPay=()=>{const b=document.getElementById('pm-list');if(b)b.innerHTML=payRows();};
+window.payEdit=(i,k,v)=>{if(!PAYDRAFT[i])return;PAYDRAFT[i][k]=k==='name'?String(v).trim():v;
+ if(k!=='name')repaintPay();};
+window.payMove=(i,d)=>{const j=i+d;if(j<0||j>=PAYDRAFT.length)return;
+ [PAYDRAFT[i],PAYDRAFT[j]]=[PAYDRAFT[j],PAYDRAFT[i]];repaintPay();};
+window.payDrop=i=>{PAYDRAFT.splice(i,1);repaintPay();};
+window.payAdd=()=>{
+ const n=(($('#pm-n')||{}).value||'').trim();
+ const err=$('#pm-e');
+ if(n.length<2){err.textContent='Give the method a name.';return;}
+ if(PAYDRAFT.some(m=>m.name.toLowerCase()===n.toLowerCase())){err.textContent=n+' is already on the list.';return;}
+ PAYDRAFT.push({id:'pm'+Date.now().toString(36),name:n,cash:!!($('#pm-c')||{}).checked,active:true,custom:true});
+ err.textContent='';$('#pm-n').value='';if($('#pm-c'))$('#pm-c').checked=false;
+ repaintPay();toast(n+' added — press Save to keep it');
+};
+window.paySave=async()=>{
+ const err=$('#pm-e');
+ const list=PAYDRAFT.map(m=>({id:m.id,name:String(m.name||'').trim(),cash:!!m.cash,
+  active:m.active!==false,custom:!!m.custom})).filter(m=>m.name);
+ const names=list.map(m=>m.name.toLowerCase());
+ if(names.some((n,i)=>names.indexOf(n)!==i)){err.textContent='Two methods have the same name.';return;}
+ if(!list.some(m=>m.active)){err.textContent='Keep at least one method switched on.';return;}
+ try{await setDoc(doc(db,'meta','settings'),{payMethods:list},{merge:true});
+  D.meta.payMethods=list;PAYDRAFT=null;
+  await audit('Payment methods updated',list.filter(m=>m.active).map(m=>m.name).join(', '));
+  render();toast('Payment methods saved');}
+ catch(e){err.textContent=friendly(e);}
+};
+
 /* ============ instalments and outstanding balances ============ */
 /* A bill can be saved with part of it still owed, but only against a named client
    so there is someone to collect from. Every payment carries its own date, which is
@@ -2538,7 +2645,7 @@ window.collectPayment=id=>{
   '<div class="grid g2"><div><label>Amount (RM)</label><input class="f" type="number" step="0.01" '+
    'id="cl-a" value="'+bal.toFixed(2)+'" style="font-size:18px"></div>'+
   '<div><label>Method</label><select class="f" id="cl-m">'+
-   ['Cash','Card','DuitNow QR','Transfer'].map(m=>'<option>'+m+'</option>').join('')+'</select></div></div>'+
+   payOptions()+'</select></div></div>'+
   '<div class="fabrow" style="margin:0">'+[0.25,0.5,1].map(f=>'<button type="button" class="btn sm ghost" '+
    'onclick="document.getElementById(\'cl-a\').value=\''+r2(bal*f).toFixed(2)+'\'">'+
    (f===1?'Full '+rm(bal):Math.round(f*100)+'% · '+rm(r2(bal*f)))+'</button>').join('')+'</div></div>'+
@@ -2671,6 +2778,348 @@ function memberOweCard(cid){
   '<span class="pill r">'+rm(owedSum(list))+'</span></div>'+list.map(oweRow).join('')+'</div>';
 }
 
+/* ============ hands-on therapist and commission ============ */
+/* Two different people can earn from one treatment: whoever sold it (the existing
+   sales commission) and whoever actually performed it (hands-on commission). Each
+   treatment in the catalogue carries a hands-on rule; checkout fills the amount from
+   it and lets the counter adjust it before the bill is saved. */
+const isTreatment=i=>i.kind==='service'||i.kind==='redeem';
+function handsOnRule(serviceId){
+ const s=svc(serviceId)||{};
+ if(s.handsOnType==='rm')return 'RM'+r2(s.handsOnValue||0).toFixed(2)+' per session';
+ if(s.handsOnType==='pct')return (+s.handsOnValue||0)+'% of '+rm(s.price||0);
+ return 'no hands-on rule set';
+}
+function handsOnFor(serviceId,qty){
+ const s=svc(serviceId)||{},q=qty||1;
+ if(s.handsOnType==='rm')return r2((+s.handsOnValue||0)*q);
+ if(s.handsOnType==='pct')return r2((+s.price||0)*(+s.handsOnValue||0)/100*q);
+ return 0;
+}
+const handsOnStaff=()=>D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
+ .sort((a,b)=>(b.takes?1:0)-(a.takes?1:0)||String(a.name).localeCompare(String(b.name)));
+/* best guess at who did it: today's appointment for this client and treatment */
+function guessHandsOn(serviceId,creditedId){
+ const a=APPTS.filter(x=>x.customerId===cart.customerId&&x.serviceId===serviceId&&x.date===today()&&
+  ['in','done','confirm','booked'].includes(x.status)).sort((x,y)=>
+  (['in','done'].includes(y.status)?1:0)-(['in','done'].includes(x.status)?1:0))[0];
+ if(a&&a.staffId)return a.staffId;
+ const cr=stf(creditedId);
+ return cr&&cr.takes?creditedId:'';
+}
+function applyHandsOn(line){
+ if(!isTreatment(line))return line;
+ if(line.handsOnId===undefined)line.handsOnId=guessHandsOn(line.id,line.staffId);
+ if(!line.handsOnEdited)line.handsOnComm=handsOnFor(line.id,line.qty);
+ return line;
+}
+function handsOnLine(i,x){
+ if(!isTreatment(i))return '';
+ const who=i.handsOnId?stf(i.handsOnId).name:'';
+ return '<button type="button" class="hoBtn'+(who?'':' need')+'" onclick="editHandsOn('+x+')">'+
+  ic('user',12)+(who?'Hands-on: <b>'+esc(who)+'</b> · '+rm(i.handsOnComm||0)+
+   (i.handsOnEdited?' <span class="muted">(adjusted)</span>':''):'<b>Choose who did the hands-on</b>')+
+  ic('edit',11)+'</button>';
+}
+window.editHandsOn=x=>{
+ const i=cart.items[x];if(!i)return;
+ const rule=handsOnFor(i.id,i.qty);
+ modal('Hands-on · '+i.name,'<div class="card">'+
+  '<label>Who performed it</label><select class="f" id="ho-s">'+
+   '<option value="">— choose —</option>'+handsOnStaff().map(s=>'<option value="'+s.id+'"'+
+    (s.id===i.handsOnId?' selected':'')+'>'+esc(s.name)+(s.takes?'':' ('+(ROLE[s.role]||s.role)+')')+
+    '</option>').join('')+'</select>'+
+  '<label>Hands-on commission (RM)'+(i.qty>1?' for '+i.qty+' sessions':'')+'</label>'+
+  '<input class="f" type="number" step="0.01" min="0" id="ho-a" value="'+r2(i.handsOnComm||0).toFixed(2)+
+   '" style="font-size:18px">'+
+  '<div class="tiny muted" style="margin:-4px 0 10px">Catalogue rule: '+esc(handsOnRule(i.id))+
+   ' → '+rm(rule)+(i.qty>1?' for '+i.qty:'')+'</div>'+
+  '<div class="fabrow" style="margin:0 0 10px"><button type="button" class="btn sm ghost" '+
+   'onclick="document.getElementById(\'ho-a\').value=\''+rule.toFixed(2)+'\'">'+ic('refresh',13)+
+   'Use the rule</button><button type="button" class="btn sm ghost" '+
+   'onclick="document.getElementById(\'ho-a\').value=\'0.00\'">No commission</button></div>'+
+  '<div id="ho-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveHandsOn('+x+')">'+
+  ic('check',16)+'Save</button>'+
+  '<p class="tiny muted" style="margin-top:9px">This is separate from the sales commission of whoever '+
+  'is credited with the sale. It never appears on the client\'s receipt.</p></div>');
+};
+window.saveHandsOn=x=>{
+ const i=cart.items[x];if(!i)return;
+ const who=($('#ho-s')||{}).value||'';
+ const amt=r2(($('#ho-a')||{}).value);
+ if(!who){$('#ho-e').textContent='Choose who performed the treatment.';return;}
+ if(!(amt>=0)){$('#ho-e').textContent='Enter an amount, or 0.';return;}
+ i.handsOnId=who;i.handsOnComm=amt;
+ i.handsOnEdited=Math.abs(amt-handsOnFor(i.id,i.qty))>0.004;
+ window.closeModal();render();
+ toast(stf(who).name+' · '+rm(amt)+' hands-on');
+};
+/* fill the hands-on for every line at once when one therapist did everything */
+window.handsOnAll=()=>{
+ const lines=cart.items.filter(isTreatment);
+ if(!lines.length)return;
+ modal('Hands-on for all treatments','<div class="card">'+
+  '<label>Who performed the treatments on this bill</label><select class="f" id="ha-s">'+
+  handsOnStaff().map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<p class="tiny muted">Each line takes the commission from its own catalogue rule. '+
+  'You can still adjust any single line afterwards.</p>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveHandsOnAll()">'+
+  ic('check',16)+'Apply to '+lines.length+' line'+(lines.length>1?'s':'')+'</button></div>');
+};
+window.saveHandsOnAll=()=>{
+ const who=($('#ha-s')||{}).value||'';if(!who)return;
+ cart.items.filter(isTreatment).forEach(i=>{i.handsOnId=who;i.handsOnEdited=false;
+  i.handsOnComm=handsOnFor(i.id,i.qty);});
+ window.closeModal();render();toast('Hands-on set for all treatments');
+};
+/* hands-on totals per person over a set of bills */
+function handsOnTotals(sales){
+ const out={};
+ sales.filter(s=>!s.voided).forEach(s=>(s.items||[]).forEach(i=>{
+  if(!i.handsOnId)return;
+  const o=out[i.handsOnId]=out[i.handsOnId]||{id:i.handsOnId,name:i.handsOnName||stf(i.handsOnId).name||'',
+   sessions:0,comm:0};
+  o.sessions+=i.qty||1;o.comm=r2(o.comm+(+i.handsOnComm||0));}));
+ return out;
+}
+
+/* ============ professional PDF receipt ============ */
+/* Drawn as a real A4 document (text stays sharp and searchable), not a screenshot.
+   jsPDF is fetched only the first time someone asks for a PDF. */
+let JSPDF_P=null;
+function loadJsPDF(){
+ if(window.jspdf&&window.jspdf.jsPDF)return Promise.resolve(window.jspdf.jsPDF);
+ if(JSPDF_P)return JSPDF_P;
+ const srcs=['https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+ JSPDF_P=new Promise((res,rej)=>{
+  let i=0;
+  const next=()=>{
+   if(i>=srcs.length){JSPDF_P=null;rej(new Error('Could not load the PDF tool — check the internet connection.'));return;}
+   const sc=document.createElement('script');sc.src=srcs[i++];sc.async=true;
+   sc.onload=()=>(window.jspdf&&window.jspdf.jsPDF)?res(window.jspdf.jsPDF):next();
+   sc.onerror=next;
+   (document.head||document.body).appendChild(sc);
+  };
+  next();
+ });
+ return JSPDF_P;
+}
+/* the built-in PDF fonts cover Western European characters only */
+const pdfText=t=>String(t==null?'':t).replace(/[‘’]/g,"'").replace(/[“”]/g,'"')
+ .replace(/[^\x20-\x7E -ÿ–—•€]/g,'?');
+const pdfRM=n=>'RM '+(Math.round((+n||0)*100)/100).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function buildReceiptPDF(s,jsPDF){
+ const doc=new jsPDF({unit:'mm',format:'a4'});
+ const W=210,H=297,M=16,CW=W-M*2;
+ const INK=[20,18,15],MUTED=[111,106,96],BRASS=[166,124,61],LINE=[227,221,208],SOFT=[247,244,238],
+  GREEN=[46,107,82],AMBER=[156,107,21],RED=[155,74,74];
+ const b=D.meta.biz||{};
+ const brName=(D.branches.find(x=>x.id===s.branchId)||{}).name||'';
+ const L=bizLines(b,brName);
+ const bal=saleBalance(s),paidSoFar=salePaid(s);
+ const status=s.voided?['VOID',RED]:(bal>0?['PART-PAID',AMBER]:['PAID',GREEN]);
+ const title=bal>0&&!s.voided?'INVOICE':'RECEIPT';
+ const cl=cust(s.customerId)||{};
+ const T=(txt,x,y,o)=>doc.text(pdfText(txt),x,y,o);
+ const font=(sz,st,col)=>{doc.setFontSize(sz);doc.setFont('helvetica',st||'normal');doc.setTextColor(...(col||INK));};
+
+ /* ---------- letterhead ---------- */
+ doc.setFillColor(...INK);doc.rect(0,0,W,4,'F');
+ doc.setFillColor(...BRASS);doc.rect(0,4,W,0.9,'F');
+ let y=16,lx=M;
+ if(b.logo){
+  try{
+   const pr=doc.getImageProperties(b.logo);
+   const h=Math.min(18,pr.height*34/pr.width),w=h*pr.width/pr.height;
+   doc.addImage(b.logo,/png/i.test(b.logo.slice(0,30))?'PNG':'JPEG',M,y-4,w,h);
+   lx=M+w+5;
+  }catch(e){console.warn('logo',e);}
+ }
+ font(15,'bold');T(b.name||'',lx,y+1);
+ let hy=y+6;
+ if(b.tagline){font(8.5,'italic',BRASS);T(b.tagline,lx,hy);hy+=4.4;}
+ font(7.8,'normal',MUTED);
+ [L.addr,L.contact,L.reg].filter(Boolean).forEach(line=>{
+  doc.splitTextToSize(pdfText(line),112).slice(0,2).forEach(p=>{doc.text(p,lx,hy);hy+=3.7;});});
+ /* document title and number, right */
+ font(22,'bold');T(title,W-M,y+2,{align:'right'});
+ font(8,'normal',MUTED);
+ const meta=[['No.',s.invoiceNo||''],['Date',dstr(s.at)+'  '+tstr(s.at)]];
+ if(s.dueDate&&bal>0)meta.push(['Due',dstr(s.dueDate)]);
+ let my=y+9;
+ meta.forEach(([k,v])=>{font(8,'normal',MUTED);T(k,W-M-46,my);font(8.5,'bold');T(v,W-M,my,{align:'right'});my+=4.6;});
+ /* status pill */
+ font(7.5,'bold',[255,255,255]);
+ const pw=doc.getTextWidth(status[0])+7;
+ doc.setFillColor(...status[1]);doc.roundedRect(W-M-pw,my-1,pw,5.6,2.8,2.8,'F');
+ T(status[0],W-M-pw/2,my+3,{align:'center'});
+ y=Math.max(hy,my+6)+4;
+ doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=7;
+
+ /* ---------- billed to / details ---------- */
+ const colW=CW/2-4;
+ const block=(x,head,rows)=>{
+  font(7,'bold',BRASS);T(head.toUpperCase(),x,y);
+  let by=y+5;
+  rows.filter(r=>r&&r[1]).forEach(([k,v],i)=>{
+   if(i===0&&!k){font(10.5,'bold');T(v,x,by);by+=5;return;}
+   font(8,'normal',MUTED);T(k,x,by);font(8.5,'normal');
+   doc.splitTextToSize(pdfText(v),colW-26).slice(0,2).forEach((p,j)=>{doc.text(p,x+24,by+j*3.8);});
+   by+=4.6;});
+  return by;};
+ const y1=block(M,'Billed to',[['',s.customerName||'Walk-in customer'],['Phone',cl.phone||''],
+  ['Email',cl.email||''],['Member no.',s.customerId?String(s.customerId).slice(0,8).toUpperCase():'']]);
+ const hands=[...new Set((s.items||[]).map(i=>i.handsOnName).filter(Boolean))].join(', ');
+ const y2=block(M+CW/2+4,'Details',[['Branch',brName],['Served by',s.staffName||''],['Therapist',hands],
+  ['Payment',bal>0?'Instalment':'In full']]);
+ y=Math.max(y1,y2)+4;
+
+ /* ---------- items ---------- */
+ const cols=[{k:'#',x:M+2,w:8,a:'left'},{k:'DESCRIPTION',x:M+11,w:98,a:'left'},
+  {k:'QTY',x:M+122,a:'right'},{k:'UNIT PRICE',x:M+150,a:'right'},{k:'AMOUNT',x:W-M-2,a:'right'}];
+ const head=()=>{
+  doc.setFillColor(...INK);doc.rect(M,y,CW,7.5,'F');
+  font(7.2,'bold',[255,255,255]);
+  cols.forEach(c=>T(c.k,c.x,y+4.9,{align:c.a}));
+  y+=7.5;};
+ const footerSpace=34;
+ const newPage=()=>{doc.addPage();y=M+4;head();};
+ head();
+ (s.items||[]).forEach((it,n)=>{
+  const notes=[];
+  if(it.kind==='package'){const pk=pkgOf(it.id);
+   notes.push('Prepaid package'+((pk.items||[]).length?': '+(pk.items||[]).map(z=>z.n+'x '+(svc(z.serviceId).name||'')).join(', '):''));}
+  if(it.kind==='redeem')notes.push('Package session'+(it.pkgName?' from '+it.pkgName:'')+
+   (it.remaining!==undefined?' - '+it.remaining+' left after this':'')+' - no charge');
+  if(it.handsOnName)notes.push('Performed by '+it.handsOnName);
+  const nameLines=doc.splitTextToSize(pdfText(it.name||''),cols[1].w);
+  const noteLines=notes.flatMap(t=>doc.splitTextToSize(pdfText(t),cols[1].w));
+  const rowH=Math.max(8.5,4.2+nameLines.length*4.2+noteLines.length*3.6+1.8);
+  if(y+rowH>H-footerSpace)newPage();
+  if(n%2===1){doc.setFillColor(...SOFT);doc.rect(M,y,CW,rowH,'F');}
+  let ty=y+5.4;
+  font(8.5,'normal',MUTED);T(String(n+1),cols[0].x,ty);
+  font(9,'bold');nameLines.forEach((l,j)=>doc.text(l,cols[1].x,ty+j*4.2));
+  font(7.4,'normal',MUTED);noteLines.forEach((l,j)=>doc.text(l,cols[1].x,ty+nameLines.length*4.2+j*3.6-0.6));
+  font(9,'normal');
+  T(String(it.qty||1),cols[2].x,ty,{align:'right'});
+  T(pdfRM(it.price),cols[3].x,ty,{align:'right'});
+  font(9,'bold');T(pdfRM((it.price||0)*(it.qty||1)),cols[4].x,ty,{align:'right'});
+  y+=rowH;
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(M,y,W-M,y);
+ });
+ y+=6;
+
+ /* ---------- totals, right ---------- */
+ const sub=(s.items||[]).reduce((a,i)=>a+(i.price||0)*(i.qty||1),0);
+ const pays=(s.payments||[]);
+ const need=40+pays.length*5+(bal>0?14:0);
+ if(y+need>H-footerSpace){doc.addPage();y=M+4;}
+ const tx=W-M-78,tw=78,vx=W-M-2;
+ const row=(k,v,opt)=>{opt=opt||{};
+  font(opt.sz||8.8,opt.bold?'bold':'normal',opt.col||(opt.muted?MUTED:INK));T(k,tx+2,y);
+  font(opt.sz||8.8,opt.bold?'bold':'normal',opt.col||INK);T(v,vx,y,{align:'right'});y+=opt.gap||5.2;};
+ const topOfTotals=y;
+ row('Subtotal',pdfRM(sub));
+ if(s.discount)row('Discount'+(s.voucher?' ('+s.voucher+')':''),'- '+pdfRM(s.discount),{muted:true});
+ if(s.pointsUsed)row('Loyalty points used',String(s.pointsUsed)+' pts',{muted:true});
+ if(s.sst)row('SST '+((D.meta.biz||{}).sstRate||8)+'%'+(b.sstNo?' ('+b.sstNo+')':''),pdfRM(s.sst),{muted:true});
+ y+=1;
+ doc.setFillColor(...INK);doc.roundedRect(tx,y-4.6,tw,9,1.5,1.5,'F');
+ font(10.5,'bold',[255,255,255]);T('TOTAL',tx+3,y+1.4);T(pdfRM(s.total),vx-1,y+1.4,{align:'right'});
+ y+=10;
+ font(7,'bold',BRASS);T('PAYMENTS',tx+2,y);y+=4.6;
+ if(!pays.length)row('Nothing paid yet','-',{muted:true,sz:8.2});
+ pays.forEach(p=>row(dshort(p.at||s.at)+'  '+(p.method||'')+(p.tendered?' (tendered '+pdfRM(p.tendered)+')':''),
+  pdfRM(p.amount),{sz:8.2,gap:4.8}));
+ if(s.change)row('Change given',pdfRM(s.change),{muted:true,sz:8.2,gap:4.8});
+ doc.setDrawColor(...LINE);doc.line(tx,y-2.2,W-M,y-2.2);y+=1.4;
+ row('Paid to date',pdfRM(paidSoFar),{bold:true});
+ if(bal>0&&!s.voided){
+  y+=1;doc.setFillColor(251,241,222);doc.setDrawColor(...AMBER);doc.setLineWidth(0.4);
+  doc.roundedRect(tx,y-4.6,tw,11.5,1.5,1.5,'FD');
+  font(9.5,'bold',AMBER);T('BALANCE DUE',tx+3,y+0.8);T(pdfRM(bal),vx-1,y+0.8,{align:'right'});
+  if(s.dueDate){font(7.2,'normal',AMBER);T('Please settle by '+dstr(s.dueDate),tx+3,y+4.8);}
+  y+=12;
+ }
+ /* ---------- left of the totals: thank-you and hours ---------- */
+ let ly=topOfTotals;
+ font(11,'bold');doc.splitTextToSize(pdfText(b.thanks||'Thank you for visiting us'),CW-tw-12)
+  .slice(0,2).forEach(l=>{doc.text(l,M,ly);ly+=5;});
+ if(b.days){font(8,'normal',MUTED);doc.splitTextToSize(pdfText(b.days),CW-tw-12).slice(0,2)
+  .forEach(l=>{doc.text(l,M,ly);ly+=3.8;});}
+ if(bal>0&&!s.voided){ly+=3;font(8,'normal',MUTED);
+  doc.splitTextToSize(pdfText('This is an instalment invoice. The balance above remains payable. '+
+   'Each payment is receipted with its date.'),CW-tw-12).forEach(l=>{doc.text(l,M,ly);ly+=3.8;});}
+ y=Math.max(y,ly)+6;
+
+ /* ---------- terms ---------- */
+ const terms=doc.splitTextToSize(pdfText(b.terms||DEFAULT_TERMS),CW-8);
+ const th=8+terms.length*3.4;
+ if(y+th>H-22){doc.addPage();y=M+4;}
+ else y=Math.max(y,H-22-th-2);          /* sit the terms just above the footer */
+ doc.setFillColor(...SOFT);doc.setDrawColor(...LINE);doc.setLineWidth(0.2);
+ doc.roundedRect(M,y,CW,th,1.5,1.5,'FD');
+ font(7,'bold',BRASS);T('TERMS & CONDITIONS',M+4,y+5);
+ font(7.2,'normal',MUTED);terms.forEach((l,i)=>doc.text(l,M+4,y+9+i*3.4));
+
+ /* ---------- void watermark and footer on every page ---------- */
+ const pages=doc.getNumberOfPages();
+ for(let p=1;p<=pages;p++){
+  doc.setPage(p);
+  if(s.voided){
+   try{doc.saveGraphicsState();doc.setGState(new doc.GState({opacity:0.12}));}catch(e){}
+   font(90,'bold',RED);T('VOID',W/2,H/2+10,{align:'center',angle:30});
+   try{doc.restoreGraphicsState();}catch(e){}
+   if(p===1){font(8,'bold',RED);T('Voided: '+(s.voidReason||''),M,H-24);}
+  }
+  if(p>1){font(7.5,'normal',MUTED);
+   T(title.charAt(0)+title.slice(1).toLowerCase()+' '+(s.invoiceNo||'')+' · '+(s.customerName||'')+
+    ' · continued',M,10);}
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(M,H-16,W-M,H-16);
+  font(7,'normal',MUTED);
+  T((b.name||'')+(b.ssm?'  |  SSM '+b.ssm:'')+(b.tin?'  |  TIN '+b.tin:''),M,H-11);
+  T('Page '+p+' of '+pages,W-M,H-11,{align:'right'});
+  T('Computer-generated '+title.toLowerCase()+' - no signature required. Issued by Spatify on '+
+   dstr(new Date())+' '+tstr(new Date())+'.',M,H-7.5);
+ }
+ doc.setProperties({title:title+' '+(s.invoiceNo||''),subject:(b.name||'')+' '+title.toLowerCase(),
+  author:b.name||'',creator:'Spatify'});
+ return doc;
+}
+function findSale(id){
+ return SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id)||
+  (((typeof HIST!=='undefined'&&HIST)||{}).sales||[]).find(x=>x.id===id);
+}
+const pdfName=s=>(saleBalance(s)>0&&!s.voided?'Invoice':'Receipt')+'-'+
+ String(s.invoiceNo||'bill').replace(/[^\w-]/g,'')+'-'+String(s.customerName||'walk-in')
+ .replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30)+'.pdf';
+window.receiptPDF=async(id,how)=>{
+ const s=findSale(id);if(!s){toast('Bill not found');return;}
+ toast('Preparing the PDF…');
+ try{
+  const jsPDF=await loadJsPDF();
+  const d=buildReceiptPDF(s,jsPDF);
+  const name=pdfName(s);
+  if(how==='share'&&navigator.canShare){
+   const file=new File([d.output('blob')],name,{type:'application/pdf'});
+   if(navigator.canShare({files:[file]})){
+    await navigator.share({files:[file],title:name.replace('.pdf',''),
+     text:((D.meta.biz||{}).name||'')+' — '+(s.invoiceNo||'')});
+    await audit('Receipt shared',(s.invoiceNo||'')+' · '+(s.customerName||''));
+    return;}
+  }
+  d.save(name);
+  await audit('Receipt PDF downloaded',(s.invoiceNo||'')+' · '+(s.customerName||''));
+ }catch(e){
+  if(e&&e.name==='AbortError')return;   /* the share sheet was closed */
+  console.error(e);toast(friendly(e));
+ }
+};
+
 /* ============ checkout: item picker with treatments, products and packages ============ */
 const pkgOf=id=>D.packages.find(p=>p.id===id)||{};
 const pkgWorth=p=>(p.items||[]).reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0);
@@ -2772,8 +3221,8 @@ window.pickAdd=(kind,id)=>{
  const qty=(same?same.qty:0)+1;
  if(kind==='product'){const st=stockOf(id);
   if(!st||st.qty<qty){toast('Not enough stock at this branch');return;}}
- if(same)same.qty=qty;
- else cart.items.push({kind,id,name:it.name,price:it.price,qty:1,staffId});
+ if(same){same.qty=qty;applyHandsOn(same);}
+ else cart.items.push(applyHandsOn({kind,id,name:it.name,price:it.price,qty:1,staffId}));
  render();                                   // the bill behind the sheet updates as you go
  const f=document.getElementById('pk-foot');if(f)f.innerHTML=pickFoot();
  const r=document.getElementById('pk-'+id);
@@ -2787,9 +3236,9 @@ function pickRedeem(key){
  if(x.expired&&!confirm(x.pkgName+' expired on '+dstr(x.expiry)+'. Redeem anyway?'))return;
  const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
  const same=cart.items.find(i=>i.kind==='redeem'&&i.cpId===x.cpId&&i.line===x.line&&i.staffId===staffId);
- if(same)same.qty++;
- else cart.items.push({kind:'redeem',id:x.serviceId,cpId:x.cpId,line:x.line,name:x.name,
-  pkgName:x.pkgName,price:0,qty:1,staffId});
+ if(same){same.qty++;applyHandsOn(same);}
+ else cart.items.push(applyHandsOn({kind:'redeem',id:x.serviceId,cpId:x.cpId,line:x.line,name:x.name,
+  pkgName:x.pkgName,price:0,qty:1,staffId}));
  render();
  const b=document.getElementById('pk-list');if(b)b.innerHTML=pickRows(
   ((document.getElementById('pk-q')||{}).value)||'');
@@ -2804,7 +3253,7 @@ window.cartQty=(x,d)=>{
  if(i.kind==='redeem'&&d>0){const l=redeemLines(cart.customerId).find(z=>z.cpId===i.cpId&&z.line===i.line);
   if(!l||redeemInCart(i.cpId,i.line)+d>l.left){toast('No more sessions left on that package');return;}}
  if(i.kind==='package'&&q>1&&!confirm('Sell '+q+' of the same package to one client?'))return;
- i.qty=q;render();
+ i.qty=q;applyHandsOn(i);render();
 };
 
 window.applyVoucher=()=>{
@@ -2857,12 +3306,16 @@ window.checkout=async()=>{
  try{
   // prices are re-read from the catalogue, never trusted from the cart UI
   const items=cart.items.map(i=>{
+   const ho=isTreatment(i)?{handsOnId:i.handsOnId||'',handsOnName:i.handsOnId?(stf(i.handsOnId).name||''):'',
+    handsOnComm:r2(i.handsOnComm||0)}:{};
+   if(isTreatment(i)&&!i.handsOnId)
+    throw new Error('Choose who did the hands-on for '+i.name+' — tap the line under it.');
    if(i.kind==='redeem'){const sv=svc(i.id);
     return{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
-     cpId:i.cpId,line:i.line,pkgName:i.pkgName||''};}
+     cpId:i.cpId,line:i.line,pkgName:i.pkgName||'',...ho};}
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
-   return{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId};});
+   return{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho};});
   if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
   const sub=items.reduce((a,i)=>a+i.price*i.qty,0);
@@ -2880,7 +3333,7 @@ window.checkout=async()=>{
   const pays=cart.payments.map(p=>({method:p.method,amount:r2(p.amount),at:nowIso,date:today(),
    by:UID,byName:ME.name}));
   if(change>0){ /* the change comes back out of the last cash payment */
-   const cashP=[...pays].reverse().find(p=>/cash/i.test(p.method))||pays[pays.length-1];
+   const cashP=[...pays].reverse().find(p=>isCashMethod(p.method))||pays[pays.length-1];
    cashP.amount=r2(cashP.amount-change);cashP.tendered=r2(cashP.amount+change);
   }
   const paid=r2(Math.min(tendered,total)),balance=Math.max(0,r2(total-paid));
@@ -2929,7 +3382,8 @@ window.checkout=async()=>{
     await addDoc(collection(db,'redemptions'),{customerId:cart.customerId,customerName:c?c.name:'',
      customerPackageId:r.cpId,packageId:r.packageId||'',serviceId:r.id,serviceName:r.name,
      remaining:r.remaining+(r.qty-1-k),branchId:ME.branchId,staffId:UID,staffName:ME.name,
-     therapistId:r.staffId,therapistName:stf(r.staffId).name||'',saleId:ref.id,invoiceNo,
+     therapistId:r.handsOnId||r.staffId,therapistName:r.handsOnName||stf(r.staffId).name||'',
+     handsOnComm:r.qty?r2((r.handsOnComm||0)/r.qty):0,saleId:ref.id,invoiceNo,
      at:nowIso,date:today()});
    }
   }
@@ -3105,6 +3559,7 @@ function receiptHTML(s){
  const sub=(s.items||[]).reduce((a,i)=>a+i.price*i.qty,0);
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
   (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
+  (i.handsOnName?'<div class="tiny muted">Performed by '+esc(i.handsOnName)+'</div>':'')+
   (i.kind==='redeem'?'<div class="tiny muted">Package session'+(i.pkgName?' · '+esc(i.pkgName):'')+
    (i.remaining!==undefined?' · '+i.remaining+' left after this':'')+' — no charge</div>':
    (i.price===0?'<div class="tiny muted">Package session — no charge</div>':''))+
@@ -3174,7 +3629,10 @@ window.showReceipt=id=>{
  if(!s){toast('Could not find that bill');return;}
  modal('Receipt '+(s.invoiceNo||''),receiptHTML(s)+
   '<div class="fabrow noprint">'+
-  '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
+  '<button class="btn sm" onclick="receiptPDF(\''+id+'\')">'+ic('download',14)+'Download PDF</button>'+
+  (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
+   '\',\'share\')">'+ic('msg',14)+'Share PDF</button>':'')+
+  '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button>'+
   (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
    ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
   (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
@@ -3312,12 +3770,19 @@ function vRep(){
   comm[who]=comm[who]||{name:u.name,svc:0,prod:0,c:0};
   if(i.kind==='service')comm[who].svc+=i.price*i.qty;else if(i.kind==='product')comm[who].prod+=i.price*i.qty;
   comm[who].c+=i.price*i.qty*rate/100;}));
+ const hot=handsOnTotals(mine);
+ Object.values(hot).forEach(o=>{comm[o.id]=comm[o.id]||{name:o.name,svc:0,prod:0,c:0};
+  comm[o.id].ho=o.comm;comm[o.id].hs=o.sessions;});
  h+='<div class="card"><h2>Commission</h2><div class="scroll"><table><tr><th>Team member</th>'+
-  '<th class="num">Services</th><th class="num">Retail</th><th class="num">Commission</th></tr>'+
+  '<th class="num">Services</th><th class="num">Retail</th><th class="num">Sales comm.</th>'+
+  '<th class="num">Hands-on</th><th class="num">Total</th></tr>'+
   (Object.values(comm).map(x=>'<tr><td>'+esc(x.name)+'</td><td class="num">'+rm(x.svc)+'</td><td class="num">'+
-   rm(x.prod)+'</td><td class="num"><b>'+rm(x.c)+'</b></td></tr>').join('')||
-   '<tr><td colspan="4" class="muted">No sales in this period.</td></tr>')+'</table></div>'+
-  '<p class="tiny muted">Rates come from each service and each staff profile.</p></div>';
+   rm(x.prod)+'</td><td class="num">'+rm(x.c)+'</td><td class="num">'+rm(x.ho||0)+
+   (x.hs?'<div class="tiny muted">'+x.hs+' session'+(x.hs>1?'s':'')+'</div>':'')+
+   '</td><td class="num"><b>'+rm(x.c+(x.ho||0))+'</b></td></tr>').join('')||
+   '<tr><td colspan="6" class="muted">No sales in this period.</td></tr>')+'</table></div>'+
+  '<p class="tiny muted">Sales commission comes from each treatment and staff profile. Hands-on is what '+
+  'was recorded at checkout for whoever performed each treatment.</p></div>';
  return h;}
 async function buildReport(){
  try{
@@ -3409,7 +3874,15 @@ window.editService=id=>{
   '<div><label>Price (RM)</label><input class="f" type="number" step="0.01" id="sv-p" value="'+(s.price||0)+'"></div></div>'+
   '<div class="grid g3"><div><label>Duration (min)</label><input class="f" type="number" id="sv-d" value="'+(s.dur||60)+'"></div>'+
   '<div><label>Buffer (min)</label><input class="f" type="number" id="sv-b" value="'+(s.buffer||0)+'"></div>'+
-  '<div><label>Commission %</label><input class="f" type="number" id="sv-c" value="'+(s.comm||0)+'"></div></div>'+
+  '<div><label>Sales commission %</label><input class="f" type="number" id="sv-c" value="'+(s.comm||0)+'"></div></div>'+
+  '<div class="fieldset"><h3>'+ic('user',13)+'Hands-on commission</h3>'+
+  '<div class="grid g2"><div><label>Paid as</label><select class="f" id="sv-hot">'+
+   [['','None'],['rm','Fixed RM per session'],['pct','% of the treatment price']].map(o=>
+   '<option value="'+o[0]+'"'+((s.handsOnType||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+
+  '</select></div><div><label>Amount</label><input class="f" type="number" step="0.01" id="sv-hov" value="'+
+   (s.handsOnValue||0)+'"></div></div>'+
+  '<p class="tiny muted" style="margin:0">Earned by whoever performs it, including sessions redeemed from a '+
+  'package. For a percentage on a package session, the treatment\'s normal price is used.</p></div>'+
   '<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
    (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
   '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
@@ -3462,7 +3935,8 @@ window.editService=id=>{
      room:$('#sv-r').value,use,active:$('#sv-a').checked,
      concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
      intervalDays:+$('#sv-int').value||14,courseSessions:+$('#sv-crs').value||4,
-     intensity:$('#sv-ity').value},
+     intensity:$('#sv-ity').value,
+     handsOnType:($('#sv-hot')||{}).value||'',handsOnValue:+(($('#sv-hov')||{}).value)||0},
      name,id?'Treatment updated':'Treatment added');};
   });};
 
@@ -4163,6 +4637,9 @@ function dailyReportBody(d,shift){
   else if(i.kind==='product')perf[who].prod+=line;
   else if(i.kind==='package')perf[who].pkg+=line;
   perf[who].total+=line;}));
+ Object.values(handsOnTotals(f.sales)).forEach(o=>{
+  perf[o.id]=perf[o.id]||{name:o.name,svc:0,prod:0,pkg:0,total:0};
+  perf[o.id].ho=o.comm;perf[o.id].hs=o.sessions;});
  f.appts.filter(a=>a.status==='done').forEach(a=>{
   const u=stf(a.staffId);if(!u.id)return;
   perf[a.staffId]=perf[a.staffId]||{name:u.name,svc:0,prod:0,pkg:0,total:0};
@@ -4272,11 +4749,12 @@ function dailyReportBody(d,shift){
  sec(6,'Therapist performance',
   Object.keys(perf).length?'<table class="rt"><tr><th>Team member</th><th class="n">Treatments</th>'+
    '<th class="n">Services</th><th class="n">Retail</th><th class="n">Packages</th>'+
-   '<th class="n">Total</th></tr>'+
+   '<th class="n">Sales</th><th class="n">Hands-on</th></tr>'+
    Object.values(perf).sort((a,b)=>b.total-a.total).map(p=>
-    '<tr><td>'+esc(p.name)+'</td><td class="n">'+(p.done||0)+'</td><td class="n">'+money(p.svc)+
+    '<tr><td>'+esc(p.name)+'</td><td class="n">'+Math.max(p.done||0,p.hs||0)+'</td><td class="n">'+money(p.svc)+
     '</td><td class="n">'+money(p.prod)+'</td><td class="n">'+money(p.pkg)+
-    '</td><td class="n"><b>'+money(p.total)+'</b></td></tr>').join('')+'</table>':none)+
+    '</td><td class="n"><b>'+money(p.total)+'</b></td><td class="n">'+money(p.ho||0)+
+    '</td></tr>').join('')+'</table>':none)+
 
  sec(7,'Treatments sold',
   Object.keys(treat).length?'<table class="rt"><tr><th>Treatment</th><th class="n">Qty</th>'+
@@ -5014,7 +5492,7 @@ function dayFigures(d){
   byMethod[p.method]=(byMethod[p.method]||0)+p.amount;
   collected+=p.amount;
   if(s.date!==d)instalments+=p.amount;
-  if(/cash/i.test(p.method))cash+=p.amount;}));
+  if(isCashMethod(p.method))cash+=p.amount;}));
  const owedToday=live.reduce((a,s)=>a+saleBalance(s),0);
  const ap=APPTS.filter(a=>a.date===d);
  const cats={};ap.forEach(a=>{const k=(visitOf(a.visitType)||{}).label||'Unspecified';
@@ -5250,6 +5728,7 @@ function vSet(){
   'open the site once in a private tab to check.</div></div>';
  if(boss()){
   h+=bizPanel();
+  h+=payPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" onclick="rebuildClientSearch()">'+ic('search',14)+'Rebuild client search</button>'+
