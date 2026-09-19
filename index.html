@@ -690,6 +690,13 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .hoBtn b{color:var(--ink);font-weight:600}
 .hoBtn.need{border-color:var(--rose);background:var(--rose-soft);color:var(--rose)}
 .hoBtn.need b{color:var(--rose)}
+
+/* ---------- pay now, treat later ---------- */
+.laterBtn{display:inline-flex;align-items:center;gap:5px;margin:5px 6px 0 0;padding:4px 9px;border-radius:99px;
+  border:1px dashed var(--line);background:transparent;color:var(--ink-3);font-size:11px;cursor:pointer}
+.laterBtn.on{border-style:solid;border-color:var(--brass);background:var(--brass-soft);color:var(--brass);font-weight:600}
+.laterInfo{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--brass)}
+.laterInfo select{font-size:11px;padding:2px 4px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -796,7 +803,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20h';
+const BUILD='2026-09-20i';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1962,8 +1969,8 @@ function custHistory(c){
   meta:(p.byName?'Taken by '+p.byName:''),tag:p.method})));
  H.sales.filter(s=>s.voided).forEach(s=>events.push({at:s.voidedAt||s.at,kind:'no',icon:'close',
   title:'Bill voided '+(s.invoiceNo||''),meta:s.voidReason||'',tag:'Voided'}));
- H.packages.forEach(p=>{const pk=D.packages.find(x=>x.id===p.packageId)||{};
-  events.push({at:p.soldAt,kind:'pkg',icon:'package',title:'Bought '+(pk.name||'package'),
+ H.packages.forEach(p=>{
+  events.push({at:p.soldAt,kind:'pkg',icon:'package',title:(p.prepaid?'Prepaid ':'Bought ')+cpName(p),
    amount:p.price,meta:'Valid until '+dstr(p.expiry),
    tag:(p.balances||[]).reduce((a,b)=>a+b.total,0)+' sessions'});});
  H.redemptions.forEach(r=>events.push({at:r.at,kind:'redeem',icon:'check',
@@ -1974,7 +1981,7 @@ function custHistory(c){
  const pkgCard=H.packages.length?'<div class="card"><div class="sec-h"><h3>'+ic('package',15)+
   ' Packages and balances</h3><span class="pill">'+H.packages.length+'</span></div>'+
   H.packages.map(p=>{
-   const pk=D.packages.find(x=>x.id===p.packageId)||{};
+   const pk={name:cpName(p)};
    const tot=(p.balances||[]).reduce((a,b)=>a+b.total,0);
    const left=(p.balances||[]).reduce((a,b)=>a+b.left,0);
    const d=daysBetween(new Date(),p.expiry);
@@ -2277,7 +2284,7 @@ function vPkg(){
    (val?' (saves '+Math.round((1-p.price/val)*100)+'%)':'')+' · valid '+p.days+' days</div></div>';}).join('')+'</div>';
  return h;}
 function pkgRow(cp,showCust){
- const p=D.packages.find(x=>x.id===cp.packageId)||{name:'Package'};
+ const p={name:cpName(cp)};
  const tot=cp.balances.reduce((a,b)=>a+b.total,0),left=cp.balances.reduce((a,b)=>a+b.left,0);
  const d=daysBetween(new Date(),cp.expiry);
  const tag=d<0?'<span class="pill r">Expired</span>':(d<=45?'<span class="pill a">'+d+'d left</span>':
@@ -2288,7 +2295,7 @@ function pkgRow(cp,showCust){
   '</div><div class="bar"><i style="width:'+(tot?(tot-left)/tot*100:0)+'%"></i></div></div>';}
 window.pkgDetail=id=>{
  const cp=HELD.find(x=>x.id===id);if(!cp)return;
- const p=D.packages.find(x=>x.id===cp.packageId)||{name:'Package'};
+ const p={name:cpName(cp)};
  modal('Package · '+(cp.customerName||''),'<div class="card"><h3>'+esc(p.name)+'</h3>'+
   '<div class="tiny muted" style="margin:5px 0 10px">Bought '+dstr(cp.soldAt)+' · '+rm(cp.price)+
   ' · expires '+dstr(cp.expiry)+'</div><table><tr><th>Treatment</th><th class="num">Remaining</th><th></th></tr>'+
@@ -2387,14 +2394,14 @@ function vPos(){
    'Points</button>':'')+'</div>'+
   '</div>';
  h+='<div class="card"><div class="sec-h"><h3>Items</h3>'+
-  (cart.items.filter(isTreatment).length>1?'<button class="btn sm ghost" onclick="handsOnAll()">'+
+  (cart.items.filter(needsHandsOn).length>1?'<button class="btn sm ghost" onclick="handsOnAll()">'+
    ic('user',13)+'Hands-on for all</button>':'')+'</div>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
   '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package',
    redeem:'Package session'}[i.kind]||i.kind)+
   '</div>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
   (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
-  '</div>'+handsOnLine(i,x)+'<div>'+
+  '</div>'+laterToggle(i,x)+handsOnLine(i,x)+'<div>'+
   '</div></td>'+
   '<td class="num"><div class="qty"><button onclick="cartQty('+x+',-1)">−</button><span>'+i.qty+
   '</span><button onclick="cartQty('+x+',1)">+</button></div><div class="tiny muted" style="margin-top:3px">'+
@@ -2456,7 +2463,9 @@ function posPicked(id){
  cart.walkin=id==='__walkin';
  cart.customerId=(id&&id!=='__walkin')?id:'';
  cart.points=0;
- if(!cart.customerId)cart.instal=false;
+ if(!cart.customerId){cart.instal=false;
+  if(cart.items.some(i=>i.later)){cart.items.forEach(i=>{if(i.later){i.later=false;applyHandsOn(i);}});
+   toast('Prepaid treatments switched back — they need a client');}}
  /* sessions from one client's packages never travel to another client's bill */
  if(was!==cart.customerId&&cart.items.some(i=>i.kind==='redeem')){
   cart.items=cart.items.filter(i=>i.kind!=='redeem');toast('Package sessions removed — they belonged to the previous client');}
@@ -2472,7 +2481,7 @@ function posClientNote(){
   new Date(p.expiry)>=new Date());
  const bits=[];
  if(held.length)bits.push(ic('package',12)+' '+held.length+' active package'+(held.length>1?'s':'')+': '+
-  held.map(p=>esc(pkgOf(p.packageId).name||'package')+' ('+(p.balances||[]).reduce((a,b)=>a+b.left,0)+' left)').join(', '));
+  held.map(p=>esc(cpName(p))+' ('+(p.balances||[]).reduce((a,b)=>a+b.left,0)+' left)').join(', '));
  const owe=owedBy(c.id);
  if(owe.length)bits.push('<span class="odue">'+ic('wallet',12)+' Owes '+rm(owedSum(owe))+' on '+owe.length+
   ' bill'+(owe.length>1?'s':'')+'</span> <button class="btn sm ghost" style="padding:3px 9px" '+
@@ -2722,7 +2731,7 @@ function redeemLines(cid){
  HELD.filter(p=>p.customerId===cid).forEach(cp=>(cp.balances||[]).forEach((b,i)=>{
   if(!(b.left>0))return;
   out.push({key:cp.id+'|'+i,cpId:cp.id,line:i,serviceId:b.serviceId,
-   name:svc(b.serviceId).name||'Session',pkgName:pkgOf(cp.packageId).name||'Package',
+   name:svc(b.serviceId).name||'Session',pkgName:cpName(cp),
    left:b.left,total:b.total,expiry:cp.expiry,expired:pkgExpired(cp),saleId:cp.saleId||''});}));
  return out.sort((a,b)=>(a.expired?1:0)-(b.expired?1:0)||String(a.expiry).localeCompare(String(b.expiry)));
 }
@@ -2757,7 +2766,7 @@ function memberPkgCard(cid){
    const d=daysBetween(new Date(),p.expiry),exp=pkgExpired(p);
    const bill=OUTSTANDING.find(s=>s.id===p.saleId&&saleBalance(s)>0);
    return '<div class="item" style="cursor:default'+(rem===0||exp?';opacity:.62':'')+'">'+
-    '<div class="spread"><b>'+esc(pkgOf(p.packageId).name||'Package')+'</b>'+
+    '<div class="spread"><b>'+esc(cpName(p))+(p.prepaid?' <span class="pill b">prepaid</span>':'')+'</b>'+
     (rem===0?'<span class="pill">Used up</span>':exp?'<span class="pill r">Expired '+dshort(p.expiry)+'</span>':
      '<span class="pill '+(d<=30?'a':'g')+'">'+d+' days left</span>')+'</div>'+
     '<div class="tiny muted" style="margin:4px 0 6px">Bought '+dstr(p.soldAt)+
@@ -2784,6 +2793,10 @@ function memberOweCard(cid){
    treatment in the catalogue carries a hands-on rule; checkout fills the amount from
    it and lets the counter adjust it before the bill is saved. */
 const isTreatment=i=>i.kind==='service'||i.kind==='redeem';
+/* a treatment paid for now but done on a later visit has nobody's hands on it yet */
+const needsHandsOn=i=>isTreatment(i)&&!i.later;
+/* the display name of any balance on a client's account */
+const cpName=cp=>(cp&&cp.name)||((typeof pkgOf==='function'?pkgOf(cp&&cp.packageId):{}).name)||'Package';
 function handsOnRule(serviceId){
  const s=svc(serviceId)||{};
  if(s.handsOnType==='rm')return 'RM'+r2(s.handsOnValue||0).toFixed(2)+' per session';
@@ -2808,13 +2821,36 @@ function guessHandsOn(serviceId,creditedId){
  return cr&&cr.takes?creditedId:'';
 }
 function applyHandsOn(line){
- if(!isTreatment(line))return line;
+ if(!isTreatment(line)||line.later)return line;
  if(line.handsOnId===undefined)line.handsOnId=guessHandsOn(line.id,line.staffId);
  if(!line.handsOnEdited)line.handsOnComm=handsOnFor(line.id,line.qty);
  return line;
 }
+const prepaidDays=()=>+((D.meta||{}).prepaidDays)||90;
+function laterToggle(i,x){
+ if(i.kind!=='service')return '';
+ return '<button type="button" class="laterBtn'+(i.later?' on':'')+'" onclick="toggleLater('+x+')">'+
+  ic(i.later?'check':'clock',12)+(i.later?'Pay now, treat later':'Treat later?')+'</button>';
+}
+function laterLine(i,x){
+ const d=i.laterDays||prepaidDays();
+ return '<div class="laterInfo">'+ic('package',12)+' Kept on the client\'s account to redeem on a later visit · valid '+
+  '<select onchange="setLaterDays('+x+',this.value)">'+[30,60,90,180,365].map(v=>
+  '<option value="'+v+'"'+(v===d?' selected':'')+'>'+v+' days</option>').join('')+'</select></div>';
+}
+window.toggleLater=x=>{
+ const i=cart.items[x];if(!i||i.kind!=='service')return;
+ if(!i.later&&!cart.customerId){toast('Choose the client first — a prepaid treatment is kept on their account');return;}
+ i.later=!i.later;
+ if(i.later){i.laterDays=i.laterDays||prepaidDays();delete i.handsOnId;i.handsOnComm=0;i.handsOnEdited=false;}
+ else{delete i.handsOnId;applyHandsOn(i);}
+ render();
+ toast(i.later?i.name+' will be kept as a prepaid treatment':'Back to a treatment done today');
+};
+window.setLaterDays=(x,v)=>{const i=cart.items[x];if(i)i.laterDays=+v||prepaidDays();};
 function handsOnLine(i,x){
  if(!isTreatment(i))return '';
+ if(i.later)return laterLine(i,cart.items.indexOf(i));
  const who=i.handsOnId?stf(i.handsOnId).name:'';
  return '<button type="button" class="hoBtn'+(who?'':' need')+'" onclick="editHandsOn('+x+')">'+
   ic('user',12)+(who?'Hands-on: <b>'+esc(who)+'</b> · '+rm(i.handsOnComm||0)+
@@ -2857,7 +2893,7 @@ window.saveHandsOn=x=>{
 };
 /* fill the hands-on for every line at once when one therapist did everything */
 window.handsOnAll=()=>{
- const lines=cart.items.filter(isTreatment);
+ const lines=cart.items.filter(needsHandsOn);
  if(!lines.length)return;
  modal('Hands-on for all treatments','<div class="card">'+
   '<label>Who performed the treatments on this bill</label><select class="f" id="ha-s">'+
@@ -2869,7 +2905,7 @@ window.handsOnAll=()=>{
 };
 window.saveHandsOnAll=()=>{
  const who=($('#ha-s')||{}).value||'';if(!who)return;
- cart.items.filter(isTreatment).forEach(i=>{i.handsOnId=who;i.handsOnEdited=false;
+ cart.items.filter(needsHandsOn).forEach(i=>{i.handsOnId=who;i.handsOnEdited=false;
   i.handsOnComm=handsOnFor(i.id,i.qty);});
  window.closeModal();render();toast('Hands-on set for all treatments');
 };
@@ -2995,6 +3031,7 @@ function buildReceiptPDF(s,jsPDF){
   if(it.kind==='redeem')notes.push('Package session'+(it.pkgName?' from '+it.pkgName:'')+
    (it.remaining!==undefined?' - '+it.remaining+' left after this':'')+' - no charge');
   if(it.handsOnName)notes.push('Performed by '+it.handsOnName);
+  if(it.later)notes.push('Prepaid - to be done on a later visit, valid '+(it.laterDays||90)+' days');
   const nameLines=doc.splitTextToSize(pdfText(it.name||''),cols[1].w);
   const noteLines=notes.flatMap(t=>doc.splitTextToSize(pdfText(t),cols[1].w));
   const rowH=Math.max(8.5,4.2+nameLines.length*4.2+noteLines.length*3.6+1.8);
@@ -3217,7 +3254,7 @@ window.pickAdd=(kind,id)=>{
  const it=itemSrc(kind,id);if(!it||!it.name)return;
  if(kind==='package'&&!cart.customerId){toast('Choose the client first');return;}
  const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
- const same=cart.items.find(i=>i.kind===kind&&i.id===id&&i.staffId===staffId);
+ const same=cart.items.find(i=>i.kind===kind&&i.id===id&&i.staffId===staffId&&!i.later);
  const qty=(same?same.qty:0)+1;
  if(kind==='product'){const st=stockOf(id);
   if(!st||st.qty<qty){toast('Not enough stock at this branch');return;}}
@@ -3306,9 +3343,11 @@ window.checkout=async()=>{
  try{
   // prices are re-read from the catalogue, never trusted from the cart UI
   const items=cart.items.map(i=>{
-   const ho=isTreatment(i)?{handsOnId:i.handsOnId||'',handsOnName:i.handsOnId?(stf(i.handsOnId).name||''):'',
-    handsOnComm:r2(i.handsOnComm||0)}:{};
-   if(isTreatment(i)&&!i.handsOnId)
+   const ho=needsHandsOn(i)?{handsOnId:i.handsOnId||'',handsOnName:i.handsOnId?(stf(i.handsOnId).name||''):'',
+    handsOnComm:r2(i.handsOnComm||0)}:(i.later?{later:true,laterDays:i.laterDays||prepaidDays()}:{});
+   if(i.later&&!cart.customerId)
+    throw new Error('A treatment paid now and done later has to be kept on a client\'s account. Choose the client.');
+   if(needsHandsOn(i)&&!i.handsOnId)
     throw new Error('Choose who did the hands-on for '+i.name+' — tap the line under it.');
    if(i.kind==='redeem'){const sv=svc(i.id);
     return{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
@@ -3403,9 +3442,20 @@ window.checkout=async()=>{
     newPkgs.push(pk.name);
    }
   }
+  /* treatments paid now, done later: each becomes a one-treatment balance to redeem */
+  for(const i of items.filter(x=>x.later)){
+   const sv=svc(i.id);
+   const paid=Math.round((i.price||0)*i.qty*share*100)/100;
+   await addDoc(collection(db,'customerPackages'),{customerId:cart.customerId,customerName:c?c.name:'',
+    packageId:'',prepaid:true,name:(sv.name||i.name)+' (prepaid)',price:paid,listPrice:r2((i.price||0)*i.qty),
+    branchId:ME.branchId,soldAt:new Date().toISOString(),
+    expiry:ymd(addDays(new Date(),i.laterDays||prepaidDays())),soldBy:i.staffId||UID,saleId:ref.id,invoiceNo,
+    balances:[{serviceId:i.id,left:i.qty,total:i.qty}]});
+   newPkgs.push((sv.name||i.name)+' (prepaid)');
+  }
   for(const i of items){
    if(i.kind==='product'){const st=stockOf(i.id);if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-i.qty)});st.qty-=i.qty;}}
-   if(i.kind==='service'||i.kind==='redeem'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
+   if((i.kind==='service'&&!i.later)||i.kind==='redeem'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
   if(cart.voucher){try{await updateDoc(doc(db,'vouchers',cart.voucher.id),{used:increment(1)});}catch(e){}}
@@ -3425,7 +3475,8 @@ window.checkout=async()=>{
   if(balance>0)toast('Saved · '+rm(balance)+' outstanding for '+(c?c.name:'the client'));
   else if(reds.length)toast(reds.reduce((a,r)=>a+r.qty,0)+' package session'+
    (reds.reduce((a,r)=>a+r.qty,0)>1?'s':'')+' redeemed');
-  else if(newPkgs.length)toast(newPkgs.length+' package'+(newPkgs.length>1?'s':'')+' added to '+(c?c.name:'the client'));
+  else if(newPkgs.length)toast(newPkgs.length+' balance'+(newPkgs.length>1?'s':'')+' added to '+(c?c.name:'the client')+
+   (items.some(x=>x.later)?' — redeem at the visit':''));
   else if(earned)toast('Bill saved · '+earned+' loyalty points earned');
   window.openSale(ref.id);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
@@ -3560,6 +3611,7 @@ function receiptHTML(s){
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
   (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
   (i.handsOnName?'<div class="tiny muted">Performed by '+esc(i.handsOnName)+'</div>':'')+
+  (i.later?'<div class="tiny muted">Prepaid — to be done on a later visit · valid '+(i.laterDays||90)+' days</div>':'')+
   (i.kind==='redeem'?'<div class="tiny muted">Package session'+(i.pkgName?' · '+esc(i.pkgName):'')+
    (i.remaining!==undefined?' · '+i.remaining+' left after this':'')+' — no charge</div>':
    (i.price===0?'<div class="tiny muted">Package session — no charge</div>':''))+
@@ -3643,7 +3695,8 @@ window.openSale=id=>window.showReceipt(id);
 /* ---- one redeemed session, in detail ---- */
 window.redeemDetail=id=>{
  const r=((HIST||{}).redemptions||[]).find(x=>x.id===id);if(!r)return;
- const pk=D.packages.find(p=>p.id===r.packageId)||{};
+ const cp=HELD.find(h=>h.id===r.customerPackageId);
+ const pk={name:cp?cpName(cp):(pkgOf(r.packageId).name||'Prepaid treatment')};
  modal('Session redeemed','<div class="card"><div class="kv">'+
   '<div class="k">'+ic('spark',12)+' Treatment</div><div class="v">'+esc(r.serviceName||'')+'</div>'+
   '<div class="k">'+ic('package',12)+' From package</div><div class="v">'+esc(pk.name||r.packageId||'')+'</div>'+
