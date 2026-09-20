@@ -972,7 +972,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21c';
+const BUILD='2026-09-21d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -5037,7 +5037,7 @@ function notifPrefs(){
  if(!p){
   const b=boss();const kinds={};
   Object.keys(ALERT_KINDS).forEach(k=>kinds[k]=b?ALERT_KINDS[k].boss:ALERT_KINDS[k].staff);
-  p={on:false,kinds,quietFrom:0,quietTo:0,sound:true,mine:false,v:2};
+  p={on:false,kinds,quietFrom:0,quietTo:0,sound:true,mine:false,bgOnly:false,v:2};
  }
  /* the first build shipped with 10pm–8am quiet by default, which silently swallowed every
     alert during an evening test; anyone who never chose their own hours is moved off it */
@@ -5101,6 +5101,26 @@ function watchReviews(){
   },err=>console.warn('reviews',err)));
  }catch(e){console.warn('reviews',e);}
 }
+let NLAST='';
+/* post a notification to the device tray, and remember exactly why if it does not go */
+async function showNote(title,body,data,urgent){
+ const p=notifPrefs();
+ if(typeof Notification==='undefined'){NLAST='This browser has no notifications';return NLAST;}
+ if(Notification.permission!=='granted'){NLAST='Permission is '+Notification.permission;return NLAST;}
+ const opt={body:body||'',icon:'./icon-192.png',badge:'./favicon-32.png',
+  tag:(data&&data.tag)||('n'+Date.now()),renotify:true,requireInteraction:!!urgent,
+  data:data||{go:'home'},vibrate:urgent?[90,60,90]:[60]};
+ let reg=SWREG;
+ if(!reg&&navigator.serviceWorker){try{reg=await navigator.serviceWorker.ready;SWREG=reg;}catch(e){}}
+ if(reg&&reg.showNotification){
+  try{await reg.showNotification(title,opt);NLAST='ok';return '';}
+  catch(e){NLAST='Service worker refused it: '+(e&&e.message||e);}
+ }else NLAST='The app service is not registered — upload sw.js and reload over https';
+ /* a page notification still works on a laptop, so try it before giving up */
+ try{const n=new Notification(title,opt);n.onclick=()=>{window.focus();};NLAST='ok (page)';return '';}
+ catch(e){NLAST=NLAST+' · '+(e&&e.message||e);}
+ return NLAST;
+}
 /* one event: buzz the device if this person asked for that kind */
 function alertOf(e){
  const p=notifPrefs();
@@ -5111,11 +5131,10 @@ function alertOf(e){
  if(!document.hidden)alertBanner(e);
  if(e.by===UID&&!p.mine&&!force)return;
  const quiet=quietNow()&&!e.urgent&&!force;
- if(document.hidden&&p.on&&!quiet&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&SWREG){
-  try{SWREG.showNotification(e.title,{body:e.body||'',icon:'./icon-192.png',badge:'./favicon-32.png',
-   tag:e.id,renotify:false,silent:quiet,data:{go:evTab(e),refType:e.refType||'',refId:e.refId||''},
-   vibrate:e.urgent?[90,60,90]:[60]});}catch(err){console.warn('notify',err);}
- }
+ /* the tray gets it whether or not the app is in front, unless this device asked
+    for background-only alerts */
+ if(p.on&&!quiet&&(document.hidden||!p.bgOnly))
+  showNote(e.title,e.body,{go:evTab(e),refType:e.refType||'',refId:e.refId||'',tag:e.id},e.urgent);
  if(p.sound&&!quiet)beep(e.urgent);
 }
 /* a tappable banner in the corner, so nothing is missed while the app is open */
@@ -5219,15 +5238,15 @@ function notifyPanel(){
    [...Array(24)].map((_,h)=>'<option value="'+h+'"'+(+p.quietTo===h?' selected':'')+'>'+String(h).padStart(2,'0')+':00</option>').join('')+'</select></div></div>'+
   '<p class="tiny muted" style="margin:0">Set both to the same hour to switch quiet hours off. While they are on nothing '+
   'buzzes, but a review of 3 stars or less still comes through.</p></div>'+
-  '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="nt-snd"'+(p.sound?' checked':'')+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="nt-snd"'+(p.sound?' checked':'')+
    ' onchange="notifySet(\'sound\',this.checked)"> Play a short sound</label>'+
+  '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="nt-bg"'+(p.bgOnly?' checked':'')+
+   ' onchange="notifySet(\'bgOnly\',this.checked)"> Only notify when the app is not in front</label>'+
   notifyDiag()+
   '<div class="fabrow" style="margin:0"><button class="btn ghost" onclick="notifyTest()">'+ic('bell',14)+
   'Test the buzz</button><button class="btn ghost" onclick="notifyFeedTest()">'+ic('refresh',14)+
   'Test the whole path</button></div>'+
-  '<p class="tiny muted" style="margin-top:9px">'+ic('cloud',12)+' Alerts arrive while the app is open, including when it '+
-  'sits in the background on this tablet. For a buzz when the app is fully closed, the spa needs Firebase Cloud Messaging '+
-  '— ask for that to be set up when you are ready.</p></div>';
+  notifyHelp()+'</div>';
 }
 /* a plain-language status, so a quiet app can be explained instead of guessed at */
 /* a quick look under the bonnet when alerts feel quiet */
@@ -5248,6 +5267,7 @@ function notifyDiag(){
   row(ic('gear',12)+' Quiet hours',(+p.quietFrom===+p.quietTo)?'Off':(String(p.quietFrom).padStart(2,'0')+':00–'+
    String(p.quietTo).padStart(2,'0')+':00'+(quietNow()?' · <b>quiet right now</b>':'')),quietNow())+
   row(ic('user',12)+' My own actions',p.mine?'Also buzz me':'Shown on screen, no buzz')+
+  row(ic('bell',12)+' Last buzz attempt',NLAST==='ok'?'Delivered to the device':NLAST?esc(NLAST):'None yet',NLAST&&NLAST!=='ok')+
   (isIOS()?row(ic('alert',12)+' iPad / iPhone','A buzz needs the app added to the Home Screen first',!standalone()):'')+
   '</div>';
 }
@@ -5261,25 +5281,60 @@ window.notifySet=(k,v)=>{const p=notifPrefs();p[k]=(v===true||v===false)?v:+v;sa
  if(k==='sound'&&v)beep(false);};
 window.notifyKind=(k,v)=>{const p=notifPrefs();p.kinds[k]=!!v;saveNotifPrefs();};
 window.notifyToggle=async v=>{
+ /* returns true when this device ends up allowed to buzz */
  const p=notifPrefs();
  if(!v){p.on=false;saveNotifPrefs();render();return;}
  if(typeof Notification==='undefined'){toast('This browser cannot show notifications');render();return;}
  try{
   const r=Notification.permission==='granted'?'granted':await Notification.requestPermission();
   if(r!=='granted'){p.on=false;saveNotifPrefs();toast('Permission was not given');render();return;}
-  p.on=true;saveNotifPrefs();beep(false);toast('Notifications on for this device');render();
+  p.on=true;saveNotifPrefs();beep(false);toast('Notifications on for this device');render();return true;
  }catch(e){p.on=false;saveNotifPrefs();toast(friendly(e));render();}
+ return false;
 };
 window.notifyTest=async()=>{
  const p=notifPrefs();
- if(p.on&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&SWREG){
-  try{await SWREG.showNotification('Luuna · test',{body:'Notifications are working on this device.',
-   icon:'./icon-192.png',badge:'./favicon-32.png',tag:'test',data:{go:'home'}});
-   toast('Sent — check the notification tray');}
-  catch(e){toast(friendly(e));}
- }else toast('Switch “Buzz this device” on first');
  beep(false);
+ if(!p.on){
+  const ok=await window.notifyToggle(true);
+  if(!notifPrefs().on)return;
+ }
+ const why=await showNote('Luuna · test','If you can see this in the notification tray, the device is set up.',
+  {go:'home',tag:'test'},false);
+ const tray=await trayCount();
+ modal('Notification test','<div class="card">'+
+  (!why?'<div class="fbicon ok" style="margin-bottom:10px">'+ic('check',24)+'</div>'+
+   '<p style="text-align:center;margin:0 0 10px"><b>Sent to this device.</b></p>'+
+   '<p class="tiny muted" style="text-align:center">Pull down the notification tray. '+
+   (tray!==null?'The app is showing <b>'+tray+'</b> notification'+(tray===1?'':'s')+' right now.':'')+'</p>'+
+   (tray===0?'<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' The browser accepted it but the device is '+
+    'not showing it. That is almost always the phone or tablet itself: open <b>Settings → Apps → '+
+    (standalone()?'Luuna':'Chrome')+' → Notifications</b> and allow them, and check that Do Not Disturb is off.</div>':'')
+   :'<div class="fbicon" style="margin-bottom:10px">'+ic('alert',24)+'</div>'+
+   '<p style="text-align:center;margin:0 0 10px"><b>It did not go out.</b></p>'+
+   '<div class="warnbox">'+esc(why)+'</div>')+
+  notifyHelp()+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="closeModal()">Close</button></div>');
 };
+/* how many of our notifications the device is actually holding */
+async function trayCount(){
+ try{const reg=SWREG||(navigator.serviceWorker?await navigator.serviceWorker.ready:null);
+  if(!reg||!reg.getNotifications)return null;
+  const list=await reg.getNotifications();return list.length;}
+ catch(e){return null;}
+}
+function notifyHelp(){
+ return '<div class="fieldset" style="margin-top:12px"><h3>'+ic('alert',13)+'If the tray stays empty</h3>'+
+  '<ol class="tiny" style="margin:0;padding-left:18px;line-height:1.85">'+
+  '<li><b>The device itself must allow it.</b> Android: Settings → Apps → '+(standalone()?'Luuna':'Chrome')+
+   ' → Notifications → on. This is separate from the permission the website asks for.</li>'+
+  '<li><b>Do Not Disturb / Focus</b> hides everything, including this.</li>'+
+  '<li><b>Battery saver</b> can freeze the app in the background, so nothing arrives until you open it again.</li>'+
+  '<li><b>iPad and iPhone:</b> only works after <b>Add to Home Screen</b>, and only while that app is open '+
+   'or recently used.</li>'+
+  '<li>A buzz when the app is fully closed needs Firebase Cloud Messaging — that is the next step when you want it.</li>'+
+  '</ol></div>';
+}
 
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
