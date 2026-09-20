@@ -2,7 +2,7 @@
    Keeps the app openable when the line drops, without ever holding back an update:
    the page itself is fetched from the network first and only falls back to the last
    good copy. Firestore traffic is never touched — that has its own offline cache. */
-const VERSION = '2026-09-21a';
+const VERSION = '2026-09-21b';
 const SHELL = 'luuna-shell-' + VERSION;
 const LIB = 'luuna-lib-v1';
 const SHELL_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png',
@@ -32,6 +32,22 @@ self.addEventListener('activate', e => {
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING' || (e.data && e.data.type === 'SKIP_WAITING')) self.skipWaiting();
   if (e.data === 'VERSION' && e.source) e.source.postMessage({ type: 'VERSION', version: VERSION });
+});
+
+/* tapping a notification brings the app forward on the right screen */
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const go = (e.notification.data && e.notification.data.go) || 'home';
+  e.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of all) {
+      if (c.url.indexOf(self.registration.scope) === 0) {
+        try { c.postMessage({ type: 'GO', go: go }); } catch (err) {}
+        return c.focus();
+      }
+    }
+    return self.clients.openWindow('./?go=' + encodeURIComponent(go));
+  })());
 });
 
 const timeout = (p, ms) => new Promise((res, rej) => {

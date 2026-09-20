@@ -766,6 +766,20 @@ tr.fbmine td{background:var(--brass-soft)}
 .offbar.on{transform:translateY(0)}
 .offbar .ico{vertical-align:-2px;margin-right:5px}
 @media (display-mode:standalone){.topbar{padding-top:max(10px,env(safe-area-inset-top))}}
+.bell{position:relative}
+.belldot{position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;
+ background:var(--rose);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;
+ box-shadow:0 0 0 2px var(--surface)}
+.alertrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--surface);
+ border:1px solid var(--line);border-radius:var(--r-md);padding:9px 11px;margin-bottom:7px;cursor:pointer;color:var(--ink)}
+.alertrow.new{border-color:var(--brass);background:var(--brass-soft)}
+.alertrow.urgent{border-color:var(--rose);background:var(--rose-soft)}
+.alertico{width:32px;height:32px;border-radius:10px;background:var(--line-2);display:grid;place-items:center;flex:none}
+.alertrow.new .alertico{background:#fff;color:var(--brass)}
+.alertrow.urgent .alertico{background:#fff;color:var(--rose)}
+.alertrow .cpmeta{min-width:0}
+.alertrow .cpmeta b{display:block;font-size:13.5px;line-height:1.35}
+.alertrow .cpmeta span{display:block;font-size:11.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -945,7 +959,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21a';
+const BUILD='2026-09-21b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1083,8 +1097,10 @@ async function loadStatic(){
  try{const m=await getDoc(doc(db,'meta','settings'));D.meta=m.exists()?m.data():{};}catch(e){D.meta={};}
  if(!D.meta.open)D.meta={open:9,close:20,biz:{name:'My Spa',ssm:'',tin:'',sst:0,sstRate:8,phone:''},...D.meta};
 }
+let APPTSUB=null;
 function watchAppointments(){
- unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];
+ /* only the calendar's own listener is replaced here — the alert feed keeps running */
+ if(APPTSUB){try{APPTSUB();}catch(e){}unsub=unsub.filter(u=>u!==APPTSUB);APPTSUB=null;}
  const anchor=calMode==='month'?new Date(new Date(calDate).getFullYear(),new Date(calDate).getMonth(),1):new Date(calDate);
  const from=ymd(addDays(anchor,-10)),to=ymd(addDays(anchor,45));
  calWin={from,to};
@@ -1092,13 +1108,14 @@ function watchAppointments(){
  // composite index in Firestore, and until that index exists the listener fails
  // silently — which is exactly how bookings went missing. Filter branch in memory instead.
  const q=query(collection(db,'appointments'),where('date','>=',from),where('date','<=',to));
- unsub.push(onSnapshot(q,s=>{
+ APPTSUB=onSnapshot(q,s=>{
    APPTS=s.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.branchId===ME.branchId);
    if(TAB==='home'||TAB==='book')render();},
    e=>{console.warn(e);
      toast(String(e.code||'').includes('failed-precondition')
        ?'Firestore needs an index for this query — open the console link in the browser log.'
-       :friendly(e));}));
+       :friendly(e));});
+ unsub.push(APPTSUB);
 }
 async function loadCustomers(term){
  let q1;
@@ -1270,6 +1287,7 @@ function render(){
      '<div class="tsub">'+new Date().toLocaleDateString('en-MY',
        {weekday:'short',day:'numeric',month:'short'})+'</div></div>'+
     '<div class="tacts">'+
+     '<span id="bellwrap">'+bellHTML()+'</span>'+
      (can('booking')?'<button class="iconbtn" title="New booking" onclick="newAppt()">'+
       ic('plus',18)+'</button>':'')+
      (can('customer')?'<button class="iconbtn" title="Find a client" onclick="go(\'cust\')">'+
@@ -1720,6 +1738,8 @@ async function saveAppt(){
    start:start.toISOString(),finish:finish.toISOString(),duration:s.dur,buffer:s.buffer,status:'booked',
    ...(und?{undecided:true,concerns:[...UNDEC.concerns],shortlist:[...UNDEC.short]}:{}),
    deposit:+$('#n-dep').value||0,notes:$('#n-n').value||'',createdBy:UID,createdAt:new Date().toISOString()});
+  logEvent('booking','New booking · '+(c.name||''),(und?'Consultation — to decide':s.name)+' · '+dstr(start)+' '+
+   tstr(start)+' with '+(stf(staffId).name||''),{refType:'appt'});
   await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
   window.closeModal();calDate=ymd(start);calMode='day';render();
   if(needsWindow())watchAppointments();
@@ -1779,6 +1799,8 @@ window.setStat=async(id,st)=>{
  const entry={from:a.status,to:st,at:new Date().toISOString(),by:UID,byName:ME.name};
  try{await updateDoc(doc(db,'appointments',id),{status:st,updatedBy:UID,
    updatedAt:new Date().toISOString(),statusLog:[...(a.statusLog||[]),entry]});
+  if(['cancel','no'].includes(st))logEvent('booking',(st==='no'?'No-show · ':'Booking cancelled · ')+(a.customerName||''),
+   (a.serviceName||'')+' · '+dstr(a.start)+' '+tstr(a.start)+' with '+(a.staffName||''),{refType:'appt',refId:id});
   await audit('Booking status',(a.customerName||'')+' → '+(STATUS[st]||[st])[0]);
   window.closeModal();toast('Status updated');}
  catch(e){toast(friendly(e));}};
@@ -2882,6 +2904,8 @@ window.saveCollect=async()=>{
    const base=(out.cur.net!==undefined?out.cur.net:out.cur.total)*amt/out.cur.total;
    await awardPoints(out.cur.customerId,out.cur.customerName||'',base,(out.cur.invoiceNo||'')+' instalment');
   }
+  logEvent('payment','Payment '+rm(amt)+' collected',(out.cur.customerName||'')+' · '+(out.cur.invoiceNo||'')+
+   ' · '+(out.balance>0?rm(out.balance)+' still owing':'settled'),{refType:'sale',refId:id,amount:r2(amt)});
   await audit('Instalment collected',(out.cur.invoiceNo||'')+' · '+(out.cur.customerName||'')+' · '+
    method+' '+rm(amt)+' · '+(out.balance>0?rm(out.balance)+' still owed':'settled'));
   window.closeModal();render();
@@ -4884,7 +4908,8 @@ function pwaInit(){
  paintOffline();
  if(!('serviceWorker' in navigator))return;
  navigator.serviceWorker.addEventListener('message',e=>{
-  if(e.data&&e.data.type==='VERSION')PWAVER=e.data.version;});
+  if(e.data&&e.data.type==='VERSION')PWAVER=e.data.version;
+  if(e.data&&e.data.type==='GO'&&e.data.go&&typeof window.go==='function'&&ME)window.go(e.data.go);});
  navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{
   SWREG=reg;
   if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage('VERSION');
@@ -4975,6 +5000,220 @@ window.pwaReset=async()=>{
   if(SWREG&&SWREG.unregister)await SWREG.unregister();
  }catch(e){}
  location.reload();
+};
+
+/* ============ live alerts and notifications ============ */
+/* Whatever happens at the counter — a bill paid, a booking made, someone clocking in —
+   is written to a small events feed. Every device with the app open watches that feed,
+   shows it under the bell, and raises a real notification on the device when the person
+   has switched to another app. Each person chooses on their own device what is worth
+   a buzz, so the owner can watch money while a therapist only hears about bookings. */
+const ALERT_KINDS={
+ sale:      {label:'Bill completed',            icon:'card',     boss:true,  staff:false},
+ payment:   {label:'Instalment collected',      icon:'wallet',   boss:true,  staff:false},
+ booking:   {label:'Booking made or changed',   icon:'calendar', boss:true,  staff:true},
+ attendance:{label:'Clock in and out',          icon:'clock',    boss:true,  staff:false},
+ day:       {label:'Day opened and closed',     icon:'home',     boss:true,  staff:false},
+ feedback:  {label:'Client review',             icon:'star',     boss:true,  staff:true},
+ stock:     {label:'Stock running low',         icon:'stock',    boss:true,  staff:false}};
+const NKEY='luunaNotify';
+let EVENTS=[],EVSEEN=0,EVBOOT=Date.now(),EVIDS=new Set(),NPREF=null;
+function notifPrefs(){
+ if(NPREF)return NPREF;
+ let p=null;try{p=JSON.parse(localStorage.getItem(NKEY)||'null');}catch(e){}
+ if(!p){
+  const b=boss();const kinds={};
+  Object.keys(ALERT_KINDS).forEach(k=>kinds[k]=b?ALERT_KINDS[k].boss:ALERT_KINDS[k].staff);
+  p={on:false,kinds,quietFrom:22,quietTo:8,sound:true,mine:false};
+ }
+ NPREF=p;return p;
+}
+function saveNotifPrefs(){try{localStorage.setItem(NKEY,JSON.stringify(NPREF));}catch(e){}}
+const quietNow=()=>{
+ const p=notifPrefs(),h=new Date().getHours(),a=+p.quietFrom,b=+p.quietTo;
+ if(a===b)return false;
+ return a<b?(h>=a&&h<b):(h>=a||h<b);
+};
+/* record something the team should know about; never blocks the action that caused it */
+function logEvent(kind,title,body,extra){
+ try{
+  const e={kind,title:String(title||'').slice(0,90),body:String(body||'').slice(0,160),
+   branchId:ME.branchId,by:UID,byName:ME.name,at:new Date().toISOString(),date:today(),...(extra||{})};
+  return addDoc(collection(db,'events'),e).catch(err=>console.warn('event',err));
+ }catch(err){console.warn('event',err);return Promise.resolve();}
+}
+function watchEvents(){
+ try{
+  const from=ymd(addDays(new Date(),-1));
+  const q=query(collection(db,'events'),where('date','>=',from));
+  unsub.push(onSnapshot(q,s=>{
+   const fresh=[];
+   s.docChanges().forEach(c=>{
+    if(c.type!=='added')return;
+    const e={id:c.doc.id,...c.doc.data()};
+    if(e.branchId!==ME.branchId||EVIDS.has(e.id))return;
+    EVIDS.add(e.id);EVENTS.push(e);
+    if(+new Date(e.at)>EVBOOT)fresh.push(e);
+   });
+   EVENTS.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+   if(EVENTS.length>120)EVENTS=EVENTS.slice(0,120);
+   fresh.forEach(alertOf);
+   if(fresh.length)paintBell();
+  },err=>console.warn('events',err)));
+ }catch(e){console.warn('events',e);}
+}
+/* new reviews arrive from the client's phone, so they are watched directly */
+function watchReviews(){
+ try{
+  const q=query(collection(db,'feedback'),where('branchId','==',ME.branchId));
+  unsub.push(onSnapshot(q,s=>{
+   s.docChanges().forEach(c=>{
+    if(c.type!=='added')return;
+    const f={id:c.doc.id,...c.doc.data()};
+    if(!FEEDBACK.some(x=>x.id===f.id))FEEDBACK.unshift(f);
+    if(+new Date(f.at)<=EVBOOT||EVIDS.has('fb'+f.id))return;
+    EVIDS.add('fb'+f.id);
+    const st=star(f.overall);
+    const e={id:'fb'+f.id,kind:'feedback',at:f.at,by:'',byName:f.firstName||'Client',branchId:f.branchId,
+     title:st+'★ review from '+(f.firstName||'a client'),
+     body:(f.comment||(f.services||[]).join(', ')||'')+(st<=3?' · needs follow-up':''),
+     refType:'feedback',refId:f.id,urgent:st<=3};
+    EVENTS.unshift(e);alertOf(e);paintBell();
+   });
+  },err=>console.warn('reviews',err)));
+ }catch(e){console.warn('reviews',e);}
+}
+/* one event: buzz the device if this person asked for that kind */
+function alertOf(e){
+ const p=notifPrefs();
+ if(!p.kinds[e.kind])return;
+ if(e.by===UID&&!p.mine)return;
+ const quiet=quietNow()&&!e.urgent;
+ if(document.hidden&&p.on&&!quiet&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&SWREG){
+  try{SWREG.showNotification(e.title,{body:e.body||'',icon:'./icon-192.png',badge:'./favicon-32.png',
+   tag:e.id,renotify:false,silent:quiet,data:{go:evTab(e),refType:e.refType||'',refId:e.refId||''},
+   vibrate:e.urgent?[90,60,90]:[60]});}catch(err){console.warn('notify',err);}
+ }else if(!document.hidden){
+  toast(ic(ALERT_KINDS[e.kind].icon,13)+' '+e.title);
+ }
+ if(p.sound&&!quiet)beep(e.urgent);
+}
+const evTab=e=>({sale:'pos',payment:'pos',booking:'book',attendance:'team',day:'shift',feedback:'merit',stock:'inv'}[e.kind]||'home');
+function beep(urgent){
+ try{
+  const A=window.AudioContext||window.webkitAudioContext;if(!A)return;
+  const c=new A();const o=c.createOscillator(),g=c.createGain();
+  o.connect(g);g.connect(c.destination);o.type='sine';
+  o.frequency.setValueAtTime(urgent?660:880,c.currentTime);
+  o.frequency.setValueAtTime(urgent?520:1170,c.currentTime+0.12);
+  g.gain.setValueAtTime(0.0001,c.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.14,c.currentTime+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.34);
+  o.start();o.stop(c.currentTime+0.36);
+  setTimeout(()=>{try{c.close();}catch(e){}},800);
+ }catch(e){}
+}
+/* ---------- the bell ---------- */
+function loadSeen(){try{EVSEEN=+localStorage.getItem('luunaSeen')||0;}catch(e){EVSEEN=0;}}
+const unseen=()=>EVENTS.filter(e=>+new Date(e.at)>EVSEEN&&(e.by!==UID||notifPrefs().mine)).length;
+function bellHTML(){
+ const n=unseen();
+ return '<button class="iconbtn bell" title="Alerts" onclick="alertsSheet()">'+ic('bell',18)+
+  (n?'<span class="belldot">'+(n>9?'9+':n)+'</span>':'')+'</button>';
+}
+function paintBell(){
+ const b=document.getElementById('bellwrap');
+ if(b)b.innerHTML=bellHTML();
+ const sheet=document.getElementById('alertlist');
+ if(sheet)sheet.innerHTML=alertRows();
+}
+function alertRows(){
+ if(!EVENTS.length)return '<div class="empty">'+ic('bell',22)+'<div>Nothing yet today. '+
+  'Bills, bookings, clock-ins and reviews will appear here.</div></div>';
+ return EVENTS.slice(0,60).map(e=>{
+  const k=ALERT_KINDS[e.kind]||{icon:'note',label:e.kind};
+  const isNew=+new Date(e.at)>EVSEEN;
+  return '<button type="button" class="alertrow'+(isNew?' new':'')+(e.urgent?' urgent':'')+'" data-id="'+esc(e.id)+
+   '" onclick="openAlert(this.dataset.id)"><span class="alertico">'+ic(k.icon,16)+'</span>'+
+   '<span class="cpmeta"><b>'+esc(e.title)+'</b><span>'+esc(e.body||'')+'</span></span>'+
+   '<span class="tiny muted" style="white-space:nowrap">'+tstr(e.at)+
+   (e.byName&&e.by!==UID?'<div>'+esc(String(e.byName).split(' ')[0])+'</div>':'')+'</span></button>';}).join('');
+}
+window.alertsSheet=()=>{
+ modal('Alerts','<div class="card">'+
+  '<div class="spread" style="margin-bottom:8px"><span class="tiny muted">Today and yesterday</span>'+
+  '<button class="btn sm ghost" onclick="markSeen()">'+ic('check',13)+'Mark all read</button></div>'+
+  '<div id="alertlist">'+alertRows()+'</div>'+
+  '<button class="btn sm ghost" style="width:100%;justify-content:center;margin-top:10px" onclick="closeModal();go(\'set\')">'+
+  ic('gear',14)+'Notification settings</button></div>');
+ markSeen(true);
+};
+window.markSeen=quiet=>{
+ EVSEEN=Date.now();try{localStorage.setItem('luunaSeen',String(EVSEEN));}catch(e){}
+ paintBell();if(!quiet)toast('All read');
+};
+window.openAlert=id=>{
+ const e=EVENTS.find(x=>x.id===id);if(!e)return;
+ window.closeModal();
+ if(e.refType==='sale'&&findSale(e.refId))return window.openSale(e.refId);
+ if(e.refType==='appt'&&APPTS.some(a=>a.id===e.refId))return window.openAppt(e.refId);
+ if(e.refType==='feedback'){FBVIEW=e.urgent?'follow':'all';return window.go('merit');}
+ window.go(evTab(e));
+};
+/* ---------- settings, per device ---------- */
+function notifyPanel(){
+ const p=notifPrefs();
+ const perm=(typeof Notification!=='undefined')?Notification.permission:'unsupported';
+ return '<div class="card"><div class="sec-h"><h2>'+ic('bell',16)+' Notifications on this device</h2>'+
+  '<span class="pill '+(p.on&&perm==='granted'?'g':'')+'">'+(perm==='granted'&&p.on?'On':perm==='denied'?'Blocked':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Each device decides for itself. Alerts always appear under the bell '+
+  'at the top of the screen; switching this on also buzzes the device when the app is in the background.</p>'+
+  (perm==='denied'?'<div class="warnbox">'+ic('alert',13)+' Notifications are blocked for this site in the browser '+
+   'settings. Allow them there first, then come back.</div>':
+   '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="nt-on"'+(p.on?' checked':'')+
+   ' onchange="notifyToggle(this.checked)"> <b>Buzz this device</b></label>')+
+  '<div class="fieldset" style="margin-top:0"><h3>'+ic('list',13)+'What to tell me about</h3>'+
+  Object.keys(ALERT_KINDS).map(k=>'<label class="row" style="gap:9px;margin-bottom:6px">'+
+   '<input type="checkbox" data-k="'+k+'"'+(p.kinds[k]?' checked':'')+' onchange="notifyKind(this.dataset.k,this.checked)"> '+
+   ic(ALERT_KINDS[k].icon,13)+' '+ALERT_KINDS[k].label+'</label>').join('')+
+  '<label class="row" style="gap:9px;margin:10px 0 0"><input type="checkbox" id="nt-mine"'+(p.mine?' checked':'')+
+   ' onchange="notifySet(\'mine\',this.checked)"> Also tell me about what I do myself</label></div>'+
+  '<div class="fieldset"><h3>'+ic('clock',13)+'Quiet hours</h3><div class="grid g2">'+
+  '<div><label>From</label><select class="f" onchange="notifySet(\'quietFrom\',this.value)">'+
+   [...Array(24)].map((_,h)=>'<option value="'+h+'"'+(+p.quietFrom===h?' selected':'')+'>'+String(h).padStart(2,'0')+':00</option>').join('')+'</select></div>'+
+  '<div><label>Until</label><select class="f" onchange="notifySet(\'quietTo\',this.value)">'+
+   [...Array(24)].map((_,h)=>'<option value="'+h+'"'+(+p.quietTo===h?' selected':'')+'>'+String(h).padStart(2,'0')+':00</option>').join('')+'</select></div></div>'+
+  '<p class="tiny muted" style="margin:0">During quiet hours nothing buzzes, but a review of 3 stars or less still comes through.</p></div>'+
+  '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="nt-snd"'+(p.sound?' checked':'')+
+   ' onchange="notifySet(\'sound\',this.checked)"> Play a short sound</label>'+
+  '<button class="btn ghost sm" style="width:100%;justify-content:center" onclick="notifyTest()">'+ic('bell',14)+
+  'Send a test notification</button>'+
+  '<p class="tiny muted" style="margin-top:9px">'+ic('cloud',12)+' Alerts arrive while the app is open, including when it '+
+  'sits in the background on this tablet. For a buzz when the app is fully closed, the spa needs Firebase Cloud Messaging '+
+  '— ask for that to be set up when you are ready.</p></div>';
+}
+window.notifySet=(k,v)=>{const p=notifPrefs();p[k]=(v===true||v===false)?v:+v;saveNotifPrefs();
+ if(k==='sound'&&v)beep(false);};
+window.notifyKind=(k,v)=>{const p=notifPrefs();p.kinds[k]=!!v;saveNotifPrefs();};
+window.notifyToggle=async v=>{
+ const p=notifPrefs();
+ if(!v){p.on=false;saveNotifPrefs();render();return;}
+ if(typeof Notification==='undefined'){toast('This browser cannot show notifications');render();return;}
+ try{
+  const r=Notification.permission==='granted'?'granted':await Notification.requestPermission();
+  if(r!=='granted'){p.on=false;saveNotifPrefs();toast('Permission was not given');render();return;}
+  p.on=true;saveNotifPrefs();beep(false);toast('Notifications on for this device');render();
+ }catch(e){p.on=false;saveNotifPrefs();toast(friendly(e));render();}
+};
+window.notifyTest=async()=>{
+ const p=notifPrefs();
+ if(p.on&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&SWREG){
+  try{await SWREG.showNotification('Luuna · test',{body:'Notifications are working on this device.',
+   icon:'./icon-192.png',badge:'./favicon-32.png',tag:'test',data:{go:'home'}});
+   toast('Sent — check the notification tray');}
+  catch(e){toast(friendly(e));}
+ }else toast('Switch “Buzz this device” on first');
+ beep(false);
 };
 
 /* ============ hands-on therapist and commission ============ */
@@ -5680,6 +5919,7 @@ window.checkout=async()=>{
     balances:[{serviceId:i.id,left:i.qty,total:i.qty}]});
    newPkgs.push((sv.name||i.name)+' (prepaid)');
   }
+  const lowAfter=[];
   for(const i of items){
    if(i.kind==='product'){const st=stockOf(i.id);if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-i.qty)});st.qty-=i.qty;}}
    if(i.kind==='set')for(const z of (i.setItems||[])){const st=stockOf(z.sku);const n=(+z.qty||1)*i.qty;
@@ -5687,6 +5927,10 @@ window.checkout=async()=>{
    if(((i.kind==='service'&&!i.later)||i.kind==='redeem')&&!stockTakenByAppt(i,cart.customerId)){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
+  D.stock.filter(st=>st.branchId===ME.branchId&&st.qty<=st.reorder&&
+   items.some(i=>i.id===st.sku||(i.setItems||[]).some(z=>z.sku===st.sku)||(svc(i.id).use||[]).some(u=>u.sku===st.sku)))
+   .forEach(st=>lowAfter.push((prod(st.sku).name||st.sku)+' ('+st.qty+' left)'));
+  if(lowAfter.length)logEvent('stock','Stock running low',lowAfter.join(', '),{refType:'stock'});
   let earned=0;
   if(cart.customerId){
    if(cart.points>0)await spendPoints(cart.customerId,c?c.name:'',cart.points,invoiceNo);
@@ -5694,6 +5938,9 @@ window.checkout=async()=>{
    earned=await awardPoints(cart.customerId,c?c.name:'',total>0?net*paid/total:0,invoiceNo);
   }
   const auto=await completeFromSale(ref.id,invoiceNo,cart.customerId,items);
+  logEvent('sale','Bill '+invoiceNo+' · '+rm(total),(c?c.name:'Walk-in')+' · '+
+   items.map(i=>i.qty+'× '+i.name).join(', ').slice(0,120)+(balance>0?' · '+rm(balance)+' outstanding':''),
+   {refType:'sale',refId:ref.id,amount:r2(total)});
   await audit('Bill completed',invoiceNo+' · '+rm(total)+' · '+(c?c.name:'Walk-in')+
    (newPkgs.length?' · packages: '+newPkgs.join(', '):'')+(auto.done?' · '+auto.done+' booking(s) completed':''));
   const ov=items.filter(i=>i.listPrice!==undefined||i.lineDisc>0||i.commAmt!==undefined);
@@ -6898,6 +7145,8 @@ window.clockPrompt=(sid,dir)=>{
       closedBy:UID,closedByName:ME.name});
     }
     await loadAttendance();
+    logEvent('attendance',s.name+(dir==='in'?' clocked in':' clocked out'),tstr(new Date())+' · '+branch().name,
+     {refType:'attendance',refId:sid});
     await audit(dir==='in'?'Clock in':'Clock out',s.name+' at '+tstr(new Date()));
     window.closeModal();render();toast(s.name+(dir==='in'?' clocked in':' clocked out'));
    }catch(e){$('#ck-err').textContent=friendly(e);$('#ck-go').disabled=false;}
@@ -7923,7 +8172,8 @@ window.openShift=()=>{
    openNote:$('#os-n').value||'',openedAt:new Date().toISOString(),openedBy:UID,
    openedByName:ME.name,expenses:[],issues:[],closedAt:''};
   try{await setDoc(doc(db,'shifts',shiftId()),data,{merge:true});
-   await loadShift();await audit('Day opened','Float '+rm(data.openingFloat));
+   await loadShift();logEvent('day','Day opened','Float '+rm(data.openingFloat)+' · '+branch().name,{refType:'shift'});
+   await audit('Day opened','Float '+rm(data.openingFloat));
    window.closeModal();render();toast('Day opened');}catch(e){toast(friendly(e));}};});};
 function shiftSummary(f){
  const cs=Object.keys(f.cats);
@@ -8076,6 +8326,8 @@ window.closeShift=()=>{
      revenue:f.revenue,bills:f.bills,cashTaken:f.cash,paidOut:expTotal(),
      showed:f.showed,booked:f.booked,noShow:f.noShow});
     await loadShift();
+    logEvent('day','Day closed · '+rm(f.revenue)+' taken',f.bills+' bills · counted '+rm(counted)+
+     ' · difference '+rm(counted-expect),{refType:'shift',urgent:Math.abs(counted-expect)>20});
     await audit('Day closed','Counted '+rm(counted)+', difference '+rm(counted-expect));
     window.closeModal();render();toast('Day closed');}
    catch(e){toast(friendly(e));}};});};
@@ -8100,6 +8352,7 @@ function vSet(){
   ' · if this does not match the file you uploaded, the browser is showing a cached copy — '+
   'open the site once in a private tab to check.</div></div>';
  h+=appPanel();
+ h+=notifyPanel();
  if(boss()){
   h+=bizPanel();
   h+=payPanel();
@@ -8195,7 +8448,8 @@ window.render=render;
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
-  if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];loginScreen();return;}
+  if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];APPTSUB=null;
+   EVENTS=[];EVIDS=new Set();loginScreen();return;}
   UID=user.uid;
   $('#root').innerHTML='<div class="center"><div class="spin"></div></div>';
   try{
@@ -8211,7 +8465,10 @@ window.render=render;
    render();
    bindNavAutoHide();
    startClock();
+   loadSeen();
    watchAppointments();
+   watchEvents();
+   watchReviews();
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback()]);
    render();
    if(TAB==='rep')buildReport();
