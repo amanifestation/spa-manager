@@ -766,6 +766,18 @@ tr.fbmine td{background:var(--brass-soft)}
 .offbar.on{transform:translateY(0)}
 .offbar .ico{vertical-align:-2px;margin-right:5px}
 @media (display-mode:standalone){.topbar{padding-top:max(10px,env(safe-area-inset-top))}}
+.albox{position:fixed;top:calc(66px + env(safe-area-inset-top));right:10px;z-index:58;display:flex;flex-direction:column;gap:8px;
+ max-width:min(92vw,380px);pointer-events:none}
+.albanner{pointer-events:auto;display:flex;align-items:center;gap:10px;text-align:left;width:100%;
+ background:var(--surface);border:1px solid var(--brass);border-left:4px solid var(--brass);border-radius:14px;
+ padding:10px 12px;color:var(--ink);cursor:pointer;box-shadow:0 14px 34px rgba(20,18,15,.18);
+ animation:alin .28s var(--ease) both}
+.albanner.urgent{border-color:var(--rose);border-left-color:var(--rose)}
+.albanner.out{opacity:0;transform:translateX(20px);transition:opacity .4s,transform .4s}
+.albanner .cpmeta{min-width:0;flex:1}
+.albanner .cpmeta b{display:block;font-size:13px;line-height:1.35}
+.albanner .cpmeta span{display:block;font-size:11.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes alin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
 .bell{position:relative}
 .belldot{position:absolute;top:-2px;right:-2px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;
  background:var(--rose);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center;
@@ -857,6 +869,7 @@ tr.fbmine td{background:var(--brass-soft)}
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
 <div id="modal"></div>
+<div id="albox" class="albox"></div>
 <div id="updbar" class="updbar"></div>
 <div id="offbar" class="offbar"></div>
 <div id="reportwrap"></div>
@@ -959,7 +972,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21b';
+const BUILD='2026-09-21c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -5024,8 +5037,11 @@ function notifPrefs(){
  if(!p){
   const b=boss();const kinds={};
   Object.keys(ALERT_KINDS).forEach(k=>kinds[k]=b?ALERT_KINDS[k].boss:ALERT_KINDS[k].staff);
-  p={on:false,kinds,quietFrom:22,quietTo:8,sound:true,mine:false};
+  p={on:false,kinds,quietFrom:0,quietTo:0,sound:true,mine:false,v:2};
  }
+ /* the first build shipped with 10pm–8am quiet by default, which silently swallowed every
+    alert during an evening test; anyone who never chose their own hours is moved off it */
+ if(p.v!==2){if(+p.quietFrom===22&&+p.quietTo===8){p.quietFrom=0;p.quietTo=0;}p.v=2;NPREF=p;saveNotifPrefs();return p;}
  NPREF=p;return p;
 }
 function saveNotifPrefs(){try{localStorage.setItem(NKEY,JSON.stringify(NPREF));}catch(e){}}
@@ -5042,6 +5058,7 @@ function logEvent(kind,title,body,extra){
   return addDoc(collection(db,'events'),e).catch(err=>console.warn('event',err));
  }catch(err){console.warn('event',err);return Promise.resolve();}
 }
+let EVFEED=false;
 function watchEvents(){
  try{
   const from=ymd(addDays(new Date(),-1));
@@ -5055,6 +5072,7 @@ function watchEvents(){
     EVIDS.add(e.id);EVENTS.push(e);
     if(+new Date(e.at)>EVBOOT)fresh.push(e);
    });
+   EVFEED=true;
    EVENTS.sort((a,b)=>String(b.at).localeCompare(String(a.at)));
    if(EVENTS.length>120)EVENTS=EVENTS.slice(0,120);
    fresh.forEach(alertOf);
@@ -5086,17 +5104,32 @@ function watchReviews(){
 /* one event: buzz the device if this person asked for that kind */
 function alertOf(e){
  const p=notifPrefs();
- if(!p.kinds[e.kind])return;
- if(e.by===UID&&!p.mine)return;
- const quiet=quietNow()&&!e.urgent;
+ const force=!!e.test;
+ if(!p.kinds[e.kind]&&!force)return;
+ /* whatever happens while you are looking at the app is always shown on screen;
+    only the buzz on the device is filtered by the settings */
+ if(!document.hidden)alertBanner(e);
+ if(e.by===UID&&!p.mine&&!force)return;
+ const quiet=quietNow()&&!e.urgent&&!force;
  if(document.hidden&&p.on&&!quiet&&typeof Notification!=='undefined'&&Notification.permission==='granted'&&SWREG){
   try{SWREG.showNotification(e.title,{body:e.body||'',icon:'./icon-192.png',badge:'./favicon-32.png',
    tag:e.id,renotify:false,silent:quiet,data:{go:evTab(e),refType:e.refType||'',refId:e.refId||''},
    vibrate:e.urgent?[90,60,90]:[60]});}catch(err){console.warn('notify',err);}
- }else if(!document.hidden){
-  toast(ic(ALERT_KINDS[e.kind].icon,13)+' '+e.title);
  }
  if(p.sound&&!quiet)beep(e.urgent);
+}
+/* a tappable banner in the corner, so nothing is missed while the app is open */
+function alertBanner(e){
+ const box=document.getElementById('albox');if(!box)return;
+ const k=ALERT_KINDS[e.kind]||{icon:'note'};
+ const el=document.createElement('button');
+ el.type='button';el.className='albanner'+(e.urgent?' urgent':'');
+ el.innerHTML='<span class="alertico">'+ic(k.icon,16)+'</span><span class="cpmeta"><b>'+esc(e.title)+
+  '</b><span>'+esc(e.body||'')+'</span></span>'+ic('right',14);
+ el.onclick=()=>{el.remove();window.openAlert(e.id);};
+ box.prepend(el);
+ while(box.children.length>3)box.lastChild.remove();
+ setTimeout(()=>{el.classList.add('out');setTimeout(()=>{try{el.remove();}catch(x){}},420);},9000);
 }
 const evTab=e=>({sale:'pos',payment:'pos',booking:'book',attendance:'team',day:'shift',feedback:'merit',stock:'inv'}[e.kind]||'home');
 function beep(urgent){
@@ -5114,8 +5147,8 @@ function beep(urgent){
  }catch(e){}
 }
 /* ---------- the bell ---------- */
-function loadSeen(){try{EVSEEN=+localStorage.getItem('luunaSeen')||0;}catch(e){EVSEEN=0;}}
-const unseen=()=>EVENTS.filter(e=>+new Date(e.at)>EVSEEN&&(e.by!==UID||notifPrefs().mine)).length;
+function loadSeen(){try{EVSEEN=+localStorage.getItem('luunaSeen')||0;}catch(e){EVSEEN=0;}notifPrefs();}
+const unseen=()=>EVENTS.filter(e=>+new Date(e.at)>EVSEEN).length;
 function bellHTML(){
  const n=unseen();
  return '<button class="iconbtn bell" title="Alerts" onclick="alertsSheet()">'+ic('bell',18)+
@@ -5178,20 +5211,52 @@ function notifyPanel(){
    ic(ALERT_KINDS[k].icon,13)+' '+ALERT_KINDS[k].label+'</label>').join('')+
   '<label class="row" style="gap:9px;margin:10px 0 0"><input type="checkbox" id="nt-mine"'+(p.mine?' checked':'')+
    ' onchange="notifySet(\'mine\',this.checked)"> Also tell me about what I do myself</label></div>'+
-  '<div class="fieldset"><h3>'+ic('clock',13)+'Quiet hours</h3><div class="grid g2">'+
+  '<div class="fieldset"><h3>'+ic('clock',13)+'Quiet hours '+(+p.quietFrom===+p.quietTo?'<span class="pill">off</span>':
+   (quietNow()?'<span class="pill a">on now</span>':''))+'</h3><div class="grid g2">'+
   '<div><label>From</label><select class="f" onchange="notifySet(\'quietFrom\',this.value)">'+
    [...Array(24)].map((_,h)=>'<option value="'+h+'"'+(+p.quietFrom===h?' selected':'')+'>'+String(h).padStart(2,'0')+':00</option>').join('')+'</select></div>'+
   '<div><label>Until</label><select class="f" onchange="notifySet(\'quietTo\',this.value)">'+
    [...Array(24)].map((_,h)=>'<option value="'+h+'"'+(+p.quietTo===h?' selected':'')+'>'+String(h).padStart(2,'0')+':00</option>').join('')+'</select></div></div>'+
-  '<p class="tiny muted" style="margin:0">During quiet hours nothing buzzes, but a review of 3 stars or less still comes through.</p></div>'+
+  '<p class="tiny muted" style="margin:0">Set both to the same hour to switch quiet hours off. While they are on nothing '+
+  'buzzes, but a review of 3 stars or less still comes through.</p></div>'+
   '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="nt-snd"'+(p.sound?' checked':'')+
    ' onchange="notifySet(\'sound\',this.checked)"> Play a short sound</label>'+
-  '<button class="btn ghost sm" style="width:100%;justify-content:center" onclick="notifyTest()">'+ic('bell',14)+
-  'Send a test notification</button>'+
+  notifyDiag()+
+  '<div class="fabrow" style="margin:0"><button class="btn ghost" onclick="notifyTest()">'+ic('bell',14)+
+  'Test the buzz</button><button class="btn ghost" onclick="notifyFeedTest()">'+ic('refresh',14)+
+  'Test the whole path</button></div>'+
   '<p class="tiny muted" style="margin-top:9px">'+ic('cloud',12)+' Alerts arrive while the app is open, including when it '+
   'sits in the background on this tablet. For a buzz when the app is fully closed, the spa needs Firebase Cloud Messaging '+
   '— ask for that to be set up when you are ready.</p></div>';
 }
+/* a plain-language status, so a quiet app can be explained instead of guessed at */
+/* a quick look under the bonnet when alerts feel quiet */
+window.alertsDebug=()=>({events:EVENTS.length,seen:EVSEEN,feed:EVFEED,unseen:unseen(),
+ prefs:notifPrefs(),sw:!!SWREG,perm:(typeof Notification!=='undefined')?Notification.permission:'none',
+ hidden:document.hidden,quiet:quietNow()});
+function notifyDiag(){
+ const p=notifPrefs();
+ const perm=(typeof Notification!=='undefined')?Notification.permission:'unsupported';
+ const last=EVENTS[0];
+ const nToday=EVENTS.filter(e=>(e.date||ymd(new Date(e.at)))===today()).length;
+ const row=(k,v,warn)=>'<div class="k">'+k+'</div><div class="v"'+(warn?' style="color:var(--amber)"':'')+'>'+v+'</div>';
+ return '<div class="kv" style="margin:10px 0">'+
+  row(ic('bell',12)+' Permission',perm==='granted'?'Given':perm==='denied'?'Blocked in the browser':'Not asked yet',perm!=='granted')+
+  row(ic('cloud',12)+' App service',SWREG?'Ready':'Not registered — open the site over https',!SWREG)+
+  row(ic('refresh',12)+' Alert feed',EVFEED?'Connected · '+nToday+' today':'Not connected — check the Firestore rules',!EVFEED)+
+  row(ic('clock',12)+' Last alert',last?esc(last.title)+' <span class="muted">'+tstr(last.at)+'</span>':'Nothing yet',!last)+
+  row(ic('gear',12)+' Quiet hours',(+p.quietFrom===+p.quietTo)?'Off':(String(p.quietFrom).padStart(2,'0')+':00–'+
+   String(p.quietTo).padStart(2,'0')+':00'+(quietNow()?' · <b>quiet right now</b>':'')),quietNow())+
+  row(ic('user',12)+' My own actions',p.mine?'Also buzz me':'Shown on screen, no buzz')+
+  (isIOS()?row(ic('alert',12)+' iPad / iPhone','A buzz needs the app added to the Home Screen first',!standalone()):'')+
+  '</div>';
+}
+window.notifyFeedTest=async()=>{
+ try{
+  await logEvent('sale','Test alert','If you can see this, the whole path works: write, feed, screen and buzz.',{test:true});
+  toast('Test sent — watch for the banner');
+ }catch(e){toast(friendly(e));}
+};
 window.notifySet=(k,v)=>{const p=notifPrefs();p[k]=(v===true||v===false)?v:+v;saveNotifPrefs();
  if(k==='sound'&&v)beep(false);};
 window.notifyKind=(k,v)=>{const p=notifPrefs();p.kinds[k]=!!v;saveNotifPrefs();};
