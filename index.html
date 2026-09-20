@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Spatify Cloud</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Luuna Skin Spa</title>
+<meta name="description" content="Bookings, checkout, clients, stock and reports.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="theme-color" content="#14120F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Luuna">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
 <style>
 :root{
   --cream:#F4F0E7; --surface:#FFFDF8; --surface-2:#FAF7F0;
@@ -743,6 +753,19 @@ tr.fbmine td{background:var(--brass-soft)}
 .swconf i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;animation:swfall 2.6s cubic-bezier(.2,.6,.4,1) forwards}
 @keyframes swfall{to{top:105%;transform:translateX(40px) rotate(540deg);opacity:.8}}
 @media (max-width:560px){.swrow,.swhead{grid-template-columns:1fr 1fr 1fr}.swhead{display:none}}
+.updbar{position:fixed;left:50%;transform:translateX(-50%) translateY(150%);bottom:calc(16px + env(safe-area-inset-bottom));
+ z-index:60;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);border-radius:14px;
+ padding:10px 12px;font-size:13px;box-shadow:0 12px 30px rgba(20,18,15,.28);transition:transform .3s var(--ease);max-width:min(94vw,520px)}
+.updbar.on{transform:translateX(-50%) translateY(0)}
+.updbar span{display:flex;align-items:center;gap:7px}
+.updbar .btn{background:var(--brass);color:#fff;flex:none}
+.updbar .iconbtn{color:var(--cream)}
+.offbar{position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--amber-soft);color:var(--amber);
+ border-top:1px solid #E8D9B8;padding:8px calc(12px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) 12px;
+ font-size:12.5px;text-align:center;transform:translateY(120%);transition:transform .3s var(--ease)}
+.offbar.on{transform:translateY(0)}
+.offbar .ico{vertical-align:-2px;margin-right:5px}
+@media (display-mode:standalone){.topbar{padding-top:max(10px,env(safe-area-inset-top))}}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -820,6 +843,8 @@ tr.fbmine td{background:var(--brass-soft)}
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
 <div id="modal"></div>
+<div id="updbar" class="updbar"></div>
+<div id="offbar" class="offbar"></div>
 <div id="reportwrap"></div>
 
 <script type="module">
@@ -827,7 +852,8 @@ import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase
 import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut}
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import {getFirestore,collection,collectionGroup,doc,getDoc,getDocs,setDoc,addDoc,updateDoc,deleteDoc,
-  query,where,orderBy,limit,onSnapshot,writeBatch,runTransaction,increment,serverTimestamp}
+  query,where,orderBy,limit,onSnapshot,writeBatch,runTransaction,increment,serverTimestamp,
+  initializeFirestore,persistentLocalCache,persistentMultipleTabManager}
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 /* ============ icons ============ */
@@ -919,7 +945,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20o';
+const BUILD='2026-09-21a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -934,6 +960,7 @@ const FORCEKEY='spatify:setup';
 let app,auth,db,ME=null,UID=null;
 const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock:[],vouchers:[],bundles:[],meta:{}};
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
+let OFFLINE_DB=false;
 let TAB='home',calMode='day',calDate=today(),calBy='staff',calWin={from:'',to:''};
 const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor'};
 const svc=id=>D.services.find(s=>s.id===id)||{};
@@ -4837,6 +4864,119 @@ function swConfetti(){
  document.body.appendChild(box);setTimeout(()=>box.remove(),3200);
 }
 
+/* ============ installable app (PWA) ============ */
+/* The app is a web page, but on a tablet it should behave like an app: its own icon,
+   full screen, and it still opens when the line drops. A service worker keeps the last
+   good copy of the page; Firestore keeps the data. Updates are never silent-stuck —
+   the page is always fetched from the network first, and when a new version is waiting
+   the team gets a tap-to-update prompt. */
+let SWREG=null,SWNEW=null,INSTALLP=null,PWAVER='';
+const standalone=()=>{try{return window.matchMedia('(display-mode: standalone)').matches||
+ window.matchMedia('(display-mode: minimal-ui)').matches||navigator.standalone===true;}catch(e){return false;}};
+const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||
+ (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function pwaInit(){
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();INSTALLP=e;
+  if(TAB==='set'&&typeof render==='function')render();});
+ window.addEventListener('appinstalled',()=>{INSTALLP=null;toast('Luuna is on your home screen');});
+ window.addEventListener('online',paintOffline);
+ window.addEventListener('offline',paintOffline);
+ paintOffline();
+ if(!('serviceWorker' in navigator))return;
+ navigator.serviceWorker.addEventListener('message',e=>{
+  if(e.data&&e.data.type==='VERSION')PWAVER=e.data.version;});
+ navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(reg=>{
+  SWREG=reg;
+  if(navigator.serviceWorker.controller)navigator.serviceWorker.controller.postMessage('VERSION');
+  if(reg.waiting&&navigator.serviceWorker.controller)swReady(reg.waiting);
+  reg.addEventListener('updatefound',()=>{
+   const w=reg.installing;if(!w)return;
+   w.addEventListener('statechange',()=>{
+    if(w.state==='installed'&&navigator.serviceWorker.controller)swReady(w);});
+  });
+  /* look for a new version when the app is opened and every half hour it stays open */
+  setInterval(()=>{try{reg.update();}catch(e){}},1800000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){try{reg.update();}catch(e){}}});
+ }).catch(e=>console.warn('service worker',e));
+ let reloading=false;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{
+  if(reloading)return;reloading=true;location.reload();});
+}
+function swReady(worker){
+ SWNEW=worker;
+ const b=document.getElementById('updbar');
+ if(b){b.className='updbar on';
+  b.innerHTML='<span>'+ic('refresh',14)+' A newer version of the app is ready.</span>'+
+   '<button class="btn sm" onclick="pwaUpdate()">Update now</button>'+
+   '<button class="iconbtn" onclick="document.getElementById(\'updbar\').className=\'updbar\'" aria-label="Later">'+
+   ic('close',14)+'</button>';}
+}
+window.pwaUpdate=()=>{
+ if(SWNEW){SWNEW.postMessage('SKIP_WAITING');setTimeout(()=>location.reload(),900);}
+ else location.reload();
+};
+function paintOffline(){
+ const b=document.getElementById('offbar');if(!b)return;
+ const off=navigator.onLine===false;
+ b.className='offbar'+(off?' on':'');
+ b.innerHTML=off?ic('cloud',14)+' No internet — you can keep working. Everything saves when the line is back.':'';
+}
+/* the home-screen shortcuts (Checkout, Calendar, Clients) land here */
+function pwaShortcut(){
+ try{const g=new URLSearchParams(location.search).get('go');
+  if(g&&TABS.some(t=>t.id===g&&(!t.perm||can(t.perm))))TAB=g;}catch(e){}
+}
+function appPanel(){
+ const inst=standalone();
+ return '<div class="card"><div class="sec-h"><h2>'+ic('grid',16)+' This app</h2>'+
+  '<span class="pill '+(inst?'g':'')+'">'+(inst?'Installed':'In the browser')+'</span></div>'+
+  (inst?'<p class="tiny muted" style="margin:0 0 10px">Running from the home screen. '+
+   'It opens full screen and still works when the line drops — bills and bookings you make offline are sent '+
+   'as soon as the internet is back.</p>':
+   (INSTALLP?'<p class="tiny muted" style="margin:0 0 10px">Put Luuna on this device\'s home screen: '+
+    'it opens full screen, starts faster and keeps working when the line drops.</p>'+
+    '<button class="btn" style="width:100%;justify-content:center" onclick="pwaInstall()">'+ic('download',16)+
+    'Install Luuna on this device</button>':
+    isIOS()?'<div class="fieldset" style="margin-top:0"><h3>'+ic('download',13)+'Add to the Home Screen (iPad / iPhone)</h3>'+
+     '<ol class="tiny" style="margin:0;padding-left:18px;line-height:1.8"><li>Open this page in <b>Safari</b></li>'+
+     '<li>Tap the <b>Share</b> button (square with an arrow)</li>'+
+     '<li>Choose <b>Add to Home Screen</b> — on newer iPads it is called <b>Open as Web App</b></li></ol></div>':
+    '<div class="fieldset" style="margin-top:0"><h3>'+ic('download',13)+'Add to the home screen</h3>'+
+     '<p class="tiny" style="margin:0">Open the browser menu (⋮) and choose <b>Install app</b> or '+
+     '<b>Add to Home screen</b>. If you do not see it, open the site in Chrome rather than inside another app.</p></div>'))+
+  '<div class="kv" style="margin-top:10px"><div class="k">'+ic('cloud',12)+' Version</div><div class="v">'+BUILD+
+   (PWAVER&&PWAVER!==BUILD?' <span class="muted">(cache '+esc(PWAVER)+')</span>':'')+'</div>'+
+  '<div class="k">'+ic('refresh',12)+' Connection</div><div class="v">'+
+   (navigator.onLine===false?'<span style="color:var(--rose)">Offline</span>':'Online')+'</div>'+
+  '<div class="k">'+ic('shield',12)+' Offline data</div><div class="v">'+(OFFLINE_DB?'On — recent records are kept on this device':'Not available on this device')+'</div></div>'+
+  '<div class="row wrap2" style="margin-top:10px">'+
+  '<button class="btn sm ghost" onclick="pwaCheck()">'+ic('refresh',14)+'Check for updates</button>'+
+  '<button class="btn sm ghost" onclick="pwaReset()">'+ic('trash',14)+'Clear app cache</button></div>'+
+  '<p class="tiny muted" style="margin-top:8px">Clearing the cache only removes the stored copy of the app itself. '+
+  'Your bookings, bills and clients live in the cloud and are never touched.</p></div>';
+}
+window.pwaInstall=async()=>{
+ if(!INSTALLP){toast('Use the browser menu → Install app');return;}
+ INSTALLP.prompt();
+ try{const r=await INSTALLP.userChoice;if(r&&r.outcome==='accepted')toast('Installing…');}catch(e){}
+ INSTALLP=null;render();
+};
+window.pwaCheck=async()=>{
+ if(!SWREG){location.reload();return;}
+ toast('Checking…');
+ try{await SWREG.update();
+  setTimeout(()=>{if(!SWNEW)toast('You are on the latest version · '+BUILD);},1500);}
+ catch(e){toast(friendly(e));}
+};
+window.pwaReset=async()=>{
+ if(!confirm('Clear the stored copy of the app and reload? Your data is not affected.'))return;
+ try{
+  if('caches' in window){const k=await caches.keys();await Promise.all(k.map(x=>caches.delete(x)));}
+  if(SWREG&&SWREG.unregister)await SWREG.unregister();
+ }catch(e){}
+ location.reload();
+};
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -7959,6 +8099,7 @@ function vSet(){
   '<div class="tiny muted" style="margin-top:10px">'+ic('cloud',12)+' Build '+BUILD+
   ' · if this does not match the file you uploaded, the browser is showing a cached copy — '+
   'open the site once in a private tab to check.</div></div>';
+ h+=appPanel();
  if(boss()){
   h+=bizPanel();
   h+=payPanel();
@@ -8036,8 +8177,20 @@ window.render=render;
  if(raw){try{cfg=JSON.parse(raw);}catch(e){cfg=null;}}
  if(!cfg&&!forced)cfg=BUILTIN_CFG;      // the normal path: nothing to set up
  if(!cfg){setupScreen();return;}
- try{app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);}
+ try{
+  app=initializeApp(cfg);auth=getAuth(app);
+  /* the staff app keeps a copy of its records on the device, so a dropped line does not
+     stop the counter; the client's feedback page has nothing to keep, so it stays plain */
+  const pub=new URLSearchParams(location.search).has('fb');
+  if(pub)db=getFirestore(app);
+  else{
+   try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
+    OFFLINE_DB=true;}
+   catch(e){console.warn('offline cache unavailable',e);db=getFirestore(app);}
+  }
+ }
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
+ pwaInit();
  /* a client opening their feedback link sees only the rating page, never the login */
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
@@ -8049,8 +8202,10 @@ window.render=render;
    const p=await getDoc(doc(db,'users',UID));
    if(!p.exists()){noProfileScreen();return;}
    ME={id:UID,...p.data()};
+   pwaShortcut();
    if(ME.active===false){await signOut(auth);loginScreen('This account has been deactivated.');return;}
    await loadStatic();
+   try{document.title=((D.meta.biz||{}).name||'Spatify')+' · Spatify';}catch(e){}
    if(!D.branches.length)D.branches=[{id:ME.branchId||'b1',name:'Main branch',code:'MAIN'}];
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
