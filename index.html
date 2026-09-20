@@ -840,7 +840,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20k';
+const BUILD='2026-09-20l';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -956,12 +956,23 @@ function noProfileScreen(){
 }
 
 /* ============ data loading ============ */
+/* Firestore hands documents back in ID order: product codes sort as text ("10" before "2")
+   and treatments/packages have random IDs. Everything is put in a human order once here,
+   so every list, picker and report shows the same, predictable order. */
+const natCmp=(a,b)=>String(a||'').localeCompare(String(b||''),'en',{numeric:true,sensitivity:'base'});
+function sortCatalogue(){
+ D.products.sort((a,b)=>(a.type===b.type?0:a.type==='retail'?-1:1)||natCmp(a.name,b.name)||natCmp(a.id,b.id));
+ D.services.sort((a,b)=>natCmp(a.cat,b.cat)||natCmp(a.name,b.name));
+ D.packages.sort((a,b)=>natCmp(a.name,b.name));
+ D.stock.sort((a,b)=>natCmp(prod(a.sku).name||a.sku,prod(b.sku).name||b.sku));
+}
 async function loadStatic(){
  const names=['branches','rooms','users','services','products','packages','stock','vouchers'];
  const snaps=await Promise.all(names.map(n=>getDocs(collection(db,n))));
  const g=i=>snaps[i].docs.map(d=>({id:d.id,...d.data()}));
  D.branches=g(0);D.rooms=g(1);D.staff=g(2);D.services=g(3);D.products=g(4);
  D.packages=g(5);D.stock=g(6);D.vouchers=g(7);
+ sortCatalogue();
  try{const m=await getDoc(doc(db,'meta','settings'));D.meta=m.exists()?m.data():{};}catch(e){D.meta={};}
  if(!D.meta.open)D.meta={open:9,close:20,biz:{name:'My Spa',ssm:'',tin:'',sst:0,sstRate:8,phone:''},...D.meta};
 }
@@ -4474,11 +4485,16 @@ function vInv(){
   '<button class="'+(invTab===t[0]?'on':'')+'" onclick="setInvTab(\''+t[0]+'\')">'+t[1]+'</button>').join('')+'</div>'+
   '<div class="scroll"><table><tr><th>Item</th><th class="num">On hand</th><th></th></tr>'+
   st.map(s=>{const p=prod(s.sku);
-   return '<tr><td><b>'+esc(p.name)+'</b><div class="tiny muted">'+esc(s.sku)+' · '+esc(p.type||'')+
+   return '<tr><td><b>'+esc(p.name||s.sku)+'</b>'+(p.name?'':' <span class="pill r">not in catalogue</span>')+
+   '<div class="tiny muted">'+esc(s.sku)+' · '+esc(p.type||'')+
    (boss()&&p.cost?' · cost '+rm(p.cost):'')+'</div></td>'+
    '<td class="num"'+(s.qty<=s.reorder?' style="color:var(--rose);font-weight:600"':'')+'>'+s.qty+' '+esc(p.unit||'')+'</td>'+
-   '<td class="num">'+(boss()?'<button class="iconbtn" style="padding:5px" onclick="adjStock(\''+s.id+'\')">'+
+   '<td class="num">'+(boss()?'<button class="iconbtn" style="padding:5px" data-id="'+esc(s.id)+'" onclick="adjStock(this.dataset.id)">'+
     ic('edit',14)+'</button>':'')+'</td></tr>';}).join('')+'</table></div>'+
+  (()=>{const un=D.products.filter(p=>p.active!==false&&!stockOf(p.id)&&(invTab==='all'||p.type===invTab));
+   return un.length?'<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' Not tracked at this branch: '+
+    un.map(p=>esc(p.name||p.id)+(boss()?' <button class="btn sm ghost" style="padding:3px 9px" data-id="'+esc(p.id)+
+     '" onclick="trackStock(this.dataset.id)">'+ic('plus',12)+'Track</button>':'')).join(' · ')+'</div>':'';})()+
   (boss()?'<div class="row wrap2" style="margin-top:10px">'+
    '<button class="btn sm" onclick="receiveStock()">'+ic('download',14)+'Receive stock</button>'+
    '<button class="btn sm ghost" onclick="poList()">'+ic('list',14)+'Order list</button></div>':'')+'</div>';
@@ -4487,20 +4503,33 @@ window.adjStock=id=>{
  const s=D.stock.find(x=>x.id===id);
  modal('Adjust · '+prod(s.sku).name,'<div class="card"><label>Counted quantity</label>'+
   '<input class="f" type="number" id="as-q" value="'+s.qty+'"><label>Reason</label><input class="f" id="as-r">'+
-  '<button class="btn" style="width:100%;justify-content:center" id="as-go">Save adjustment</button></div>',
+  '<label>Reorder level</label><input class="f" type="number" id="as-ro" value="'+(s.reorder||0)+'">'+
+  '<button class="btn" style="width:100%;justify-content:center" id="as-go">Save adjustment</button>'+
+  (prod(s.sku).id?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" data-id="'+
+   esc(s.sku)+'" onclick="editProduct(this.dataset.id)">'+ic('edit',14)+'Edit product details (name, price, code)</button>':'')+
+  '</div>',
  ()=>{$('#as-go').onclick=async()=>{
-  const old=s.qty,q=+$('#as-q').value;
-  try{await updateDoc(doc(db,'stock',id),{qty:q});s.qty=q;
+  const old=s.qty,q=+$('#as-q').value,ro=+$('#as-ro').value||0;
+  try{await updateDoc(doc(db,'stock',id),{qty:q,reorder:ro});s.qty=q;s.reorder=ro;
    await audit('Stock adjusted',prod(s.sku).name+': '+old+' → '+q+' ('+($('#as-r').value||'no reason')+')');
    window.closeModal();render();toast('Stock updated');}catch(e){toast(friendly(e));}};});};
+/* start keeping stock of a product at this branch */
+window.trackStock=async(sku,quiet)=>{
+ const id=ME.branchId+'_'+sku,rec={branchId:ME.branchId,sku,qty:0,reorder:5,expiry:''};
+ await setDoc(doc(db,'stock',id),rec,{merge:true});
+ const s={id,...rec};D.stock.push(s);sortCatalogue();
+ if(!quiet){await audit('Stock tracking started',(prod(sku).name||sku));render();toast('Now tracked — use Adjust to set the count');}
+ return s;
+};
 window.receiveStock=()=>{
  modal('Receive stock','<div class="card"><label>Item</label><select class="f" id="rs-s">'+
-  D.products.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'</option>').join('')+'</select>'+
+  D.products.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name||p.id)+(stockOf(p.id)?'':' (not tracked yet)')+
+   '</option>').join('')+'</select>'+
   '<label>Quantity received</label><input class="f" type="number" id="rs-q" value="10">'+
   '<button class="btn" style="width:100%;justify-content:center" id="rs-go">Record delivery</button></div>',
  ()=>{$('#rs-go').onclick=async()=>{
-  const s=stockOf($('#rs-s').value),q=+$('#rs-q').value;
-  if(!s){toast('No stock record for this item at your branch');return;}
+  let s=stockOf($('#rs-s').value);const q=+$('#rs-q').value;
+  if(!s){try{s=await trackStock($('#rs-s').value,true);}catch(e){toast(friendly(e));return;}}
   try{await updateDoc(doc(db,'stock',s.id),{qty:increment(q)});s.qty+=q;
    await audit('Stock received',prod(s.sku).name+' +'+q);
    window.closeModal();render();toast('Delivery recorded');}catch(e){toast(friendly(e));}};});};
@@ -4635,7 +4664,7 @@ const offTag=x=>x.active===false?' <span class="pill">hidden</span>':'';
 function catServices(){
  return '<div class="sec-h"><h2>Treatments</h2><button class="btn sm" onclick="editService()">'+
   ic('plus',15)+'New</button></div>'+
-  (D.services.length?D.services.map(s=>'<div class="item" onclick="editService(\''+s.id+'\')">'+
+  (D.services.length?D.services.map(s=>'<div class="item" data-id="'+esc(s.id)+'" onclick="editService(this.dataset.id)">'+
    '<div class="spread"><b>'+esc(s.name)+offTag(s)+'</b><span>'+rm(s.price)+'</span></div>'+
    '<div class="tiny muted">'+esc(s.cat||'Uncategorised')+' · '+s.dur+' min +'+(s.buffer||0)+
    ' buffer · '+esc(s.room||'any')+' room · commission '+(s.comm||0)+'%'+
@@ -4690,7 +4719,7 @@ window.editService=id=>{
   '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="sv-go">Save treatment</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
-   'onclick="catDelete(\'services\',\''+id+'\',\''+esc(s.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+   'data-id="'+esc(id)+'" data-name="'+esc(s.name||'')+'" onclick="catDelete(\'services\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
   '</div>',()=>{
    const box=$('#sv-use');
    const backbar=D.products.filter(p=>p.type==='backbar');
@@ -4724,41 +4753,65 @@ window.editService=id=>{
      name,id?'Treatment updated':'Treatment added');};
   });};
 
-function catProducts(){
- return '<div class="sec-h"><h2>Products</h2><button class="btn sm" onclick="editProduct()">'+
-  ic('plus',15)+'New</button></div>'+
-  (D.products.length?D.products.map(p=>'<div class="item" onclick="editProduct(\''+p.id+'\')">'+
+let PRODQ='',PRODTYPE='all';
+window.setProdType=t=>{PRODTYPE=t;const q=PRODQ;render();const i=document.getElementById('prs-q');if(i)i.value=q;};
+window.prodFilter=()=>{PRODQ=((document.getElementById('prs-q')||{}).value||'');
+ const b=document.getElementById('pr-list');if(b)b.innerHTML=prodRows();};
+function prodRows(){
+ const t=PRODQ.trim().toLowerCase();
+ const list=D.products.filter(p=>(PRODTYPE==='all'||(PRODTYPE==='hidden'?p.active===false:p.type===PRODTYPE))&&
+  (!t||String(p.name||'').toLowerCase().includes(t)||String(p.id).toLowerCase().includes(t)));
+ if(!list.length)return '<div class="empty">'+(D.products.length?'No product matches.':'No products yet.')+'</div>';
+ return list.map(p=>{const st=stockOf(p.id);
+  return '<div class="item" data-id="'+esc(p.id)+'" onclick="editProduct(this.dataset.id)">'+
    '<div class="row">'+(p.image?'<img class="pthumb" src="'+p.image+'" alt="">'
     :'<div class="pthumb ph">'+ic('image',18)+'</div>')+
    '<div style="flex:1;min-width:0">'+
-   '<div class="spread"><b>'+esc(p.name)+offTag(p)+'</b><span>'+(p.type==='retail'?rm(p.price):
+   '<div class="spread"><b>'+esc(p.name||'(no name)')+offTag(p)+'</b><span>'+(p.type==='retail'?rm(p.price):
     '<span class="pill">backbar</span>')+'</span></div>'+
-   '<div class="tiny muted">'+esc(p.id)+' · '+esc(p.type||'')+' · '+(p.size||1)+' '+esc(p.unit||'')+
-   ' per unit'+(p.cost?' · cost '+rm(p.cost):'')+
+   '<div class="tiny muted">Code '+esc(p.id)+' · '+(p.size||1)+' '+esc(p.unit||'')+' per unit'+
+   (p.cost?' · cost '+rm(p.cost):'')+' · '+(st?st.qty+' in stock':'<span class="odue">no stock record here</span>')+'</div>'+
    ((p.concerns||[]).length?'<div class="tiny" style="color:var(--brass);margin-top:2px">'+
     ic('spark',10)+' '+p.concerns.map(concernLabel).join(', ')+'</div>':'')+
-   '</div>'+ic('right',16)+'</div></div>').join('')
-  :'<div class="empty">No products yet.</div>')+
+   '</div>'+ic('right',16)+'</div></div>';}).join('');
+}
+function catProducts(){
+ const n=k=>D.products.filter(p=>k==='all'||(k==='hidden'?p.active===false:p.type===k)).length;
+ return '<div class="sec-h"><h2>Products</h2><button class="btn sm" onclick="editProduct()">'+
+  ic('plus',15)+'New</button></div>'+
+  '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span><input class="f" id="prs-q" '+
+   'placeholder="Search by name or code" autocomplete="off" oninput="prodFilter()" value="'+esc(PRODQ)+'"></div>'+
+  '<div class="chips">'+[['all','All'],['retail','Retail'],['backbar','Backbar'],['hidden','Hidden']]
+   .filter(c=>c[0]==='all'||n(c[0])).map(c=>'<button class="chip'+(PRODTYPE===c[0]?' on':'')+
+   '" onclick="setProdType(\''+c[0]+'\')">'+c[1]+' <span class="muted">'+n(c[0])+'</span></button>').join('')+'</div>'+
+  '<div id="pr-list">'+prodRows()+'</div>'+
   '<p class="tiny muted" style="margin-top:8px">'+ic('shield',13)+
-  ' Backbar items are consumed by treatments. Retail items are sold at checkout.</p>';}
+  ' Backbar items are consumed by treatments. Retail items are sold at checkout. Sorted A–Z; tap any item to edit it.</p>';}
+const skuClean=v=>String(v||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'');
 window.editProduct=id=>{
  const p=id?prod(id):{name:'',type:'retail',price:0,cost:0,unit:'pcs',size:1,active:true};
+ if(id&&!p.id){toast('That product is no longer in the catalogue');return;}
+ const missing=id?D.branches.filter(b=>!stockOf(id,b.id)):[];
  modal(id?'Edit product':'New product','<div class="card">'+
-  (id?'':'<label>Code / SKU <span class="muted">— short, no spaces</span></label>'+
-   '<input class="f" id="pr-id" placeholder="RT05">')+
-  '<label>Name</label><input class="f" id="pr-n" value="'+esc(p.name)+'">'+
+  '<label>Code / SKU <span class="muted">— letters, numbers, - and _ only</span></label>'+
+  '<input class="f" id="pr-id" placeholder="RT05" value="'+esc(id||'')+'" autocapitalize="characters">'+
+  (id?'<div class="tiny muted" style="margin:-4px 0 10px">Changing the code moves its stock and its treatment '+
+   'links to the new code. Past bills keep the old one.</div>':'')+
+  '<label>Name</label><input class="f" id="pr-n" value="'+esc(p.name||'')+'">'+
   imageField('pr-img',p.image||'','product','Product photo')+
-  '<label>Type</label><select class="f" id="pr-t"><option value="retail"'+(p.type==='retail'?' selected':'')+
+  '<label>Type</label><select class="f" id="pr-t"><option value="retail"'+(p.type!=='backbar'?' selected':'')+
    '>Retail — sold to clients</option><option value="backbar"'+(p.type==='backbar'?' selected':'')+
    '>Backbar — used during treatments</option></select>'+
   '<div class="grid g2"><div><label>Selling price (RM)</label><input class="f" type="number" step="0.01" id="pr-p" value="'+
-   (p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
-   (p.cost||0)+'"></div></div>'+
+   (+p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
+   (+p.cost||0)+'"></div></div>'+
   '<div class="grid g2"><div><label>Unit</label><input class="f" id="pr-u" value="'+esc(p.unit||'pcs')+
    '" placeholder="pcs, ml, g"></div><div><label>Size per unit</label><input class="f" type="number" id="pr-s" value="'+
-   (p.size||1)+'"></div></div>'+
-  (id?'':'<label>Opening stock at every branch</label><input class="f" type="number" id="pr-q" value="0">'+
-   '<label>Reorder level</label><input class="f" type="number" id="pr-r" value="5">')+
+   (+p.size||1)+'"></div></div>'+
+  (!id||missing.length?'<label>Opening stock'+(id?' at '+missing.map(b=>esc(b.name)).join(', ')+
+    ' <span class="muted">— no stock record there yet</span>':' at every branch')+'</label>'+
+   '<input class="f" type="number" id="pr-q" value="0">'+
+   '<label>Reorder level</label><input class="f" type="number" id="pr-r" value="5">':'')+
   '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
   chipField('pr-con',CONCERNS,p.concerns||[],'This helps with','suggested as homecare')+
   '<label>Homecare step</label><select class="f" id="pr-step"><option value="">— none —</option>'+
@@ -4769,42 +4822,66 @@ window.editProduct=id=>{
   '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="pr-go">Save product</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
-   'onclick="catDelete(\'products\',\''+id+'\',\''+esc(p.name).replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+   'data-id="'+esc(id)+'" data-name="'+esc(p.name||id)+'" '+
+   'onclick="catDelete(\'products\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
   '</div>',()=>{
    imgReset('pr-img',p.image||'');
    $('#pr-go').onclick=async()=>{
+    const err=$('#cat-err');
     const name=$('#pr-n').value.trim();
-    if(!name){toast('Name is required');return;}
-    let sku=id;
-    if(!sku){
-     sku=($('#pr-id').value||'').trim().toUpperCase().replace(/[^A-Z0-9_-]/g,'');
-     if(!sku){toast('Give the product a short code, e.g. RT05');return;}
-     if(prod(sku).name){toast('That code is already used');return;}
-    }
+    if(!name){err.textContent='Name is required.';return;}
+    const sku=skuClean($('#pr-id').value);
+    if(!sku){err.textContent='Give the product a short code, e.g. RT05.';return;}
+    if(sku!==id&&prod(sku).id){err.textContent='Code '+sku+' is already used by '+(prod(sku).name||'another product')+'.';return;}
     const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
      unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked,
      image:imgValue('pr-img',p.image||''),concerns:chipVals('pr-con'),
      step:$('#pr-step').value};
+    const btn=$('#pr-go');btn.disabled=true;
     try{
-     await setDoc(doc(db,'products',sku),data,{merge:true});
-     if(!id){
-      const qty=+$('#pr-q').value||0,reorder=+$('#pr-r').value||0;
-      for(const b of D.branches){
-       await setDoc(doc(db,'stock',b.id+'_'+sku),{branchId:b.id,sku,qty,reorder,expiry:''},{merge:true});
-      }
+     if(id&&sku!==id)await renameProduct(id,sku,data);
+     else await setDoc(doc(db,'products',sku),data,{merge:true});
+     /* a stock record at every branch that does not have one yet */
+     const qEl=document.getElementById('pr-q'),rEl=document.getElementById('pr-r');
+     const qty=+(qEl&&qEl.value)||0,reorder=+(rEl&&rEl.value)||0;
+     for(const b of D.branches){
+      if(stockOf(sku,b.id)||(id&&sku!==id&&stockOf(id,b.id)))continue;
+      await setDoc(doc(db,'stock',b.id+'_'+sku),{branchId:b.id,sku,qty,reorder,expiry:''},{merge:true});
      }
      await loadStatic();
-     await audit(id?'Product updated':'Product added',name+' ('+sku+')');
-     window.closeModal();render();toast('Saved');
-    }catch(e){toast(friendly(e));}
+     await audit(id?'Product updated':'Product added',name+' ('+sku+(id&&sku!==id?', was '+id:'')+')');
+     window.closeModal();render();toast(id&&sku!==id?'Saved · code changed to '+sku:'Saved');
+    }catch(e){console.error(e);err.textContent='Could not save: '+friendly(e);btn.disabled=false;}
    };});};
+/* a new code means a new document: copy it, move stock and links, then remove the old one */
+async function renameProduct(from,to,data){
+ const old=prod(from);
+ const b=writeBatch(db);
+ const {id:_oid,...oldRest}=old;
+ b.set(doc(db,'products',to),{...oldRest,...data,renamedFrom:from});
+ D.stock.filter(s=>s.sku===from).forEach(s=>{
+  const {id:sid,...rest}=s;
+  b.set(doc(db,'stock',s.branchId+'_'+to),{...rest,sku:to});
+  b.delete(doc(db,'stock',sid));});
+ D.services.filter(sv=>(sv.use||[]).some(u=>u.sku===from)).forEach(sv=>
+  b.set(doc(db,'services',sv.id),{use:sv.use.map(u=>u.sku===from?{...u,sku:to}:u)},{merge:true}));
+ if(typeof LIB!=='undefined'){
+  const g=LIB.find(x=>x.id==='prd_'+from);
+  if(g){const {id:gid,...rest}=g;b.set(doc(db,'library','prd_'+to),{...rest,refId:to});b.delete(doc(db,'library',gid));}
+  LIB.filter(x=>(x.pairs||[]).includes('prd_'+from)).forEach(x=>
+   b.set(doc(db,'library',x.id),{pairs:x.pairs.map(y=>y==='prd_'+from?'prd_'+to:y)},{merge:true}));
+ }
+ b.delete(doc(db,'products',from));
+ await b.commit();
+ if(typeof LIB!=='undefined')try{await loadLibrary();}catch(e){}
+}
 
 function catPackages(){
  return '<div class="sec-h"><h2>Packages</h2><button class="btn sm" onclick="editPackage()">'+
   ic('plus',15)+'New</button></div>'+
   (D.packages.length?D.packages.map(p=>{
    const val=(p.items||[]).reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0);
-   return '<div class="item" onclick="editPackage(\''+p.id+'\')"><div class="spread"><b>'+esc(p.name)+offTag(p)+
+   return '<div class="item" data-id="'+esc(p.id)+'" onclick="editPackage(this.dataset.id)"><div class="spread"><b>'+esc(p.name)+offTag(p)+
     '</b><span>'+rm(p.price)+'</span></div><div class="tiny muted">'+
     ((p.items||[]).map(i=>i.n+'× '+(svc(i.serviceId).name||'?')).join(' + ')||'no sessions set')+
     ' · worth '+rm(val)+(val?' (saves '+Math.round((1-p.price/val)*100)+'%)':'')+
@@ -4824,7 +4901,7 @@ window.editPackage=id=>{
    (p.active===false?'':' checked')+'> Available to sell</label>'+
   '<button class="btn" style="width:100%;justify-content:center" id="pk-go">Save package</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
-   'onclick="catDelete(\'packages\',\''+id+'\',\''+esc(p.name||'').replace(/'/g,"\\'")+'\')">Delete</button>':'')+
+   'data-id="'+esc(id)+'" data-name="'+esc(p.name||'')+'" onclick="catDelete(\'packages\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
   '</div>',()=>{
    const box=$('#pk-items');
    const rowHtml=(sid,n)=>'<div class="row" style="margin-bottom:6px" data-it>'+
