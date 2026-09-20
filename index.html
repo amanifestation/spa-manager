@@ -29,9 +29,12 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{background:var(--cream);color:var(--ink);
+  background-image:radial-gradient(900px 420px at 88% -140px,rgba(166,124,61,.13),transparent 70%),
+    radial-gradient(760px 380px at -8% -120px,rgba(46,107,82,.07),transparent 68%);
+  background-attachment:fixed;background-repeat:no-repeat;
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums;
-  padding-bottom:26px;-webkit-font-smoothing:antialiased}
+  -webkit-font-smoothing:antialiased}
 h1,h2,h3{margin:0;font-weight:650;letter-spacing:-.022em}
 h1{font-size:20px}h2{font-size:16.5px}h3{font-size:13.5px}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -72,7 +75,8 @@ svg{display:block;flex:none}
 
 /* ---------- surfaces ---------- */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+  padding:15px;margin-bottom:12px;box-shadow:var(--shadow);
+  background-image:linear-gradient(180deg,rgba(255,255,255,.75),rgba(255,255,255,0) 90px)}
 .row{display:flex;gap:9px;align-items:center}.row.wrap2{flex-wrap:wrap}
 .spread{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .grid{display:grid;gap:10px}
@@ -181,13 +185,14 @@ td{padding:9px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
 .x{background:var(--surface);border:1px solid var(--line);border-radius:99px;cursor:pointer;
   color:var(--ink-2);padding:6px;display:grid;place-items:center;transition:transform .16s var(--ease)}
 .x:active{transform:scale(.9) rotate(90deg)}
-.toast{position:fixed;left:50%;bottom:98px;background:var(--ink);color:var(--cream);padding:11px 17px;
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));background:var(--ink);color:var(--cream);padding:11px 17px;
   border-radius:12px;z-index:99;font-size:13px;max-width:88%;animation:toastIn .3s var(--ease);
   box-shadow:0 14px 36px -14px rgba(0,0,0,.7)}
 
 /* ---------- kpi & chart ---------- */
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 13px;
-  box-shadow:var(--shadow);transition:transform .18s var(--ease)}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:12px 13px;
+  box-shadow:var(--shadow);transition:transform .18s var(--ease);position:relative;overflow:hidden;
+  background-image:linear-gradient(160deg,rgba(166,124,61,.07),rgba(255,255,255,0) 58%)}
 .kpi:active{transform:scale(.98)}
 .kpi .lab{font-size:10.5px;color:var(--ink-3);margin-bottom:4px;display:flex;align-items:center;gap:5px;
   text-transform:uppercase;letter-spacing:.06em}
@@ -534,27 +539,63 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .navveil{position:fixed;inset:0;z-index:55;background:rgba(20,18,15,.45);
   backdrop-filter:blur(2px);display:none;animation:fadeIn .2s var(--ease)}
 .navveil.on{display:block}
-.main{min-height:100vh}
+.main{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+
+/* ---------- bottom navigation bar ---------- */
+.botnav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:stretch;gap:2px;
+  padding:7px 7px calc(10px + env(safe-area-inset-bottom));
+  padding-left:max(7px,env(safe-area-inset-left));padding-right:max(7px,env(safe-area-inset-right));
+  background:rgba(20,18,15,.80);backdrop-filter:blur(26px) saturate(175%);
+  -webkit-backdrop-filter:blur(26px) saturate(175%);
+  border-top:1px solid rgba(255,255,255,.10);border-radius:20px 20px 0 0;
+  box-shadow:0 -12px 40px -22px rgba(20,18,15,.85)}
+.botnav::before{content:'';position:absolute;left:50%;top:5px;width:34px;height:3px;border-radius:99px;
+  transform:translateX(-50%);background:rgba(255,255,255,.14);pointer-events:none}
+.bnitem{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:9px 3px 7px;border:0;background:transparent;color:#A49C90;border-radius:15px;
+  cursor:pointer;font-size:9.8px;font-weight:560;letter-spacing:-.005em;position:relative;
+  transition:background .24s var(--ease),color .2s,transform .16s var(--ease)}
+.bnlab{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.25}
+.bnitem:active{transform:scale(.93)}
+.bnitem.on{background:var(--cream);color:var(--ink);font-weight:650}
+.bnitem.on .ico{color:var(--brass)}
+.bndot{position:absolute;top:4px;left:calc(50% + 5px);min-width:16px;height:16px;padding:0 4px;
+  border-radius:99px;background:var(--brass);color:#fff;font-size:9.5px;font-weight:700;
+  display:grid;place-items:center;line-height:1;box-shadow:0 0 0 2px rgba(20,18,15,.9)}
+.bnitem.on .bndot{box-shadow:0 0 0 2px var(--cream)}
+.bndot.plain{min-width:9px;width:9px;height:9px;padding:0;top:5px;left:calc(50% + 7px)}
+@media(min-width:760px){
+  .botnav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100% - 32px));
+    bottom:calc(14px + env(safe-area-inset-bottom));border-radius:22px;
+    border:1px solid rgba(255,255,255,.12);padding:6px 7px;
+    box-shadow:0 22px 48px -20px rgba(20,18,15,.7)}
+  .botnav::before{display:none}
+  .bnitem{font-size:10.5px}
+  .main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+}
 
 .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:11px;
   padding:11px 14px;color:var(--ink);
-  background:rgba(244,240,231,.74);backdrop-filter:blur(20px) saturate(160%);
-  -webkit-backdrop-filter:blur(20px) saturate(160%);
-  border-bottom:1px solid rgba(20,18,15,.08);box-shadow:none}
-.ttitle{font-size:16px;font-weight:650;letter-spacing:-.02em;overflow:hidden;
+  background:rgba(244,240,231,.78);backdrop-filter:blur(22px) saturate(168%);
+  -webkit-backdrop-filter:blur(22px) saturate(168%);
+  border-bottom:1px solid rgba(20,18,15,.07);box-shadow:none}
+.ttitle{font-size:17px;font-weight:660;letter-spacing:-.025em;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;line-height:1.2}
+.tsub{font-size:11px;color:var(--ink-3);line-height:1.35;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
-.tsub{font-size:11px;color:var(--ink-3);line-height:1.3}
 .tacts{margin-left:auto;display:flex;gap:7px}
-.menubtn{flex:none;background:rgba(20,18,15,.9);color:var(--cream);
-  border-color:rgba(255,255,255,.14);
-  box-shadow:0 4px 14px -6px rgba(20,18,15,.6),inset 0 1px 0 rgba(255,255,255,.14)}
-.menubtn:active{background:var(--brass);color:#fff}
+.menubtn{flex:none;width:38px;height:38px;padding:0;border-radius:13px;
+  background:linear-gradient(150deg,#25211B,#14120F);color:var(--cream);
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 5px 16px -7px rgba(20,18,15,.75),inset 0 1px 0 rgba(255,255,255,.15)}
+.menubtn:active{background:linear-gradient(150deg,var(--brass),#7E5B26);color:#fff}
 
 @media(min-width:900px){
   .wrap{padding:20px 26px}
   .side{width:280px}
 }
-@media print{.side,.navveil,.topbar{display:none!important}.main{margin-left:0}}
+@media print{.side,.navveil,.topbar,.botnav{display:none!important}
+  .main{margin-left:0;padding-bottom:0}}
 
 
 /* ---------- home dashboard ---------- */
@@ -753,17 +794,20 @@ tr.fbmine td{background:var(--brass-soft)}
 .swconf i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;animation:swfall 2.6s cubic-bezier(.2,.6,.4,1) forwards}
 @keyframes swfall{to{top:105%;transform:translateX(40px) rotate(540deg);opacity:.8}}
 @media (max-width:560px){.swrow,.swhead{grid-template-columns:1fr 1fr 1fr}.swhead{display:none}}
-.updbar{position:fixed;left:50%;transform:translateX(-50%) translateY(150%);bottom:calc(16px + env(safe-area-inset-bottom));
+.updbar{position:fixed;left:50%;transform:translateX(-50%) translateY(24px);bottom:calc(88px + env(safe-area-inset-bottom));
  z-index:60;display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);border-radius:14px;
- padding:10px 12px;font-size:13px;box-shadow:0 12px 30px rgba(20,18,15,.28);transition:transform .3s var(--ease);max-width:min(94vw,520px)}
-.updbar.on{transform:translateX(-50%) translateY(0)}
+ padding:10px 12px;font-size:13px;box-shadow:0 12px 30px rgba(20,18,15,.28);max-width:min(94vw,520px);
+ opacity:0;pointer-events:none;transition:transform .3s var(--ease),opacity .25s var(--ease)}
+.updbar.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
 .updbar span{display:flex;align-items:center;gap:7px}
 .updbar .btn{background:var(--brass);color:#fff;flex:none}
 .updbar .iconbtn{color:var(--cream)}
-.offbar{position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--amber-soft);color:var(--amber);
- border-top:1px solid #E8D9B8;padding:8px calc(12px + env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom)) 12px;
- font-size:12.5px;text-align:center;transform:translateY(120%);transition:transform .3s var(--ease)}
-.offbar.on{transform:translateY(0)}
+.offbar{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));z-index:52;
+ width:min(94vw,440px);background:var(--amber-soft);color:var(--amber);
+ border:1px solid #E8D9B8;border-radius:13px;padding:8px 12px;box-shadow:var(--shadow-lift);
+ font-size:12.5px;text-align:center;opacity:0;pointer-events:none;
+ transform:translate(-50%,24px);transition:transform .3s var(--ease),opacity .25s var(--ease)}
+.offbar.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .offbar .ico{vertical-align:-2px;margin-right:5px}
 @media (display-mode:standalone){.topbar{padding-top:max(10px,env(safe-area-inset-top))}}
 .albox{position:fixed;top:calc(66px + env(safe-area-inset-top));right:10px;z-index:58;display:flex;flex-direction:column;gap:8px;
@@ -972,7 +1016,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21d';
+const BUILD='2026-09-21e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1123,7 +1167,7 @@ function watchAppointments(){
  const q=query(collection(db,'appointments'),where('date','>=',from),where('date','<=',to));
  APPTSUB=onSnapshot(q,s=>{
    APPTS=s.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.branchId===ME.branchId);
-   if(TAB==='home'||TAB==='book')render();},
+   if(TAB==='home'||TAB==='book')render();else window.paintBotNav();},
    e=>{console.warn(e);
      toast(String(e.code||'').includes('failed-precondition')
        ?'Firestore needs an index for this query — open the console link in the browser log.'
@@ -1250,6 +1294,8 @@ const TABS=[
  {id:'cat', ic:'list',   label:'Catalogue',perm:'admin',   group:'Manage', desc:'Treatments, products, prices'},
  {id:'set', ic:'gear',   label:'Settings', perm:null,      group:'Manage', desc:'Business details and data'}];
 const GROUPS=['Today','Clients','Money','Manage'];
+/* the order the bottom bar prefers — first four the person is allowed to see win a slot */
+const BNAV=['home','book','pos','cust','merit','lib','shift','board'];
 let navOpen=false;
 window.go=t=>{TAB=t;window.closeModal();render();window.scrollTo(0,0);};
 window.setCal=(m)=>{calMode=m;const need=needsWindow();render();if(need)watchAppointments();};
@@ -1263,6 +1309,40 @@ window.shiftCal=n=>{
  render();if(needsWindow())watchAppointments();};
 window.pickDate=d=>{calDate=d;calMode='day';render();if(needsWindow())watchAppointments();};
 window.setCalBy=v=>{calBy=v;render();};
+
+/* --- bottom bar --- */
+function navCount(t){
+ let b='';try{b=tileBadge(t)||'';}catch(e){}
+ const m=/^(\d+)/.exec(b);return m?+m[1]:0;
+}
+function botTabs(allowed){
+ const by={};allowed.forEach(t=>by[t.id]=t);
+ const pick=[];
+ BNAV.forEach(id=>{if(pick.length<4&&by[id])pick.push(by[id]);});
+ allowed.forEach(t=>{if(pick.length<4&&pick.indexOf(t)<0)pick.push(t);});
+ return pick;
+}
+function botNavHTML(allowed){
+ const shown=botTabs(allowed);
+ const here=shown.some(t=>t.id===TAB);
+ const rest=allowed.filter(t=>shown.indexOf(t)<0);
+ let more=0;rest.forEach(t=>{more+=navCount(t);});
+ const dot=n=>n?'<span class="bndot">'+(n>99?'99+':n)+'</span>':'';
+ return '<nav class="botnav" id="botnav">'+
+  shown.map(t=>'<button class="bnitem'+(TAB===t.id?' on':'')+'" onclick="go(\''+t.id+'\')" '+
+   'aria-label="'+esc(t.label)+'"'+(TAB===t.id?' aria-current="page"':'')+'>'+
+   ic(t.ic,19)+'<span class="bnlab">'+esc(t.label)+'</span>'+dot(navCount(t))+'</button>').join('')+
+  '<button class="bnitem'+(here?'':' on')+'" onclick="toggleNav()" aria-label="More screens">'+
+   ic('list',19)+'<span class="bnlab">More</span>'+
+   (more?'<span class="bndot plain"></span>':'')+'</button>'+
+  '</nav>';
+}
+window.paintBotNav=()=>{
+ if(!ME)return;
+ const el=document.getElementById('botnav');
+ if(!el)return;
+ el.outerHTML=botNavHTML(TABS.filter(t=>!t.perm||can(t.perm)));
+};
 
 function render(){
  if(!ME)return;
@@ -1294,10 +1374,10 @@ function render(){
   '<div class="navveil'+(navOpen?' on':'')+'" onclick="toggleNav()"></div>'+
   '<div class="main">'+
    '<header class="topbar"><button class="iconbtn menubtn" aria-label="Menu" '+
-    'onclick="toggleNav()">'+ic(navOpen?'close':'list',18)+'</button>'+
+    'onclick="toggleNav()">'+ic(navOpen?'close':'spark',18)+'</button>'+
     '<div style="min-width:0"><div class="ttitle">'+
      esc((TABS.find(t=>t.id===TAB)||{label:'Home'}).label)+'</div>'+
-     '<div class="tsub">'+new Date().toLocaleDateString('en-MY',
+     '<div class="tsub">'+esc(branch().name)+' · '+new Date().toLocaleDateString('en-MY',
        {weekday:'short',day:'numeric',month:'short'})+'</div></div>'+
     '<div class="tacts">'+
      '<span id="bellwrap">'+bellHTML()+'</span>'+
@@ -1307,7 +1387,7 @@ function render(){
       ic('search',18)+'</button>':'')+
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
-  '</div>';
+  '</div>'+botNavHTML(allowed);
  const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
@@ -8611,6 +8691,8 @@ window.hideNav=()=>{if(navOpen){navOpen=false;render();}};
 let navBound=false;
 function bindNavAutoHide(){
  if(navBound)return;navBound=true;
+ /* the counters on the bottom bar keep up even while another screen is open */
+ setInterval(()=>{if(!document.hidden)window.paintBotNav();},15000);
  /* the menu is an overlay, so it gets out of the way the moment attention moves */
  window.addEventListener('scroll',()=>window.hideNav(),{passive:true});
  window.addEventListener('resize',()=>window.hideNav());
