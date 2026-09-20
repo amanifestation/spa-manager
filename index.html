@@ -725,6 +725,24 @@ tr.fbmine td{background:var(--brass-soft)}
 .fbicon{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--rose-soft);color:var(--rose)}
 .fbicon.ok{background:#E4EFE8;color:#2E6B52}
 .fblang{position:absolute;top:14px;right:14px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--ink)}
+.swrow{display:grid;grid-template-columns:1.6fr 1.1fr 1.3fr .9fr .8fr auto;gap:6px;align-items:center}
+.swrow .f{margin:0 0 6px;padding:8px}
+.swhead{display:grid;grid-template-columns:1.6fr 1.1fr 1.3fr .9fr .8fr 32px;gap:6px;margin:-2px 0 8px}
+.swwrap h1{font-size:21px}
+.swcard{position:relative;margin:16px auto 10px;height:170px;border-radius:18px;overflow:hidden;
+ background:linear-gradient(135deg,#FFF8E6,#F3E9D8);border:2px dashed var(--brass);touch-action:none;user-select:none}
+.swcard canvas{position:absolute;inset:0;cursor:grab;touch-action:none;background:transparent!important;border:0!important;border-radius:0!important}
+.swunder{position:absolute;inset:0;display:grid;place-items:center;padding:12px}
+.swwin .swprize{font-size:30px;font-weight:800;color:var(--brass);line-height:1.15}
+.swsmall{font-size:12.5px;color:var(--ink-3)}
+.swlose{font-size:34px}.swlose div{font-size:14px;color:var(--ink-2);margin-top:6px;line-height:1.5}
+.swreveal{background:none;border:0;color:var(--ink-3);text-decoration:underline;font-size:13px;cursor:pointer;margin-bottom:6px}
+.swticket{margin-top:10px;border:1.5px dashed var(--brass);border-radius:14px;padding:13px;background:var(--brass-soft)}
+.swcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.12em;color:var(--brass);margin:3px 0;user-select:all}
+.swconf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99}
+.swconf i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;animation:swfall 2.6s cubic-bezier(.2,.6,.4,1) forwards}
+@keyframes swfall{to{top:105%;transform:translateX(40px) rotate(540deg);opacity:.8}}
+@media (max-width:560px){.swrow,.swhead{grid-template-columns:1fr 1fr 1fr}.swhead{display:none}}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -901,7 +919,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20n';
+const BUILD='2026-09-20o';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2945,7 +2963,7 @@ function rvCodeFor(saleId,salt){
 }
 const rvPrefix=p=>String(p||'BACK').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'BACK';
 const rvForSale=id=>D.vouchers.find(v=>isReturnV(v)&&v.saleId===id);
-const rvOf=cid=>D.vouchers.filter(v=>isReturnV(v)&&v.customerId===cid);
+const rvOf=cid=>D.vouchers.filter(v=>(v.kind==='return'||v.kind==='prize')&&v.customerId===cid);
 const rvUsed=v=>(v.used||0)>=(v.cap||1);
 const rvState=v=>rvUsed(v)?'used':v.expiry<today()?'expired':(v.validFrom&&v.validFrom>today())?'waiting':'ready';
 /* why a bill cannot earn a voucher, or '' when it can */
@@ -3000,10 +3018,10 @@ function rvMessage(v){
 function rvTicket(v){
  const st=rvState(v);
  return '<div class="rvtix'+(st==='used'||st==='expired'?' dim':'')+'">'+
-  '<div class="rvtop"><span>'+ic('tag',13)+' Next-visit voucher</span>'+
+  '<div class="rvtop"><span>'+ic(v.kind==='prize'?'gift':'tag',13)+(v.kind==='prize'?' Scratch &amp; win prize':' Next-visit voucher')+'</span>'+
    '<span class="pill '+({ready:'g',waiting:'b',used:'',expired:'r'}[st])+'">'+
    ({ready:'Ready to use',waiting:'From '+dshort(v.validFrom),used:'Used',expired:'Expired'}[st])+'</span></div>'+
-  '<div class="rvworth">'+rvWorth(v)+'</div>'+
+  '<div class="rvworth">'+(v.kind==='prize'&&v.label?esc(v.label):rvWorth(v))+'</div>'+
   '<div class="rvcode">'+esc(v.id)+'</div>'+
   '<div class="tiny muted">'+esc(v.customerName||'')+(v.ownerOnly!==false?' only':'')+
    (v.min?' · min spend '+rm(v.min):'')+' · '+dshort(v.validFrom||v.issuedAt)+' – '+dshort(v.expiry)+
@@ -3031,14 +3049,18 @@ window.copyRV=()=>{
 
 /* ---------- redeeming any voucher at checkout ---------- */
 /* one place that decides whether a voucher can go on this bill */
-function voucherProblem(v,sub,customerId){
+function voucherProblem(v,sub,customerId,line){
  if(!v)return 'That code does not exist.';
  if(v.expiry&&v.expiry<today())return 'This voucher expired on '+dstr(v.expiry)+'.';
  if(v.validFrom&&v.validFrom>today())return 'This voucher can be used from '+dstr(v.validFrom)+
   ' — it is for the next visit, not today\'s.';
- if(v.cap&&(v.used||0)>=v.cap)return isReturnV(v)?'This voucher has already been used'+
+ if(v.cap&&(v.used||0)>=v.cap)return isClientV(v)?'This voucher has already been used'+
   (v.usedInvoice?' ('+v.usedInvoice+')':'')+'.':'This voucher\'s quota is used up.';
- if(isReturnV(v)&&v.ownerOnly!==false){
+ if(v.serviceId){
+  if(!line)return 'This voucher is for '+(v.serviceName||svc(v.serviceId).name||'one treatment')+' — it goes on that treatment\'s line.';
+  if(line.id!==v.serviceId||!['service'].includes(line.kind))return 'This voucher is only for '+(v.serviceName||svc(v.serviceId).name||'another treatment')+'.';
+ }
+ if(isClientV(v)&&v.ownerOnly!==false){
   if(!customerId)return 'Choose the client first — this voucher belongs to '+(v.customerName||'a client')+'.';
   if(v.customerId!==customerId)return 'This voucher belongs to '+(v.customerName||'another client')+'.';
  }
@@ -3054,7 +3076,7 @@ window.applyVoucher=()=>{
   (mine.length?'<h3 style="margin:0 0 8px">'+esc((cust(cart.customerId)||{}).name||'')+'\'s vouchers</h3>'+
    mine.map(v=>{const p=voucherProblem(v,sub,cart.customerId);
     return '<button type="button" class="pkrow"'+(p?' disabled':'')+' onclick="applyVoucherCode(\''+
-     esc(v.id)+'\')"><span class="pkico">'+ic('tag',18)+'</span><span class="cpmeta"><b>'+rvWorth(v)+
+     esc(v.id)+'\')"><span class="pkico">'+ic(v.kind==='prize'?'gift':'tag',18)+'</span><span class="cpmeta"><b>'+(v.kind==='prize'&&v.label?esc(v.label):rvWorth(v))+
      ' · '+esc(v.id)+'</b><span>'+(p?esc(p):'Until '+dshort(v.expiry)+(v.min?' · min '+rm(v.min):''))+
      '</span></span><span class="pkprice">'+(p?'':'Use')+'</span></button>';}).join('')+
    '<div class="tiny muted" style="margin:10px 0 4px">Or type a code</div>':'')+
@@ -3064,11 +3086,19 @@ window.applyVoucher=()=>{
   '<button class="btn" style="width:100%;justify-content:center" onclick="applyVoucherCode()">'+
    ic('check',16)+'Apply</button>'+
   '<div class="tiny muted" style="margin-top:10px">Campaign codes running: '+
-  (D.vouchers.filter(v=>!isReturnV(v)&&v.expiry>=today()).map(v=>esc(v.id)).join(', ')||'none')+'</div></div>');
+  (D.vouchers.filter(v=>!isClientV(v)&&v.expiry>=today()).map(v=>esc(v.id)).join(', ')||'none')+'</div></div>');
 };
 window.applyVoucherCode=code=>{
  const typed=code||(($('#vc')||{}).value||'');
  const v=findVoucher(typed);
+ if(v&&v.serviceId){
+  const ln=cart.items.find(i=>i.kind==='service'&&i.id===v.serviceId&&!i.later&&i.dType!=='code');
+  const sname=v.serviceName||svc(v.serviceId).name||'the treatment';
+  if(!ln){const m='Add '+sname+' to the bill first — this voucher makes it free.';const e=$('#vc-e');if(e&&!code)e.textContent=m;toast(m);return;}
+  const lp=voucherProblem(v,lineGross(ln),cart.customerId,ln);
+  if(lp){const e=$('#vc-e');if(e&&!code)e.textContent=lp;toast(lp);return;}
+  ln.dType='code';ln.discCode=v.id;ln.dVal=0;recalcLine(ln);window.closeModal();render();toast(sname+' · voucher '+v.id+' applied');return;
+ }
  const p=voucherProblem(v,cartTotals().sub,cart.customerId);
  if(p){const e=$('#vc-e');if(e&&!code)e.textContent=p;toast(p);return;}
  cart.voucher=v;window.closeModal();render();toast('Voucher '+v.id+' applied · '+rvWorth(v));
@@ -3702,7 +3732,7 @@ function elProblem(i,d){
  if(d.dType==='code'){
   if(!d.discCode)return 'Type the code.';
   const v=findVoucher(d.discCode);
-  const p=voucherProblem(v,lineGross(d),cart.customerId);if(p)return p;
+  const p=voucherProblem(v,lineGross(d),cart.customerId,d);if(p)return p;
   const others=cart.items.filter((z,k)=>k!==cart.items.indexOf(i)&&z.discCode===d.discCode).length+
    (cart.voucher&&cart.voucher.id===v.id?1:0);
   if(v.cap&&(v.used||0)+others+1>v.cap)return 'Code '+v.id+' is already used on this bill.';
@@ -3772,7 +3802,7 @@ function lineForSale(i,base){
    throw new Error(base.name+': discount is more than staff may give ('+discCap()+'%). Ask a manager.');
   if(draft.dType==='code'){
    const v=findVoucher(draft.discCode);
-   const p=voucherProblem(v,g,cart.customerId);if(p)throw new Error(base.name+' · code '+draft.discCode+': '+p);}
+   const p=voucherProblem(v,g,cart.customerId,base);if(p)throw new Error(base.name+' · code '+draft.discCode+': '+p);}
   out.lineDisc=draft.lineDisc;out.discType=draft.dType;
   if(['pct','rm'].includes(draft.dType))out.discVal=draft.dVal;
   if(draft.dType==='code')out.discCode=draft.discCode;
@@ -4215,6 +4245,7 @@ async function fbCreate(base){
   staffIds,staffNames,services:(base.services||[]).slice(0,6),saleId:base.saleId||'',apptId:base.apptId||'',
   invoiceNo:base.invoiceNo||'',lang:R.lang||'ms',google:R.google||'',nps:R.nps!==false,
   goodTags:fbTags(R.goodTags),badTags:fbTags(R.badTags),
+  ...(base.customerId&&swSet().on?{prize:swDraw(c.name||base.customerName)}:{}),
   createdAt:new Date().toISOString(),createdBy:UID,createdByName:ME.name,
   expiresMs:Date.now()+Math.max(1,+R.validDays||7)*864e5};
  await setDoc(doc(db,'fbRequests',token),data);
@@ -4254,6 +4285,8 @@ window.fbShow=token=>{
    '<div class="tiny muted">Answered '+dshort(answered.at)+'</div></div>':
    '<div class="tiny muted" style="margin-bottom:8px">'+ic('clock',12)+' Valid until '+dstr(new Date(r.expiresMs))+
    ' · one answer per link</div>')+
+  (r.prize?'<div class="tiny" style="margin-bottom:8px">'+ic('gift',12)+' Scratch card: <b>'+esc(swPrizeText(r.prize))+'</b>'+
+   (answered?'':' <span class="muted">— the client sees it after sending the review</span>')+'</div>':'')+
   '<label>Message</label><textarea class="f" id="fb-msg" rows="5">'+esc(msg)+'</textarea>'+
   '<div class="fabrow" style="margin:0">'+
   (phone?'<a class="btn" style="text-decoration:none" target="_blank" href="https://wa.me/'+(phone.startsWith('6')?'':'6')+phone+
@@ -4318,6 +4351,9 @@ function fbReview(f,opt){
    (Number.isInteger(f.nps)?' · recommend '+f.nps+'/10':'')+'</div>'+
   ((f.tags||[]).length?'<div class="fbtags">'+f.tags.map(t=>'<span>'+esc(t)+'</span>').join('')+'</div>':'')+
   (f.comment?'<div class="fbq">“'+esc(f.comment)+'”</div>':'')+
+  ((FBREQ.find(r=>r.id===f.id)||{}).prize?'<div class="tiny" style="margin-top:5px;color:var(--brass)">'+ic('gift',11)+' '+
+   esc(swPrizeText(FBREQ.find(r=>r.id===f.id).prize))+(()=>{const pz=FBREQ.find(r=>r.id===f.id).prize;const v=pz.code&&D.vouchers.find(x=>x.id===pz.code);
+   return v?(rvUsed(v)?' · redeemed':' · '+esc(v.id)):'';})()+'</div>':'')+
   (opt.manage&&low?(f.followUp?'<div class="tiny" style="color:var(--jade);margin-top:6px">'+ic('check',11)+' Followed up by '+
    esc(f.followUpBy||'')+(f.followUpNote?': '+esc(f.followUpNote):'')+'</div>':
    '<button class="btn sm ghost" style="margin-top:7px" data-id="'+esc(f.id)+'" onclick="fbFollow(this.dataset.id)">'+
@@ -4513,7 +4549,9 @@ async function feedbackPage(token){
   if(!s.exists()){fbPubMsg(FBT.ms.bad1);return;}
   const r={id:token,...s.data()};
   FBPUB={r,lang:r.lang==='en'?'en':'ms',overall:0,staff:{},tags:[],nps:null,comment:''};
-  try{if(localStorage.getItem('fbdone_'+token)){fbPubMsg(FBT[FBPUB.lang].done,true);return;}}catch(e){}
+  try{if(localStorage.getItem('fbdone_'+token)){fbPubMsg(FBT[FBPUB.lang].done,true);
+   if(r.prize&&!r.prize.lose){const b=document.querySelector('.fbbox');if(b){b.insertAdjacentHTML('beforeend','<div id="swafter"></div>');FBPUB.overall=0;swAfter();}}
+   return;}}catch(e){}
   if(Date.now()>(+r.expiresMs||0)){fbPubMsg(FBT[FBPUB.lang].exp);return;}
   fbPubPaint();
  }catch(e){console.error(e);fbPubMsg(FBT.ms.bad1);}
@@ -4568,24 +4606,236 @@ window.fbSubmit=async()=>{
   at:new Date().toISOString(),branchId:r.branchId,customerId:r.customerId,firstName:r.firstName,staffIds:r.staffIds,
   staffNames:r.staffNames,services:r.services,saleId:r.saleId,apptId:r.apptId,lang:FBPUB.lang};
  if(Number.isInteger(FBPUB.nps))data.nps=FBPUB.nps;
- try{await setDoc(doc(db,'feedback',r.id),data);
+ try{
+  const bt=writeBatch(db);
+  bt.set(doc(db,'feedback',r.id),data);
+  const pz=r.prize;
+  if(pz&&!pz.lose&&pz.code)bt.set(doc(db,'vouchers',pz.code),{kind:'prize',type:pz.type,value:pz.value,min:pz.min,cap:1,used:0,
+   firstOnly:false,ownerOnly:true,validFrom:pz.validFrom,expiry:pz.expiry,customerId:r.customerId,customerName:pz.customerName||'',
+   label:pz.label,serviceId:pz.serviceId||'',serviceName:pz.serviceName||'',fbToken:r.id,branchId:r.branchId,
+   issuedAt:new Date().toISOString(),issuedBy:'client'});
+  await bt.commit();
   try{localStorage.setItem('fbdone_'+r.id,'1');}catch(e){}
   fbThanks();}
  catch(e){console.error(e);
   if(btn)btn.disabled=false;
   document.getElementById('fberr').textContent=/permission/i.test(String(e&&(e.code||e.message)))?L.done:L.err;}
 };
+function fbThanksExtra(){
+ const r=FBPUB.r,L=FBT[FBPUB.lang],happy=FBPUB.overall>=4;
+ return (r.prize?'<p class="fbsub" style="margin-top:16px">'+esc(happy?L.thanksSub:L.sorry)+'</p>':'')+
+  (happy&&r.google?'<p style="margin-top:18px">'+esc(L.google)+'</p><a class="fbsend" style="display:block;text-decoration:none" '+
+   'target="_blank" href="'+esc(r.google)+'" onclick="fbCopyComment()">'+esc(L.gbtn)+'</a><div id="fbcp" class="fbsub"></div>':'');
+}
 function fbThanks(){
  const r=FBPUB.r,L=FBT[FBPUB.lang],happy=FBPUB.overall>=4;
+ if(r.prize){
+  document.getElementById('root').innerHTML='<div class="fbpage">'+fbPubHead()+'<div class="fbbox" style="text-align:center">'+swCard()+'</div></div>';
+  setTimeout(swInit,30);return;}
  document.getElementById('root').innerHTML='<div class="fbpage">'+fbPubHead()+
   '<div class="fbbox" style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div><h1>'+esc(L.thanks)+'</h1>'+
-  '<p class="fbsub">'+esc(happy?L.thanksSub:L.sorry)+'</p>'+
-  (happy&&r.google?'<p style="margin-top:18px">'+esc(L.google)+'</p><a class="fbsend" style="display:block;text-decoration:none" '+
-   'target="_blank" href="'+esc(r.google)+'" onclick="fbCopyComment()">'+esc(L.gbtn)+'</a><div id="fbcp" class="fbsub"></div>':'')+
-  '</div></div>';
+  '<p class="fbsub">'+esc(happy?L.thanksSub:L.sorry)+'</p>'+fbThanksExtra()+'</div></div>';
 }
 window.fbCopyComment=()=>{const t=FBPUB.comment;if(!t)return;
  try{navigator.clipboard.writeText(t).then(()=>{const e=document.getElementById('fbcp');if(e)e.textContent=FBT[FBPUB.lang].copied;});}catch(e){}};
+
+/* ============ scratch & win after a review ============ */
+/* Every client who sends a review gets one scratch card. The prize is drawn by the spa's
+   app when the link is made (from the odds the owner sets), so the client's phone cannot
+   pick its own prize. The winning voucher is written together with the review, and the
+   security rules accept it only when it matches the drawn prize exactly and the review
+   exists — no review, no voucher. */
+const SW_DEFAULT={on:false,validDays:60,startDays:0,lose:25,
+ prizes:[{label:'RM10 off',type:'rm',value:10,min:50,weight:40},{label:'RM20 off',type:'rm',value:20,min:100,weight:20},
+  {label:'10% off',type:'pct',value:10,min:0,weight:15},{label:'Free treatment',type:'free',value:100,serviceId:'',min:0,weight:0}]};
+const swSet=()=>{const m=((D.meta||{}).scratch)||{};return{...SW_DEFAULT,...m,prizes:Array.isArray(m.prizes)?m.prizes:SW_DEFAULT.prizes};};
+const isClientV=v=>!!v&&(v.kind==='return'||v.kind==='prize');
+const swPrizeOk=p=>p&&+p.weight>0&&(p.type==='free'?!!svc(p.serviceId).id:+p.value>0);
+function swOdds(){
+ const S=swSet(),list=S.prizes.filter(swPrizeOk),tot=list.reduce((a,p)=>a+(+p.weight||0),0)+Math.max(0,+S.lose||0);
+ return{list,tot,lose:Math.max(0,+S.lose||0)};
+}
+function swDraw(customerName){
+ const S=swSet(),O=swOdds();
+ if(!S.on||!O.tot)return null;
+ const a=new Uint32Array(1);crypto.getRandomValues(a);
+ let x=a[0]/4294967296*O.tot;
+ const hit=O.list.find(p=>(x-=+p.weight)<0);
+ if(!hit)return{lose:true};
+ const b=new Uint8Array(6);crypto.getRandomValues(b);
+ const code='WIN-'+Array.from(b,v=>RV_CHARS[v%32]).join('');
+ const now=new Date(),fbDays=Math.max(1,+fbSet().validDays||7);
+ const free=hit.type==='free';
+ return{code,label:String(hit.label||'').slice(0,60)||(free?'Free '+svc(hit.serviceId).name:rvWorth(hit)),
+  type:free?'pct':(hit.type==='pct'?'pct':'rm'),value:free?100:+hit.value,min:+hit.min||0,
+  serviceId:free?hit.serviceId:'',serviceName:free?(svc(hit.serviceId).name||''):'',
+  validFrom:ymd(addDays(now,+S.startDays||0)),expiry:ymd(addDays(now,fbDays+Math.max(1,+S.validDays||60))),
+  customerName:String(customerName||'')};
+}
+const swPrizeText=p=>!p?'':p.lose?'No prize this time':p.label+(p.serviceName&&!/free/i.test(p.label)?' ('+p.serviceName+')':'');
+
+/* ---------- settings ---------- */
+let SWDRAFT=null;
+function swPanel(){
+ if(!boss())return '';
+ const S=swSet();SWDRAFT=SWDRAFT||S.prizes.map(p=>({...p}));
+ const O=(()=>{const list=SWDRAFT.filter(swPrizeOk),t=list.reduce((a,p)=>a+(+p.weight||0),0)+Math.max(0,+S.lose||0);return{list,t};})();
+ return '<div class="card"><div class="sec-h"><h2>'+ic('gift',16)+' Scratch &amp; win</h2>'+
+  '<span class="pill '+(S.on?'g':'')+'">'+(S.on?'On':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">After a client sends their review, they scratch a card. Prizes are vouchers '+
+  'redeemed at checkout (client only, one use). Every review gets a card — good or bad — so the game never buys better ratings.</p>'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="sw-on"'+(S.on?' checked':'')+
+   '> Give a scratch card after each review</label>'+
+  '<div id="sw-rows">'+swRows()+'</div>'+
+  '<button type="button" class="btn sm ghost" onclick="swAdd()" style="margin-bottom:10px">'+ic('plus',14)+'Add a prize</button>'+
+  '<div class="grid g3"><div><label>“Try again” chance (weight)</label><input class="f" type="number" min="0" id="sw-lose" value="'+(+S.lose||0)+'"></div>'+
+  '<div><label>Prize valid (days)</label><input class="f" type="number" min="1" id="sw-vd" value="'+S.validDays+'"></div>'+
+  '<div><label>Usable after (days)</label><input class="f" type="number" min="0" id="sw-sd" value="'+(+S.startDays||0)+'"></div></div>'+
+  '<div class="tiny muted" id="sw-odds" style="margin-bottom:8px">'+swOddsText()+'</div>'+
+  '<div id="sw-e" class="tiny" style="color:var(--rose);margin-bottom:6px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="swSave()">'+ic('check',16)+'Save scratch &amp; win</button></div>';
+}
+function swOddsText(){
+ const lose=Math.max(0,+(((document.getElementById('sw-lose')||{}).value)??swSet().lose)||0);
+ const list=(SWDRAFT||[]).filter(swPrizeOk),t=list.reduce((a,p)=>a+(+p.weight||0),0)+lose;
+ if(!t)return 'Give at least one prize a weight above 0.';
+ return 'Chances: '+list.map(p=>esc(p.label||'prize')+' '+Math.round(p.weight/t*100)+'%').join(' · ')+
+  ' · try again '+Math.round(lose/t*100)+'%';
+}
+function swRows(){
+ const svcs=D.services.filter(s=>s.active!==false);
+ return SWDRAFT.map((p,k)=>'<div class="swrow">'+
+  '<input class="f" value="'+esc(p.label||'')+'" placeholder="Prize name" onchange="swEdit('+k+',\'label\',this.value)">'+
+  '<select class="f" onchange="swEdit('+k+',\'type\',this.value)">'+[['rm','RM off'],['pct','% off'],['free','Free treatment']].map(o=>
+   '<option value="'+o[0]+'"'+(p.type===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'+
+  (p.type==='free'?'<select class="f" onchange="swEdit('+k+',\'serviceId\',this.value)"><option value="">— treatment —</option>'+
+   svcs.map(s=>'<option value="'+esc(s.id)+'"'+(p.serviceId===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>':
+   '<input class="f" type="number" min="0" value="'+(+p.value||0)+'" title="Value" onchange="swEdit('+k+',\'value\',this.value)">')+
+  '<input class="f" type="number" min="0" value="'+(+p.min||0)+'" title="Minimum spend (RM)" placeholder="Min RM" onchange="swEdit('+k+',\'min\',this.value)">'+
+  '<input class="f" type="number" min="0" value="'+(+p.weight||0)+'" title="Weight — bigger means more likely" onchange="swEdit('+k+',\'weight\',this.value)">'+
+  '<button type="button" class="iconbtn" onclick="swDrop('+k+')">'+ic('trash',14)+'</button></div>').join('')+
+  '<div class="tiny muted swhead"><span>Prize</span><span>Type</span><span>Value / treatment</span><span>Min spend</span><span>Weight</span></div>';
+}
+const swRepaint=()=>{const b=document.getElementById('sw-rows');if(b)b.innerHTML=swRows();
+ const o=document.getElementById('sw-odds');if(o)o.innerHTML=swOddsText();};
+window.swEdit=(k,f,v)=>{const p=SWDRAFT[k];if(!p)return;p[f]=['value','min','weight'].includes(f)?Math.max(0,+v||0):v;swRepaint();};
+window.swAdd=()=>{SWDRAFT.push({label:'',type:'rm',value:10,min:0,weight:10});swRepaint();};
+window.swDrop=k=>{SWDRAFT.splice(k,1);swRepaint();};
+window.swSave=async()=>{
+ const g=k=>document.getElementById(k)||{};
+ const prizes=SWDRAFT.map(p=>({label:String(p.label||'').trim(),type:['rm','pct','free'].includes(p.type)?p.type:'rm',
+  value:p.type==='free'?100:Math.max(0,+p.value||0),min:Math.max(0,+p.min||0),weight:Math.max(0,+p.weight||0),
+  serviceId:p.type==='free'?(p.serviceId||''):''}));
+ const bad=prizes.find(p=>p.weight>0&&(p.type==='free'?!p.serviceId:!p.value));
+ if(bad){g('sw-e').textContent=(bad.label||'A prize')+': '+(bad.type==='free'?'choose the treatment.':'give it a value.');return;}
+ if(prizes.some(p=>p.type==='pct'&&p.value>100)){g('sw-e').textContent='A percentage cannot be more than 100.';return;}
+ prizes.forEach(p=>{if(!p.label)p.label=p.type==='free'?'Free '+(svc(p.serviceId).name||'treatment'):rvWorth(p);});
+ const S={on:!!g('sw-on').checked,lose:Math.max(0,+g('sw-lose').value||0),validDays:Math.max(1,Math.round(+g('sw-vd').value||60)),
+  startDays:Math.max(0,Math.round(+g('sw-sd').value||0)),prizes};
+ /* the largest prize, so the security rules can refuse anything bigger */
+ S.maxRm=Math.max(0,...prizes.filter(p=>p.type==='rm'&&p.weight>0).map(p=>p.value));
+ S.maxPct=Math.max(0,...prizes.filter(p=>p.type!=='rm'&&p.weight>0).map(p=>p.type==='free'?100:p.value));
+ if(S.on&&!prizes.some(p=>p.weight>0)){g('sw-e').textContent='Give at least one prize a weight above 0.';return;}
+ try{await setDoc(doc(db,'meta','settings'),{scratch:S},{merge:true});D.meta.scratch=S;SWDRAFT=null;
+  await audit('Scratch & win settings',(S.on?'On':'Off')+' · '+prizes.filter(p=>p.weight>0).map(p=>p.label+' ×'+p.weight).join(', ')+' · try again ×'+S.lose);
+  render();toast('Saved');}
+ catch(e){g('sw-e').textContent=friendly(e);}
+};
+
+/* ---------- how the prizes are doing ---------- */
+function swSection(){
+ const list=D.vouchers.filter(v=>v.kind==='prize').sort((a,b)=>String(b.issuedAt).localeCompare(String(a.issuedAt)));
+ const drawn=FBREQ.filter(r=>r.prize);
+ const played=drawn.filter(r=>FEEDBACK.some(f=>f.id===r.id));
+ const used=list.filter(rvUsed);
+ return '<div class="sec-h" style="margin-top:18px"><h2>Scratch &amp; win prizes</h2>'+
+  '<span class="pill '+(swSet().on?'g':'')+'">'+(swSet().on?'On':'Off')+'</span></div>'+
+  '<div class="grid g3" style="margin-bottom:10px">'+kpi('Cards played',played.length,drawn.length+' links with a card','gift')+
+  kpi('Prizes won',list.length,played.filter(r=>r.prize&&r.prize.lose).length+' try again','award')+
+  kpi('Redeemed',used.length,list.length?Math.round(used.length/list.length*100)+'% of prizes':'','check')+'</div>'+
+  (list.length?list.slice(0,25).map(v=>'<div class="item" data-id="'+esc(v.id)+'" onclick="showRV(this.dataset.id)">'+rvTicket(v)+'</div>').join(''):
+   '<div class="empty">No prizes won yet.</div>');
+}
+
+/* ---------- the client's scratch card ---------- */
+const SWT={
+ ms:{title:'Terima kasih! Ini hadiah anda 🎁',sub:'Gores kad di bawah untuk lihat hadiah',hint:'Gores di sini ✨',reveal:'Buka terus',
+  win:'Tahniah! Anda menang',lose:'Kali ini tiada hadiah — terima kasih atas maklum balas anda!',code:'Kod voucher',
+  how:'Tunjukkan kod ini di kaunter pada lawatan seterusnya.',valid:'Sah',until:'hingga',min:'Belanja minimum',only:'Untuk',copy:'Salin kod',copied:'Kod disalin',
+  shot:'Tip: ambil screenshot skrin ini.'},
+ en:{title:'Thank you! Here is your gift 🎁',sub:'Scratch the card below to see your prize',hint:'Scratch here ✨',reveal:'Reveal',
+  win:'Congratulations! You won',lose:'No prize this time — thank you for your feedback!',code:'Voucher code',
+  how:'Show this code at the counter on your next visit.',valid:'Valid',until:'until',min:'Minimum spend',only:'For',copy:'Copy code',copied:'Code copied',
+  shot:'Tip: take a screenshot of this screen.'}};
+const swDate=d=>{try{return new Date(d).toLocaleDateString(FBPUB.lang==='en'?'en-MY':'ms-MY',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}};
+function swCard(){
+ const p=FBPUB.r.prize,L=SWT[FBPUB.lang];
+ const inner=p.lose?'<div class="swlose">🌸<div>'+esc(L.lose)+'</div></div>':
+  '<div class="swwin"><div class="swsmall">'+esc(L.win)+'</div><div class="swprize">'+esc(p.label)+'</div>'+
+  (p.serviceName&&!/free|percuma/i.test(p.label)?'<div class="swsmall">'+esc(p.serviceName)+'</div>':'')+'</div>';
+ return '<div class="swwrap"><h1 style="text-align:center">'+esc(L.title)+'</h1><p class="fbsub">'+esc(L.sub)+'</p>'+
+  '<div class="swcard" id="swcard"><div class="swunder">'+inner+'</div><canvas id="swcv"></canvas></div>'+
+  '<button type="button" class="swreveal" id="swrv" onclick="swReveal()">'+esc(L.reveal)+'</button>'+
+  '<div id="swafter"></div></div>';
+}
+function swAfter(){
+ const p=FBPUB.r.prize,L=SWT[FBPUB.lang],r=FBPUB.r;
+ const box=document.getElementById('swafter');if(!box)return;
+ const rb=document.getElementById('swrv');if(rb)rb.style.display='none';
+ box.innerHTML=(p.lose?'':'<div class="swticket"><div class="swsmall">'+esc(L.code)+'</div><div class="swcode">'+esc(p.code)+'</div>'+
+   '<div class="swsmall">'+esc(L.valid)+' '+swDate(p.validFrom)+' '+esc(L.until)+' '+swDate(p.expiry)+
+   (p.min?' · '+esc(L.min)+' RM'+(+p.min).toFixed(2):'')+(p.customerName?' · '+esc(L.only)+' '+esc(p.customerName):'')+'</div>'+
+   '<p style="margin:10px 0 4px">'+esc(L.how)+'</p><button type="button" class="fbsend" style="margin-top:8px" onclick="swCopy()">'+
+   esc(L.copy)+'</button><div class="swsmall" id="swcp" style="margin-top:6px">'+esc(L.shot)+'</div></div>')+
+  fbThanksExtra();
+}
+window.swCopy=()=>{try{navigator.clipboard.writeText(FBPUB.r.prize.code).then(()=>{const e=document.getElementById('swcp');
+ if(e)e.textContent=SWT[FBPUB.lang].copied;});}catch(e){}};
+let SWDONE=false;
+window.swReveal=()=>{
+ if(SWDONE)return;SWDONE=true;
+ const cv=document.getElementById('swcv');if(cv){cv.style.transition='opacity .5s';cv.style.opacity='0';setTimeout(()=>{cv.style.display='none';},520);}
+ if(FBPUB.r.prize&&!FBPUB.r.prize.lose)swConfetti();
+ swAfter();
+};
+function swInit(){
+ SWDONE=false;
+ const cv=document.getElementById('swcv');if(!cv||!cv.getContext)return;
+ const card=document.getElementById('swcard');
+ const dpr=window.devicePixelRatio||1,W=card.clientWidth||300,H=card.clientHeight||160;
+ cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
+ const g=cv.getContext('2d');g.scale(dpr,dpr);
+ const gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#C9C5BC');gr.addColorStop(.5,'#EDEAE3');gr.addColorStop(1,'#B9B4A9');
+ g.fillStyle=gr;g.fillRect(0,0,W,H);
+ g.fillStyle='rgba(255,255,255,.35)';for(let i=0;i<60;i++){g.fillRect(Math.random()*W,Math.random()*H,2,2);}
+ g.fillStyle='#6F6A60';g.font='600 18px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';
+ g.fillText(SWT[FBPUB.lang].hint,W/2,H/2);
+ g.globalCompositeOperation='destination-out';
+ let down=false,last=null,moves=0;
+ const pos=e=>{const b=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:t.clientX-b.left,y:t.clientY-b.top};};
+ const scratch=p=>{g.lineWidth=38;g.lineCap='round';g.beginPath();
+  if(last){g.moveTo(last.x,last.y);g.lineTo(p.x,p.y);g.stroke();}
+  g.beginPath();g.arc(p.x,p.y,19,0,Math.PI*2);g.fill();last=p;
+  if(++moves%8===0&&swCleared(g,cv)>0.5)window.swReveal();};
+ const start=e=>{down=true;last=null;scratch(pos(e));e.preventDefault&&e.preventDefault();};
+ const move=e=>{if(!down)return;scratch(pos(e));e.preventDefault&&e.preventDefault();};
+ const end=()=>{down=false;last=null;if(swCleared(g,cv)>0.5)window.swReveal();};
+ cv.addEventListener('pointerdown',start);cv.addEventListener('pointermove',move);
+ window.addEventListener('pointerup',end);cv.addEventListener('pointerleave',end);
+ cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});cv.addEventListener('touchend',end);
+}
+function swCleared(g,cv){
+ try{const d=g.getImageData(0,0,cv.width,cv.height).data;let n=0,c=0;
+  for(let i=3;i<d.length;i+=64){n++;if(d[i]===0)c++;}return n?c/n:0;}catch(e){return 0;}
+}
+function swConfetti(){
+ const box=document.createElement('div');box.className='swconf';
+ const cols=['#D4A017','#A67C3D','#2E6B52','#9B4A4A','#2C5A7A','#E7DCC5'];
+ for(let i=0;i<70;i++){const s=document.createElement('i');s.style.left=Math.random()*100+'%';
+  s.style.background=cols[i%cols.length];s.style.animationDelay=(Math.random()*.6)+'s';
+  s.style.transform='rotate('+Math.random()*360+'deg)';box.appendChild(s);}
+ document.body.appendChild(box);setTimeout(()=>box.remove(),3200);
+}
 
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
@@ -6116,13 +6366,13 @@ window.editBranch=id=>{
 function catVouchers(){
  return '<div class="sec-h"><h2>Vouchers</h2><button class="btn sm" onclick="editVoucher()">'+
   ic('plus',15)+'New</button></div>'+
-  (D.vouchers.filter(v=>!isReturnV(v)).length?D.vouchers.filter(v=>!isReturnV(v)).map(v=>{const exp=v.expiry<today();
+  (D.vouchers.filter(v=>!isClientV(v)).length?D.vouchers.filter(v=>!isClientV(v)).map(v=>{const exp=v.expiry<today();
    return '<div class="item" onclick="editVoucher(\''+v.id+'\')"><div class="spread"><b>'+ic('tag',14)+' '+
     esc(v.id)+'</b>'+(exp?'<span class="pill r">Expired</span>':'<span class="pill g">Active</span>')+'</div>'+
     '<div class="tiny muted">'+(v.type==='pct'?v.value+'% off':rm(v.value)+' off')+
     (v.min?' · min spend '+rm(v.min):'')+(v.firstOnly?' · first-timers only':'')+
     ' · ends '+dstr(v.expiry)+' · used '+(v.used||0)+(v.cap?' of '+v.cap:'')+'</div></div>';}).join('')
-  :'<div class="empty">No campaign vouchers yet.</div>')+rvSection();}
+  :'<div class="empty">No campaign vouchers yet.</div>')+rvSection()+swSection();}
 window.editVoucher=id=>{
  const v=id?(D.vouchers.find(x=>x.id===id)||{}):{type:'pct',value:10,min:0,firstOnly:false,
   expiry:ymd(addDays(new Date(),30)),used:0,cap:0};
@@ -7714,6 +7964,7 @@ function vSet(){
   h+=payPanel();
   h+=coPanel();
   h+=fbPanel();
+  h+=swPanel();
   h+=rvPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
