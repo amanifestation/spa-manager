@@ -664,6 +664,23 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
  display:grid;gap:5px;font-size:13px}
 .chip.warnchip{border-color:var(--rose);color:var(--rose)}
 #lib-list mark{background:var(--brass-soft);color:inherit;border-radius:3px;padding:0 2px}
+.blk.done{background:#E4EFE8!important;color:#1E4A38!important;border-left-color:#2E6B52!important;padding-right:26px}
+.blk.done small{color:#3F6B57!important}
+.blk.done b{text-decoration:none}
+.donemark{position:absolute;top:4px;right:4px;width:18px;height:18px;border-radius:50%;background:#2E6B52;color:#fff;
+ display:grid;place-items:center;box-shadow:0 0 0 2px #E4EFE8}
+.donemark .ico,.paidmark .ico{display:grid}
+.paidmark{position:absolute;top:25px;right:4px;width:18px;height:18px;border-radius:50%;background:var(--brass);color:#fff;
+ display:grid;place-items:center}
+.blk.undec{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 6px,transparent 6px 12px)}
+.legend .lgdone,.legend .lgpaid{width:14px!important;height:14px!important;display:inline-grid!important;place-items:center;border-radius:50%!important;color:#fff}
+.legend .lgdone{background:#2E6B52!important}.legend .lgpaid{background:var(--brass)!important}
+.slot.done{border-left-color:#2E6B52!important;opacity:.85}
+.mcell .dot.f{background:#2E6B52!important}
+.btn.donebtn{background:#2E6B52;color:#fff}
+.lineinfo{color:var(--brass);margin-top:3px;line-height:1.5}
+.lineinfo s{opacity:.7}
+.undecrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-2)}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -840,7 +857,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20l';
+const BUILD='2026-09-20m';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -853,7 +870,7 @@ const CFGKEY='spatify:firebase';
 const CFGKEY_OLD='spaatur:firebase';
 const FORCEKEY='spatify:setup';
 let app,auth,db,ME=null,UID=null;
-const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock:[],vouchers:[],meta:{}};
+const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock:[],vouchers:[],bundles:[],meta:{}};
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
 let TAB='home',calMode='day',calDate=today(),calBy='staff',calWin={from:'',to:''};
 const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor'};
@@ -964,14 +981,15 @@ function sortCatalogue(){
  D.products.sort((a,b)=>(a.type===b.type?0:a.type==='retail'?-1:1)||natCmp(a.name,b.name)||natCmp(a.id,b.id));
  D.services.sort((a,b)=>natCmp(a.cat,b.cat)||natCmp(a.name,b.name));
  D.packages.sort((a,b)=>natCmp(a.name,b.name));
+ (D.bundles||[]).sort((a,b)=>natCmp(a.name,b.name));
  D.stock.sort((a,b)=>natCmp(prod(a.sku).name||a.sku,prod(b.sku).name||b.sku));
 }
 async function loadStatic(){
- const names=['branches','rooms','users','services','products','packages','stock','vouchers'];
- const snaps=await Promise.all(names.map(n=>getDocs(collection(db,n))));
+ const names=['branches','rooms','users','services','products','packages','stock','vouchers','bundles'];
+ const snaps=await Promise.all(names.map(n=>getDocs(collection(db,n)).catch(e=>{if(n==='bundles')return{docs:[]};throw e;})));
  const g=i=>snaps[i].docs.map(d=>({id:d.id,...d.data()}));
  D.branches=g(0);D.rooms=g(1);D.staff=g(2);D.services=g(3);D.products=g(4);
- D.packages=g(5);D.stock=g(6);D.vouchers=g(7);
+ D.packages=g(5);D.stock=g(6);D.vouchers=g(7);D.bundles=g(8);
  sortCatalogue();
  try{const m=await getDoc(doc(db,'meta','settings'));D.meta=m.exists()?m.data():{};}catch(e){D.meta={};}
  if(!D.meta.open)D.meta={open:9,close:20,biz:{name:'My Spa',ssm:'',tin:'',sst:0,sstRate:8,phone:''},...D.meta};
@@ -1395,12 +1413,15 @@ function vHome(){
 
 const STATUS={booked:['Booked',''],confirm:['Confirmed','g'],in:['In treatment','a'],done:['Completed','g'],
  no:['No-show','r'],cancel:['Cancelled','']};
+/* a completed booking wears a solid jade tick; a paid one also shows a receipt mark */
+const doneMark=a=>a.status==='done'?'<span class="donemark" title="Completed'+(a.saleId?' and paid':'')+'">'+ic('check',11)+'</span>'+
+ (a.saleId?'<span class="paidmark" title="Paid">'+ic('receipt',10)+'</span>':''):'';
 function apptRow(a){
  const st=STATUS[a.status]||['',''];
  return '<div class="slot '+({done:'done',no:'no'}[a.status]||'')+'" onclick="openAppt(\''+a.id+'\')">'+
   '<div class="spread"><div><b>'+tstr(a.start)+'</b> · '+esc(a.customerName||'')+'</div>'+
-  '<span class="pill '+st[1]+'">'+st[0]+'</span></div>'+
-  '<div class="tiny muted">'+esc(a.serviceName||'')+' · '+esc(a.staffName||'')+' · '+esc(room(a.roomId).name||'—')+
+  '<span class="pill '+st[1]+'">'+(a.status==='done'?ic('check',11):'')+st[0]+(a.saleId?' · paid':'')+'</span></div>'+
+  '<div class="tiny muted">'+esc(a.serviceName||'')+(a.undecided?' (to decide)':'')+' · '+esc(a.staffName||'')+' · '+esc(room(a.roomId).name||'—')+
   (a.deposit?' · deposit '+rm(a.deposit):'')+'</div></div>';}
 
 /* ============ calendar ============ */
@@ -1451,9 +1472,9 @@ function calDay(){
    const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px,hh=Math.max((a.duration||30)*px,26);
    const P=apptPal(a);
    const plain=['done','no'].includes(a.status);
-   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
+   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+(a.undecided?' undec':'')+
     '" style="top:'+top+'px;height:'+hh+'px'+(plain?'':';background:'+P.bg+';color:'+P.fg+
-     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+
+     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
     '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
      tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
     (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
@@ -1463,7 +1484,8 @@ function calDay(){
   h+='</div>';});
  h+='</div></div><div class="legend">'+VISITS.map(v=>'<span><i style="background:'+pal(v.color).bg+
   '"></i>'+v.label+'</span>').join('')+
-  '<span><i style="background:var(--line-2)"></i>Completed</span>'+
+  '<span><i class="lgdone">'+ic('check',9)+'</i>Completed</span>'+
+  '<span><i class="lgpaid">'+ic('receipt',9)+'</i>Paid</span>'+
   '<span><i style="background:var(--rose-soft)"></i>No-show</span>'+
   '<span><i style="background:repeating-linear-gradient(45deg,var(--line-2),var(--line-2) 3px,transparent 3px,transparent 6px)"></i>Buffer</span></div>';
  return h;}
@@ -1487,7 +1509,7 @@ function calWeek(){
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
     '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+
     (plain?'':';background:'+P.bg+';color:'+P.fg+';border-left-color:'+P.bd)+
-    '" onclick="openAppt(\''+a.id+'\')">'+
+    '" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
     '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
     esc((a.customerName||'').split(' ')[0])+'</small></div>';});
   h+='</div>';});
@@ -1521,7 +1543,9 @@ window.newAppt=async(pre)=>{
  modal('New booking','<div class="card"><label>Client</label>'+
   clientPicker('n-c',pre.customerId||'',{onPick:bookPicked})+
   '<div style="height:10px"></div>'+
-  '<label>Treatment</label><select class="f" id="n-s">'+ss+'</select>'+
+  '<div class="spread"><label>Treatment</label><label class="row tiny" style="gap:6px;margin:0 0 5px">'+
+   '<input type="checkbox" id="n-undec-t" onchange="undecToggle(this.checked)"> Client hasn\'t decided</label></div>'+
+  '<div id="n-s-w"><select class="f" id="n-s">'+ss+'</select></div><div id="n-undec"></div>'+
   '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="n-d" value="'+calDate+'"></div>'+
   '<div><label>Start</label><input class="f" type="time" id="n-t" value="10:00"></div></div>'+
   '<label>Therapist</label><select class="f" id="n-st">'+(st||'<option value="">No bookable staff</option>')+'</select>'+
@@ -1537,9 +1561,11 @@ window.newAppt=async(pre)=>{
   '<div id="n-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="n-go">'+ic('check',16)+'Save booking</button></div>',
  ()=>{
+  UNDEC={on:false,concerns:[],dur:60,budget:0,short:[]};
   const sync=()=>{const s=svc($('#n-s').value);
-   $('#n-r').innerHTML=D.rooms.filter(r=>r.branchId===ME.branchId&&r.type===s.room)
-    .map(r=>'<option value="'+r.id+'">'+esc(r.name)+'</option>').join('')||'<option value="">No suitable room</option>';};
+   const rooms=D.rooms.filter(r=>r.branchId===ME.branchId&&(UNDEC.on||r.type===s.room));
+   $('#n-r').innerHTML=rooms.map(r=>'<option value="'+r.id+'">'+esc(r.name)+'</option>').join('')||'<option value="">No suitable room</option>';};
+  window.nSync=sync;
   $('#n-s').onchange=sync;sync();
   NEWCOLOR=pre.color||'';
   const box=document.getElementById('n-sw');
@@ -1572,7 +1598,9 @@ function paintSwatches(){
 async function saveAppt(){
  const btn=$('#n-go');btn.disabled=true;
  try{
-  const s=svc($('#n-s').value);
+  const und=UNDEC.on;
+  const s=und?{id:'',name:'Consultation — to decide',dur:UNDEC.dur||60,buffer:15}:svc($('#n-s').value);
+  if(!und&&!s.id)throw new Error('Choose a treatment, or tick “Client hasn\'t decided”.');
   const start=new Date($('#n-d').value+'T'+$('#n-t').value+':00');
   if(isNaN(+start))throw new Error('Please pick a valid date and time.');
   const finish=new Date(+start+s.dur*6e4);
@@ -1598,6 +1626,7 @@ async function saveAppt(){
    color:NEWCOLOR||'',branchId:ME.branchId,customerId:cid,customerName:c.name||'',
    staffId,staffName:stf(staffId).name,serviceId:s.id,serviceName:s.name,roomId,date,
    start:start.toISOString(),finish:finish.toISOString(),duration:s.dur,buffer:s.buffer,status:'booked',
+   ...(und?{undecided:true,concerns:[...UNDEC.concerns],shortlist:[...UNDEC.short]}:{}),
    deposit:+$('#n-dep').value||0,notes:$('#n-n').value||'',createdBy:UID,createdAt:new Date().toISOString()});
   await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
   window.closeModal();calDate=ymd(start);calMode='day';render();
@@ -1611,7 +1640,9 @@ window.openAppt=id=>{
  modal('Appointment','<div class="card"><div class="spread"><h3>'+esc(a.customerName||'')+'</h3>'+
   (c&&c.phone?'<span class="pill">'+ic('user',12)+esc(c.phone)+'</span>':'')+'</div>'+
   '<div class="tiny muted" style="margin:8px 0 10px;line-height:1.7">'+
-  ic('spark',13)+' '+esc(a.serviceName||'')+
+  ic('spark',13)+' '+esc(a.serviceName||'')+(a.undecided?' <span class="pill a">to decide</span>':'')+
+  (a.status==='done'?' <span class="pill g">'+ic('check',11)+' Completed</span>':'')+
+  (a.saleId?' <span class="pill b">'+ic('receipt',11)+' Paid '+esc(a.invoiceNo||'')+'</span>':'')+
   ((visitOf(a.visitType)||{}).label?'  <span class="pill" style="background:'+apptPal(a).bg+
    ';color:'+apptPal(a).fg+'">'+visitOf(a.visitType).label+'</span>':'')+
   '<br>'+ic('clock',13)+' '+dstr(a.start)+', '+tstr(a.start)+'–'+tstr(a.finish)+
@@ -1619,13 +1650,19 @@ window.openAppt=id=>{
   ic('user',13)+' '+esc(a.staffName||'')+'<br>'+ic('room',13)+' '+esc(room(a.roomId).name||'—')+
   (a.deposit?'<br>'+ic('card',13)+' Deposit '+rm(a.deposit):'')+
   (c&&c.allergy?'<br><span style="color:var(--rose)">'+ic('alert',13)+' '+esc(c.allergy)+'</span>':'')+
-  (a.notes?'<br>'+ic('note',13)+' '+esc(a.notes):'')+'</div><div class="row wrap2">'+
+  (a.notes?'<br>'+ic('note',13)+' '+esc(a.notes):'')+
+  ((a.concerns||[]).length?'<br>'+ic('spark',13)+' Wants help with: '+esc(a.concerns.map(concernLabel).join(', ')):'')+
+  ((a.shortlist||[]).length&&a.undecided?'<br>'+ic('star',13)+' Shortlist: '+esc(a.shortlist.map(x=>svc(x).name).filter(Boolean).join(', ')):'')+
+  '</div><div class="row wrap2">'+
+  (a.undecided&&apptOpen(a)?'<button class="btn sm" onclick="setApptService(\''+id+'\')">'+ic('spark',14)+'Set treatment</button>':'')+
+  (!['cancel','no'].includes(a.status)?'<button class="btn sm'+(a.saleId?' ghost':'')+'" onclick="checkoutFromAppt(\''+id+'\')">'+
+   ic(a.saleId?'receipt':'card',14)+(a.saleId?'View bill':'Checkout')+'</button>':'')+
   (a.status==='booked'?'<button class="btn sm" onclick="setStat(\''+id+'\',\'confirm\')">'+ic('check',14)+'Confirm</button>':'')+
   (['booked','confirm'].includes(a.status)?'<button class="btn sm" onclick="setStat(\''+id+'\',\'in\')">'+ic('clock',14)+'Start</button>':'')+
-  (a.status==='in'?'<button class="btn sm" onclick="finishAppt(\''+id+'\')">'+ic('check',14)+'Complete</button>':'')+
+  (apptOpen(a)&&!(a.undecided&&!a.serviceId)?'<button class="btn sm donebtn" onclick="finishAppt(\''+id+'\')">'+ic('check',14)+'Complete</button>':'')+
   '<button class="btn sm ghost" onclick="waLink(\''+id+'\')">'+ic('msg',14)+'Reminder</button>'+
-  '<button class="btn sm ghost" onclick="openLib(\'svc_'+esc(a.serviceId)+'\',{customerId:\''+esc(a.customerId||'')+'\'})">'+
-   ic('note',14)+'Guide</button>'+
+  (a.serviceId?'<button class="btn sm ghost" onclick="openLib(\'svc_'+esc(a.serviceId)+'\',{customerId:\''+esc(a.customerId||'')+'\'})">'+
+   ic('note',14)+'Guide</button>':'')+
   (['in','done'].includes(a.status)&&String(((libDoc('svc_'+a.serviceId)||{}).sections||{}).aftercareMsg||'').trim()?
    '<button class="btn sm ghost" onclick="LIBCTX={customerId:\''+esc(a.customerId||'')+'\'};libSendAftercare(\'svc_'+
    esc(a.serviceId)+'\')">'+ic('shield',14)+'Aftercare</button>':'')+
@@ -1659,7 +1696,7 @@ window.revertStat=async id=>{
  if(!log.length){toast('No earlier status to go back to');return;}
  const last=log[log.length-1];
  const wasDone=a.status==='done';
- const svcUsed=svc(a.serviceId).use||[];
+ const svcUsed=a.stockDone==='sale'?[]:(svc(a.serviceId).use||[]);
  modal('Undo the last change','<div class="card">'+
   '<div class="kv"><div class="k">'+ic('history',12)+' Changed</div><div class="v">'+
    dstr(last.at)+' '+tstr(last.at)+'</div>'+
@@ -1679,7 +1716,7 @@ window.revertStat=async id=>{
   const why=($('#rv-r').value||'').trim();
   if(why.length<3){toast('Please give a reason');return;}
   try{
-   await updateDoc(doc(db,'appointments',id),{status:last.from,
+   await updateDoc(doc(db,'appointments',id),{status:last.from,...(wasDone&&a.stockDone!=='sale'?{stockDone:null}:{}),
     statusLog:[...log,{from:a.status,to:last.from,at:new Date().toISOString(),
       by:UID,byName:ME.name,reverted:true,reason:why}],
     updatedBy:UID,updatedAt:new Date().toISOString()});
@@ -1720,18 +1757,6 @@ window.deleteAppt=id=>{
    await deleteDoc(doc(db,'appointments',id));
    window.closeModal();render();toast('Booking deleted and logged');
   }catch(e){toast(friendly(e));}};});};
-window.finishAppt=async id=>{
- const a=APPTS.find(x=>x.id===id);const s=svc(a.serviceId);const warn=[];
- try{
-  await updateDoc(doc(db,'appointments',id),{status:'done',updatedBy:UID,updatedAt:new Date().toISOString()});
-  for(const u of (s.use||[])){
-   const st=stockOf(u.sku,a.branchId);if(!st)continue;
-   await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty)});
-   st.qty-=u.qty;if(st.qty<=st.reorder)warn.push(prod(u.sku).name);
-  }
-  await audit('Treatment completed',(a.customerName||'')+' — '+(a.serviceName||''));
-  window.closeModal();toast(warn.length?'Completed. Running low: '+warn.join(', '):'Completed. Stock deducted.');
- }catch(e){toast(friendly(e));}};
 window.waLink=id=>{
  const a=APPTS.find(x=>x.id===id),c=cust(a.customerId);
  const msg='Hi '+(a.customerName||'').split(' ')[0]+', a reminder from '+(D.meta.biz.name||'us')+' '+branch().name+
@@ -2428,7 +2453,8 @@ async function loadHeld(){
 /* ============ checkout ============ */
 let cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false,instal:false,dueDate:''};
 function cartTotals(){
- const sub=cart.items.reduce((a,i)=>a+i.price*i.qty,0);
+ cart.items.forEach(recalcLine);
+ const sub=r2(cart.items.reduce((a,i)=>a+lineAmt(i),0));
  const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
  const pd=pointsWorth(cart.points||0);
  const net=Math.max(0,sub-cart.discount-v-pd);
@@ -2452,15 +2478,17 @@ function vPos(){
   (cart.items.filter(needsHandsOn).length>1?'<button class="btn sm ghost" onclick="handsOnAll()">'+
    ic('user',13)+'Hands-on for all</button>':'')+'</div>'+(cart.items.length?'<table>'+cart.items.map((i,x)=>
   '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package',
-   redeem:'Package session'}[i.kind]||i.kind)+
+   redeem:'Package session',set:'Product set'}[i.kind]||i.kind)+(i.apptId?' · from booking':'')+
   '</div>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
   (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
-  '</div>'+laterToggle(i,x)+handsOnLine(i,x)+'<div>'+
+  (i.kind==='set'?' · '+esc(setLabel(setOf(i.id))):'')+
+  '</div>'+lineInfo(i)+laterToggle(i,x)+handsOnLine(i,x)+'<div>'+
   '</div></td>'+
   '<td class="num"><div class="qty"><button onclick="cartQty('+x+',-1)">−</button><span>'+i.qty+
   '</span><button onclick="cartQty('+x+',1)">+</button></div><div class="tiny muted" style="margin-top:3px">'+
-  rm(i.price*i.qty)+'</div></td><td class="num">'+
+  (i.lineDisc>0?'<s>'+rm(lineGross(i))+'</s> ':'')+'<b>'+rm(lineAmt(i))+'</b></div></td><td class="num">'+
+  '<button class="iconbtn" style="padding:4px" title="Edit price, discount, commission" onclick="editLine('+x+')">'+ic('edit',14)+'</button>'+
   (['service','product','redeem'].includes(i.kind)?'<button class="iconbtn" style="padding:4px" title="Guide" '+
    'onclick="openLib(\''+(i.kind==='product'?'prd_':'svc_')+esc(i.id)+'\',{customerId:cart.customerId})">'+ic('note',14)+'</button>':'')+
   '<button class="iconbtn" style="padding:4px" onclick="dropItem('+x+')">'+ic('close',14)+'</button></td></tr>').join('')+
@@ -3211,7 +3239,8 @@ function vLib(){
   ...LIB_CATS.map(c=>[c[0],c[1],all.filter(e=>e.cat===c[0]).length]).filter(c=>c[2]),
   ...(libUnreadCount()?[['unread','To read',libUnreadCount()]]:[])];
  return '<div class="card"><div class="sec-h"><h2>'+ic('note',17)+' Library</h2>'+
-  (boss()?'<button class="btn sm" onclick="editArticle()">'+ic('plus',15)+'Article</button>':'')+'</div>'+
+  '<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="priceListSheet()">'+ic('print',14)+'Price list</button>'+
+  (boss()?'<button class="btn sm" onclick="editArticle()">'+ic('plus',15)+'Article</button>':'')+'</div></div>'+
   '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span><input class="f" id="lib-q" '+
    'placeholder="Search treatments, products, SOPs, aftercare…" autocomplete="off" oninput="libFilter()"></div>'+
   '<div class="chips">'+cats.map(c=>'<button class="chip'+(LIBCAT===c[0]?' on':'')+'" onclick="setLibCat(\''+
@@ -3502,6 +3531,588 @@ window.libStarter=async()=>{
  catch(e){toast(friendly(e));}
 };
 
+/* ============ per-line pricing at checkout ============ */
+/* Every line on a bill can carry its own price, discount (percent, ringgit or a voucher
+   code), a reason for the discount, who is credited, a commission override and a note
+   for the receipt. What the line is worth after its own discount is the base for bill
+   totals, reports and commission. Owner and manager may change anything; the owner
+   decides in Settings how far other staff may go. */
+function lineGross(i){return r2((+i.price||0)*(i.qty||1));}
+function lineAmt(i){return Math.max(0,r2(lineGross(i)-(+i.lineDisc||0)));}
+function lineComm(i,rate){
+ return (i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!=='')?r2(+i.commAmt):r2(lineAmt(i)*(+rate||0)/100);}
+function salesRate(i,u){
+ if(i.kind==='service')return svc(i.id).comm??u.commSvc??0;
+ if(i.kind==='redeem')return 0;
+ return u.commProd??0;
+}
+const retailKind=k=>k==='product'||k==='set';
+const CO_DEFAULT={staffPrice:false,staffDiscMax:10,staffComm:false,needNote:true};
+const coRules=()=>({...CO_DEFAULT,...(((D.meta||{}).checkoutRules)||{})});
+const canPrice=()=>boss()||!!coRules().staffPrice;
+const canComm=()=>boss()||!!coRules().staffComm;
+const discCap=()=>boss()?100:Math.max(0,+coRules().staffDiscMax||0);
+/* the discount on one line, worked out again whenever price, quantity or code changes */
+function recalcLine(i){
+ const g=lineGross(i);let d=0;
+ if(i.dType==='pct')d=g*(+i.dVal||0)/100;
+ else if(i.dType==='rm')d=+i.dVal||0;
+ else if(i.dType==='code'&&i.discCode){const v=findVoucher(i.discCode);
+  if(v)d=v.type==='pct'?g*(+v.value||0)/100:(+v.value||0);}
+ i.lineDisc=r2(Math.min(g,Math.max(0,d)));
+ return i;
+}
+const lineEdited=i=>!!(i.priceEdited||i.dType||i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''||i.lineNote);
+function lineInfo(i){
+ const bits=[];
+ const list=+((itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{}).price||0);
+ if(i.priceEdited&&i.kind!=='redeem'&&Math.abs(list-(+i.price||0))>0.004)
+  bits.push('price '+rm(i.price)+' <s class="muted">'+rm(list)+'</s>');
+ if(i.lineDisc>0)bits.push((i.dType==='pct'?(+i.dVal)+'% off':i.dType==='code'?'code '+esc(i.discCode):'discount')+
+  ' −'+rm(i.lineDisc)+(i.discNote?' · '+esc(i.discNote):''));
+ if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!=='')bits.push('commission '+rm(i.commAmt));
+ if(i.lineNote)bits.push('“'+esc(i.lineNote)+'”');
+ return bits.length?'<div class="tiny lineinfo">'+bits.join(' · ')+'</div>':'';
+}
+window.editLine=x=>{
+ const i=cart.items[x];if(!i)return;
+ recalcLine(i);
+ const isRedeem=i.kind==='redeem';
+ const src=itemSrc(isRedeem?'service':i.kind,i.id)||{};
+ const list=+src.price||0;
+ const u=stf(i.staffId)||{};
+ const rate=salesRate(i,u);
+ const staff=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false);
+ const R=coRules();
+ modal('Edit line · '+i.name,'<div class="card">'+
+  (isRedeem?'<p class="tiny muted" style="margin:0 0 10px">A package session has no charge, so only the credit, '+
+   'commission and note can change.</p>':
+  '<div class="grid g2"><div><label>Unit price (RM)'+(canPrice()?'':' <span class="muted">— manager only</span>')+'</label>'+
+   '<input class="f" type="number" step="0.01" min="0" id="el-p" value="'+r2(i.price).toFixed(2)+'"'+
+   (canPrice()?'':' disabled')+' oninput="elPreview('+x+')"></div>'+
+   '<div><label>Quantity</label><input class="f" type="number" min="1" id="el-q" value="'+i.qty+'" oninput="elPreview('+x+')"></div></div>'+
+  '<div class="tiny muted" style="margin:-4px 0 10px">Catalogue price '+rm(list)+
+   (canPrice()?' · <a href="javascript:void 0" onclick="document.getElementById(\'el-p\').value=\''+list.toFixed(2)+
+   '\';elPreview('+x+')">use it</a>':'')+'</div>'+
+  '<label>Discount on this line</label>'+
+  '<div class="seg" id="el-dt">'+[['','None'],['pct','%'],['rm','RM'],['code','Code']].map(o=>
+   '<button type="button" data-v="'+o[0]+'" class="'+((i.dType||'')===o[0]?'on':'')+'" onclick="elType('+x+',\''+o[0]+
+   '\')">'+o[1]+'</button>').join('')+'</div>'+
+  '<div id="el-dv-w"'+(['pct','rm'].includes(i.dType)?'':' style="display:none"')+'><input class="f" type="number" step="0.01" min="0" '+
+   'id="el-dv" value="'+(['pct','rm'].includes(i.dType)?(+i.dVal||0):'')+'" placeholder="Amount" oninput="elPreview('+x+')">'+
+   (boss()?'':'<div class="tiny muted" style="margin:-4px 0 10px">Up to '+discCap()+'% without a manager.</div>')+'</div>'+
+  '<div id="el-code-w"'+(i.dType==='code'?'':' style="display:none"')+'><input class="f" id="el-code" autocomplete="off" '+
+   'autocapitalize="characters" placeholder="Voucher or discount code" value="'+esc(i.discCode||'')+'" oninput="elPreview('+x+')"></div>'+
+  '<label>Discount note'+(R.needNote?' <span class="muted">— required for a price change or discount</span>':'')+'</label>'+
+  '<input class="f" id="el-n" value="'+esc(i.discNote||'')+'" placeholder="e.g. Birthday month, staff family, damaged box">')+
+  '<label>Credited to</label><select class="f" id="el-s" onchange="elPreview('+x+')">'+staff.map(s=>'<option value="'+esc(s.id)+'"'+
+   (s.id===i.staffId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<label>Sales commission (RM)'+(canComm()?'':' <span class="muted">— manager only</span>')+'</label>'+
+  '<input class="f" type="number" step="0.01" min="0" id="el-c" value="'+
+   (i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''?r2(i.commAmt).toFixed(2):'')+'"'+
+   (canComm()?'':' disabled')+' placeholder="Automatic" oninput="elPreview('+x+')">'+
+  '<div class="tiny muted" style="margin:-4px 0 10px" id="el-cr">Automatic: '+rate+'% of the line = '+rm(lineAmt(i)*rate/100)+'</div>'+
+  '<label>Note on the receipt <span class="muted">— optional</span></label>'+
+  '<input class="f" id="el-ln" value="'+esc(i.lineNote||'')+'" placeholder="e.g. Free gift wrap">'+
+  '<div class="fieldset" id="el-pv" style="margin:6px 0 10px"></div>'+
+  '<div id="el-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveLine('+x+')">'+ic('check',16)+'Save line</button>'+
+  (lineEdited(i)?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="resetLine('+x+
+   ')">'+ic('refresh',14)+'Back to catalogue price, no discount</button>':'')+'</div>');
+ ELTYPE=i.dType||'';window.elPreview(x);
+};
+let ELTYPE='';
+window.elType=(x,t)=>{ELTYPE=t;
+ const seg=document.getElementById('el-dt');
+ if(seg&&seg.querySelectorAll)[...seg.querySelectorAll('button')].forEach(b=>b.className=b.dataset.v===t?'on':'');
+ const a=document.getElementById('el-dv-w'),c=document.getElementById('el-code-w');
+ if(a&&a.style)a.style.display=['pct','rm'].includes(t)?'':'none';
+ if(c&&c.style)c.style.display=t==='code'?'':'none';
+ window.elPreview(x);};
+/* the line as it would be saved, from what is on the form */
+function elDraft(x){
+ const i=cart.items[x];const g=id=>document.getElementById(id);
+ const d={...i};
+ if(i.kind!=='redeem'){
+  const pe=g('el-p');if(pe)d.price=r2(pe.value);
+  const qe=g('el-q');if(qe)d.qty=Math.max(1,Math.round(+qe.value||1));
+  d.dType=ELTYPE;d.dVal=['pct','rm'].includes(ELTYPE)?(+((g('el-dv')||{}).value)||0):0;
+  d.discCode=ELTYPE==='code'?String((g('el-code')||{}).value||'').trim().toUpperCase().replace(/\s/g,''):'';
+  d.discNote=String((g('el-n')||{}).value||'').trim();
+ }
+ d.staffId=(g('el-s')||{}).value||i.staffId;
+ const cv=(g('el-c')||{}).value;d.commAmt=cv===''||cv===undefined?undefined:r2(cv);
+ d.lineNote=String((g('el-ln')||{}).value||'').trim();
+ recalcLine(d);return d;
+}
+function elProblem(i,d){
+ if(i.kind==='redeem')return '';
+ const list=+((itemSrc(i.kind,i.id)||{}).price||0);
+ if(!(d.price>=0))return 'Enter a price.';
+ if(Math.abs(d.price-list)>0.004&&!canPrice())return 'Only a manager can change the price.';
+ if(d.dType==='code'){
+  if(!d.discCode)return 'Type the code.';
+  const v=findVoucher(d.discCode);
+  const p=voucherProblem(v,lineGross(d),cart.customerId);if(p)return p;
+  const others=cart.items.filter((z,k)=>k!==cart.items.indexOf(i)&&z.discCode===d.discCode).length+
+   (cart.voucher&&cart.voucher.id===v.id?1:0);
+  if(v.cap&&(v.used||0)+others+1>v.cap)return 'Code '+v.id+' is already used on this bill.';
+ }
+ if(['pct','rm'].includes(d.dType)){
+  if(d.dType==='pct'&&d.dVal>100)return 'A discount cannot be more than 100%.';
+  const pct=lineGross(d)?d.lineDisc/lineGross(d)*100:0;
+  if(pct>discCap()+0.01)return 'That is '+Math.round(pct)+'% off. Staff can give up to '+discCap()+'% — ask a manager.';
+ }
+ if(d.commAmt!==undefined&&!canComm()&&d.commAmt!==i.commAmt)return 'Only a manager can change commission.';
+ const changed=Math.abs(d.price-list)>0.004||(['pct','rm'].includes(d.dType)&&d.lineDisc>0);
+ if(changed&&coRules().needNote&&!d.discNote)return 'Add a short note saying why.';
+ return '';
+}
+window.elPreview=x=>{
+ const i=cart.items[x];if(!i)return;
+ const d=elDraft(x);
+ const u=stf(d.staffId)||{},rate=salesRate(d,u);
+ const cr=document.getElementById('el-cr');if(cr)cr.textContent='Automatic: '+rate+'% of the line = '+rm(lineAmt(d)*rate/100);
+ const pv=document.getElementById('el-pv');
+ if(pv)pv.innerHTML='<table><tr><td>'+d.qty+' × '+rm(d.price)+'</td><td class="num">'+rm(lineGross(d))+'</td></tr>'+
+  (d.lineDisc?'<tr><td>Discount</td><td class="num">−'+rm(d.lineDisc)+'</td></tr>':'')+
+  '<tr><td><b>Line total</b></td><td class="num"><b>'+rm(lineAmt(d))+'</b></td></tr>'+
+  '<tr><td class="muted">Sales commission to '+esc(u.name||'')+'</td><td class="num muted">'+rm(lineComm(d,rate))+'</td></tr></table>';
+ const e=document.getElementById('el-e');if(e)e.textContent=elProblem(i,d);
+};
+window.saveLine=x=>{
+ const i=cart.items[x];if(!i)return;
+ const d=elDraft(x);const p=elProblem(i,d);
+ if(p){const e=document.getElementById('el-e');if(e)e.textContent=p;return;}
+ if(i.kind==='product'&&d.qty!==i.qty){const st=stockOf(i.id);if(!st||st.qty<d.qty){
+  const e=document.getElementById('el-e');if(e)e.textContent='Only '+(st?st.qty:0)+' in stock.';return;}}
+ if(i.kind==='set'&&d.qty!==i.qty&&setShort(i.id,d.qty)){
+  const e=document.getElementById('el-e');if(e)e.textContent=setShort(i.id,d.qty);return;}
+ const list=+((itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{}).price||0);
+ Object.assign(i,d);
+ i.priceEdited=i.kind!=='redeem'&&Math.abs(i.price-list)>0.004;
+ if(!i.dType){i.dVal=0;i.discCode='';}
+ if(i.commAmt===undefined)delete i.commAmt;
+ recalcLine(i);applyHandsOn(i);
+ window.closeModal();render();toast('Line updated');
+};
+window.resetLine=x=>{
+ const i=cart.items[x];if(!i)return;
+ const src=itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{};
+ if(i.kind!=='redeem')i.price=+src.price||0;
+ ['priceEdited','dType','dVal','discCode','discNote','commAmt','lineNote'].forEach(k=>delete i[k]);
+ recalcLine(i);applyHandsOn(i);window.closeModal();render();toast('Line reset');
+};
+/* the saved form of one line: re-priced from the catalogue unless a permitted override
+   applies, with only the fields that are set (Firestore refuses undefined values) */
+function lineForSale(i,base){
+ const out={...base};
+ if(i.kind==='redeem'){
+  if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!=='')out.commAmt=r2(i.commAmt);
+  if(i.lineNote)out.lineNote=i.lineNote;
+  return out;}
+ const list=+base.price||0;
+ if(i.priceEdited&&Math.abs((+i.price||0)-list)>0.004){
+  if(!canPrice())throw new Error('Only a manager can change the price of '+base.name+'.');
+  out.price=r2(i.price);out.listPrice=list;}
+ const draft={...out,qty:i.qty,dType:i.dType||'',dVal:+i.dVal||0,discCode:i.discCode||''};
+ recalcLine(draft);
+ if(draft.lineDisc>0){
+  const g=lineGross(draft);
+  if(['pct','rm'].includes(draft.dType)&&g&&draft.lineDisc/g*100>discCap()+0.01)
+   throw new Error(base.name+': discount is more than staff may give ('+discCap()+'%). Ask a manager.');
+  if(draft.dType==='code'){
+   const v=findVoucher(draft.discCode);
+   const p=voucherProblem(v,g,cart.customerId);if(p)throw new Error(base.name+' · code '+draft.discCode+': '+p);}
+  out.lineDisc=draft.lineDisc;out.discType=draft.dType;
+  if(['pct','rm'].includes(draft.dType))out.discVal=draft.dVal;
+  if(draft.dType==='code')out.discCode=draft.discCode;
+ }
+ const changed=out.listPrice!==undefined||(out.lineDisc>0&&out.discType!=='code');
+ if(changed&&coRules().needNote&&!i.discNote)throw new Error('Add a note saying why '+base.name+' was discounted.');
+ if(i.discNote&&(changed||out.lineDisc>0))out.discNote=i.discNote;
+ if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''){
+  if(!canComm())throw new Error('Only a manager can change commission.');
+  out.commAmt=r2(i.commAmt);}
+ if(i.lineNote)out.lineNote=i.lineNote;
+ return out;
+}
+/* receipt wording for one line's extras */
+function lineNotes(i){
+ const n=[];
+ if(i.listPrice!==undefined&&i.listPrice>i.price)n.push('Usual price '+rm(i.listPrice));
+ if(i.lineDisc>0)n.push((i.discType==='pct'?(+i.discVal)+'% discount':i.discType==='code'?'Code '+i.discCode:'Discount')+
+  (i.discNote?' ('+i.discNote+')':'')+' −'+rm(i.lineDisc));
+ if(i.kind==='set'){const b=setOf(i.id);const it=i.setItems||b.items||[];
+  if(it.length)n.push('Set: '+it.map(z=>z.qty+'× '+(z.name||prod(z.sku).name||z.sku)).join(' + '));}
+ if(i.lineNote)n.push(i.lineNote);
+ return n;
+}
+
+/* ---------- Settings: how far staff may go ---------- */
+function coPanel(){
+ if(!boss())return '';
+ const R=coRules();
+ return '<div class="card"><div class="sec-h"><h2>'+ic('card',16)+' Checkout permissions</h2></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Owner and manager can always change prices, discounts and commission '+
+  'on any line. These settings decide what other staff may do.</p>'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="co-sp"'+(R.staffPrice?' checked':'')+
+   '> Staff may change a line\'s price</label>'+
+  '<label>Largest line discount staff may give (%)</label>'+
+  '<input class="f" type="number" min="0" max="100" id="co-dm" value="'+(+R.staffDiscMax||0)+'">'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="co-sc"'+(R.staffComm?' checked':'')+
+   '> Staff may change sales commission</label>'+
+  '<label class="row" style="gap:9px;margin-bottom:10px"><input type="checkbox" id="co-nn"'+(R.needNote?' checked':'')+
+   '> A note is required for every price change or manual discount</label>'+
+  '<div id="co-e" class="tiny" style="color:var(--rose);margin-bottom:6px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="coSave()">'+ic('check',16)+
+  'Save checkout permissions</button></div>';
+}
+window.coSave=async()=>{
+ const g=id=>document.getElementById(id)||{};
+ const R={staffPrice:!!g('co-sp').checked,staffDiscMax:Math.min(100,Math.max(0,+g('co-dm').value||0)),
+  staffComm:!!g('co-sc').checked,needNote:!!g('co-nn').checked};
+ try{await setDoc(doc(db,'meta','settings'),{checkoutRules:R},{merge:true});D.meta.checkoutRules=R;
+  await audit('Checkout permissions',(R.staffPrice?'staff may change price':'price: managers only')+
+   ' · staff discount up to '+R.staffDiscMax+'%'+(R.staffComm?' · staff may change commission':''));
+  render();toast('Saved');}
+ catch(e){g('co-e').textContent=friendly(e);}
+};
+
+/* ============ product sets ============ */
+/* A set is a fixed group of retail products sold together at one price. Selling a set
+   takes each product in it out of stock. */
+const setOf=id=>(D.bundles||[]).find(b=>b.id===id)||{};
+const setWorth=b=>(b.items||[]).reduce((a,z)=>a+(+prod(z.sku).price||0)*(+z.qty||1),0);
+const setLabel=b=>(b.items||[]).map(z=>z.qty+'× '+(prod(z.sku).name||z.sku)).join(' + ');
+/* what stops n of a set being sold here, or '' */
+function setShort(id,n){
+ const b=setOf(id);
+ for(const z of (b.items||[])){
+  const st=stockOf(z.sku),need=(+z.qty||1)*(n||1);
+  if(!st||st.qty<need)return 'Not enough '+(prod(z.sku).name||z.sku)+' for '+(n||1)+' set'+((n||1)>1?'s':'')+
+   ' — '+(st?st.qty:0)+' in stock.';
+ }
+ return '';
+}
+function catSets(){
+ const list=D.bundles||[];
+ return '<div class="sec-h"><h2>Product sets</h2><button class="btn sm" onclick="editSet()">'+ic('plus',15)+'New</button></div>'+
+  (list.length?list.map(b=>{const w=setWorth(b);
+   return '<div class="item" data-id="'+esc(b.id)+'" onclick="editSet(this.dataset.id)"><div class="spread"><b>'+
+    esc(b.name)+offTag(b)+'</b><span>'+rm(b.price)+'</span></div><div class="tiny muted">'+esc(setLabel(b)||'no products yet')+
+    (w?' · worth '+rm(w)+(w>b.price?' (saves '+Math.round((1-b.price/w)*100)+'%)':''):'')+'</div></div>';}).join(''):
+   '<div class="empty">No sets yet. A set groups retail products at one price — e.g. a cleanser, toner and '+
+   'moisturiser bundle.</div>');
+}
+let SETDRAFT=null;
+window.editSet=id=>{
+ const b=id?setOf(id):{name:'',price:0,items:[],active:true,desc:''};
+ if(id&&!b.id){toast('That set is no longer in the catalogue');return;}
+ SETDRAFT=(b.items||[]).map(z=>({...z}));
+ modal(id?'Edit set':'New product set','<div class="card">'+
+  '<label>Set name</label><input class="f" id="se-n" value="'+esc(b.name||'')+'" placeholder="Acne Home Care Set">'+
+  '<label>Products in the set</label><div id="se-items"></div>'+
+  '<div class="row" style="gap:6px;margin-bottom:10px"><select class="f" id="se-add" style="margin:0;flex:1">'+
+   D.products.filter(p=>p.type==='retail'&&p.active!==false).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+
+   ' · '+rm(p.price)+'</option>').join('')+'</select>'+
+   '<button type="button" class="btn sm ghost" onclick="setAddItem()">'+ic('plus',14)+'Add</button></div>'+
+  '<div class="grid g2"><div><label>Set price (RM)</label><input class="f" type="number" step="0.01" id="se-p" value="'+
+   (+b.price||0)+'" oninput="setPaint()"></div><div><label>&nbsp;</label><div class="tiny muted" id="se-w" '+
+   'style="margin-top:12px"></div></div></div>'+
+  '<label>Description <span class="muted">— optional, shown on the price list</span></label>'+
+  '<input class="f" id="se-d" value="'+esc(b.desc||'')+'">'+
+  '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="se-a"'+(b.active===false?'':' checked')+
+   '> Available to sell</label>'+
+  '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveSet(\''+esc(id||'')+'\')">'+
+   ic('check',16)+'Save set</button>'+
+  (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" data-id="'+esc(id)+
+   '" data-name="'+esc(b.name||'')+'" onclick="catDelete(\'bundles\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
+  '</div>');
+ window.setPaint();
+};
+window.setPaint=()=>{
+ const box=document.getElementById('se-items');
+ if(box)box.innerHTML=SETDRAFT.length?SETDRAFT.map((z,k)=>'<div class="row" style="gap:6px;margin-bottom:6px">'+
+  '<span style="flex:1">'+esc(prod(z.sku).name||z.sku)+' <span class="muted tiny">'+rm(prod(z.sku).price||0)+'</span></span>'+
+  '<input class="f" type="number" min="1" style="width:70px;margin:0" value="'+z.qty+'" onchange="setQty('+k+',this.value)">'+
+  '<button type="button" class="iconbtn" onclick="setDrop('+k+')">'+ic('close',14)+'</button></div>').join(''):
+  '<div class="tiny muted" style="margin-bottom:8px">No products added yet.</div>';
+ const w=SETDRAFT.reduce((a,z)=>a+(+prod(z.sku).price||0)*(+z.qty||1),0);
+ const p=+((document.getElementById('se-p')||{}).value)||0;
+ const el=document.getElementById('se-w');
+ if(el)el.textContent='Bought separately: '+rm(w)+(w>p&&p>0?' · saves '+Math.round((1-p/w)*100)+'%':'');
+};
+window.setAddItem=()=>{const sku=(document.getElementById('se-add')||{}).value;if(!sku)return;
+ const z=SETDRAFT.find(x=>x.sku===sku);if(z)z.qty++;else SETDRAFT.push({sku,qty:1});window.setPaint();};
+window.setQty=(k,v)=>{if(SETDRAFT[k])SETDRAFT[k].qty=Math.max(1,Math.round(+v||1));window.setPaint();};
+window.setDrop=k=>{SETDRAFT.splice(k,1);window.setPaint();};
+window.saveSet=async id=>{
+ const g=k=>document.getElementById(k)||{};
+ const name=String(g('se-n').value||'').trim(),price=r2(g('se-p').value);
+ const err=g('cat-err');
+ if(!name){err.textContent='Give the set a name.';return;}
+ if(SETDRAFT.length<1){err.textContent='Add at least one product.';return;}
+ if(!(price>0)){err.textContent='Set a price.';return;}
+ const data={name,price,items:SETDRAFT.map(z=>({sku:z.sku,qty:+z.qty||1})),desc:String(g('se-d').value||'').trim(),
+  active:!!g('se-a').checked};
+ await catSave('bundles',id||'',data,name,id?'Product set updated':'Product set added');
+};
+
+/* ============ price list PDF ============ */
+window.priceListSheet=()=>{
+ const n=k=>({svc:D.services.filter(s=>s.active!==false).length,prd:D.products.filter(p=>p.type==='retail'&&p.active!==false).length,
+  set:(D.bundles||[]).filter(b=>b.active!==false).length,pkg:D.packages.filter(p=>p.active!==false).length}[k]);
+ modal('Price list PDF','<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 10px">A printable A4 list of current prices, straight from the catalogue.</p>'+
+  [['svc','Treatments'],['prd','Retail products'],['set','Product sets'],['pkg','Packages']].map(([k,l])=>
+   '<label class="row" style="gap:9px;margin-bottom:7px"><input type="checkbox" class="pl-sec" value="'+k+'"'+
+   (n(k)?' checked':' disabled')+'> '+l+' <span class="muted tiny">'+n(k)+'</span></label>').join('')+
+  '<label class="row" style="gap:9px;margin:10px 0 7px"><input type="checkbox" id="pl-code"> Show product codes</label>'+
+  '<label class="row" style="gap:9px;margin-bottom:12px"><input type="checkbox" id="pl-dur" checked> Show treatment duration</label>'+
+  '<div class="fabrow" style="margin:0"><button class="btn" onclick="priceListPDF()">'+ic('download',15)+'Download PDF</button>'+
+  (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn ghost" onclick="priceListPDF(\'share\')">'+
+   ic('msg',15)+'Share</button>':'')+'</div></div>');
+};
+function plOpts(){
+ const secs=[...(document.querySelectorAll?document.querySelectorAll('.pl-sec'):[])].filter(x=>x.checked).map(x=>x.value);
+ return{secs:secs.length?secs:['svc','prd','set','pkg'],codes:!!(document.getElementById('pl-code')||{}).checked,
+  dur:(document.getElementById('pl-dur')||{checked:true}).checked!==false};
+}
+function buildPriceListPDF(o,jsPDF){
+ const doc=new jsPDF({unit:'mm',format:'a4'});
+ const W=210,H=297,M=16,CW=W-M*2;
+ const INK=[20,18,15],MUTED=[111,106,96],BRASS=[166,124,61],LINE=[227,221,208],SOFT=[247,244,238];
+ const b=D.meta.biz||{};
+ const T=(t,x,y,op)=>doc.text(pdfText(t),x,y,op);
+ const font=(sz,st,col)=>{doc.setFontSize(sz);doc.setFont('helvetica',st||'normal');doc.setTextColor(...(col||INK));};
+ let y=0;
+ const top=first=>{
+  doc.setFillColor(...INK);doc.rect(0,0,W,4,'F');doc.setFillColor(...BRASS);doc.rect(0,4,W,0.9,'F');
+  y=first?18:14;
+  if(first){
+   let lx=M;
+   if(b.logo){try{const pr=doc.getImageProperties(b.logo);const h=Math.min(16,pr.height*30/pr.width),w=h*pr.width/pr.height;
+    doc.addImage(b.logo,/png/i.test(b.logo.slice(0,30))?'PNG':'JPEG',M,y-5,w,h);lx=M+w+5;}catch(e){}}
+   font(16,'bold');T(b.name||'',lx,y+1);
+   font(8.5,'normal',MUTED);T((branch().name||'')+(b.phone?'  ·  '+b.phone:''),lx,y+6.5);
+   font(20,'bold',BRASS);T('PRICE LIST',W-M,y+1,{align:'right'});
+   font(8,'normal',MUTED);T('Effective '+dstr(new Date()),W-M,y+6.5,{align:'right'});
+   y+=15;doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=8;
+  }else{font(8,'normal',MUTED);T((b.name||'')+' · Price list (continued)',M,y);y+=8;}
+ };
+ const need=h=>{if(y+h>H-20){doc.addPage();top(false);}};
+ const head=(title,sub)=>{need(18);font(12,'bold');T(title,M,y);
+  if(sub){font(8,'normal',MUTED);T(sub,W-M,y,{align:'right'});}
+  y+=2.5;doc.setDrawColor(...BRASS);doc.setLineWidth(0.6);doc.line(M,y,M+18,y);y+=6;};
+ const group=t=>{need(12);font(8,'bold',BRASS);T(String(t).toUpperCase(),M,y);y+=5;};
+ const row=(name,detail,price,note)=>{
+  const dl=detail?doc.splitTextToSize(pdfText(detail),CW-44):[];
+  const nl=note?doc.splitTextToSize(pdfText(note),CW-44):[];
+  const h=5.2+dl.length*3.7+nl.length*3.5+1.6;
+  need(h);
+  font(10,'bold');const nm=doc.splitTextToSize(pdfText(name),CW-44)[0];doc.text(nm,M,y);
+  const nw=doc.getTextWidth(nm);
+  font(10,'bold');T(price,W-M,y,{align:'right'});
+  const pw=doc.getTextWidth(pdfText(price));
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.25);
+  try{doc.setLineDashPattern([0.4,1.2],0);}catch(e){}
+  if(W-M-pw-3>M+nw+3)doc.line(M+nw+3,y-0.8,W-M-pw-3,y-0.8);
+  try{doc.setLineDashPattern([],0);}catch(e){}
+  let ty=y+4.4;
+  font(8,'normal',MUTED);dl.forEach(l=>{doc.text(l,M,ty);ty+=3.7;});
+  font(7.6,'italic',BRASS);nl.forEach(l=>{doc.text(l,M,ty);ty+=3.5;});
+  y=ty+2;};
+ top(true);
+ if(o.secs.includes('svc')){
+  const list=D.services.filter(s=>s.active!==false);
+  if(list.length){head('Treatments',list.length+' treatments');
+   const cats=[...new Set(list.map(s=>s.cat||'Other'))];
+   cats.forEach(c=>{if(cats.length>1)group(c);
+    list.filter(s=>(s.cat||'Other')===c).forEach(s=>row(s.name,[o.dur&&s.dur?s.dur+' min':'',s.desc||''].filter(Boolean).join(' · '),pdfRM(s.price)));
+    y+=2;});y+=4;}}
+ if(o.secs.includes('prd')){
+  const list=D.products.filter(p=>p.type==='retail'&&p.active!==false);
+  if(list.length){head('Retail products',list.length+' products');
+   list.forEach(p=>row(p.name,[p.size&&p.unit&&p.unit!=='pcs'?p.size+' '+p.unit:'',o.codes?'Code '+p.id:''].filter(Boolean).join(' · '),pdfRM(p.price)));
+   y+=4;}}
+ if(o.secs.includes('set')){
+  const list=(D.bundles||[]).filter(x=>x.active!==false);
+  if(list.length){head('Product sets');
+   list.forEach(s=>{const w=setWorth(s);row(s.name,[setLabel(s),s.desc||''].filter(Boolean).join(' · '),pdfRM(s.price),
+    w>s.price?'Worth '+pdfRM(w)+' separately - save '+pdfRM(w-s.price):'');});y+=4;}}
+ if(o.secs.includes('pkg')){
+  const list=D.packages.filter(p=>p.active!==false);
+  if(list.length){head('Packages');
+   list.forEach(p=>{const w=pkgWorth(p);row(p.name,(p.items||[]).map(i=>i.n+'x '+(svc(i.serviceId).name||'')).join(' + ')+
+    ' · valid '+(p.days||0)+' days',pdfRM(p.price),w>p.price?'Worth '+pdfRM(w)+' - save '+Math.round((1-p.price/w)*100)+'%':'');});
+   y+=4;}}
+ const pages=doc.getNumberOfPages();
+ for(let p=1;p<=pages;p++){doc.setPage(p);
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(M,H-14,W-M,H-14);font(7,'normal',MUTED);
+  T('All prices in Ringgit Malaysia'+(b.sst?', before SST '+(b.sstRate||8)+'%':'')+'. Prices may change without notice.',M,H-9.5);
+  T('Page '+p+' of '+pages,W-M,H-9.5,{align:'right'});}
+ doc.setProperties({title:(b.name||'')+' price list',creator:'Spatify'});
+ return doc;
+}
+window.priceListPDF=async how=>{
+ const o=plOpts();toast('Preparing the price list…');
+ try{
+  const jsPDF=await loadJsPDF();
+  const d=buildPriceListPDF(o,jsPDF);
+  const name='Price-list-'+String((D.meta.biz||{}).name||'spa').replace(/[^A-Za-z0-9]+/g,'-')+'-'+today()+'.pdf';
+  if(how==='share'&&navigator.canShare){
+   const file=new File([d.output('blob')],name,{type:'application/pdf'});
+   if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Price list'});return;}}
+  d.save(name);
+ }catch(e){if(e&&e.name==='AbortError')return;console.error(e);toast(friendly(e));}
+};
+
+/* ============ bookings: complete, pay, and treatments for undecided clients ============ */
+const apptOpen=a=>['booked','confirm','in'].includes(a.status);
+/* a single place that marks a booking complete: logs it, and takes backbar stock
+   unless it was already taken (by checkout, or an earlier completion) */
+async function completeAppt(a,extra){
+ extra=extra||{};
+ const now=new Date().toISOString();
+ const patch={status:'done',updatedBy:UID,updatedAt:now,completedAt:a.completedAt||now,
+  statusLog:[...(a.statusLog||[]),{from:a.status,to:'done',at:now,by:UID,byName:ME.name,
+   ...(extra.saleId?{via:'payment'}:{})}]};
+ const warn=[];
+ if(!a.stockDone&&!extra.skipStock){
+  for(const u of (svc(a.serviceId).use||[])){const st=stockOf(u.sku,a.branchId);if(!st)continue;
+   await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty)});st.qty-=u.qty;if(st.qty<=st.reorder)warn.push(prod(u.sku).name);}
+  patch.stockDone='appt';
+ }
+ if(extra.stockBySale&&!a.stockDone)patch.stockDone='sale';
+ if(extra.saleId){patch.saleId=extra.saleId;patch.invoiceNo=extra.invoiceNo||'';patch.paidAt=now;}
+ if(extra.serviceId&&extra.serviceId!==a.serviceId){patch.serviceId=extra.serviceId;patch.serviceName=extra.serviceName||'';
+  patch.undecided=false;}
+ await updateDoc(doc(db,'appointments',a.id),patch);
+ Object.assign(a,patch);
+ return warn;
+}
+window.finishAppt=async id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ if(a.undecided&&!a.serviceId){toast('Choose the treatment first — tap “Set treatment”');return;}
+ try{const warn=await completeAppt(a);
+  await audit('Treatment completed',(a.customerName||'')+' — '+(a.serviceName||''));
+  window.closeModal();render();
+  toast(warn.length?'Completed. Running low: '+warn.join(', '):'Completed ✓');}
+ catch(e){toast(friendly(e));}};
+/* after a bill is saved, today's bookings for the treatments on it are completed and linked */
+async function completeFromSale(saleId,invoiceNo,customerId,items){
+ if(!customerId)return {done:0,stockAppts:new Set()};
+ const lines=items.filter(i=>(i.kind==='service'&&!i.later)||i.kind==='redeem');
+ const used=new Set();let done=0;
+ for(const l of lines){
+  let a=l.apptId?APPTS.find(x=>x.id===l.apptId):null;
+  if(!a)a=APPTS.find(x=>!used.has(x.id)&&x.customerId===customerId&&x.date===today()&&x.serviceId===l.id&&
+   !x.saleId&&['booked','confirm','in','done'].includes(x.status));
+  if(!a)a=APPTS.find(x=>!used.has(x.id)&&x.customerId===customerId&&x.date===today()&&x.undecided&&
+   !x.saleId&&['booked','confirm','in'].includes(x.status));
+  if(!a)continue;used.add(a.id);
+  try{
+   if(a.status==='done')await updateDoc(doc(db,'appointments',a.id),{saleId,invoiceNo,paidAt:new Date().toISOString()});
+   else{await completeAppt(a,{saleId,invoiceNo,skipStock:true,stockBySale:true,
+     serviceId:a.undecided?l.id:'',serviceName:a.undecided?l.name:''});done++;}
+   a.saleId=saleId;a.invoiceNo=invoiceNo;
+  }catch(e){console.warn('auto-complete',e);}
+ }
+ return {done};
+}
+/* a line's backbar is not taken again when its booking was already completed (and stock taken) */
+function stockTakenByAppt(line,customerId){
+ const a=line.apptId?APPTS.find(x=>x.id===line.apptId):APPTS.find(x=>x.customerId===customerId&&x.date===today()&&
+  x.serviceId===line.id&&!x.saleId&&x.status==='done'&&x.stockDone!=='sale');
+ return !!(a&&a.status==='done'&&a.stockDone!=='sale');
+}
+window.checkoutFromAppt=async id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ if(a.saleId){window.closeModal();window.openSale(a.saleId);return;}
+ const others=cart.items.length&&cart.customerId&&cart.customerId!==a.customerId;
+ if(others&&!confirm('The checkout has another client\'s bill in progress. Replace it?'))return;
+ if(others||cart.customerId!==a.customerId)cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,
+  walkin:false,instal:false,dueDate:''};
+ cart.customerId=a.customerId;cart.walkin=false;
+ const addSvc=sid=>{const s=svc(sid);if(!s.id)return;
+  if(cart.items.some(i=>i.apptId===a.id))return;
+  cart.items.push(applyHandsOn({kind:'service',id:s.id,name:s.name,price:s.price,qty:1,staffId:a.staffId||UID,
+   handsOnId:a.staffId||undefined,apptId:a.id}));};
+ if(a.serviceId)addSvc(a.serviceId);
+ if(a.deposit>0&&!cart.payments.some(p=>p.apptId===a.id))cart.payments.push({method:'Booking deposit',amount:+a.deposit,apptId:a.id});
+ window.closeModal();window.go('pos');
+ await loadClientPackages(a.customerId);render();
+ if(!a.serviceId){APPT_PICK=a.id;window.pickItem('service');}
+ else toast(a.serviceName+' added'+(a.deposit>0?' · deposit '+rm(a.deposit)+' counted':''));
+};
+let APPT_PICK='';
+/* ---- treatment menu for a client who has not decided ---- */
+const UNDEC_DUR=[30,45,60,75,90,120];
+function menuFor(concerns,dur,budget){
+ return D.services.filter(s=>s.active!==false&&(!dur||(s.dur||0)<=dur)&&(!budget||(+s.price||0)<=budget))
+  .map(s=>({s,score:(concerns||[]).filter(c=>(s.concerns||[]).includes(c)).length}))
+  .filter(x=>!(concerns||[]).length||x.score>0)
+  .sort((a,b)=>b.score-a.score||(a.s.price||0)-(b.s.price||0))
+  .map(x=>x.s);
+}
+let UNDEC={on:false,concerns:[],dur:60,budget:0,short:[]};
+window.undecToggle=on=>{UNDEC={on:!!on,concerns:[],dur:60,budget:0,short:[]};undecPaint();
+ if(typeof window.nSync==='function')window.nSync();};
+window.undecConcern=c=>{const k=UNDEC.concerns.indexOf(c);if(k>=0)UNDEC.concerns.splice(k,1);else UNDEC.concerns.push(c);undecPaint();};
+window.undecSet=(k,v)=>{UNDEC[k]=+v||0;undecPaint();};
+window.undecShort=id=>{const k=UNDEC.short.indexOf(id);if(k>=0)UNDEC.short.splice(k,1);else UNDEC.short.push(id);undecPaint();};
+window.undecChoose=id=>{UNDEC.on=false;const sel=document.getElementById('n-s');if(sel)sel.value=id;undecPaint();
+ if(typeof window.nSync==='function')window.nSync();toast(svc(id).name+' chosen');};
+function undecPaint(){
+ const box=document.getElementById('n-undec');if(!box)return;
+ const sw=document.getElementById('n-s-w');if(sw&&sw.style)sw.style.display=UNDEC.on?'none':'';
+ const tg=document.getElementById('n-undec-t');if(tg)tg.checked=UNDEC.on;
+ if(!UNDEC.on){box.innerHTML='';return;}
+ const list=menuFor(UNDEC.concerns,UNDEC.dur,UNDEC.budget);
+ box.innerHTML='<div class="fieldset" style="margin-top:0"><h3>'+ic('spark',13)+'Treatment menu for this client</h3>'+
+  '<div class="tiny muted" style="margin-bottom:8px">Pick what the client wants help with. Tap a treatment to book it now, '+
+  'or tick a few to keep as a shortlist and decide at the visit.</div>'+
+  '<div class="chips">'+CONCERNS.map(c=>'<button type="button" class="chip'+(UNDEC.concerns.includes(c.id)?' on':'')+
+   '" onclick="undecConcern(\''+c.id+'\')">'+esc(c.label)+'</button>').join('')+'</div>'+
+  '<div class="grid g2"><div><label>Time to hold</label><select class="f" onchange="undecSet(\'dur\',this.value)">'+
+   UNDEC_DUR.map(d=>'<option value="'+d+'"'+(UNDEC.dur===d?' selected':'')+'>'+d+' min</option>').join('')+'</select></div>'+
+  '<div><label>Budget up to (RM)</label><input class="f" type="number" min="0" value="'+(UNDEC.budget||'')+
+   '" placeholder="Any" onchange="undecSet(\'budget\',this.value)"></div></div>'+
+  (list.length?list.slice(0,12).map(s=>'<div class="undecrow"><label class="row" style="gap:8px;flex:1;min-width:0">'+
+   '<input type="checkbox"'+(UNDEC.short.includes(s.id)?' checked':'')+' onchange="undecShort(\''+esc(s.id)+'\')">'+
+   '<span style="min-width:0"><b>'+esc(s.name)+'</b><span class="tiny muted" style="display:block">'+(s.dur||0)+' min · '+
+   rm(s.price)+((s.concerns||[]).filter(c=>UNDEC.concerns.includes(c)).length?' · for '+
+   (s.concerns||[]).filter(c=>UNDEC.concerns.includes(c)).map(concernLabel).join(', '):'')+'</span></span></label>'+
+   '<button type="button" class="btn sm ghost" onclick="undecChoose(\''+esc(s.id)+'\')">Book this</button></div>').join(''):
+   '<div class="tiny muted">No treatment fits. Try another concern, a longer time or a higher budget.</div>')+
+  '<div class="tiny" style="margin-top:8px">'+(UNDEC.short.length?ic('check',12)+' Shortlist: '+
+   UNDEC.short.map(id=>esc(svc(id).name)).join(', '):'Nothing shortlisted — the slot is held as a consultation.')+'</div></div>';
+}
+window.setApptService=id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ const short=(a.shortlist||[]).filter(s=>svc(s).id);
+ const rest=menuFor(a.concerns||[],0,0).filter(s=>!short.includes(s.id));
+ modal('Set treatment · '+(a.customerName||''),'<div class="card">'+
+  (short.length?'<h3 style="margin:0 0 8px">Shortlisted</h3>'+short.map(s=>apptSvcRow(id,svc(s))).join(''):'')+
+  '<h3 style="margin:12px 0 8px">'+((a.concerns||[]).length?'Also suitable':'All treatments')+'</h3>'+
+  (rest.length?rest:D.services.filter(s=>s.active!==false)).slice(0,20).map(s=>apptSvcRow(id,s)).join('')+'</div>');
+};
+function apptSvcRow(id,s){
+ return '<button type="button" class="pkrow" data-a="'+esc(id)+'" data-s="'+esc(s.id)+
+  '" onclick="saveApptService(this.dataset.a,this.dataset.s)"><span class="pkico">'+ic('spark',18)+'</span>'+
+  '<span class="cpmeta"><b>'+esc(s.name)+'</b><span>'+(s.dur||0)+' min</span></span><span class="pkprice">'+rm(s.price)+'</span></button>';
+}
+window.saveApptService=async(id,sid)=>{
+ const a=APPTS.find(x=>x.id===id),s=svc(sid);if(!a||!s.id)return;
+ try{const patch={serviceId:s.id,serviceName:s.name,undecided:false,updatedBy:UID,updatedAt:new Date().toISOString()};
+  await updateDoc(doc(db,'appointments',id),patch);Object.assign(a,patch);
+  await audit('Treatment decided',(a.customerName||'')+' → '+s.name);
+  window.closeModal();render();toast(s.name+' set');window.openAppt(id);}
+ catch(e){toast(friendly(e));}
+};
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -3747,6 +4358,7 @@ function buildReceiptPDF(s,jsPDF){
    (it.remaining!==undefined?' - '+it.remaining+' left after this':'')+' - no charge');
   if(it.handsOnName)notes.push('Performed by '+it.handsOnName);
   if(it.later)notes.push('Prepaid - to be done on a later visit, valid '+(it.laterDays||90)+' days');
+  lineNotes(it).forEach(t=>notes.push(t.replace(/−/g,'-')));
   const nameLines=doc.splitTextToSize(pdfText(it.name||''),cols[1].w);
   const noteLines=notes.flatMap(t=>doc.splitTextToSize(pdfText(t),cols[1].w));
   const rowH=Math.max(8.5,4.2+nameLines.length*4.2+noteLines.length*3.6+1.8);
@@ -3759,14 +4371,14 @@ function buildReceiptPDF(s,jsPDF){
   font(9,'normal');
   T(String(it.qty||1),cols[2].x,ty,{align:'right'});
   T(pdfRM(it.price),cols[3].x,ty,{align:'right'});
-  font(9,'bold');T(pdfRM((it.price||0)*(it.qty||1)),cols[4].x,ty,{align:'right'});
+  font(9,'bold');T(pdfRM(lineAmt(it)),cols[4].x,ty,{align:'right'});
   y+=rowH;
   doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(M,y,W-M,y);
  });
  y+=6;
 
  /* ---------- totals, right ---------- */
- const sub=(s.items||[]).reduce((a,i)=>a+(i.price||0)*(i.qty||1),0);
+ const sub=(s.items||[]).reduce((a,i)=>a+lineAmt(i),0);
  const pays=(s.payments||[]);
  const need=40+pays.length*5+(bal>0?14:0);
  if(y+need>H-footerSpace){doc.addPage();y=M+4;}
@@ -3898,6 +4510,7 @@ const pkgWorth=p=>(p.items||[]).reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,
 function itemSrc(kind,id){
  if(kind==='service')return svc(id);
  if(kind==='package')return pkgOf(id);
+ if(kind==='set')return setOf(id);
  return prod(id);
 }
 let PICKTAB='service',PICKSTAFF='';
@@ -3906,12 +4519,17 @@ window.setPickTab=k=>{PICKTAB=k;paintPicker();};
 window.setPickStaff=v=>{PICKSTAFF=v;};
 function pickList(kind){
  if(kind==='redeem')return cart.customerId?redeemLines(cart.customerId):[];
- if(kind==='service')return D.services.filter(x=>x.active!==false);
+ if(kind==='set')return (D.bundles||[]).filter(x=>x.active!==false);
+ if(kind==='service'){const l=D.services.filter(x=>x.active!==false);
+  const a=APPT_PICK?APPTS.find(x=>x.id===APPT_PICK):null;
+  if(a&&(a.shortlist||[]).length)return [...l.filter(s=>a.shortlist.includes(s.id)),...l.filter(s=>!a.shortlist.includes(s.id))];
+  return l;}
  if(kind==='package')return D.packages.filter(x=>x.active!==false);
  return D.products.filter(p=>p.type==='retail'&&p.active!==false);
 }
 function paintPicker(){
  const tabs=[['service','Treatments','spark'],['product','Products','stock'],['package','Packages','package']];
+ if((D.bundles||[]).some(b=>b.active!==false))tabs.splice(2,0,['set','Sets','gift']);
  if(cart.customerId)tabs.push(['redeem','Redeem','check']);
  if(PICKTAB==='redeem'&&!cart.customerId)PICKTAB='service';
  const staffOpts=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false)
@@ -3921,7 +4539,7 @@ function paintPicker(){
    t[1]+' <span class="muted tiny">'+pickList(t[0]).length+'</span></button>').join('')+'</div>'+
   '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span>'+
   '<input class="f" id="pk-q" placeholder="Search '+
-   ({service:'treatments',product:'products',package:'packages',redeem:'this client\'s packages'}[PICKTAB])+'" autocomplete="off" '+
+   ({service:'treatments',product:'products',package:'packages',set:'product sets',redeem:'this client\'s packages'}[PICKTAB])+'" autocomplete="off" '+
    'oninput="pickFilter()"></div>'+
   '<label>Credited to</label><select class="f" id="pk-s" onchange="setPickStaff(this.value)">'+
    staffOpts+'</select>'+
@@ -3945,11 +4563,16 @@ function pickRows(q){
   (t?'Nothing matches “'+esc(q)+'”.':'Nothing in this part of the catalogue yet.')+'</div></div>';
  return h+list.map(x=>{
   let icon,sub;
-  if(PICKTAB==='service'){icon=ic('spark',18);sub=(x.dur||0)+' min'+(x.cat?' · '+esc(x.cat):'');}
+  if(PICKTAB==='service'&&APPT_PICK&&((APPTS.find(a=>a.id===APPT_PICK)||{}).shortlist||[]).includes(x.id)){
+   icon=ic('star',18);sub='Shortlisted at booking · '+(x.dur||0)+' min';}
+  else if(PICKTAB==='service'){icon=ic('spark',18);sub=(x.dur||0)+' min'+(x.cat?' · '+esc(x.cat):'');}
   else if(PICKTAB==='product'){
    const st=stockOf(x.id);
    icon=x.image?'<img src="'+x.image+'" alt="">':ic('stock',18);
    sub=(st?st.qty+' in stock':'not stocked here')+(st&&st.qty<=st.reorder?' · low':'');}
+  else if(PICKTAB==='set'){const w=setWorth(x),sh=setShort(x.id,1);
+   icon=ic('gift',18);
+   sub=esc(setLabel(x))+(w>x.price?' · saves '+Math.round((1-x.price/w)*100)+'%':'')+(sh?' · <span class="odue">short of stock</span>':'');}
   else{
    const w=pkgWorth(x);
    icon=ic('package',18);
@@ -3988,11 +4611,17 @@ window.pickAdd=(kind,id)=>{
  const it=itemSrc(kind,id);if(!it||!it.name)return;
  if(kind==='package'&&!cart.customerId){toast('Choose the client first');return;}
  const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
- const same=cart.items.find(i=>i.kind===kind&&i.id===id&&i.staffId===staffId&&!i.later);
+ const same=cart.items.find(i=>i.kind===kind&&i.id===id&&i.staffId===staffId&&!i.later&&!lineEdited(i)&&!i.apptId);
  const qty=(same?same.qty:0)+1;
  if(kind==='product'){const st=stockOf(id);
   if(!st||st.qty<qty){toast('Not enough stock at this branch');return;}}
- if(same){same.qty=qty;applyHandsOn(same);}
+ if(kind==='set'){const sh=setShort(id,qty+cart.items.filter(i=>i.kind==='set'&&i.id===id&&i!==same).reduce((a,i)=>a+i.qty,0));
+  if(sh){toast(sh);return;}}
+ const ap=kind==='service'&&APPT_PICK?APPTS.find(a=>a.id===APPT_PICK&&a.customerId===cart.customerId):null;
+ if(ap&&!cart.items.some(i=>i.apptId===ap.id)){
+  cart.items.push(applyHandsOn({kind,id,name:it.name,price:it.price,qty:1,staffId:ap.staffId||staffId,
+   handsOnId:ap.staffId||undefined,apptId:ap.id}));APPT_PICK='';}
+ else if(same){same.qty=qty;applyHandsOn(same);}
  else cart.items.push(applyHandsOn({kind,id,name:it.name,price:it.price,qty:1,staffId}));
  render();                                   // the bill behind the sheet updates as you go
  const f=document.getElementById('pk-foot');if(f)f.innerHTML=pickFoot();
@@ -4021,6 +4650,7 @@ window.cartQty=(x,d)=>{
  const q=i.qty+d;
  if(q<1){cart.items.splice(x,1);render();return;}
  if(i.kind==='product'){const st=stockOf(i.id);if(!st||st.qty<q){toast('Not enough stock');return;}}
+ if(i.kind==='set'&&d>0){const sh=setShort(i.id,q);if(sh){toast(sh);return;}}
  if(i.kind==='redeem'&&d>0){const l=redeemLines(cart.customerId).find(z=>z.cpId===i.cpId&&z.line===i.line);
   if(!l||redeemInCart(i.cpId,i.line)+d>l.left){toast('No more sessions left on that package');return;}}
  if(i.kind==='package'&&q>1&&!confirm('Sell '+q+' of the same package to one client?'))return;
@@ -4070,15 +4700,20 @@ window.checkout=async()=>{
     throw new Error('A treatment paid now and done later has to be kept on a client\'s account. Choose the client.');
    if(needsHandsOn(i)&&!i.handsOnId)
     throw new Error('Choose who did the hands-on for '+i.name+' — tap the line under it.');
+   const ap=i.apptId?{apptId:i.apptId}:{};
    if(i.kind==='redeem'){const sv=svc(i.id);
-    return{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
-     cpId:i.cpId,line:i.line,pkgName:i.pkgName||'',...ho};}
+    return lineForSale(i,{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
+     cpId:i.cpId,line:i.line,pkgName:i.pkgName||'',...ho,...ap});}
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
-   return{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho};});
+   const setBits=i.kind==='set'?{setItems:(src.items||[]).map(z=>({sku:z.sku,qty:+z.qty||1,name:prod(z.sku).name||z.sku}))}:{};
+   return lineForSale(i,{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho,...ap,...setBits});});
   if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
-  const sub=items.reduce((a,i)=>a+i.price*i.qty,0);
+  const sub=r2(items.reduce((a,i)=>a+lineAmt(i),0));
+  const lineDiscTotal=r2(items.reduce((a,i)=>a+(+i.lineDisc||0),0));
+  for(const i of items.filter(x=>x.kind==='set')){const sh=setShort(i.id,items.filter(z=>z.kind==='set'&&z.id===i.id).reduce((a,z)=>a+z.qty,0));
+   if(sh)throw new Error(sh);}
   if(cart.voucher){const fresh=D.vouchers.find(x=>x.id===cart.voucher.id)||null;
    const vp=voucherProblem(fresh,sub,cart.customerId);
    if(vp)throw new Error('Voucher '+cart.voucher.id+': '+vp+' Remove it to continue.');
@@ -4130,11 +4765,12 @@ window.checkout=async()=>{
    const local=HELD.find(h=>h.id===cpId);if(local)local.balances=after;
   }
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
+  for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
    customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
-   voucherAmt:r2(v),sst,total,date:today(),at:new Date().toISOString(),
+   voucherAmt:r2(v),lineDiscTotal,sst,total,date:today(),at:new Date().toISOString(),
    voided:false,payments:pays,createdBy:UID,invoiceNo,
    net:r2(net),paid,balance,status:balance>0?'partial':'paid',
    dueDate:balance>0?(cart.dueDate||''):'',tendered,change,
@@ -4160,7 +4796,7 @@ window.checkout=async()=>{
   for(const i of items.filter(x=>x.kind==='package')){
    const pk=pkgOf(i.id);
    for(let k=0;k<i.qty;k++){
-    const paid=Math.round(pk.price*share*100)/100;
+    const paid=Math.round(lineAmt(i)/(i.qty||1)*share*100)/100;
     const r=await addDoc(collection(db,'customerPackages'),{customerId:cart.customerId,
      customerName:c?c.name:'',packageId:pk.id,price:paid,listPrice:pk.price,branchId:ME.branchId,
      soldAt:new Date().toISOString(),expiry:ymd(addDays(new Date(),pk.days||365)),soldBy:i.staffId||UID,
@@ -4172,7 +4808,7 @@ window.checkout=async()=>{
   /* treatments paid now, done later: each becomes a one-treatment balance to redeem */
   for(const i of items.filter(x=>x.later)){
    const sv=svc(i.id);
-   const paid=Math.round((i.price||0)*i.qty*share*100)/100;
+   const paid=Math.round(lineAmt(i)*share*100)/100;
    await addDoc(collection(db,'customerPackages'),{customerId:cart.customerId,customerName:c?c.name:'',
     packageId:'',prepaid:true,name:(sv.name||i.name)+' (prepaid)',price:paid,listPrice:r2((i.price||0)*i.qty),
     branchId:ME.branchId,soldAt:new Date().toISOString(),
@@ -4182,7 +4818,9 @@ window.checkout=async()=>{
   }
   for(const i of items){
    if(i.kind==='product'){const st=stockOf(i.id);if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-i.qty)});st.qty-=i.qty;}}
-   if((i.kind==='service'&&!i.later)||i.kind==='redeem'){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
+   if(i.kind==='set')for(const z of (i.setItems||[])){const st=stockOf(z.sku);const n=(+z.qty||1)*i.qty;
+    if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-n)});st.qty-=n;}}
+   if(((i.kind==='service'&&!i.later)||i.kind==='redeem')&&!stockTakenByAppt(i,cart.customerId)){for(const u of (svc(i.id).use||[])){const st=stockOf(u.sku);
     if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty*i.qty)});st.qty-=u.qty*i.qty;}}}
   }
   let earned=0;
@@ -4191,8 +4829,13 @@ window.checkout=async()=>{
    /* points on what was paid today; later instalments earn the rest as they come in */
    earned=await awardPoints(cart.customerId,c?c.name:'',total>0?net*paid/total:0,invoiceNo);
   }
+  const auto=await completeFromSale(ref.id,invoiceNo,cart.customerId,items);
   await audit('Bill completed',invoiceNo+' · '+rm(total)+' · '+(c?c.name:'Walk-in')+
-   (newPkgs.length?' · packages: '+newPkgs.join(', '):''));
+   (newPkgs.length?' · packages: '+newPkgs.join(', '):'')+(auto.done?' · '+auto.done+' booking(s) completed':''));
+  const ov=items.filter(i=>i.listPrice!==undefined||i.lineDisc>0||i.commAmt!==undefined);
+  if(ov.length)await audit('Line price or discount',invoiceNo+' · '+ov.map(i=>i.name+(i.listPrice!==undefined?' '+rm(i.listPrice)+'→'+rm(i.price):'')+
+   (i.lineDisc>0?' −'+rm(i.lineDisc)+(i.discCode?' ('+i.discCode+')':i.discNote?' ('+i.discNote+')':''):'')+
+   (i.commAmt!==undefined?' comm '+rm(i.commAmt):'')).join('; '));
   cart={customerId:'',items:[],discount:0,voucher:null,payments:[],points:0,walkin:false,
    instal:false,dueDate:''};
   await loadRecentSales();
@@ -4341,8 +4984,9 @@ function receiptHTML(s){
  const b=D.meta.biz||{};
  const br=(D.branches.find(x=>x.id===s.branchId)||{}).name||'';
  const L=bizLines(b,br);
- const sub=(s.items||[]).reduce((a,i)=>a+i.price*i.qty,0);
+ const sub=(s.items||[]).reduce((a,i)=>a+lineAmt(i),0);
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
+  lineNotes(i).map(t=>'<div class="tiny muted">'+esc(t)+'</div>').join('')+
   (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
   (i.handsOnName?'<div class="tiny muted">Performed by '+esc(i.handsOnName)+'</div>':'')+
   (i.later?'<div class="tiny muted">Prepaid — to be done on a later visit · valid '+(i.laterDays||90)+' days</div>':'')+
@@ -4350,7 +4994,7 @@ function receiptHTML(s){
    (i.remaining!==undefined?' · '+i.remaining+' left after this':'')+' — no charge</div>':
    (i.price===0?'<div class="tiny muted">Package session — no charge</div>':''))+
   '</td><td class="num">'+i.qty+'</td><td class="num">'+rm(i.price)+'</td>'+
-  '<td class="num">'+rm(i.price*i.qty)+'</td></tr>').join('');
+  '<td class="num">'+rm(lineAmt(i))+'</td></tr>').join('');
  const paid=(s.payments||[]).reduce((a,p)=>a+p.amount,0);
  return '<div class="rcpt" id="rcpt">'+
   '<div class="rhead">'+
@@ -4556,9 +5200,9 @@ function vRep(){
  const uniq=new Set(mine.map(s=>s.customerId).filter(Boolean)).size;
  const cat={Services:0,Retail:0,Packages:0};
  mine.forEach(s=>(s.items||[]).forEach(i=>{
-  if(i.kind==='service')cat.Services+=i.price*i.qty;
-  else if(i.kind==='product')cat.Retail+=i.price*i.qty;
-  else if(i.kind==='package')cat.Packages+=i.price*i.qty;}));
+  if(i.kind==='service')cat.Services+=lineAmt(i);
+  else if(retailKind(i.kind))cat.Retail+=lineAmt(i);
+  else if(i.kind==='package')cat.Packages+=lineAmt(i);}));
  h+='<h2 style="margin-bottom:8px">'+esc(D.meta.biz.name||'')+' · last '+repDays+' days</h2>'+
   '<div class="grid g3">'+kpi('Revenue',rm(rev),esc(branch().code))+
   kpi('Average bill',rm(mine.length?rev/mine.length:0),mine.length+' bills')+
@@ -4573,16 +5217,16 @@ function vRep(){
   D.branches.map(b=>{const x=S.filter(s=>s.branchId===b.id),r=x.reduce((a,s)=>a+s.total,0);
    return '<tr><td>'+esc(b.name)+'</td><td class="num">'+rm(r)+'</td><td class="num">'+x.length+
    '</td><td class="num">'+rm(x.length?r/x.length:0)+'</td></tr>';}).join('')+'</table></div></div>';
- const top={};mine.forEach(s=>(s.items||[]).forEach(i=>{if(i.kind==='service')top[i.name]=(top[i.name]||0)+i.price*i.qty;}));
+ const top={};mine.forEach(s=>(s.items||[]).forEach(i=>{if(i.kind==='service')top[i.name]=(top[i.name]||0)+lineAmt(i);}));
  h+='<div class="card"><h2>Top treatments</h2><table>'+Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,10)
   .map(([n,v])=>'<tr><td>'+esc(n)+'</td><td class="num">'+rm(v)+'</td></tr>').join('')+'</table></div>';
  const comm={};
  mine.forEach(s=>(s.items||[]).forEach(i=>{
   const who=i.staffId||s.staffId;const u=stf(who);if(!u.id)return;
-  const rate=i.kind==='service'?(svc(i.id).comm??u.commSvc??0):(u.commProd??0);
+  const rate=salesRate(i,u);
   comm[who]=comm[who]||{name:u.name,svc:0,prod:0,c:0};
-  if(i.kind==='service')comm[who].svc+=i.price*i.qty;else if(i.kind==='product')comm[who].prod+=i.price*i.qty;
-  comm[who].c+=i.price*i.qty*rate/100;}));
+  if(i.kind==='service')comm[who].svc+=lineAmt(i);else if(retailKind(i.kind))comm[who].prod+=lineAmt(i);
+  comm[who].c+=lineComm(i,rate);}));
  const hot=handsOnTotals(mine);
  Object.values(hot).forEach(o=>{comm[o.id]=comm[o.id]||{name:o.name,svc:0,prod:0,c:0};
   comm[o.id].ho=o.comm;comm[o.id].hs=o.sessions;});
@@ -4653,10 +5297,11 @@ window.catToggle=async(col,id,on,label)=>{
 
 function vCat(){
  const tabs=[['services','Treatments','spark'],['products','Products','stock'],['packages','Packages','package'],
-  ['rooms','Rooms','room'],['branches','Branches','home'],['vouchers','Vouchers','tag']];
- let h='<div class="card"><div class="tabs">'+tabs.map(t=>'<button class="'+(catTab===t[0]?'on':'')+
+  ['sets','Sets','gift'],['rooms','Rooms','room'],['branches','Branches','home'],['vouchers','Vouchers','tag']];
+ let h='<div class="row" style="justify-content:flex-end;margin-bottom:10px"><button class="btn sm ghost" onclick="priceListSheet()">'+
+  ic('print',14)+'Price list PDF</button></div><div class="card"><div class="tabs">'+tabs.map(t=>'<button class="'+(catTab===t[0]?'on':'')+
   '" onclick="setCatTab(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+'</button>').join('')+'</div>'+
-  ({services:catServices,products:catProducts,packages:catPackages,rooms:catRooms,
+  ({services:catServices,products:catProducts,packages:catPackages,sets:catSets,rooms:catRooms,
     branches:catBranches,vouchers:catVouchers}[catTab])()+'</div>';
  return h;}
 const offTag=x=>x.active===false?' <span class="pill">hidden</span>':'';
@@ -5493,9 +6138,9 @@ function dailyReportBody(d,shift){
  f.sales.forEach(s=>(s.items||[]).forEach(i=>{
   const who=i.staffId||s.staffId;const u=stf(who);if(!u.id)return;
   perf[who]=perf[who]||{name:u.name,svc:0,prod:0,pkg:0,total:0};
-  const line=i.price*i.qty;
+  const line=lineAmt(i);
   if(i.kind==='service')perf[who].svc+=line;
-  else if(i.kind==='product')perf[who].prod+=line;
+  else if(retailKind(i.kind))perf[who].prod+=line;
   else if(i.kind==='package')perf[who].pkg+=line;
   perf[who].total+=line;}));
  Object.values(handsOnTotals(f.sales)).forEach(o=>{
@@ -5508,7 +6153,7 @@ function dailyReportBody(d,shift){
 
  const treat={};
  f.sales.forEach(s=>(s.items||[]).forEach(i=>{if(i.kind!=='service')return;
-  treat[i.name]=treat[i.name]||{n:0,v:0};treat[i.name].n+=i.qty;treat[i.name].v+=i.price*i.qty;}));
+  treat[i.name]=treat[i.name]||{n:0,v:0};treat[i.name].n+=i.qty;treat[i.name].v+=lineAmt(i);}));
 
  const sec=(n,title,body,extra)=>'<section class="rsec"><h2><span class="rnum">'+n+'</span>'+title+
   (extra?'<span class="rextra">'+extra+'</span>':'')+'</h2>'+body+'</section>';
@@ -6359,7 +7004,7 @@ function dayFigures(d){
  const cats={};ap.forEach(a=>{const k=(visitOf(a.visitType)||{}).label||'Unspecified';
   cats[k]=(cats[k]||0)+1;});
  const items={service:0,product:0,package:0};
- live.forEach(s=>(s.items||[]).forEach(i=>{if(items[i.kind]!==undefined)items[i.kind]+=i.price*i.qty;}));
+ live.forEach(s=>(s.items||[]).forEach(i=>{const k=retailKind(i.kind)?'product':i.kind;if(items[k]!==undefined)items[k]+=lineAmt(i);}));
  return{sales:live,voided:sales.filter(s=>s.voided),revenue:live.reduce((a,s)=>a+s.total,0),
   bills:live.length,byMethod,cash,items,collected:r2(collected),instalments:r2(instalments),
   owedToday:r2(owedToday),
@@ -6590,6 +7235,7 @@ function vSet(){
  if(boss()){
   h+=bizPanel();
   h+=payPanel();
+  h+=coPanel();
   h+=rvPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
@@ -6611,7 +7257,7 @@ function bindSettings(){
   toast('Building backup…');
   const out={exportedAt:new Date().toISOString()};
   for(const n of ['branches','rooms','users','services','products','packages','stock','vouchers',
-   'customers','customerPackages','appointments','sales','library']){
+   'customers','customerPackages','appointments','sales','library','bundles']){
    try{const s=await getDocs(query(collection(db,n),limit(3000)));
     out[n]=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){out[n]='blocked: '+e.code;}}
   const a=document.createElement('a');
