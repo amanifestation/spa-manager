@@ -681,6 +681,50 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .lineinfo{color:var(--brass);margin-top:3px;line-height:1.5}
 .lineinfo s{opacity:.7}
 .undecrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.grid.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.fbstars{color:var(--line);letter-spacing:1px;white-space:nowrap}.fbstars .on{color:#D4A017}
+.fbme{display:flex;justify-content:space-between;gap:12px;background:var(--brass-soft);border-radius:var(--r-md);padding:13px 15px;margin-top:4px}
+.fbbig{font-size:30px;font-weight:700;line-height:1.1}
+.fbtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.fbtags span{font-size:11.5px;background:var(--line-2);border-radius:99px;padding:3px 9px}
+.fbrev{border:1px solid var(--line);border-radius:var(--r-md);padding:10px 12px;margin-bottom:8px}
+.fbrev.low{border-color:var(--rose);background:var(--rose-soft)}
+.fbq{margin-top:6px;font-style:italic;line-height:1.55}
+tr.fbmine td{background:var(--brass-soft)}
+/* client page */
+.fbpage{min-height:100vh;max-width:520px;margin:0 auto;padding:22px 16px 40px;position:relative}
+.fbhead{text-align:center;margin:10px 0 18px}
+.fbhead img{max-width:120px;max-height:70px;object-fit:contain}
+.fbmark{width:52px;height:52px;border-radius:16px;margin:0 auto;background:var(--ink);color:var(--cream);display:grid;place-items:center}
+.fbbiz{font-size:20px;font-weight:700;margin-top:8px}.fbbr{font-size:13px;color:var(--ink-3)}
+.fbbox{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 18px;box-shadow:0 10px 30px rgba(20,18,15,.06)}
+.fbbox h1{font-size:23px;margin:0 0 4px;text-align:center}
+.fbsub{text-align:center;color:var(--ink-3);margin:0;line-height:1.55}
+.fbsvc{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 4px}
+.fbsvc span{font-size:12px;background:var(--brass-soft);color:var(--brass);border-radius:99px;padding:4px 10px}
+.fbrate{display:flex;justify-content:center;gap:6px;margin:14px 0 4px}
+.fbrate button{background:none;border:0;font-size:40px;line-height:1;color:var(--line);cursor:pointer;padding:0 2px;transition:transform .12s}
+.fbrate button.on{color:#D4A017}.fbrate button:active{transform:scale(.85)}
+.fblabel{text-align:center;font-weight:600;color:var(--brass);min-height:20px}
+.fbstaff{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line-2);margin-top:14px;padding-top:12px}
+.fbstaff .fbrate{justify-content:flex-start;margin:4px 0 0}.fbstaff .fbrate button{font-size:30px}
+.fbav{width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-weight:600;flex:none}
+.fbsn{font-weight:600}
+.fbq2{font-weight:600;margin:18px 0 8px}
+.fbchips{display:flex;flex-wrap:wrap;gap:7px}
+.fbchips button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 13px;font-size:13.5px;cursor:pointer;color:var(--ink)}
+.fbchips button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.fbnps{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
+.fbnps button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 0;font-size:13px;cursor:pointer;color:var(--ink)}
+.fbnps button.on{background:var(--brass);color:#fff;border-color:var(--brass)}
+.fbnpsl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);margin-top:4px}
+.fbpage textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:12px;padding:11px;font:inherit;background:var(--surface);color:var(--ink)}
+.fbsend{width:100%;margin-top:18px;border:0;border-radius:14px;padding:15px;font-size:16px;font-weight:600;background:var(--ink);color:var(--cream);cursor:pointer;text-align:center}
+.fbsend:disabled{opacity:.4}
+.fberr{color:var(--rose);text-align:center;margin-top:10px;font-size:13px}
+.fbicon{width:60px;height:60px;border-radius:50%;margin:0 auto 12px;display:grid;place-items:center;background:var(--rose-soft);color:var(--rose)}
+.fbicon.ok{background:#E4EFE8;color:#2E6B52}
+.fblang{position:absolute;top:14px;right:14px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--ink)}
 .rvtix{border:1.5px dashed var(--brass);border-radius:12px;padding:11px 13px;background:var(--brass-soft)}
 .rvtix.dim{opacity:.55;background:transparent}
 .rvtop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;font-weight:600;
@@ -857,7 +901,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-20m';
+const BUILD='2026-09-20n';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1123,6 +1167,7 @@ const TABS=[
  {id:'prog',ic:'spark',  label:'Programs', perm:'customer',group:'Clients',desc:'Match treatments to concerns'},
  {id:'pkg', ic:'package',label:'Packages', perm:'customer',group:'Clients',desc:'Sell and track balances'},
  {id:'loy', ic:'award',  label:'Loyalty',  perm:'customer',group:'Clients',desc:'Points, tiers and rewards'},
+ {id:'merit',ic:'star',  label:'Feedback', perm:null,      group:'Clients',desc:'Client ratings and merit points'},
  {id:'pos', ic:'card',   label:'Checkout', perm:'pos',     group:'Money',  desc:'Bills, payments, receipts'},
  {id:'rep', ic:'chart',  label:'Reports',  perm:'report',  group:'Money',  desc:'Revenue and commission'},
  {id:'inv', ic:'stock',  label:'Stock',    perm:'inventory',group:'Manage',desc:'Backbar and retail levels'},
@@ -1187,7 +1232,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>';
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -1204,6 +1249,8 @@ function tileBadge(t){
  if(t.id==='book'){const n=onDay(today()).length;return n?n+' today':'';}
  if(t.id==='board'){const n=NOTES.filter(noteLive).length;return n?n+' live':'';}
  if(t.id==='lib'){const n=libUnreadCount();return n?n+' to read':'';}
+ if(t.id==='merit'){if(boss()){const n=fbFollowList().length;return n?n+' to follow up':'';}
+  const me=staffScore(UID,'m');return me.reviews?me.avg.toFixed(1)+'★':'';}
  if(t.id==='inv'){const n=D.stock.filter(x=>x.branchId===ME.branchId&&x.qty<=x.reorder).length;
   return n?n+' low':'';}
  if(t.id==='shift')return SHIFT?(SHIFT.closedAt?'closed':'open'):'not opened';
@@ -1661,6 +1708,8 @@ window.openAppt=id=>{
   (['booked','confirm'].includes(a.status)?'<button class="btn sm" onclick="setStat(\''+id+'\',\'in\')">'+ic('clock',14)+'Start</button>':'')+
   (apptOpen(a)&&!(a.undecided&&!a.serviceId)?'<button class="btn sm donebtn" onclick="finishAppt(\''+id+'\')">'+ic('check',14)+'Complete</button>':'')+
   '<button class="btn sm ghost" onclick="waLink(\''+id+'\')">'+ic('msg',14)+'Reminder</button>'+
+  (a.status==='done'&&fbSet().on?'<button class="btn sm ghost" onclick="askFeedbackAppt(\''+id+'\')">'+ic('star',14)+
+   ((fbForAppt(id)||(a.saleId&&fbForSale(a.saleId)))?'Feedback link':'Ask for feedback')+'</button>':'')+
   (a.serviceId?'<button class="btn sm ghost" onclick="openLib(\'svc_'+esc(a.serviceId)+'\',{customerId:\''+esc(a.customerId||'')+'\'})">'+
    ic('note',14)+'Guide</button>':'')+
   (['in','done'].includes(a.status)&&String(((libDoc('svc_'+a.serviceId)||{}).sections||{}).aftercareMsg||'').trim()?
@@ -4113,6 +4162,431 @@ window.saveApptService=async(id,sid)=>{
  catch(e){toast(friendly(e));}
 };
 
+/* ============ client feedback and staff merit ============ */
+/* The counter sends the client a private link after a visit. The link opens a small
+   rating page (no login) where the client scores the visit and each therapist who
+   treated them. Scores become merit points; the team sees their own reviews and a
+   leaderboard, and the owner sets the rewards. One link, one answer: the answer is
+   stored under the link's own id, so it cannot be sent twice. */
+const FB_DEFAULT={on:true,validDays:7,lang:'ms',google:'',nps:true,showBoard:true,
+ message:'Hi {name}, terima kasih kerana memilih {biz} hari ini 🌿 Boleh luangkan 30 saat untuk menilai servis {staff}? Maklum balas anda sangat bermakna untuk kami: {link}',
+ goodTags:'Mesra,Profesional,Bersih & selesa,Tepat masa,Hasil memuaskan,Nasihat berguna',
+ badTags:'Menunggu lama,Kurang mesra,Kurang bersih,Terburu-buru,Hasil kurang memuaskan,Terlalu banyak jualan',
+ points:[-10,-5,0,5,10],tiers:[{at:100,reward:'RM50 bonus'},{at:250,reward:'RM150 bonus'},{at:500,reward:'RM300 bonus + sijil'}]};
+const fbSet=()=>{const m=((D.meta||{}).feedback)||{};return{...FB_DEFAULT,...m,
+ points:Array.isArray(m.points)&&m.points.length===5?m.points:FB_DEFAULT.points,
+ tiers:Array.isArray(m.tiers)?m.tiers:FB_DEFAULT.tiers};};
+const fbTags=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,12);
+let FEEDBACK=[],FBREQ=[],MERITS=[];
+async function loadFeedback(){
+ try{const [f,r,m]=await Promise.all([
+   getDocs(query(collection(db,'feedback'),where('branchId','==',ME.branchId))),
+   getDocs(query(collection(db,'fbRequests'),where('branchId','==',ME.branchId))),
+   getDocs(query(collection(db,'merits'),where('branchId','==',ME.branchId)))]);
+  FEEDBACK=f.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  FBREQ=r.docs.map(d=>({id:d.id,...d.data()}));
+  MERITS=m.docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){console.warn('feedback',e);}
+}
+const fbToken=()=>{const a=new Uint8Array(16);crypto.getRandomValues(a);
+ return Array.from(a,b=>b.toString(36).padStart(2,'0')).join('').slice(0,26);};
+const fbLink=t=>location.origin+location.pathname+'?fb='+t;
+const fbForSale=id=>FBREQ.find(r=>r.saleId===id);
+const fbForAppt=id=>FBREQ.find(r=>r.apptId===id);
+/* one star value, safe whatever the page sent */
+const star=v=>{v=Math.round(+v);return v>=1&&v<=5?v:0;};
+const staffStar=(f,sid)=>star((f.staff||{})[sid])||star(f.overall);
+const fbPoints=v=>{const P=fbSet().points;return v?(+P[v-1]||0):0;};
+
+/* ---------- sending the link ---------- */
+function fbStaffOfSale(s){
+ const ids=[];(s.items||[]).forEach(i=>{const id=i.handsOnId||(i.kind==='service'?i.staffId:'');if(id&&!ids.includes(id))ids.push(id);});
+ if(!ids.length&&s.staffId)ids.push(s.staffId);
+ return ids;
+}
+async function fbCreate(base){
+ const R=fbSet(),b=D.meta.biz||{};
+ const c=cust(base.customerId)||{};
+ const staffIds=base.staffIds.filter(Boolean).slice(0,6);
+ const staffNames={};staffIds.forEach(id=>staffNames[id]=stf(id).name||'');
+ const token=fbToken();
+ const data={token,branchId:ME.branchId,branchName:branch().name||'',bizName:b.name||'',logo:b.logo||'',
+  customerId:base.customerId||'',firstName:String(c.name||base.customerName||'').split(' ')[0],
+  staffIds,staffNames,services:(base.services||[]).slice(0,6),saleId:base.saleId||'',apptId:base.apptId||'',
+  invoiceNo:base.invoiceNo||'',lang:R.lang||'ms',google:R.google||'',nps:R.nps!==false,
+  goodTags:fbTags(R.goodTags),badTags:fbTags(R.badTags),
+  createdAt:new Date().toISOString(),createdBy:UID,createdByName:ME.name,
+  expiresMs:Date.now()+Math.max(1,+R.validDays||7)*864e5};
+ await setDoc(doc(db,'fbRequests',token),data);
+ const r={id:token,...data};FBREQ.push(r);
+ await audit('Feedback link created',(c.name||'')+' · '+Object.values(staffNames).join(', '));
+ return r;
+}
+window.askFeedbackSale=async id=>{
+ const s=findSale(id);if(!s)return;
+ let r=fbForSale(id);
+ try{if(!r)r=await fbCreate({customerId:s.customerId,customerName:s.customerName,staffIds:fbStaffOfSale(s),
+   services:[...new Set((s.items||[]).filter(i=>i.kind==='service'||i.kind==='redeem').map(i=>i.name))],
+   saleId:s.id,invoiceNo:s.invoiceNo,apptId:((s.items||[]).find(i=>i.apptId)||{}).apptId||''});
+  fbShow(r.id);}
+ catch(e){toast(friendly(e));}
+};
+window.askFeedbackAppt=async id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ let r=fbForAppt(id)||(a.saleId?fbForSale(a.saleId):null);
+ try{if(!r)r=await fbCreate({customerId:a.customerId,customerName:a.customerName,staffIds:[a.staffId],
+   services:[a.serviceName].filter(Boolean),apptId:a.id,saleId:a.saleId||'',invoiceNo:a.invoiceNo||''});
+  fbShow(r.id);}
+ catch(e){toast(friendly(e));}
+};
+function fbMessage(r){
+ const names=Object.values(r.staffNames||{}).filter(Boolean);
+ return String(fbSet().message||FB_DEFAULT.message).replace(/\{name\}/g,r.firstName||'')
+  .replace(/\{biz\}/g,r.bizName||'kami').replace(/\{staff\}/g,names.length?names.join(' & '):'kami')
+  .replace(/\{link\}/g,fbLink(r.id));
+}
+window.fbShow=token=>{
+ const r=FBREQ.find(x=>x.id===token);if(!r)return;
+ const c=cust(r.customerId)||{},msg=fbMessage(r),phone=String(c.phone||'').replace(/\D/g,'');
+ const answered=FEEDBACK.find(f=>f.id===token);
+ modal('Feedback link','<div class="card">'+
+  (answered?'<div class="fbcard" style="margin-bottom:10px">'+fbStars(answered.overall)+
+   '<div class="tiny muted">Answered '+dshort(answered.at)+'</div></div>':
+   '<div class="tiny muted" style="margin-bottom:8px">'+ic('clock',12)+' Valid until '+dstr(new Date(r.expiresMs))+
+   ' · one answer per link</div>')+
+  '<label>Message</label><textarea class="f" id="fb-msg" rows="5">'+esc(msg)+'</textarea>'+
+  '<div class="fabrow" style="margin:0">'+
+  (phone?'<a class="btn" style="text-decoration:none" target="_blank" href="https://wa.me/'+(phone.startsWith('6')?'':'6')+phone+
+   '?text='+encodeURIComponent(msg)+'">'+ic('msg',15)+'Send by WhatsApp</a>':'')+
+  '<button class="btn ghost" onclick="fbCopy()">'+ic('note',15)+'Copy</button>'+
+  '<a class="btn ghost" style="text-decoration:none" target="_blank" href="'+esc(fbLink(r.id))+'">'+ic('left',15,'transform:rotate(180deg)')+
+   'Open page</a></div></div>');
+};
+window.fbCopy=()=>{const t=(document.getElementById('fb-msg')||{}).value||'';
+ try{navigator.clipboard.writeText(t).then(()=>toast('Copied'),()=>toast('Could not copy'));}catch(e){toast('Could not copy');}};
+
+/* ---------- the numbers ---------- */
+const FBP={m:'This month',lm:'Last month',q:'90 days',all:'All time'};
+let FBPERIOD='m',FBSTAFF='',FBVIEW='board';
+function fbRange(p){
+ const n=new Date();
+ if(p==='m')return[ymd(new Date(n.getFullYear(),n.getMonth(),1)),'9999'];
+ if(p==='lm')return[ymd(new Date(n.getFullYear(),n.getMonth()-1,1)),ymd(new Date(n.getFullYear(),n.getMonth(),0))];
+ if(p==='q')return[ymd(addDays(n,-90)),'9999'];
+ return['0000','9999'];
+}
+const inRange=(iso,p)=>{const [a,b]=fbRange(p);const d=String(iso||'').slice(0,10);return d>=a&&d<=b;};
+function fbStats(p){
+ const list=FEEDBACK.filter(f=>!f.hidden&&inRange(f.at,p));
+ const reqs=FBREQ.filter(r=>inRange(r.createdAt,p));
+ const ov=list.map(f=>star(f.overall)).filter(Boolean);
+ const np=list.map(f=>f.nps).filter(v=>Number.isInteger(v)&&v>=0&&v<=10);
+ const nps=np.length?Math.round((np.filter(v=>v>=9).length-np.filter(v=>v<=6).length)/np.length*100):null;
+ return{list,count:list.length,sent:reqs.length,avg:ov.length?ov.reduce((a,b)=>a+b,0)/ov.length:0,
+  rate:reqs.length?Math.round(list.filter(f=>reqs.some(r=>r.id===f.id)).length/reqs.length*100):0,nps,npsN:np.length};
+}
+function staffScore(sid,p){
+ const list=FEEDBACK.filter(f=>!f.hidden&&inRange(f.at,p)&&(f.staffIds||[]).includes(sid));
+ const st=list.map(f=>staffStar(f,sid)).filter(Boolean);
+ const fromFb=st.reduce((a,v)=>a+fbPoints(v),0);
+ const manual=MERITS.filter(m=>m.staffId===sid&&inRange(m.at,p)).reduce((a,m)=>a+(+m.points||0),0);
+ const tags={};list.forEach(f=>(f.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1));
+ return{sid,name:stf(sid).name||'',reviews:st.length,avg:st.length?st.reduce((a,b)=>a+b,0)/st.length:0,
+  five:st.filter(v=>v===5).length,points:fromFb+manual,fromFb,manual,list,tags};
+}
+function board(p){
+ const ids=new Set(D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&(s.takes||FEEDBACK.some(f=>(f.staffIds||[]).includes(s.id)))).map(s=>s.id));
+ MERITS.forEach(m=>ids.add(m.staffId));
+ return [...ids].map(id=>staffScore(id,p)).filter(x=>x.name)
+  .sort((a,b)=>b.points-a.points||b.avg-a.avg||b.reviews-a.reviews);
+}
+function tierOfPts(pts){
+ const T=[...fbSet().tiers].filter(t=>+t.at>0).sort((a,b)=>a.at-b.at);
+ const got=T.filter(t=>pts>=t.at).pop()||null,next=T.find(t=>pts<t.at)||null;
+ return{got,next,T};
+}
+const fbStars=(v,sz)=>'<span class="fbstars" style="font-size:'+(sz||15)+'px">'+[1,2,3,4,5].map(i=>
+ '<span class="'+(i<=Math.round(v)?'on':'')+'">★</span>').join('')+'</span>';
+function fbReview(f,opt){
+ opt=opt||{};
+ const names=(f.staffIds||[]).map(id=>(f.staffNames||{})[id]||stf(id).name).filter(Boolean);
+ const low=star(f.overall)&&star(f.overall)<=3;
+ return '<div class="fbrev'+(low?' low':'')+'"><div class="spread"><span>'+fbStars(f.overall)+
+  ' <b>'+esc(f.firstName||'Client')+'</b></span><span class="tiny muted">'+dshort(f.at)+'</span></div>'+
+  '<div class="tiny muted" style="margin:3px 0">'+esc((f.services||[]).join(', '))+
+   (names.length?' · '+names.map((n,k)=>esc(n)+((f.staff||{})[f.staffIds[k]]?' '+star(f.staff[f.staffIds[k]])+'★':'')).join(', '):'')+
+   (Number.isInteger(f.nps)?' · recommend '+f.nps+'/10':'')+'</div>'+
+  ((f.tags||[]).length?'<div class="fbtags">'+f.tags.map(t=>'<span>'+esc(t)+'</span>').join('')+'</div>':'')+
+  (f.comment?'<div class="fbq">“'+esc(f.comment)+'”</div>':'')+
+  (opt.manage&&low?(f.followUp?'<div class="tiny" style="color:var(--jade);margin-top:6px">'+ic('check',11)+' Followed up by '+
+   esc(f.followUpBy||'')+(f.followUpNote?': '+esc(f.followUpNote):'')+'</div>':
+   '<button class="btn sm ghost" style="margin-top:7px" data-id="'+esc(f.id)+'" onclick="fbFollow(this.dataset.id)">'+
+   ic('msg',13)+'Mark followed up</button>'):'')+'</div>';
+}
+
+/* ---------- the tab ---------- */
+window.setFbPeriod=p=>{FBPERIOD=p;render();};
+window.setFbView=v=>{FBVIEW=v;render();};
+window.setFbStaff=v=>{FBSTAFF=v;render();};
+function vFeedback(){
+ const R=fbSet(),p=FBPERIOD,me=staffScore(UID,p);
+ let h='<div class="card"><div class="sec-h"><h2>'+ic('star',17)+' Feedback &amp; merit</h2>'+
+  (boss()?'<button class="btn sm" onclick="giveMerit()">'+ic('award',14)+'Merit points</button>':'')+'</div>'+
+  '<div class="chips">'+Object.keys(FBP).map(k=>'<button class="chip'+(p===k?' on':'')+'" onclick="setFbPeriod(\''+k+'\')">'+
+   FBP[k]+'</button>').join('')+'</div>';
+ /* my own card, for everyone who treats clients */
+ const tr=tierOfPts(me.points);
+ if(me.reviews||me.manual||stf(UID).takes){
+  h+='<div class="fbme"><div><div class="tiny muted">My rating · '+FBP[p].toLowerCase()+'</div>'+
+   '<div class="fbbig">'+(me.reviews?me.avg.toFixed(1):'—')+'</div>'+fbStars(me.avg,17)+
+   '<div class="tiny muted">'+me.reviews+' review'+(me.reviews===1?'':'s')+' · '+me.five+' five-star</div></div>'+
+   '<div style="text-align:right"><div class="tiny muted">Merit points</div><div class="fbbig">'+me.points+'</div>'+
+   (tr.got?'<div class="pill g">'+ic('award',11)+' '+esc(tr.got.reward)+'</div>':'')+'</div></div>'+
+   (tr.next?'<div class="tiny" style="margin:8px 0 3px">'+(tr.next.at-me.points)+' points to <b>'+esc(tr.next.reward)+'</b></div>'+
+    '<div class="bar"><i class="brass" style="width:'+Math.min(100,Math.max(0,me.points/tr.next.at*100))+'%"></i></div>':
+    (tr.T.length?'<div class="tiny" style="margin-top:8px;color:var(--jade)">'+ic('award',12)+' Top reward reached this period</div>':''))+
+   (Object.keys(me.tags).length?'<div class="fbtags" style="margin-top:9px">'+Object.entries(me.tags).sort((a,b)=>b[1]-a[1]).slice(0,6)
+    .map(([t,n])=>'<span>'+esc(t)+' · '+n+'</span>').join('')+'</div>':'');
+ }
+ h+='</div>';
+ const views=[['board','Leaderboard'],['mine','My reviews']];
+ if(boss())views.push(['all','All reviews'],['follow','Follow-up']);
+ if(!boss()&&!R.showBoard)views.shift();
+ if(!views.some(v=>v[0]===FBVIEW))FBVIEW=views[0][0];
+ const S=fbStats(p);
+ if(boss())h+='<div class="grid g3" style="margin-bottom:12px">'+kpi('Average',S.count?S.avg.toFixed(2)+' ★':'—',S.count+' reviews','star')+
+  kpi('Answered',S.rate+'%',S.sent+' links sent','msg')+
+  kpi('NPS',S.nps===null?'—':(S.nps>0?'+':'')+S.nps,S.npsN?S.npsN+' answers':'would recommend','award')+'</div>';
+ h+='<div class="card"><div class="seg">'+views.map(v=>'<button class="'+(FBVIEW===v[0]?'on':'')+'" onclick="setFbView(\''+v[0]+
+  '\')">'+v[1]+(v[0]==='follow'&&fbFollowList().length?' <span class="pill r">'+fbFollowList().length+'</span>':'')+'</button>').join('')+'</div>';
+ if(FBVIEW==='board'){
+  const B=board(p);
+  h+=B.length?'<div class="scroll"><table><tr><th>#</th><th>Therapist</th><th class="num">Rating</th><th class="num">Reviews</th>'+
+   '<th class="num">Points</th></tr>'+B.map((x,k)=>'<tr'+(x.sid===UID?' class="fbmine"':'')+'><td>'+
+   (k<3&&x.points>0?['🥇','🥈','🥉'][k]:k+1)+'</td><td><b>'+esc(x.name)+'</b>'+
+   (tierOfPts(x.points).got?'<div class="tiny" style="color:var(--jade)">'+esc(tierOfPts(x.points).got.reward)+'</div>':'')+'</td>'+
+   '<td class="num">'+(x.reviews?x.avg.toFixed(1)+' ★':'—')+'</td><td class="num">'+x.reviews+'</td>'+
+   '<td class="num"><b>'+x.points+'</b>'+(x.manual?'<div class="tiny muted">'+(x.manual>0?'+':'')+x.manual+' manual</div>':'')+
+   '</td></tr>').join('')+'</table></div>':'<div class="empty">No reviews yet in this period.</div>';
+  h+='<p class="tiny muted" style="margin-top:8px">Points per review: '+[1,2,3,4,5].map(v=>v+'★ '+(fbPoints(v)>0?'+':'')+fbPoints(v)).join(' · ')+
+   (tierOfPts(0).T.length?' · Rewards: '+tierOfPts(0).T.map(t=>t.at+' pts → '+esc(t.reward)).join(' · '):'')+'</p>';
+ }
+ else if(FBVIEW==='mine'){
+  h+=me.list.length?me.list.map(f=>fbReview(f)).join(''):'<div class="empty">No reviews about you yet in this period. '+
+   'Ask the counter to send the feedback link after each visit.</div>';
+  const mm=MERITS.filter(m=>m.staffId===UID&&inRange(m.at,p));
+  if(mm.length)h+='<h3 style="margin:14px 0 6px">Merit points from the management</h3>'+mm.map(m=>
+   '<div class="spread tiny" style="padding:6px 0;border-bottom:1px solid var(--line-2)"><span>'+esc(m.reason||'')+
+   ' <span class="muted">· '+dshort(m.at)+'</span></span><b style="color:'+(m.points<0?'var(--rose)':'var(--jade)')+'">'+
+   (m.points>0?'+':'')+m.points+'</b></div>').join('');
+ }
+ else if(FBVIEW==='all'){
+  const sl=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false);
+  h+='<select class="f" onchange="setFbStaff(this.value)"><option value="">Everyone</option>'+sl.map(s=>'<option value="'+esc(s.id)+'"'+
+   (FBSTAFF===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>';
+  const l=S.list.filter(f=>!FBSTAFF||(f.staffIds||[]).includes(FBSTAFF));
+  h+=l.length?l.map(f=>fbReview(f,{manage:true})).join(''):'<div class="empty">No reviews in this period.</div>';
+ }
+ else if(FBVIEW==='follow'){
+  const l=fbFollowList();
+  h+=l.length?'<p class="tiny muted" style="margin:0 0 8px">Visits rated 3 stars or lower. Call or message the client, '+
+   'then record what was done.</p>'+l.map(f=>fbReview(f,{manage:true})).join(''):'<div class="empty">'+ic('check',22)+
+   '<div>Nothing to follow up.</div></div>';
+ }
+ h+='</div>';
+ if(boss()&&!R.on)h+='<div class="warnbox">'+ic('alert',13)+' Feedback links are switched off in Settings.</div>';
+ return h;
+}
+const fbFollowList=()=>FEEDBACK.filter(f=>!f.hidden&&star(f.overall)&&star(f.overall)<=3&&!f.followUp);
+window.fbFollow=id=>{
+ const f=FEEDBACK.find(x=>x.id===id);if(!f)return;
+ const c=cust(f.customerId)||{};
+ modal('Follow up · '+(f.firstName||''),'<div class="card">'+fbReview(f)+
+  (c.phone?'<a class="btn ghost sm" target="_blank" style="text-decoration:none;margin:8px 0" href="https://wa.me/6'+
+   String(c.phone).replace(/\D/g,'').replace(/^6/,'')+'">'+ic('msg',14)+'WhatsApp '+esc(c.name||'')+'</a>':'')+
+  '<label>What was done</label><textarea class="f" id="fu-n" rows="3" placeholder="Called, apologised, offered a free touch-up"></textarea>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="fbFollowSave(\''+esc(id)+'\')">'+ic('check',16)+
+  'Mark followed up</button></div>');
+};
+window.fbFollowSave=async id=>{
+ const f=FEEDBACK.find(x=>x.id===id);if(!f)return;
+ const patch={followUp:true,followUpNote:String((document.getElementById('fu-n')||{}).value||'').trim(),
+  followUpBy:ME.name,followUpAt:new Date().toISOString()};
+ try{await updateDoc(doc(db,'feedback',id),patch);Object.assign(f,patch);
+  await audit('Feedback followed up',(f.firstName||'')+' · '+patch.followUpNote);window.closeModal();render();toast('Recorded');}
+ catch(e){toast(friendly(e));}
+};
+window.giveMerit=()=>{
+ if(!boss())return;
+ const sl=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false);
+ modal('Merit points','<div class="card">'+
+  '<label>Team member</label><select class="f" id="me-s">'+sl.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<label>Points <span class="muted">— use a minus for a deduction</span></label>'+
+  '<div class="fabrow" style="margin:0 0 8px">'+[5,10,20,-5,-10].map(v=>'<button type="button" class="btn sm ghost" '+
+   'onclick="document.getElementById(\'me-p\').value=\''+v+'\'">'+(v>0?'+':'')+v+'</button>').join('')+'</div>'+
+  '<input class="f" type="number" id="me-p" value="10">'+
+  '<label>Reason</label><input class="f" id="me-r" placeholder="Top upsell this week, came in on her day off, late 3 times">'+
+  '<div id="me-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveMerit()">'+ic('check',16)+'Save</button></div>');
+};
+window.saveMerit=async()=>{
+ const g=k=>document.getElementById(k)||{};
+ const pts=Math.round(+g('me-p').value||0),reason=String(g('me-r').value||'').trim(),sid=g('me-s').value;
+ if(!pts){g('me-e').textContent='Enter the points.';return;}
+ if(reason.length<3){g('me-e').textContent='Give a reason — the team member will see it.';return;}
+ const m={staffId:sid,staffName:stf(sid).name||'',points:pts,reason,branchId:ME.branchId,by:UID,byName:ME.name,
+  at:new Date().toISOString()};
+ try{const r=await addDoc(collection(db,'merits'),m);MERITS.push({id:r.id,...m});
+  await audit('Merit points',m.staffName+' '+(pts>0?'+':'')+pts+' — '+reason);window.closeModal();render();toast('Saved');}
+ catch(e){g('me-e').textContent=friendly(e);}
+};
+
+/* ---------- settings ---------- */
+function fbPanel(){
+ if(!boss())return '';
+ const R=fbSet();
+ return '<div class="card"><div class="sec-h"><h2>'+ic('star',16)+' Client feedback &amp; merit</h2>'+
+  '<span class="pill '+(R.on?'g':'')+'">'+(R.on?'On':'Off')+'</span></div>'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="fs-on"'+(R.on?' checked':'')+
+   '> Send feedback links after visits</label>'+
+  '<div class="grid g2"><div><label>Link valid for (days)</label><input class="f" type="number" min="1" id="fs-d" value="'+R.validDays+'"></div>'+
+  '<div><label>Page language</label><select class="f" id="fs-l"><option value="ms"'+(R.lang!=='en'?' selected':'')+
+   '>Bahasa Malaysia</option><option value="en"'+(R.lang==='en'?' selected':'')+'>English</option></select></div></div>'+
+  '<label>Google review link <span class="muted">— happy clients (4–5★) are invited to post there</span></label>'+
+  '<input class="f" id="fs-g" value="'+esc(R.google)+'" placeholder="https://g.page/r/…/review">'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="fs-n"'+(R.nps!==false?' checked':'')+
+   '> Ask “would you recommend us” (0–10, gives your NPS)</label>'+
+  '<label>Quick words when happy <span class="muted">— comma separated</span></label><input class="f" id="fs-gt" value="'+esc(R.goodTags)+'">'+
+  '<label>Quick words when unhappy</label><input class="f" id="fs-bt" value="'+esc(R.badTags)+'">'+
+  '<label>WhatsApp message <span class="muted">— {name} {biz} {staff} {link}</span></label>'+
+  '<textarea class="f" id="fs-m" rows="3">'+esc(R.message)+'</textarea>'+
+  '<div class="fieldset"><h3>'+ic('award',13)+'Merit points per review</h3><div class="grid g5">'+[1,2,3,4,5].map(v=>
+   '<div><label>'+v+'★</label><input class="f fs-pt" type="number" value="'+R.points[v-1]+'"></div>').join('')+'</div>'+
+  '<label>Rewards <span class="muted">— one per line: points = reward</span></label>'+
+  '<textarea class="f" id="fs-t" rows="3" placeholder="100 = RM50 bonus">'+esc(R.tiers.map(t=>t.at+' = '+t.reward).join('\n'))+'</textarea>'+
+  '<label class="row" style="gap:9px;margin:0"><input type="checkbox" id="fs-b"'+(R.showBoard?' checked':'')+
+   '> Everyone can see the leaderboard</label></div>'+
+  '<div id="fs-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="fbSave()">'+ic('check',16)+'Save feedback settings</button></div>';
+}
+window.fbSave=async()=>{
+ const g=k=>document.getElementById(k)||{};
+ const pts=[...(document.querySelectorAll?document.querySelectorAll('.fs-pt'):[])].map(x=>Math.round(+x.value||0));
+ const tiers=String(g('fs-t').value||'').split('\n').map(l=>{const m=l.match(/^\s*(\d+)\s*[=:\-]\s*(.+)$/);
+  return m?{at:+m[1],reward:m[2].trim()}:null;}).filter(Boolean).sort((a,b)=>a.at-b.at);
+ const gl=String(g('fs-g').value||'').trim();
+ if(gl&&!/^https:\/\//.test(gl)){g('fs-e').textContent='The Google link should start with https://';return;}
+ const R={on:!!g('fs-on').checked,validDays:Math.max(1,Math.round(+g('fs-d').value||7)),lang:g('fs-l').value==='en'?'en':'ms',
+  google:gl,nps:!!g('fs-n').checked,goodTags:String(g('fs-gt').value||''),badTags:String(g('fs-bt').value||''),
+  message:String(g('fs-m').value||'').trim()||FB_DEFAULT.message,points:pts.length===5?pts:FB_DEFAULT.points,tiers,
+  showBoard:!!g('fs-b').checked};
+ try{await setDoc(doc(db,'meta','settings'),{feedback:R},{merge:true});D.meta.feedback=R;
+  await audit('Feedback settings',(R.on?'On':'Off')+' · points '+R.points.join('/'));render();toast('Saved');}
+ catch(e){g('fs-e').textContent=friendly(e);}
+};
+
+/* ============ the client's page (no login) ============ */
+const FBT={
+ ms:{hi:n=>'Hai'+(n?' '+n:'')+'!',q:'Bagaimana pengalaman anda hari ini?',sub:'Maklum balas anda membantu kami memberi layanan terbaik.',
+  labels:['Sangat teruk','Kurang memuaskan','Okey','Bagus','Cemerlang!'],staff:n=>'Bagaimana dengan '+n+'?',
+  good:'Apa yang anda suka?',bad:'Apa yang boleh kami perbaiki?',nps:'Sejauh mana anda akan cadangkan kami kepada kawan & keluarga?',
+  npsL:['Tidak sama sekali','Pasti'],c:'Ada apa-apa lagi yang ingin dikongsi? (pilihan)',send:'Hantar maklum balas',
+  need:'Sila beri bintang untuk pengalaman keseluruhan dahulu.',thanks:'Terima kasih!',thanksSub:'Maklum balas anda telah diterima. Kami hargai masa anda.',
+  google:'Sudi kongsi pengalaman anda di Google? Ia sangat membantu kami 🙏',gbtn:'Tulis ulasan di Google',copied:'Komen anda telah disalin — tampal sahaja di Google.',
+  sorry:'Maaf atas pengalaman anda. Pihak pengurusan akan menghubungi anda.',bad1:'Pautan ini tidak sah.',exp:'Pautan ini telah tamat tempoh.',
+  done:'Maklum balas untuk lawatan ini sudah diterima. Terima kasih!',err:'Tidak dapat dihantar. Sila cuba lagi.',lang:'English'},
+ en:{hi:n=>'Hi'+(n?' '+n:'')+'!',q:'How was your visit today?',sub:'Your feedback helps us look after you better.',
+  labels:['Very poor','Not good','Okay','Good','Excellent!'],staff:n=>'How was '+n+'?',
+  good:'What did you like?',bad:'What could we do better?',nps:'How likely are you to recommend us to friends and family?',
+  npsL:['Not at all','Definitely'],c:'Anything else you would like to share? (optional)',send:'Send feedback',
+  need:'Please rate your overall visit first.',thanks:'Thank you!',thanksSub:'Your feedback has been received. We appreciate your time.',
+  google:'Would you share your experience on Google? It helps us a lot 🙏',gbtn:'Write a Google review',copied:'Your comment is copied — just paste it on Google.',
+  sorry:'We are sorry about your experience. Our manager will be in touch.',bad1:'This link is not valid.',exp:'This link has expired.',
+  done:'Feedback for this visit has already been received. Thank you!',err:'Could not send. Please try again.',lang:'Bahasa Malaysia'}};
+let FBPUB={r:null,lang:'ms',overall:0,staff:{},tags:[],nps:null,comment:''};
+async function feedbackPage(token){
+ document.title='Feedback';
+ const root=document.getElementById('root');
+ root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
+ try{
+  const s=await getDoc(doc(db,'fbRequests',token));
+  if(!s.exists()){fbPubMsg(FBT.ms.bad1);return;}
+  const r={id:token,...s.data()};
+  FBPUB={r,lang:r.lang==='en'?'en':'ms',overall:0,staff:{},tags:[],nps:null,comment:''};
+  try{if(localStorage.getItem('fbdone_'+token)){fbPubMsg(FBT[FBPUB.lang].done,true);return;}}catch(e){}
+  if(Date.now()>(+r.expiresMs||0)){fbPubMsg(FBT[FBPUB.lang].exp);return;}
+  fbPubPaint();
+ }catch(e){console.error(e);fbPubMsg(FBT.ms.bad1);}
+}
+function fbPubHead(){
+ const r=FBPUB.r||{};
+ return '<div class="fbhead">'+(r.logo?'<img src="'+r.logo+'" alt="">':'<div class="fbmark">'+ic('spark',22)+'</div>')+
+  '<div class="fbbiz">'+esc(r.bizName||'')+'</div>'+(r.branchName?'<div class="fbbr">'+esc(r.branchName)+'</div>':'')+'</div>';
+}
+function fbPubMsg(t,ok){
+ document.getElementById('root').innerHTML='<div class="fbpage">'+(FBPUB.r?fbPubHead():'')+
+  '<div class="fbbox" style="text-align:center"><div class="fbicon'+(ok?' ok':'')+'">'+ic(ok?'check':'alert',26)+'</div><p>'+esc(t)+'</p></div></div>';
+}
+const fbStarRow=(key,val)=>'<div class="fbrate" role="radiogroup">'+[1,2,3,4,5].map(i=>
+ '<button type="button" class="'+(i<=val?'on':'')+'" aria-label="'+i+'" onclick="fbPick(\''+key+'\','+i+')">★</button>').join('')+'</div>';
+function fbPubPaint(){
+ const r=FBPUB.r,L=FBT[FBPUB.lang],o=FBPUB.overall;
+ const tags=o?(o>=4?r.goodTags:r.badTags)||[]:[];
+ document.getElementById('root').innerHTML='<div class="fbpage">'+
+  '<button class="fblang" onclick="fbLang()">'+L.lang+'</button>'+fbPubHead()+
+  '<div class="fbbox"><h1>'+esc(L.hi(r.firstName))+'</h1><p class="fbsub">'+esc(L.q)+'</p>'+
+  ((r.services||[]).length?'<div class="fbsvc">'+r.services.map(s=>'<span>'+esc(s)+'</span>').join('')+'</div>':'')+
+  fbStarRow('overall',o)+'<div class="fblabel">'+(o?esc(L.labels[o-1]):'&nbsp;')+'</div>'+
+  (o?(r.staffIds||[]).map(id=>'<div class="fbstaff"><div class="fbav">'+esc(initials((r.staffNames||{})[id]||'?'))+'</div>'+
+    '<div style="flex:1"><div class="fbsn">'+esc(L.staff((r.staffNames||{})[id]||''))+'</div>'+fbStarRow('s:'+id,FBPUB.staff[id]||0)+'</div></div>').join('')+
+   (tags.length?'<div class="fbq2">'+esc(o>=4?L.good:L.bad)+'</div><div class="fbchips">'+tags.map(t=>
+    '<button type="button" class="'+(FBPUB.tags.includes(t)?'on':'')+'" onclick="fbTag(this.dataset.t)" data-t="'+esc(t)+'">'+esc(t)+'</button>').join('')+'</div>':'')+
+   (r.nps!==false?'<div class="fbq2">'+esc(L.nps)+'</div><div class="fbnps">'+[...Array(11)].map((_,i)=>
+    '<button type="button" class="'+(FBPUB.nps===i?'on':'')+'" onclick="fbNps('+i+')">'+i+'</button>').join('')+'</div>'+
+    '<div class="fbnpsl"><span>'+esc(L.npsL[0])+'</span><span>'+esc(L.npsL[1])+'</span></div>':'')+
+   '<div class="fbq2">'+esc(L.c)+'</div><textarea id="fbc" maxlength="1000" rows="4" oninput="fbComment(this.value)">'+esc(FBPUB.comment)+'</textarea>':
+   '<p class="fbsub" style="margin-top:14px">'+esc(L.sub)+'</p>')+
+  '<div id="fberr" class="fberr"></div>'+
+  '<button class="fbsend" id="fbgo"'+(o?'':' disabled')+' onclick="fbSubmit()">'+esc(L.send)+'</button></div></div>';
+}
+window.fbLang=()=>{FBPUB.lang=FBPUB.lang==='ms'?'en':'ms';fbPubPaint();};
+window.fbPick=(k,v)=>{if(k==='overall'){const was=FBPUB.overall;FBPUB.overall=v;
+  if(!was)(FBPUB.r.staffIds||[]).forEach(id=>{if(!FBPUB.staff[id])FBPUB.staff[id]=v;});
+  if(was&&(was>=4)!==(v>=4))FBPUB.tags=[];}
+ else FBPUB.staff[k.slice(2)]=v;
+ const c=document.getElementById('fbc');if(c)FBPUB.comment=c.value;fbPubPaint();};
+window.fbTag=t=>{const k=FBPUB.tags.indexOf(t);if(k>=0)FBPUB.tags.splice(k,1);else FBPUB.tags.push(t);
+ const c=document.getElementById('fbc');if(c)FBPUB.comment=c.value;fbPubPaint();};
+window.fbNps=v=>{FBPUB.nps=v;const c=document.getElementById('fbc');if(c)FBPUB.comment=c.value;fbPubPaint();};
+window.fbComment=v=>{FBPUB.comment=v;};
+window.fbSubmit=async()=>{
+ const r=FBPUB.r,L=FBT[FBPUB.lang];
+ if(!FBPUB.overall){document.getElementById('fberr').textContent=L.need;return;}
+ const btn=document.getElementById('fbgo');if(btn)btn.disabled=true;
+ const staff={};(r.staffIds||[]).forEach(id=>{if(star(FBPUB.staff[id]))staff[id]=star(FBPUB.staff[id]);});
+ const data={token:r.id,overall:FBPUB.overall,staff,tags:FBPUB.tags.slice(0,12),comment:String(FBPUB.comment||'').trim().slice(0,1000),
+  at:new Date().toISOString(),branchId:r.branchId,customerId:r.customerId,firstName:r.firstName,staffIds:r.staffIds,
+  staffNames:r.staffNames,services:r.services,saleId:r.saleId,apptId:r.apptId,lang:FBPUB.lang};
+ if(Number.isInteger(FBPUB.nps))data.nps=FBPUB.nps;
+ try{await setDoc(doc(db,'feedback',r.id),data);
+  try{localStorage.setItem('fbdone_'+r.id,'1');}catch(e){}
+  fbThanks();}
+ catch(e){console.error(e);
+  if(btn)btn.disabled=false;
+  document.getElementById('fberr').textContent=/permission/i.test(String(e&&(e.code||e.message)))?L.done:L.err;}
+};
+function fbThanks(){
+ const r=FBPUB.r,L=FBT[FBPUB.lang],happy=FBPUB.overall>=4;
+ document.getElementById('root').innerHTML='<div class="fbpage">'+fbPubHead()+
+  '<div class="fbbox" style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div><h1>'+esc(L.thanks)+'</h1>'+
+  '<p class="fbsub">'+esc(happy?L.thanksSub:L.sorry)+'</p>'+
+  (happy&&r.google?'<p style="margin-top:18px">'+esc(L.google)+'</p><a class="fbsend" style="display:block;text-decoration:none" '+
+   'target="_blank" href="'+esc(r.google)+'" onclick="fbCopyComment()">'+esc(L.gbtn)+'</a><div id="fbcp" class="fbsub"></div>':'')+
+  '</div></div>';
+}
+window.fbCopyComment=()=>{const t=FBPUB.comment;if(!t)return;
+ try{navigator.clipboard.writeText(t).then(()=>{const e=document.getElementById('fbcp');if(e)e.textContent=FBT[FBPUB.lang].copied;});}catch(e){}};
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -5068,6 +5542,9 @@ window.showReceipt=id=>{
   (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
    '\',\'share\')">'+ic('msg',14)+'Share PDF</button>':'')+
   '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button>'+
+  (s.customerId&&!s.voided&&fbSet().on?'<button class="btn sm ghost" onclick="'+(fbForSale(id)?'fbShow(\''+fbForSale(id).id+'\')':
+   'askFeedbackSale(\''+id+'\')')+'">'+ic('star',14)+(FEEDBACK.find(f=>f.saleId===id)?'Rated '+star(FEEDBACK.find(f=>f.saleId===id).overall)+'★':
+   fbForSale(id)?'Feedback link':'Ask for feedback')+'</button>':'')+
   (rvForSale(id)?'<button class="btn sm ghost" onclick="showRV(\''+esc(rvForSale(id).id)+'\')">'+ic('gift',14)+
    'Voucher '+esc(rvForSale(id).id)+'</button>':(rvSet().on&&!rvWhyNot(s)?'<button class="btn sm" '+
    'onclick="issueReturnVoucher(\''+id+'\')">'+ic('gift',14)+'Generate come-back voucher</button>':''))+
@@ -7236,6 +7713,7 @@ function vSet(){
   h+=bizPanel();
   h+=payPanel();
   h+=coPanel();
+  h+=fbPanel();
   h+=rvPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
@@ -7257,7 +7735,7 @@ function bindSettings(){
   toast('Building backup…');
   const out={exportedAt:new Date().toISOString()};
   for(const n of ['branches','rooms','users','services','products','packages','stock','vouchers',
-   'customers','customerPackages','appointments','sales','library','bundles']){
+   'customers','customerPackages','appointments','sales','library','bundles','feedback','fbRequests','merits']){
    try{const s=await getDocs(query(collection(db,n),limit(3000)));
     out[n]=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){out[n]='blocked: '+e.code;}}
   const a=document.createElement('a');
@@ -7309,6 +7787,9 @@ window.render=render;
  if(!cfg){setupScreen();return;}
  try{app=initializeApp(cfg);auth=getAuth(app);db=getFirestore(app);}
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
+ /* a client opening their feedback link sees only the rating page, never the login */
+ const fbq=new URLSearchParams(location.search).get('fb');
+ if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
   if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];loginScreen();return;}
   UID=user.uid;
@@ -7325,7 +7806,7 @@ window.render=render;
    bindNavAutoHide();
    startClock();
    watchAppointments();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
