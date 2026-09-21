@@ -1105,6 +1105,50 @@ tr.fbmine td{background:var(--brass-soft)}
     -webkit-mask-image:linear-gradient(#000 calc(100% - 26px),transparent);mask-image:linear-gradient(#000 calc(100% - 26px),transparent)}
   .cpcol+.cpcol .cptitle{margin-top:2px}
 }
+
+/* ---------- holidays on the calendar ---------- */
+.holbar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:-3px 0 10px}
+.holtag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;
+  white-space:nowrap;line-height:1.35}
+.holtag.ph{background:var(--rose-soft);color:var(--rose)}
+.holtag.ob{background:var(--brass-soft);color:var(--brass)}
+.holtag i{font-style:normal;opacity:.7;margin-left:1px}
+.holtag.mini{font-size:9.5px;padding:2px 6px;gap:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.sec-h .holtag{margin-left:auto;margin-right:8px}
+.tlh.hol{background:var(--rose-soft)}
+.wkhol{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:3px;max-width:100%;overflow:hidden}
+.mcell.hol{background:var(--rose-soft);border-color:#EBC9C5}
+.mcell.hol .d{color:var(--rose)}
+.mcell.obs{background:var(--brass-soft);border-color:#E8D8BB}
+.mcell.sel.hol,.mcell.sel.obs{background:var(--ink);border-color:var(--ink)}
+.mcell.sel .d{color:inherit}
+.mhol{font-size:8.5px;font-weight:650;line-height:1.2;color:var(--rose);overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;margin:1px 0 2px}
+.mcell.obs .mhol{color:var(--brass)}
+.mcell.sel .mhol{color:#E9D5AE}
+.holmonth{margin-top:4px}
+.holrow{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:8px 10px;margin-bottom:6px;
+  border:1px solid var(--line-2);border-radius:var(--r-md);background:var(--surface);cursor:pointer;color:var(--ink)}
+.holrow .hd{width:40px;flex:none;display:grid;justify-items:center;font-size:17px;font-weight:650;line-height:1.1;
+  padding:5px 0;border-radius:10px;background:var(--brass-soft);color:var(--brass)}
+.holrow.ph .hd{background:var(--rose-soft);color:var(--rose)}
+.holrow .hd small{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.holrow .hn b{display:block;font-size:13.5px}
+.holrow .hn span{font-size:11px;color:var(--ink-3)}
+.holnote{display:flex;align-items:center;gap:6px;font-size:12px;margin:-4px 0 10px;padding:7px 10px;border-radius:10px;
+  background:var(--brass-soft);color:var(--brass);font-weight:560}
+.holnote.ph{background:var(--rose-soft);color:var(--rose)}
+.hchip.hol{background:rgba(155,74,74,.22);color:#F2CFCB;border-color:rgba(242,207,203,.25);cursor:pointer}
+/* ---------- rooms and therapists in the booking forms ---------- */
+.slotline{display:flex;gap:6px;flex-wrap:wrap;margin:-4px 0 11px}
+.slotline:empty{display:none}
+.slotpill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11.5px;font-weight:560;
+  background:var(--jade-soft);color:var(--jade)}
+.slotpill.full{background:var(--rose-soft);color:var(--rose)}
+.slotpill.warn{background:var(--amber-soft);color:var(--amber)}
+/* two bookings for one therapist at once share the column */
+.blk.lane{padding:4px 5px;font-size:10.5px}
+.blk.lane small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -1215,7 +1259,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21k';
+const BUILD='2026-09-21l';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1728,6 +1772,10 @@ function vHome(){
     '<div class="heroChips">'+
      '<span class="hchip">'+ic('users',12)+onShift.length+' on shift</span>'+
      '<span class="hchip">'+ic('calendar',12)+f.booked+' booked</span>'+
+     (()=>{const up=holUpcoming(new Date(),15).filter(x=>x.h||x.d===today())[0];if(!up)return '';
+      const n=daysBetween(today(),up.d);
+      return '<span class="hchip hol" onclick="pickDate(\''+up.d+'\');go(\'book\')">'+ic('flag',12)+esc(up.n)+' · '+
+       (up.d===today()?'hari ini':n===1?'esok':'dalam '+n+' hari')+'</span>';})()+
      (SHIFT?'<span class="hchip'+(SHIFT.closedAt?'':' live')+'">'+ic('wallet',12)+
       (SHIFT.closedAt?'day closed':'day open')+'</span>'
       :'<span class="hchip warn">'+ic('alert',12)+'day not opened</span>')+
@@ -1855,6 +1903,7 @@ function calDay(){
  const colOf=a=>cols.some(c=>c.id===a[key])?a[key]:'__none';
  const O=D.meta.open,C=D.meta.close,hrs=C-O,ROW=58,px=ROW/60;
  let h=calNav(new Date(calDate).toLocaleDateString('en-MY',{weekday:'long',day:'numeric',month:'long'}),1);
+ if(holOf(calDate).length)h+='<div class="holbar">'+holTags(calDate)+'</div>';
  h+='<div class="tabs">'+[['staff','By therapist','user'],['room','By room','room']].map(x=>
   '<button class="'+(calBy===x[0]?'on':'')+'" onclick="setCalBy(\''+x[0]+'\')">'+ic(x[2],14)+x[1]+'</button>').join('')+
   '<span class="pill" style="align-self:center">'+ap.length+' booked</span></div>';
@@ -1874,19 +1923,21 @@ function calDay(){
   h+='<div class="tlcol'+(ci===0?' first':'')+'">'+
    [...Array(hrs*2)].map((_,i)=>'<div class="hline'+(i%2?' half':'')+'" style="top:'+(i*ROW/2)+'px"></div>').join('')+
    (calDate===today()&&nowMin>0&&nowMin<hrs*60?'<div class="nowline" style="top:'+(nowMin*px)+'px"></div>':'');
-  ap.filter(a=>colOf(a)===c.id).forEach(a=>{
+  const inCol=ap.filter(a=>colOf(a)===c.id),LN=apptLanes(inCol);
+  inCol.forEach(a=>{
    const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px,hh=Math.max((a.duration||30)*px,26);
    const P=apptPal(a);
    const plain=['done','no'].includes(a.status);
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+(a.undecided?' undec':'')+
-    '" style="top:'+top+'px;height:'+hh+'px'+(plain?'':';background:'+P.bg+';color:'+P.fg+
+    (LN[a.id]&&LN[a.id].of>1?' lane':'')+
+    '" style="top:'+top+'px;height:'+hh+'px'+laneCss(LN[a.id])+(plain?'':';background:'+P.bg+';color:'+P.fg+
      ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
     '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
      tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
     (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
      esc(calBy==='staff'?(room(a.roomId).name||''):(a.staffName||''))+
      ((visitOf(a.visitType)||{}).label?' · '+visitOf(a.visitType).label:'')+'</small>':'')+'</div>'+
-    (a.buffer?'<div class="buf" style="top:'+(top+(a.duration||0)*px)+'px;height:'+(a.buffer*px)+'px"></div>':'');});
+    (a.buffer?'<div class="buf" style="top:'+(top+(a.duration||0)*px)+'px;height:'+(a.buffer*px)+'px'+laneCss(LN[a.id])+'"></div>':'');});
   h+='</div>';});
  h+='</div></div><div class="legend">'+VISITS.map(v=>'<span><i style="background:'+pal(v.color).bg+
   '"></i>'+v.label+'</span>').join('')+
@@ -1902,18 +1953,19 @@ function calWeek(){
  let h=calNav(dshort(days[0])+' – '+dshort(days[6]),7);
  h+='<div class="tl"><div class="tlg" style="grid-template-columns:44px repeat(7,minmax(96px,1fr));'+
   'grid-template-rows:auto '+(hrs*ROW)+'px"><div class="tlh first"></div>'+
-  days.map(d=>'<div class="tlh" style="'+(d===today()?'color:var(--jade)':'')+'" onclick="pickDate(\''+d+'\')">'+
+  days.map(d=>'<div class="tlh'+(isHoliday(d)?' hol':'')+'" style="'+(d===today()?'color:var(--jade)':'')+'" onclick="pickDate(\''+d+'\')">'+
    new Date(d).toLocaleDateString('en-MY',{weekday:'short'})+'<small>'+new Date(d).getDate()+' · '+
-   onDay(d).length+'</small></div>').join('')+
+   onDay(d).length+'</small>'+(holOf(d).length?'<span class="wkhol">'+holTags(d,'mini')+'</span>':'')+'</div>').join('')+
   '<div class="tlgut">'+[...Array(hrs+1)].map((_,i)=>'<span style="top:'+(i*ROW)+'px">'+
    String(O+i).padStart(2,'0')+'</span>').join('')+'</div>';
  days.forEach((d,di)=>{
   h+='<div class="tlcol'+(di===0?' first':'')+'">'+
    [...Array(hrs)].map((_,i)=>'<div class="hline" style="top:'+(i*ROW)+'px"></div>').join('');
-  onDay(d).forEach(a=>{const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px;
+  const dayAp=onDay(d),LN=apptLanes(dayAp);
+  dayAp.forEach(a=>{const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px;
    const P=apptPal(a),plain=['done','no'].includes(a.status);
-   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+
-    '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+
+   h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+(LN[a.id]&&LN[a.id].of>1?' lane':'')+
+    '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+laneCss(LN[a.id])+
     (plain?'':';background:'+P.bg+';color:'+P.fg+';border-left-color:'+P.bd)+
     '" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
     '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
@@ -1928,13 +1980,22 @@ function calMonthView(){
  h+='<div class="mgrid">'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>'<div class="mhead">'+d+'</div>').join('')+'</div>';
  h+='<div class="mgrid">'+cells.map(d=>{
   const ap=onDay(d),off=new Date(d).getMonth()!==m;
+  const hl=holOf(d);
   return '<div class="mcell'+(off?' off':'')+(d===today()?' today':'')+(d===calDate?' sel':'')+
-   '" onclick="pickDate(\''+d+'\')"><div class="d">'+new Date(d).getDate()+'</div><div class="dots">'+
+   (hl.some(x=>x.h)?' hol':(hl.length?' obs':''))+
+   '" onclick="pickDate(\''+d+'\')"'+(hl.length?' title="'+esc(hl.map(x=>x.n).join(' · '))+'"':'')+
+   '><div class="d">'+new Date(d).getDate()+'</div>'+(hl.length?'<div class="mhol">'+esc(hl[0].n)+'</div>':'')+'<div class="dots">'+
    ap.slice(0,6).map(a=>'<span class="dot '+(a.status==='no'?'n':a.status==='done'?'f':'')+
     '" style="background:'+(['done','no'].includes(a.status)?'':apptPal(a).bg)+'"></span>').join('')+
    '</div>'+(ap.length?'<div class="cnt">'+ap.length+'</div>':'')+'</div>';}).join('')+'</div>';
+ const monthHols=cells.filter(d=>new Date(d).getMonth()===m).flatMap(d=>holOf(d).map(x=>({d,...x})));
+ if(monthHols.length)h+='<div class="holmonth"><div class="sec-h" style="margin:12px 0 7px"><h3>'+ic('flag',14)+
+  ' Cuti &amp; perayaan bulan ini</h3></div>'+monthHols.map(x=>'<button class="holrow'+(x.h?' ph':'')+'" onclick="pickDate(\''+x.d+'\')">'+
+  '<span class="hd">'+new Date(x.d).getDate()+'<small>'+new Date(x.d).toLocaleDateString('ms-MY',{weekday:'short'})+'</small></span>'+
+  '<span class="hn"><b>'+esc(x.n)+'</b><span>'+(x.h?'Cuti umum Johor':'Perayaan · bukan cuti')+(x.p?' · tarikh anggaran':'')+
+  '</span></span></button>').join('')+'</div>';
  const sel=onDay(calDate);
- h+='<div style="margin-top:12px"><div class="sec-h"><h3>'+dstr(calDate)+'</h3><span class="tiny muted">'+
+ h+='<div style="margin-top:12px"><div class="sec-h"><h3>'+dstr(calDate)+'</h3>'+holTags(calDate)+'<span class="tiny muted">'+
   sel.length+' appointments</span></div>'+(sel.length?sel.map(apptRow).join(''):'<div class="empty">Nothing booked.</div>')+'</div>';
  return h;}
 
@@ -1954,8 +2015,10 @@ window.newAppt=async(pre)=>{
   '<div id="n-s-w"><select class="f" id="n-s">'+ss+'</select></div><div id="n-undec"></div>'+
   '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="n-d" value="'+calDate+'"></div>'+
   '<div><label>Start</label><input class="f" type="time" id="n-t" value="10:00"></div></div>'+
+  '<div id="n-hol"></div>'+
   '<label>Therapist</label><select class="f" id="n-st">'+(st||'<option value="">No bookable staff</option>')+'</select>'+
   '<label>Room</label><select class="f" id="n-r"></select>'+
+  '<div class="slotline" id="n-note"></div>'+
   '<label>Visit type</label><select class="f" id="n-vt" onchange="syncSwatch()">'+
    VISITS.map(v=>'<option value="'+v.id+'"'+(pre.visitType===v.id?' selected':'')+'>'+
     v.label+'</option>').join('')+'</select>'+
@@ -1968,11 +2031,16 @@ window.newAppt=async(pre)=>{
   '<button class="btn" style="width:100%;justify-content:center" id="n-go">'+ic('check',16)+'Save booking</button></div>',
  ()=>{
   UNDEC={on:false,concerns:[],dur:60,budget:0,short:[]};
-  const sync=()=>{const s=svc($('#n-s').value);
-   const rooms=D.rooms.filter(r=>r.branchId===ME.branchId&&(UNDEC.on||r.type===s.room));
-   $('#n-r').innerHTML=rooms.map(r=>'<option value="'+r.id+'">'+esc(r.name)+'</option>').join('')||'<option value="">No suitable room</option>';};
+  const sync=()=>{const s=UNDEC.on?{dur:UNDEC.dur||60,buffer:15}:svc($('#n-s').value);
+   const o=roomOptions(s,UNDEC.on,$('#n-d').value,$('#n-t').value,'',$('#n-r').value);
+   $('#n-r').innerHTML=o.html;
+   $('#n-note').innerHTML=slotNote(o.busy,o.free,o.total,$('#n-st').value);
+   $('#n-hol').innerHTML=holNote($('#n-d').value);
+   NWARN='';};
   window.nSync=sync;
-  $('#n-s').onchange=sync;sync();
+  $('#n-s').onchange=sync;
+  ['n-d','n-t','n-st'].forEach(k=>{const el=$('#'+k);if(el){el.onchange=sync;el.oninput=sync;}});
+  sync();
   NEWCOLOR=pre.color||'';
   const box=document.getElementById('n-sw');
   if(box)box.onclick=e=>{const b=e.target.closest&&e.target.closest('.sw');if(!b)return;
@@ -1982,7 +2050,7 @@ window.newAppt=async(pre)=>{
   if(pre.customerId)bookPicked(pre.customerId);
   $('#n-go').onclick=saveAppt;});
 };
-let NEWCOLOR='';
+let NEWCOLOR='',NWARN='';
 /* when a client is chosen, suggest their preferred therapist and flag allergies early */
 function bookPicked(id){
  const c=cust(id);if(!c)return;
@@ -2012,19 +2080,25 @@ async function saveAppt(){
   const finish=new Date(+start+s.dur*6e4);
   const staffId=$('#n-st').value,roomId=$('#n-r').value;
   if(!staffId)throw new Error('No therapist selected.');
-  if(!roomId)throw new Error('No room available for this treatment type.');
+  if(!roomId)throw new Error(D.rooms.some(r=>r.branchId===ME.branchId&&(und||!s.room||r.type===s.room))
+   ?'Every suitable room is taken at that time. Try another time.':'No room is set up for this treatment type yet.');
   const date=ymd(start);
   const day=await getDocs(query(collection(db,'appointments'),where('date','==',date)));
   const s0=+start,e0=+finish+s.buffer*6e4;
-  for(const dd of day.docs){
-   const a=dd.data();
-   if(a.branchId!==ME.branchId)continue;
-   if(a.status==='cancel'||a.status==='no')continue;
-   const as=+new Date(a.start),ae=+new Date(a.finish)+(a.buffer||0)*6e4;
-   if(!(e0<=as||s0>=ae)){
-    if(a.staffId===staffId)throw new Error(stf(staffId).name+' already has a booking at '+tstr(a.start));
-    if(a.roomId===roomId)throw new Error(room(roomId).name+' is occupied at '+tstr(a.start));
-   }}
+  /* one therapist may run more than one booking at a time, as long as each has its own room */
+  const busy=busyAt(day.docs.map(d=>({id:d.id,...d.data()})),s0,e0,'');
+  const inRoom=busy.find(a=>a.roomId===roomId);
+  if(inRoom){
+   const o=roomOptions(s,und,date,$('#n-t').value,'','');
+   throw new Error(room(roomId).name+' is taken at '+tstr(inRoom.start)+
+    (o.free?'. Pick another room — '+o.free+' still free.':'. Every suitable room is taken then — try another time.'));}
+  const mine=busy.filter(a=>a.staffId===staffId);
+  const wkey=date+s0+staffId+roomId;
+  if(mine.length&&NWARN!==wkey){NWARN=wkey;btn.disabled=false;
+   const el=$('#n-err');if(el)el.innerHTML=esc(stf(staffId).name||'')+' also has '+
+    mine.map(a=>esc(a.customerName||'')+' at '+tstr(a.start)+' in '+esc(room(a.roomId).name||'another room')).join(', ')+
+    '. Tap <b>Save booking</b> again to book both.';
+   return;}
   const cid=cpValue('n-c');
   if(!cid||cid==='__walkin')throw new Error('Choose a client, or add a new one with the New client button.');
   const c=cust(cid)||{};
@@ -2054,6 +2128,7 @@ window.openAppt=id=>{
   ((visitOf(a.visitType)||{}).label?'  <span class="pill" style="background:'+apptPal(a).bg+
    ';color:'+apptPal(a).fg+'">'+visitOf(a.visitType).label+'</span>':'')+
   '<br>'+ic('clock',13)+' '+dstr(a.start)+', '+tstr(a.start)+'–'+tstr(a.finish)+
+  (holOf(a.date).length?' '+holTags(a.date,'mini'):'')+
   (a.buffer?' <span class="muted">(+'+a.buffer+' min buffer)</span>':'')+'<br>'+
   ic('user',13)+' '+esc(a.staffName||'')+'<br>'+ic('room',13)+' '+esc(room(a.roomId).name||'—')+
   (a.deposit?'<br>'+ic('card',13)+' Deposit '+rm(a.deposit):'')+
@@ -2065,6 +2140,7 @@ window.openAppt=id=>{
   (a.undecided&&apptOpen(a)?'<button class="btn sm" onclick="setApptService(\''+id+'\')">'+ic('spark',14)+'Set treatment</button>':'')+
   (!['cancel','no'].includes(a.status)?'<button class="btn sm'+(a.saleId?' ghost':'')+'" onclick="checkoutFromAppt(\''+id+'\')">'+
    ic(a.saleId?'receipt':'card',14)+(a.saleId?'View bill':'Checkout')+'</button>':'')+
+  (['booked','confirm','in'].includes(a.status)?'<button class="btn sm ghost" onclick="editApptTime(\''+id+'\')">'+ic('clock',14)+'Change time</button>':'')+
   (a.status==='booked'?'<button class="btn sm" onclick="setStat(\''+id+'\',\'confirm\')">'+ic('check',14)+'Confirm</button>':'')+
   (['booked','confirm'].includes(a.status)?'<button class="btn sm" onclick="setStat(\''+id+'\',\'in\')">'+ic('clock',14)+'Start</button>':'')+
   (apptOpen(a)&&!(a.undecided&&!a.serviceId)?'<button class="btn sm donebtn" onclick="finishAppt(\''+id+'\')">'+ic('check',14)+'Complete</button>':'')+
@@ -2083,6 +2159,10 @@ window.openAppt=id=>{
    '\')">'+ic('refresh',14)+'Undo last change</button>':'')+
   (boss()?'<button class="btn sm ghost" style="color:var(--rose)" onclick="deleteAppt(\''+id+
    '\')">'+ic('trash',14)+'Delete</button>':'')+'</div>'+
+  ((a.moves||[]).length?'<div class="tiny muted" style="margin-top:11px">'+ic('clock',12)+' Moved<br>'+
+   a.moves.slice(-3).map(m=>dshort(m.from.start)+' '+tstr(m.from.start)+' → '+dshort(m.to.start)+' '+tstr(m.to.start)+
+    (m.to.staffName!==m.from.staffName?' · '+esc(m.to.staffName):'')+(m.to.room!==m.from.room?' · '+esc(m.to.room):'')+
+    ' · by '+esc(m.byName||'')).join('<br>')+'</div>':'')+
   ((a.statusLog||[]).length?'<div class="tiny muted" style="margin-top:11px">'+ic('history',12)+
    ' History<br>'+(a.statusLog||[]).slice(-4).map(l=>
     ((STATUS[l.from]||[l.from||'new'])[0])+' → '+((STATUS[l.to]||[l.to])[0])+
@@ -6040,6 +6120,176 @@ window.openCust=(id,keep)=>{
 /* turning the tablet redraws the screen for the new shape */
 let CWIDE=custWide();
 if(window.addEventListener)window.addEventListener('resize',()=>{const w=custWide();if(w!==CWIDE){CWIDE=w;if(TAB==='cust')render();}});
+
+/* ============ bookings: rooms first, moving a booking, holidays ============ */
+
+/* ---- overlapping bookings in one column sit side by side ---- */
+function apptLanes(list){
+ const out={};
+ const xs=list.map(a=>({a,s:+new Date(a.start),e:+new Date(a.finish||(+new Date(a.start)+(a.duration||30)*6e4))}))
+  .sort((x,y)=>x.s-y.s||y.e-x.e);
+ let cluster=[],ends=[],clEnd=-1;
+ const close=()=>{const n=Math.max(1,ends.length);cluster.forEach(c=>{out[c.a.id]={lane:c.lane,of:n};});cluster=[];ends=[];};
+ xs.forEach(x=>{
+  if(x.s>=clEnd&&cluster.length)close();
+  let lane=ends.findIndex(e=>e<=x.s);
+  if(lane<0){lane=ends.length;ends.push(x.e);}else ends[lane]=x.e;
+  x.lane=lane;cluster.push(x);clEnd=Math.max(clEnd,x.e);
+ });
+ if(cluster.length)close();
+ return out;
+}
+const laneCss=L=>!L||L.of<2?'':';left:calc(3px + (100% - 6px) * '+L.lane+' / '+L.of+');'+
+ 'width:calc((100% - 6px) / '+L.of+' - 2px);right:auto';
+
+/* ---- who and what is busy at a given time ---- */
+function busyAt(list,s0,e0,exceptId){
+ return list.filter(a=>a.id!==exceptId&&a.branchId===ME.branchId&&!['cancel','no'].includes(a.status)).filter(a=>{
+  const as=+new Date(a.start),ae=+new Date(a.finish)+(a.buffer||0)*6e4;return !(e0<=as||s0>=ae);});
+}
+/* rooms that suit the treatment, marked free or taken, the chosen one kept if still free */
+function roomOptions(s,undec,date,time,exceptId,keep){
+ const rooms=D.rooms.filter(r=>r.branchId===ME.branchId&&(undec||!s.room||r.type===s.room));
+ const st=new Date(date+'T'+(time||'00:00')+':00');
+ const ok=!isNaN(+st);
+ const busy=ok?busyAt(APPTS.filter(a=>a.date===date),+st,+st+((s.dur||60)+(s.buffer||0))*6e4,exceptId):[];
+ const taken=new Set(busy.map(a=>a.roomId));
+ const free=rooms.filter(r=>!taken.has(r.id));
+ const pick=keep&&free.some(r=>r.id===keep)?keep:(free[0]||{}).id||'';
+ return {html:rooms.map(r=>'<option value="'+r.id+'"'+(taken.has(r.id)?' disabled':'')+(r.id===pick?' selected':'')+'>'+
+   esc(r.name)+(taken.has(r.id)?' — taken':'')+'</option>').join('')||'<option value="">No suitable room</option>',
+  free:free.length,total:rooms.length,busy};
+}
+/* the line under the time: rooms left, and a heads-up when the therapist is already busy */
+function slotNote(busy,free,total,staffId){
+ const mine=busy.filter(a=>a.staffId===staffId);
+ return (total?'<span class="slotpill'+(free?'':' full')+'">'+ic('room',12)+(free?free+' of '+total+' rooms free':'All rooms taken')+'</span>':'')+
+  (mine.length&&free?'<span class="slotpill warn">'+ic('user',12)+esc(stf(staffId).name||'Therapist')+' also has '+
+   mine.map(a=>esc(a.customerName||'')+' '+tstr(a.start)).join(', ')+'</span>':'');
+}
+
+/* ---- moving a booking ---- */
+window.editApptTime=id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ const s=a.serviceId?svc(a.serviceId):{};
+ const dur=a.duration||s.dur||60,buf=a.buffer||0;
+ const t0=new Date(a.start);
+ const hm=String(t0.getHours()).padStart(2,'0')+':'+String(t0.getMinutes()).padStart(2,'0');
+ const st=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&x.takes);
+ modal('Change time','<div class="card">'+
+  '<div class="tiny muted" style="margin-bottom:10px">'+esc(a.customerName||'')+' · '+esc(a.serviceName||'')+' · '+dur+' min'+
+   '<br>Now: '+dstr(a.start)+', '+tstr(a.start)+' with '+esc(a.staffName||'')+' in '+esc(room(a.roomId).name||'—')+'</div>'+
+  '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="mv-d" value="'+esc(a.date)+'"></div>'+
+  '<div><label>Start</label><input class="f" type="time" id="mv-t" value="'+hm+'"></div></div>'+
+  '<div id="mv-hol"></div>'+
+  '<label>Therapist</label><select class="f" id="mv-st">'+st.map(x=>'<option value="'+x.id+'"'+
+   (x.id===a.staffId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+
+   (st.some(x=>x.id===a.staffId)?'':'<option value="'+esc(a.staffId||'')+'" selected>'+esc(a.staffName||'')+'</option>')+'</select>'+
+  '<label>Room</label><select class="f" id="mv-r"></select>'+
+  '<div class="slotline" id="mv-note"></div>'+
+  '<div id="mv-err" class="tiny" style="color:var(--rose);margin:8px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="mv-go">'+ic('check',16)+'Move booking</button></div>',
+ ()=>{
+  let warned='';
+  const sync=()=>{
+   const o=roomOptions({room:s.room,dur,buffer:buf},!!a.undecided||!a.serviceId,$('#mv-d').value,$('#mv-t').value,id,
+    ($('#mv-r').value||a.roomId));
+   $('#mv-r').innerHTML=o.html;
+   $('#mv-note').innerHTML=slotNote(o.busy,o.free,o.total,$('#mv-st').value);
+   $('#mv-hol').innerHTML=holNote($('#mv-d').value);
+   warned='';$('#mv-err').textContent='';};
+  ['mv-d','mv-t','mv-st'].forEach(k=>{const el=$('#'+k);el.onchange=sync;el.oninput=sync;});
+  sync();
+  $('#mv-go').onclick=async()=>{
+   const btn=$('#mv-go');btn.disabled=true;
+   try{
+    const start=new Date($('#mv-d').value+'T'+$('#mv-t').value+':00');
+    if(isNaN(+start))throw new Error('Please pick a valid date and time.');
+    const finish=new Date(+start+dur*6e4);
+    const staffId=$('#mv-st').value,roomId=$('#mv-r').value;
+    if(!roomId)throw new Error('Every suitable room is taken at that time. Try another time.');
+    const date=ymd(start);
+    const day=await getDocs(query(collection(db,'appointments'),where('date','==',date)));
+    const list=day.docs.map(d=>({id:d.id,...d.data()}));
+    const busy=busyAt(list,+start,+finish+buf*6e4,id);
+    const inRoom=busy.find(x=>x.roomId===roomId);
+    if(inRoom)throw new Error(room(roomId).name+' is taken at '+tstr(inRoom.start)+' ('+(inRoom.customerName||'')+').');
+    const mine=busy.filter(x=>x.staffId===staffId);
+    const key=date+start.toISOString()+staffId;
+    if(mine.length&&warned!==key){warned=key;btn.disabled=false;
+     $('#mv-err').innerHTML=esc(stf(staffId).name||'')+' also has '+mine.map(x=>esc(x.customerName||'')+' at '+tstr(x.start)).join(', ')+
+      ' in another room. Tap <b>Move booking</b> again to keep both.';return;}
+    const move={at:new Date().toISOString(),by:UID,byName:ME.name,
+     from:{start:a.start,staffName:a.staffName||'',room:room(a.roomId).name||''},
+     to:{start:start.toISOString(),staffName:stf(staffId).name||'',room:room(roomId).name||''}};
+    await updateDoc(doc(db,'appointments',id),{date,start:start.toISOString(),finish:finish.toISOString(),
+     staffId,staffName:stf(staffId).name||'',roomId,moves:[...(a.moves||[]),move],
+     updatedBy:UID,updatedAt:new Date().toISOString()});
+    logEvent('booking','Booking moved · '+(a.customerName||''),dstr(a.start)+' '+tstr(a.start)+' → '+
+     dstr(start)+' '+tstr(start)+' with '+(stf(staffId).name||''),{refType:'appt',refId:id});
+    await audit('Booking moved',(a.customerName||'')+' · '+dstr(a.start)+' '+tstr(a.start)+' → '+dstr(start)+' '+tstr(start));
+    window.closeModal();calDate=date;render();if(needsWindow())watchAppointments();
+    toast('Moved to '+dstr(start)+', '+tstr(start));
+   }catch(e){$('#mv-err').textContent=friendly(e);btn.disabled=false;}
+  };
+ });
+};
+
+/* ---- public holidays and festivals (Johor) ----
+   h: public holiday in Johor · o: festival or observance, not a day off
+   p: provisional — Islamic and lunar dates for 2027 are estimates until Johor gazettes them.
+   2026 checked against publicholidays.com.my and officeholidays.com; Johor rests on Saturday
+   and Sunday, so a holiday falling on Sunday moves to Monday. */
+const HOLS={
+ '2026-01-01':[['Tahun Baru','o']],
+ '2026-02-01':[['Thaipusam','h']],'2026-02-02':[['Thaipusam (cuti ganti)','h']],
+ '2026-02-14':[['Hari Valentine','o']],
+ '2026-02-17':[['Tahun Baru Cina','h']],'2026-02-18':[['Tahun Baru Cina (hari kedua)','h']],
+ '2026-02-19':[['Awal Ramadan','h']],
+ '2026-03-03':[['Chap Goh Mei','o']],'2026-03-08':[['Hari Wanita Sedunia','o']],
+ '2026-03-20':[['Hari Raya Aidilfitri (cuti tambahan)','h']],'2026-03-21':[['Hari Raya Aidilfitri','h']],
+ '2026-03-22':[['Hari Raya Aidilfitri (hari kedua)','h']],
+ '2026-03-23':[['Hari Keputeraan Sultan Johor','h'],['Hari Raya (cuti ganti)','h']],'2026-03-24':[['Cuti ganti','h']],
+ '2026-05-01':[['Hari Pekerja','h']],'2026-05-10':[['Hari Ibu','o']],'2026-05-27':[['Hari Raya Haji','h']],
+ '2026-05-31':[['Hari Wesak','h']],'2026-06-01':[['Hari Keputeraan YDP Agong','h']],'2026-06-02':[['Hari Wesak (cuti ganti)','h']],
+ '2026-06-17':[['Awal Muharam','h']],'2026-06-21':[['Hari Bapa','o']],
+ '2026-07-21':[['Hari Hol Almarhum Sultan Iskandar','h']],'2026-08-25':[['Maulidur Rasul','h']],
+ '2026-08-31':[['Hari Kebangsaan','h']],'2026-09-16':[['Hari Malaysia','h']],'2026-09-25':[['Pesta Tanglung','o']],
+ '2026-11-08':[['Deepavali','h']],'2026-11-09':[['Deepavali (cuti ganti)','h']],
+ '2026-12-25':[['Hari Krismas','h']],'2026-12-31':[['Malam Tahun Baru','o']],
+ '2027-01-01':[['Tahun Baru','o']],'2027-01-22':[['Thaipusam','h',1]],
+ '2027-02-06':[['Tahun Baru Cina','h',1]],'2027-02-07':[['Tahun Baru Cina (hari kedua)','h',1]],
+ '2027-02-08':[['Awal Ramadan','h',1],['Tahun Baru Cina (cuti ganti)','h',1]],'2027-02-09':[['Awal Ramadan (cuti ganti)','h',1]],
+ '2027-02-14':[['Hari Valentine','o']],'2027-02-20':[['Chap Goh Mei','o']],'2027-03-08':[['Hari Wanita Sedunia','o']],
+ '2027-03-10':[['Hari Raya Aidilfitri','h',1]],'2027-03-11':[['Hari Raya Aidilfitri (hari kedua)','h',1]],
+ '2027-03-23':[['Hari Keputeraan Sultan Johor','h']],'2027-05-01':[['Hari Pekerja','h']],'2027-05-09':[['Hari Ibu','o']],
+ '2027-05-17':[['Hari Raya Haji','h',1]],'2027-05-20':[['Hari Wesak','h',1]],
+ '2027-06-06':[['Awal Muharam','h',1]],'2027-06-07':[['Hari Keputeraan YDP Agong','h']],'2027-06-08':[['Awal Muharam (cuti ganti)','h',1]],
+ '2027-06-20':[['Hari Bapa','o']],'2027-07-10':[['Hari Hol Almarhum Sultan Iskandar','h',1]],
+ '2027-08-15':[['Maulidur Rasul','h',1]],'2027-08-16':[['Maulidur Rasul (cuti ganti)','h',1]],
+ '2027-08-31':[['Hari Kebangsaan','h']],'2027-09-15':[['Pesta Tanglung','o']],'2027-09-16':[['Hari Malaysia','h']],
+ '2027-10-28':[['Deepavali','h',1]],'2027-12-25':[['Hari Krismas','h']],'2027-12-31':[['Malam Tahun Baru','o']]};
+const holOf=d=>(HOLS[d]||[]).map(x=>({n:x[0],h:x[1]==='h',p:!!x[2]}));
+const isHoliday=d=>holOf(d).some(x=>x.h);
+window.holOf=holOf;window.isHoliday=isHoliday;window.HOLS=HOLS;
+function holTags(d,cls){
+ return holOf(d).map(x=>'<span class="holtag'+(x.h?' ph':' ob')+(cls?' '+cls:'')+'" title="'+
+  esc(x.n+(x.h?' · cuti umum':' · perayaan')+(x.p?' · tarikh anggaran':''))+'">'+
+  (x.h?ic('flag',10):ic('spark',10))+esc(x.n)+(x.p?'<i>*</i>':'')+'</span>').join('');
+}
+/* a quiet line in the booking forms when the chosen day is a holiday */
+function holNote(d){
+ const hs=holOf(d);if(!hs.length)return '';
+ const ph=hs.filter(x=>x.h);
+ return '<div class="holnote'+(ph.length?' ph':'')+'">'+ic(ph.length?'flag':'spark',13)+
+  (ph.length?'Cuti umum: ':'Perayaan: ')+esc(hs.map(x=>x.n).join(' · '))+
+  (hs.some(x=>x.p)?' <span class="muted">(tarikh anggaran)</span>':'')+'</div>';
+}
+/* what is coming up, for the month view and the home header */
+function holUpcoming(from,days){
+ const out=[];for(let i=0;i<days;i++){const d=ymd(addDays(from,i));holOf(d).forEach(x=>out.push({d,...x}));}
+ return out;
+}
 
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
