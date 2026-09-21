@@ -1149,6 +1149,33 @@ tr.fbmine td{background:var(--brass-soft)}
 /* two bookings for one therapist at once share the column */
 .blk.lane{padding:4px 5px;font-size:10.5px}
 .blk.lane small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+
+/* ---------- counter tablet: cashier and the team clock ---------- */
+.cav{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:12px;font-weight:650;
+  background:var(--ink);color:var(--cream)}
+.cashbar{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:12px;border-radius:var(--r-lg);
+  border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.cashbar>span:not(.cav){flex:1;min-width:0;font-size:13px}
+.cashbar small{display:block;font-size:11px;color:var(--ink-3)}
+.cashbar.ok{border-color:#BFD6C8;background:linear-gradient(90deg,var(--jade-soft),var(--surface) 70%)}
+.cashbar.ok .cav{background:var(--jade);color:#fff}
+.cashbar.need{border-color:#E8D0A3;background:linear-gradient(90deg,var(--amber-soft),var(--surface) 70%);color:var(--amber)}
+.cashbar.need b{color:var(--ink)}
+.cashbar.self{color:var(--ink-2)}
+.cashgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cashpick{display:grid;justify-items:center;gap:4px;padding:14px 8px;border-radius:var(--r-md);cursor:pointer;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);text-align:center}
+.cashpick .cav{width:46px;height:46px;border-radius:15px;font-size:15px}
+.cashpick b{font-size:13.5px}
+.cashpick small{font-size:10.5px;color:var(--ink-3)}
+.cashpick.on{border-color:var(--jade);box-shadow:0 0 0 2px var(--jade-soft)}
+.cashpick:active{transform:scale(.96)}
+.tclist{display:grid;gap:6px;max-height:300px;overflow-y:auto;margin:0 -4px;padding:0 4px;scrollbar-width:thin}
+.tcrow{display:flex;align-items:center;gap:10px;padding:8px 9px;border-radius:var(--r-md);border:1px solid var(--line-2)}
+.tcrow b{display:block;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcrow.on{border-color:#BFD6C8;background:var(--jade-soft)}
+.tcrow.on .cav{background:var(--jade);color:#fff}
+.tcin{color:var(--jade);font-weight:560}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -1259,7 +1286,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21l';
+const BUILD='2026-09-21m';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1276,7 +1303,7 @@ const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
 let OFFLINE_DB=false;
 let TAB='home',calMode='day',calDate=today(),calBy='staff',calWin={from:'',to:''};
-const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor'};
+const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor',branch:'Branch tablet'};
 const svc=id=>D.services.find(s=>s.id===id)||{};
 const prod=sku=>D.products.find(p=>p.id===sku)||{};
 const stf=id=>D.staff.find(s=>s.id===id)||{};
@@ -1286,10 +1313,12 @@ const branch=()=>D.branches.find(b=>b.id===(ME&&ME.branchId))||D.branches[0]||{n
 const stockOf=(sku,b)=>D.stock.find(s=>s.sku===sku&&s.branchId===(b||ME.branchId));
 const boss=()=>ME&&['owner','manager'].includes(ME.role);
 const can=k=>{if(!ME)return false;if(['owner','manager'].includes(ME.role))return true;
+ if(ME.role==='branch')return ['booking','pos','customer'].includes(k);
  return (ME.perms||[]).includes(k);};
 
 async function audit(action,detail){
- try{await addDoc(collection(db,'audit'),{action,detail,uid:UID,userName:ME.name,
+ try{await addDoc(collection(db,'audit'),{action,detail,uid:UID,
+  userName:(ME.role==='branch'&&typeof cashierValid==='function'&&cashierValid())?CASHIER.name+' @ '+ME.name:ME.name,
   branchId:ME.branchId,at:new Date().toISOString()});}catch(e){console.warn('audit',e);}}
 
 /* ============ setup screens ============ */
@@ -1329,6 +1358,10 @@ function loginScreen(err){
  $('#root').innerHTML='<div class="center"><div class="card">'+
   '<div class="row" style="margin-bottom:12px"><div class="mark">'+ic('spark',17,'color:#fff')+'</div><h1>Spatify</h1></div>'+
   (err?'<div class="errbox">'+esc(err)+'</div>':'')+
+  (()=>{let em='';try{em=localStorage.getItem('luuna:branchEmail')||'';}catch(e){}
+   return em?'<button class="btn brass" style="width:100%;justify-content:center;margin-bottom:12px" id="li-br" data-em="'+esc(em)+'">'+
+    ic('home',15)+'Counter tablet · '+esc(em)+'</button><div class="tiny muted" style="margin:-4px 0 12px;text-align:center">'+
+    'Tap, then enter the branch password. Owners and managers sign in below with their own account.</div>':'';})()+
   '<label>Email</label><input class="f" id="li-e" type="email" autocomplete="username">'+
   '<label>Password</label><input class="f" id="li-p" type="password" autocomplete="current-password">'+
   '<button class="btn" style="width:100%;justify-content:center" id="li-go">Sign in</button>'+
@@ -1341,6 +1374,8 @@ function loginScreen(err){
   try{await signInWithEmailAndPassword(auth,$('#li-e').value.trim(),$('#li-p').value);}
   catch(e){loginScreen(friendly(e));}};
  $('#li-p').onkeydown=e=>{if(e.key==='Enter')$('#li-go').click();};
+ const lb=document.getElementById('li-br');
+ if(lb)lb.onclick=()=>{$('#li-e').value=lb.dataset.em;const pw=$('#li-p');pw.focus&&pw.focus();};
  $('#li-reset').onclick=()=>{
   if(!confirm('Point this device at a different Firebase project? You will need that project\'s config.'))return;
   localStorage.removeItem(CFGKEY);localStorage.removeItem(CFGKEY_OLD);
@@ -1537,6 +1572,8 @@ const TABS=[
  {id:'cat', ic:'list',   label:'Catalogue',perm:'admin',   group:'Manage', desc:'Treatments, products, prices'},
  {id:'set', ic:'gear',   label:'Settings', perm:null,      group:'Manage', desc:'Business details and data'}];
 const GROUPS=['Today','Clients','Money','Manage'];
+/* what this sign-in may open; the counter tablet leaves the back office to its owner */
+const tabOk=t=>(!t.perm||can(t.perm))&&!(ME&&ME.role==='branch'&&t.id==='set');
 /* the order the bottom bar prefers — first four the person is allowed to see win a slot */
 const BNAV=['home','book','pos','cust','merit','lib','shift','board'];
 let navOpen=false;
@@ -1590,7 +1627,8 @@ function botNavHTML(allowed){
   '<div class="bnacct"><div class="av">'+esc(initials(ME.name))+'</div>'+
    '<div style="min-width:0"><b>'+esc(ME.name)+'</b>'+
    '<span>'+esc(ROLE[ME.role]||ME.role)+' · '+esc(branch().name)+' · '+BUILD+'</span></div>'+
-   '<button class="bnout" onclick="firebaseSignOut()">'+ic('out',13)+'Sign out</button></div>'+
+   (ME.role==='branch'?'<button class="bnout" onclick="ownerSignIn()">'+ic('user',13)+'Owner sign-in</button>'
+    :'<button class="bnout" onclick="firebaseSignOut()">'+ic('out',13)+'Sign out</button>')+'</div>'+
   '<div class="bngrid">'+rows.map(r=>'<div class="bngl">'+esc(r.label)+'</div>'+
    r.items.map(t=>item(t,k++)).join('')).join('')+'</div>'+
   '</div><div class="bnsep"></div></div></div>';
@@ -1608,12 +1646,12 @@ window.paintBotNav=()=>{
  if(!ME||navOpen)return;
  const el=document.getElementById('botnav');
  if(!el)return;
- el.outerHTML=botNavHTML(TABS.filter(t=>!t.perm||can(t.perm)));
+ el.outerHTML=botNavHTML(TABS.filter(tabOk));
 };
 
 function render(){
  if(!ME)return;
- const allowed=TABS.filter(t=>!t.perm||can(t.perm));
+ const allowed=TABS.filter(tabOk);
  $('#root').innerHTML=
   '<div class="navveil'+(navOpen?' on':'')+'" id="trayveil" onclick="toggleNav()"></div>'+
   '<div class="main">'+
@@ -1696,6 +1734,7 @@ function tickClock(){
  if(mk!==WXMIN){WXMIN=mk;if(document.getElementById('heroWx'))paintWx();wxNowLoad();wxLoad();}
  const ar=document.getElementById('att-run');
  if(ar&&ar.dataset.from)ar.textContent=runFor(ar.dataset.from);
+ if(document.querySelectorAll)document.querySelectorAll('.trun').forEach(e=>{if(e.dataset.from)e.textContent=runFor(e.dataset.from);});
  const s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;
  const set=(id,deg)=>{const el=document.getElementById(id);
   if(el&&typeof el.setAttribute==='function')
@@ -2931,7 +2970,7 @@ function cartTotals(){
  return{sub,v,pd,net,sst,total,paid,balance:total-paid};}
 function vPos(){
  const t=cartTotals();
- let h='<div class="card"><label>Client</label>'+
+ let h=cashierBar()+'<div class="card"><label>Client</label>'+
   clientPicker('pos-c',cart.customerId||(cart.walkin?'__walkin':''),{walkin:true,onPick:posPicked})+
   posClientNote()+
   '<div class="row wrap2" style="margin-top:12px">'+
@@ -3239,7 +3278,8 @@ window.saveCollect=async()=>{
    const bal=saleBalance(cur);
    if(bal<=0)throw new Error('This bill is already fully paid.');
    if(amt>bal+0.001)throw new Error('That is more than the '+rm(bal)+' still owed.');
-   const p={method,amount:amt,at:new Date().toISOString(),date:today(),by:UID,byName:ME.name,instalment:true};
+   if(isBranch()&&!cashierValid())throw new Error('Choose the cashier first — open Checkout and tap Choose cashier.');
+   const p={method,amount:amt,at:new Date().toISOString(),date:today(),by:actorId()||UID,byName:actorName(),instalment:true};
    const paid=r2(salePaid(cur)+amt),balance=Math.max(0,r2(cur.total-paid));
    tx.update(ref,{payments:[...(cur.payments||[]),p],paid,balance,
     status:balance>0?'partial':'paid',lastPaidDate:today(),lastPaidAt:p.at});
@@ -5695,6 +5735,7 @@ function attRing(state,pct){
   '</svg><span>'+ic(glyph,20)+'</span></div>';
 }
 function wAttend(){
+ if(isBranch())return wTeamClock();
  const me=stf(UID)||{};
  const a=attToday(UID);
  const on=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
@@ -6291,6 +6332,135 @@ function holUpcoming(from,days){
  return out;
 }
 
+/* ============ branch tablet profile and the cashier ============ */
+/* A shared counter tablet signs in once with the branch's own account (role 'branch').
+   It can run the counter — bookings, checkout, clients, packages — but not the back office.
+   Everyone clocks in and out on it with their personal code, and every bill is taken by a
+   named cashier who is on shift and has confirmed with that same code. */
+const isBranch=()=>!!ME&&ME.role==='branch';
+const BRANCH_PERMS=['booking','pos','customer'];
+const BRKEY='luuna:branchEmail',CSKEY='luuna:cashier';
+const CASHIER_IDLE=20*60e3;                     /* a cashier lapses after 20 quiet minutes */
+/* the people of this branch — never the tablet itself */
+const people=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.role!=='branch');
+const canTill=s=>['owner','manager'].includes(s.role)||(s.perms||[]).includes('pos');
+const onShiftNow=sid=>{const a=attToday(sid);return !!(a&&a.clockIn&&!a.clockOut);};
+
+let CASHIER=null;
+try{CASHIER=JSON.parse(localStorage.getItem(CSKEY)||'null');}catch(e){}
+function saveCashier(){try{CASHIER?localStorage.setItem(CSKEY,JSON.stringify(CASHIER)):localStorage.removeItem(CSKEY);}catch(e){}}
+/* still the cashier? on shift, same branch, and used recently */
+function cashierValid(){
+ if(!CASHIER||!ME||CASHIER.branchId!==ME.branchId)return false;
+ const s=stf(CASHIER.id);
+ if(!s||!s.id||s.active===false||!onShiftNow(CASHIER.id))return false;
+ return Date.now()-(CASHIER.last||0)<CASHIER_IDLE;
+}
+/* who is doing this, for the records: the cashier on the tablet, otherwise the signed-in person */
+const actorId=()=>isBranch()?(cashierValid()?CASHIER.id:''):UID;
+const actorName=()=>isBranch()?(cashierValid()?CASHIER.name:ME.name):ME.name;
+const cashierCandidates=()=>people().filter(s=>canTill(s)&&onShiftNow(s.id));
+
+function cashierBar(){
+ const ok=cashierValid();
+ if(!isBranch()&&!ok)return '<div class="cashbar self">'+ic('user',14)+'<span>Cashier: <b>'+esc(ME.name)+'</b> (you)</span>'+
+  (cashierCandidates().some(s=>s.id!==UID)?'<button class="btn sm ghost" onclick="pickCashier()">Change</button>':'')+'</div>';
+ if(ok){const mins=Math.max(1,Math.round((CASHIER_IDLE-(Date.now()-CASHIER.last))/6e4));
+  return '<div class="cashbar ok">'+'<span class="cav">'+esc(initials(CASHIER.name))+'</span>'+
+   '<span>Cashier: <b>'+esc(CASHIER.name)+'</b><small>confirmed '+tstr(CASHIER.at)+' · lapses after '+mins+' min idle</small></span>'+
+   '<button class="btn sm ghost" onclick="pickCashier()">Change</button></div>';}
+ return '<div class="cashbar need">'+ic('alert',14)+'<span><b>Who is the cashier?</b><small>Pick a staff member on shift before taking payment.</small></span>'+
+  '<button class="btn sm" onclick="pickCashier()">'+ic('user',14)+'Choose cashier</button></div>';
+}
+window.pickCashier=()=>{
+ const list=cashierCandidates();
+ modal('Choose cashier',list.length?'<div class="card"><div class="tiny muted" style="margin-bottom:10px">'+
+  'Staff on shift who may take payment. The cashier confirms with their attendance code.</div>'+
+  '<div class="cashgrid">'+list.map(s=>'<button class="cashpick'+(CASHIER&&CASHIER.id===s.id&&cashierValid()?' on':'')+
+   '" onclick="cashierCode(\''+s.id+'\')"><span class="cav">'+esc(initials(s.name))+'</span><b>'+esc(s.name)+'</b>'+
+   '<small>'+esc(ROLE[s.role]||s.role)+' · in since '+tstr(attToday(s.id).clockIn)+'</small></button>').join('')+'</div></div>'
+  :'<div class="card"><div class="empty">'+ic('clock',26)+'<div>Nobody who can take payment is clocked in right now.'+
+   ' Clock in on the home screen first.</div></div><button class="btn" style="width:100%;justify-content:center" '+
+   'onclick="closeModal();go(\'home\')">'+ic('login',15)+'Go to clock in</button></div>');
+};
+window.cashierCode=sid=>{
+ const s=stf(sid);
+ if(!s.attCode){toast(s.name+' has no attendance code yet — the owner sets it under Team.');return;}
+ modal('Cashier · '+s.name,'<div class="card"><div class="chead"><div class="avatar">'+esc(initials(s.name))+'</div>'+
+  '<div><h3>'+esc(s.name)+'</h3><div class="tiny muted">Confirm with your attendance code</div></div></div>'+
+  '<input class="f" id="cc-p" type="password" inputmode="numeric" autocomplete="off" '+
+  'style="font-size:22px;letter-spacing:.35em;text-align:center">'+
+  '<div id="cc-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="cc-go">'+ic('check',16)+'I am the cashier</button></div>',
+ ()=>{
+  const go=async()=>{
+   const code=($('#cc-p').value||'').trim();if(!code){$('#cc-err').textContent='Enter your code.';return;}
+   $('#cc-go').disabled=true;
+   const h=await hashCode(code,s.attSalt||'');
+   if(h!==s.attCode){$('#cc-err').textContent='That code does not match.';$('#cc-p').value='';$('#cc-go').disabled=false;return;}
+   const now=new Date().toISOString();
+   CASHIER={id:s.id,name:s.name,branchId:ME.branchId,at:now,last:Date.now()};saveCashier();
+   await audit('Cashier on duty',s.name+(isBranch()?' on '+ME.name:''));
+   window.closeModal();render();toast(s.name+' is the cashier');
+  };
+  $('#cc-go').onclick=go;$('#cc-p').onkeydown=e=>{if(e.key==='Enter')go();};
+  setTimeout(()=>{const i=$('#cc-p');if(i&&i.focus)i.focus();},60);
+ });
+};
+/* a bill taken counts as activity for the cashier */
+function cashierUsed(){if(CASHIER){CASHIER.last=Date.now();saveCashier();}}
+
+/* ---- the team clock on the branch tablet ---- */
+function wTeamClock(){
+ const ps=people();
+ const rows=ps.map(s=>{
+  const a=attToday(s.id);
+  let st,btn;
+  if(!s.attCode){st='<span class="muted">No attendance code yet</span>';btn='';}
+  else if(!a){st='<span class="muted">Not in yet</span>';
+   btn='<button class="btn sm brass" onclick="clockPrompt(\''+s.id+'\',\'in\')">'+ic('login',13)+'In</button>';}
+  else if(!a.clockOut){st='<span class="tcin">In since '+tstr(a.clockIn)+' · <span class="trun" data-from="'+esc(a.clockIn)+'">'+
+    runFor(a.clockIn)+'</span></span>';
+   btn='<button class="btn sm" onclick="clockPrompt(\''+s.id+'\',\'out\')">'+ic('out',13)+'Out</button>';}
+  else{st='<span class="muted">Done · '+tstr(a.clockIn)+'–'+tstr(a.clockOut)+' · '+worked(a)+'</span>';btn='';}
+  return '<div class="tcrow'+(a&&!a.clockOut?' on':'')+'"><span class="cav">'+esc(initials(s.name))+'</span>'+
+   '<div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b><div class="tiny">'+st+'</div></div>'+btn+'</div>';}).join('');
+ const n=ps.filter(s=>onShiftNow(s.id)).length;
+ return '<div class="card wcard" id="watt">'+
+  '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Team attendance</h2>'+
+  '<span class="pill'+(n?' g':'')+'">'+n+' on shift</span></div>'+
+  (ps.length?'<div class="tclist">'+rows+'</div>':'<div class="wempty">'+ic('users',22)+'<p>No staff set up for this branch yet.</p></div>')+
+  '<div class="wfoot"><span class="tiny muted">Each person clocks in with their own code</span>'+
+  '<button class="wlink" onclick="addIssue()">'+ic('tool',13)+'Report an issue</button></div></div>';
+}
+
+/* ---- on the tablet, a personal sign-in times out so the owner's access is not left open ---- */
+const PERSONAL_IDLE=10*60e3;
+let LASTACT=Date.now(),IDLEBOUND=false;
+function bindIdleGuard(){
+ if(IDLEBOUND||!window.addEventListener)return;IDLEBOUND=true;
+ ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev,()=>{LASTACT=Date.now();},{passive:true}));
+ setInterval(()=>{
+  let tablet='';try{tablet=localStorage.getItem(BRKEY)||'';}catch(e){}
+  if(!ME||isBranch()||!tablet)return;
+  if(Date.now()-LASTACT>PERSONAL_IDLE){toast('Signed out after 10 minutes idle on the counter tablet');window.firebaseSignOut();}
+ },30000);
+}
+/* remember that this device is a branch tablet, so the sign-in screen can offer it back */
+function noteBranchDevice(){
+ if(!isBranch())return;
+ try{const em=(auth&&auth.currentUser&&auth.currentUser.email)||ME.email||'';if(em)localStorage.setItem(BRKEY,em);}catch(e){}
+}
+window.forgetBranchDevice=()=>{try{localStorage.removeItem(BRKEY);}catch(e){}toast('This device is no longer a counter tablet');};
+/* the owner steps in on the tablet: sign out, sign in as themselves, and back again after */
+window.ownerSignIn=()=>{
+ modal('Owner or manager sign-in','<div class="card"><p style="margin-top:0">Reports, Catalogue, Team and Settings need your own account.</p>'+
+  '<ol class="tiny" style="line-height:1.8;padding-left:18px;margin:0 0 12px"><li>The tablet signs out of the branch profile.</li>'+
+  '<li>Sign in with your own email and password.</li><li>When you are done, sign out — the sign-in screen offers the branch profile back.</li></ol>'+
+  '<p class="tiny muted">Your own sign-in closes by itself after 10 minutes without a tap.</p>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="closeModal();firebaseSignOut()">'+ic('out',15)+'Sign out and switch</button></div>');
+};
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -6313,7 +6483,7 @@ function handsOnFor(serviceId,qty){
  if(s.handsOnType==='pct')return r2((+s.price||0)*(+s.handsOnValue||0)/100*q);
  return 0;
 }
-const handsOnStaff=()=>D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
+const handsOnStaff=()=>D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&x.role!=='branch')
  .sort((a,b)=>(b.takes?1:0)-(a.takes?1:0)||String(a.name).localeCompare(String(b.name)));
 /* best guess at who did it: today's appointment for this client and treatment */
 function guessHandsOn(serviceId,creditedId){
@@ -6513,7 +6683,7 @@ function buildReceiptPDF(s,jsPDF){
  const y1=block(M,'Billed to',[['',s.customerName||'Walk-in customer'],['Phone',cl.phone||''],
   ['Email',cl.email||''],['Member no.',s.customerId?String(s.customerId).slice(0,8).toUpperCase():'']]);
  const hands=[...new Set((s.items||[]).map(i=>i.handsOnName).filter(Boolean))].join(', ');
- const y2=block(M+CW/2+4,'Details',[['Branch',brName],['Served by',s.staffName||''],['Therapist',hands],
+ const y2=block(M+CW/2+4,'Details',[['Branch',brName],[s.cashierName?'Cashier':'Served by',s.cashierName||s.staffName||''],['Therapist',hands],
   ['Payment',bal>0?'Instalment':'In full']]);
  y=Math.max(y1,y2)+4;
 
@@ -6692,7 +6862,8 @@ function itemSrc(kind,id){
  return prod(id);
 }
 let PICKTAB='service',PICKSTAFF='';
-window.pickItem=kind=>{PICKTAB=kind||PICKTAB;PICKSTAFF=PICKSTAFF||UID;paintPicker();};
+window.pickItem=kind=>{PICKTAB=kind||PICKTAB;
+ if(!PICKSTAFF||(isBranch()&&PICKSTAFF===UID))PICKSTAFF=actorId()||((people()[0]||{}).id)||UID;paintPicker();};
 window.setPickTab=k=>{PICKTAB=k;paintPicker();};
 window.setPickStaff=v=>{PICKSTAFF=v;};
 function pickList(kind){
@@ -6710,7 +6881,7 @@ function paintPicker(){
  if((D.bundles||[]).some(b=>b.active!==false))tabs.splice(2,0,['set','Sets','gift']);
  if(cart.customerId)tabs.push(['redeem','Redeem','check']);
  if(PICKTAB==='redeem'&&!cart.customerId)PICKTAB='service';
- const staffOpts=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false)
+ const staffOpts=people()
   .map(s=>'<option value="'+s.id+'"'+(s.id===PICKSTAFF?' selected':'')+'>'+esc(s.name)+'</option>').join('');
  modal('Add to bill','<div class="seg">'+tabs.map(t=>
    '<button class="'+(PICKTAB===t[0]?'on':'')+'" onclick="setPickTab(\''+t[0]+'\')">'+ic(t[2],14)+
@@ -6869,6 +7040,7 @@ window.addPay=m=>{
 window.checkout=async()=>{
  const btn=$('#co-go');if(btn)btn.disabled=true;
  const t=cartTotals();
+ if(isBranch()&&!cashierValid()){if(btn)btn.disabled=false;toast('Choose the cashier first');window.pickCashier();return;}
  try{
   // prices are re-read from the catalogue, never trusted from the cart UI
   const items=cart.items.map(i=>{
@@ -6908,7 +7080,7 @@ window.checkout=async()=>{
   const tendered=r2(cart.payments.reduce((a,p)=>a+p.amount,0));
   const change=Math.max(0,r2(tendered-total));
   const pays=cart.payments.map(p=>({method:p.method,amount:r2(p.amount),at:nowIso,date:today(),
-   by:UID,byName:ME.name}));
+   by:actorId()||UID,byName:actorName()}));
   if(change>0){ /* the change comes back out of the last cash payment */
    const cashP=[...pays].reverse().find(p=>isCashMethod(p.method))||pays[pays.length-1];
    cashP.amount=r2(cashP.amount-change);cashP.tendered=r2(cashP.amount+change);
@@ -6945,7 +7117,8 @@ window.checkout=async()=>{
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
-   customerName:c?c.name:'Walk-in',staffId:UID,staffName:ME.name,items,
+   customerName:c?c.name:'Walk-in',staffId:actorId()||UID,staffName:actorName(),items,
+   cashierId:actorId()||UID,cashierName:actorName(),cashierVerified:cashierValid()||!isBranch(),
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
    voucherAmt:r2(v),lineDiscTotal,sst,total,date:today(),at:new Date().toISOString(),
@@ -6953,6 +7126,7 @@ window.checkout=async()=>{
    net:r2(net),paid,balance,status:balance>0?'partial':'paid',
    dueDate:balance>0?(cart.dueDate||''):'',tendered,change,
    lastPaidDate:paid>0?today():'',lastPaidAt:paid>0?nowIso:''});
+  cashierUsed();
   if(balance>0)OUTSTANDING.unshift({id:ref.id,branchId:ME.branchId,customerId:cart.customerId,
    customerName:c?c.name:'',items,total,net:r2(net),paid,balance,status:'partial',
    dueDate:cart.dueDate||'',payments:pays,invoiceNo,date:today(),at:nowIso});
@@ -6961,7 +7135,7 @@ window.checkout=async()=>{
    for(let k=0;k<r.qty;k++){
     await addDoc(collection(db,'redemptions'),{customerId:cart.customerId,customerName:c?c.name:'',
      customerPackageId:r.cpId,packageId:r.packageId||'',serviceId:r.id,serviceName:r.name,
-     remaining:r.remaining+(r.qty-1-k),branchId:ME.branchId,staffId:UID,staffName:ME.name,
+     remaining:r.remaining+(r.qty-1-k),branchId:ME.branchId,staffId:actorId()||UID,staffName:actorName(),
      therapistId:r.handsOnId||r.staffId,therapistName:r.handsOnName||stf(r.staffId).name||'',
      handsOnComm:r.qty?r2((r.handsOnComm||0)/r.qty):0,saleId:ref.id,invoiceNo,
      at:nowIso,date:today()});
@@ -7197,7 +7371,7 @@ function receiptHTML(s){
    '<div><span>Receipt</span><b>'+esc(s.invoiceNo||'')+'</b></div>'+
    '<div><span>Date</span><b>'+dstr(s.at)+' '+tstr(s.at)+'</b></div>'+
    '<div><span>Client</span><b>'+esc(s.customerName||'Walk-in')+'</b></div>'+
-   '<div><span>Served by</span><b>'+esc(s.staffName||'')+'</b></div>'+
+   '<div><span>'+(s.cashierName?'Cashier':'Served by')+'</span><b>'+esc(s.cashierName||s.staffName||'')+'</b></div>'+
   '</div>'+
   '<table class="rtab"><tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th>'+
    '<th class="num">Amount</th></tr>'+rows+'</table>'+
@@ -8120,7 +8294,7 @@ window.editStaff=id=>{
   '<label>Notes</label><textarea class="f" id="ts-note" rows="2">'+esc(s.note||'')+'</textarea></div>'+
   '<div class="fieldset"><h3>'+ic('work',13)+'Role and pay</h3>'+
   '<div class="grid g2"><div><label>Role</label><select class="f" id="ts-r">'+
-   ['therapist','frontdesk','manager','doctor','owner'].map(r=>'<option value="'+r+'"'+
+   ['therapist','frontdesk','manager','doctor','owner','branch'].map(r=>'<option value="'+r+'"'+
     (s.role===r?' selected':'')+'>'+ROLE[r]+'</option>').join('')+'</select></div>'+
   '<div><label>Branch</label><select class="f" id="ts-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
@@ -8152,7 +8326,7 @@ async function saveStaffForm(id){
   idNo:$('#ts-ic').value.trim(),joined:$('#ts-jd').value,emergency:$('#ts-emg').value.trim(),
   note:$('#ts-note').value.trim(),role,branchId:$('#ts-b').value,
   commSvc:+$('#ts-cs').value||0,commProd:+$('#ts-cp').value||0,
-  takes:$('#ts-t').checked,active:$('#ts-a').checked,
+  takes:role==='branch'?false:$('#ts-t').checked,active:$('#ts-a').checked,
   perms:['therapist','frontdesk'].includes(role)?['booking','pos','customer']:[]};
  const pin=($('#ts-pin').value||'').trim();
  if(pin){
@@ -8166,7 +8340,7 @@ async function saveStaffForm(id){
  catch(e){toast(friendly(e));}}
 
 function teamToday(){
- const list=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false);
+ const list=people();
  const inNow=list.filter(s=>{const a=attToday(s.id);return a&&a.clockIn&&!a.clockOut;});
  return '<div class="sec-h"><h2>'+dstr(new Date())+'</h2>'+
   '<span class="pill '+(inNow.length?'g':'')+'">'+inNow.length+' on shift</span></div>'+
@@ -9476,7 +9650,7 @@ window.openStaff=id=>{
  modal(s.name,'<div class="card"><label>Service commission (%)</label>'+
   '<input class="f" type="number" id="st-cs" value="'+(s.commSvc||0)+'">'+
   '<label>Retail commission (%)</label><input class="f" type="number" id="st-cp" value="'+(s.commProd||0)+'">'+
-  '<label>Role</label><select class="f" id="st-r">'+['therapist','frontdesk','manager','doctor','owner'].map(r=>
+  '<label>Role</label><select class="f" id="st-r">'+['therapist','frontdesk','manager','doctor','owner','branch'].map(r=>
    '<option value="'+r+'"'+(s.role===r?' selected':'')+'>'+ROLE[r]+'</option>').join('')+'</select>'+
   '<label>Branch</label><select class="f" id="st-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>'+
@@ -9485,7 +9659,7 @@ window.openStaff=id=>{
   '<button class="btn" style="width:100%;justify-content:center" id="st-go">Save</button></div>',
  ()=>{$('#st-go').onclick=async()=>{
   const patch={commSvc:+$('#st-cs').value,commProd:+$('#st-cp').value,role:$('#st-r').value,
-   branchId:$('#st-b').value,takes:$('#st-t').checked,
+   branchId:$('#st-b').value,takes:$('#st-r').value==='branch'?false:$('#st-t').checked,
    perms:['therapist','frontdesk'].includes($('#st-r').value)?['booking','pos','customer']:[]};
   try{await updateDoc(doc(db,'users',id),patch);Object.assign(s,patch);
    await audit('Team settings updated',s.name);window.closeModal();render();bindSettings();toast('Saved');}
@@ -9532,6 +9706,7 @@ window.render=render;
    const p=await getDoc(doc(db,'users',UID));
    if(!p.exists()){noProfileScreen();return;}
    ME={id:UID,...p.data()};
+   noteBranchDevice();bindIdleGuard();
    pwaShortcut();
    if(ME.active===false){await signOut(auth);loginScreen('This account has been deactivated.');return;}
    await loadStatic();
