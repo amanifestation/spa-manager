@@ -1221,6 +1221,129 @@ h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
 .membtns{display:flex;flex-direction:column;gap:6px}
 @media (max-width:560px){.membtns{flex-direction:row;flex-wrap:wrap;width:100%}}
 .clhead .blankf{border:0;background:none;color:var(--brass);font:inherit;font-size:12px;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+/* ---- checkout, redesigned ---- */
+.posteps{display:flex;align-items:center;gap:8px;margin:0 0 12px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow-x:auto}
+.posteps i{flex:1;min-width:14px;height:1.5px;background:var(--line)}
+.posstep{display:flex;align-items:center;gap:8px;white-space:nowrap;color:var(--ink-3)}
+.posstep span{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;border:1.5px solid var(--line);background:var(--surface-2)}
+.posstep b{font-size:13px;font-weight:600}
+.posstep.on{color:var(--ink)}.posstep.on span{background:var(--ink);color:#E2C58F;border-color:var(--ink)}
+.posstep.done{color:var(--jade)}.posstep.done span{background:var(--jade);border-color:var(--jade);color:#fff}
+.posgrid{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.posgrid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}}
+.poscol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.poscol>.card{margin:0}
+.pshead{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.pshead h3{margin:0;font-size:15.5px;display:flex;align-items:center;gap:6px}
+.pshead .btn{margin-left:auto}
+.psn{width:22px;height:22px;border-radius:7px;background:var(--brass-soft);color:#6E4E1E;display:grid;place-items:center;font-size:11.5px;font-weight:700}
+.rcl{display:flex;flex-direction:column;max-height:430px;overflow:auto;margin:0 -6px}
+.rcsec{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:650;padding:8px 8px 4px}
+.rcrow{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:12px;cursor:pointer;transition:background .15s}
+.rcrow:hover,.rcrow:active{background:var(--surface-2)}
+.rcrow.on{background:var(--brass-soft);box-shadow:inset 3px 0 0 var(--brass)}
+.rcrow b{font-size:13.5px;font-weight:600;margin-right:5px}
+.pscart{border-color:#E6D3B1}
+.cartbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;background:var(--ink);color:#E2C58F;font-size:12px}
+.cartbadge b{color:#fff}
+.addtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-bottom:12px}
+.addtile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:11px 6px 10px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,#fff,var(--surface-2));font:inherit;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer;transition:transform .12s,box-shadow .15s}
+.addtile span{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--ink);color:#E2C58F}
+.addtile.ghost span{background:var(--brass-soft);color:#6E4E1E}
+.addtile:active{transform:scale(.96)}
+.addtile:hover{box-shadow:var(--shadow)}
+.lnlist{display:flex;flex-direction:column;gap:8px}
+.lnwrap{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+.lnwrap.lnnew,.lnadd.lnnew{animation:lnIn .7s var(--ease)}
+@keyframes lnIn{0%{transform:translateY(-6px);opacity:0;box-shadow:0 0 0 3px rgba(166,124,61,.45)}60%{opacity:1}100%{transform:none;box-shadow:0 0 0 0 rgba(166,124,61,0)}}
+.lnmain{display:flex;gap:10px;padding:11px 12px 8px}
+.lnico{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);color:var(--ink-2)}
+.lnico.k-service,.lnico.k-redeem{background:#F1E7D6;color:#6E4E1E}
+.lnico.k-package{background:#E4EEE8;color:var(--jade)}
+.lnico.k-product,.lnico.k-set{background:#E8EEF3;color:#2C5A7A}
+.lnbody{flex:1;min-width:0}
+.lnbody>b{font-size:14px;font-weight:600;display:block}
+.lnside{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.lnamt{text-align:right;font-size:14px}
+.lnamt s{display:block;color:var(--ink-3);font-size:11px}
+.lnacts{display:flex;flex-wrap:wrap;gap:2px;padding:4px 8px 6px;border-top:1px dashed var(--line-2);background:var(--surface-2)}
+.lnacts button{border:0;background:none;font:inherit;font-size:12px;color:var(--ink-2);padding:5px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.lnacts button:hover{background:#fff}
+.lnacts button.rm{color:var(--rose);margin-left:auto}
+.lnadd{display:flex;align-items:center;gap:8px;padding:7px 12px 7px 20px;border-top:1px solid var(--line-2);background:linear-gradient(90deg,#FBF6EC,#fff)}
+.lnlist>.lnadd{border:1px solid var(--line);border-radius:12px}
+.lnaddp{width:20px;height:20px;border-radius:6px;background:var(--brass);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.lnadd b{font-size:13px;font-weight:600}
+.lnaddamt{font-size:13px;min-width:62px;text-align:right}
+.qty.sm button{padding:2px 7px}
+.postot{margin-top:12px}
+.postot tr.grand td{font-size:19px;font-weight:700;border-top:2px solid var(--ink);padding-top:9px}
+.paygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.paybtn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 6px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;cursor:pointer;min-height:84px;justify-content:center;transition:border-color .15s,transform .12s}
+.paybtn:hover{border-color:var(--brass)}.paybtn:active{transform:scale(.97)}
+.paybtn b{font-size:12.5px;font-weight:600;text-align:center;line-height:1.2}
+.paybtn small{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.paylogo{height:30px;min-width:44px;display:grid;place-items:center}
+.paylogo img{max-height:30px;max-width:78px;object-fit:contain;display:block}
+.paylogo.plain{width:40px;border-radius:10px;background:var(--surface-2);color:var(--ink-2)}
+.paylogo.sm{height:24px;min-width:34px}.paylogo.sm img{max-height:22px;max-width:52px}.paylogo.plain.sm{width:32px}
+.paylist{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.payrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--line-2);background:#fff}
+.payrow:last-child{border-bottom:0}
+.payhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.payhead .paylogo{height:42px;min-width:60px}.payhead .paylogo.plain{width:52px}.payhead .paylogo img{max-height:40px;max-width:110px}
+.payamt{font-size:24px;font-weight:700;text-align:right}
+.btn.copay{width:100%;justify-content:center;margin-top:14px;padding:15px;font-size:15.5px;border-radius:14px}
+.blbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+.blbar .seg{margin:0}
+.blbar input[type=date]{margin:0;width:auto}
+.blsum{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:var(--surface-2);margin-bottom:6px;font-size:13px}
+.blrow{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line-2);cursor:pointer}
+.blrow:hover{background:var(--surface-2)}
+.blrow b{font-weight:600;font-size:13.5px;margin-right:5px}
+.bltime{font-variant-numeric:tabular-nums;font-size:12px;color:var(--ink-3);width:44px}
+.blamt{font-size:14px;min-width:78px;text-align:right}
+/* the item menu */
+.sheet.pk2sheet{max-width:980px;width:100%}
+.pk2{display:flex;flex-direction:column;gap:10px}
+.pk2top{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.pk2who{display:flex;flex-direction:column;gap:3px;font-size:11.5px;color:var(--ink-3);min-width:170px;margin:0}
+.pk2body{display:grid;grid-template-columns:132px minmax(0,1fr);gap:12px;min-height:340px}
+.pk2rail{display:flex;flex-direction:column;gap:6px}
+.pk2rail button{display:flex;align-items:center;gap:8px;padding:10px;border-radius:12px;border:1px solid transparent;background:var(--surface-2);font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;text-align:left}
+.pk2rail button span{flex:1}
+.pk2rail button i{font-style:normal;font-size:11px;color:var(--ink-3);font-weight:500}
+.pk2rail button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pk2rail button.on i{color:#E2C58F}
+.pk2grid{max-height:56vh;overflow:auto;padding:2px}
+.pk2sec{font-size:11px;text-transform:uppercase;letter-spacing:.07em;font-weight:650;color:var(--ink-3);margin:6px 0 7px}
+.pk2sec span{color:var(--brass);margin-left:4px}
+.adgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;margin-bottom:12px}
+.pk2card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px 12px 11px;border-radius:14px;border:1px solid var(--line);background:#fff;font:inherit;text-align:left;cursor:pointer;min-height:118px;transition:border-color .15s,box-shadow .15s,transform .12s}
+.pk2card:hover{border-color:var(--brass);box-shadow:var(--shadow)}
+.pk2card:active{transform:scale(.97)}
+.pk2card:disabled{opacity:.45;cursor:not-allowed}
+.pk2ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--brass-soft);color:#6E4E1E;overflow:hidden;margin-bottom:4px}
+.pk2ico img{width:100%;height:100%;object-fit:cover}
+.pk2card b{font-size:13.5px;font-weight:600;line-height:1.25;padding-right:26px}
+.pk2card small{font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.pk2price{margin-top:auto;padding-top:6px;font-weight:700;font-size:14px}
+.pk2plus{position:absolute;right:10px;bottom:10px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#E2C58F;display:grid;place-items:center}
+.pk2in{position:absolute;top:9px;right:9px;padding:1px 7px;border-radius:99px;background:var(--jade);color:#fff;font-size:11px;font-weight:700}
+.pk2foot{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--line-2);position:sticky;bottom:-1px;background:inherit}
+.pk2cart{flex:1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;border:0;background:var(--ink);color:#fff;font:inherit;cursor:pointer;text-align:left}
+.pk2cart span{display:flex;flex-direction:column;font-size:13px}
+.pk2cart small{color:#E2C58F;font-size:12px}
+.pk2cart b{font-size:15px}
+.flyer{position:fixed;z-index:9999;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--ink);color:#E2C58F;box-shadow:0 10px 24px rgba(20,18,15,.35);pointer-events:none;overflow:hidden}
+.flyer img{width:100%;height:100%;object-fit:cover}
+@media(max-width:699px){.pk2body{grid-template-columns:minmax(0,1fr)}.pk2rail{flex-direction:row;overflow-x:auto}
+ .pk2rail button{flex:none}.adgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.pk2grid{max-height:none}}
+.pmrow .pmlogo{width:46px;height:30px;border:1px dashed var(--line);border-radius:8px;background:#fff;display:grid;place-items:center;cursor:pointer;padding:0;overflow:hidden}
+.pmrow .pmlogo img{max-width:44px;max-height:28px}
+.pmquick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+@media(max-width:560px){.posstep:not(.on) b{display:none}.posteps{gap:6px}
+ .lnadd{flex-wrap:wrap}.lnadd>div:nth-child(2){flex-basis:calc(100% - 30px)}.lnadd .qty{margin-left:28px}.lnaddamt{margin-left:auto}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1328,7 +1451,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21q';
+const BUILD='2026-09-21r';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2789,6 +2912,7 @@ function cpInner(pid){
   'New client</button></div><div id="'+pid+'-new"></div>';
 }
 function cpList(pid,term,searching){
+ if(!term&&(CP[pid]||{}).noRecent)return '';
  const list=matchClients(term,term?12:6);
  if(!list.length)return term?'<div class="cpnone">'+(searching?'<div class="spin" style="width:16px;'+
    'height:16px;margin:0 0 6px"></div>Searching…':'No client matches “'+esc(term)+'”.')+
@@ -3025,7 +3149,7 @@ function cartTotals(){
  const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
  const total=net+sst,paid=cart.payments.reduce((a,p)=>a+p.amount,0);
  return{sub,v,pd,net,sst,total,paid,balance:total-paid};}
-function vPos(){
+function vPosOld(){
  const t=cartTotals();
  let h=cashierBar()+'<div class="card"><label>Client</label>'+
   clientPicker('pos-c',cart.customerId||(cart.walkin?'__walkin':''),{walkin:true,onPick:posPicked})+
@@ -3165,7 +3289,7 @@ const isCashMethod=name=>{
  const m=payMethods().find(x=>String(x.name).toLowerCase()===String(name||'').toLowerCase());
  return m?!!m.cash:/cash/i.test(String(name||''));
 };
-function payButtons(){
+function payButtonsOld(){
  const list=activePay();
  if(!list.length)return '<div class="tiny" style="color:var(--rose)">No payment methods are switched on. '+
   'Turn one on in Settings → Payment methods.</div>';
@@ -3185,6 +3309,9 @@ function payPanel(){
   'instalments. Hide a method instead of deleting it — old bills keep their method name either way.</p>'+
   '<div id="pm-list">'+payRows()+'</div>'+
   '<div class="fieldset" style="margin-top:10px"><h3>'+ic('plus',13)+'Add a method</h3>'+
+  '<div class="pmquick">'+['Debit / Credit Card','Atome','SPayLater','Grab PayLater','Touch \'n Go eWallet','Boost']
+   .filter(n=>!PAYDRAFT.some(m=>m.name.toLowerCase()===n.toLowerCase())).map(n=>'<button type="button" class="btn sm ghost" '+
+   'onclick="payQuick(this.dataset.n)" data-n="'+esc(n)+'">'+ic('plus',12)+esc(n)+'</button>').join('')+'</div>'+
   '<div class="grid g2"><div><label>Name</label><input class="f" id="pm-n" placeholder="e.g. Touch \'n Go, '+
    'Boost, Atome, Bank-in"></div><div><label>&nbsp;</label><label class="row" style="gap:9px;margin-top:9px">'+
    '<input type="checkbox" id="pm-c"> Counts as cash in the drawer</label></div></div>'+
@@ -3200,8 +3327,11 @@ function payRows(){
   '<button type="button" class="iconbtn" '+(i===PAYDRAFT.length-1?'disabled ':'')+
    'onclick="payMove('+i+',1)" aria-label="Down">'+ic('left',13,'transform:rotate(-90deg)')+'</button></div>'+
   '<input class="f" value="'+esc(m.name)+'" onchange="payEdit('+i+',\'name\',this.value)">'+
+  '<button type="button" class="pmlogo" title="Upload the official logo" onclick="payLogoUp('+i+')">'+(m.logo?'<img src="'+m.logo+'" alt="">':ic('image',14))+'</button>'+
   '<label class="row pmopt"><input type="checkbox"'+(m.cash?' checked':'')+
    ' onchange="payEdit('+i+',\'cash\',this.checked)"> cash</label>'+
+  '<label class="row pmopt" title="Cashier must key in the reference number"><input type="checkbox"'+(payNeedsRef(m)?' checked':'')+
+   ' onchange="payEdit('+i+',\'ref\',this.checked)"> ref no.</label>'+
   '<label class="row pmopt"><input type="checkbox"'+(m.active!==false?' checked':'')+
    ' onchange="payEdit('+i+',\'active\',this.checked)"> on</label>'+
   (m.custom?'<button type="button" class="iconbtn" onclick="payDrop('+i+')" aria-label="Remove">'+
@@ -3213,6 +3343,10 @@ window.payEdit=(i,k,v)=>{if(!PAYDRAFT[i])return;PAYDRAFT[i][k]=k==='name'?String
 window.payMove=(i,d)=>{const j=i+d;if(j<0||j>=PAYDRAFT.length)return;
  [PAYDRAFT[i],PAYDRAFT[j]]=[PAYDRAFT[j],PAYDRAFT[i]];repaintPay();};
 window.payDrop=i=>{PAYDRAFT.splice(i,1);repaintPay();};
+window.payQuick=n=>{if(PAYDRAFT.some(m=>m.name.toLowerCase()===n.toLowerCase()))return;
+ PAYDRAFT.push({id:'pm'+Date.now().toString(36),name:n,cash:false,active:true,custom:true,ref:REF_RE.test(n)});
+ render();toast(n+' added — upload its logo, then press Save');};
+window.payLogoUp=async i=>{const img=await pickImage('paylogo');if(img&&PAYDRAFT[i]){PAYDRAFT[i].logo=img;repaintPay();toast('Logo added — press Save to keep it');}};
 window.payAdd=()=>{
  const n=(($('#pm-n')||{}).value||'').trim();
  const err=$('#pm-e');
@@ -3225,7 +3359,7 @@ window.payAdd=()=>{
 window.paySave=async()=>{
  const err=$('#pm-e');
  const list=PAYDRAFT.map(m=>({id:m.id,name:String(m.name||'').trim(),cash:!!m.cash,
-  active:m.active!==false,custom:!!m.custom})).filter(m=>m.name);
+  active:m.active!==false,custom:!!m.custom,ref:payNeedsRef(m),...(m.logo?{logo:m.logo}:{})})).filter(m=>m.name);
  const names=list.map(m=>m.name.toLowerCase());
  if(names.some((n,i)=>names.indexOf(n)!==i)){err.textContent='Two methods have the same name.';return;}
  if(!list.some(m=>m.active)){err.textContent='Keep at least one method switched on.';return;}
@@ -3305,8 +3439,9 @@ window.collectPayment=id=>{
   '<div class="fieldset" style="margin-top:13px"><h3>'+ic('card',13)+'This payment</h3>'+
   '<div class="grid g2"><div><label>Amount (RM)</label><input class="f" type="number" step="0.01" '+
    'id="cl-a" value="'+bal.toFixed(2)+'" style="font-size:18px"></div>'+
-  '<div><label>Method</label><select class="f" id="cl-m">'+
+  '<div><label>Method</label><select class="f" id="cl-m" onchange="clRef()">'+
    payOptions()+'</select></div></div>'+
+  '<div id="cl-rw"><label id="cl-rl">Reference</label><input class="f" id="cl-r" autocomplete="off"></div>'+
   '<div class="fabrow" style="margin:0">'+[0.25,0.5,1].map(f=>'<button type="button" class="btn sm ghost" '+
    'onclick="document.getElementById(\'cl-a\').value=\''+r2(bal*f).toFixed(2)+'\'">'+
    (f===1?'Full '+rm(bal):Math.round(f*100)+'% · '+rm(r2(bal*f)))+'</button>').join('')+'</div></div>'+
@@ -3314,14 +3449,19 @@ window.collectPayment=id=>{
   '<button class="btn" style="width:100%;justify-content:center" id="cl-go" onclick="saveCollect()">'+
   ic('check',16)+'Record payment</button>'+
   '<div class="fabrow"><button class="btn sm ghost" onclick="showReceipt(\''+id+'\')">'+ic('receipt',14)+
-  'View bill</button></div></div>');
+  'View bill</button></div></div>',()=>window.clRef());
 };
+/* card and pay-later instalments need their reference too */
+window.clRef=()=>{const m=($('#cl-m')||{}).value||'',l=document.getElementById('cl-rl');
+ if(l)l.innerHTML=payNeedsRef(m)?'Reference number *':'Reference <span class="muted">— optional</span>';};
 window.saveCollect=async()=>{
  const id=COLLECT_ID;
  const amt=r2(($('#cl-a')||{}).value);
  const method=($('#cl-m')||{}).value||'Cash';
  const err=$('#cl-e');
+ const pref=String(($('#cl-r')||{}).value||'').trim();
  if(!(amt>0)){err.textContent='Enter the amount being paid.';return;}
+ if(payNeedsRef(method)&&pref.length<4){err.textContent='Enter the reference number for '+method+'.';return;}
  const btn=$('#cl-go');btn.disabled=true;
  try{
   let out=null;
@@ -3336,7 +3476,7 @@ window.saveCollect=async()=>{
    if(bal<=0)throw new Error('This bill is already fully paid.');
    if(amt>bal+0.001)throw new Error('That is more than the '+rm(bal)+' still owed.');
    if(isBranch()&&!cashierValid())throw new Error('Choose the cashier first — open Checkout and tap Choose cashier.');
-   const p={method,amount:amt,at:new Date().toISOString(),date:today(),by:actorId()||UID,byName:actorName(),instalment:true};
+   const p={method,amount:amt,...(pref?{ref:pref}:{}),at:new Date().toISOString(),date:today(),by:actorId()||UID,byName:actorName(),instalment:true};
    const paid=r2(salePaid(cur)+amt),balance=Math.max(0,r2(cur.total-paid));
    tx.update(ref,{payments:[...(cur.payments||[]),p],paid,balance,
     status:balance>0?'partial':'paid',lastPaidDate:today(),lastPaidAt:p.at});
@@ -6736,7 +6876,19 @@ function stopScan(){
  try{(SCAN.stream.getTracks()||[]).forEach(t=>t.stop());}catch(e){}
  SCAN=null;
 }
-window.scanClient=()=>{
+/* find a client by number and hand them to a caller (the checkout) instead of opening them */
+async function pickByNo(raw,cb){
+ const hit=String(raw||'').match(/[A-Za-z]{1,5}\s*-?\s*M?\s*-?\s*\d{1,6}/i);
+ const no=normNo(hit?hit[0]:raw);if(!no)return false;
+ const hasNo=x=>x.clientNo===no||x.memberNo===no;
+ let c=CUSTS.find(hasNo);
+ if(!c){try{const s=await getDocs(query(collection(db,'customers'),where(isMem(no)?'memberNo':'clientNo','==',no),limit(2)));
+  s.docs.forEach(d=>{const x={id:d.id,...d.data()};if(!CUSTS.find(y=>y.id===x.id))CUSTS.push(x);});}catch(e){}
+  c=CUSTS.find(hasNo);}
+ if(!c||c.active===false)return false;
+ stopScan();cb(c);return true;
+}
+window.scanClient=(cb)=>{
  const canScan=typeof window.BarcodeDetector==='function'&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia;
  modal('Find by client number','<div class="card">'+
   (canScan?'<div class="scanbox"><video id="sc-v" playsinline muted autoplay></video><span class="scanframe"></span></div>'+
@@ -6748,7 +6900,7 @@ window.scanClient=()=>{
   '<div id="sc-err" class="tiny" style="color:var(--rose);margin-top:8px"></div></div>',
  ()=>{
   const go=async()=>{const v=$('#sc-no').value;
-   if(!(await window.openByNo(v))){const e=document.getElementById('sc-err');if(e)e.textContent=normNo(v)?'No client has '+normNo(v)+'.':'That is not a client number.';}};
+   if(!(await (cb?pickByNo(v,cb):window.openByNo(v)))){const e=document.getElementById('sc-err');if(e)e.textContent=normNo(v)?'No client has '+normNo(v)+'.':'That is not a client number.';}};
   $('#sc-go').onclick=go;$('#sc-no').onkeydown=e=>{if(e.key==='Enter')go();};
   if(!canScan)return;
   stopScan();
@@ -6760,7 +6912,7 @@ window.scanClient=()=>{
     if(!document.getElementById('sc-v')){stopScan();return;}
     if(busy||v.readyState<2)return;busy=true;
     try{const r=await det.detect(v);
-     if(r&&r[0]){const txt=r[0].rawValue||'';const ok=await window.openByNo(txt);
+     if(r&&r[0]){const txt=r[0].rawValue||'';const ok=await (cb?pickByNo(txt,cb):window.openByNo(txt));
       if(!ok){const m=document.getElementById('sc-msg');if(m)m.textContent='Read "'+txt+'" — no client with that number.';}}}
     catch(e){}
     busy=false;},350)};
@@ -8072,6 +8224,11 @@ window.checkout=async()=>{
    if(i.kind==='redeem'){const sv=svc(i.id);
     return lineForSale(i,{kind:'redeem',id:i.id,name:sv.name||i.name,price:0,qty:i.qty,staffId:i.staffId,
      cpId:i.cpId,line:i.line,pkgName:i.pkgName||'',...ho,...ap});}
+   if(i.kind==='addon'){const a=addonOf(i.id);
+    if(!a)throw new Error(i.name+' is no longer an add-on in the catalogue. Remove it and add it again.');
+    const out=lineForSale({...i,commAmt:undefined},{kind:'addon',id:i.id,name:a.name,price:+a.price||0,qty:i.qty,staffId:i.staffId,
+     parentName:i.parentName||''});
+    out.commAmt=addonComm(a,out);return out;}
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
    const setBits=i.kind==='set'?{setItems:(src.items||[]).map(z=>({sku:z.sku,qty:+z.qty||1,name:prod(z.sku).name||z.sku}))}:{};
@@ -8097,7 +8254,7 @@ window.checkout=async()=>{
   const nowIso=new Date().toISOString();
   const tendered=r2(cart.payments.reduce((a,p)=>a+p.amount,0));
   const change=Math.max(0,r2(tendered-total));
-  const pays=cart.payments.map(p=>({method:p.method,amount:r2(p.amount),at:nowIso,date:today(),
+  const pays=cart.payments.map(p=>({method:p.method,amount:r2(p.amount),...(p.ref?{ref:String(p.ref)}:{}),at:nowIso,date:today(),
    by:actorId()||UID,byName:actorName()}));
   if(change>0){ /* the change comes back out of the last cash payment */
    const cashP=[...pays].reverse().find(p=>isCashMethod(p.method))||pays[pays.length-1];
@@ -8367,6 +8524,7 @@ function receiptHTML(s){
  const L=bizLines(b,br);
  const sub=(s.items||[]).reduce((a,i)=>a+lineAmt(i),0);
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
+  (i.kind==='addon'?'<div class="tiny muted">Add-on'+(i.parentName?' · '+esc(i.parentName):'')+'</div>':'')+
   lineNotes(i).map(t=>'<div class="tiny muted">'+esc(t)+'</div>').join('')+
   (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
   (i.handsOnName?'<div class="tiny muted">Performed by '+esc(i.handsOnName)+'</div>':'')+
@@ -8404,7 +8562,7 @@ function receiptHTML(s){
    (s.pointsUsed?'<tr><td>Loyalty points used</td><td class="num">'+s.pointsUsed+'</td></tr>':'')+
    (s.sst?'<tr><td>SST '+((D.meta.biz||{}).sstRate||8)+'%</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
    '<tr class="grand"><td>Total</td><td class="num">'+rm(s.total)+'</td></tr>'+
-   (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+
+   (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+(p.ref?' <span class="muted">· Ref '+esc(p.ref)+'</span>':'')+
     ((p.date&&p.date!==s.date)?' · '+dshort(p.at||p.date):'')+
     (p.tendered?' · tendered '+rm(p.tendered):'')+'</td><td class="num">'+rm(p.amount)+'</td></tr>').join('')+
    (s.change?'<tr class="pay"><td>Change</td><td class="num">'+rm(s.change)+'</td></tr>':
@@ -8582,9 +8740,10 @@ function vRep(){
  const mine=S.filter(s=>s.branchId===ME.branchId);
  const rev=mine.reduce((a,s)=>a+s.total,0);
  const uniq=new Set(mine.map(s=>s.customerId).filter(Boolean)).size;
- const cat={Services:0,Retail:0,Packages:0};
+ const cat={Services:0,'Add-ons':0,Retail:0,Packages:0};
  mine.forEach(s=>(s.items||[]).forEach(i=>{
-  if(i.kind==='service')cat.Services+=lineAmt(i);
+  if(i.kind==='addon')cat['Add-ons']+=lineAmt(i);
+  else if(i.kind==='service')cat.Services+=lineAmt(i);
   else if(retailKind(i.kind))cat.Retail+=lineAmt(i);
   else if(i.kind==='package')cat.Packages+=lineAmt(i);}));
  h+='<h2 style="margin-bottom:8px">'+esc(D.meta.biz.name||'')+' · last '+repDays+' days</h2>'+
@@ -8681,11 +8840,11 @@ window.catToggle=async(col,id,on,label)=>{
 
 function vCat(){
  const tabs=[['services','Treatments','spark'],['products','Products','stock'],['packages','Packages','package'],
-  ['sets','Sets','gift'],['rooms','Rooms','room'],['branches','Branches','home'],['vouchers','Vouchers','tag']];
+  ['sets','Sets','gift'],['addons','Add-ons','layers'],['rooms','Rooms','room'],['branches','Branches','home'],['vouchers','Vouchers','tag']];
  let h='<div class="row" style="justify-content:flex-end;margin-bottom:10px"><button class="btn sm ghost" onclick="priceListSheet()">'+
   ic('print',14)+'Price list PDF</button></div><div class="card"><div class="tabs">'+tabs.map(t=>'<button class="'+(catTab===t[0]?'on':'')+
   '" onclick="setCatTab(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+'</button>').join('')+'</div>'+
-  ({services:catServices,products:catProducts,packages:catPackages,sets:catSets,rooms:catRooms,
+  ({services:catServices,products:catProducts,packages:catPackages,sets:catSets,addons:catAddons,rooms:catRooms,
     branches:catBranches,vouchers:catVouchers}[catTab])()+'</div>';
  return h;}
 const offTag=x=>x.active===false?' <span class="pill">hidden</span>':'';
@@ -9062,7 +9221,7 @@ window.editVoucher=id=>{
 /* Firebase Cloud Storage needs the paid Blaze plan, so pictures are shrunk in the
    browser and stored inline in the Firestore document. A document can hold 1 MB in
    total, so every picture is squeezed under a strict budget before it is saved. */
-const IMG_BUDGET={logo:150000,product:110000,notice:420000};
+const IMG_BUDGET={logo:150000,product:110000,notice:420000,paylogo:26000};
 function pickImage(kind){
  return new Promise(resolve=>{
   const inp=document.createElement('input');
@@ -9080,7 +9239,7 @@ function pickImage(kind){
 }
 function compressImage(file,kind){
  const budget=IMG_BUDGET[kind]||200000;
- const maxPx=kind==='logo'?420:(kind==='product'?720:1600);
+ const maxPx=kind==='logo'?420:kind==='paylogo'?180:(kind==='product'?720:1600);
  return new Promise((resolve,reject)=>{
   const fr=new FileReader();
   fr.onerror=()=>reject(new Error('read failed'));
@@ -9093,7 +9252,7 @@ function compressImage(file,kind){
     w=Math.round(w*scale);h=Math.round(h*scale);
     const cv=document.createElement('canvas');cv.width=w;cv.height=h;
     const cx=cv.getContext('2d');
-    const alpha=kind==='logo'&&/png|webp|svg/i.test(file.type);
+    const alpha=(kind==='logo'||kind==='paylogo')&&/png|webp|svg/i.test(file.type);
     if(!alpha){cx.fillStyle='#ffffff';cx.fillRect(0,0,w,h);}
     cx.drawImage(img,0,0,w,h);
     // A logo is usually placed on a light receipt, so transparency is worth keeping.
@@ -10793,4 +10952,503 @@ function bindNavAutoHide(){
   else if(document.getElementById('reportwrap').innerHTML)window.closeReport();
   else window.hideNav();});
 }
+
+/* ============ checkout, redesigned ============ */
+/* One screen, four steps: who is paying, what they are paying for, how they pay, done.
+   Today's clients sit beside the bill so the counter picks one with a tap (or scans the
+   QR on their form). Items are added from a menu grouped by category, each one flying
+   into the bill. Any treatment line can carry add-ons from the catalogue, each with its
+   own commission. Card and pay-later payments need the reference number from the
+   terminal or app before the bill can be completed. */
+ICONS.bag='M5 8.5h14l-1.2 11.5H6.2zM9 8.5V7a3 3 0 016 0v1.5';
+ICONS.minus='M6 12h12';
+ICONS.layers='M12 4l8 4-8 4-8-4zM4 12l8 4 8-4M4 16l8 4 8-4';
+
+/* every cart line gets a stable id, so an add-on can follow its treatment */
+let LINESEQ=0,LASTADD='';
+const uidOf=i=>i.uid||(i.uid='L'+(++LINESEQ)+Date.now().toString(36).slice(-3));
+
+/* ---------------- add-ons, kept in the catalogue (meta/settings.addons) ---------------- */
+const addons=()=>((D.meta&&Array.isArray(D.meta.addons))?D.meta.addons:[]);
+const addonOf=id=>addons().find(a=>a.id===id)||null;
+const addonFits=(a,line)=>a.active!==false&&(a.applies==='all'||['service','redeem'].includes(line.kind));
+/* commission on an add-on line: a percentage of what was charged, or a fixed ringgit per unit */
+function addonComm(a,line){
+ if(!a)return 0;
+ const amt=lineAmt(line);
+ return r2(a.commType==='rm'?(+a.commVal||0)*(line.qty||1):amt*(+a.commVal||0)/100);
+}
+const commLabel=a=>a.commType==='rm'?rm(+a.commVal||0)+' each':(+a.commVal||0)+'%';
+
+/* ---------------- step bar ---------------- */
+function posSteps(step){
+ const S=[['user','Client'],['bag','Items'],['card','Payment'],['check','Complete']];
+ return '<div class="posteps">'+S.map((s,i)=>{const n=i+1;
+  return '<div class="posstep'+(n<step?' done':n===step?' on':'')+'"><span>'+(n<step?ic('check',13):n)+'</span><b>'+s[1]+'</b></div>';})
+  .join('<i></i>')+'</div>';
+}
+
+/* ---------------- left: the client ---------------- */
+function posRecent(){
+ const td=APPTS.filter(a=>a.date===today()&&a.branchId===ME.branchId&&a.customerId&&!['cancel','no'].includes(a.status));
+ const rank=a=>a.saleId?3:(['in','done'].includes(a.status)?0:1);
+ td.sort((x,y)=>rank(x)-rank(y)||String(x.start).localeCompare(String(y.start)));
+ const seen=new Set(),today_=[],recent=[];
+ td.forEach(a=>{if(seen.has(a.customerId))return;seen.add(a.customerId);today_.push({cid:a.customerId,a});});
+ SALES.filter(s=>s.branchId===ME.branchId&&s.customerId&&!s.voided).forEach(s=>{
+  if(seen.has(s.customerId)||recent.length>=8)return;seen.add(s.customerId);recent.push({cid:s.customerId,s});});
+ return {today:today_,recent};
+}
+function rcRow(r){
+ const c=cust(r.cid)||{},a=r.a,s=r.s;
+ const name=c.name||(a&&a.customerName)||(s&&s.customerName)||'Client';
+ let st='',sub='';
+ if(a){
+  st=a.saleId?'<span class="pill g">'+ic('check',11)+'Paid</span>':a.status==='in'?'<span class="pill b">In treatment</span>':
+   a.status==='done'?'<span class="pill a">To pay</span>':'<span class="pill">'+tstr(a.start)+'</span>';
+  sub=tstr(a.start)+' · '+esc(a.serviceName||'')+(a.staffName?' · '+esc(a.staffName):'');
+ }else sub='Last bill '+dshort(s.at)+' · '+rm(s.total);
+ const on=cart.customerId===r.cid;
+ return '<div class="rcrow'+(on?' on':'')+'" onclick="posPick(\''+r.cid+'\')">'+
+  '<span class="avatar" style="width:36px;height:36px;border-radius:11px;font-size:12.5px">'+esc(initials(name))+'</span>'+
+  '<div style="flex:1;min-width:0"><b>'+esc(name)+'</b>'+cnoTag(c)+'<div class="tiny muted">'+sub+'</div></div>'+
+  (a&&!a.saleId&&['in','done','confirm','booked'].includes(a.status)?
+   '<button class="btn sm'+(['in','done'].includes(a.status)?'':' ghost')+'" onclick="event.stopPropagation();checkoutFromAppt(\''+a.id+'\')">'+
+    ic('card',13)+'Bill</button>':st)+'</div>';
+}
+function posClientCard(){
+ return '<div class="card pscard"><div class="pshead"><span class="psn">1</span><h3>Client</h3>'+
+  '<button class="btn sm ghost" onclick="posScan()">'+ic('scan',14)+'Scan QR</button></div>'+
+  clientPicker('pos-c',cart.customerId||(cart.walkin?'__walkin':''),{walkin:true,onPick:posPicked,noRecent:true})+
+  posClientNote()+'</div>';
+}
+function posRecentCard(){
+ const R=posRecent();
+ return '<div class="card pscard"><div class="pshead"><h3>'+ic('calendar',15)+' Today &amp; recent</h3>'+
+  '<span class="pill">'+R.today.length+' booked today</span></div>'+
+  '<div class="rcl">'+
+  (R.today.length?'<div class="rcsec">Today\'s bookings</div>'+R.today.map(rcRow).join(''):'')+
+  (R.recent.length?'<div class="rcsec">Recent bills</div>'+R.recent.map(rcRow).join(''):'')+
+  (!R.today.length&&!R.recent.length?'<div class="empty">'+ic('users',22)+'<div>No bookings or bills yet today.</div></div>':'')+
+  '</div></div>';
+}
+window.posPick=cid=>{
+ if(cart.customerId===cid)return;
+ if(cart.items.length&&cart.customerId&&!confirm('Switch this bill to '+((cust(cid)||{}).name||'another client')+'?'))return;
+ CP['pos-c']={...(CP['pos-c']||{}),value:cid};
+ posPicked(cid);
+};
+window.posScan=()=>window.scanClient(c=>{window.closeModal();window.posPick(c.id);toast((c.name||'Client')+' selected');});
+
+/* ---------------- right: the bill ---------------- */
+const KIND={service:['Treatment','spark'],product:['Product','stock'],package:['Package','package'],
+ redeem:['Package session','check'],set:['Product set','gift'],addon:['Add-on','layers']};
+function lineHTML(i,x){
+ const k=KIND[i.kind]||[i.kind,'tag'];
+ const isNew=uidOf(i)===LASTADD;
+ const kids=cart.items.map((z,j)=>[z,j]).filter(([z])=>z.kind==='addon'&&z.parent===i.uid);
+ const canAdd=addons().some(a=>addonFits(a,i));
+ return '<div class="lnwrap'+(isNew?' lnnew':'')+'" data-uid="'+i.uid+'"><div class="lnmain">'+
+  '<span class="lnico k-'+esc(i.kind)+'">'+ic(k[1],16)+'</span>'+
+  '<div class="lnbody"><div class="cartkind">'+k[0]+(i.apptId?' · from booking':'')+'</div>'+
+   '<b>'+esc(i.name)+'</b><div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
+   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
+   (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
+   (i.kind==='set'?' · '+esc(setLabel(setOf(i.id))):'')+'</div>'+
+   lineInfo(i)+laterToggle(i,x)+handsOnLine(i,x)+'</div>'+
+  '<div class="lnside"><div class="qty"><button onclick="cartQty('+x+',-1)" aria-label="Less">−</button><span>'+i.qty+
+   '</span><button onclick="cartQty('+x+',1)" aria-label="More">+</button></div>'+
+   '<div class="lnamt">'+(i.lineDisc>0?'<s>'+rm(lineGross(i))+'</s>':'')+'<b>'+rm(lineAmt(i))+'</b></div></div></div>'+
+  kids.map(([z,j])=>addonLine(z,j)).join('')+
+  '<div class="lnacts">'+
+   (canAdd?'<button onclick="addonPick('+x+')">'+ic('plus',13)+'Add-on</button>':'')+
+   '<button onclick="editLine('+x+')">'+ic('edit',13)+'Price &amp; discount</button>'+
+   (['service','product','redeem'].includes(i.kind)?'<button onclick="openLib(\''+(i.kind==='product'?'prd_':'svc_')+esc(i.id)+
+    '\',{customerId:cart.customerId})">'+ic('note',13)+'Guide</button>':'')+
+   '<button class="rm" onclick="dropItem('+x+')">'+ic('close',13)+'Remove</button></div></div>';
+}
+function addonLine(z,j){
+ const a=addonOf(z.id);
+ return '<div class="lnadd'+(uidOf(z)===LASTADD?' lnnew':'')+'"><span class="lnaddp">+</span>'+
+  '<div style="flex:1;min-width:0"><b>'+esc(z.name)+'</b><div class="tiny muted">Add-on · commission to '+
+   esc(stf(z.staffId).name||'—')+' '+rm(z.commAmt||0)+(a?' ('+commLabel(a)+')':'')+'</div></div>'+
+  '<div class="qty sm"><button onclick="cartQty('+j+',-1)">−</button><span>'+z.qty+'</span><button onclick="cartQty('+j+',1)">+</button></div>'+
+  '<b class="lnaddamt">'+rm(lineAmt(z))+'</b>'+
+  '<button class="iconbtn" style="padding:4px" onclick="addonWho('+j+')" title="Commission to">'+ic('user',13)+'</button>'+
+  '<button class="iconbtn" style="padding:4px" onclick="dropItem('+j+')" aria-label="Remove">'+ic('close',13)+'</button></div>';
+}
+function addTiles(){
+ const T=[['service','Treatment','spark'],['product','Product','stock'],['package','Package','package']];
+ if((D.bundles||[]).some(b=>b.active!==false))T.push(['set','Set','gift']);
+ if(cart.customerId&&redeemLines(cart.customerId).some(l=>l.left>0))T.push(['redeem','Redeem','check']);
+ return '<div class="addtiles">'+T.map(t=>'<button class="addtile" onclick="pickItem(\''+t[0]+'\')">'+
+   '<span>'+ic(t[2],18)+'</span>'+t[1]+'</button>').join('')+
+  '<button class="addtile ghost" onclick="applyVoucher()"><span>'+ic('tag',18)+'</span>Voucher</button>'+
+  (loy().on&&cart.customerId?'<button class="addtile ghost" onclick="usePoints()"><span>'+ic('award',18)+'</span>Points</button>':'')+
+  '</div>';
+}
+function posCartCard(t){
+ const n=cart.items.reduce((a,i)=>a+(i.kind==='addon'?0:i.qty),0);
+ const c=cust(cart.customerId);
+ const lines=cart.items.map((i,x)=>[i,x]).filter(([i])=>i.kind!=='addon'||!cart.items.some(p=>p.uid===i.parent));
+ const h='<div class="card pscard pscart"><div class="pshead"><span class="psn">2</span><h3>Bill</h3>'+
+  '<span class="cartbadge" id="cartbadge">'+ic('bag',14)+'<b>'+n+'</b></span>'+
+  (c?'<span class="pill b">'+esc(c.name.split(' ')[0])+'</span>':cart.walkin?'<span class="pill">Walk-in</span>':'')+
+  (cart.items.length?'<button class="btn sm ghost" style="margin-left:auto" onclick="posClear()">'+ic('trash',13)+'Clear</button>':'')+'</div>'+
+  addTiles()+
+  (cart.items.filter(needsHandsOn).length>1?'<button class="btn sm ghost" style="margin:4px 0 8px" onclick="handsOnAll()">'+
+   ic('user',13)+'Hands-on for all</button>':'')+
+  '<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
+   :'<div class="empty">'+ic('bag',24)+'<div>'+(cart.customerId||cart.walkin?'Add a treatment, product or package above.':'Choose the client first, then add items.')+'</div></div>')+'</div>'+
+  '<table class="postot">'+
+  '<tr><td>Subtotal</td><td class="num">'+rm(t.sub)+'</td></tr>'+
+  (boss()?'<tr><td>Manual discount</td><td class="num"><input class="f" style="margin:0;text-align:right;padding:4px 6px;'+
+   'width:90px" type="number" value="'+cart.discount+'" onchange="setCartDiscount(this.value)"></td></tr>':'')+
+  (cart.voucher?'<tr><td>Voucher '+esc(cart.voucher.id)+
+   ' <button class="iconbtn" style="padding:2px;display:inline-grid" onclick="removeVoucher()" aria-label="Remove voucher">'+
+   ic('close',12)+'</button>'+(voucherProblem(cart.voucher,t.sub,cart.customerId)?'<div class="tiny odue">'+
+   esc(voucherProblem(cart.voucher,t.sub,cart.customerId))+'</div>':'')+'</td><td class="num">-'+rm(t.v)+'</td></tr>':'')+
+  (cart.points?'<tr><td>'+cart.points+' loyalty points <button class="iconbtn" style="padding:2px;display:inline-grid" '+
+   'onclick="clearCartPoints()">'+ic('close',12)+'</button></td><td class="num">-'+rm(t.pd)+'</td></tr>':'')+
+  (D.meta.biz.sst?'<tr><td>SST</td><td class="num">'+rm(t.sst)+'</td></tr>':'')+
+  '<tr class="grand"><td>Total</td><td class="num">'+rm(t.total)+'</td></tr></table>'+
+  '<div class="pshead" style="margin-top:14px"><span class="psn">3</span><h3>Payment</h3>'+
+   (cart.payments.length?'<span class="tiny muted" style="margin-left:auto">'+(t.balance>0.009?'Balance '+rm(t.balance):
+    t.balance<-0.009?'Change '+rm(-t.balance):'Fully paid')+'</span>':'')+'</div>'+
+  '<div class="paygrid">'+payButtons()+'</div>'+
+  (cart.payments.length?'<div class="paylist">'+cart.payments.map((p,i)=>
+   '<div class="payrow">'+payLogo(payMethods().find(m=>m.name===p.method)||{name:p.method},'sm')+
+   '<div style="flex:1;min-width:0"><b>'+esc(p.method)+'</b>'+(p.ref?'<div class="tiny muted">Ref '+esc(p.ref)+'</div>':
+    payNeedsRef(p.method)?'<div class="tiny odue">Reference number missing</div>':'')+'</div>'+
+   '<b>'+rm(p.amount)+'</b><button class="iconbtn" style="padding:3px" onclick="dropPay('+i+')" aria-label="Remove">'+ic('close',13)+'</button></div>').join('')+
+   '</div>':'')+
+  instalBox(t)+
+  '<button class="btn copay" '+(canComplete(t)?'':'disabled')+' id="co-go" onclick="checkout()">'+ic('check',17)+
+  (cart.instal&&t.balance>0.009?'Save bill · '+rm(t.balance)+' outstanding':'Complete payment · '+rm(t.total))+'</button></div>';
+ return h;
+}
+window.posClear=()=>{if(!confirm('Clear this bill?'))return;
+ cart={customerId:cart.customerId,items:[],discount:0,voucher:null,payments:[],points:0,walkin:cart.walkin,instal:false,dueDate:''};render();};
+
+function vPos(){
+ const t=cartTotals();
+ cart.items.forEach(uidOf);
+ const who=!!(cart.customerId||cart.walkin);
+ const step=!who?1:!cart.items.length?2:(t.balance>0.009&&!(cart.instal&&cart.customerId))?3:4;
+ setTimeout(()=>{LASTADD='';},900);
+ return cashierBar()+posSteps(step)+
+  '<div class="posgrid"><section class="poscol">'+posClientCard()+posRecentCard()+'</section>'+
+  '<section class="poscol">'+posCartCard(t)+'</section></div>'+
+  outstandingCard()+billsCard();
+}
+
+/* removing a treatment takes its add-ons with it */
+window.dropItem=x=>{const i=cart.items[x];if(!i)return;
+ cart.items=cart.items.filter((z,j)=>j!==x&&!(z.kind==='addon'&&i.uid&&z.parent===i.uid));render();};
+/* add-on quantities and commission follow the line */
+const cartQtyOrig=window.cartQty;
+window.cartQty=(x,d)=>{const i=cart.items[x];cartQtyOrig(x,d);
+ if(i&&i.kind==='addon'&&cart.items.includes(i)){i.commAmt=addonComm(addonOf(i.id),i);render();}};
+
+/* ---------------- add-on picker for one line ---------------- */
+window.addonPick=x=>{
+ const line=cart.items[x];if(!line)return;uidOf(line);
+ const list=addons().filter(a=>addonFits(a,line));
+ const groups={};list.forEach(a=>{(groups[a.cat||'Add-ons']=groups[a.cat||'Add-ons']||[]).push(a);});
+ modal('Add-on · '+line.name,'<div class="tiny muted" style="margin-bottom:10px">Tap to add to this '+
+  (line.kind==='product'?'item':'treatment')+'. Commission goes to '+esc(stf(line.handsOnId||line.staffId).name||'the therapist')+'.</div>'+
+  (list.length?Object.entries(groups).map(([g,xs])=>'<div class="pk2sec">'+esc(g)+'</div><div class="adgrid">'+xs.map(a=>{
+   const inn=cart.items.filter(z=>z.kind==='addon'&&z.parent===line.uid&&z.id===a.id).reduce((s,z)=>s+z.qty,0);
+   return '<button class="pk2card" id="ad-'+esc(a.id)+'" onclick="addonAdd('+x+',\''+esc(a.id)+'\')">'+
+    '<span class="pk2ico">'+ic('layers',17)+'</span><b>'+esc(a.name)+'</b>'+
+    '<small>'+(a.dur?a.dur+' min · ':'')+'comm '+commLabel(a)+'</small><span class="pk2price">'+rm(a.price)+'</span>'+
+    '<span class="pk2plus">'+ic('plus',14)+'</span>'+(inn?'<span class="pk2in">×'+inn+'</span>':'')+'</button>';}).join('')+'</div>').join('')
+   :'<div class="empty">'+ic('layers',22)+'<div>No add-ons in the catalogue yet.'+(boss()?' Add them under Catalogue → Add-ons.':'')+'</div></div>')+
+  '<div class="pk2foot"><button class="pk2cart" id="pk-cart" onclick="closeModal();render()">'+ic('bag',16)+
+   '<b id="pk-n">'+cart.items.filter(z=>z.parent===line.uid).reduce((s,z)=>s+z.qty,0)+'</b> add-on(s) on this line</button>'+
+   '<button class="btn" onclick="closeModal();render()">'+ic('check',15)+'Done</button></div>');
+};
+window.addonAdd=(x,id)=>{
+ const line=cart.items[x],a=addonOf(id);if(!line||!a)return;
+ const who=line.handsOnId||line.staffId||UID;
+ let z=cart.items.find(q=>q.kind==='addon'&&q.parent===line.uid&&q.id===id);
+ if(z)z.qty++;
+ else{z={kind:'addon',id,name:a.name,price:+a.price||0,qty:1,staffId:who,parent:line.uid,parentName:line.name};uidOf(z);
+  let at=x+1;while(cart.items[at]&&cart.items[at].kind==='addon'&&cart.items[at].parent===line.uid)at++;
+  cart.items.splice(at,0,z);}
+ z.commAmt=addonComm(a,z);LASTADD=z.uid;
+ flyToCart(document.getElementById('ad-'+id));
+ const nb=document.getElementById('pk-n');if(nb)nb.textContent=cart.items.filter(q=>q.parent===line.uid).reduce((s,q)=>s+q.qty,0);
+ const card=document.getElementById('ad-'+id);
+ if(card){let b=card.querySelector('.pk2in');if(!b){b=document.createElement('span');b.className='pk2in';card.appendChild(b);}b.textContent='×'+z.qty;}
+ render();
+ toast(a.name+' added to '+line.name);
+};
+window.addonWho=j=>{
+ const z=cart.items[j];if(!z)return;
+ modal('Commission for '+z.name,'<div class="card"><label>Commission goes to</label><select class="f" id="aw-s">'+
+  handsOnStaff().map(s=>'<option value="'+s.id+'"'+(s.id===z.staffId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+
+  '</select><button class="btn" style="width:100%;justify-content:center" onclick="addonWhoSave('+j+')">'+ic('check',15)+'Save</button></div>');
+};
+window.addonWhoSave=j=>{const z=cart.items[j];if(!z)return;z.staffId=$('#aw-s').value;window.closeModal();render();};
+
+/* ---------------- the item menu: categories on the left, cards on the right ---------------- */
+function pickGroups(kind,t){
+ const G=[];const add=(g,x)=>{let e=G.find(y=>y[0]===g);if(!e){e=[g,[]];G.push(e);}e[1].push(x);};
+ if(kind==='redeem'){redeemLines(cart.customerId).filter(x=>!t||x.name.toLowerCase().includes(t)||x.pkgName.toLowerCase().includes(t))
+  .forEach(x=>add(x.pkgName,x));return G;}
+ pickList(kind).filter(x=>!t||String(x.name||'').toLowerCase().includes(t)||String(x.cat||'').toLowerCase().includes(t))
+  .forEach(x=>add(kind==='service'?(x.cat||'Other treatments'):kind==='product'?(x.brand||x.cat||'Retail'):
+   kind==='package'?'Packages':'Product sets',x));
+ return G;
+}
+function pk2Card(kind,x){
+ let icon,sub,price=rm(x.price),key=x.id,dis=false;
+ const inn=kind==='redeem'?redeemInCart(x.cpId,x.line):cart.items.filter(i=>i.kind===kind&&i.id===x.id).reduce((a,i)=>a+i.qty,0);
+ if(kind==='service'){icon=ic('spark',18);sub=(x.dur||0)+' min';}
+ else if(kind==='product'){const st=stockOf(x.id);icon=x.image?'<img src="'+x.image+'" alt="">':ic('stock',18);
+  sub=st?st.qty+' in stock'+(st.qty<=st.reorder?' · low':''):'not stocked here';dis=!st||st.qty<=0;}
+ else if(kind==='set'){icon=ic('gift',18);sub=esc(setLabel(x));}
+ else if(kind==='package'){icon=ic('package',18);const w=pkgWorth(x);
+  sub=(x.items||[]).map(i=>i.n+'× '+esc(svc(i.serviceId).name||'?')).join(' + ')+(w>x.price?' · save '+Math.round((1-x.price/w)*100)+'%':'');
+  dis=!cart.customerId;}
+ else{icon=ic('package',18);const avail=x.left-inn;key=x.key;price='Redeem';
+  sub=avail+' of '+x.total+' left'+(x.expired?' · expired':'');dis=avail<=0;}
+ return '<button type="button" class="pk2card" id="pk-'+esc(key)+'"'+(dis?' disabled':'')+
+  ' onclick="pickAdd(\''+kind+'\',\''+esc(key)+'\')"><span class="pk2ico">'+icon+'</span>'+
+  '<b>'+esc(x.name)+'</b><small>'+sub+'</small><span class="pk2price">'+price+'</span>'+
+  '<span class="pk2plus">'+ic('plus',14)+'</span>'+(inn?'<span class="pk2in">×'+inn+'</span>':'')+'</button>';
+}
+function pk2Grid(q){
+ const t=String(q||'').trim().toLowerCase();
+ const G=pickGroups(PICKTAB,t);
+ let h='';
+ if(PICKTAB==='package'&&!cart.customerId)h+='<div class="warnbox">'+ic('alert',13)+' Choose the client first — a package goes onto their account.</div>';
+ if(!G.length)return h+'<div class="empty">'+ic('search',22)+'<div>'+(t?'Nothing matches “'+esc(q)+'”.':'Nothing here yet.')+'</div></div>';
+ return h+G.map(([g,xs])=>'<div class="pk2sec">'+esc(g)+' <span>'+xs.length+'</span></div><div class="adgrid">'+
+  xs.map(x=>pk2Card(PICKTAB,x)).join('')+'</div>').join('');
+}
+function pk2Foot(){
+ const n=cart.items.reduce((a,i)=>a+i.qty,0);
+ return '<button class="pk2cart" id="pk-cart" onclick="closeModal();render()">'+ic('bag',17)+
+  '<span><b><i id="pk-n" style="font-style:normal">'+n+'</i> item'+(n===1?'':'s')+' in the bill</b><small>'+rm(cartTotals().sub)+' before discounts</small></span></button>'+
+  '<button class="btn" onclick="closeModal();render()">'+ic('check',15)+'Done</button>';
+}
+function paintPicker2(){
+ const tabs=[['service','Treatments','spark'],['product','Products','stock'],['package','Packages','package']];
+ if((D.bundles||[]).some(b=>b.active!==false))tabs.splice(2,0,['set','Sets','gift']);
+ if(cart.customerId)tabs.push(['redeem','Redeem','check']);
+ if(PICKTAB==='redeem'&&!cart.customerId)PICKTAB='service';
+ const staffOpts=people().map(s=>'<option value="'+s.id+'"'+(s.id===PICKSTAFF?' selected':'')+'>'+esc(s.name)+'</option>').join('');
+ modal('Add to bill','<div class="pk2">'+
+  '<div class="pk2top"><div class="cpsearch" style="flex:1;margin:0"><span class="cpico">'+ic('search',16)+'</span>'+
+   '<input class="f" id="pk-q" style="margin:0" placeholder="Search the menu" autocomplete="off" oninput="pickFilter()"></div>'+
+   '<label class="pk2who">Credited to<select class="f" id="pk-s" style="margin:0" onchange="setPickStaff(this.value)">'+staffOpts+'</select></label></div>'+
+  '<div class="pk2body"><nav class="pk2rail">'+tabs.map(t=>'<button class="'+(PICKTAB===t[0]?'on':'')+'" onclick="setPickTab(\''+t[0]+'\')">'+
+    ic(t[2],17)+'<span>'+t[1]+'</span><i>'+pickList(t[0]).length+'</i></button>').join('')+'</nav>'+
+   '<div class="pk2grid" id="pk-grid">'+pk2Grid('')+'</div></div>'+
+  '<div class="pk2foot" id="pk-foot2">'+pk2Foot()+'</div></div>');
+ const sh=document.querySelector('#modal .sheet');if(sh)sh.classList.add('pk2sheet');
+ const qi=document.getElementById('pk-q');if(qi&&window.matchMedia&&window.matchMedia('(min-width:900px)').matches)setTimeout(()=>qi.focus(),80);
+}
+window.pickItem=kind=>{PICKTAB=kind||PICKTAB;
+ if(!PICKSTAFF||(isBranch()&&PICKSTAFF===UID))PICKSTAFF=actorId()||((people()[0]||{}).id)||UID;paintPicker2();};
+window.setPickTab=k=>{PICKTAB=k;const q=document.getElementById('pk-q');paintPicker2();
+ const q2=document.getElementById('pk-q');if(q&&q2&&q.value){q2.value=q.value;window.pickFilter();}};
+window.pickFilter=()=>{const g=document.getElementById('pk-grid');if(g)g.innerHTML=pk2Grid((document.getElementById('pk-q')||{}).value||'');};
+const pickAddOrig=window.pickAdd;
+window.pickAdd=(kind,id)=>{
+ const before=cart.items.map(i=>uidOf(i)+':'+i.qty).join('|');
+ const from=document.getElementById('pk-'+id);
+ pickAddOrig(kind,id);
+ const now=cart.items.map(i=>uidOf(i)+':'+i.qty);
+ if(now.join('|')===before)return;
+ const old=new Map(before.split('|').map(s=>s.split(':')));
+ const hit=cart.items.find(i=>!old.has(i.uid)||+old.get(i.uid)<i.qty);
+ if(hit)LASTADD=hit.uid;
+ flyToCart(from);
+ const g=document.getElementById('pk-grid');if(g){const top=g.scrollTop;g.innerHTML=pk2Grid((document.getElementById('pk-q')||{}).value||'');g.scrollTop=top;}
+ const f=document.getElementById('pk-foot2');if(f)setTimeout(()=>{const n=document.getElementById('pk-foot2');if(n)n.innerHTML=pk2Foot();popCart();},520);
+};
+/* the item flies from its card into the bag, and the bag answers */
+function flyToCart(from){
+ const to=document.getElementById('pk-cart')||document.getElementById('cartbadge');
+ if(!from||!to||!from.getBoundingClientRect||!document.body.animate)return;
+ const a=from.getBoundingClientRect(),b=to.getBoundingClientRect();
+ const d=document.createElement('div');d.className='flyer';
+ const ico=from.querySelector('.pk2ico');d.innerHTML=ico?ico.innerHTML:'';
+ const x0=a.left+a.width/2-20,y0=a.top+a.height/2-20,x1=b.left+Math.min(34,b.width/2)-20,y1=b.top+b.height/2-20;
+ d.style.left=x0+'px';d.style.top=y0+'px';document.body.appendChild(d);
+ const mx=(x1-x0)*0.5,my=Math.min(y1-y0,0)-120;
+ const an=d.animate([
+  {transform:'translate(0,0) scale(1)',opacity:1},
+  {transform:'translate('+mx+'px,'+my+'px) scale(1.15)',opacity:1,offset:0.45},
+  {transform:'translate('+(x1-x0)+'px,'+(y1-y0)+'px) scale(.35)',opacity:.2}],{duration:560,easing:'cubic-bezier(.3,.7,.4,1)'});
+ an.onfinish=()=>{d.remove();popCart();};
+ from.animate&&from.animate([{transform:'scale(1)'},{transform:'scale(.95)'},{transform:'scale(1)'}],{duration:260});
+}
+function popCart(){const c=document.getElementById('pk-cart')||document.getElementById('cartbadge');
+ if(c&&c.animate)c.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:320,easing:'ease-out'});}
+
+/* ---------------- payments: logos, reference numbers ---------------- */
+const REF_RE=/card|kad|debit|credit|visa|master|amex|atome|pay\s*later|spaylater|shopee|grab|hoolah|split|pace|rely|mcash/i;
+const payNeedsRef=m=>{const pm=typeof m==='string'?(payMethods().find(x=>x.name===m)||{name:m}):m;
+ return pm.ref!==undefined?!!pm.ref:REF_RE.test(pm.name||'');};
+/* the owner uploads each provider's official acceptance mark in Settings; until then a plain badge */
+function payLogo(m,size){
+ if(m.logo)return '<span class="paylogo'+(size==='sm'?' sm':'')+'"><img src="'+m.logo+'" alt="'+esc(m.name)+'"></span>';
+ const n=String(m.name||'');
+ const icn=/cash|tunai/i.test(n)?'wallet':/transfer|bank/i.test(n)?'home':/qr|duitnow|tng|touch|boost|wallet/i.test(n)?'qr':
+  /deposit/i.test(n)?'calendar':REF_RE.test(n)?'card':'card';
+ return '<span class="paylogo plain'+(size==='sm'?' sm':'')+'">'+ic(icn,size==='sm'?15:19)+'</span>';
+}
+function payButtons(){
+ const list=activePay();
+ if(!list.length)return '<div class="tiny" style="color:var(--rose)">No payment methods are switched on. Turn one on in Settings → Payment methods.</div>';
+ return list.map((m,i)=>'<button class="paybtn" onclick="addPayIdx('+i+')">'+payLogo(m)+'<b>'+esc(m.name)+'</b>'+
+  (payNeedsRef(m)?'<small>ref no.</small>':'')+'</button>').join('');
+}
+window.addPay=(m,amt,ref)=>{
+ const t=cartTotals(),pm=payMethods().find(x=>x.name===m)||{name:m},need=payNeedsRef(pm);
+ if(amt!==undefined){
+  if(!(+amt>0))return;
+  if(need&&String(ref||'').trim().length<4){toast('Enter the reference number for '+m);return;}
+  cart.payments.push({method:m,amount:r2(+amt),...(need||ref?{ref:String(ref||'').trim()}:{})});render();return;}
+ const bal=Math.max(0,r2(t.balance));
+ const cash=isCashMethod(m);
+ const quick=cash?[bal,Math.ceil(bal/10)*10,Math.ceil(bal/50)*50,Math.ceil(bal/100)*100].filter((v,i,a)=>v>0&&a.indexOf(v)===i):[bal];
+ modal('Payment · '+m,'<div class="card paysheet">'+
+  '<div class="payhead">'+payLogo(pm)+'<div><b>'+esc(m)+'</b><div class="tiny muted">Balance to pay '+rm(bal)+'</div></div></div>'+
+  '<label>Amount (RM)</label><input class="f payamt" id="py-a" type="number" step="0.01" min="0" inputmode="decimal" value="'+bal.toFixed(2)+'">'+
+  (quick.length>1?'<div class="row wrap2" style="margin:-4px 0 10px">'+quick.map(v=>'<button type="button" class="btn sm ghost" '+
+   'onclick="document.getElementById(\'py-a\').value=\''+v.toFixed(2)+'\'">'+rm(v)+'</button>').join('')+'</div>':'')+
+  (need?'<label>Reference number *</label><input class="f" id="py-r" autocomplete="off" '+
+   'placeholder="'+(/atome|later|grab|shopee/i.test(m)?'Order / transaction ID from the app':'Approval code on the terminal slip')+'">'+
+   '<div class="tiny muted" style="margin:-4px 0 10px">Needed before the bill can be completed, so the payment can be matched later.</div>'
+   :'<label>Reference <span class="muted">— optional</span></label><input class="f" id="py-r" autocomplete="off">')+
+  '<div id="py-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="py-go">'+ic('check',16)+'Add payment</button></div>',
+ ()=>{
+  const go=()=>{
+   const a=r2(+$('#py-a').value),r=String($('#py-r').value||'').trim(),e=$('#py-e');
+   if(!(a>0)){e.textContent='Enter the amount.';return;}
+   if(need&&r.length<4){e.textContent='Enter the reference number from the '+(/atome|later|grab|shopee/i.test(m)?'app':'card terminal')+'.';$('#py-r').focus&&$('#py-r').focus();return;}
+   if(r&&cart.payments.some(p=>p.ref===r)){e.textContent='That reference is already on this bill.';return;}
+   cart.payments.push({method:m,amount:a,...(r?{ref:r}:{})});window.closeModal();render();
+  };
+  $('#py-go').onclick=go;$('#py-r').onkeydown=ev=>{if(ev.key==='Enter')go();};
+  setTimeout(()=>{const f=need?$('#py-r'):$('#py-a');if(f&&f.focus)f.focus();},60);
+ });
+};
+/* no bill leaves without its references */
+const checkoutOrig=window.checkout;
+window.checkout=async()=>{
+ const miss=cart.payments.find(p=>payNeedsRef(p.method)&&!p.ref&&!p.apptId);
+ if(miss){toast(miss.method+' needs its reference number — remove it and add it again');return;}
+ return checkoutOrig();
+};
+
+/* ---------------- recent bills by day ---------------- */
+let BILLDAY='today',BILLQ='';const BILLCACHE={};
+const billDate=()=>BILLDAY==='today'?today():BILLDAY==='yesterday'?ymd(addDays(new Date(),-1)):BILLDAY;
+function billsFor(d){
+ if(d>=ymd(addDays(new Date(),-44)))return SALES.filter(s=>s.branchId===ME.branchId&&s.date===d);
+ if(BILLCACHE[d])return BILLCACHE[d];
+ BILLCACHE[d]=null;
+ getDocs(query(collection(db,'sales'),where('date','==',d),limit(300))).then(s=>{
+  BILLCACHE[d]=s.docs.map(x=>({id:x.id,...x.data()})).filter(x=>x.branchId===ME.branchId)
+   .sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  if(TAB==='pos'&&billDate()===d)paintBills();}).catch(e=>{BILLCACHE[d]=[];toast(friendly(e));});
+ return undefined;
+}
+function billRows(){
+ const d=billDate(),all=billsFor(d);
+ if(all===undefined||all===null)return '<div class="skel"></div><div class="skel" style="width:70%"></div>';
+ const q=BILLQ.trim().toLowerCase();
+ const xs=all.filter(s=>!q||String(s.invoiceNo||'').toLowerCase().includes(q)||String(s.customerName||'').toLowerCase().includes(q)||
+  String(s.customerNo||'').toLowerCase().includes(q)||(s.payments||[]).some(p=>String(p.ref||'').toLowerCase().includes(q)));
+ const live=xs.filter(s=>!s.voided),sum=live.reduce((a,s)=>a+(+s.total||0),0);
+ return '<div class="blsum"><span><b>'+live.length+'</b> bill'+(live.length===1?'':'s')+(xs.length>live.length?' · '+(xs.length-live.length)+' voided':'')+'</span>'+
+  '<b>'+rm(sum)+'</b></div>'+
+  (xs.length?xs.map(s=>'<div class="blrow" onclick="openSale(\''+s.id+'\')">'+
+   '<span class="bltime">'+tstr(s.at)+'</span>'+
+   '<div style="flex:1;min-width:0"><b>'+esc(s.customerName||'Walk-in')+'</b>'+(s.customerNo?'<span class="cno'+(isMem(s.customerNo)?' mem':'')+'">'+esc(s.customerNo)+'</span>':'')+
+    '<div class="tiny muted">'+esc(s.invoiceNo||s.id.slice(0,6))+' · '+(s.items||[]).length+' item'+((s.items||[]).length===1?'':'s')+' · '+
+    esc([...new Set((s.payments||[]).map(p=>p.method))].join(', ')||'unpaid')+'</div></div>'+
+   (s.voided?'<span class="pill r">Voided</span>':saleBalance(s)>0?'<span class="pill a">'+rm(saleBalance(s))+' owed</span>':'')+
+   '<b class="blamt">'+rm(s.total)+'</b></div>').join('')
+   :'<div class="empty">'+ic('receipt',22)+'<div>'+(q?'No bill matches “'+esc(BILLQ)+'”.':'No bills on '+dstr(d)+'.')+'</div></div>');
+}
+function billsCard(){
+ const d=billDate();
+ return '<div class="card" id="billcard"><div class="sec-h"><h2>'+ic('receipt',17)+' Bills</h2>'+
+  (boss()?'<button class="btn sm ghost" onclick="cashUp()">'+ic('list',15)+'Cash up</button>':'')+'</div>'+
+  '<div class="blbar"><div class="seg blseg">'+
+   '<button class="'+(BILLDAY==='today'?'on':'')+'" onclick="billDay(\'today\')">Today</button>'+
+   '<button class="'+(BILLDAY==='yesterday'?'on':'')+'" onclick="billDay(\'yesterday\')">Yesterday</button></div>'+
+   '<input class="f" type="date" id="bl-d" value="'+d+'" max="'+today()+'" onchange="billDay(this.value)">'+
+   '<div class="cpsearch" style="flex:1;min-width:160px;margin:0"><span class="cpico">'+ic('search',15)+'</span>'+
+    '<input class="f" id="bl-q" style="margin:0" placeholder="Invoice, client or ref no." value="'+esc(BILLQ)+'" oninput="billFind(this.value)"></div></div>'+
+  '<div class="tiny muted" style="margin:2px 0 6px">'+(BILLDAY==='today'?'Today, ':BILLDAY==='yesterday'?'Yesterday, ':'')+dstr(d)+'</div>'+
+  '<div id="bl-list">'+billRows()+'</div></div>';
+}
+function paintBills(){const b=document.getElementById('bl-list');if(b)b.innerHTML=billRows();}
+window.billDay=v=>{if(!v)return;BILLDAY=v===today()?'today':v===ymd(addDays(new Date(),-1))?'yesterday':v;
+ const c=document.getElementById('billcard');if(c)c.outerHTML=billsCard();else render();};
+window.billFind=v=>{BILLQ=v;paintBills();};
+
+/* ---------------- catalogue: add-ons ---------------- */
+function catAddons(){
+ const L=addons();
+ return '<div class="sec-h"><h2>Add-ons</h2><button class="btn sm" onclick="editAddon()">'+ic('plus',15)+'New</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Extras added on top of a treatment at checkout — a mask, an eye treatment, extra minutes. '+
+  'Each add-on carries its own commission, paid to whoever the add-on is credited to (the therapist doing the treatment by default).</p>'+
+  (L.length?L.map(a=>'<div class="item" data-id="'+esc(a.id)+'" onclick="editAddon(this.dataset.id)">'+
+   '<div class="spread"><b>'+esc(a.name)+offTag(a)+'</b><span>'+rm(a.price)+'</span></div>'+
+   '<div class="tiny muted">'+esc(a.cat||'Add-ons')+(a.dur?' · '+a.dur+' min':'')+' · commission '+commLabel(a)+
+   ' · '+(a.applies==='all'?'any item':'treatments only')+'</div></div>').join('')
+   :'<div class="empty">No add-ons yet. Add your first one.</div>');
+}
+window.editAddon=id=>{
+ const a=id?addonOf(id):{name:'',cat:'',price:0,dur:0,commType:'pct',commVal:10,applies:'treat',active:true};
+ modal(id?'Edit add-on':'New add-on','<div class="card">'+
+  '<label>Name</label><input class="f" id="ao-n" value="'+esc(a.name)+'" placeholder="Collagen mask, Eye treatment, +15 min massage">'+
+  '<div class="grid g3"><div><label>Group</label><input class="f" id="ao-g" value="'+esc(a.cat||'')+'" placeholder="Masks"></div>'+
+  '<div><label>Price (RM)</label><input class="f" id="ao-p" type="number" step="0.01" value="'+(a.price||0)+'"></div>'+
+  '<div><label>Extra minutes</label><input class="f" id="ao-d" type="number" value="'+(a.dur||0)+'"></div></div>'+
+  '<div class="fieldset"><h3>'+ic('wallet',13)+'Commission</h3><div class="grid g2">'+
+  '<div><label>Type</label><select class="f" id="ao-ct"><option value="pct"'+(a.commType!=='rm'?' selected':'')+'>% of the add-on price</option>'+
+   '<option value="rm"'+(a.commType==='rm'?' selected':'')+'>Fixed RM per add-on</option></select></div>'+
+  '<div><label>Value</label><input class="f" id="ao-cv" type="number" step="0.01" value="'+(+a.commVal||0)+'"></div></div></div>'+
+  '<label>Can be added to</label><select class="f" id="ao-ap"><option value="treat"'+(a.applies!=='all'?' selected':'')+'>Treatments and package sessions</option>'+
+   '<option value="all"'+(a.applies==='all'?' selected':'')+'>Any item on the bill</option></select>'+
+  '<label class="row" style="gap:9px"><input type="checkbox" id="ao-on"'+(a.active!==false?' checked':'')+'> Show at checkout</label>'+
+  '<div id="ao-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="saveAddon(\''+(id||'')+'\')">'+ic('check',16)+'Save add-on</button>'+
+  (id?'<button class="btn ghost sm" style="margin-top:8px;color:var(--rose)" onclick="dropAddon(\''+id+'\')">'+ic('trash',14)+'Delete</button>':'')+'</div>');
+};
+window.saveAddon=async id=>{
+ const n=$('#ao-n').value.trim(),e=$('#ao-e');
+ if(n.length<2){e.textContent='Give the add-on a name.';return;}
+ const x={id:id||'ao'+Date.now().toString(36),name:n,cat:$('#ao-g').value.trim(),price:r2(+$('#ao-p').value||0),
+  dur:Math.max(0,Math.round(+$('#ao-d').value||0)),commType:$('#ao-ct').value,commVal:r2(+$('#ao-cv').value||0),
+  applies:$('#ao-ap').value,active:$('#ao-on').checked};
+ if(x.commType==='pct'&&x.commVal>100){e.textContent='Commission cannot be more than 100%.';return;}
+ const list=addons().filter(a=>a.id!==x.id);
+ if(list.some(a=>a.name.toLowerCase()===n.toLowerCase())){e.textContent=n+' is already an add-on.';return;}
+ const old=id?addonOf(id):null,idx=id?addons().findIndex(a=>a.id===id):-1;
+ if(idx>=0)list.splice(idx,0,x);else list.push(x);
+ try{await setDoc(doc(db,'meta','settings'),{addons:list},{merge:true});D.meta.addons=list;
+  await audit(id?'Add-on updated':'Add-on created',n+' '+rm(x.price)+' · commission '+commLabel(x)+
+   (old&&(old.commVal!==x.commVal||old.commType!==x.commType)?' (was '+commLabel(old)+')':''));
+  window.closeModal();render();toast('Add-on saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+window.dropAddon=async id=>{
+ const a=addonOf(id);if(!a||!confirm('Delete '+a.name+'? Bills that already include it keep their record.'))return;
+ const list=addons().filter(x=>x.id!==id);
+ try{await setDoc(doc(db,'meta','settings'),{addons:list},{merge:true});D.meta.addons=list;
+  await audit('Add-on deleted',a.name);window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+
 </script>
