@@ -285,7 +285,7 @@ td{padding:9px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
 .blk.in small{color:#F1E2CB}
 .buf{position:absolute;left:3px;right:3px;border-radius:0 0 8px 8px;
   background:repeating-linear-gradient(45deg,var(--line-2),var(--line-2) 4px,transparent 4px,transparent 8px)}
-.nowline{position:absolute;left:0;right:0;border-top:2px solid var(--brass);z-index:2}
+.nowline{position:absolute;left:0;right:0;border-top:2px solid var(--brass);z-index:2;pointer-events:none}
 .nowline::before{content:'';position:absolute;left:0;top:-4px;width:7px;height:7px;border-radius:99px;
   background:var(--brass)}
 .legend{display:flex;gap:13px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--ink-3)}
@@ -498,75 +498,105 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .chip.on{background:var(--ink);color:var(--cream);border-color:var(--ink);font-weight:530}
 
 
-/* ---------- app shell: the tray menu + glass bars ---------- */
-.tray{position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:88vh;
-  display:flex;flex-direction:column;overflow:hidden;
-  background:rgba(250,247,240,.94);backdrop-filter:blur(30px) saturate(180%);
-  -webkit-backdrop-filter:blur(30px) saturate(180%);
-  border:1px solid rgba(255,255,255,.62);border-bottom:0;border-radius:26px 26px 0 0;
-  box-shadow:0 -22px 64px -20px rgba(20,18,15,.52);
-  transform:translateY(103%);pointer-events:none;
-  transition:transform .34s var(--ease)}
-.tray.open{transform:none;pointer-events:auto}
-.trayhandle{flex:none;height:18px;display:grid;place-items:center;cursor:pointer}
-.trayhandle::after{content:'';width:38px;height:4px;border-radius:99px;background:var(--line)}
-.trayhead{flex:none;display:flex;align-items:center;gap:11px;padding:4px 15px 13px;
-  border-bottom:1px solid var(--line-2)}
-.trayhead .avatar{width:40px;height:40px;border-radius:14px;font-size:14px;flex:none;
-  background:linear-gradient(145deg,var(--brass),#7E5B26);color:#fff;
-  display:grid;place-items:center;font-weight:650;
-  box-shadow:0 4px 12px -4px rgba(166,124,61,.85)}
-.trayhead b{display:block;font-size:14px;line-height:1.3;overflow:hidden;
-  text-overflow:ellipsis;white-space:nowrap}
-.trayhead span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.trayhead .iconbtn{margin-left:auto;flex:none}
-.traybody{flex:1;overflow-y:auto;padding:2px 11px 6px;overscroll-behavior:contain;
-  scrollbar-width:thin;-webkit-overflow-scrolling:touch}
-.traybody::-webkit-scrollbar{width:4px}
-.traybody::-webkit-scrollbar-thumb{background:var(--line);border-radius:9px}
-.traygroup{--acc:var(--brass);--tint:var(--brass-soft)}
-.traygroup.gc{--acc:var(--jade);--tint:var(--jade-soft)}
-.traygroup.gm{--acc:var(--amber);--tint:var(--amber-soft)}
-.traygroup.gx{--acc:var(--ink-2);--tint:var(--line-2)}
-.trayglab{display:flex;align-items:center;gap:9px;margin:11px 5px 7px;
-  font-size:9.8px;text-transform:uppercase;letter-spacing:.13em;font-weight:700;color:var(--acc)}
-.trayglab::after{content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,var(--tint),rgba(0,0,0,0))}
-.traygrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.ttile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:7px 3px 8px;
-  border:0;background:transparent;border-radius:17px;cursor:pointer;color:var(--ink);
-  transition:background .2s var(--ease),transform .16s var(--ease)}
-.ttile:active{transform:scale(.93)}
-.ttile:hover .tchip{transform:translateY(-2px)}
-.tchip{position:relative;width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
-  background:var(--tint);color:var(--acc);border:1px solid rgba(20,18,15,.05);
-  box-shadow:0 3px 10px -4px rgba(20,18,15,.28),inset 0 1px 0 rgba(255,255,255,.75);
-  transition:transform .2s var(--ease),background .22s,color .22s,box-shadow .22s}
-.ttile.on .tchip{background:var(--acc);color:#fff;border-color:var(--acc);
-  box-shadow:0 8px 20px -7px var(--acc),inset 0 1px 0 rgba(255,255,255,.28)}
-.tname{font-size:11.5px;font-weight:560;line-height:1.25;text-align:center;max-width:100%;
+/* ---------- app shell: the tray menu (smoked glass) ---------- */
+.tray{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;
+  max-height:calc(100vh - 34px - env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;overflow:hidden;border-radius:30px;color:var(--cream);
+  background:
+    radial-gradient(420px 220px at 100% 0%,rgba(201,160,99,.20),rgba(201,160,99,0) 70%),
+    radial-gradient(360px 240px at 0% 100%,rgba(46,107,82,.13),rgba(46,107,82,0) 70%),
+    linear-gradient(165deg,rgba(44,39,32,.74),rgba(18,16,13,.84));
+  backdrop-filter:blur(40px) saturate(185%);-webkit-backdrop-filter:blur(40px) saturate(185%);
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.35),
+    0 40px 90px -30px rgba(0,0,0,.75),0 10px 30px -12px rgba(0,0,0,.45);
+  transform:translateY(calc(100% + 40px)) scale(.985);opacity:0;pointer-events:none;
+  transition:transform .46s cubic-bezier(.2,.9,.25,1),opacity .3s var(--ease)}
+.tray.open{transform:none;opacity:1;pointer-events:auto}
+/* a hairline sheen along the top edge, the way light catches real glass */
+.tray::before{content:'';position:absolute;left:14%;right:14%;top:0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,236,200,.55),rgba(255,255,255,0))}
+.trayhandle{flex:none;height:20px;display:grid;place-items:center;cursor:pointer}
+.trayhandle::after{content:'';width:36px;height:4px;border-radius:99px;background:rgba(255,255,255,.22)}
+.trayhead{flex:none;display:flex;align-items:center;gap:12px;padding:2px 18px 15px;position:relative}
+.trayhead::after{content:'';position:absolute;left:18px;right:18px;bottom:0;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.14),rgba(255,255,255,0))}
+.trayhead .avatar{width:42px;height:42px;border-radius:15px;font-size:14px;flex:none;
+  display:grid;place-items:center;font-weight:650;color:#1B1712;letter-spacing:.02em;
+  background:linear-gradient(150deg,#E6CB98,#B8893F 60%,#8A6530);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 20px -8px rgba(201,160,99,.8)}
+.trayhead b{display:block;font-size:15px;font-weight:620;letter-spacing:-.015em;line-height:1.3;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ttile.on .tname{font-weight:700;color:var(--acc)}
-.tmeta{font-size:9.5px;line-height:1.2;color:var(--acc);font-weight:600;text-align:center;
-  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-3px}
-.tdot{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;
-  border-radius:99px;background:var(--rose);color:#fff;font-size:10px;font-weight:700;
-  display:grid;place-items:center;line-height:1;box-shadow:0 0 0 2.5px var(--surface-2)}
-.trayfoot{flex:none;display:flex;align-items:center;gap:10px;padding:10px 15px;
-  border-top:1px solid var(--line-2);
-  padding-bottom:calc(10px + env(safe-area-inset-bottom))}
-.trayfoot .tiny{margin-left:auto}
-@media(min-width:520px){.traygrid{grid-template-columns:repeat(5,1fr)}}
+.trayhead span{display:block;font-size:11.5px;color:rgba(244,240,231,.52);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trayhead .iconbtn,.trayfoot .btn{background:rgba(255,255,255,.07);color:var(--cream);
+  border:1px solid rgba(255,255,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+.trayhead .iconbtn{margin-left:auto;flex:none;width:36px;height:36px;padding:0;border-radius:99px}
+.trayhead .iconbtn:active,.trayfoot .btn:active{background:rgba(255,255,255,.18)}
+.traybody{flex:1;overflow-y:auto;padding:14px 12px 4px;overscroll-behavior:contain;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.traybody::-webkit-scrollbar{display:none}
+.shelf{margin-bottom:10px;padding:11px 8px 8px;border-radius:22px;
+  background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.075);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.shelflab{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 9px;
+  font-size:9.5px;font-weight:650;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(244,240,231,.5)}
+.shelflab::before,.shelflab::after{content:'';width:22px;height:1px;
+  background:linear-gradient(90deg,rgba(201,160,99,0),rgba(201,160,99,.7))}
+.shelflab::after{transform:scaleX(-1)}
+/* every tile is the same width across the tray and each row sits centred,
+   so a short category is balanced rather than left hanging */
+.shelfrow{display:flex;flex-wrap:wrap;justify-content:center;gap:2px}
+.ttile{flex:0 0 calc((100% - 8px)/5);min-width:0;display:flex;flex-direction:column;align-items:center;
+  gap:7px;padding:6px 2px 8px;border:0;background:transparent;border-radius:16px;cursor:pointer;
+  color:rgba(244,240,231,.84);-webkit-tap-highlight-color:transparent;
+  transition:transform .18s var(--ease)}
+.ttile:active{transform:scale(.92)}
+.tchip{position:relative;width:54px;height:54px;border-radius:19px;display:grid;place-items:center;
+  color:#EFE8DA;
+  background:linear-gradient(160deg,rgba(255,255,255,.15),rgba(255,255,255,.04));
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),inset 0 -8px 16px -10px rgba(0,0,0,.5),
+    0 10px 22px -14px rgba(0,0,0,.9);
+  transition:transform .24s var(--ease),background .25s,border-color .25s,box-shadow .25s}
+.ttile:hover .tchip{transform:translateY(-2px);border-color:rgba(255,236,200,.3)}
+.ttile.on .tchip{color:#1B1712;border-color:rgba(255,236,200,.55);
+  background:linear-gradient(150deg,#EBD2A2,#C49A55 55%,#95703A);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 26px -10px rgba(201,160,99,.85)}
+.tlab{font-size:11px;font-weight:540;letter-spacing:.005em;line-height:1.2;text-align:center;color:inherit;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ttile.on .tlab{color:#F1DDB6;font-weight:650}
+.tmeta{font-size:9.5px;line-height:1.1;margin-top:-4px;color:rgba(226,197,143,.78);font-weight:560;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tdot{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;
+  display:grid;place-items:center;font-size:10px;font-weight:750;line-height:1;color:#1B1712;
+  background:linear-gradient(150deg,#F0D9AE,#C49A55);
+  box-shadow:0 0 0 2.5px rgba(26,23,19,.95),0 4px 10px -3px rgba(0,0,0,.6)}
+.trayfoot{flex:none;display:flex;align-items:center;gap:10px;padding:10px 18px 14px;position:relative}
+.trayfoot::before{content:'';position:absolute;left:18px;right:18px;top:0;height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.12),rgba(255,255,255,0))}
+.trayfoot .btn{border-radius:99px;padding:7px 14px}
+.trayfoot .tiny{margin-left:auto;color:rgba(244,240,231,.36);letter-spacing:.04em}
+/* the tiles settle in one after another as the tray opens */
+@keyframes trayIn{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
+.tray.open .ttile{animation:trayIn .42s cubic-bezier(.2,.9,.25,1) both;
+  animation-delay:calc(90ms + var(--i,0) * 22ms)}
+.tray.open .shelf{animation:fadeIn .4s var(--ease) both}
+@media(max-width:359px){.ttile{flex-basis:calc((100% - 6px)/4)}}
 @media(min-width:760px){
-  .tray{left:50%;right:auto;width:min(640px,calc(100% - 28px));
-    bottom:calc(14px + env(safe-area-inset-bottom));border-radius:26px;
-    border-bottom:1px solid rgba(255,255,255,.62);transform:translate(-50%,calc(103% + 20px))}
+  .tray{left:50%;right:auto;width:min(660px,calc(100% - 32px));bottom:calc(16px + env(safe-area-inset-bottom));
+    transform:translate(-50%,calc(100% + 40px)) scale(.985)}
   .tray.open{transform:translate(-50%,0)}
-  .traygrid{grid-template-columns:repeat(6,1fr)}
+  .traybody{padding:16px 16px 6px}
+  .shelf{padding:13px 10px 10px}
+  .tchip{width:58px;height:58px;border-radius:20px}
+  .tlab{font-size:11.5px}
 }
-.navveil{position:fixed;inset:0;z-index:55;background:rgba(20,18,15,.45);
-  backdrop-filter:blur(2px);display:none;animation:fadeIn .2s var(--ease)}
-.navveil.on{display:block}
+.navveil{position:fixed;inset:0;z-index:55;background:rgba(14,12,10,.34);
+  backdrop-filter:blur(7px) saturate(115%);-webkit-backdrop-filter:blur(7px) saturate(115%);
+  opacity:0;pointer-events:none;transition:opacity .32s var(--ease)}
+.navveil.on{opacity:1;pointer-events:auto}
 .main{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 
 /* ---------- bottom navigation bar ---------- */
@@ -1043,7 +1073,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21f';
+const BUILD='2026-09-21g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1321,8 +1351,6 @@ const TABS=[
  {id:'cat', ic:'list',   label:'Catalogue',perm:'admin',   group:'Manage', desc:'Treatments, products, prices'},
  {id:'set', ic:'gear',   label:'Settings', perm:null,      group:'Manage', desc:'Business details and data'}];
 const GROUPS=['Today','Clients','Money','Manage'];
-/* each category carries its own accent so the icons read apart at a glance */
-const GKEY={Today:'gt',Clients:'gc',Money:'gm',Manage:'gx'};
 /* the order the bottom bar prefers — first four the person is allowed to see win a slot */
 const BNAV=['home','book','pos','cust','merit','lib','shift','board'];
 let navOpen=false;
@@ -1385,23 +1413,23 @@ function render(){
    '<span class="tiny muted">'+(ROLE[ME.role]||ME.role)+' · '+esc(branch().name)+'</span></div>'+
    '<button class="iconbtn" onclick="toggleNav()" aria-label="Close menu">'+
     ic('close',17)+'</button></div>'+
-  '<div class="traybody">'+GROUPS.map(g=>{
+  '<div class="traybody">'+(()=>{let k=0;return GROUPS.map(g=>{
     const items=allowed.filter(t=>t.group===g);
     if(!items.length)return '';
-    return '<div class="traygroup '+(GKEY[g]||'')+'">'+
-     '<div class="trayglab">'+esc(g)+'</div><div class="traygrid">'+
+    return '<section class="shelf" data-group="'+esc(g)+'">'+
+     '<div class="shelflab">'+esc(g)+'</div><div class="shelfrow">'+
      items.map(t=>{
       const b=tileBadge(t),n=navCount(t);
-      return '<button class="ttile'+(TAB===t.id?' on':'')+'" onclick="go(\''+t.id+'\')" '+
-       'title="'+esc(t.desc||t.label)+'">'+
-       '<span class="tchip">'+ic(t.ic,25)+
+      return '<button class="ttile'+(TAB===t.id?' on':'')+'" style="--i:'+(k++)+'" '+
+       'onclick="go(\''+t.id+'\')" title="'+esc(t.desc||t.label)+'">'+
+       '<span class="tchip">'+ic(t.ic,24)+
         (n?'<span class="tdot">'+(n>99?'99+':n)+'</span>':'')+'</span>'+
-       '<span class="tname">'+esc(t.label)+'</span>'+
+       '<span class="tlab">'+esc(t.label)+'</span>'+
        (b?'<span class="tmeta">'+esc(b)+'</span>':'')+'</button>';}).join('')+
-     '</div></div>';}).join('')+
+     '</div></section>';}).join('');})()+
   '</div>'+
   '<div class="trayfoot"><button class="btn ghost sm" onclick="firebaseSignOut()">'+
-   ic('out',15)+'Sign out</button>'+
+   ic('out',14)+'Sign out</button>'+
    '<span class="tiny muted">Build '+BUILD+'</span></div>'+
   '</div>';
  $('#root').innerHTML=tray+
