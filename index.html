@@ -927,31 +927,45 @@ tr.fbmine td{background:var(--brass-soft)}
 .laterInfo{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--brass)}
 .laterInfo select{font-size:11px;padding:2px 4px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
 
-/* ---------- hero: weather beside the clock ---------- */
-.heroSide{flex:none;display:flex;align-items:flex-start;gap:10px;position:relative;z-index:1}
-.heroWx{display:grid;justify-items:center;align-content:start;gap:1px;min-width:88px;padding:7px 10px 8px;
-  border-radius:18px;border:1px solid rgba(255,255,255,.10);color:var(--cream);cursor:pointer;
-  background:linear-gradient(170deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:transform .16s var(--ease)}
-.heroWx:active{transform:scale(.95)}
-.heroWx b{font-size:15px;font-weight:650;letter-spacing:-.02em;line-height:1.1;margin-top:1px}
-.heroWx .wxname{font-size:10.5px;color:#E2C58F;font-weight:600;line-height:1.25}
-.heroWx .wxwhen{font-size:9.5px;color:#A8A092;line-height:1.25;white-space:nowrap}
-.heroWx.empty .wxname{color:#A8A092}
-.wxnext{display:none}
+/* ---------- hero: one instrument — the clock and the weather ---------- */
+.heroInst{flex:none;display:flex;align-items:stretch;position:relative;z-index:1;
+  padding:10px 14px 10px 12px;border-radius:26px;
+  border:1px solid rgba(244,240,231,.16);
+  background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.heroInst .heroClock{gap:4px;align-content:center}
+.instRule{width:1px;margin:4px 14px;flex:none;
+  background:linear-gradient(180deg,rgba(244,240,231,0),rgba(244,240,231,.22),rgba(244,240,231,0))}
+.instWx{display:grid;align-content:center;justify-items:start;gap:2px;min-width:112px;padding:0;border:0;
+  background:none;color:var(--cream);cursor:pointer;text-align:left;font-variant-numeric:tabular-nums}
+.iwmain{display:flex;align-items:center;gap:6px}
+.iwtemp{font-size:34px;font-weight:300;letter-spacing:-.04em;line-height:1}
+.iwtemp sup{font-size:.5em;font-weight:400;vertical-align:.6em;margin-left:1px;color:#C79A55}
+.iwcond{font-size:12px;font-weight:600;letter-spacing:.01em;color:#E9D5AE;margin-top:3px}
+.iwmeta{font-size:10.5px;color:#A8A092;white-space:nowrap}
+.iwrh{display:inline-flex;align-items:center;gap:3px}
+.iwlive{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;color:#8C8577;margin-top:3px;
+  letter-spacing:.02em;white-space:nowrap}
+.iwlive i{width:6px;height:6px;border-radius:99px;background:#7FB48F;box-shadow:0 0 0 0 rgba(127,180,143,.6);
+  animation:wxpulse 2.4s ease-out infinite}
+.iwlive.fc i{background:#C79A55;animation:none}
+.iwlive.stale i{background:#6F6A60;animation:none}
+@keyframes wxpulse{0%{box-shadow:0 0 0 0 rgba(127,180,143,.55)}80%,100%{box-shadow:0 0 0 7px rgba(127,180,143,0)}}
+.iwnext{display:none}
+.instWx.empty .iwtemp{color:#8C8577}
 .wxart{display:block;overflow:visible}
-.wx-rays{transform-origin:32px 32px;animation:wxspin 22s linear infinite}
-.wx-core{transform-origin:32px 32px;animation:wxglow 3.4s ease-in-out infinite}
+.wx-rays{animation:wxspin 24s linear infinite}
+.wx-core{animation:wxglow 3.6s ease-in-out infinite}
 .wx-cloud{animation:wxdrift 5.5s ease-in-out infinite alternate}
-.wx-drop{opacity:0;animation:wxfall 1.05s linear infinite}
-.wx-heavy .wx-drop{animation-duration:.72s}
-.wx-bolt{opacity:0;animation:wxflash 3.8s linear infinite;filter:drop-shadow(0 0 4px rgba(242,194,101,.9))}
+.wx-drop{opacity:0;animation:wxfall 1.1s linear infinite}
+.wx-drop.fast{animation-duration:.7s}
+.wx-bolt{opacity:0;animation:wxflash 3.8s linear infinite;filter:drop-shadow(0 0 5px rgba(199,154,85,.95))}
 .wx-star{animation:wxtw 2.6s ease-in-out infinite}
-.wx-moonb{transform-origin:30px 30px;animation:wxbob 6s ease-in-out infinite}
+.wx-moonb{animation:wxbob 6s ease-in-out infinite}
 .wx-haze{animation:wxhaze 4.5s ease-in-out infinite alternate}
 .wx-wind{stroke-dasharray:46 16;animation:wxwind 2.2s linear infinite}
 @keyframes wxspin{to{transform:rotate(360deg)}}
-@keyframes wxglow{50%{transform:scale(1.06)}}
+@keyframes wxglow{50%{transform:scale(1.07)}}
 @keyframes wxdrift{from{transform:translateX(-1.6px)}to{transform:translateX(2.2px)}}
 @keyframes wxfall{0%{transform:translateY(-5px);opacity:0}25%{opacity:1}100%{transform:translateY(9px);opacity:0}}
 @keyframes wxflash{0%,80%,100%{opacity:0}82%{opacity:1}85%{opacity:.25}88%{opacity:1}92%{opacity:0}}
@@ -959,33 +973,44 @@ tr.fbmine td{background:var(--brass-soft)}
 @keyframes wxbob{50%{transform:translateY(-1.5px) rotate(-4deg)}}
 @keyframes wxhaze{from{transform:translateX(-3px)}to{transform:translateX(3px)}}
 @keyframes wxwind{to{stroke-dashoffset:-62}}
-.wxrow{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:14px;margin-bottom:4px;
+.wxnow{display:flex;align-items:center;gap:14px;background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.wxnowt{font-size:38px;font-weight:300;letter-spacing:-.04em;line-height:1}
+.wxnowt small{font-size:14px;color:#C79A55;margin-left:2px}
+.wxnow .muted{color:#A8A092}
+.wxhours{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.wxhours>div,.wxdays>div{display:grid;justify-items:center;gap:2px;padding:8px 4px;border-radius:14px;
   background:var(--ink);color:var(--cream)}
+.wxhours .muted,.wxdays .muted{color:#A8A092}
+.wxrow{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:14px;margin-bottom:4px;
+  background:rgba(20,18,15,.86);color:var(--cream)}
 .wxrow b{display:block;font-size:13.5px}
 .wxrow .muted{color:#A8A092}
-.wxrow:not(.now){background:rgba(20,18,15,.82)}
-.wxrow.now{box-shadow:0 0 0 2px var(--brass)}
+.wxrow.now{background:var(--ink);box-shadow:0 0 0 2px var(--brass)}
 .wxdays{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.wxdays>div{display:grid;justify-items:center;gap:2px;padding:8px 4px;border-radius:14px;
-  background:var(--ink);color:var(--cream)}
-.wxdays .muted{color:#A8A092}
 @media(max-width:520px){
   .heroTop{flex-wrap:wrap}
   .heroWho{flex-basis:100%}
-  .heroSide{width:100%;justify-content:flex-start;align-items:center;gap:12px;margin-top:2px}
-  .heroWx{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto auto;justify-items:start;
-    column-gap:10px;align-items:center;min-width:0;flex:1;padding:9px 12px;text-align:left}
-  .heroWx .wxart{grid-row:1/4}
-  .wxnext{display:flex;grid-column:3;grid-row:1/4;align-items:center;gap:6px;padding-left:10px;
-    border-left:1px solid rgba(255,255,255,.1);font-size:9.5px;color:#A8A092;line-height:1.3;align-self:stretch}
-  .wxnext>span{display:grid}
-  .wxnext b{font-size:10.5px;color:var(--cream);font-weight:600}
-  .heroSide .heroClock{flex:none}
+  .heroInst{width:100%;margin-top:4px}
+  .instWx{flex:1;min-width:0;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
+  .iwmain,.iwcond,.iwmeta,.iwlive{grid-column:1}
+  .iwnext{display:flex;grid-column:2;grid-row:1/5;justify-self:end;gap:2px;padding-left:12px;
+    border-left:1px solid rgba(244,240,231,.12);align-self:stretch;align-items:center}
+  .iwnext>span{display:grid;justify-items:center;gap:1px;width:34px}
+  .iwnext em{font-style:normal;font-size:9.5px;color:#8C8577}
+  .iwnext b{font-size:11px;font-weight:600}
 }
+@media(max-width:520px){.iwnext>span:nth-child(n+4){display:none}}
+@media(max-width:380px){.iwnext>span:nth-child(n+3){display:none}}
 
 /* ---------- home widgets ---------- */
 .wgrid{display:grid;gap:12px;margin-bottom:12px}
-@media(min-width:760px){.wgrid{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}}
+@media(min-width:760px){.wgrid{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}
+  .wgrid>#wneed{grid-column:1/-1}}
+@media(min-width:1000px){.wgrid{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr)}
+  .wgrid>#wneed{grid-column:auto}
+  #wneed .needlist{max-height:292px;overflow-y:auto;scrollbar-width:thin;margin:0 -6px;padding:0 6px}}
+.wico.warn{background:var(--amber-soft);color:var(--amber)}
+.wico.ok{background:var(--jade-soft);color:var(--jade)}
 .wgrid>*{min-width:0}
 .wgrid .card{margin:0;display:flex;flex-direction:column}
 .wh{display:flex;align-items:center;gap:9px;margin-bottom:12px}
@@ -1031,6 +1056,55 @@ tr.fbmine td{background:var(--brass-soft)}
 .wtreat .pr{font-weight:650;font-size:13px;flex:none}
 .wempty{display:grid;justify-items:center;gap:8px;text-align:center;color:var(--ink-3);padding:10px 6px}
 .wempty p{margin:0;font-size:12.5px;line-height:1.5}
+
+/* ---------- clients: side by side on a landscape tablet ---------- */
+.crname{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.crflags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.cpane{display:none}
+@media(min-width:820px){
+  .wrap:has(.cwrap){max-width:1440px}
+  .cwrap{display:grid;grid-template-columns:minmax(260px,300px) minmax(0,1fr);gap:14px;
+    height:calc(100dvh - 196px - env(safe-area-inset-bottom));min-height:480px}
+  .clist{margin:0;padding:12px;display:flex;flex-direction:column;min-height:0}
+  .clhead{flex:none;padding-bottom:10px;border-bottom:1px solid var(--line-2);margin-bottom:8px}
+  .clscroll{flex:1;min-height:0;overflow-y:auto;margin:0 -6px;padding:2px 6px;scrollbar-width:thin}
+  .crow{margin-bottom:6px;padding:9px 10px;transition:background .18s var(--ease),border-color .18s}
+  .crow.sel{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+  .crow.sel .muted{color:#A8A092}
+  .crow.sel .avatar{background:var(--brass);color:#fff}
+  .crow.sel>.row>svg,.crow.sel .ico{color:#C79A55}
+  .cpane{display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0}
+  .cphead{flex:none;margin:0;display:flex;align-items:center;gap:14px;padding:14px 16px}
+  .cphead h2{font-size:19px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cpav{width:52px;height:52px;border-radius:16px;font-size:17px;flex:none}
+  .cpflags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+  .cpflags:empty{display:none}
+  .cpacts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none;max-width:48%}
+  .cpcols{flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;position:relative;
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 26px),transparent);mask-image:linear-gradient(#000 calc(100% - 26px),transparent)}
+  .clscroll{-webkit-mask-image:linear-gradient(#000 calc(100% - 22px),transparent);mask-image:linear-gradient(#000 calc(100% - 22px),transparent)}
+  .cpjump{position:sticky;top:0;z-index:2;display:inline-flex;gap:3px;padding:3px;margin:0 0 10px;border-radius:99px;
+    background:rgba(244,240,231,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line)}
+  .cpjump button{display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:6px 12px;
+    border-radius:99px;font-size:12px;font-weight:560;color:var(--ink-2);cursor:pointer}
+  .cpjump button.on{background:var(--ink);color:var(--cream)}
+  .cpcol>.card:last-child{margin-bottom:4px}
+  .cptitle{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:650;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-3);margin:2px 2px 8px}
+  .cpcol+.cpcol .cptitle{margin-top:16px}
+  .cpempty{flex:1;margin:0;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;color:var(--ink-3)}
+  .cpempty p{margin:0;max-width:260px}
+  .cpcol .kv{grid-template-columns:96px 1fr}
+}
+/* wide enough for profile and history next to each other, each scrolling on its own */
+@media(min-width:1180px){
+  .cpcols{overflow:visible;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:14px;
+    -webkit-mask-image:none;mask-image:none}
+  .cpjump{display:none}
+  .cpcol{min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:2px;
+    -webkit-mask-image:linear-gradient(#000 calc(100% - 26px),transparent);mask-image:linear-gradient(#000 calc(100% - 26px),transparent)}
+  .cpcol+.cpcol .cptitle{margin-top:2px}
+}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -1141,7 +1215,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21j';
+const BUILD='2026-09-21k';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1569,14 +1643,15 @@ function clockSVG(){
   '<circle cx="50" cy="50" r="1.3" fill="var(--ink)"/></svg>';
 }
 let NOTEIDX=0,tickBound=false;
+let WXMIN=-1;
 function tickClock(){
  const d=new Date();
+ /* each new minute the reading moves on; the sources are asked only when due.
+    Keyed on the minute changing, so a skipped or throttled tick cannot miss it */
+ const mk=Math.floor(+d/6e4);
+ if(mk!==WXMIN){WXMIN=mk;if(document.getElementById('heroWx'))paintWx();wxNowLoad();wxLoad();}
  const ar=document.getElementById('att-run');
  if(ar&&ar.dataset.from)ar.textContent=runFor(ar.dataset.from);
- if(d.getSeconds()===0){
-  if(document.getElementById('heroWx')&&wxPeriod(d)!==WXPER)paintWx();
-  wxLoad();
- }
  const s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;
  const set=(id,deg)=>{const el=document.getElementById(id);
   if(el&&typeof el.setAttribute==='function')
@@ -1657,9 +1732,10 @@ function vHome(){
       (SHIFT.closedAt?'day closed':'day open')+'</span>'
       :'<span class="hchip warn">'+ic('alert',12)+'day not opened</span>')+
     '</div></div>'+
-   '<div class="heroSide">'+wxHTML()+
+   '<div class="heroInst" id="heroInst">'+
     '<div class="heroClock">'+clockSVG()+
-    '<div class="ckdigital" id="ck-digital">'+tstr(new Date())+'</div></div></div>'+
+    '<div class="ckdigital" id="ck-digital">'+tstr(new Date())+'</div></div>'+
+    '<span class="instRule" aria-hidden="true"></span>'+wxHTML()+'</div>'+
   '</div>'+
   '<div class="heroStats">'+
    (can('pos')?'<div><b>'+rm(f.revenue).replace('RM','')+'</b><span>taken</span></div>':'')+
@@ -1675,8 +1751,8 @@ function vHome(){
  '</section>';
 
  /* ---- attendance and programme suggestion ---- */
- h+='<div class="wgrid">'+wAttend()+wProgram()+'</div>';
- setTimeout(()=>wxLoad(),0);
+ h+='<div class="wgrid">'+wAttend()+wProgram()+'<!--NEED--></div>';
+ setTimeout(()=>{wxNowLoad();wxLoad();},0);
 
  /* ---- things that need a decision ---- */
  const alerts=[];
@@ -1697,11 +1773,15 @@ function vHome(){
   ' overdue · '+rm(owedSum(late)),d:late.slice(0,3).map(x=>x.customerName).join(', '),go:"go('pos')"});
  if(f.noShow)alerts.push({i:'alert',t:f.noShow+' no-show'+(f.noShow>1?'s':'')+' today',
   d:'Follow up while it is still fresh.',go:"go('book')"});
- if(alerts.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('bell',16)+
-  ' Needs attention</h2><span class="pill">'+alerts.length+'</span></div>'+
-  alerts.map(a=>'<button class="needrow" onclick="'+a.go+'">'+
+ /* it sits in the same row as attendance and the programme widget */
+ h=h.replace('<!--NEED-->','<div class="card wcard" id="wneed"><div class="wh"><span class="wico'+
+  (alerts.length?' warn':' ok')+'">'+ic(alerts.length?'bell':'check',16)+'</span><h2>Needs attention</h2>'+
+  '<span class="pill'+(alerts.length?' a':' g')+'">'+(alerts.length||'clear')+'</span></div>'+
+  (alerts.length?'<div class="needlist">'+alerts.map(a=>'<button class="needrow" onclick="'+a.go+'">'+
    '<span class="aico">'+ic(a.i,17)+'</span><span class="atext"><b>'+esc(a.t)+'</b>'+
-   '<span>'+esc(a.d)+'</span></span>'+ic('right',15)+'</button>').join('')+'</div>';
+   '<span>'+esc(a.d)+'</span></span>'+ic('right',15)+'</button>').join('')+'</div>'
+   :'<div class="wempty">'+ic('check',22)+'<p>Nothing waiting on you right now.</p></div>')+
+  '</div>');
 
  /* ---- figures ---- */
  if(can('pos')){
@@ -2101,30 +2181,6 @@ window.waLink=id=>{
 
 /* ============ clients ============ */
 let custQ='';
-function vCust(){
- const list=custQ.trim()?matchClients(custQ,80):CUSTS.filter(c=>c.active!==false);
- return '<div class="card"><div class="row" style="margin-bottom:11px">'+
-  '<div style="flex:1;position:relative"><span style="position:absolute;left:11px;top:10px;color:var(--ink-3)">'+
-  ic('search',17)+'</span><input class="f" id="cq" style="margin:0;padding-left:36px" '+
-  'placeholder="Search name or phone number" value="'+esc(custQ)+'"></div>'+
-  '<button class="btn" onclick="newCust()">'+ic('plus',16)+'</button></div>'+
-  '<div class="tiny muted" style="margin-bottom:9px">'+list.length+(custQ.trim()?' found':' shown')+'</div>'+
-  (list.length?list.map(c=>{
-   const flags=[];
-   if(c.allergy)flags.push('<span class="pill r">'+ic('alert',11)+'allergy</span>');
-   if((c.tags||[]).length)flags.push('<span class="pill b">'+esc(c.tags[0])+'</span>');
-   if(c.marketing===false)flags.push('<span class="pill">no promo</span>');
-   const bd=c.dob&&c.dob.slice(5,7)===today().slice(5,7);
-   if(bd)flags.push('<span class="pill a">'+ic('gift',11)+'birthday</span>');
-   return '<div class="item" onclick="openCust(\''+c.id+'\')"><div class="row">'+
-    '<div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:13px">'+
-    esc(initials(c.name))+'</div><div style="flex:1;min-width:0">'+
-    '<div class="spread"><b>'+esc(c.name)+'</b></div>'+
-    '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.skin?' · '+esc(c.skin):'')+'</div>'+
-    (flags.length?'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px">'+flags.join('')+'</div>':'')+
-    '</div>'+ic('right',16)+'</div></div>';}).join('')
-  :'<div class="empty">'+ic('users',26)+'<div>No clients found. Try another spelling, or add a new one.</div></div>')+
-  '</div>';}
 function bindCustSearch(){
  const el=$('#cq');if(!el)return;
  let t=null;
@@ -5634,16 +5690,25 @@ function wProgram(){
 window.homeCon=id=>{HOMECON=id;const el=document.getElementById('wprog');if(el)el.outerHTML=wProgram();};
 window.startProgFor=id=>{PROGSEED={concerns:[id]};PROG=null;progView='build';window.go('prog');};
 
-/* ---- weather: MET Malaysia's forecast, from the government open data API ---- */
-const WXKEY='luuna:wx';
+/* ---- weather ----
+   Two sources, both free for business use under CC BY 4.0:
+   · MET Norway (api.met.no) — hour-by-hour model values for this exact spot, polled every
+     10 minutes and eased minute by minute, so the reading moves through the day.
+   · MET Malaysia via data.gov.my — the official pagi / petang / malam forecast and the days
+     ahead; also the fallback whenever MET Norway cannot be reached. */
+const WXKEY='luuna:wx',WXNKEY='luuna:wxn';
 let WX=null,WXBUSY=false,WXERR='',WXPER='';
+let WXN=null,WXNBUSY=false,WXNERR='';
 try{WX=JSON.parse(localStorage.getItem(WXKEY)||'null');}catch(e){}
+try{WXN=JSON.parse(localStorage.getItem(WXNKEY)||'null');}catch(e){}
 const wxLoc=()=>(branch().wxLoc||'Kulai');
+const wxLat=()=>+(branch().wxLat||1.6561),wxLon=()=>+(branch().wxLon||103.6032);
 function wxPeriod(d){const h=(d||new Date()).getHours();
  return h>=6&&h<12?'morning':(h>=12&&h<19?'afternoon':'night');}
 const WXWHEN={morning:'Pagi',afternoon:'Petang',night:'Malam'};
-const WXNAME={storm:'Ribut petir',heavy:'Hujan lebat',rain:'Hujan',sun:'Cerah',moon:'Cerah',
- haze:'Berjerebu',wind:'Berangin',cloud:'Mendung'};
+const WXNAME={storm:'Ribut petir',heavy:'Hujan lebat',rain:'Hujan',drizzle:'Hujan renyai',sun:'Cerah',
+ moon:'Cerah',psun:'Berawan',pmoon:'Berawan',haze:'Berjerebu',fog:'Berkabus',wind:'Berangin',cloud:'Mendung'};
+/* MET Malaysia wording → picture */
 function wxKind(text,night){
  const t=String(text||'').toLowerCase();
  if(t.includes('ribut petir'))return 'storm';
@@ -5655,7 +5720,20 @@ function wxKind(text,night){
  if(t.includes('mendung')||t.includes('berawan'))return 'cloud';
  return night?'moon':'sun';
 }
+/* MET Norway symbol codes → picture */
+function symKind(sym){
+ const s=String(sym||'');const night=s.endsWith('_night');
+ if(s.includes('thunder'))return 'storm';
+ if(s.startsWith('heavyrain')||s.startsWith('heavysleet'))return 'heavy';
+ if(/rain|sleet|snow/.test(s))return s.startsWith('light')?'drizzle':'rain';
+ if(s.startsWith('fog'))return 'fog';
+ if(s.startsWith('cloudy'))return 'cloud';
+ if(s.startsWith('partlycloudy')||s.startsWith('fair'))return night?'pmoon':'psun';
+ if(s.startsWith('clearsky'))return night?'moon':'sun';
+ return 'cloud';
+}
 const wxDay=date=>(WX&&WX.rows||[]).find(r=>r.date===date)||null;
+
 async function wxLoad(force){
  if(WXBUSY)return;
  const fresh=WX&&WX.loc===wxLoc()&&WX.at&&(Date.now()-WX.at<3600e3)&&wxDay(today());
@@ -5678,89 +5756,290 @@ async function wxLoad(force){
  WXBUSY=false;
  paintWx();
 }
-/* small animated scenes, drawn in the hero's cream and brass */
+async function wxNowLoad(force){
+ if(WXNBUSY)return;
+ const lat=wxLat().toFixed(4),lon=wxLon().toFixed(4);
+ const fresh=WXN&&WXN.lat===lat&&WXN.lon===lon&&(Date.now()-WXN.at<600e3)&&wxNow();
+ if(fresh&&!force)return;
+ WXNBUSY=true;
+ try{
+  /* a plain GET, so the browser identifies the app by its Origin as MET Norway asks,
+     and its HTTP cache honours their Expires header between polls */
+  const r=await fetch('https://api.met.no/weatherapi/locationforecast/2.0/compact?lat='+lat+'&lon='+lon);
+  if(!r.ok)throw new Error('MET Norway answered '+r.status);
+  const j=await r.json();
+  const ts=((j.properties||{}).timeseries||[]).slice(0,30).map(x=>{
+   const d=(x.data||{}),i=(d.instant||{}).details||{},n1=d.next_1_hours||d.next_6_hours||{};
+   return {t:x.time,temp:i.air_temperature,rh:i.relative_humidity,wind:i.wind_speed,
+    cloud:i.cloud_area_fraction,sym:(n1.summary||{}).symbol_code||'',
+    pr:((d.next_1_hours||{}).details||{}).precipitation_amount};}).filter(x=>x.temp!=null);
+  if(!ts.length)throw new Error('MET Norway sent no readings');
+  WXN={at:Date.now(),lat,lon,updated:((j.properties||{}).meta||{}).updated_at||'',ts};
+  WXNERR='';
+  try{localStorage.setItem(WXNKEY,JSON.stringify(WXN));}catch(e){}
+ }catch(e){WXNERR=String(e&&e.message||e);}
+ WXNBUSY=false;
+ paintWx();
+}
+/* the reading for this minute: eased between the hour either side */
+function wxNow(at){
+ const ts=WXN&&WXN.ts;if(!ts||!ts.length)return null;
+ const now=+(at||new Date());
+ let i=-1;for(let k=0;k<ts.length;k++){if(+new Date(ts[k].t)<=now)i=k;else break;}
+ if(i<0||now-+new Date(ts[i].t)>2*3600e3)return null;
+ const a=ts[i],b=ts[i+1]||a;
+ const span=Math.max(1,+new Date(b.t)-+new Date(a.t)),f=b===a?0:Math.min(1,(now-+new Date(a.t))/span);
+ const mix=(x,y)=>x==null?y:(y==null?x:x+(y-x)*f);
+ const temp=mix(a.temp,b.temp),rh=mix(a.rh,b.rh);
+ return {temp,rh,wind:mix(a.wind,b.wind),sym:a.sym,pr:a.pr,feels:heatIndex(temp,rh),
+  kind:symKind(a.sym),next:ts.slice(i+1,i+7)};
+}
+/* how hot it feels — the heat index, for Kulai's humid afternoons */
+function heatIndex(c,rh){
+ if(c==null||rh==null)return c;
+ const T=c*9/5+32;
+ let hi=0.5*(T+61+((T-68)*1.2)+rh*0.094);
+ if(hi>=80)hi=-42.379+2.04901523*T+10.14333127*rh-.22475541*T*rh-.00683783*T*T-.05481717*rh*rh+
+  .00122874*T*T*rh+.00085282*T*rh*rh-.00000199*T*T*rh*rh;
+ return (hi-32)*5/9;
+}
+
+/* line drawings in the clock's own strokes: cream lines, brass accents */
 function wxArt(k,size){
- const sz=size||46;
- const cloud=(y,fill)=>'<g transform="translate(0 '+y+')"><path class="wx-cloud" fill="'+(fill||'#EDE6D8')+
-  '" d="M19 46h27a10 10 0 0 0 1.5-19.9A13 13 0 0 0 22.6 24A10.5 10.5 0 0 0 19 46z"/></g>';
- const drops=n=>'<g class="wx-drops">'+[...Array(n)].map((_,i)=>{const x=22+i*(20/(n-1||1));
-  return '<line class="wx-drop" style="animation-delay:'+(i*0.27).toFixed(2)+'s" x1="'+x+'" y1="48" x2="'+
-   (x-2)+'" y2="54" stroke="#9FC3D6" stroke-width="2.4" stroke-linecap="round"/>';}).join('')+'</g>';
- const sun=(dim)=>'<g'+(dim?' opacity=".55"':'')+'><g class="wx-rays" stroke="#E7B75A" stroke-width="3" '+
-  'stroke-linecap="round">'+[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;
-  return '<line x1="'+(32+19*Math.cos(a)).toFixed(1)+'" y1="'+(32+19*Math.sin(a)).toFixed(1)+
-   '" x2="'+(32+25*Math.cos(a)).toFixed(1)+'" y2="'+(32+25*Math.sin(a)).toFixed(1)+'"/>';}).join('')+
-  '</g><circle class="wx-core" cx="32" cy="32" r="12.5" fill="#F2C265"/>'+
-  '<circle cx="28.5" cy="28.5" r="5" fill="#FBE3A6" opacity=".6"/></g>';
+ const sz=size||46,C='rgba(244,240,231,.92)',B='#C79A55';
+ const cloud=(x,y,sc,op)=>'<g transform="translate('+x+' '+y+') scale('+(sc||1)+')"'+(op?' opacity="'+op+'"':'')+'>'+
+  '<path class="wx-cloud" d="M20 44h25a9 9 0 0 0 1-17.9A12 12 0 0 0 23.2 25a9.5 9.5 0 0 0-3.2 19z" '+
+  'fill="rgba(20,18,15,.55)" stroke="'+C+'" stroke-width="2.2" stroke-linejoin="round"/></g>';
+ const drops=(n,fast)=>'<g>'+[...Array(n)].map((_,i)=>{const x=22+i*(22/Math.max(1,n-1));
+  return '<line class="wx-drop'+(fast?' fast':'')+'" style="animation-delay:'+(i*0.23).toFixed(2)+'s" x1="'+
+   x.toFixed(1)+'" y1="47" x2="'+(x-2.4).toFixed(1)+'" y2="53" stroke="'+B+'" stroke-width="2.2" '+
+   'stroke-linecap="round"/>';}).join('')+'</g>';
+ const sun=(cx,cy,r,op)=>'<g'+(op?' opacity="'+op+'"':'')+'><g class="wx-rays" style="transform-origin:'+cx+'px '+cy+'px" '+
+  'stroke="'+B+'" stroke-width="2.2" stroke-linecap="round">'+[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;
+  return '<line x1="'+(cx+(r+4)*Math.cos(a)).toFixed(1)+'" y1="'+(cy+(r+4)*Math.sin(a)).toFixed(1)+
+   '" x2="'+(cx+(r+8)*Math.cos(a)).toFixed(1)+'" y2="'+(cy+(r+8)*Math.sin(a)).toFixed(1)+'"/>';}).join('')+
+  '</g><circle class="wx-core" style="transform-origin:'+cx+'px '+cy+'px" cx="'+cx+'" cy="'+cy+'" r="'+r+
+  '" fill="rgba(199,154,85,.18)" stroke="'+B+'" stroke-width="2.2"/></g>';
+ const moon=(cx,cy,s)=>'<g transform="translate('+(cx-30*s)+' '+(cy-30*s)+') scale('+s+')">'+
+  '<g class="wx-moonb" style="transform-origin:30px 30px"><path d="M39.5 41.5A14 14 0 1 1 29 16a11 11 0 0 0 10.5 25.5z" '+
+  'fill="rgba(244,240,231,.08)" stroke="'+C+'" stroke-width="2.2" stroke-linejoin="round"/></g></g>';
+ const stars='<circle class="wx-star" cx="47" cy="15" r="1.6" fill="'+B+'"/>'+
+  '<circle class="wx-star" style="animation-delay:.9s" cx="53" cy="27" r="1.2" fill="'+B+'"/>'+
+  '<circle class="wx-star" style="animation-delay:1.7s" cx="41" cy="7" r="1" fill="'+B+'"/>';
  const art={
-  sun:sun(),
-  moon:'<g class="wx-moonb"><path d="M39.5 43.5A15 15 0 1 1 30 15.2a12 12 0 0 0 9.5 28.3z" fill="#EFE3C4"/></g>'+
-   '<circle class="wx-star" cx="45" cy="17" r="1.8" fill="#F6E7BE"/>'+
-   '<circle class="wx-star" style="animation-delay:.8s" cx="51" cy="29" r="1.3" fill="#F6E7BE"/>'+
-   '<circle class="wx-star" style="animation-delay:1.6s" cx="42" cy="9" r="1.1" fill="#F6E7BE"/>',
-  cloud:'<g transform="translate(9 -6) scale(.7)" opacity=".7">'+cloud(0,'#BDB4A4')+'</g>'+cloud(4),
-  rain:cloud(-6)+drops(3),
-  heavy:cloud(-6,'#CFC6B6')+drops(5),
-  storm:cloud(-6,'#C9C0B0')+drops(2)+
-   '<path class="wx-bolt" d="M33 40l-6 10h5l-3 9 9-12h-5l3-7z" fill="#F2C265"/>',
-  haze:sun(true)+'<g class="wx-haze" stroke="#D9CFBD" stroke-width="2.6" stroke-linecap="round" fill="none">'+
-   '<path d="M10 42q6-4 12 0t12 0 12 0 12 0"/><path d="M14 50q6-4 12 0t12 0 12 0"/></g>',
-  wind:'<g class="wx-winds" stroke="#E4DCCB" stroke-width="3" stroke-linecap="round" fill="none">'+
+  sun:sun(32,32,10),
+  moon:moon(30,30,1)+stars,
+  psun:sun(41,21,7.5)+cloud(-3,6,.95),
+  pmoon:moon(42,20,.62)+'<circle class="wx-star" cx="55" cy="10" r="1.2" fill="'+B+'"/>'+cloud(-3,6,.95),
+  cloud:cloud(8,-6,.7,.55)+cloud(-2,4),
+  drizzle:cloud(0,-6)+drops(3),
+  rain:cloud(0,-6)+drops(4),
+  heavy:cloud(0,-6)+drops(6,true),
+  storm:cloud(0,-6)+drops(2)+'<path class="wx-bolt" d="M34 40l-7 10h5.5l-3 9 10-12.5h-5.5l3.5-6.5z" fill="'+B+'"/>',
+  haze:sun(32,24,8,.5)+'<g class="wx-haze" stroke="'+C+'" stroke-width="2.2" stroke-linecap="round" fill="none">'+
+   '<path d="M10 42q6-4 12 0t12 0 12 0 12 0"/><path d="M14 50q6-4 12 0t12 0 12 0" opacity=".6"/></g>',
+  fog:'<g class="wx-haze" stroke="'+C+'" stroke-width="2.2" stroke-linecap="round" fill="none">'+
+   '<path d="M10 26h40"/><path d="M14 34h40" opacity=".75"/><path d="M8 42h40"/><path d="M16 50h32" opacity=".6"/></g>',
+  wind:'<g stroke="'+C+'" stroke-width="2.2" stroke-linecap="round" fill="none">'+
    '<path class="wx-wind" d="M8 24h30a6 6 0 1 0-6-6"/>'+
-   '<path class="wx-wind" style="animation-delay:.4s" d="M8 34h42a6 6 0 1 1-6 6"/>'+
+   '<path class="wx-wind" style="animation-delay:.4s" stroke="'+B+'" d="M8 34h42a6 6 0 1 1-6 6"/>'+
    '<path class="wx-wind" style="animation-delay:.8s" d="M8 44h22"/></g>'};
  return '<svg class="wxart wx-'+k+'" width="'+sz+'" height="'+sz+'" viewBox="0 0 64 64" aria-hidden="true">'+
   (art[k]||art.cloud)+'</svg>';
 }
+const wxhm=iso=>new Date(iso).toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit',hour12:false});
+
+/* the weather half of the clock cluster */
 function wxHTML(){
- const d=wxDay(today());
  WXPER=wxPeriod();
- if(!d)return '<button class="heroWx empty" id="heroWx" onclick="wxSheet()" '+
-  'title="'+esc(WXERR||'Loading the forecast')+'">'+wxArt('cloud',40)+
-  '<b>—°</b><span class="wxname">'+(WXERR?'Tiada data':'Memuat…')+'</span>'+
-  '<span class="wxwhen">'+esc(wxLoc())+'</span></button>';
- const night=WXPER==='night';
- const text=d[WXPER]||d.summary||'';
- const k=wxKind(text,night);
- return '<button class="heroWx" id="heroWx" data-kind="'+k+'" onclick="wxSheet()" '+
-  'title="'+esc(text)+' · MET Malaysia">'+wxArt(k)+
-  '<b>'+(d.min!=null?d.min+'–':'')+d.max+'°</b><span class="wxname">'+WXNAME[k]+'</span>'+
-  '<span class="wxwhen">'+WXWHEN[WXPER]+' · '+esc(WX.loc)+'</span>'+wxNextHTML(d)+'</button>';
+ const n=wxNow(),d=wxDay(today());
+ let k,big,cond,meta,live,cls='instWx',title='';
+ if(n){
+  k=n.kind;big=Math.round(n.temp)+'<sup>°</sup>';cond=WXNAME[k];
+  meta='Rasa '+Math.round(n.feels)+'° · <span class="iwrh" title="Kelembapan">'+
+   '<svg viewBox="0 0 10 12" width="8" height="10" aria-hidden="true"><path d="M5 .8C3.4 3.3 1.3 5.6 1.3 7.7a3.7 3.7 0 0 0 7.4 0C8.7 5.6 6.6 3.3 5 .8z" fill="#8FB6CC"/></svg>'+
+   Math.round(n.rh)+'%</span>';
+  const stale=Date.now()-WXN.at>30*60e3;
+  live='<span class="iwlive'+(stale?' stale':'')+'"><i></i>'+esc(wxLoc())+' · '+wxhm(WXN.at)+
+   (stale?' · luar talian':'')+'</span>';
+  title=cond+' · MET Norway';
+ }else if(d){
+  const text=d[WXPER]||d.summary||'';
+  k=wxKind(text,WXPER==='night');big=d.max+'<sup>°</sup>';cond=WXNAME[k];
+  meta='Hari ini '+d.min+'–'+d.max+'°';
+  live='<span class="iwlive fc"><i></i>'+WXWHEN[WXPER]+' · '+esc(WX.loc)+'</span>';
+  title=text+' · MET Malaysia';
+ }else{
+  k='cloud';big='—';cond=(WXERR&&WXNERR)?'Tiada data':'Memuat…';meta='';cls+=' empty';
+  live='<span class="iwlive stale"><i></i>'+esc(wxLoc())+'</span>';title=WXNERR||WXERR||'';
+ }
+ const strip=n&&n.next.length?'<span class="iwnext">'+n.next.slice(0,4).map(x=>
+  '<span><em>'+wxhm(x.t).slice(0,2)+'</em>'+wxArt(symKind(x.sym),22)+'<b>'+Math.round(x.temp)+'°</b></span>').join('')+'</span>':'';
+ return '<button class="'+cls+'" id="heroWx" data-kind="'+k+'" onclick="wxSheet()" title="'+esc(title)+'">'+
+  '<span class="iwmain">'+wxArt(k,44)+'<span class="iwtemp">'+big+'</span></span>'+
+  '<span class="iwcond">'+esc(cond)+'</span>'+(meta?'<span class="iwmeta">'+meta+'</span>':'')+live+strip+
+  '</button>';
 }
-/* what the next part of the day looks like — shown where there is room for it */
-function wxNextHTML(d){
- const nxt={morning:['afternoon',d,'Petang'],afternoon:['night',d,'Malam'],
-  night:['morning',wxDay(ymd(addDays(new Date(),new Date().getHours()>=6?1:0))),'Esok pagi']}[WXPER];
- if(!nxt||!nxt[1])return '';
- const t=nxt[1][nxt[0]]||'';const k=wxKind(t,nxt[0]==='night');
- return '<span class="wxnext" title="'+esc(t)+'">'+wxArt(k,26)+'<span>'+nxt[2]+'<b>'+WXNAME[k]+'</b></span></span>';
+function paintWx(){
+ const el=document.getElementById('heroWx');if(!el)return;
+ const html=wxHTML();
+ const t=document.createElement('div');t.innerHTML=html;const nu=t.firstElementChild;
+ if(!nu||!el.replaceWith){el.outerHTML=html;return;}
+ if(el.dataset.kind===nu.dataset.kind){
+  const o=el.querySelector('.iwmain .wxart'),n=nu.querySelector('.iwmain .wxart');if(o&&n)n.replaceWith(o);}
+ el.replaceWith(nu);
 }
-function paintWx(){const el=document.getElementById('heroWx');if(el)el.outerHTML=wxHTML();}
+
 window.wxSheet=()=>{
- const d=wxDay(today());
- const per=wxPeriod();
- const row=(p)=>{const t=d[p]||'';const k=wxKind(t,p==='night');
+ const d=wxDay(today()),n=wxNow(),per=wxPeriod();
+ const row=p=>{const t=d[p]||'';const k=wxKind(t,p==='night');
   return '<div class="wxrow'+(p===per?' now':'')+'">'+wxArt(k,40)+'<div style="flex:1;min-width:0"><b>'+
    WXWHEN[p]+(p===per?' <span class="pill g">sekarang</span>':'')+'</b>'+
    '<span class="tiny muted">'+esc(t||'—')+'</span></div></div>';};
  const next=(WX&&WX.rows||[]).filter(r=>r.date>today()).slice(0,4);
- modal('Cuaca · '+esc(wxLoc()),d?
-  '<div class="card"><div class="spread" style="margin-bottom:8px"><h3>Hari ini</h3>'+
+ let h='';
+ if(n)h+='<div class="card wxnow">'+wxArt(n.kind,64)+
+  '<div style="flex:1;min-width:0"><div class="wxnowt">'+Math.round(n.temp)+'°<small>C</small></div>'+
+  '<b>'+WXNAME[n.kind]+'</b><div class="tiny muted">Rasa seperti '+Math.round(n.feels)+'° · lembapan '+
+  Math.round(n.rh)+'% · angin '+Math.round((n.wind||0)*3.6)+' km/j'+
+  (n.pr?' · hujan sejam lagi '+n.pr+' mm':'')+'</div></div></div>'+
+  '<div class="card"><h3 style="margin-bottom:8px">Beberapa jam lagi</h3><div class="wxhours">'+
+  n.next.slice(0,6).map(x=>'<div><span class="tiny muted">'+wxhm(x.t)+'</span>'+wxArt(symKind(x.sym),32)+
+   '<b>'+Math.round(x.temp)+'°</b></div>').join('')+'</div></div>';
+ if(d)h+='<div class="card"><div class="spread" style="margin-bottom:8px"><h3>Ramalan rasmi hari ini</h3>'+
    '<span class="pill">'+d.min+'° – '+d.max+'°C</span></div>'+
    ['morning','afternoon','night'].map(row).join('')+'</div>'+
   (next.length?'<div class="card"><h3 style="margin-bottom:8px">Hari seterusnya</h3>'+
    '<div class="wxdays">'+next.map(r=>{const k=wxKind(r.summary,false);
-    return '<div>'+'<span class="tiny muted">'+new Date(r.date+'T00:00').toLocaleDateString('ms-MY',
+    return '<div><span class="tiny muted">'+new Date(r.date+'T00:00').toLocaleDateString('ms-MY',
      {weekday:'short',day:'numeric'})+'</span>'+wxArt(k,34)+'<b>'+r.max+'°</b>'+
-     '<span class="tiny muted">'+r.min+'°</span></div>';}).join('')+'</div></div>':'')+
-  '<p class="tiny muted">Ramalan rasmi MET Malaysia untuk kawasan '+esc(WX.loc)+', melalui data.gov.my '+
-  '(CC BY 4.0). Dikemas kini '+new Date(WX.at).toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'})+
-  '. Ini ramalan untuk waktu pagi / petang / malam, bukan bacaan suhu langsung.</p>'+
-  '<button class="btn ghost sm" onclick="wxLoad(true).then(()=>window.wxSheet())">'+ic('history',14)+'Muat semula</button>'
-  :'<div class="card"><p>'+(WXERR?'Ramalan tak dapat dimuat: '+esc(WXERR)+'.':'Sedang memuat ramalan…')+'</p>'+
-   '<button class="btn sm" onclick="wxLoad(true).then(()=>window.wxSheet())">'+ic('history',14)+'Cuba lagi</button></div>');
+     '<span class="tiny muted">'+r.min+'°</span></div>';}).join('')+'</div></div>':'');
+ if(!n&&!d)h+='<div class="card"><p>Cuaca tak dapat dimuat: '+esc(WXNERR||WXERR||'belum ada sambungan')+'.</p></div>';
+ h+='<p class="tiny muted">'+
+  (n?'Bacaan semasa: MET Norway (api.met.no), dikemas kini '+wxhm(WXN.at)+
+   ' dan setiap 10 minit. Ia anggaran model cuaca untuk lokasi spa, bukan bacaan stesen. ':'')+
+  (d?'Ramalan rasmi: MET Malaysia melalui data.gov.my, untuk kawasan '+esc(WX.loc)+'. ':'')+
+  'Kedua-dua data di bawah lesen CC BY 4.0.</p>'+
+  '<button class="btn ghost sm" onclick="Promise.all([wxNowLoad(true),wxLoad(true)]).then(()=>window.wxSheet())">'+
+  ic('history',14)+(n||d?'Muat semula':'Cuba lagi')+'</button>';
+ modal('Cuaca · '+esc(wxLoc()),h);
 };
-window.wxLoad=wxLoad;window.wxKind=wxKind;
+window.wxLoad=wxLoad;window.wxNowLoad=wxNowLoad;window.wxKind=wxKind;window.symKind=symKind;
+/* coming back to the tablet brings the reading up to date straight away */
+if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(!document.hidden&&document.getElementById('heroWx')){
+ paintWx();wxNowLoad();wxLoad();}});
+
+
+/* ============ clients: list, profile and history side by side ============ */
+/* On a landscape tablet the list stays on the left and the chosen client fills the rest:
+   profile and history in two columns when there is room, one above the other when not.
+   Held upright, the screen works as before — the list, and a client opens on top. */
+let CSEL=null,CSEQ=0;
+const custWide=()=>!!(window.matchMedia&&window.matchMedia('(min-width:820px)').matches);
+function custRow(c){
+ const flags=[];
+ if(c.allergy)flags.push('<span class="pill r">'+ic('alert',11)+'allergy</span>');
+ if((c.tags||[]).length)flags.push('<span class="pill b">'+esc(c.tags[0])+'</span>');
+ if(c.marketing===false)flags.push('<span class="pill">no promo</span>');
+ if(c.dob&&c.dob.slice(5,7)===today().slice(5,7))flags.push('<span class="pill a">'+ic('gift',11)+'birthday</span>');
+ return '<div class="item crow'+(c.id===CSEL?' sel':'')+'" data-id="'+c.id+'" onclick="openCust(\''+c.id+'\')">'+
+  '<div class="row"><div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:13px">'+
+  esc(initials(c.name))+'</div><div style="flex:1;min-width:0">'+
+  '<b class="crname">'+esc(c.name)+'</b>'+
+  '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.skin?' · '+esc(c.skin):'')+'</div>'+
+  (flags.length?'<div class="crflags">'+flags.join('')+'</div>':'')+
+  '</div>'+ic('right',16)+'</div></div>';
+}
+function vCust(){
+ const list=custQ.trim()?matchClients(custQ,80):CUSTS.filter(c=>c.active!==false);
+ const wide=custWide();
+ if(wide){
+  const cur=CSEL&&cust(CSEL);
+  if(!cur||cur.active===false)CSEL=list.length?list[0].id:null;
+  if(CSEL&&!(HIST&&HISTFOR===CSEL))setTimeout(()=>window.pickCust(CSEL),0);
+ }
+ return '<div class="cwrap">'+
+  '<aside class="card clist"><div class="clhead"><div class="row" style="margin-bottom:9px">'+
+   '<div style="flex:1;position:relative"><span style="position:absolute;left:11px;top:10px;color:var(--ink-3)">'+
+   ic('search',17)+'</span><input class="f" id="cq" style="margin:0;padding-left:36px" '+
+   'placeholder="Search name or phone number" value="'+esc(custQ)+'"></div>'+
+   '<button class="btn" onclick="newCust()" aria-label="New client">'+ic('plus',16)+'</button></div>'+
+   '<div class="tiny muted">'+list.length+(custQ.trim()?' found':' shown')+'</div></div>'+
+  '<div class="clscroll">'+(list.length?list.map(custRow).join('')
+   :'<div class="empty">'+ic('users',26)+'<div>No clients found. Try another spelling, or add a new one.</div></div>')+
+  '</div></aside>'+
+  '<section class="cpane" id="cpane">'+(wide?custPaneHTML():'')+'</section>'+
+ '</div>';
+}
+function custSkel(){return '<div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div>'+
+ '<div class="skel" style="width:80%"></div><div class="skel" style="width:45%"></div></div>';}
+function custHeadHTML(c){
+ const since=c.createdAt?'Client since '+dstr(c.createdAt):'';
+ return '<div class="card cphead"><div class="avatar cpav">'+esc(initials(c.name))+'</div>'+
+  '<div style="flex:1;min-width:0"><h2>'+esc(c.name)+'</h2>'+
+  '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.email?' · '+esc(c.email):'')+(since?' · '+since:'')+'</div>'+
+  '<div class="cpflags">'+(c.allergy?'<span class="pill r">'+ic('alert',11)+esc(c.allergy)+'</span>':'')+
+   (c.skin?'<span class="pill">'+esc(c.skin)+'</span>':'')+
+   (c.tags||[]).map(t=>'<span class="pill b">'+esc(t)+'</span>').join('')+'</div></div>'+
+  '<div class="cpacts">'+
+   '<button class="btn sm" onclick="newAppt({customerId:\''+c.id+'\'})">'+ic('calendar',14)+'Book</button>'+
+   '<button class="btn sm ghost" onclick="checkoutFor(\''+c.id+'\')">'+ic('card',14)+'Checkout</button>'+
+   (c.phone?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/6'+
+    digits(c.phone)+'">'+ic('msg',14)+'WhatsApp</a>':'')+
+   '<button class="btn sm ghost" onclick="editCust(\''+c.id+'\')">'+ic('edit',14)+'Edit</button>'+
+  '</div></div>';
+}
+function custPaneHTML(){
+ const c=CSEL&&cust(CSEL);
+ if(!c)return '<div class="card cpempty">'+ic('users',30)+'<p>Choose a client on the left to see their details and history.</p></div>';
+ return custHeadHTML(c)+
+  '<div class="cpcols" id="cpcols">'+
+   '<div class="cpjump"><button class="on" onclick="cpJump(\'cp-prof\',this)">'+ic('user',13)+'Profile</button>'+
+    '<button onclick="cpJump(\'cp-hist\',this)">'+ic('history',13)+'History</button></div>'+
+   '<div class="cpcol" id="cp-prof"><div class="cptitle">'+ic('user',13)+'Profile</div>'+custProfile(c)+'</div>'+
+   '<div class="cpcol" id="cp-hist"><div class="cptitle">'+ic('history',13)+'History</div>'+
+    (HIST&&HISTFOR===c.id?custHistory(c):custSkel())+'</div>'+
+  '</div>';
+}
+/* where profile and history are stacked, one tap jumps between them */
+window.cpJump=(id,btn)=>{
+ const box=document.getElementById('cpcols'),el=document.getElementById(id);if(!box||!el)return;
+ box.scrollTo({top:el.offsetTop-box.offsetTop-44,behavior:'smooth'});
+ document.querySelectorAll('.cpjump button').forEach(b=>b.classList.toggle('on',b===btn));
+};
+/* repaint one column and keep where the reader was */
+function paintCol(id,html){
+ const el=document.getElementById(id);if(!el)return;
+ const top=el.scrollTop;el.innerHTML=html;el.scrollTop=top;
+}
+window.pickCust=async id=>{
+ const c=cust(id);if(!c)return;
+ const fresh=CSEL!==id;
+ CSEL=id;
+ document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('sel',r.dataset.id===id));
+ if(fresh){HIST=null;HISTFOR=id;const p=document.getElementById('cpane');if(p)p.innerHTML=custPaneHTML();}
+ const seq=++CSEQ;
+ loadClientPackages(id).then(()=>{
+  if(CSEL!==id||seq!==CSEQ)return;
+  paintCol('cp-prof','<div class="cptitle">'+ic('user',13)+'Profile</div>'+custProfile(c));});
+ const h=await loadHistory(id);
+ if(CSEL!==id||seq!==CSEQ)return;
+ HIST=h;HISTFOR=id;
+ paintCol('cp-hist','<div class="cptitle">'+ic('history',13)+'History</div>'+custHistory(c));
+};
+/* wherever a client is opened from — the list, after an edit, after a note — on the wide
+   Clients screen it lands in the side pane; everywhere else it opens on top as before */
+const openCustOnTop=window.openCust;
+window.openCust=(id,keep)=>{
+ if(!keep&&TAB==='cust'&&custWide()&&document.getElementById('cpane')){
+  if(id===CSEL){render();}          /* same client again: their details may have changed */
+  return window.pickCust(id);
+ }
+ return openCustOnTop(id,keep);
+};
+/* turning the tablet redraws the screen for the new shape */
+let CWIDE=custWide();
+if(window.addEventListener)window.addEventListener('resize',()=>{const w=custWide();if(w!==CWIDE){CWIDE=w;if(TAB==='cust')render();}});
 
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
