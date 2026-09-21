@@ -1344,6 +1344,48 @@ h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
 .pmquick{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
 @media(max-width:560px){.posstep:not(.on) b{display:none}.posteps{gap:6px}
  .lnadd{flex-wrap:wrap}.lnadd>div:nth-child(2){flex-basis:calc(100% - 30px)}.lnadd .qty{margin-left:28px}.lnaddamt{margin-left:auto}}
+
+/* ---- package types and smart suggestions ---- */
+.pkdtype{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.pkdtype button{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:11px;border-radius:13px;border:1.5px solid var(--line);background:#fff;font:inherit;text-align:left;cursor:pointer;color:var(--ink-2)}
+.pkdtype button b{font-size:13px;color:var(--ink)}
+.pkdtype button small{font-size:11px;color:var(--ink-3);line-height:1.3}
+.pkdtype button.on{border-color:var(--brass);background:var(--brass-soft);box-shadow:0 0 0 3px rgba(166,124,61,.12)}
+.pkdsum{padding:11px 12px;border-radius:12px;background:var(--surface-2);border:1px dashed var(--line);font-size:13px;line-height:1.6;margin:0 0 12px}
+.pkdprice{font-size:15px}
+.pkdeal{display:inline-block;padding:0 6px;border-radius:6px;background:var(--jade);color:#fff;font-weight:700;font-size:10.5px;margin-right:2px}
+@media(max-width:560px){.pkdtype{grid-template-columns:1fr}}
+.smartbox:empty{display:none}
+.smartbox{margin:12px 0 0;border-radius:14px;border:1px solid #E6D3B1;background:linear-gradient(180deg,#FFF8EC,#fff);padding:10px 10px 4px}
+.smhead{display:flex;align-items:center;gap:7px;margin:0 2px 6px;color:#6E4E1E;font-size:13px}
+.smmute{margin-left:auto;border:0;background:none;font:inherit;font-size:11.5px;color:var(--ink-3);cursor:pointer;text-decoration:underline}
+.smrow{display:flex;align-items:center;gap:9px;padding:8px 2px;border-top:1px solid rgba(166,124,61,.18)}
+.smico{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--ink);color:#E2C58F}
+.smrow.k-save .smico{background:var(--jade);color:#fff}
+.smrow.k-promo .smico{background:var(--brass);color:#fff}
+.smtext{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.smtext b{font-size:13px;font-weight:600;line-height:1.3}
+.smtext small{font-size:11.5px;color:var(--ink-3);line-height:1.35}
+.smartpop{position:fixed;right:20px;bottom:108px;z-index:900;width:min(360px,calc(100vw - 24px));display:flex;gap:12px;padding:14px 14px 12px;
+ border-radius:18px;background:rgba(20,18,15,.96);color:#F4F0E7;box-shadow:0 20px 50px -12px rgba(20,18,15,.55),0 0 0 1px rgba(226,197,143,.25);
+ opacity:0;transform:translateY(24px) scale(.92);pointer-events:none;transition:opacity .2s}
+.smartpop.show{pointer-events:auto;animation:smIn .6s cubic-bezier(.2,1.4,.4,1) forwards}
+.smartpop.hide{animation:smOut .3s ease forwards}
+@keyframes smIn{0%{opacity:0;transform:translateY(40px) scale(.9)}60%{opacity:1;transform:translateY(-6px) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes smOut{to{opacity:0;transform:translateY(20px) scale(.96)}}
+.smpring{position:relative;flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#E2C58F;color:#14120F;animation:smShake 1.2s ease .5s 2}
+.smpring::after{content:"";position:absolute;inset:-4px;border-radius:15px;border:2px solid #E2C58F;animation:smRing 1.6s ease-out .3s 3;opacity:0}
+.smartpop.k-save .smpring{background:#7FC4A4}.smartpop.k-save .smpring::after{border-color:#7FC4A4}
+@keyframes smRing{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.6)}}
+@keyframes smShake{0%,100%{transform:rotate(0)}15%{transform:rotate(-14deg)}30%{transform:rotate(12deg)}45%{transform:rotate(-8deg)}60%{transform:rotate(5deg)}75%{transform:rotate(-2deg)}}
+.smpbody{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.smplab{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#E2C58F;font-weight:650}
+.smpbody b{font-size:14px;line-height:1.3}
+.smpbody small{font-size:12px;color:#C9C1B2;line-height:1.4}
+.smpacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.smpacts .btn{background:#E2C58F;color:#14120F;border-color:#E2C58F}
+.smpacts .btn.ghost{background:transparent;color:#F4F0E7;border-color:rgba(244,240,231,.3)}
+@media(max-width:699px){.smartpop{right:12px;bottom:96px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1451,7 +1493,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21r';
+const BUILD='2026-09-21s';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -7389,6 +7431,8 @@ function drawPkgConf(P,c,s,cps){
   need(22+rows.length*6.2);
   const days=daysBetween(String(cp.soldAt||s.at).slice(0,10),cp.expiry);
   font(10,'bold');T((cps.length>1?(k+1)+'. ':'')+cpName(cp),16,y+2);
+  const dl=pkgDealBM(pkgOf(cp.packageId));if(dl){const w=doc.getTextWidth(pdfText((cps.length>1?(k+1)+'. ':'')+cpName(cp)));
+   font(8,'bold',BRASS);T(dl,16+w+4,y+2);}
   font(9,'bold');T(pdfRM(cp.price),194,y+2,{align:'right'});
   font(7.6,'normal',MUTED);
   T('Sah dari / Valid from '+dstr(cp.soldAt||s.at)+'  hingga / until '+dstr(cp.expiry)+'  ('+days+' hari / days)'+
@@ -8292,7 +8336,7 @@ window.checkout=async()=>{
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
-   customerName:c?c.name:'Walk-in',customerNo:idOf(c),staffId:actorId()||UID,staffName:actorName(),items,
+   customerName:c?c.name:'Walk-in',customerNo:idOf(c),...(cart.upsell&&cart.upsell.length?{upsell:[...new Set(cart.upsell)]}:{}),staffId:actorId()||UID,staffName:actorName(),items,
    cashierId:actorId()||UID,cashierName:actorName(),cashierVerified:cashierValid()||!isBranch(),
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
@@ -9064,7 +9108,7 @@ async function renameProduct(from,to,data){
  if(typeof LIB!=='undefined')try{await loadLibrary();}catch(e){}
 }
 
-function catPackages(){
+function catPackagesOld(){
  return '<div class="sec-h"><h2>Packages</h2><button class="btn sm" onclick="editPackage()">'+
   ic('plus',15)+'New</button></div>'+
   (D.packages.length?D.packages.map(p=>{
@@ -10850,7 +10894,7 @@ window.openStaff=id=>{
 const _render=render;
 render=function(){_render();
  if(TAB==='home'){tickClock();paintNoteStrip();}
- if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();};
+ if(TAB!=='pos'&&typeof hideSmart==='function')hideSmart();if(TAB==='cust')bindCustSearch();if(TAB==='set')bindSettings();if(TAB==='loy'&&loyView==='rules')bindLoyalty();};
 window.render=render;
 
 /* ============ boot ============ */
@@ -11100,6 +11144,7 @@ function posCartCard(t){
    ic('user',13)+'Hands-on for all</button>':'')+
   '<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
    :'<div class="empty">'+ic('bag',24)+'<div>'+(cart.customerId||cart.walkin?'Add a treatment, product or package above.':'Choose the client first, then add items.')+'</div></div>')+'</div>'+
+  smartBox()+
   '<table class="postot">'+
   '<tr><td>Subtotal</td><td class="num">'+rm(t.sub)+'</td></tr>'+
   (boss()?'<tr><td>Manual discount</td><td class="num"><input class="f" style="margin:0;text-align:right;padding:4px 6px;'+
@@ -11136,6 +11181,7 @@ function vPos(){
  const who=!!(cart.customerId||cart.walkin);
  const step=!who?1:!cart.items.length?2:(t.balance>0.009&&!(cart.instal&&cart.customerId))?3:4;
  setTimeout(()=>{LASTADD='';},900);
+ setTimeout(smartRun,60);
  return cashierBar()+posSteps(step)+
   '<div class="posgrid"><section class="poscol">'+posClientCard()+posRecentCard()+'</section>'+
   '<section class="poscol">'+posCartCard(t)+'</section></div>'+
@@ -11210,7 +11256,7 @@ function pk2Card(kind,x){
   sub=st?st.qty+' in stock'+(st.qty<=st.reorder?' · low':''):'not stocked here';dis=!st||st.qty<=0;}
  else if(kind==='set'){icon=ic('gift',18);sub=esc(setLabel(x));}
  else if(kind==='package'){icon=ic('package',18);const w=pkgWorth(x);
-  sub=(x.items||[]).map(i=>i.n+'× '+esc(svc(i.serviceId).name||'?')).join(' + ')+(w>x.price?' · save '+Math.round((1-x.price/w)*100)+'%':'');
+  sub=(pkgDeal(x)?'<span class="pkdeal">'+esc(pkgDeal(x))+'</span> ':'')+(x.items||[]).map(i=>i.n+'× '+esc(svc(i.serviceId).name||'?')).join(' + ')+(w>x.price?' · save '+Math.round((1-x.price/w)*100)+'%':'');
   dis=!cart.customerId;}
  else{icon=ic('package',18);const avail=x.left-inn;key=x.key;price='Redeem';
   sub=avail+' of '+x.total+' left'+(x.expired?' · expired':'');dis=avail<=0;}
@@ -11451,4 +11497,309 @@ window.dropAddon=async id=>{
   await audit('Add-on deleted',a.name);window.closeModal();render();}catch(e){toast(friendly(e));}
 };
 
+
+/* ============ package deals: buy X free Y, and a discount off the normal price ============ */
+/* A package can be priced three ways. "Custom" is the old way: pick the sessions, type the
+   price. "Buy X, free Y" is one treatment: the client pays for X sessions and gets X+Y.
+   "Discount" is any mix of sessions at a percentage off what they would cost one by one.
+   The price is worked out when the package is saved, so a bill always uses a fixed price. */
+const pkgType=p=>p&&['bxgy','disc'].includes(p.type)?p.type:'custom';
+function pkgDeal(p){
+ if(!p)return '';
+ if(pkgType(p)==='bxgy')return 'Buy '+p.buy+' free '+p.free;
+ if(pkgType(p)==='disc')return (+p.pct||0)+'% off';
+ return '';
+}
+const pkgDealBM=p=>pkgType(p)==='bxgy'?'Beli '+p.buy+' percuma '+p.free+' / Buy '+p.buy+' free '+p.free:
+ pkgType(p)==='disc'?'Diskaun '+p.pct+'% / '+p.pct+'% off':'';
+function catPackages(){
+ return '<div class="sec-h"><h2>Packages</h2><button class="btn sm" onclick="editPackage()">'+ic('plus',15)+'New</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Three kinds: a custom price, <b>buy X free Y</b> on one treatment, or a '+
+  '<b>percentage off</b> the normal price of the sessions.</p>'+
+  (D.packages.length?D.packages.map(p=>{
+   const val=pkgWorth(p),deal=pkgDeal(p);
+   return '<div class="item" data-id="'+esc(p.id)+'" onclick="editPackage(this.dataset.id)"><div class="spread"><b>'+esc(p.name)+offTag(p)+
+    (deal?' <span class="pill '+(pkgType(p)==='bxgy'?'g':'b')+'">'+esc(deal)+'</span>':'')+
+    '</b><span>'+rm(p.price)+'</span></div><div class="tiny muted">'+
+    ((p.items||[]).map(i=>i.n+'× '+(svc(i.serviceId).name||'?')).join(' + ')||'no sessions set')+
+    ' · worth '+rm(val)+(val&&val>p.price?' (saves '+Math.round((1-p.price/val)*100)+'%)':'')+
+    ' · valid '+(p.days||0)+' days</div></div>';}).join('')
+  :'<div class="empty">No packages yet.</div>');
+}
+let PKD=null;   /* the package being edited */
+window.editPackage=id=>{
+ const p=id?(D.packages.find(x=>x.id===id)||{}):{name:'',price:0,days:365,items:[],active:true};
+ PKD={id:id||'',type:pkgType(p),name:p.name||'',days:p.days||365,active:p.active!==false,
+  items:(p.items||[]).map(i=>({...i})),price:+p.price||0,
+  serviceId:p.serviceId||((p.items||[])[0]||{}).serviceId||((D.services[0]||{}).id)||'',
+  buy:+p.buy||5,free:+p.free||1,pct:+p.pct||10,round:p.round!==false};
+ if(!PKD.items.length&&PKD.type!=='bxgy'&&D.services[0])PKD.items=[{serviceId:D.services[0].id,n:1}];
+ paintPkgEd();
+};
+function pkdCalc(){
+ const P=PKD;
+ if(P.type==='bxgy'){
+  const s=svc(P.serviceId);const unit=+s.price||0;
+  const items=P.serviceId?[{serviceId:P.serviceId,n:P.buy+P.free}]:[];
+  return {items,price:r2(unit*P.buy),worth:r2(unit*(P.buy+P.free)),unit};
+ }
+ const items=P.items.filter(i=>i.serviceId&&i.n>0);
+ const worth=r2(items.reduce((a,i)=>a+(svc(i.serviceId).price||0)*i.n,0));
+ if(P.type==='disc'){let price=worth*(1-(+P.pct||0)/100);price=P.round?Math.round(price):r2(price);return {items,price,worth};}
+ return {items,price:r2(+P.price||0),worth};
+}
+function pkdSummary(){
+ const P=PKD,c=pkdCalc();
+ const sessions=c.items.reduce((a,i)=>a+i.n,0),save=c.worth-c.price;
+ if(!c.items.length)return '<span class="muted">Choose the treatment'+(P.type==='bxgy'?'':'s')+' first.</span>';
+ let lead='';
+ if(P.type==='bxgy')lead='Client pays <b>'+P.buy+' × '+rm(c.unit)+'</b> and gets <b>'+sessions+' sessions</b> ('+P.free+' free).<br>';
+ if(P.type==='disc')lead='Normal price '+rm(c.worth)+' less '+P.pct+'%'+(P.round?', rounded to the ringgit':'')+'.<br>';
+ return lead+'Package price <b class="pkdprice">'+rm(c.price)+'</b> · '+sessions+' sessions worth '+rm(c.worth)+
+  (save>0.004?' · client saves <b>'+rm(save)+'</b> ('+Math.round(save/c.worth*100)+'%)':save<-0.004?' · <span class="odue">costs more than paying per session</span>':'')+
+  ' · '+rm(sessions?c.price/sessions:0)+' per session';
+}
+const svcOpts=sel=>D.services.filter(s=>s.active!==false||s.id===sel).map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+
+ esc(s.name)+' — '+rm(s.price)+'</option>').join('')||'<option value="">Add treatments first</option>';
+function paintPkgEd(){
+ const P=PKD;
+ const T=[['custom','Custom price','edit'],['bxgy','Buy X free Y','gift'],['disc','Discount %','tag']];
+ modal(P.id?'Edit package':'New package','<div class="card">'+
+  '<label>Package type</label><div class="pkdtype">'+T.map(t=>'<button type="button" class="'+(P.type===t[0]?'on':'')+
+   '" onclick="pkdSet(\'type\',\''+t[0]+'\')">'+ic(t[2],16)+'<b>'+t[1]+'</b><small>'+
+   ({custom:'Sessions at a price you set',bxgy:'Pay for X, get Y more free',disc:'Sessions at % off the normal price'}[t[0]])+'</small></button>').join('')+'</div>'+
+  '<label>Package name</label><input class="f" id="pk-n" value="'+esc(P.name)+'" oninput="pkdSet(\'name\',this.value,1)" placeholder="'+
+   (P.type==='bxgy'?'Hydra Facial Buy 5 Free 1':P.type==='disc'?'Glow Programme 20% off':'Glow Hydra 6x')+'">'+
+  (P.type==='bxgy'?
+   '<label>Treatment</label><select class="f" id="pk-s" onchange="pkdSet(\'serviceId\',this.value)">'+svcOpts(P.serviceId)+'</select>'+
+   '<div class="grid g2"><div><label>Buy (paid sessions)</label><input class="f" id="pk-b" type="number" min="1" value="'+P.buy+'" oninput="pkdSet(\'buy\',this.value,1)"></div>'+
+   '<div><label>Free sessions</label><input class="f" id="pk-f" type="number" min="1" value="'+P.free+'" oninput="pkdSet(\'free\',this.value,1)"></div></div>'
+  :'<label>Sessions included</label><div id="pk-items">'+P.items.map((i,k)=>'<div class="row" style="margin-bottom:6px">'+
+    '<select class="f" style="margin:0;flex:1" onchange="pkdItem('+k+',\'serviceId\',this.value)">'+svcOpts(i.serviceId)+'</select>'+
+    '<input class="f" style="margin:0;width:74px" type="number" min="1" value="'+i.n+'" oninput="pkdItem('+k+',\'n\',this.value,1)">'+
+    '<button type="button" class="iconbtn" onclick="pkdDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>').join('')+'</div>'+
+   '<button type="button" class="btn ghost sm" style="margin-bottom:10px" onclick="pkdAdd()">'+ic('plus',14)+'Add treatment</button>'+
+   (P.type==='disc'?'<div class="grid g2"><div><label>Discount off the normal price (%)</label><input class="f" id="pk-pc" type="number" min="1" max="90" value="'+P.pct+'" oninput="pkdSet(\'pct\',this.value,1)"></div>'+
+     '<div><label>&nbsp;</label><label class="row" style="gap:8px;margin-top:9px"><input type="checkbox"'+(P.round?' checked':'')+' onchange="pkdSet(\'round\',this.checked)"> Round to the ringgit</label></div></div>'
+    :'<label>Price (RM)</label><input class="f" type="number" step="0.01" id="pk-p" value="'+P.price+'" oninput="pkdSet(\'price\',this.value,1)">'))+
+  '<div class="pkdsum" id="pk-sum">'+pkdSummary()+'</div>'+
+  '<label>Valid for (days)</label><input class="f" type="number" id="pk-d" value="'+P.days+'" oninput="pkdSet(\'days\',this.value,1)">'+
+  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="pk-a"'+(P.active?' checked':'')+' onchange="pkdSet(\'active\',this.checked,1)"> Available to sell</label>'+
+  (P.type!=='custom'?'<p class="tiny muted" style="margin:-4px 0 10px">The price is fixed when you save. If treatment prices change later, open the package and save it again.</p>':'')+
+  '<button class="btn" style="width:100%;justify-content:center" id="pk-go" onclick="pkdSave()">'+ic('check',16)+'Save package</button>'+
+  (P.id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" data-id="'+esc(P.id)+'" data-name="'+esc(P.name)+
+   '" onclick="catDelete(\'packages\',this.dataset.id,this.dataset.name)">Delete</button>':'')+'</div>');
+}
+/* typing only refreshes the summary; switching things around redraws the form */
+window.pkdSet=(k,v,quiet)=>{
+ if(['buy','free','pct','days'].includes(k))v=Math.max(k==='pct'?0:1,Math.round(+v||0));
+ if(k==='price')v=+v||0;
+ PKD[k]=v;
+ if(k==='type'&&v!=='bxgy'&&!PKD.items.length&&PKD.serviceId)PKD.items=[{serviceId:PKD.serviceId,n:1}];
+ if(quiet){const s=document.getElementById('pk-sum');if(s)s.innerHTML=pkdSummary();return;}
+ paintPkgEd();
+};
+window.pkdItem=(k,f,v,quiet)=>{const i=PKD.items[k];if(!i)return;i[f]=f==='n'?Math.max(1,Math.round(+v||0)):v;
+ if(quiet){const s=document.getElementById('pk-sum');if(s)s.innerHTML=pkdSummary();}else paintPkgEd();};
+window.pkdAdd=()=>{PKD.items.push({serviceId:(D.services[0]||{}).id||'',n:1});paintPkgEd();};
+window.pkdDrop=k=>{PKD.items.splice(k,1);paintPkgEd();};
+window.pkdSave=()=>{
+ const P=PKD,name=String(P.name||'').trim();
+ if(!name){toast('Name is required');return;}
+ const c=pkdCalc();
+ if(!c.items.length){toast(P.type==='bxgy'?'Choose the treatment':'Add at least one treatment');return;}
+ if(P.type==='disc'&&!(P.pct>0&&P.pct<100)){toast('Discount must be between 1% and 99%');return;}
+ if(!(c.price>0)){toast('The package needs a price');return;}
+ const data={name,type:P.type,price:c.price,days:+P.days||365,items:c.items,active:!!P.active};
+ if(P.type==='bxgy')Object.assign(data,{serviceId:P.serviceId,buy:P.buy,free:P.free});
+ if(P.type==='disc')Object.assign(data,{pct:P.pct,round:!!P.round});
+ const deal=pkgDeal(data);
+ catSave('packages',P.id||null,data,name,(P.id?'Package updated':'Package added')+(deal?' ('+deal+', '+rm(c.price)+')':''));
+};
+
+/* ============ smart checkout: heads-up for upsell, cross-sell and promotions ============ */
+/* Every time the bill changes, the checkout looks at what is on it, who the client is,
+   what they have on their account, what sells together, and which promotions are running,
+   and suggests what would help. New suggestions pop up in the corner so the cashier does
+   not miss them; all of them stay listed on the bill. Nothing is added without a tap. */
+let SMART={who:null,shown:new Set(),gone:new Set(),list:[],idx:0,timer:null};
+let SMART_OFF=false;try{SMART_OFF=localStorage.getItem('luuna:smartOff')==='1';}catch(e){}
+const promoWorth=v=>v.type==='pct'?(+v.value||0)+'% off':rm(+v.value||0)+' off';
+/* what sells together: counted over the bills this tablet already holds */
+function coBought(){
+ const pairs={},seen={};
+ SALES.filter(s=>!s.voided&&s.branchId===ME.branchId).forEach(s=>{
+  const ids=[...new Set((s.items||[]).filter(i=>['service','product'].includes(i.kind)).map(i=>i.kind+':'+i.id))];
+  ids.forEach(a=>{seen[a]=(seen[a]||0)+1;ids.forEach(b=>{if(a!==b){pairs[a]=pairs[a]||{};pairs[a][b]=(pairs[a][b]||0)+1;}});});
+ });
+ return {pairs,seen};
+}
+function addonRate(serviceName,addonName){
+ let n=0,w=0;
+ SALES.filter(s=>!s.voided).forEach(s=>{const hasS=(s.items||[]).some(i=>i.kind==='service'&&i.name===serviceName);
+  if(!hasS)return;n++;if((s.items||[]).some(i=>i.kind==='addon'&&i.name===addonName&&i.parentName===serviceName))w++;});
+ return {n,w};
+}
+function smartList(){
+ const out=[];
+ if(!cart.items.length)return out;
+ const c=cust(cart.customerId);
+ const t=cartTotals(),sub=t.sub;
+ const inCart=(kind,id)=>cart.items.some(i=>i.kind===kind&&i.id===id);
+ const first=c?c.name.split(' ')[0]:'The client';
+ /* 1. they already own sessions of what they are about to pay for */
+ if(c)cart.items.forEach((i,x)=>{
+  if(i.kind!=='service'||i.later)return;
+  const l=redeemLines(c.id).find(z=>z.serviceId===i.id&&z.left-redeemInCart(z.cpId,z.line)>0&&!z.expired);
+  if(!l)return;
+  out.push({key:'own:'+i.id,kind:'save',icon:'package',prio:100,
+   title:first+' already has '+i.name+' in a package',
+   body:(l.left-redeemInCart(l.cpId,l.line))+' session'+(l.left>1?'s':'')+' left in '+l.pkgName+'. Use one instead of charging '+rm(lineAmt(i))+'.',
+   label:'Use a session',run:()=>{cart.items.splice(x,1);window.pickAdd('redeem',l.key);window.closeModal();}});
+ });
+ /* 2. vouchers and promotions */
+ if(!cart.voucher){
+  const mine=c?rvOf(c.id).filter(v=>rvState(v)==='ready'):[];
+  mine.forEach(v=>{const p=voucherProblem(v,sub,cart.customerId);
+   if(!p)out.push({key:'rv:'+v.id,kind:'save',icon:'gift',prio:90,title:first+' has a voucher: '+promoWorth(v),
+    body:v.id+(v.expiry?' · until '+dshort(v.expiry):'')+'. It can be used on this bill.',label:'Apply voucher',run:()=>window.applyVoucherCode(v.id)});
+   else if(+v.min>sub&&!v.serviceId)out.push({key:'rvgap:'+v.id,kind:'promo',icon:'gift',prio:85,
+    title:'Add '+rm(r2(+v.min-sub))+' more to use '+first+'\'s voucher',
+    body:promoWorth(v)+' on bills from '+rm(v.min)+'.'+gapIdea(+v.min-sub),...gapAction(+v.min-sub)});
+  });
+  D.vouchers.filter(v=>!isClientV(v)&&v.active!==false&&!v.serviceId&&(!v.expiry||v.expiry>=today())&&
+   (!v.validFrom||v.validFrom<=today())&&!(v.cap&&(v.used||0)>=v.cap)).forEach(v=>{
+   if(v.firstOnly&&c&&SALES.some(s=>s.customerId===c.id&&!s.voided))return;
+   const gap=r2((+v.min||0)-sub);
+   if(gap<=0)out.push({key:'promo:'+v.id,kind:'promo',icon:'tag',prio:80,title:'Promotion '+v.id+' applies: '+promoWorth(v),
+    body:(v.label?v.label+'. ':'')+'This bill qualifies'+(v.min?' (minimum '+rm(v.min)+')':'')+'.',label:'Apply '+v.id,run:()=>window.applyVoucherCode(v.id)});
+   else if(gap<=Math.max(120,(+v.min||0)*0.4))out.push({key:'promogap:'+v.id,kind:'promo',icon:'tag',prio:75,
+    title:'Add '+rm(gap)+' more to unlock '+v.id+' ('+promoWorth(v)+')',
+    body:(v.label?v.label+'. ':'')+'Minimum spend '+rm(v.min)+', the bill is '+rm(sub)+'.'+gapIdea(gap),...gapAction(gap)});
+  });
+ }
+ /* 3. a package would cost less per session than what is on the bill */
+ cart.items.forEach((i,x)=>{
+  if(i.kind!=='service'||i.later||cart.items.some(z=>z.kind==='package'))return;
+  /* what this treatment works out at inside each package: packages of only this treatment first */
+  const deals=D.packages.filter(p=>p.active!==false&&(p.items||[]).some(z=>z.serviceId===i.id)).map(p=>{
+   const n=(p.items||[]).reduce((a,z)=>a+z.n,0),own=(p.items||[]).filter(z=>z.serviceId===i.id).reduce((a,z)=>a+z.n,0);
+   const worth=pkgWorth(p),per=worth?(+svc(i.id).price||0)*p.price/worth:1e9;
+   return {p,n,own,only:own===n,per:r2(per),save:r2(worth-p.price),pct:worth?Math.round((1-p.price/worth)*100):0};})
+   .filter(d=>d.per<(+i.price||0)-0.5&&d.save>0).sort((a,b)=>(b.only?1:0)-(a.only?1:0)||b.pct-a.pct);
+  const d=deals[0];if(!d)return;
+  const others=(d.p.items||[]).filter(z=>z.serviceId!==i.id).map(z=>z.n+'× '+(svc(z.serviceId).name||'')).join(', ');
+  out.push({key:'pkg:'+i.id+':'+d.p.id,kind:'upsell',icon:'package',prio:70,
+   title:'Upgrade to '+d.p.name+(pkgDeal(d.p)?' · '+pkgDeal(d.p):''),
+   body:i.name+' works out at '+rm(d.per)+' a session instead of '+rm(i.price)+' — '+(d.only?d.n+' sessions for '+rm(d.p.price)+', saving '+rm(d.save)+'.':
+    d.own+' of '+d.n+' sessions, with '+others+'; saves '+rm(d.save)+' ('+d.pct+'%) overall.')+(c?'':' Choose the client first; a package goes on their account.'),
+   label:c?'Add package':'Choose client',run:()=>{if(!c){toast('Choose the client first');return;}window.pickAdd('package',d.p.id);window.closeModal();
+    toast('Package added — remove the single '+i.name+' if today\'s session comes from the package');}});
+ });
+ /* 4. add-ons that go with the treatment */
+ cart.items.forEach((i,x)=>{
+  if(!['service','redeem'].includes(i.kind)||cart.items.some(z=>z.kind==='addon'&&z.parent===i.uid))return;
+  const fit=addons().filter(a=>addonFits(a,i)).map(a=>({a,r:addonRate(i.name,a.name)}))
+   .sort((p,q)=>(q.r.n?q.r.w/q.r.n:0)-(p.r.n?p.r.w/p.r.n:0)||(+q.a.price||0)-(+p.a.price||0));
+  const f=fit[0];if(!f)return;
+  const rate=f.r.n>=3?Math.round(f.r.w/f.r.n*100):0;
+  out.push({key:'addon:'+i.uid+':'+f.a.id,kind:'upsell',icon:'layers',prio:60+(rate>30?8:0),
+   title:'Add '+f.a.name+' to '+i.name+' (+'+rm(f.a.price)+')',
+   body:(rate?rate+'% of '+i.name+' bills include it. ':'')+(f.a.dur?'Adds '+f.a.dur+' min. ':'')+'Commission to '+(stf(i.handsOnId||i.staffId).name||'the therapist')+'.',
+   label:'Add add-on',run:()=>window.addonAdd(cart.items.indexOf(i),f.a.id)});
+ });
+ /* 5. what usually goes with it */
+ const CB=coBought(),seen=new Set();
+ cart.items.filter(i=>['service','product'].includes(i.kind)).forEach(i=>{
+  const m=CB.pairs[i.kind+':'+i.id]||{};
+  Object.entries(m).sort((a,b)=>b[1]-a[1]).forEach(([k,n])=>{
+   if(n<2||seen.size>=2)return;const [kind,id]=k.split(':');
+   if(inCart(kind,id)||seen.has(k))return;
+   const src=kind==='product'?prod(id):svc(id);if(!src||!src.name||src.active===false)return;
+   if(kind==='product'){const st=stockOf(id);if(!st||st.qty<=0)return;}
+   seen.add(k);
+   out.push({key:'co:'+k,kind:'cross',icon:kind==='product'?'stock':'spark',prio:50+Math.min(9,n),
+    title:'Often bought with '+i.name+': '+src.name,
+    body:'Together on '+n+' of '+(CB.seen[i.kind+':'+i.id]||n)+' recent bills · '+rm(src.price)+'.',
+    label:'Add '+(kind==='product'?'product':'treatment'),run:()=>{window.pickAdd(kind,id);window.closeModal();}});
+  });
+ });
+ /* 6. a refill of what they bought before */
+ if(c){
+  const past=SALES.filter(s=>s.customerId===c.id&&!s.voided&&daysBetween(s.at,new Date())>=25);
+  const prods=[];past.forEach(s=>(s.items||[]).filter(i=>i.kind==='product').forEach(i=>{if(!prods.some(p=>p.id===i.id))prods.push({id:i.id,at:s.at,name:i.name});}));
+  prods.filter(p=>!inCart('product',p.id)&&(stockOf(p.id)||{}).qty>0).slice(0,1).forEach(p=>
+   out.push({key:'refill:'+p.id,kind:'cross',icon:'stock',prio:45,title:first+' bought '+p.name+' on '+dshort(p.at),
+    body:daysBetween(p.at,new Date())+' days ago — likely running low. '+rm(prod(p.id).price)+'.',
+    label:'Add refill',run:()=>{window.pickAdd('product',p.id);window.closeModal();}}));
+ }
+ /* 7. points they could use */
+ if(c&&loy().on&&!cart.points&&(c.points||0)>=(loy().minRedeem||0)&&(c.points||0)>0)
+  out.push({key:'pts:'+c.id,kind:'save',icon:'award',prio:30,title:first+' has '+(c.points||0).toLocaleString()+' points',
+   body:'Worth '+rm(pointsWorth(c.points||0))+' off. Ask if they would like to use them.',label:'Use points',run:()=>window.usePoints()});
+ return out.filter(s=>!SMART.gone.has(s.key)).sort((a,b)=>b.prio-a.prio).slice(0,6);
+}
+/* what could close a promotion gap: the nearest priced item that covers it */
+function gapPick(gap){
+ const pool=[...addons().filter(a=>a.active!==false&&cart.items.some(i=>addonFits(a,i))).map(a=>({kind:'addon',id:a.id,name:a.name,price:+a.price||0})),
+  ...D.products.filter(p=>p.type==='retail'&&p.active!==false&&(stockOf(p.id)||{}).qty>0).map(p=>({kind:'product',id:p.id,name:p.name,price:+p.price||0}))];
+ return pool.filter(x=>x.price>=gap).sort((a,b)=>a.price-b.price)[0]||pool.sort((a,b)=>b.price-a.price)[0]||null;
+}
+const gapIdea=gap=>{const x=gapPick(gap);if(!x)return '';
+ return x.price>=gap?' e.g. '+x.name+' ('+rm(x.price)+').':' e.g. start with '+x.name+' ('+rm(x.price)+'), '+rm(r2(gap-x.price))+' still to go.';};
+function gapAction(gap){
+ const x=gapPick(gap);if(!x)return {label:'Browse products',run:()=>window.pickItem('product')};
+ return {label:'Add '+x.name,run:()=>{
+  if(x.kind==='addon'){const i=cart.items.findIndex(z=>addonFits(addonOf(x.id),z));if(i>=0)window.addonAdd(i,x.id);}
+  else{window.pickAdd('product',x.id);window.closeModal();}}};
+}
+/* ---- the panel on the bill and the pop-up in the corner ---- */
+function smartBox(){
+ return '<div id="smartbox" class="smartbox"></div>';
+}
+function smartRun(){
+ if(TAB!=='pos')return hideSmart();
+ const who=cart.customerId||(cart.walkin?'walkin':'');
+ if(SMART.who!==who){SMART={...SMART,who,shown:new Set(),gone:new Set(),idx:0};}
+ const L=smartList();SMART.list=L;
+ const box=document.getElementById('smartbox');
+ if(box)box.innerHTML=L.length?'<div class="smhead">'+ic('spark',14)+'<b>Smart suggestions</b><span class="pill">'+L.length+'</span>'+
+   '<button class="smmute" onclick="smartMute()">'+(SMART_OFF?'Pop-ups off':'Pop-ups on')+'</button></div>'+
+   L.map(s=>'<div class="smrow k-'+s.kind+'"><span class="smico">'+ic(s.icon,15)+'</span><div class="smtext"><b>'+esc(s.title)+'</b><small>'+esc(s.body)+'</small></div>'+
+    '<button class="btn sm" onclick="smartDo(\''+esc(s.key)+'\')">'+esc(s.label)+'</button>'+
+    '<button class="iconbtn" style="padding:4px" onclick="smartGone(\''+esc(s.key)+'\')" aria-label="Not now">'+ic('close',13)+'</button></div>').join(''):'';
+ const fresh=L.filter(s=>!SMART.shown.has(s.key));
+ fresh.forEach(s=>SMART.shown.add(s.key));
+ if(fresh.length&&!SMART_OFF)popSmart(fresh[0]);
+ else if(!L.length)hideSmart();
+}
+function popSmart(s){
+ let el=document.getElementById('smartpop');
+ if(!el){el=document.createElement('div');el.id='smartpop';document.body.appendChild(el);}
+ SMART.idx=Math.max(0,SMART.list.findIndex(x=>x.key===s.key));
+ el.className='smartpop k-'+s.kind;
+ el.innerHTML='<div class="smpring">'+ic('bell',18)+'</div><div class="smpbody"><div class="smplab">Heads-up · '+
+   ({promo:'promotion',upsell:'upsell',cross:'cross-sell',save:'for the client'}[s.kind]||'tip')+
+   (SMART.list.length>1?' · '+(SMART.idx+1)+' of '+SMART.list.length:'')+'</div>'+
+  '<b>'+esc(s.title)+'</b><small>'+esc(s.body)+'</small>'+
+  '<div class="smpacts"><button class="btn sm" onclick="smartDo(\''+esc(s.key)+'\')">'+esc(s.label)+'</button>'+
+   (SMART.list.length>1?'<button class="btn sm ghost" onclick="smartNext()">Next</button>':'')+
+   '<button class="btn sm ghost" onclick="hideSmart()">Not now</button></div></div>';
+ el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+ try{if(navigator.vibrate)navigator.vibrate([40,40,40]);}catch(e){}
+ clearTimeout(SMART.timer);SMART.timer=setTimeout(hideSmart,16000);
+}
+function hideSmart(){const el=document.getElementById('smartpop');if(el){el.classList.remove('show');el.classList.add('hide');}clearTimeout(SMART.timer);}
+window.hideSmart=hideSmart;
+window.smartNext=()=>{const L=SMART.list;if(!L.length)return;popSmart(L[(SMART.idx+1)%L.length]);};
+window.smartDo=key=>{
+ const s=SMART.list.find(x=>x.key===key);if(!s)return;
+ hideSmart();SMART.gone.add(key);
+ cart.upsell=[...(cart.upsell||[]),key.split(':')[0]];
+ s.run();
+ setTimeout(()=>{if(TAB==='pos')render();},30);
+};
+window.smartGone=key=>{SMART.gone.add(key);hideSmart();smartRun();};
+window.smartMute=()=>{SMART_OFF=!SMART_OFF;try{localStorage.setItem('luuna:smartOff',SMART_OFF?'1':'0');}catch(e){}
+ if(SMART_OFF)hideSmart();smartRun();toast(SMART_OFF?'Pop-ups off — suggestions stay listed on the bill':'Pop-ups on');};
 </script>
