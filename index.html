@@ -499,8 +499,10 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 
 
 /* ---------- app shell: the tray menu (smoked glass) ---------- */
-.tray{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:60;
-  max-height:calc(100vh - 34px - env(safe-area-inset-bottom));
+.tray{position:fixed;left:10px;right:10px;z-index:61;
+  --nb:78px;--ox:88%;--cr:150vh;
+  bottom:calc(var(--nb) + 14px);
+  max-height:calc(100vh - var(--nb) - 30px - env(safe-area-inset-top));
   display:flex;flex-direction:column;overflow:hidden;border-radius:30px;color:var(--cream);
   background:
     radial-gradient(420px 220px at 100% 0%,rgba(201,160,99,.20),rgba(201,160,99,0) 70%),
@@ -510,15 +512,31 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   border:1px solid rgba(255,255,255,.13);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.35),
     0 40px 90px -30px rgba(0,0,0,.75),0 10px 30px -12px rgba(0,0,0,.45);
-  transform:translateY(calc(100% + 40px)) scale(.985);opacity:0;pointer-events:none;
-  transition:transform .46s cubic-bezier(.2,.9,.25,1),opacity .3s var(--ease)}
-.tray.open{transform:none;opacity:1;pointer-events:auto}
+  transform-origin:var(--ox) calc(100% + 16px);
+  clip-path:circle(0px at var(--ox) calc(100% + 16px));
+  transform:translateY(18px) scale(.9);opacity:0;pointer-events:none;
+  /* closing: it gathers itself back into the More button, quicker than it came */
+  transition:clip-path .3s cubic-bezier(.5,0,.75,0),transform .3s cubic-bezier(.5,0,.75,0),
+    opacity .2s ease .1s}
+.tray.open{clip-path:circle(var(--cr) at var(--ox) calc(100% + 16px));
+  transform:none;opacity:1;pointer-events:auto;
+  /* opening: it billows up out of the button like a cloud */
+  transition:clip-path .62s cubic-bezier(.22,.9,.28,1),transform .56s cubic-bezier(.2,1.25,.4,1),
+    opacity .18s ease}
 /* a hairline sheen along the top edge, the way light catches real glass */
 .tray::before{content:'';position:absolute;left:14%;right:14%;top:0;height:1px;pointer-events:none;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,236,200,.55),rgba(255,255,255,0))}
-.trayhandle{flex:none;height:20px;display:grid;place-items:center;cursor:pointer}
-.trayhandle::after{content:'';width:36px;height:4px;border-radius:99px;background:rgba(255,255,255,.22)}
-.trayhead{flex:none;display:flex;align-items:center;gap:12px;padding:2px 18px 15px;position:relative}
+.trayhead{flex:none;display:flex;align-items:center;gap:12px;padding:16px 18px 15px;position:relative}
+.traytail{position:fixed;z-index:61;width:18px;height:18px;pointer-events:none;
+  left:calc(var(--mx,88%) - 9px);bottom:calc(var(--nb,78px) + 14px - 9px);
+  background:rgba(22,19,15,.9);backdrop-filter:blur(40px) saturate(185%);
+  -webkit-backdrop-filter:blur(40px) saturate(185%);
+  border-right:1px solid rgba(255,255,255,.13);border-bottom:1px solid rgba(255,255,255,.13);
+  border-bottom-right-radius:5px;clip-path:polygon(100% 0,100% 100%,0 100%);
+  transform:rotate(45deg) scale(0);opacity:0;
+  transition:transform .18s ease,opacity .15s ease}
+.traytail.on{transform:rotate(45deg) scale(1);opacity:1;
+  transition:transform .34s cubic-bezier(.2,1.4,.4,1) .12s,opacity .2s ease .1s}
 .trayhead::after{content:'';position:absolute;left:18px;right:18px;bottom:0;height:1px;
   background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.14),rgba(255,255,255,0))}
 .trayhead .avatar{width:42px;height:42px;border-radius:15px;font-size:14px;flex:none;
@@ -585,9 +603,7 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .tray.open .shelf{animation:fadeIn .4s var(--ease) both}
 @media(max-width:359px){.ttile{flex-basis:calc((100% - 6px)/4)}}
 @media(min-width:760px){
-  .tray{left:50%;right:auto;width:min(660px,calc(100% - 32px));bottom:calc(16px + env(safe-area-inset-bottom));
-    transform:translate(-50%,calc(100% + 40px)) scale(.985)}
-  .tray.open{transform:translate(-50%,0)}
+  .tray{left:50%;right:auto;width:min(640px,calc(100% - 32px));margin-left:calc(min(640px,calc(100% - 32px)) / -2)}
   .traybody{padding:16px 16px 6px}
   .shelf{padding:13px 10px 10px}
   .tchip{width:58px;height:58px;border-radius:20px}
@@ -600,7 +616,7 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .main{min-height:100vh;padding-bottom:calc(78px + env(safe-area-inset-bottom))}
 
 /* ---------- bottom navigation bar ---------- */
-.botnav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;align-items:stretch;gap:2px;
+.botnav{position:fixed;left:0;right:0;bottom:0;z-index:62;display:flex;align-items:stretch;gap:2px;
   padding:7px 7px calc(10px + env(safe-area-inset-bottom));
   padding-left:max(7px,env(safe-area-inset-left));padding-right:max(7px,env(safe-area-inset-right));
   background:rgba(20,18,15,.80);backdrop-filter:blur(26px) saturate(175%);
@@ -622,6 +638,17 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   display:grid;place-items:center;line-height:1;box-shadow:0 0 0 2px rgba(20,18,15,.9)}
 .bnitem.on .bndot{box-shadow:0 0 0 2px var(--cream)}
 .bndot.plain{min-width:9px;width:9px;height:9px;padding:0;top:5px;left:calc(50% + 7px)}
+.bnic{position:relative;width:19px;height:19px;display:block}
+.bnic>span{position:absolute;inset:0;display:grid;place-items:center;
+  transition:transform .42s cubic-bezier(.2,1.2,.4,1),opacity .22s ease}
+.bnic .i2{opacity:0;transform:rotate(-120deg) scale(.4)}
+.bnmore.open .bnic .i1{opacity:0;transform:rotate(120deg) scale(.4)}
+.bnmore.open .bnic .i2{opacity:1;transform:none}
+.bnmore{transition:background .24s var(--ease),color .2s,transform .16s var(--ease),box-shadow .35s var(--ease)}
+.bnmore.open{background:var(--cream);color:var(--ink);
+  box-shadow:0 0 0 4px rgba(201,160,99,.28),0 8px 22px -8px rgba(201,160,99,.7)}
+.bnmore.open .ico{color:var(--brass)}
+.bnmore.open .bndot{opacity:0}
 @media(min-width:760px){
   .botnav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100% - 32px));
     bottom:calc(14px + env(safe-area-inset-bottom));border-radius:22px;
@@ -1073,7 +1100,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21g';
+const BUILD='2026-09-21h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1389,9 +1416,12 @@ function botNavHTML(allowed){
   shown.map(t=>'<button class="bnitem'+(TAB===t.id?' on':'')+'" onclick="go(\''+t.id+'\')" '+
    'aria-label="'+esc(t.label)+'"'+(TAB===t.id?' aria-current="page"':'')+'>'+
    ic(t.ic,19)+'<span class="bnlab">'+esc(t.label)+'</span>'+dot(navCount(t))+'</button>').join('')+
-  '<button class="bnitem'+(!here||navOpen?' on':'')+'" onclick="toggleNav()" '+
-   'aria-label="More screens" aria-expanded="'+(navOpen?'true':'false')+'">'+
-   ic('list',19)+'<span class="bnlab">More</span>'+
+  '<button id="bnmore" class="bnitem bnmore'+(!here||navOpen?' on':'')+(navOpen?' open':'')+'" '+
+   'data-here="'+(here?'1':'0')+'" '+
+   'onclick="toggleNav()" aria-label="More screens" aria-controls="tray" '+
+   'aria-expanded="'+(navOpen?'true':'false')+'">'+
+   '<span class="bnic"><span class="i1">'+ic('list',19)+'</span><span class="i2">'+ic('close',19)+
+   '</span></span><span class="bnlab">More</span>'+
    (more?'<span class="bndot plain"></span>':'')+'</button>'+
   '</nav>';
 }
@@ -1407,7 +1437,6 @@ function render(){
  const allowed=TABS.filter(t=>!t.perm||can(t.perm));
  const tray='<div class="tray'+(navOpen?' open':'')+'" id="tray" role="dialog" '+
    'aria-label="All screens" aria-hidden="'+(navOpen?'false':'true')+'">'+
-  '<div class="trayhandle" onclick="toggleNav()" aria-hidden="true"></div>'+
   '<div class="trayhead"><div class="avatar">'+esc(initials(ME.name))+'</div>'+
    '<div style="min-width:0"><b>'+esc(ME.name)+'</b>'+
    '<span class="tiny muted">'+(ROLE[ME.role]||ME.role)+' · '+esc(branch().name)+'</span></div>'+
@@ -1433,6 +1462,7 @@ function render(){
    '<span class="tiny muted">Build '+BUILD+'</span></div>'+
   '</div>';
  $('#root').innerHTML=tray+
+  '<div class="traytail'+(navOpen?' on':'')+'" id="traytail" aria-hidden="true"></div>'+
   '<div class="navveil'+(navOpen?' on':'')+'" id="trayveil" onclick="toggleNav()"></div>'+
   '<div class="main">'+
    '<header class="topbar"><button class="iconbtn menubtn" aria-label="Menu" '+
@@ -1454,6 +1484,7 @@ function render(){
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
+ if(navOpen)placeTray();
 }
 const kpi=(l,v,s,icon)=>'<div class="kpi"><div class="lab">'+(icon?ic(icon,13):'')+l+'</div><div class="big">'+v+
  '</div><div class="tiny muted">'+(s||'')+'</div></div>';
@@ -8748,13 +8779,36 @@ window.render=render;
 })();
 window.go=(t)=>{if(t==='lib'){LIBOPEN='';LIBCTX={};}TAB=t;navOpen=false;window.closeModal();render();window.scrollTo(0,0);
  if(t==='rep'&&!REPSALES)buildReport();};
-/* the tray slides, so it is never rebuilt on open — only its classes change */
+/* the tray is a bubble that grows out of the More button. It is never rebuilt on open —
+   it is measured, anchored to the button, and only its classes change, so it can animate */
+function placeTray(){
+ const t=document.getElementById('tray'),tail=document.getElementById('traytail'),
+  nav=document.getElementById('botnav'),more=document.getElementById('bnmore');
+ if(!t||!nav)return;
+ const nr=nav.getBoundingClientRect(),mr=(more||nav).getBoundingClientRect();
+ const nb=Math.max(0,Math.round(window.innerHeight-nr.top));
+ t.style.setProperty('--nb',nb+'px');
+ const left=t.offsetLeft,w=t.offsetWidth,h=t.offsetHeight;
+ /* keep the pointer clear of the rounded corner */
+ const ox=Math.min(w-34,Math.max(34,Math.round(mr.left+mr.width/2)-left));
+ t.style.setProperty('--ox',ox+'px');
+ t.style.setProperty('--cr',(Math.ceil(Math.hypot(Math.max(ox,w-ox),h+16))+90)+'px');
+ if(tail){tail.style.setProperty('--nb',nb+'px');tail.style.setProperty('--mx',(left+ox)+'px');}
+}
 function paintNavState(){
- const t=document.getElementById('tray'),v=document.getElementById('trayveil');
- if(t){t.className='tray'+(navOpen?' open':'');t.setAttribute('aria-hidden',navOpen?'false':'true');
-  if(navOpen)t.querySelector('.traybody').scrollTop=0;}
+ const t=document.getElementById('tray'),v=document.getElementById('trayveil'),
+  tail=document.getElementById('traytail'),more=document.getElementById('bnmore');
+ if(navOpen)placeTray();
+ if(t){
+  if(navOpen){void t.offsetWidth;t.querySelector('.traybody').scrollTop=0;}
+  t.classList.toggle('open',navOpen);t.setAttribute('aria-hidden',navOpen?'false':'true');}
+ if(tail)tail.classList.toggle('on',navOpen);
  if(v)v.className='navveil'+(navOpen?' on':'');
- window.paintBotNav();
+ if(more){
+  more.classList.toggle('open',navOpen);
+  more.classList.toggle('on',navOpen||more.dataset.here!=='1');
+  more.setAttribute('aria-expanded',navOpen?'true':'false');
+ }else window.paintBotNav();
 }
 window.toggleNav=()=>{if(!document.getElementById('tray')){navOpen=!navOpen;render();return;}
  navOpen=!navOpen;paintNavState();};
