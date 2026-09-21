@@ -577,6 +577,14 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
   box-shadow:0 0 0 4px rgba(201,160,99,.28),0 8px 22px -8px rgba(201,160,99,.7)}
 .bnmore.open .ico{color:var(--brass)}
 .bnmore.open .bndot{opacity:0}
+/* while the bar is open, More is the only thing lit */
+.botnav.open .bnrow .bnitem.on:not(.bnmore){background:transparent;color:#A49C90;font-weight:560}
+.botnav.open .bnrow .bnitem.on:not(.bnmore) .ico{color:inherit}
+.botnav.open .bnrow .bnitem.on:not(.bnmore) .bndot{box-shadow:0 0 0 2px rgba(20,18,15,.9)}
+/* the screen you are on shows inside the drawer as a quiet brass tint, not a second pill */
+.bnpanel .bnitem.on{background:transparent;color:#E2C58F;font-weight:650}
+.bnpanel .bnitem.on .ico{color:#E2C58F}
+.bnpanel .bnitem.on .bndot{box-shadow:0 0 0 2px rgba(20,18,15,.9)}
 @media(min-width:760px){
   .botnav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,calc(100% - 32px));
     bottom:calc(14px + env(safe-area-inset-bottom));border-radius:22px;
@@ -656,11 +664,11 @@ canvas{border:1px dashed var(--line);border-radius:var(--r-md);background:var(--
 .nstext span{font-size:11px;color:#A8A092;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nscount{font-size:10px;color:#A8A092;flex:none}
 
-.alertrow{width:100%;display:flex;align-items:center;gap:11px;padding:11px 10px;border:0;
+.needrow{width:100%;display:flex;align-items:center;gap:11px;padding:11px 10px;border:0;
   border-bottom:1px solid var(--line-2);background:transparent;cursor:pointer;text-align:left;
   color:var(--ink);transition:background .2s var(--ease)}
-.alertrow:last-child{border-bottom:0}
-.alertrow:active{background:var(--surface-2)}
+.needrow:last-child{border-bottom:0}
+.needrow:active{background:var(--surface-2)}
 .aico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none;
   background:var(--amber-soft);color:var(--amber)}
 .atext{flex:1;min-width:0;display:grid;gap:2px}
@@ -918,6 +926,111 @@ tr.fbmine td{background:var(--brass-soft)}
 .laterBtn.on{border-style:solid;border-color:var(--brass);background:var(--brass-soft);color:var(--brass);font-weight:600}
 .laterInfo{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:5px;font-size:11px;color:var(--brass)}
 .laterInfo select{font-size:11px;padding:2px 4px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+
+/* ---------- hero: weather beside the clock ---------- */
+.heroSide{flex:none;display:flex;align-items:flex-start;gap:10px;position:relative;z-index:1}
+.heroWx{display:grid;justify-items:center;align-content:start;gap:1px;min-width:88px;padding:7px 10px 8px;
+  border-radius:18px;border:1px solid rgba(255,255,255,.10);color:var(--cream);cursor:pointer;
+  background:linear-gradient(170deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);transition:transform .16s var(--ease)}
+.heroWx:active{transform:scale(.95)}
+.heroWx b{font-size:15px;font-weight:650;letter-spacing:-.02em;line-height:1.1;margin-top:1px}
+.heroWx .wxname{font-size:10.5px;color:#E2C58F;font-weight:600;line-height:1.25}
+.heroWx .wxwhen{font-size:9.5px;color:#A8A092;line-height:1.25;white-space:nowrap}
+.heroWx.empty .wxname{color:#A8A092}
+.wxnext{display:none}
+.wxart{display:block;overflow:visible}
+.wx-rays{transform-origin:32px 32px;animation:wxspin 22s linear infinite}
+.wx-core{transform-origin:32px 32px;animation:wxglow 3.4s ease-in-out infinite}
+.wx-cloud{animation:wxdrift 5.5s ease-in-out infinite alternate}
+.wx-drop{opacity:0;animation:wxfall 1.05s linear infinite}
+.wx-heavy .wx-drop{animation-duration:.72s}
+.wx-bolt{opacity:0;animation:wxflash 3.8s linear infinite;filter:drop-shadow(0 0 4px rgba(242,194,101,.9))}
+.wx-star{animation:wxtw 2.6s ease-in-out infinite}
+.wx-moonb{transform-origin:30px 30px;animation:wxbob 6s ease-in-out infinite}
+.wx-haze{animation:wxhaze 4.5s ease-in-out infinite alternate}
+.wx-wind{stroke-dasharray:46 16;animation:wxwind 2.2s linear infinite}
+@keyframes wxspin{to{transform:rotate(360deg)}}
+@keyframes wxglow{50%{transform:scale(1.06)}}
+@keyframes wxdrift{from{transform:translateX(-1.6px)}to{transform:translateX(2.2px)}}
+@keyframes wxfall{0%{transform:translateY(-5px);opacity:0}25%{opacity:1}100%{transform:translateY(9px);opacity:0}}
+@keyframes wxflash{0%,80%,100%{opacity:0}82%{opacity:1}85%{opacity:.25}88%{opacity:1}92%{opacity:0}}
+@keyframes wxtw{50%{opacity:.18}}
+@keyframes wxbob{50%{transform:translateY(-1.5px) rotate(-4deg)}}
+@keyframes wxhaze{from{transform:translateX(-3px)}to{transform:translateX(3px)}}
+@keyframes wxwind{to{stroke-dashoffset:-62}}
+.wxrow{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:14px;margin-bottom:4px;
+  background:var(--ink);color:var(--cream)}
+.wxrow b{display:block;font-size:13.5px}
+.wxrow .muted{color:#A8A092}
+.wxrow:not(.now){background:rgba(20,18,15,.82)}
+.wxrow.now{box-shadow:0 0 0 2px var(--brass)}
+.wxdays{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.wxdays>div{display:grid;justify-items:center;gap:2px;padding:8px 4px;border-radius:14px;
+  background:var(--ink);color:var(--cream)}
+.wxdays .muted{color:#A8A092}
+@media(max-width:520px){
+  .heroTop{flex-wrap:wrap}
+  .heroWho{flex-basis:100%}
+  .heroSide{width:100%;justify-content:flex-start;align-items:center;gap:12px;margin-top:2px}
+  .heroWx{grid-template-columns:auto 1fr auto;grid-template-rows:auto auto auto;justify-items:start;
+    column-gap:10px;align-items:center;min-width:0;flex:1;padding:9px 12px;text-align:left}
+  .heroWx .wxart{grid-row:1/4}
+  .wxnext{display:flex;grid-column:3;grid-row:1/4;align-items:center;gap:6px;padding-left:10px;
+    border-left:1px solid rgba(255,255,255,.1);font-size:9.5px;color:#A8A092;line-height:1.3;align-self:stretch}
+  .wxnext>span{display:grid}
+  .wxnext b{font-size:10.5px;color:var(--cream);font-weight:600}
+  .heroSide .heroClock{flex:none}
+}
+
+/* ---------- home widgets ---------- */
+.wgrid{display:grid;gap:12px;margin-bottom:12px}
+@media(min-width:760px){.wgrid{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)}}
+.wgrid>*{min-width:0}
+.wgrid .card{margin:0;display:flex;flex-direction:column}
+.wh{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.wh h2{font-size:15px}
+.wh .pill{margin-left:auto}
+.wico{width:30px;height:30px;border-radius:10px;flex:none;display:grid;place-items:center;
+  background:var(--brass-soft);color:var(--brass)}
+.wattmain{display:flex;align-items:center;gap:14px}
+.wattmain b{display:block;font-size:15.5px;letter-spacing:-.015em;line-height:1.3}
+.wattmain .tiny{display:block;margin-top:2px}
+.wring{position:relative;width:64px;height:64px;flex:none}
+.wring svg{width:64px;height:64px;display:block}
+.wring>span{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-3)}
+.wring.s-in>span{color:var(--brass)}
+.wring.s-done>span{color:var(--jade)}
+.wbig{width:100%;justify-content:center;padding:12px;margin-top:14px;margin-bottom:12px;font-size:14px}
+.wfoot{display:flex;align-items:center;gap:8px;margin-top:auto;padding-top:12px}
+.wfoot{border-top:1px solid var(--line-2)}
+.wattmain+.wfoot{margin-top:14px}
+#wprog .wbig{margin-bottom:0}
+.wteam{display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;cursor:pointer;
+  font-size:12px;color:var(--ink-2)}
+.wav{display:flex;padding-left:7px}
+.wav span{width:26px;height:26px;border-radius:99px;margin-left:-7px;display:grid;place-items:center;
+  font-size:9.5px;font-weight:650;color:var(--cream);background:var(--ink);border:2px solid var(--surface)}
+.wav span:nth-child(2n){background:#6B5B45}
+.wlink{margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:none;border:0;
+  padding:4px 0;cursor:pointer;font-size:12px;color:var(--ink-3)}
+.wchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -15px 10px;padding:2px 15px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 34px),transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 34px),transparent)}
+.wchips::-webkit-scrollbar{display:none}
+.wchip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;
+  font-size:12px;cursor:pointer;color:var(--ink-2);white-space:nowrap;transition:background .2s,color .2s}
+.wchip i{font-style:normal;font-size:10px;margin-left:5px;opacity:.55}
+.wchip.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.wtreat{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-2)}
+.wtreat:last-child{border-bottom:0}
+.wtreat .num{width:24px;height:24px;border-radius:8px;flex:none;display:grid;place-items:center;
+  font-size:11px;font-weight:700;background:var(--brass-soft);color:var(--brass)}
+.wtreat b{display:block;font-size:13.5px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wtreat .tiny{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wtreat .pr{font-weight:650;font-size:13px;flex:none}
+.wempty{display:grid;justify-items:center;gap:8px;text-align:center;color:var(--ink-3);padding:10px 6px}
+.wempty p{margin:0;font-size:12.5px;line-height:1.5}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
@@ -1028,7 +1141,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21i';
+const BUILD='2026-09-21j';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1458,6 +1571,12 @@ function clockSVG(){
 let NOTEIDX=0,tickBound=false;
 function tickClock(){
  const d=new Date();
+ const ar=document.getElementById('att-run');
+ if(ar&&ar.dataset.from)ar.textContent=runFor(ar.dataset.from);
+ if(d.getSeconds()===0){
+  if(document.getElementById('heroWx')&&wxPeriod(d)!==WXPER)paintWx();
+  wxLoad();
+ }
  const s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;
  const set=(id,deg)=>{const el=document.getElementById(id);
   if(el&&typeof el.setAttribute==='function')
@@ -1538,8 +1657,9 @@ function vHome(){
       (SHIFT.closedAt?'day closed':'day open')+'</span>'
       :'<span class="hchip warn">'+ic('alert',12)+'day not opened</span>')+
     '</div></div>'+
-   '<div class="heroClock">'+clockSVG()+
-    '<div class="ckdigital" id="ck-digital">'+tstr(new Date())+'</div></div>'+
+   '<div class="heroSide">'+wxHTML()+
+    '<div class="heroClock">'+clockSVG()+
+    '<div class="ckdigital" id="ck-digital">'+tstr(new Date())+'</div></div></div>'+
   '</div>'+
   '<div class="heroStats">'+
    (can('pos')?'<div><b>'+rm(f.revenue).replace('RM','')+'</b><span>taken</span></div>':'')+
@@ -1554,19 +1674,9 @@ function vHome(){
     ic('right',15)+'</button>')+
  '</section>';
 
- /* ---- quick actions ---- */
- h+='<div class="quick">'+
-  (can('booking')?'<button class="qbtn" onclick="newAppt()">'+ic('plus',20)+'<span>Booking</span></button>':'')+
-  (can('pos')?'<button class="qbtn" onclick="go(\'pos\')">'+ic('card',20)+'<span>Payment</span></button>':'')+
-  (can('customer')?'<button class="qbtn" onclick="newCust()">'+ic('user',20)+'<span>New client</span></button>':'')+
-  (can('customer')?'<button class="qbtn" onclick="go(\'prog\')">'+ic('spark',20)+'<span>Programme</span></button>':'')+
-  attendQuick()+
-  (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="qbtn" onclick="addExpense()">'+ic('wallet',20)+
-   '<span>Cash out</span></button>':'')+
-  '<button class="qbtn" onclick="addIssue()">'+ic('tool',20)+'<span>Report</span></button>'+
-  (can('pos')?'<button class="qbtn" onclick="openDailyReport()">'+ic('receipt',20)+
-   '<span>Day report</span></button>':'')+
- '</div>';
+ /* ---- attendance and programme suggestion ---- */
+ h+='<div class="wgrid">'+wAttend()+wProgram()+'</div>';
+ setTimeout(()=>wxLoad(),0);
 
  /* ---- things that need a decision ---- */
  const alerts=[];
@@ -1589,7 +1699,7 @@ function vHome(){
   d:'Follow up while it is still fresh.',go:"go('book')"});
  if(alerts.length)h+='<div class="card"><div class="sec-h"><h2>'+ic('bell',16)+
   ' Needs attention</h2><span class="pill">'+alerts.length+'</span></div>'+
-  alerts.map(a=>'<button class="alertrow" onclick="'+a.go+'">'+
+  alerts.map(a=>'<button class="needrow" onclick="'+a.go+'">'+
    '<span class="aico">'+ic(a.i,17)+'</span><span class="atext"><b>'+esc(a.t)+'</b>'+
    '<span>'+esc(a.d)+'</span></span>'+ic('right',15)+'</button>').join('')+'</div>';
 
@@ -5429,6 +5539,229 @@ function notifyHelp(){
   '</ol></div>';
 }
 
+/* ============ home widgets: attendance, programme suggestion, weather ============ */
+
+/* ---- attendance ---- */
+function runFor(iso){
+ const m=Math.max(0,Math.floor((Date.now()-new Date(iso))/6e4));
+ return Math.floor(m/60)+'h '+String(m%60).padStart(2,'0')+'m';
+}
+const SHIFTMIN=9*60;   /* a full day, for the ring */
+function attRing(state,pct){
+ const r=27,c=2*Math.PI*r,len=Math.max(0,Math.min(1,pct))*c;
+ const col=state==='done'?'var(--jade)':'var(--brass)';
+ const glyph={none:'idcard',out:'clock',in:'clock',done:'check'}[state]||'clock';
+ return '<div class="wring s-'+state+'"><svg viewBox="0 0 64 64" aria-hidden="true">'+
+  '<circle cx="32" cy="32" r="'+r+'" fill="none" stroke="var(--line-2)" stroke-width="5"/>'+
+  (len?'<circle id="att-arc" cx="32" cy="32" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="5" '+
+   'stroke-linecap="round" stroke-dasharray="'+len.toFixed(1)+' '+c.toFixed(1)+'" '+
+   'transform="rotate(-90 32 32)"/>':'')+
+  '</svg><span>'+ic(glyph,20)+'</span></div>';
+}
+function wAttend(){
+ const me=stf(UID)||{};
+ const a=attToday(UID);
+ const on=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
+  .filter(x=>{const r=attToday(x.id);return r&&r.clockIn&&!r.clockOut;});
+ let state,title,sub,btn='',pill='';
+ if(!me.attCode){
+  state='none';title='No attendance code yet';pill='<span class="pill">not set</span>';
+  sub=can('staff')?'Set your personal code, then clock in from here.'
+   :'Ask the owner to set your attendance code.';
+  if(can('staff'))btn='<button class="btn ghost wbig" onclick="editStaff(\''+UID+'\')">'+
+   ic('idcard',16)+'Set my code</button>';
+ }else if(!a){
+  state='out';title='Not clocked in yet';pill='<span class="pill a">off shift</span>';
+  sub='Tap when you start work today.';
+  btn='<button class="btn brass wbig" onclick="clockPrompt(\''+UID+'\',\'in\')">'+
+   ic('login',17)+'Clock in</button>';
+ }else if(!a.clockOut){
+  state='in';title='On shift since '+tstr(a.clockIn);pill='<span class="pill g">on shift</span>';
+  sub='<span id="att-run" data-from="'+esc(a.clockIn)+'">'+runFor(a.clockIn)+'</span> so far';
+  btn='<button class="btn wbig" onclick="clockPrompt(\''+UID+'\',\'out\')">'+
+   ic('out',17)+'Clock out</button>';
+ }else{
+  state='done';title='Done for today';pill='<span class="pill g">'+ic('check',11)+' done</span>';
+  sub=tstr(a.clockIn)+' – '+tstr(a.clockOut)+' · '+worked(a);
+ }
+ const pct=state==='in'?(Date.now()-new Date(a.clockIn))/6e4/SHIFTMIN:(state==='done'?1:0);
+ const faces=on.slice(0,5).map(x=>'<span title="'+esc(x.name)+'">'+esc(initials(x.name))+'</span>').join('');
+ return '<div class="card wcard" id="watt">'+
+  '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Attendance</h2>'+pill+'</div>'+
+  '<div class="wattmain">'+attRing(state,pct)+
+   '<div style="min-width:0"><b>'+esc(title)+'</b><span class="tiny muted">'+sub+'</span></div></div>'+
+  btn+
+  '<div class="wfoot">'+
+   (on.length?'<button class="wteam" '+(can('staff')?'onclick="go(\'team\')"':'')+'>'+
+     '<span class="wav">'+faces+'</span><span>'+on.length+' on shift now</span></button>'
+    :'<span class="tiny muted">Nobody on shift yet</span>')+
+   '<button class="wlink" onclick="addIssue()">'+ic('tool',13)+'Report an issue</button>'+
+  '</div></div>';
+}
+
+/* ---- programme suggestion ---- */
+let HOMECON='';
+let PROGSEED=null;
+function wProgram(){
+ if(!can('customer'))return '';
+ const act=D.services.filter(s=>s.active!==false&&(s.concerns||[]).length);
+ const counts=CONCERNS.map(c=>({c,n:act.filter(s=>s.concerns.includes(c.id)).length}))
+  .filter(x=>x.n).sort((a,b)=>b.n-a.n);
+ const head='<div class="wh"><span class="wico">'+ic('spark',16)+'</span><h2>Programme suggestion</h2>'+
+  '<button class="wlink" style="margin-left:auto" onclick="go(\'prog\')">Builder'+ic('right',13)+'</button></div>';
+ if(!counts.length)return '<div class="card wcard" id="wprog">'+head+
+  '<div class="wempty">'+ic('spark',22)+'<p>Tag each treatment with the concerns it treats, and '+
+  'suggestions show up here for whatever the client asks about.</p>'+
+  (can('admin')?'<button class="btn sm ghost" onclick="go(\'cat\')">'+ic('list',14)+'Open catalogue</button>':'')+
+  '</div></div>';
+ const sel=counts.find(x=>x.c.id===HOMECON)||counts[0];
+ const list=act.filter(s=>s.concerns.includes(sel.c.id))
+  /* the most focused treatment first, then the gentler price */
+  .sort((a,b)=>(a.concerns.length-b.concerns.length)||((+a.price||0)-(+b.price||0))).slice(0,3);
+ const short=l=>l.split(' and ')[0];
+ return '<div class="card wcard" id="wprog">'+head+
+  '<div class="tiny muted" style="margin:-4px 0 8px">What is the client hoping to fix?</div>'+
+  '<div class="wchips">'+counts.slice(0,10).map(x=>'<button class="wchip'+(x===sel?' on':'')+'" '+
+   'onclick="homeCon(\''+x.c.id+'\')">'+esc(short(x.c.label))+'<i>'+x.n+'</i></button>').join('')+'</div>'+
+  '<div class="wtreats">'+list.map((s,i)=>'<div class="wtreat"><span class="num">'+(i+1)+'</span>'+
+   '<div style="min-width:0;flex:1"><b>'+esc(s.name)+'</b><span class="tiny muted">'+(s.dur||0)+' min'+
+   (s.concerns.length>1?' · also '+esc(s.concerns.filter(c=>c!==sel.c.id).slice(0,2)
+    .map(c=>short(concernLabel(c)).toLowerCase()).join(', ')):'')+'</span></div>'+
+   '<span class="pr">'+rm(+s.price||0)+'</span></div>').join('')+'</div>'+
+  '<button class="btn wbig" onclick="startProgFor(\''+sel.c.id+'\')">'+ic('spark',16)+
+   'Build a programme for this</button></div>';
+}
+window.homeCon=id=>{HOMECON=id;const el=document.getElementById('wprog');if(el)el.outerHTML=wProgram();};
+window.startProgFor=id=>{PROGSEED={concerns:[id]};PROG=null;progView='build';window.go('prog');};
+
+/* ---- weather: MET Malaysia's forecast, from the government open data API ---- */
+const WXKEY='luuna:wx';
+let WX=null,WXBUSY=false,WXERR='',WXPER='';
+try{WX=JSON.parse(localStorage.getItem(WXKEY)||'null');}catch(e){}
+const wxLoc=()=>(branch().wxLoc||'Kulai');
+function wxPeriod(d){const h=(d||new Date()).getHours();
+ return h>=6&&h<12?'morning':(h>=12&&h<19?'afternoon':'night');}
+const WXWHEN={morning:'Pagi',afternoon:'Petang',night:'Malam'};
+const WXNAME={storm:'Ribut petir',heavy:'Hujan lebat',rain:'Hujan',sun:'Cerah',moon:'Cerah',
+ haze:'Berjerebu',wind:'Berangin',cloud:'Mendung'};
+function wxKind(text,night){
+ const t=String(text||'').toLowerCase();
+ if(t.includes('ribut petir'))return 'storm';
+ if(t.includes('hujan lebat'))return 'heavy';
+ if(t.includes('tiada hujan'))return night?'moon':'sun';
+ if(t.includes('hujan'))return 'rain';
+ if(t.includes('jerebu'))return 'haze';
+ if(t.includes('berangin'))return 'wind';
+ if(t.includes('mendung')||t.includes('berawan'))return 'cloud';
+ return night?'moon':'sun';
+}
+const wxDay=date=>(WX&&WX.rows||[]).find(r=>r.date===date)||null;
+async function wxLoad(force){
+ if(WXBUSY)return;
+ const fresh=WX&&WX.loc===wxLoc()&&WX.at&&(Date.now()-WX.at<3600e3)&&wxDay(today());
+ if(fresh&&!force)return;
+ WXBUSY=true;
+ try{
+  const r=await fetch('https://api.data.gov.my/weather/forecast?contains='+
+   encodeURIComponent(wxLoc())+'@location__location_name&limit=14');
+  if(!r.ok)throw new Error('the weather service answered '+r.status);
+  const want=wxLoc().toLowerCase();
+  const rows=(await r.json()).filter(x=>x&&x.location&&
+   String(x.location.location_name).toLowerCase()===want);
+  if(!rows.length)throw new Error('no forecast is published for '+wxLoc());
+  WX={loc:wxLoc(),at:Date.now(),rows:rows.map(x=>({date:x.date,morning:x.morning_forecast,
+   afternoon:x.afternoon_forecast,night:x.night_forecast,summary:x.summary_forecast,
+   when:x.summary_when,min:x.min_temp,max:x.max_temp})).sort((a,b)=>a.date<b.date?-1:1)};
+  WXERR='';
+  try{localStorage.setItem(WXKEY,JSON.stringify(WX));}catch(e){}
+ }catch(e){WXERR=String(e&&e.message||e);}
+ WXBUSY=false;
+ paintWx();
+}
+/* small animated scenes, drawn in the hero's cream and brass */
+function wxArt(k,size){
+ const sz=size||46;
+ const cloud=(y,fill)=>'<g transform="translate(0 '+y+')"><path class="wx-cloud" fill="'+(fill||'#EDE6D8')+
+  '" d="M19 46h27a10 10 0 0 0 1.5-19.9A13 13 0 0 0 22.6 24A10.5 10.5 0 0 0 19 46z"/></g>';
+ const drops=n=>'<g class="wx-drops">'+[...Array(n)].map((_,i)=>{const x=22+i*(20/(n-1||1));
+  return '<line class="wx-drop" style="animation-delay:'+(i*0.27).toFixed(2)+'s" x1="'+x+'" y1="48" x2="'+
+   (x-2)+'" y2="54" stroke="#9FC3D6" stroke-width="2.4" stroke-linecap="round"/>';}).join('')+'</g>';
+ const sun=(dim)=>'<g'+(dim?' opacity=".55"':'')+'><g class="wx-rays" stroke="#E7B75A" stroke-width="3" '+
+  'stroke-linecap="round">'+[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;
+  return '<line x1="'+(32+19*Math.cos(a)).toFixed(1)+'" y1="'+(32+19*Math.sin(a)).toFixed(1)+
+   '" x2="'+(32+25*Math.cos(a)).toFixed(1)+'" y2="'+(32+25*Math.sin(a)).toFixed(1)+'"/>';}).join('')+
+  '</g><circle class="wx-core" cx="32" cy="32" r="12.5" fill="#F2C265"/>'+
+  '<circle cx="28.5" cy="28.5" r="5" fill="#FBE3A6" opacity=".6"/></g>';
+ const art={
+  sun:sun(),
+  moon:'<g class="wx-moonb"><path d="M39.5 43.5A15 15 0 1 1 30 15.2a12 12 0 0 0 9.5 28.3z" fill="#EFE3C4"/></g>'+
+   '<circle class="wx-star" cx="45" cy="17" r="1.8" fill="#F6E7BE"/>'+
+   '<circle class="wx-star" style="animation-delay:.8s" cx="51" cy="29" r="1.3" fill="#F6E7BE"/>'+
+   '<circle class="wx-star" style="animation-delay:1.6s" cx="42" cy="9" r="1.1" fill="#F6E7BE"/>',
+  cloud:'<g transform="translate(9 -6) scale(.7)" opacity=".7">'+cloud(0,'#BDB4A4')+'</g>'+cloud(4),
+  rain:cloud(-6)+drops(3),
+  heavy:cloud(-6,'#CFC6B6')+drops(5),
+  storm:cloud(-6,'#C9C0B0')+drops(2)+
+   '<path class="wx-bolt" d="M33 40l-6 10h5l-3 9 9-12h-5l3-7z" fill="#F2C265"/>',
+  haze:sun(true)+'<g class="wx-haze" stroke="#D9CFBD" stroke-width="2.6" stroke-linecap="round" fill="none">'+
+   '<path d="M10 42q6-4 12 0t12 0 12 0 12 0"/><path d="M14 50q6-4 12 0t12 0 12 0"/></g>',
+  wind:'<g class="wx-winds" stroke="#E4DCCB" stroke-width="3" stroke-linecap="round" fill="none">'+
+   '<path class="wx-wind" d="M8 24h30a6 6 0 1 0-6-6"/>'+
+   '<path class="wx-wind" style="animation-delay:.4s" d="M8 34h42a6 6 0 1 1-6 6"/>'+
+   '<path class="wx-wind" style="animation-delay:.8s" d="M8 44h22"/></g>'};
+ return '<svg class="wxart wx-'+k+'" width="'+sz+'" height="'+sz+'" viewBox="0 0 64 64" aria-hidden="true">'+
+  (art[k]||art.cloud)+'</svg>';
+}
+function wxHTML(){
+ const d=wxDay(today());
+ WXPER=wxPeriod();
+ if(!d)return '<button class="heroWx empty" id="heroWx" onclick="wxSheet()" '+
+  'title="'+esc(WXERR||'Loading the forecast')+'">'+wxArt('cloud',40)+
+  '<b>—°</b><span class="wxname">'+(WXERR?'Tiada data':'Memuat…')+'</span>'+
+  '<span class="wxwhen">'+esc(wxLoc())+'</span></button>';
+ const night=WXPER==='night';
+ const text=d[WXPER]||d.summary||'';
+ const k=wxKind(text,night);
+ return '<button class="heroWx" id="heroWx" data-kind="'+k+'" onclick="wxSheet()" '+
+  'title="'+esc(text)+' · MET Malaysia">'+wxArt(k)+
+  '<b>'+(d.min!=null?d.min+'–':'')+d.max+'°</b><span class="wxname">'+WXNAME[k]+'</span>'+
+  '<span class="wxwhen">'+WXWHEN[WXPER]+' · '+esc(WX.loc)+'</span>'+wxNextHTML(d)+'</button>';
+}
+/* what the next part of the day looks like — shown where there is room for it */
+function wxNextHTML(d){
+ const nxt={morning:['afternoon',d,'Petang'],afternoon:['night',d,'Malam'],
+  night:['morning',wxDay(ymd(addDays(new Date(),new Date().getHours()>=6?1:0))),'Esok pagi']}[WXPER];
+ if(!nxt||!nxt[1])return '';
+ const t=nxt[1][nxt[0]]||'';const k=wxKind(t,nxt[0]==='night');
+ return '<span class="wxnext" title="'+esc(t)+'">'+wxArt(k,26)+'<span>'+nxt[2]+'<b>'+WXNAME[k]+'</b></span></span>';
+}
+function paintWx(){const el=document.getElementById('heroWx');if(el)el.outerHTML=wxHTML();}
+window.wxSheet=()=>{
+ const d=wxDay(today());
+ const per=wxPeriod();
+ const row=(p)=>{const t=d[p]||'';const k=wxKind(t,p==='night');
+  return '<div class="wxrow'+(p===per?' now':'')+'">'+wxArt(k,40)+'<div style="flex:1;min-width:0"><b>'+
+   WXWHEN[p]+(p===per?' <span class="pill g">sekarang</span>':'')+'</b>'+
+   '<span class="tiny muted">'+esc(t||'—')+'</span></div></div>';};
+ const next=(WX&&WX.rows||[]).filter(r=>r.date>today()).slice(0,4);
+ modal('Cuaca · '+esc(wxLoc()),d?
+  '<div class="card"><div class="spread" style="margin-bottom:8px"><h3>Hari ini</h3>'+
+   '<span class="pill">'+d.min+'° – '+d.max+'°C</span></div>'+
+   ['morning','afternoon','night'].map(row).join('')+'</div>'+
+  (next.length?'<div class="card"><h3 style="margin-bottom:8px">Hari seterusnya</h3>'+
+   '<div class="wxdays">'+next.map(r=>{const k=wxKind(r.summary,false);
+    return '<div>'+'<span class="tiny muted">'+new Date(r.date+'T00:00').toLocaleDateString('ms-MY',
+     {weekday:'short',day:'numeric'})+'</span>'+wxArt(k,34)+'<b>'+r.max+'°</b>'+
+     '<span class="tiny muted">'+r.min+'°</span></div>';}).join('')+'</div></div>':'')+
+  '<p class="tiny muted">Ramalan rasmi MET Malaysia untuk kawasan '+esc(WX.loc)+', melalui data.gov.my '+
+  '(CC BY 4.0). Dikemas kini '+new Date(WX.at).toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'})+
+  '. Ini ramalan untuk waktu pagi / petang / malam, bukan bacaan suhu langsung.</p>'+
+  '<button class="btn ghost sm" onclick="wxLoad(true).then(()=>window.wxSheet())">'+ic('history',14)+'Muat semula</button>'
+  :'<div class="card"><p>'+(WXERR?'Ramalan tak dapat dimuat: '+esc(WXERR)+'.':'Sedang memuat ramalan…')+'</p>'+
+   '<button class="btn sm" onclick="wxLoad(true).then(()=>window.wxSheet())">'+ic('history',14)+'Cuba lagi</button></div>');
+};
+window.wxLoad=wxLoad;window.wxKind=wxKind;
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -7845,7 +8178,7 @@ function vProgram(){
  return h+'</div>'+(PROG?progResult():'');
 }
 function progForm(){
- const p=(PROG&&PROG.params)||{};
+ const p=(PROG&&PROG.params)||PROGSEED||{};
  return '<div class="fieldset"><h3>'+ic('user',13)+'Client</h3>'+
   '<label>Who is this for</label>'+
   clientPicker('pg-c',p.customerId||'',{onPick:progClient})+
@@ -7896,6 +8229,7 @@ window.progClient=()=>{
  if(c.allergy)toast('Allergy on file: '+c.allergy);
 };
 window.runProgram=()=>{
+ PROGSEED=null;
  const concerns=chipVals('pg-con');
  if(!concerns.length){toast('Pick at least one concern');return;}
  const cid=cpValue('pg-c'),c=cust(cid);
