@@ -6134,7 +6134,8 @@ function vCust(){
    '<button class="btn ghost" onclick="scanClient()" aria-label="Scan client number">'+ic('scan',16)+'</button>'+
    '<button class="btn" onclick="newCust()" aria-label="New client">'+ic('plus',16)+'</button></div>'+
    '<div class="tiny muted spread">'+list.length+(custQ.trim()?' found':' shown')+
-   '<button class="blankf" onclick="paperPDF(\'form\')">'+ic('print',12)+'Blank form</button></div></div>'+
+   '<span class="row" style="gap:12px"><button class="blankf" onclick="paperPDF(\'register\')">'+ic('list',12)+'Client register</button>'+
+   '<button class="blankf" onclick="paperPDF(\'form\')">'+ic('print',12)+'Blank form</button></span></div></div>'+
   '<div class="clscroll">'+(list.length?list.map(custRow).join('')
    :'<div class="empty">'+ic('users',26)+'<div>No clients found. Try another spelling, or add a new one.</div></div>')+
   '</div></aside>'+
