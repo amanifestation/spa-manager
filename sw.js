@@ -2,7 +2,7 @@
    Keeps the app openable when the line drops, without ever holding back an update:
    the page itself is fetched from the network first and only falls back to the last
    good copy. Firestore traffic is never touched — that has its own offline cache. */
-const VERSION = '2026-09-21o';
+const VERSION = '2026-09-21p';
 const SHELL = 'luuna-shell-' + VERSION;
 const LIB = 'luuna-lib-v1';
 const SHELL_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png',
