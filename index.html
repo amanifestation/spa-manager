@@ -1386,6 +1386,71 @@ h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
 .smpacts .btn{background:#E2C58F;color:#14120F;border-color:#E2C58F}
 .smpacts .btn.ghost{background:transparent;color:#F4F0E7;border-color:rgba(244,240,231,.3)}
 @media(max-width:699px){.smartpop{right:12px;bottom:96px}}
+
+/* ---------- CRM ---------- */
+.crmtop{margin-bottom:12px}
+.crmseg{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.crmseg button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 14px;font-size:13px;color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.crmseg button.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.crmkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:12px}
+.crmbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.crmbar .f{flex:1;min-width:150px;margin:0}
+.crmbar .seg{margin:0;flex:0 0 auto}
+.crmbar .seg button{white-space:nowrap;flex:0 0 auto}
+.kanban{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x proximity}
+.kcol{flex:1 0 240px;min-width:240px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:16px;padding:9px;scroll-snap-align:start;border-top:3px solid var(--line)}
+.kcol.k-new{border-top-color:var(--brass)}.kcol.k-contacted{border-top-color:var(--amber)}.kcol.k-booked{border-top-color:#4A6FA5}.kcol.k-won{border-top-color:var(--jade)}
+.kcolh{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:600;padding:2px 4px 8px;color:var(--ink-2)}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin-bottom:8px;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s var(--ease)}
+.kcard:active{transform:scale(.98)}
+.kcard b{display:block;font-size:14px;font-weight:600}
+.kmeta{font-size:11.5px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ksrc{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:99px;background:var(--brass-soft);color:var(--brass);margin-top:6px}
+.ksrc.c{background:var(--line-2);color:var(--ink-2);margin-left:4px}
+.kfoot{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:11px;color:var(--ink-3)}
+.kwho{font-size:11px;color:var(--ink-2)}.kwho.none{color:var(--rose)}
+.kdue{font-size:11px;color:var(--amber)}.kdue.od{color:var(--rose);font-weight:600}
+.kempty{font-size:12px;color:var(--ink-3);text-align:center;padding:14px 4px}
+.klostg{margin-top:14px}
+.ldhead{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.ldline{font-size:12.5px;color:var(--ink-2);margin:3px 0}
+.ldstages{display:flex;gap:4px;margin:10px 0;overflow-x:auto}
+.ldstages button{flex:1 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 9px;font-size:12px;color:var(--ink-2)}
+.ldstages button.on{color:#fff;border-color:transparent}
+.ldstages .on.st-new{background:var(--brass)}.ldstages .on.st-contacted{background:var(--amber)}.ldstages .on.st-booked{background:#4A6FA5}.ldstages .on.st-won{background:var(--jade)}.ldstages .on.st-lost{background:var(--rose)}
+.ldacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:7px;margin:10px 0}
+.ldacts .btn{justify-content:center}
+.ctl{border-left:2px solid var(--line);margin:8px 0 4px 6px;padding-left:12px}
+.ctlrow{position:relative;padding:5px 0 9px;font-size:12.5px}
+.ctlrow:before{content:'';position:absolute;left:-17px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--line);border:2px solid var(--surface)}
+.ctlrow.t-stage:before{background:var(--brass)}.ctlrow.t-wa:before{background:var(--jade)}.ctlrow.t-call:before{background:#4A6FA5}.ctlrow.t-note:before{background:var(--ink-3)}
+.ctlrow .tiny{color:var(--ink-3)}
+.tkrow{display:flex;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line-2)}
+.tkrow b{display:block;font-size:13.5px}.tkrow small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.tkbtns{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.tkcase{display:flex;width:100%;gap:10px;align-items:center;text-align:left;padding:11px 12px;margin-bottom:7px;background:var(--surface);
+ border:1px solid var(--line);border-left:4px solid #4A6FA5;border-radius:12px;cursor:pointer;color:var(--ink);font:inherit}
+.tkcase b{display:block;font-size:13.5px}.tkcase small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tkpri{font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.04em;padding:3px 7px;border-radius:6px;background:var(--line-2);color:var(--ink-2);flex-shrink:0}
+.tkcase.p-urgent{border-left-color:var(--rose)}.tkcase.p-urgent .tkpri{background:var(--rose-soft);color:var(--rose)}
+.tkcase.p-high{border-left-color:var(--amber)}.tkcase.p-high .tkpri{background:var(--amber-soft);color:var(--amber)}
+.tkcase.p-low{border-left-color:var(--line)}
+.crmseg button i{font-style:normal;font-size:10.5px;font-weight:650;min-width:18px;padding:1px 6px;border-radius:99px;background:var(--brass-soft);color:var(--brass)}
+.crmseg button.on i{background:rgba(255,255,255,.2);color:inherit}
+.ctlrow{display:flex;gap:8px}.ctlrow b{display:block;font-weight:520}.ctlrow small{display:block;font-size:11px;color:var(--ink-3)}
+.ctlrow>span{color:var(--ink-3)}
+.klost summary{cursor:pointer;font-size:13px;color:var(--ink-2);padding:6px 2px}
+details.klost{display:block;border:0;margin-top:10px}
+.kcard{width:100%;text-align:left;font:inherit;color:var(--ink);display:block}
+@media(max-width:600px){.tkrow{flex-wrap:wrap}.tkbtns{width:100%;justify-content:flex-start}}
+.wfqr{flex-direction:column;align-items:center;gap:6px}
+.frow{display:grid;grid-template-columns:90px 1fr 34px 38px;gap:8px;align-items:center;font-size:12.5px;margin:6px 0}
+.frow .bar{height:14px;border-radius:7px;background:var(--line-2);overflow:hidden}
+.frow .bar i{display:block;height:100%;background:var(--brass);border-radius:7px}
+.roasok{color:var(--jade);font-weight:600}.roaslow{color:var(--rose);font-weight:600}
+.wfqr{display:flex;justify-content:center;margin:12px 0}.wfqr img,.wfqr canvas{width:180px;height:180px}
+.lfbox label{display:block;font-size:12.5px;margin:10px 0 4px;color:var(--ink-2)}
+.lfbox .f{width:100%}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1493,7 +1558,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21t';
+const BUILD='2026-09-21u';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1772,6 +1837,7 @@ const TABS=[
  {id:'pkg', ic:'package',label:'Packages', perm:'customer',group:'Clients',desc:'Sell and track balances'},
  {id:'loy', ic:'award',  label:'Loyalty',  perm:'customer',group:'Clients',desc:'Points, tiers and rewards'},
  {id:'merit',ic:'star',  label:'Feedback', perm:null,      group:'Clients',desc:'Client ratings and merit points'},
+ {id:'crm',ic:'target',label:'CRM',perm:'customer',group:'Clients',desc:'Leads, follow-ups, service, marketing'},
  {id:'pos', ic:'card',   label:'Checkout', perm:'pos',     group:'Money',  desc:'Bills, payments, receipts'},
  {id:'rep', ic:'chart',  label:'Reports',  perm:'report',  group:'Money',  desc:'Revenue and commission'},
  {id:'inv', ic:'stock',  label:'Stock',    perm:'inventory',group:'Manage',desc:'Backbar and retail levels'},
@@ -1877,7 +1943,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -2068,6 +2134,7 @@ function vHome(){
  if(f.noShow)alerts.push({i:'alert',t:f.noShow+' no-show'+(f.noShow>1?'s':'')+' today',
   d:'Follow up while it is still fresh.',go:"go('book')"});
  paperAlerts(alerts);
+ crmAlerts(alerts);
  /* it sits in the same row as attendance and the programme widget */
  h=h.replace('<!--NEED-->','<div class="card wcard" id="wneed"><div class="wh"><span class="wico'+
   (alerts.length?' warn':' ok')+'">'+ic(alerts.length?'bell':'check',16)+'</span><h2>Needs attention</h2>'+
@@ -7429,7 +7496,7 @@ function drawPkgConf(P,c,s,cps){
  cps.forEach((cp,k)=>{
   const rows=(cp.balances||[]);
   need(22+rows.length*6.2);
-  const days=daysBetween(String(cp.soldAt||s.at).slice(0,10),cp.expiry);
+  const days=daysBetween(ymd(new Date(cp.soldAt||s.at)),cp.expiry);
   font(10,'bold');T((cps.length>1?(k+1)+'. ':'')+cpName(cp),16,y+2);
   const dl=pkgDealBM(pkgOf(cp.packageId));if(dl){const w=doc.getTextWidth(pdfText((cps.length>1?(k+1)+'. ':'')+cpName(cp)));
    font(8,'bold',BRASS);T(dl,16+w+4,y+2);}
@@ -10911,7 +10978,7 @@ window.render=render;
   app=initializeApp(cfg);auth=getAuth(app);
   /* the staff app keeps a copy of its records on the device, so a dropped line does not
      stop the counter; the client's feedback page has nothing to keep, so it stays plain */
-  const pub=new URLSearchParams(location.search).has('fb');
+  const pub=new URLSearchParams(location.search).has('fb')||new URLSearchParams(location.search).has('lead');
   if(pub)db=getFirestore(app);
   else{
    try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
@@ -10924,6 +10991,8 @@ window.render=render;
  /* a client opening their feedback link sees only the rating page, never the login */
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
+ const lq=new URLSearchParams(location.search);
+ if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
  onAuthStateChanged(auth,async user=>{
   if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];APPTSUB=null;
    EVENTS=[];EVIDS=new Set();loginScreen();return;}
@@ -10947,7 +11016,7 @@ window.render=render;
    watchAppointments();
    watchEvents();
    watchReviews();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
@@ -11837,4 +11906,609 @@ function smartReport(bills){
    '<p class="tiny muted" style="margin-top:8px">Sales added counts only the items a suggestion put on the bill. Promotions, vouchers and package sessions are counted but add no sales of their own.</p>'
   :'<div class="empty">'+ic('spark',22)+'<div>No suggestions taken in this period yet. They are counted from build 2026-09-21t onwards.</div></div>')+'</div>';
 }
+
+/* ================= CRM ================= */
+/* ============ CRM: leads, follow-ups, customer service, marketing ============ */
+/* Leads come from the counter (staff key them in from WhatsApp, Instagram, calls) and from a
+   public web form the spa can put in its Instagram bio or ads. Each lead moves through a
+   pipeline until it becomes a client or is lost, with every call and message logged.
+   Follow-ups are worked out from what already happened (a treatment two days ago, a client
+   not seen for two months, a package about to lapse, a birthday) and ticked off when done.
+   Complaints and requests are cases with a deadline by priority. Marketing compares the
+   leads and sales each campaign brought against what it cost. */
+ICONS.target='M12 3a9 9 0 100 18 9 9 0 000-18zM12 7a5 5 0 100 10 5 5 0 000-10zM12 11a1 1 0 100 2 1 1 0 000-2z';
+ICONS.funnel='M4 5h16l-6 7.5V19l-4 1.5v-8z';
+ICONS.headset='M5 13v-1a7 7 0 0114 0v1M5 13h2.5v5H5zM16.5 13H19v5h-2.5zM19 18c0 1.5-2 2.5-5 2.5';
+
+let LEADS=[],TICKETS=[],CAMPAIGNS=[],CRMTASKS=[],LASTV=null,LEADSUB=null,LEADSEEN=null;
+let CRMV='pipe',LEADF={who:'',src:'',q:''},TKF='open',MKTDAYS=30,MKTREV={};
+const STAGES=[['new','New','spark'],['contacted','Contacted','msg'],['booked','Booked','calendar'],['won','Client','check'],['lost','Lost','close']];
+const stageOf=k=>STAGES.find(s=>s[0]===k)||STAGES[0];
+const LEAD_SOURCES=['Instagram','Facebook','TikTok','Google','WhatsApp','Walk-in','Referral','Web form','Event','Other'];
+const LOST_REASONS=['Price','No reply','Chose another spa','Timing / schedule','Location','Just asking','Other'];
+const TKT_CATS=['Complaint','Skin reaction','Service quality','Billing / refund','Booking issue','Enquiry','Other'];
+const TKPRIO={urgent:['Urgent',4],high:['High',24],normal:['Normal',72],low:['Low',168]};
+const openLead=l=>!['won','lost'].includes(l.stage);
+const myBranch=x=>!x.branchId||x.branchId===ME.branchId;
+const hrsAgo=t=>(Date.now()-new Date(t).getTime())/36e5;
+const agoTxt=t=>{const h=hrsAgo(t);return h<1?Math.max(1,Math.round(h*60))+' min ago':h<24?Math.round(h)+' h ago':Math.round(h/24)+' d ago';};
+const waNum=p=>{const d=digits(p);return d.startsWith('60')?d:d.startsWith('0')?'6'+d:d;};
+const srcToClient=s=>({Instagram:'Instagram',Facebook:'Facebook',TikTok:'TikTok',Google:'Google Maps','Walk-in':'Walk-in',Referral:'Friend referral'}[s]||'Other');
+
+/* ---------------- loading ---------------- */
+async function loadCrm(){
+ const g=async(col,n)=>{try{return (await getDocs(query(collection(db,col),limit(n)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){return [];}};
+ [TICKETS,CAMPAIGNS,CRMTASKS]=await Promise.all([g('tickets',400),g('campaigns',200),g('crmTasks',800)]);
+ watchLeads();
+}
+function watchLeads(){
+ if(LEADSUB)return;
+ try{
+  LEADSUB=onSnapshot(query(collection(db,'leads'),orderBy('createdAt','desc'),limit(400)),snap=>{
+   const fresh=snap.docs.map(d=>({id:d.id,...d.data()}));
+   if(LEADSEEN){const news=fresh.filter(l=>!LEADSEEN.has(l.id)&&l.createdBy==='web'&&myBranch(l));
+    news.forEach(l=>{toast('New web lead: '+l.name+(l.interest?' · '+l.interest:''));});}
+   const first=!LEADSEEN,webNew=LEADSEEN&&fresh.some(l=>!LEADSEEN.has(l.id));
+   LEADSEEN=new Set(fresh.map(l=>l.id));LEADS=fresh;
+   autoWin();
+   if(!document.querySelector('#modal .sheet')&&(TAB==='crm'||(TAB==='home'&&(first||webNew))))render();
+  },e=>console.warn('leads',e));
+  unsub.push(LEADSUB);
+ }catch(e){console.warn('leads watch',e);}
+}
+/* a booked lead whose client has since paid a bill has become a client */
+function autoWin(){
+ LEADS.filter(l=>l.stage==='booked'&&l.customerId&&SALES.some(s=>s.customerId===l.customerId&&!s.voided&&String(s.at)>=String(l.convertedAt||'')))
+  .forEach(l=>{if(l._won)return;l._won=1;leadPatch(l.id,{stage:'won',wonAt:new Date().toISOString()},'stage','Became a client — first bill paid',true);});
+}
+async function leadPatch(id,patch,type,text,quiet){
+ const l=LEADS.find(x=>x.id===id);if(!l)return;
+ const act=type?{at:new Date().toISOString(),by:UID,byName:(typeof actorName==='function'?actorName():ME.name),type,text:text||''}:null;
+ const data={...patch,updatedAt:new Date().toISOString(),...(act?{acts:[...(l.acts||[]),act],lastContactAt:['call','wa','note'].includes(type)?act.at:(l.lastContactAt||'')}:{})};
+ if(act&&['call','wa'].includes(type)&&!l.firstContactAt)data.firstContactAt=act.at;
+ if(act&&['call','wa'].includes(type)&&l.stage==='new')data.stage='contacted';
+ try{await updateDoc(doc(db,'leads',id),data);Object.assign(l,data);
+  if(!quiet&&TAB==='crm'){const m=document.getElementById('ld-box');if(m)window.leadOpen(id);else render();}}
+ catch(e){toast(friendly(e));}
+}
+
+/* ---------------- the CRM screen ---------------- */
+function crmCounts(){
+ const mine=LEADS.filter(myBranch);
+ return {open:mine.filter(openLead).length,
+  due:crmTasks().length,
+  tk:TICKETS.filter(t=>myBranch(t)&&t.status!=='resolved').length,
+  newToday:mine.filter(l=>String(l.createdAt).slice(0,10)===today()).length};
+}
+function vCrm(){
+ if(!LEADF.who)LEADF.who=boss()?'all':'mine';
+ const C=crmCounts();
+ const tabs=[['pipe','Leads','target',C.open],['tasks','Follow-ups','bell',C.due],['service','Service','headset',C.tk]];
+ if(boss())tabs.push(['mkt','Marketing','chart',''],['tpl','Templates','msg','']);
+ if(!tabs.some(t=>t[0]===CRMV))CRMV='pipe';
+ const V={pipe:crmPipe,tasks:crmTasksView,service:crmService,mkt:crmMarketing,tpl:crmTemplates};
+ return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(CRMV===t[0]?'on':'')+'" onclick="crmTab(\''+t[0]+'\')">'+
+   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[CRMV]();
+}
+window.crmTab=v=>{CRMV=v;render();if(v==='mkt')mktRevenue();if(v==='tasks')loadLapsed();};
+
+/* ---------------- pipeline ---------------- */
+function leadList(){
+ const q=LEADF.q.trim().toLowerCase();
+ return LEADS.filter(myBranch).filter(l=>(LEADF.who==='all'||l.assignedTo===UID||(!l.assignedTo&&LEADF.who==='mine'))&&
+  (!LEADF.src||l.source===LEADF.src)&&(!q||String(l.name).toLowerCase().includes(q)||digits(l.phone).includes(digits(q)||'@@')||String(l.interest||'').toLowerCase().includes(q)));
+}
+function crmPipe(){
+ const L=leadList(),all=LEADS.filter(myBranch);
+ const d30=all.filter(l=>hrsAgo(l.createdAt)<=720),won30=d30.filter(l=>l.stage==='won').length;
+ const due=all.filter(l=>openLead(l)&&l.nextAt&&l.nextAt<=today()).length;
+ const card=l=>{const s=stageOf(l.stage),od=openLead(l)&&l.nextAt&&l.nextAt<today(),dueT=openLead(l)&&l.nextAt===today();
+  return '<button class="kcard" onclick="leadOpen(\''+l.id+'\')">'+
+   '<div class="spread"><b>'+esc(l.name)+'</b>'+(l.assignedTo?'<span class="kwho" title="'+esc(stf(l.assignedTo).name||'')+'">'+esc(initials(stf(l.assignedTo).name||'?'))+'</span>':'<span class="kwho none">?</span>')+'</div>'+
+   '<div class="kmeta"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+'</div>'+
+   (l.interest?'<div class="tiny muted" style="margin-top:3px">'+esc(l.interest)+'</div>':'')+
+   '<div class="kfoot"><span>'+agoTxt(l.createdAt)+'</span>'+(od?'<span class="kdue od">'+ic('clock',11)+'overdue</span>':dueT?'<span class="kdue">'+ic('clock',11)+'today</span>':
+    l.stage==='lost'?'<span class="tiny muted">'+esc(l.lostReason||'')+'</span>':'')+'</div></button>';};
+ const cols=STAGES.filter(s=>s[0]!=='lost').map(s=>{
+  let xs=L.filter(l=>(l.stage||'new')===s[0]);
+  if(s[0]==='won')xs=xs.filter(l=>hrsAgo(l.wonAt||l.updatedAt||l.createdAt)<=720);
+  xs.sort((a,b)=>String(a.nextAt||'9').localeCompare(String(b.nextAt||'9'))||String(b.createdAt).localeCompare(String(a.createdAt)));
+  return '<div class="kcol k-'+s[0]+'"><div class="kcolh">'+ic(s[2],14)+'<b>'+s[1]+'</b><span>'+xs.length+'</span></div>'+
+   (xs.length?xs.map(card).join(''):'<div class="kempty">'+({new:'New enquiries land here',contacted:'Leads you have spoken to',booked:'Leads with a booking',won:'Became clients (30 days)'}[s[0]])+'</div>')+'</div>';});
+ const lost=L.filter(l=>l.stage==='lost'&&hrsAgo(l.updatedAt||l.createdAt)<=720);
+ return '<div class="crmkpis">'+kpi('New today',all.filter(l=>String(l.createdAt).slice(0,10)===today()).length,'','spark')+
+   kpi('Open leads',all.filter(openLead).length,due?due+' to follow up today':'none due','target')+
+   kpi('Became clients',won30,'last 30 days · '+(d30.length?Math.round(won30/d30.length*100):0)+'% of '+d30.length+' leads','check')+'</div>'+
+  '<div class="card"><div class="crmbar"><div class="seg" style="margin:0">'+
+   '<button class="'+(LEADF.who==='mine'?'on':'')+'" onclick="leadWho(\'mine\')">Mine</button>'+
+   '<button class="'+(LEADF.who==='all'?'on':'')+'" onclick="leadWho(\'all\')">Everyone</button></div>'+
+   '<select class="f" style="margin:0;width:auto" onchange="leadSrc(this.value)"><option value="">All sources</option>'+
+    LEAD_SOURCES.map(s=>'<option'+(LEADF.src===s?' selected':'')+'>'+s+'</option>').join('')+'</select>'+
+   '<div class="cpsearch" style="flex:1;min-width:150px;margin:0"><span class="cpico">'+ic('search',15)+'</span>'+
+    '<input class="f" id="ld-q" style="margin:0" placeholder="Name, phone or interest" value="'+esc(LEADF.q)+'" onchange="leadQ(this.value)"></div>'+
+   (boss()?'<button class="btn sm ghost" onclick="webFormSheet()">'+ic('qr',14)+'Web form</button>':'')+
+   '<button class="btn sm" onclick="leadForm()">'+ic('plus',14)+'New lead</button></div>'+
+  '<div class="kanban">'+cols.join('')+'</div>'+
+  (lost.length?'<details class="klost"><summary>'+ic('close',13)+' Lost in the last 30 days ('+lost.length+')</summary><div class="klostg">'+lost.map(card).join('')+'</div></details>':'')+
+  '</div>';
+}
+window.leadWho=v=>{LEADF.who=v;render();};
+window.leadSrc=v=>{LEADF.src=v;render();};
+window.leadQ=v=>{LEADF.q=v;render();};
+
+/* ---- a new lead, or editing one ---- */
+window.leadForm=id=>{
+ const l=id?LEADS.find(x=>x.id===id):{source:'Instagram',assignedTo:boss()?'':UID,nextAt:today()};
+ const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ modal(id?'Edit lead':'New lead','<div class="card">'+
+  '<div class="grid g2"><div><label>Name *</label><input class="f" id="lf-n" value="'+esc(l.name||'')+'"></div>'+
+  '<div><label>Phone *</label><input class="f" id="lf-p" type="tel" value="'+esc(l.phone||'')+'" placeholder="012-3456789" oninput="leadDup()"></div></div>'+
+  '<div id="lf-dup"></div>'+
+  '<div class="grid g2"><div><label>Came from</label><select class="f" id="lf-s">'+LEAD_SOURCES.map(s=>'<option'+(l.source===s?' selected':'')+'>'+s+'</option>').join('')+'</select></div>'+
+  '<div><label>Campaign</label><select class="f" id="lf-c"><option value="">— none —</option>'+CAMPAIGNS.filter(c=>c.active!==false||c.code===l.campaign)
+   .map(c=>'<option value="'+esc(c.code)+'"'+(l.campaign===c.code?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></div></div>'+
+  '<label>Interested in</label><input class="f" id="lf-i" list="lf-il" value="'+esc(l.interest||'')+'" placeholder="Hydra Facial, acne, pigmentation…">'+
+  '<datalist id="lf-il">'+D.services.filter(s=>s.active!==false).map(s=>'<option value="'+esc(s.name)+'">').join('')+'</datalist>'+
+  '<label>Email</label><input class="f" id="lf-e" type="email" value="'+esc(l.email||'')+'">'+
+  '<label>Note</label><textarea class="f" id="lf-no" rows="2" placeholder="What they asked, budget, best time to call">'+esc(l.note||'')+'</textarea>'+
+  '<div class="grid g2"><div><label>Handled by</label><select class="f" id="lf-a"'+(boss()?'':' disabled')+'><option value="">— unassigned —</option>'+
+   staff.map(s=>'<option value="'+s.id+'"'+(l.assignedTo===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></div>'+
+  '<div><label>Follow up on</label><input class="f" id="lf-d" type="date" value="'+esc(l.nextAt||'')+'"></div></div>'+
+  '<div id="lf-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="lf-go" onclick="leadSave(\''+(id||'')+'\')">'+ic('check',16)+(id?'Save':'Add lead')+'</button></div>');
+};
+window.leadDup=()=>{
+ const d=digits(($('#lf-p')||{}).value);const box=document.getElementById('lf-dup');if(!box)return;
+ if(d.length<8){box.innerHTML='';return;}
+ const c=CUSTS.find(x=>digits(x.phone)===d),l=LEADS.find(x=>digits(x.phone)===d);
+ box.innerHTML=c?'<div class="warnbox">'+ic('alert',13)+' Already a client: <b>'+esc(c.name)+'</b>'+(idOf(c)?' ('+esc(idOf(c))+')':'')+'</div>':
+  l?'<div class="warnbox">'+ic('alert',13)+' Already a lead: <b>'+esc(l.name)+'</b> · '+stageOf(l.stage)[1]+'</div>':'';
+};
+window.leadSave=async id=>{
+ const name=$('#lf-n').value.trim(),phone=$('#lf-p').value.trim(),e=$('#lf-err');
+ if(name.length<2){e.textContent='Enter the name.';return;}
+ if(digits(phone).length<9){e.textContent='Enter a valid phone number.';return;}
+ const data={name,phone,phoneDigits:digits(phone),source:$('#lf-s').value,campaign:$('#lf-c').value,interest:$('#lf-i').value.trim(),
+  email:$('#lf-e').value.trim(),note:$('#lf-no').value.trim(),assignedTo:boss()?$('#lf-a').value:(id?(LEADS.find(x=>x.id===id)||{}).assignedTo||UID:UID),
+  nextAt:$('#lf-d').value,branchId:ME.branchId,updatedAt:new Date().toISOString()};
+ $('#lf-go').disabled=true;
+ try{
+  if(id){await updateDoc(doc(db,'leads',id),data);Object.assign(LEADS.find(x=>x.id===id)||{},data);}
+  else{Object.assign(data,{stage:'new',createdAt:new Date().toISOString(),createdBy:UID,createdByName:ME.name,
+    acts:[{at:new Date().toISOString(),by:UID,byName:ME.name,type:'stage',text:'Lead added'+(data.assignedTo?' · to '+(stf(data.assignedTo).name||''):'')}]});
+   const r=await addDoc(collection(db,'leads'),data);LEADS.unshift({id:r.id,...data});
+   await audit('Lead added',name+' · '+data.source+(data.campaign?' · '+data.campaign:''));}
+  window.closeModal();render();toast(id?'Lead saved':'Lead added');
+ }catch(err){e.textContent=friendly(err);$('#lf-go').disabled=false;}
+};
+
+/* ---- one lead ---- */
+window.leadOpen=id=>{
+ const l=LEADS.find(x=>x.id===id);if(!l)return;
+ const s=stageOf(l.stage),c=l.customerId?cust(l.customerId):null;
+ const staff=D.staff.filter(x=>x.active!==false&&x.role!=='branch'&&(!x.branchId||x.branchId===ME.branchId));
+ const acts=(l.acts||[]).slice().reverse();
+ modal(l.name,'<div id="ld-box"><div class="card">'+
+  '<div class="ldhead"><span class="avatar">'+esc(initials(l.name))+'</span><div style="flex:1;min-width:0">'+
+   '<div class="tiny muted">'+esc(l.phone||'')+(l.email?' · '+esc(l.email):'')+'</div>'+
+   '<div class="kmeta" style="margin-top:4px"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+
+   '<span class="pill">'+agoTxt(l.createdAt)+'</span>'+(l.firstContactAt?'<span class="pill g">replied in '+Math.max(1,Math.round((new Date(l.firstContactAt)-new Date(l.createdAt))/6e4))+' min</span>':
+    '<span class="pill a">not contacted yet</span>')+'</div></div></div>'+
+  (l.interest?'<div class="ldline">'+ic('spark',13)+' Interested in <b>'+esc(l.interest)+'</b></div>':'')+
+  (l.note?'<div class="ldline">'+ic('note',13)+' '+esc(l.note)+'</div>':'')+
+  '<div class="ldstages">'+STAGES.map(x=>'<button class="'+(x[0]===l.stage?'on':'')+' st-'+x[0]+'" onclick="leadStage(\''+id+'\',\''+x[0]+'\')">'+ic(x[2],13)+x[1]+'</button>').join('')+'</div>'+
+  '<div class="ldacts">'+
+   '<button class="btn sm" onclick="crmWa(\'lead\',\''+id+'\')">'+ic('msg',14)+'WhatsApp</button>'+
+   '<a class="btn sm ghost" href="tel:'+esc(digits(l.phone))+'" onclick="leadPatch(\''+id+'\',{},\'call\',\'Phone call\')">'+ic('phone',14)+'Call</a>'+
+   '<button class="btn sm ghost" onclick="leadNote(\''+id+'\')">'+ic('note',14)+'Log note</button>'+
+   (c?'<button class="btn sm ghost" onclick="closeModal();openCust(\''+c.id+'\')">'+ic('user',14)+'Open client</button>':
+    '<button class="btn sm ghost" onclick="leadConvert(\''+id+'\',false)">'+ic('user',14)+'Make client</button>')+
+   '<button class="btn sm ghost" onclick="leadConvert(\''+id+'\',true)">'+ic('calendar',14)+'Book</button>'+
+   '<button class="btn sm ghost" onclick="leadForm(\''+id+'\')">'+ic('edit',14)+'Edit</button></div>'+
+  '<div class="grid g2" style="margin-top:10px"><div><label>Follow up on</label><input class="f" type="date" value="'+esc(l.nextAt||'')+'" onchange="leadPatch(\''+id+'\',{nextAt:this.value},\'note\',\'Follow-up set for \'+this.value)"></div>'+
+  '<div><label>Handled by</label><select class="f"'+(boss()?'':' disabled')+' onchange="leadAssign(\''+id+'\',this.value)"><option value="">— unassigned —</option>'+
+   staff.map(x=>'<option value="'+x.id+'"'+(l.assignedTo===x.id?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div></div>'+
+  (l.stage==='lost'?'<div class="warnbox" style="margin-top:4px">'+ic('close',13)+' Lost · '+esc(l.lostReason||'')+'</div>':'')+
+  '</div><div class="card"><h3 style="margin:0 0 8px">'+ic('history',15)+' Activity</h3><div class="ctl">'+
+  (acts.length?acts.map(a=>'<div class="ctlrow t-'+esc(a.type)+'"><span>'+ic({call:'phone',wa:'msg',note:'note',stage:'flag'}[a.type]||'note',13)+'</span>'+
+   '<div><b>'+esc(a.text||a.type)+'</b><small>'+esc(a.byName||'')+' · '+dshort(a.at)+' '+tstr(a.at)+'</small></div></div>').join(''):'<div class="tiny muted">Nothing logged yet.</div>')+
+  '</div></div></div>');
+};
+window.leadPatch=(id,patch,type,text)=>leadPatch(id,patch,type,text);
+window.leadAssign=(id,uid)=>leadPatch(id,{assignedTo:uid},'stage','Handed to '+(stf(uid).name||'nobody'));
+window.leadNote=id=>{const t=prompt('Note for this lead');if(t&&t.trim())leadPatch(id,{},'note',t.trim());};
+window.leadStage=(id,st)=>{
+ const l=LEADS.find(x=>x.id===id);if(!l||l.stage===st)return;
+ if(st==='lost'){
+  modal('Why was this lead lost?','<div class="card">'+LOST_REASONS.map(r=>'<button class="pkrow" onclick="leadLost(\''+id+'\',\''+esc(r)+'\')"><span class="cpmeta"><b>'+esc(r)+'</b></span></button>').join('')+'</div>');
+  return;}
+ leadPatch(id,{stage:st,...(st==='won'?{wonAt:new Date().toISOString()}:{})},'stage','Moved to '+stageOf(st)[1]);
+};
+window.leadLost=(id,r)=>{leadPatch(id,{stage:'lost',lostReason:r},'stage','Lost · '+r).then(()=>window.leadOpen(id));};
+/* the lead becomes a client record (numbered as usual), and optionally a booking */
+window.leadConvert=async(id,book)=>{
+ const l=LEADS.find(x=>x.id===id);if(!l)return;
+ let cid=l.customerId;
+ if(!cid){
+  const ex=CUSTS.find(x=>digits(x.phone)===digits(l.phone));
+  if(ex&&confirm(l.phone+' belongs to '+ex.name+'. Link this lead to that client?'))cid=ex.id;
+ }
+ try{
+  if(!cid){
+   const data={name:l.name,nameLower:l.name.toLowerCase(),phone:l.phone,phoneDigits:digits(l.phone),keywords:kwFor(l.name,l.phone),
+    email:l.email||'',source:srcToClient(l.source),branchId:ME.branchId,pdpa:true,marketing:true,tags:[],notes:'',
+    note:l.interest?'Interested in '+l.interest:'',active:true,wantNo:true,leadId:id,createdAt:new Date().toISOString(),createdBy:UID};
+   const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});cid=r.id;
+   await newClientNo(cid);
+   await audit('Client registered',l.name+' (from lead)');
+  }
+  await leadPatch(id,{customerId:cid,convertedAt:l.convertedAt||new Date().toISOString(),...(book&&openLead(l)?{stage:'booked'}:{})},'stage',book?'Booking made':'Client record created',true);
+  window.closeModal();
+  if(book)window.newAppt({customerId:cid,visitType:'new'});else{toast(l.name+' is now a client');render();}
+ }catch(e){toast(friendly(e));}
+};
+
+/* ---------------- WhatsApp templates ---------------- */
+const TPL_DEFAULT={
+ lead:'Hi {name}, terima kasih kerana berminat dengan {biz}! Saya {staff}. Boleh saya tahu bila masa yang sesuai untuk rawatan {service}? 😊',
+ leadfu:'Hi {name}, {staff} dari {biz} di sini. Nak follow up tentang {service} — masih berminat? Slot minggu ni masih ada.',
+ after:'Hi {name}, terima kasih datang ke {biz} semalam untuk {service}. Macam mana kulit hari ni? Kalau ada apa-apa, terus WhatsApp kami ya.',
+ lapsed:'Hi {name}, lama tak jumpa! Kami rindu nak manjakan kulit anda di {biz}. Nak saya bookkan slot minggu ni?',
+ pkg:'Hi {name}, pakej {pkg} anda masih ada {left} sesi dan akan luput pada {expiry}. Jom book sesi seterusnya supaya tak rugi!',
+ bday:'Selamat hari jadi {name}! 🎂 Semoga terus berseri. Hadiah istimewa dari {biz} menanti anda bulan ini.',
+ ticket:'Hi {name}, {staff} dari {biz}. Kami dah terima maklum balas anda dan sedang uruskan. Kami akan update anda secepat mungkin.'};
+const TPL_NAMES={lead:'New lead — first reply',leadfu:'Lead follow-up',after:'After treatment check',lapsed:'Client not seen for a while',
+ pkg:'Package about to expire',bday:'Birthday wishes',ticket:'Service case — acknowledgement'};
+const tplOf=k=>((D.meta&&D.meta.waTpl)||{})[k]||TPL_DEFAULT[k]||'';
+function tplFill(k,ctx){
+ return tplOf(k).replace(/\{(\w+)\}/g,(m,f)=>({biz:(D.meta.biz||{}).name||'kami',staff:(typeof actorName==='function'?actorName():ME.name).split(' ')[0],...ctx})[f]??m);
+}
+/* open WhatsApp with the message ready, and log that it was sent */
+window.crmWa=(kind,id,extra)=>{
+ let phone='',text='',after=null;
+ if(kind==='lead'){const l=LEADS.find(x=>x.id===id);if(!l)return;phone=l.phone;
+  text=tplFill(l.stage==='new'?'lead':'leadfu',{name:l.name.split(' ')[0],service:l.interest||'rawatan kami'});
+  after=()=>leadPatch(id,{},'wa','WhatsApp sent');}
+ else if(kind==='ticket'){const t=TICKETS.find(x=>x.id===id);if(!t)return;phone=t.phone;
+  text=tplFill('ticket',{name:(t.customerName||'').split(' ')[0]});after=()=>ticketLog(id,'WhatsApp sent to the client');}
+ else{const task=crmTasks().find(x=>x.key===id)||extra;if(!task)return;phone=task.phone;text=task.msg;after=()=>taskMark(task.key,'done','WhatsApp sent');}
+ if(!digits(phone)){toast('No phone number');return;}
+ modal('WhatsApp','<div class="card"><label>Message</label><textarea class="f" id="wa-t" rows="6">'+esc(text)+'</textarea>'+
+  '<a class="btn" id="wa-go" style="width:100%;justify-content:center;text-decoration:none" target="_blank" href="#">'+ic('msg',16)+'Open WhatsApp</a>'+
+  '<p class="tiny muted" style="margin-top:8px">Edit the message if you like. It opens in WhatsApp to '+esc(phone)+'.</p></div>',
+ ()=>{const go=$('#wa-go');const set=()=>{go.href='https://wa.me/'+waNum(phone)+'?text='+encodeURIComponent($('#wa-t').value);};set();
+  $('#wa-t').oninput=set;go.onclick=()=>{setTimeout(()=>{window.closeModal();if(after)after();},200);};});
+};
+function crmTemplates(){
+ return '<div class="card"><div class="sec-h"><h2>'+ic('msg',16)+' WhatsApp templates</h2></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Used by the WhatsApp buttons across the CRM. Fill-ins: <code>{name}</code> <code>{biz}</code> <code>{staff}</code> '+
+  '<code>{service}</code> <code>{pkg}</code> <code>{left}</code> <code>{expiry}</code>.</p>'+
+  Object.keys(TPL_DEFAULT).map(k=>'<label>'+esc(TPL_NAMES[k])+'</label><textarea class="f" rows="3" id="tp-'+k+'">'+esc(tplOf(k))+'</textarea>').join('')+
+  '<div class="row wrap2"><button class="btn" onclick="tplSave()">'+ic('check',15)+'Save templates</button>'+
+  '<button class="btn ghost sm" onclick="tplReset()">'+ic('refresh',14)+'Back to the defaults</button></div></div>';
+}
+window.tplSave=async()=>{
+ const T={};Object.keys(TPL_DEFAULT).forEach(k=>{const v=($('#tp-'+k)||{}).value;if(v&&v.trim())T[k]=v.trim();});
+ try{await setDoc(doc(db,'meta','settings'),{waTpl:T},{merge:true});D.meta.waTpl=T;await audit('WhatsApp templates updated',Object.keys(T).length+' templates');toast('Templates saved');}
+ catch(e){toast(friendly(e));}
+};
+window.tplReset=()=>{Object.keys(TPL_DEFAULT).forEach(k=>{const e=$('#tp-'+k);if(e)e.value=TPL_DEFAULT[k];});toast('Defaults restored — press Save to keep them');};
+
+/* ---------------- follow-ups ---------------- */
+/* last visit per client over the past four months, for "not seen for a while" */
+async function loadLapsed(){
+ if(LASTV)return;
+ try{const from=ymd(addDays(new Date(),-120));
+  const s=await getDocs(query(collection(db,'sales'),where('date','>=',from),limit(1500)));
+  const m={};s.docs.forEach(d=>{const x=d.data();if(x.voided||!x.customerId||x.branchId!==ME.branchId)return;
+   if(!m[x.customerId]||x.date>m[x.customerId].date)m[x.customerId]={date:x.date,name:x.customerName||''};});
+  LASTV=m;if(TAB==='crm'&&CRMV==='tasks')render();
+ }catch(e){LASTV={};}
+}
+const taskState=k=>CRMTASKS.find(t=>t.id===k.replace(/[\/\s]/g,'_'));
+function crmTasks(){
+ const out=[],td=today(),biz=(D.meta.biz||{}).name||'';
+ /* leads due */
+ LEADS.filter(l=>myBranch(l)&&openLead(l)&&l.nextAt&&l.nextAt<=td&&(boss()||!l.assignedTo||l.assignedTo===UID)).forEach(l=>out.push({
+  key:'lead:'+l.id+':'+l.nextAt,type:'lead',icon:'target',leadId:l.id,phone:l.phone,prio:l.nextAt<td?0:1,
+  title:(l.stage==='new'?'Reply to new lead ':'Follow up ')+l.name,sub:(l.interest||l.source||'')+(l.nextAt<td?' · overdue since '+dshort(l.nextAt):' · due today'),
+  msg:tplFill(l.stage==='new'?'lead':'leadfu',{name:l.name.split(' ')[0],service:l.interest||'rawatan kami'})}));
+ /* after-treatment check: done 1–3 days ago */
+ APPTS.filter(a=>a.status==='done'&&a.customerId&&a.branchId===ME.branchId&&a.date<td&&a.date>=ymd(addDays(new Date(),-3))).forEach(a=>{
+  const c=cust(a.customerId)||{};out.push({key:'after:'+a.id,type:'after',icon:'spark',phone:c.phone,prio:2,customerId:a.customerId,
+   title:'How is '+(a.customerName||'').split(' ')[0]+' after '+a.serviceName+'?',sub:'Treated '+dshort(a.date)+' by '+(a.staffName||''),
+   msg:tplFill('after',{name:(a.customerName||'').split(' ')[0],service:a.serviceName||''})});});
+ /* packages running out */
+ HELD.filter(p=>!p.prepaid&&(p.balances||[]).some(b=>b.left>0)&&!pkgExpired(p)&&daysBetween(td,p.expiry)<=21&&(!p.branchId||p.branchId===ME.branchId)).forEach(p=>{
+  const c=cust(p.customerId)||{},left=(p.balances||[]).reduce((a,b)=>a+b.left,0);
+  out.push({key:'pkg:'+p.id+':'+p.expiry,type:'pkg',icon:'package',phone:c.phone,prio:3,customerId:p.customerId,
+   title:(p.customerName||c.name||'')+': '+left+' session'+(left>1?'s':'')+' left in '+cpName(p),sub:'Expires '+dstr(p.expiry)+' · in '+daysBetween(td,p.expiry)+' days',
+   msg:tplFill('pkg',{name:(p.customerName||c.name||'').split(' ')[0],pkg:cpName(p),left,expiry:dstr(p.expiry)})});});
+ /* birthdays in the coming week */
+ const wk=[...Array(8)].map((_,i)=>ymd(addDays(new Date(),i)).slice(5));
+ CUSTS.filter(c=>c.active!==false&&c.dob&&wk.includes(c.dob.slice(5))&&myBranch(c)).forEach(c=>{
+  const md=c.dob.slice(5),yr=wk.indexOf(md);out.push({key:'bday:'+c.id+':'+td.slice(0,4),type:'bday',icon:'gift',phone:c.phone,prio:4,customerId:c.id,
+   title:c.name+'\'s birthday '+(yr===0?'is today':'in '+yr+' day'+(yr>1?'s':'')),sub:dstr(td.slice(0,4)+'-'+md),msg:tplFill('bday',{name:c.name.split(' ')[0]})});});
+ /* clients not seen for 60–120 days */
+ if(LASTV)Object.entries(LASTV).filter(([cid,v])=>{const d=daysBetween(v.date,new Date());return d>=60&&d<=120;}).slice(0,40).forEach(([cid,v])=>{
+  const c=cust(cid)||{};out.push({key:'lapsed:'+cid+':'+v.date,type:'lapsed',icon:'history',phone:c.phone,prio:5,customerId:cid,
+   title:(c.name||v.name)+' has not been back for '+daysBetween(v.date,new Date())+' days',sub:'Last visit '+dstr(v.date),
+   msg:tplFill('lapsed',{name:(c.name||v.name||'').split(' ')[0]})});});
+ return out.filter(t=>{const s=taskState(t.key);return !s||(s.status==='snooze'&&s.until<=td);}).sort((a,b)=>a.prio-b.prio);
+}
+const TASKT={lead:'Leads',after:'After treatment',pkg:'Packages expiring',bday:'Birthdays',lapsed:'Not seen for a while'};
+function crmTasksView(){
+ const T=crmTasks();
+ const done=CRMTASKS.filter(t=>t.status==='done'&&String(t.at).slice(0,10)===today()).length;
+ const groups={};T.forEach(t=>{(groups[t.type]=groups[t.type]||[]).push(t);});
+ return '<div class="crmkpis">'+kpi('To do',T.length,'follow-ups waiting','bell')+kpi('Done today',done,'ticked off by the team','check')+
+  kpi('Leads due',(groups.lead||[]).length,'replies and follow-ups','target')+'</div>'+
+  (T.length?Object.keys(TASKT).filter(k=>groups[k]).map(k=>'<div class="card"><div class="sec-h"><h3>'+ic(groups[k][0].icon,15)+' '+TASKT[k]+'</h3><span class="pill">'+groups[k].length+'</span></div>'+
+   groups[k].map(t=>'<div class="tkrow"><div style="flex:1;min-width:0"><b>'+esc(t.title)+'</b><small>'+esc(t.sub)+'</small></div>'+
+    '<div class="tkbtns">'+(t.phone?'<button class="btn sm" onclick="crmWa(\'task\',\''+esc(t.key)+'\')">'+ic('msg',13)+'WhatsApp</button>':'')+
+    (t.leadId?'<button class="btn sm ghost" onclick="leadOpen(\''+t.leadId+'\')">'+ic('target',13)+'Open</button>':
+     t.customerId?'<button class="btn sm ghost" onclick="openCust(\''+t.customerId+'\')">'+ic('user',13)+'Client</button>':'')+
+    '<button class="btn sm ghost" onclick="taskMark(\''+esc(t.key)+'\',\'done\')">'+ic('check',13)+'Done</button>'+
+    '<button class="btn sm ghost" onclick="taskMark(\''+esc(t.key)+'\',\'snooze\')">'+ic('clock',13)+'3 days</button></div></div>').join('')+'</div>').join('')
+  :'<div class="card"><div class="empty">'+ic('check',26)+'<div>Nothing to follow up right now.'+(LASTV?'':' Checking for clients not seen lately…')+'</div></div></div>');
+}
+async function taskMark(key,status,note){
+ const id=key.replace(/[\/\s]/g,'_');
+ const d={key,status,at:new Date().toISOString(),by:UID,byName:(typeof actorName==='function'?actorName():ME.name),...(status==='snooze'?{until:ymd(addDays(new Date(),3))}:{}),...(note?{note}:{})};
+ try{await setDoc(doc(db,'crmTasks',id),d);const i=CRMTASKS.findIndex(t=>t.id===id);if(i>=0)CRMTASKS[i]={id,...d};else CRMTASKS.push({id,...d});
+  if(key.startsWith('lead:')){const lid=key.split(':')[1];if(status==='done')await leadPatch(lid,{nextAt:''},'note','Follow-up done',true);
+   else await leadPatch(lid,{nextAt:ymd(addDays(new Date(),3))},'note','Follow-up moved 3 days',true);}
+  render();toast(status==='done'?'Done':'Moved 3 days');}catch(e){toast(friendly(e));}
+}
+window.taskMark=(k,s)=>taskMark(k,s);
+
+/* ---------------- customer service ---------------- */
+const tkDue=t=>new Date(new Date(t.createdAt).getTime()+(TKPRIO[t.priority]||TKPRIO.normal)[1]*36e5);
+function tkSla(t){
+ if(t.status==='resolved')return '<span class="pill g">'+ic('check',11)+'resolved</span>';
+ const h=(tkDue(t)-Date.now())/36e5;
+ return h<0?'<span class="pill r">'+ic('clock',11)+Math.round(-h)+' h over</span>':'<span class="pill'+(h<4?' a':'')+'">'+ic('clock',11)+(h<24?Math.round(h)+' h left':Math.round(h/24)+' d left')+'</span>';
+}
+function crmService(){
+ const mine=TICKETS.filter(myBranch);
+ const open=mine.filter(t=>t.status!=='resolved'),over=open.filter(t=>tkDue(t)<new Date());
+ const res=mine.filter(t=>t.status==='resolved'&&hrsAgo(t.resolvedAt||t.createdAt)<=720);
+ const avg=res.length?res.reduce((a,t)=>a+(new Date(t.resolvedAt)-new Date(t.createdAt))/36e5,0)/res.length:0;
+ const list=mine.filter(t=>TKF==='open'?t.status!=='resolved':TKF==='mine'?(t.status!=='resolved'&&t.assignedTo===UID):t.status==='resolved')
+  .sort((a,b)=>TKF==='resolved'?String(b.resolvedAt).localeCompare(String(a.resolvedAt)):tkDue(a)-tkDue(b));
+ return '<div class="crmkpis">'+kpi('Open cases',open.length,over.length?over.length+' past their deadline':'all on time','headset')+
+  kpi('Resolved',res.length,'last 30 days','check')+kpi('Average time to resolve',avg?(avg<24?Math.round(avg)+' h':(avg/24).toFixed(1)+' d'):'—','last 30 days','clock')+'</div>'+
+  '<div class="card"><div class="crmbar"><div class="seg" style="margin:0">'+[['open','Open'],['mine','Mine'],['resolved','Resolved']].map(x=>
+   '<button class="'+(TKF===x[0]?'on':'')+'" onclick="tkFilter(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>'+
+   '<button class="btn sm" style="margin-left:auto" onclick="ticketForm()">'+ic('plus',14)+'New case</button></div>'+
+  (list.length?list.map(t=>'<button class="tkcase p-'+esc(t.priority)+'" onclick="ticketOpen(\''+t.id+'\')">'+
+   '<span class="tkpri">'+esc((TKPRIO[t.priority]||TKPRIO.normal)[0])+'</span><div style="flex:1;min-width:0"><b>'+esc(t.subject)+'</b>'+
+   '<small>'+esc(t.customerName||'')+' · '+esc(t.category||'')+' · '+(t.assignedTo?esc(stf(t.assignedTo).name||''):'unassigned')+' · '+agoTxt(t.createdAt)+'</small></div>'+
+   tkSla(t)+'</button>').join(''):'<div class="empty">'+ic('headset',24)+'<div>'+(TKF==='resolved'?'Nothing resolved in the last while.':'No open cases.')+'</div></div>')+'</div>';
+}
+window.tkFilter=v=>{TKF=v;render();};
+window.ticketForm=cid=>{
+ CP['tk-c']={value:cid||''};
+ const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ modal('New service case','<div class="card"><label>Client</label>'+clientPicker('tk-c',cid||'',{})+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="tk-cat">'+TKT_CATS.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
+  '<div><label>Priority</label><select class="f" id="tk-pr">'+Object.entries(TKPRIO).map(([k,v])=>'<option value="'+k+'"'+(k==='normal'?' selected':'')+'>'+v[0]+' — reply within '+(v[1]<24?v[1]+' h':v[1]/24+' days')+'</option>').join('')+'</select></div></div>'+
+  '<label>Subject *</label><input class="f" id="tk-s" placeholder="Redness after chemical peel">'+
+  '<label>What happened</label><textarea class="f" id="tk-d" rows="3"></textarea>'+
+  '<label>Handled by</label><select class="f" id="tk-a"><option value="">— unassigned —</option>'+staff.map(s=>'<option value="'+s.id+'"'+(s.id===UID?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<div id="tk-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="tk-go" onclick="ticketSave()">'+ic('check',16)+'Open case</button></div>');
+};
+window.ticketSave=async()=>{
+ const cid=cpValue('tk-c'),c=cust(cid),s=$('#tk-s').value.trim(),e=$('#tk-e');
+ if(!c){e.textContent='Choose the client.';return;}
+ if(s.length<3){e.textContent='Give the case a short subject.';return;}
+ const now=new Date().toISOString();
+ const t={customerId:cid,customerName:c.name,customerNo:idOf(c),phone:c.phone||'',category:$('#tk-cat').value,priority:$('#tk-pr').value,
+  subject:s,detail:$('#tk-d').value.trim(),assignedTo:$('#tk-a').value,status:'open',branchId:ME.branchId,createdAt:now,createdBy:UID,
+  log:[{at:now,by:UID,byName:ME.name,text:'Case opened'}]};
+ $('#tk-go').disabled=true;
+ try{const r=await addDoc(collection(db,'tickets'),t);TICKETS.unshift({id:r.id,...t});
+  await audit('Service case opened',c.name+' · '+t.category+' · '+s);
+  logEvent('booking','Service case: '+s,c.name+' · '+(TKPRIO[t.priority]||[])[0],{refType:'cust',refId:cid});
+  window.closeModal();CRMV='service';TAB='crm';render();toast('Case opened');}
+ catch(err){e.textContent=friendly(err);$('#tk-go').disabled=false;}
+};
+async function ticketLog(id,text,patch){
+ const t=TICKETS.find(x=>x.id===id);if(!t)return;
+ const d={...(patch||{}),log:[...(t.log||[]),{at:new Date().toISOString(),by:UID,byName:ME.name,text}],updatedAt:new Date().toISOString()};
+ try{await updateDoc(doc(db,'tickets',id),d);Object.assign(t,d);if(document.getElementById('tk-box'))window.ticketOpen(id);else render();}
+ catch(e){toast(friendly(e));}
+}
+window.ticketOpen=id=>{
+ const t=TICKETS.find(x=>x.id===id);if(!t)return;
+ const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ modal(t.subject,'<div id="tk-box"><div class="card">'+
+  '<div class="spread"><div><b>'+esc(t.customerName||'')+'</b>'+(t.customerNo?' <span class="cno'+(isMem(t.customerNo)?' mem':'')+'">'+esc(t.customerNo)+'</span>':'')+
+   '<div class="tiny muted">'+esc(t.category)+' · '+esc((TKPRIO[t.priority]||TKPRIO.normal)[0])+' priority · opened '+dshort(t.createdAt)+' '+tstr(t.createdAt)+'</div></div>'+tkSla(t)+'</div>'+
+  (t.detail?'<p style="margin:10px 0">'+esc(t.detail)+'</p>':'')+
+  '<div class="grid g2"><div><label>Status</label><select class="f" onchange="ticketStatus(\''+id+'\',this.value)">'+
+   [['open','Open'],['progress','In progress'],['waiting','Waiting for the client'],['resolved','Resolved']].map(s=>'<option value="'+s[0]+'"'+(t.status===s[0]?' selected':'')+'>'+s[1]+'</option>').join('')+'</select></div>'+
+  '<div><label>Handled by</label><select class="f" onchange="ticketLog(\''+id+'\',\'Handed to \'+this.options[this.selectedIndex].text,{assignedTo:this.value})"><option value="">— unassigned —</option>'+
+   staff.map(s=>'<option value="'+s.id+'"'+(t.assignedTo===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></div></div>'+
+  (t.status==='resolved'?'<div class="warnbox" style="background:var(--jade-soft)">'+ic('check',13)+' '+esc(t.resolution||'Resolved')+'</div>':'')+
+  '<div class="row wrap2">'+(t.phone?'<button class="btn sm" onclick="crmWa(\'ticket\',\''+id+'\')">'+ic('msg',14)+'WhatsApp client</button>':'')+
+   '<button class="btn sm ghost" onclick="ticketNote(\''+id+'\')">'+ic('note',14)+'Add update</button>'+
+   '<button class="btn sm ghost" onclick="closeModal();openCust(\''+t.customerId+'\')">'+ic('user',14)+'Client</button></div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('history',15)+' Updates</h3><div class="ctl">'+(t.log||[]).slice().reverse().map(a=>
+   '<div class="ctlrow"><span>'+ic('note',13)+'</span><div><b>'+esc(a.text)+'</b><small>'+esc(a.byName||'')+' · '+dshort(a.at)+' '+tstr(a.at)+'</small></div></div>').join('')+'</div></div></div>');
+};
+window.ticketLog=(id,text,patch)=>ticketLog(id,text,patch);
+window.ticketNote=id=>{const t=prompt('Update on this case');if(t&&t.trim())ticketLog(id,t.trim());};
+window.ticketStatus=(id,st)=>{
+ if(st==='resolved'){const r=prompt('How was it resolved?');if(!r||!r.trim()){window.ticketOpen(id);return;}
+  ticketLog(id,'Resolved: '+r.trim(),{status:'resolved',resolution:r.trim(),resolvedAt:new Date().toISOString()});
+  audit('Service case resolved',((TICKETS.find(x=>x.id===id)||{}).subject||'')+' — '+r.trim());return;}
+ ticketLog(id,'Status: '+({open:'Open',progress:'In progress',waiting:'Waiting for the client'}[st]||st),{status:st});
+};
+
+/* ---------------- marketing performance ---------------- */
+async function mktRevenue(){
+ const since=ymd(addDays(new Date(),-MKTDAYS));
+ const conv=LEADS.filter(l=>myBranch(l)&&l.customerId&&String(l.createdAt).slice(0,10)>=since);
+ const key=MKTDAYS+':'+conv.map(l=>l.customerId).join(',');
+ if(MKTREV[key])return;
+ const ids=[...new Set(conv.map(l=>l.customerId))];const by={};
+ try{
+  for(let i=0;i<ids.length;i+=10){
+   const s=await getDocs(query(collection(db,'sales'),where('customerId','in',ids.slice(i,i+10)),limit(500)));
+   s.docs.forEach(d=>{const x=d.data();if(x.voided)return;(by[x.customerId]=by[x.customerId]||[]).push(x);});
+  }
+ }catch(e){console.warn('mkt revenue',e);}
+ MKTREV[key]=by;if(TAB==='crm'&&CRMV==='mkt')render();
+}
+function mktRev(l){
+ const since=ymd(addDays(new Date(),-MKTDAYS));
+ const conv=LEADS.filter(x=>myBranch(x)&&x.customerId&&String(x.createdAt).slice(0,10)>=since);
+ const by=MKTREV[MKTDAYS+':'+conv.map(x=>x.customerId).join(',')];
+ if(!by)return null;
+ return (by[l.customerId]||[]).filter(s=>String(s.at)>=String(l.convertedAt||l.createdAt)).reduce((a,s)=>a+(+s.total||0),0);
+}
+function crmMarketing(){
+ const since=ymd(addDays(new Date(),-MKTDAYS));
+ const L=LEADS.filter(l=>myBranch(l)&&String(l.createdAt).slice(0,10)>=since);
+ const loading=L.some(l=>l.customerId)&&mktRev(L.find(l=>l.customerId))===null;
+ if(loading)setTimeout(mktRevenue,0);
+ const stat=xs=>{const won=xs.filter(l=>l.stage==='won'||(l.customerId&&l.stage!=='lost')),rev=xs.reduce((a,l)=>a+(mktRev(l)||0),0);
+  const resp=xs.filter(l=>l.firstContactAt).map(l=>(new Date(l.firstContactAt)-new Date(l.createdAt))/6e4);
+  return {n:xs.length,cont:xs.filter(l=>l.firstContactAt||!['new'].includes(l.stage)).length,booked:xs.filter(l=>['booked','won'].includes(l.stage)||l.customerId).length,
+   won:won.length,lost:xs.filter(l=>l.stage==='lost').length,rev,resp:resp.length?resp.reduce((a,b)=>a+b,0)/resp.length:null};};
+ const T=stat(L);
+ const bar=(lab,n,of)=>'<div class="frow"><span>'+lab+'</span><div class="bar"><i style="width:'+(of?Math.round(n/of*100):0)+'%"></i></div><b>'+n+'</b><small>'+(of?Math.round(n/of*100):0)+'%</small></div>';
+ const srcs=[...new Set(L.map(l=>l.source||'Other'))].map(s=>[s,stat(L.filter(l=>(l.source||'Other')===s))]).sort((a,b)=>b[1].n-a[1].n);
+ const camps=CAMPAIGNS.map(c=>{const xs=L.filter(l=>l.campaign===c.code);const s=stat(LEADS.filter(l=>myBranch(l)&&l.campaign===c.code));return [c,s];});
+ const lostBy={};L.filter(l=>l.stage==='lost').forEach(l=>{lostBy[l.lostReason||'Other']=(lostBy[l.lostReason||'Other']||0)+1;});
+ const mins=m=>m===null?'—':m<60?Math.round(m)+' min':m<1440?(m/60).toFixed(1)+' h':(m/1440).toFixed(1)+' d';
+ return '<div class="card"><div class="crmbar"><div class="seg" style="margin:0">'+[30,90,365].map(d=>'<button class="'+(MKTDAYS===d?'on':'')+'" onclick="mktDays('+d+')">'+
+   (d===365?'1 year':d+' days')+'</button>').join('')+'</div>'+(loading?'<span class="tiny muted">'+ic('refresh',12)+' adding up sales…</span>':'')+
+   '<button class="btn sm" style="margin-left:auto" onclick="campForm()">'+ic('plus',14)+'Campaign</button>'+
+   '<button class="btn sm ghost" onclick="webFormSheet()">'+ic('qr',14)+'Web form</button></div>'+
+  '<div class="crmkpis" style="margin:10px 0 0">'+kpi('Leads',T.n,'last '+MKTDAYS+' days','target')+
+   kpi('Became clients',T.won,(T.n?Math.round(T.won/T.n*100):0)+'% conversion','check')+
+   kpi('Sales from leads',rm(T.rev),'paid bills since they converted','wallet')+
+   kpi('First reply',mins(T.resp),'average time to first call or WhatsApp','clock')+'</div></div>'+
+  '<div class="grid g2" style="align-items:start"><div class="card"><h3 style="margin:0 0 10px">'+ic('funnel',15)+' Funnel</h3>'+
+   bar('Leads',T.n,T.n)+bar('Contacted',T.cont,T.n)+bar('Booked',T.booked,T.n)+bar('Became clients',T.won,T.n)+
+   (T.lost?'<div class="tiny muted" style="margin-top:8px">Lost '+T.lost+': '+Object.entries(lostBy).sort((a,b)=>b[1]-a[1]).map(([r,n])=>esc(r)+' '+n).join(' · ')+'</div>':'')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 10px">'+ic('target',15)+' By source</h3><div class="scroll"><table><tr><th>Source</th><th class="num">Leads</th><th class="num">Clients</th><th class="num">Conv.</th><th class="num">Sales</th></tr>'+
+   (srcs.length?srcs.map(([s,x])=>'<tr><td>'+esc(s)+'</td><td class="num">'+x.n+'</td><td class="num">'+x.won+'</td><td class="num">'+(x.n?Math.round(x.won/x.n*100):0)+'%</td><td class="num">'+rm(x.rev)+'</td></tr>').join('')
+    :'<tr><td colspan="5" class="muted">No leads in this period.</td></tr>')+'</table></div></div></div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('chart',15)+' Campaigns</h3></div><div class="scroll"><table><tr><th>Campaign</th><th class="num">Cost</th><th class="num">Leads</th>'+
+   '<th class="num">Clients</th><th class="num">Cost / lead</th><th class="num">Cost / client</th><th class="num">Sales</th><th class="num">ROAS</th></tr>'+
+   (camps.length?camps.map(([c,x])=>'<tr onclick="campForm(\''+c.id+'\')" style="cursor:pointer"><td><b>'+esc(c.name)+'</b>'+(c.active===false?' <span class="pill">ended</span>':'')+
+    '<div class="tiny muted">'+esc(c.channel||'')+(c.start?' · '+dshort(c.start):'')+(c.end?' – '+dshort(c.end):'')+'</div></td>'+
+    '<td class="num">'+rm(+c.cost||0)+'</td><td class="num">'+x.n+'</td><td class="num">'+x.won+'</td>'+
+    '<td class="num">'+(x.n?rm((+c.cost||0)/x.n):'—')+'</td><td class="num">'+(x.won?rm((+c.cost||0)/x.won):'—')+'</td>'+
+    '<td class="num">'+rm(x.rev)+'</td><td class="num"><b class="'+((+c.cost&&x.rev/c.cost>=1)?'roasok':'roaslow')+'">'+(+c.cost?(x.rev/c.cost).toFixed(1)+'×':'—')+'</b></td></tr>').join('')
+    :'<tr><td colspan="8" class="muted">No campaigns yet. Add one with its cost, then pick it on each lead it brings in.</td></tr>')+'</table></div>'+
+   '<p class="tiny muted" style="margin-top:8px">Campaign figures cover all its leads, whatever the period. ROAS is sales from its converted leads divided by what the campaign cost.</p></div>';
+}
+window.mktDays=d=>{MKTDAYS=d;render();mktRevenue();};
+const slug=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,24);
+window.campForm=id=>{
+ const c=id?CAMPAIGNS.find(x=>x.id===id):{name:'',channel:'Facebook / Instagram ads',start:today(),end:'',cost:0,active:true};
+ modal(id?'Edit campaign':'New campaign','<div class="card"><label>Name *</label><input class="f" id="cm-n" value="'+esc(c.name)+'" placeholder="Merdeka Hydra Promo">'+
+  '<div class="grid g2"><div><label>Channel</label><input class="f" id="cm-ch" list="cm-chl" value="'+esc(c.channel||'')+'">'+
+   '<datalist id="cm-chl">'+['Facebook / Instagram ads','TikTok ads','Google ads','Influencer','Flyers','Event / booth','WhatsApp broadcast','Other'].map(x=>'<option value="'+x+'">').join('')+'</datalist></div>'+
+  '<div><label>Amount spent (RM)</label><input class="f" id="cm-c" type="number" step="0.01" value="'+(+c.cost||0)+'"></div></div>'+
+  '<div class="grid g2"><div><label>Starts</label><input class="f" id="cm-s" type="date" value="'+esc(c.start||'')+'"></div><div><label>Ends</label><input class="f" id="cm-e" type="date" value="'+esc(c.end||'')+'"></div></div>'+
+  '<label>Code <span class="muted">— used in the web form link</span></label><input class="f" id="cm-k" value="'+esc(c.code||'')+'" placeholder="auto from the name"'+(id?' disabled':'')+'>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="cm-a"'+(c.active!==false?' checked':'')+'> Running</label>'+
+  '<div id="cm-er" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="campSave(\''+(id||'')+'\')">'+ic('check',16)+'Save campaign</button></div>');
+};
+window.campSave=async id=>{
+ const n=$('#cm-n').value.trim(),e=$('#cm-er');if(n.length<2){e.textContent='Name the campaign.';return;}
+ const code=id?(CAMPAIGNS.find(x=>x.id===id)||{}).code:(slug($('#cm-k').value)||slug(n));
+ if(!id&&CAMPAIGNS.some(c=>c.code===code)){e.textContent='Another campaign already uses the code '+code+'.';return;}
+ const d={name:n,code,channel:$('#cm-ch').value.trim(),cost:r2(+$('#cm-c').value||0),start:$('#cm-s').value,end:$('#cm-e').value,active:$('#cm-a').checked,
+  branchId:ME.branchId,updatedAt:new Date().toISOString()};
+ try{if(id){await updateDoc(doc(db,'campaigns',id),d);Object.assign(CAMPAIGNS.find(x=>x.id===id),d);}
+  else{const r=await addDoc(collection(db,'campaigns'),{...d,createdAt:new Date().toISOString()});CAMPAIGNS.push({id:r.id,...d});}
+  await audit(id?'Campaign updated':'Campaign added',n+' · '+rm(d.cost));window.closeModal();render();}
+ catch(err){e.textContent=friendly(err);}
+};
+
+/* ---------------- the public web form ---------------- */
+function webLink(code){
+ const u=location.origin+location.pathname.replace(/index\.html$/,'');
+ return u+'?lead='+encodeURIComponent(ME.branchId)+(code?'&c='+encodeURIComponent(code):'');
+}
+window.webFormSheet=async()=>{
+ const b=D.meta.biz||{};
+ /* the form cannot read the staff data, so it gets its own small public page of details */
+ try{await setDoc(doc(db,'leadForms',ME.branchId),{bizName:b.name||'',branchName:branch().name||'',logo:b.logo||'',
+  services:D.services.filter(s=>s.active!==false).map(s=>s.name).slice(0,40),active:true,updatedAt:new Date().toISOString()});}
+ catch(e){toast(friendly(e));return;}
+ const opts=CAMPAIGNS.filter(c=>c.active!==false);
+ modal('Web form for leads','<div class="card"><p class="tiny muted" style="margin-top:0">Put this link in your Instagram bio, WhatsApp status or ads. '+
+  'Whoever fills it in lands under <b>Leads → New</b> straight away.</p>'+
+  '<label>Campaign</label><select class="f" id="wf-c" onchange="wfPaint()"><option value="">— none (general link) —</option>'+
+   opts.map(c=>'<option value="'+esc(c.code)+'">'+esc(c.name)+'</option>').join('')+'</select>'+
+  '<div id="wf-out"></div></div>',()=>window.wfPaint());
+};
+window.wfPaint=()=>{
+ const code=($('#wf-c')||{}).value||'',link=webLink(code),o=document.getElementById('wf-out');if(!o)return;
+ o.innerHTML='<label>Link</label><div class="row"><input class="f" id="wf-l" style="margin:0;flex:1" readonly value="'+esc(link)+'">'+
+  '<button class="btn sm" onclick="wfCopy()">'+ic('check',13)+'Copy</button></div>'+
+  '<div class="wfqr"><span class="pfqr" data-qr="'+esc(link)+'" data-px="170" style="width:170px;height:170px"></span><small>Print or post this QR — it opens the same form.</small></div>'+
+  '<a class="btn ghost sm" target="_blank" href="'+esc(link)+'">'+ic('right',13)+'Preview the form</a>';
+ setTimeout(paintQRs,0);
+};
+window.wfCopy=()=>{const i=$('#wf-l');try{navigator.clipboard.writeText(i.value);}catch(e){i.select();document.execCommand&&document.execCommand('copy');}toast('Link copied');};
+async function leadFormPage(branchId,code){
+ document.title='Enquiry';
+ const root=document.getElementById('root');
+ root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
+ let f=null;try{const s=await getDoc(doc(db,'leadForms',branchId));if(s.exists())f=s.data();}catch(e){}
+ if(!f||f.active===false){root.innerHTML='<div class="fbpage"><div class="fbbox" style="text-align:center"><p>This form is not available.</p></div></div>';return;}
+ const head='<div class="fbhead">'+(f.logo?'<img src="'+f.logo+'" alt="">':'<div class="fbmark">'+ic('spark',22)+'</div>')+
+  '<div class="fbbiz">'+esc(f.bizName||'')+'</div>'+(f.branchName?'<div class="fbbr">'+esc(f.branchName)+'</div>':'')+'</div>';
+ root.innerHTML='<div class="fbpage">'+head+'<div class="fbbox lfbox"><h2 style="margin-top:0">Tempah konsultasi percuma</h2>'+
+  '<p class="tiny muted">Isi maklumat di bawah, kami akan hubungi anda melalui WhatsApp.</p>'+
+  '<label>Nama *</label><input class="f" id="wl-n" autocomplete="name">'+
+  '<label>No. telefon (WhatsApp) *</label><input class="f" id="wl-p" type="tel" autocomplete="tel" placeholder="012-3456789">'+
+  '<label>Rawatan yang diminati</label><select class="f" id="wl-i"><option value="">Belum pasti / nak nasihat</option>'+
+   (f.services||[]).map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>'+
+  '<label>Masalah kulit / soalan</label><textarea class="f" id="wl-q" rows="3" placeholder="Contoh: jerawat, jeragat, kulit kusam"></textarea>'+
+  '<label class="row" style="gap:9px;align-items:flex-start"><input type="checkbox" id="wl-ok"> <span class="tiny">Saya bersetuju '+esc(f.bizName||'spa')+
+   ' menghubungi saya dan menyimpan maklumat ini (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+  '<div id="wl-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="wl-go">Hantar</button></div></div>';
+ document.getElementById('wl-go').onclick=async()=>{
+  const n=$('#wl-n').value.trim(),p=$('#wl-p').value.trim(),e=$('#wl-e');
+  if(n.length<2){e.textContent='Sila isi nama.';return;}
+  if(digits(p).length<9){e.textContent='Sila isi nombor telefon yang betul.';return;}
+  if(!$('#wl-ok').checked){e.textContent='Sila tandakan persetujuan.';return;}
+  $('#wl-go').disabled=true;
+  const d={name:n.slice(0,80),phone:p.slice(0,20),source:'Web form',campaign:String(code||'').slice(0,24),branchId,stage:'new',
+   createdAt:new Date().toISOString(),createdBy:'web',web:true,consent:true};
+  const i=$('#wl-i').value,q=$('#wl-q').value.trim();if(i)d.interest=i.slice(0,200);if(q)d.note=q.slice(0,500);
+  try{await addDoc(collection(db,'leads'),d);
+   root.innerHTML='<div class="fbpage">'+head+'<div class="fbbox" style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div>'+
+    '<h2>Terima kasih, '+esc(n.split(' ')[0])+'!</h2><p>Kami akan WhatsApp anda tidak lama lagi.</p></div></div>';}
+  catch(err){e.textContent='Maaf, tidak dapat dihantar. Cuba lagi sebentar.';$('#wl-go').disabled=false;}
+ };
+}
+
+/* ---------------- home: what the CRM needs today ---------------- */
+function crmAlerts(al){
+ if(!can('customer'))return;
+ const fresh=LEADS.filter(l=>myBranch(l)&&l.stage==='new'&&!l.firstContactAt&&(boss()||!l.assignedTo||l.assignedTo===UID));
+ if(fresh.length)al.push({i:'target',t:fresh.length+' new lead'+(fresh.length>1?'s':'')+' waiting for a reply',
+  d:fresh.slice(0,3).map(l=>l.name.split(' ')[0]+' ('+agoTxt(l.createdAt)+')').join(', '),go:"crmGo('pipe')"});
+ const due=crmTasks().filter(t=>t.type!=='lead').length;
+ if(due)al.push({i:'bell',t:due+' client follow-up'+(due>1?'s':'')+' today',d:'After-treatment checks, packages, birthdays',go:"crmGo('tasks')"});
+ const over=TICKETS.filter(t=>myBranch(t)&&t.status!=='resolved'&&tkDue(t)<new Date());
+ if(over.length)al.push({i:'headset',t:over.length+' service case'+(over.length>1?'s':'')+' past the deadline',d:over.slice(0,2).map(t=>t.subject).join(' · '),go:"crmGo('service')"});
+}
+window.crmTasksList=()=>crmTasks();
+window.crmState=()=>({LEADS,TICKETS,CAMPAIGNS,CRMTASKS});
+window.crmGo=v=>{CRMV=v;window.go('crm');if(v==='tasks')loadLapsed();};
+
 </script>
