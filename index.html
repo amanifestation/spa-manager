@@ -1213,6 +1213,13 @@ h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
 .scanframe{position:absolute;inset:18% 26%;border:2px solid rgba(255,255,255,.85);border-radius:14px;
  box-shadow:0 0 0 999px rgba(0,0,0,.28)}
 .crow .crname+.cno{display:table;margin:3px 0 1px}
+.cno.mem{background:#14120F;color:#E2C58F;border-color:#14120F}
+.memtag{display:inline-flex;align-items:center;gap:3px;font-weight:650;color:var(--brass);text-transform:uppercase;letter-spacing:.06em;font-size:10.5px}
+.pfile.member{border-color:#E6D3B1;background:linear-gradient(180deg,#FFFBF3,var(--surface))}
+.memban{display:flex;align-items:center;gap:13px;flex-wrap:wrap;border-color:#E6D3B1;background:linear-gradient(180deg,#FFF8EC,var(--surface))}
+.memban .pfqr{width:64px;height:64px}
+.membtns{display:flex;flex-direction:column;gap:6px}
+@media (max-width:560px){.membtns{flex-direction:row;flex-wrap:wrap;width:100%}}
 .clhead .blankf{border:0;background:none;color:var(--brass);font:inherit;font-size:12px;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 </style>
 
@@ -1321,7 +1328,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21n';
+const BUILD='2026-09-21o';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2717,11 +2724,11 @@ function matchClients(term,max){
   const n=String(c.name||'').toLowerCase();
   const byName=words.every(w=>n.includes(w));
   const byPhone=dg.length>=3&&(digits(c.phone).includes(dg)||digits(c.phone2).includes(dg));
-  return byName||byPhone||(!!no&&c.clientNo===no);});
+  return byName||byPhone||(!!no&&(c.clientNo===no||c.memberNo===no));});
  /* names that start with what was typed come first */
  hits.sort((a,b)=>{
-  const as=no&&a.clientNo===no?-1:String(a.name||'').toLowerCase().startsWith(t)?0:1;
-  const bs=no&&b.clientNo===no?-1:String(b.name||'').toLowerCase().startsWith(t)?0:1;
+  const as=no&&(a.clientNo===no||a.memberNo===no)?-1:String(a.name||'').toLowerCase().startsWith(t)?0:1;
+  const bs=no&&(b.clientNo===no||b.memberNo===no)?-1:String(b.name||'').toLowerCase().startsWith(t)?0:1;
   return as-bs||String(a.name).localeCompare(String(b.name));});
  return hits.slice(0,max||12);
 }
@@ -2731,7 +2738,7 @@ async function searchClients(term){
  const qs=[];
  const dg=digits(t);
  const no=(/[a-z]/.test(t)||dg.length<=5)?normNo(t):'';
- if(no)qs.push(query(collection(db,'customers'),where('clientNo','==',no),limit(2)));
+ if(no)qs.push(query(collection(db,'customers'),where(isMem(no)?'memberNo':'clientNo','==',no),limit(2)));
  if(dg.length>=3&&/^[0-9+\-\s()]+$/.test(t)){
   qs.push(query(collection(db,'customers'),orderBy('phoneDigits'),
    where('phoneDigits','>=',dg),where('phoneDigits','<=',dg+''),limit(20)));
@@ -2985,17 +2992,20 @@ async function doSellPkg(){
  try{
   const p=D.packages.find(x=>x.id===$('#sp-p').value);
   const c=cust($('#sp-c').value)||{};
-  const expiry=ymd(addDays(new Date(),p.days));
-  await addDoc(collection(db,'customerPackages'),{customerId:c.id,customerName:c.name,packageId:p.id,
-   price:p.price,branchId:ME.branchId,soldAt:new Date().toISOString(),expiry,soldBy:UID,
-   balances:(p.items||[]).map(i=>({serviceId:i.serviceId,left:i.n,total:i.n}))});
-  await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:c.id,customerName:c.name,
-   staffId:UID,staffName:ME.name,items:[{kind:'package',id:p.id,name:'Package: '+p.name,price:p.price,qty:1,staffId:UID}],
-   discount:0,sst:0,total:p.price,date:today(),at:new Date().toISOString(),voided:false,
+  const expiry=ymd(addDays(new Date(),p.days||365));
+  const invoiceNo='INV-'+Date.now().toString().slice(-8),at=new Date().toISOString();
+  const sref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:c.id,customerName:c.name,customerNo:idOf(c),
+   invoiceNo,staffId:UID,staffName:ME.name,items:[{kind:'package',id:p.id,name:'Package: '+p.name,price:p.price,qty:1,staffId:UID}],
+   discount:0,sst:0,total:p.price,date:today(),at,voided:false,
    payments:[{method:$('#sp-m').value,amount:p.price}],createdBy:UID});
+  await addDoc(collection(db,'customerPackages'),{customerId:c.id,customerName:c.name,packageId:p.id,
+   price:p.price,branchId:ME.branchId,soldAt:at,expiry,soldBy:UID,saleId:sref.id,invoiceNo,
+   balances:(p.items||[]).map(i=>({serviceId:i.serviceId,left:i.n,total:i.n}))});
+  const memb=await makeMember(c.id,{saleId:sref.id});
   await audit('Package sold',c.name+' — '+p.name+' '+rm(p.price));
   await loadHeld();await loadRecentSales();
-  window.closeModal();render();toast('Package sold');
+  window.closeModal();render();window.openSale(sref.id);
+  toast(memb&&memb.fresh?c.name+' is now a member · '+memb.no:'Package sold');
  }catch(e){toast(friendly(e));$('#sp-go').disabled=false;}
 }
 async function loadHeld(){
@@ -3416,6 +3426,7 @@ function memberPkgCard(cid){
      '<span class="pill '+(d<=30?'a':'g')+'">'+d+' days left</span>')+'</div>'+
     '<div class="tiny muted" style="margin:4px 0 6px">Bought '+dstr(p.soldAt)+
     (p.invoiceNo?' · '+esc(p.invoiceNo):'')+' · '+rem+' of '+tot+' sessions left</div>'+
+    (p.saleId&&!p.prepaid?pkgConfLine(p):'')+
     (p.balances||[]).map(b=>'<div style="margin:6px 0"><div class="spread tiny"><span>'+
      esc(svc(b.serviceId).name||b.serviceId)+'</span><span><b>'+b.left+'</b> of '+b.total+
      '</span></div><div class="bar"><i class="brass" style="width:'+
@@ -6527,18 +6538,34 @@ const brCode=bid=>{const b=brOf(bid)||{};
  return (String(b.code||'').replace(/[^A-Za-z]/g,'')||String(b.name||'').replace(/[^A-Za-z]/g,'').slice(0,3)||'LU')
   .toUpperCase().slice(0,5);};
 const fmtNo=(code,n)=>code+'-'+String(n).padStart(5,'0');
-/* 'kul 123', 'KUL-00123', '123' → 'KUL-00123' (a bare number is read as this branch) */
-function normNo(t){const m=String(t||'').match(CNO_RE);if(!m||!+m[2])return '';return fmtNo((m[1]||brCode(ME.branchId)).toUpperCase(),+m[2]);}
-const noNum=no=>+(String(no||'').split('-')[1]||0);
-const cnoOf=id=>(id&&(cust(id)||{}).clientNo)||'';
+/* members carry their own series: KUL-M00012 */
+const fmtMem=(code,n)=>code+'-M'+String(n).padStart(5,'0');
+const isMem=no=>/-M\d/.test(String(no||''));
+const idOf=c=>(c&&(c.memberNo||c.clientNo))||'';
+/* 'kul 123', 'KUL-00123', '123' → 'KUL-00123'; 'm12', 'KUL-M12', 'kulm12' → 'KUL-M00012'.
+   A bare number is read as this branch. */
+function normNo(t){
+ const s=String(t||'').toUpperCase().replace(/\s+/g,'');
+ const m=s.match(/^([A-Z]*)-?(M?)-?0*(\d{1,6})$/);
+ if(!m||!+m[3])return '';
+ let code=m[1],mem=!!m[2];
+ const codes=(D.branches||[]).map(b=>brCode(b.id));
+ if(code==='M'){code='';mem=true;}
+ else if(!mem&&code.length>2&&code.endsWith('M')&&!codes.includes(code)&&codes.includes(code.slice(0,-1))){code=code.slice(0,-1);mem=true;}
+ code=code||brCode(ME.branchId);
+ return mem?fmtMem(code,+m[3]):fmtNo(code,+m[3]);
+}
+const noNum=no=>+(String(no||'').split('-').pop().replace(/\D/g,'')||0);
+const cnoOf=id=>id?idOf(cust(id)):'';
 const PAPER=()=>({per:50,...((D.meta&&D.meta.paper)||{})});
 function boxOf(no){
  if(!no)return null;
- const n=noNum(no),per=Math.max(1,+PAPER().per||50),b=Math.ceil(n/per),code=String(no).split('-')[0];
- return {b,label:'Box '+b,range:fmtNo(code,(b-1)*per+1)+' – '+fmtNo(code,b*per),
-  short:code+' '+String((b-1)*per+1).padStart(5,'0')+'–'+String(b*per).padStart(5,'0')};
+ const n=noNum(no),per=Math.max(1,+PAPER().per||50),b=Math.ceil(n/per),pre=String(no).replace(/\d+$/,'');
+ const lo=String((b-1)*per+1).padStart(5,'0'),hi=String(b*per).padStart(5,'0');
+ return {b,label:(isMem(no)?'Box M':'Box ')+b,range:pre+lo+' – '+pre+hi,short:pre+lo+'–'+hi,mem:isMem(no)};
 }
-const cnoTag=c=>c&&c.clientNo?'<span class="cno">'+esc(c.clientNo)+'</span>':'';
+const cnoTag=c=>c&&c.memberNo?'<span class="cno mem" title="Member">'+esc(c.memberNo)+'</span>'
+ :c&&c.clientNo?'<span class="cno">'+esc(c.clientNo)+'</span>':'';
 
 /* ---- handing out a number ---- */
 async function assignClientNo(cid){
@@ -6639,22 +6666,27 @@ function pdfQR(doc,text,x,y,size){
 const PAPER_ITEMS=[
  ['form','Registration form signed and filed','Borang pendaftaran'],
  ['label','Folder labelled with the number','Label fail']];
+const MEMBER_ITEMS=[
+ ['form','Registration form signed and filed','Borang pendaftaran'],
+ ['mlabel','Moved to the member cabinet and relabelled','Fail member']];
+const paperItems=c=>c&&c.memberNo?MEMBER_ITEMS:PAPER_ITEMS;
 function paperCard(c){
  setTimeout(paintQRs,0);
- retryClientNo(c);
- const bx=boxOf(c.clientNo),pp=c.paper||{};
- if(!c.clientNo)return '<div class="card pfile" data-cid="'+c.id+'"><div class="pfhead">'+
+ retryClientNo(c);retryMember(c);
+ const no=idOf(c),bx=boxOf(no),pp=c.paper||{},IT=paperItems(c);
+ if(!no)return '<div class="card pfile" data-cid="'+c.id+'"><div class="pfhead">'+
   '<span class="pfqr empty">'+ic('qr',28)+'</span><div style="flex:1;min-width:0"><div class="pfno none">No client number yet</div>'+
   '<div class="tiny muted">'+(c.wantNo?'Waiting for the tablet to be online.':'Give this client a number for the paper file.')+'</div></div>'+
   '<button class="btn sm" onclick="giveClientNo(\''+c.id+'\')">'+ic('idcard',14)+'Give number</button></div></div>';
- const done=PAPER_ITEMS.filter(([k])=>pp[k]).length;
- return '<div class="card pfile" data-cid="'+c.id+'"><div class="pfhead">'+
-  '<span class="pfqr" data-qr="'+esc(c.clientNo)+'" data-px="76"></span>'+
-  '<div style="flex:1;min-width:0"><div class="tiny muted">Client no. · for the paper file</div>'+
-  '<div class="pfno">'+esc(c.clientNo)+'</div>'+
+ const done=IT.filter(([k])=>pp[k]).length;
+ return '<div class="card pfile'+(c.memberNo?' member':'')+'" data-cid="'+c.id+'"><div class="pfhead">'+
+  '<span class="pfqr" data-qr="'+esc(no)+'" data-px="76"></span>'+
+  '<div style="flex:1;min-width:0"><div class="tiny muted">'+(c.memberNo?'<span class="memtag">'+ic('star',11)+'Member</span> since '+
+   (c.memberSince?dshort(c.memberSince):'')+(c.clientNo?' · was '+esc(c.clientNo):''):'Client no. · single treatments')+'</div>'+
+  '<div class="pfno">'+esc(no)+'</div>'+
   '<div class="pfbox">'+ic('folder',13)+'<b>'+bx.label+'</b><span>'+esc(bx.range)+'</span></div></div>'+
-  '<span class="pill'+(done===PAPER_ITEMS.length?' g':' a')+'">'+done+'/'+PAPER_ITEMS.length+'</span></div>'+
-  '<div class="pflist">'+PAPER_ITEMS.map(([k,t,bm])=>{const v=pp[k];
+  '<span class="pill'+(done===IT.length?' g':' a')+'">'+done+'/'+IT.length+'</span></div>'+
+  '<div class="pflist">'+IT.map(([k,t,bm])=>{const v=pp[k];
    return '<button class="pfrow'+(v?' on':'')+'" onclick="paperTick(\''+c.id+'\',\''+k+'\')"><span class="pchk">'+(v?ic('check',13):'')+'</span>'+
     '<span class="pftext"><b>'+t+'</b><small>'+(v?bm+' · '+esc(v.byName||'')+' · '+dshort(v.at):bm+' · tap when done')+'</small></span></button>';}).join('')+
   '</div><div class="row wrap2 pfacts">'+
@@ -6670,7 +6702,7 @@ window.paperTick=async(cid,key)=>{
  try{
   await updateDoc(doc(db,'customers',cid),{paper:pp,updatedAt:new Date().toISOString(),updatedBy:UID});
   c.paper=pp;
-  if(pp[key])await audit('Paper file',(PAPER_ITEMS.find(x=>x[0]===key)||[,key])[1]+' · '+(c.clientNo||'')+' '+c.name);
+  if(pp[key])await audit('Paper file',(paperItems(c).find(x=>x[0]===key)||[,key])[1]+' · '+idOf(c)+' '+c.name);
   rerenderClient(cid);
   const m=document.getElementById('pt-list');if(m)window.paperTodo();
  }catch(e){toast(friendly(e));}
@@ -6678,15 +6710,16 @@ window.paperTick=async(cid,key)=>{
 
 /* ---- finding a client by number: scan the QR or type it ---- */
 window.openByNo=async raw=>{
- const hit=String(raw||'').match(/[A-Za-z]{2,5}\s*-?\s*\d{1,6}/);
+ const hit=String(raw||'').match(/[A-Za-z]{1,5}\s*-?\s*M?\s*-?\s*\d{1,6}/i);
  const no=normNo(hit?hit[0]:raw);
  if(!no)return false;
- let c=CUSTS.find(x=>x.clientNo===no);
+ const hasNo=x=>x.clientNo===no||x.memberNo===no;
+ let c=CUSTS.find(hasNo);
  if(!c){
-  try{const s=await getDocs(query(collection(db,'customers'),where('clientNo','==',no),limit(2)));
+  try{const s=await getDocs(query(collection(db,'customers'),where(isMem(no)?'memberNo':'clientNo','==',no),limit(2)));
    s.docs.forEach(d=>{const x={id:d.id,...d.data()};const old=CUSTS.find(y=>y.id===x.id);
     if(old)Object.assign(old,x);else CUSTS.push(x);});}catch(e){console.warn('by no',e);}
-  c=CUSTS.find(x=>x.clientNo===no);
+  c=CUSTS.find(hasNo);
  }
  if(!c||c.active===false)return false;
  stopScan();window.closeModal();
@@ -6710,7 +6743,7 @@ window.scanClient=()=>{
    '<div class="tiny muted" id="sc-msg" style="margin:8px 0 12px">Point the camera at the QR code on the form or the folder.</div>'
    :'<div class="tiny muted" style="margin-bottom:12px">'+ic('scan',13)+' This browser cannot read QR codes — type the number from the form instead.</div>')+
   '<label>Client number</label><div class="row"><input class="f" id="sc-no" autocomplete="off" '+
-   'placeholder="'+esc(brCode(ME.branchId))+'-00123 or just 123" style="margin:0;flex:1">'+
+   'placeholder="'+esc(brCode(ME.branchId))+'-00123, '+esc(brCode(ME.branchId))+'-M00012 or 123" style="margin:0;flex:1">'+
   '<button class="btn" id="sc-go">'+ic('search',15)+'Open</button></div>'+
   '<div id="sc-err" class="tiny" style="color:var(--rose);margin-top:8px"></div></div>',
  ()=>{
@@ -6741,7 +6774,8 @@ function pulledSet(){try{return new Set(JSON.parse(localStorage.getItem(PULLKEY(
 function savePulled(s){try{localStorage.setItem(PULLKEY(),JSON.stringify([...s]));}catch(e){}}
 const todayFiles=()=>onDay(today()).filter(a=>a.customerId&&a.branchId===ME.branchId&&!['cancel','no'].includes(a.status));
 const byBox=(x,y)=>{const a=cnoOf(x.customerId),b=cnoOf(y.customerId);
- if(!a!==!b)return a?-1:1;return noNum(a)-noNum(b)||String(x.start).localeCompare(String(y.start));};
+ if(!a!==!b)return a?-1:1;if(isMem(a)!==isMem(b))return isMem(a)?-1:1;
+ return noNum(a)-noNum(b)||String(x.start).localeCompare(String(y.start));};
 function paperAlerts(al){
  if(!(can('booking')||can('customer')))return;
  const td=todayFiles(),pulled=pulledSet();
@@ -6752,12 +6786,16 @@ function paperAlerts(al){
  const unfiled=td.filter(a=>a.status==='done'&&!a.paperFiled);
  if(unfiled.length)al.push({i:'note',t:unfiled.length+' treatment record'+(unfiled.length>1?'s':'')+' to file',
   d:'Write today’s visit on the paper record, then tick it off.',go:'fileList()'});
+ const pf=pkgFormsDue();
+ if(pf.length)al.push({i:'package',t:pf.length+' package form'+(pf.length>1?'s':'')+' to sign',
+  d:pf.slice(0,3).map(x=>(cnoOf(x.customerId)||'')+' '+x.name.split(' ')[0]).join(' · '),go:'pkgFormList()'});
  const fresh=newPaperTodo();
  if(fresh.length)al.push({i:'idcard',t:fresh.length+' new client file'+(fresh.length>1?'s':'')+' not complete',
   d:fresh.slice(0,3).map(c=>c.name.split(' ')[0]).join(', '),go:'paperTodo()'});
 }
-const newPaperTodo=()=>CUSTS.filter(c=>c.active!==false&&c.createdAt&&(!c.branchId||c.branchId===ME.branchId)&&
- daysBetween(c.createdAt,new Date())<=14&&(!c.clientNo||PAPER_ITEMS.some(([k])=>!(c.paper||{})[k])));
+const newPaperTodo=()=>CUSTS.filter(c=>c.active!==false&&(!c.branchId||c.branchId===ME.branchId)&&
+ ((c.createdAt&&daysBetween(c.createdAt,new Date())<=14)||(c.memberSince&&daysBetween(c.memberSince,new Date())<=14))&&
+ (!idOf(c)||paperItems(c).some(([k])=>!(c.paper||{})[k])));
 window.pullList=()=>{
  const td=todayFiles().slice().sort(byBox),pulled=pulledSet();
  modal('Files to pull · today','<div class="card">'+
@@ -6798,7 +6836,7 @@ window.paperTodo=()=>{
  const xs=newPaperTodo();
  modal('New client files','<div class="card" id="pt-list">'+
   '<div class="tiny muted" style="margin-bottom:10px">Clients registered in the last two weeks whose paper file is not finished.</div>'+
-  (xs.length?xs.map(c=>{const miss=c.clientNo?PAPER_ITEMS.filter(([k])=>!(c.paper||{})[k]).map(x=>x[2]):['client number'];
+  (xs.length?xs.map(c=>{const miss=idOf(c)?paperItems(c).filter(([k])=>!(c.paper||{})[k]).map(x=>x[2]):['client number'];
    return '<button class="pfrow" onclick="closeModal();openCust(\''+c.id+'\')"><span class="pchk warn">'+ic('idcard',13)+'</span>'+
     '<span class="pftext"><b>'+cnoTag(c)+' '+esc(c.name)+'</b><small>Still to do: '+esc(miss.join(', '))+'</small></span>'+ic('right',15)+'</button>';}).join('')
    :'<div class="empty">'+ic('check',24)+'<div>Every new client’s file is complete.</div></div>')+'</div>');
@@ -6810,7 +6848,10 @@ function paperPanel(){
  return '<div class="card" id="paperpanel"><h2 style="margin-bottom:6px">Paper records</h2>'+
   '<p class="tiny muted" style="margin:0 0 10px">Client folders are kept in number order. The box for each folder follows from its number.</p>'+
   '<div class="grid g2"><div><label>Folders per box</label><input class="f" id="pp-per" type="number" min="1" max="1000" value="'+P.per+'"></div>'+
-  '<div><label>Next number here</label><div class="f" style="background:var(--surface-2)" id="pp-next">'+esc(brCode(ME.branchId))+'-…</div></div></div>'+
+  '<div><label>Next numbers here</label><div class="f" style="background:var(--surface-2)" id="pp-next">'+esc(brCode(ME.branchId))+'-…</div></div></div>'+
+  '<label>Package purchase policy <span class="muted">— one clause per line, printed on every package confirmation form</span></label>'+
+  '<textarea class="f" id="pp-pol" rows="9">'+esc(pkgPolicy().join('\n'))+'</textarea>'+
+  '<p class="tiny muted" style="margin:-4px 0 10px">Have your lawyer read this once. Changes apply to forms printed from now on.</p>'+
   '<div class="row wrap2"><button class="btn sm" onclick="savePaper()">'+ic('check',14)+'Save</button>'+
   '<button class="btn sm ghost" onclick="backfillNos()">'+ic('idcard',14)+'Number older clients</button>'+
   '<button class="btn sm ghost" onclick="paperPDF(\'register\')">'+ic('list',14)+'Print client register</button>'+
@@ -6818,43 +6859,61 @@ function paperPanel(){
 }
 async function paintNextNo(){
  const el=document.getElementById('pp-next');if(!el)return;
- try{const s=await getDoc(doc(db,'clientSeq',ME.branchId));el.textContent=fmtNo(brCode(ME.branchId),(s.exists()?+s.data().n||0:0)+1);}catch(e){}
+ try{const s=await getDoc(doc(db,'clientSeq',ME.branchId)),m=await getDoc(doc(db,'clientSeq',ME.branchId+'_M'));
+  el.textContent=fmtNo(brCode(ME.branchId),(s.exists()?+s.data().n||0:0)+1)+' · '+fmtMem(brCode(ME.branchId),(m.exists()?+m.data().n||0:0)+1);}catch(e){}
 }
 window.savePaper=async()=>{
  const per=Math.round(+$('#pp-per').value);
  if(!(per>=1&&per<=1000)){toast('Between 1 and 1000 folders per box');return;}
- try{await setDoc(doc(db,'meta','settings'),{paper:{...PAPER(),per}},{merge:true});D.meta.paper={...PAPER(),per};
+ const polEl=document.getElementById('pp-pol');
+ const pol=polEl?polEl.value.split('\n').map(x=>x.trim()).filter(Boolean):pkgPolicy();
+ try{await setDoc(doc(db,'meta','settings'),{paper:{...PAPER(),per},pkgPolicy:pol},{merge:true});D.meta.paper={...PAPER(),per};D.meta.pkgPolicy=pol;
   await audit('Paper records','folders per box '+per);toast('Saved');}catch(e){toast(friendly(e));}
 };
 /* number everyone who has none yet, oldest first, so the numbers follow the order they joined */
 window.backfillNos=async()=>{
  toast('Looking for clients without a number…');
- let all;
- try{all=(await getDocs(query(collection(db,'customers'),limit(5000)))).docs.map(d=>({id:d.id,...d.data()}));}
+ let all,cps;
+ try{all=(await getDocs(query(collection(db,'customers'),limit(5000)))).docs.map(d=>({id:d.id,...d.data()}));
+  cps=(await getDocs(query(collection(db,'customerPackages'),limit(5000)))).docs.map(d=>d.data());}
  catch(e){toast(friendly(e));return;}
- const todo=all.filter(c=>!c.clientNo&&c.active!==false)
+ const live=all.filter(c=>c.active!==false);
+ const todo=live.filter(c=>!c.clientNo)
   .sort((a,b)=>String(a.createdAt||'9').localeCompare(String(b.createdAt||'9'))||String(a.name).localeCompare(String(b.name)));
- if(!todo.length){toast('Every client already has a number');return;}
- if(!confirm('Give numbers to '+todo.length+' client'+(todo.length>1?'s':'')+', oldest first? Numbers are permanent once given.'))return;
- const byBr={};todo.forEach(c=>{const b=c.branchId||ME.branchId;(byBr[b]=byBr[b]||[]).push(c);});
- let done=0;
- try{
+ /* whoever has ever bought a real package is a member, numbered in the order they first bought one */
+ const first={};
+ cps.filter(p=>p.customerId&&p.packageId&&!p.prepaid).forEach(p=>{
+  if(first[p.customerId]===undefined||String(p.soldAt||'')<String(first[p.customerId]))first[p.customerId]=p.soldAt||'';});
+ const mtodo=live.filter(c=>first[c.id]!==undefined&&!c.memberNo)
+  .sort((a,b)=>String(first[a.id]).localeCompare(String(first[b.id]))||String(a.name).localeCompare(String(b.name)));
+ if(!todo.length&&!mtodo.length){toast('Every client and member already has a number');return;}
+ if(!confirm((todo.length?'Give client numbers to '+todo.length+' client'+(todo.length>1?'s':'')+', oldest first':'')+
+  (todo.length&&mtodo.length?', and ':'')+(mtodo.length?(todo.length?'member':'Give member')+' numbers to '+mtodo.length+
+  ' package holder'+(mtodo.length>1?'s':''):'')+'? Numbers are permanent once given.'))return;
+ const run=async(list,seqId,make,fields)=>{
+  const byBr={};list.forEach(c=>{const b=c.branchId||ME.branchId;(byBr[b]=byBr[b]||[]).push(c);});
+  let done=0;
   for(const bid of Object.keys(byBr)){
-   const list=byBr[bid],code=brCode(bid),seqRef=doc(db,'clientSeq',bid);
-   for(let i=0;i<list.length;i+=200){
-    const chunk=list.slice(i,i+200),now=new Date().toISOString();
+   const rows=byBr[bid],code=brCode(bid),seqRef=doc(db,'clientSeq',seqId(bid));
+   for(let i=0;i<rows.length;i+=200){
+    const chunk=rows.slice(i,i+200),now=new Date().toISOString();
     const got=await runTransaction(db,async tx=>{
      const ss=await tx.get(seqRef);let n=ss.exists()?(+ss.data().n||0):0;
-     const out=chunk.map(c=>{n++;return [c.id,fmtNo(code,n)];});
+     const out=chunk.map(c=>{n++;return [c,make(code,n)];});
      ss.exists()?tx.update(seqRef,{n,code,at:now}):tx.set(seqRef,{n,code,at:now});
-     out.forEach(([id,no])=>tx.update(doc(db,'customers',id),{clientNo:no,clientNoAt:now,clientNoBy:UID,wantNo:false}));
+     out.forEach(([c,no])=>tx.update(doc(db,'customers',c.id),fields(c,no,now)));
      return out;});
-    got.forEach(([id,no])=>{const c=cust(id);if(c)c.clientNo=no;});
+    got.forEach(([c,no])=>{const l=cust(c.id);if(l)Object.assign(l,fields(c,no,new Date().toISOString()));});
     done+=got.length;
    }
   }
-  await audit('Client numbers given',done+' older clients numbered');
-  toast(done+' clients numbered');render();paintNextNo();
+  return done;
+ };
+ try{
+  const a=await run(todo,bid=>bid,fmtNo,(c,no,now)=>({clientNo:no,clientNoAt:now,clientNoBy:UID,wantNo:false}));
+  const m=await run(mtodo,bid=>bid+'_M',fmtMem,(c,no,now)=>({memberNo:no,memberSince:first[c.id]||now,memberBy:UID,wantMember:false}));
+  await audit('Client numbers given',a+' client numbers, '+m+' member numbers');
+  toast((a?a+' clients':'')+(a&&m?' and ':'')+(m?m+' members':'')+' numbered');render();paintNextNo();
  }catch(e){toast(friendly(e));}
 };
 
@@ -6874,7 +6933,8 @@ function paperDoc(jsPDF){
  /* the number box, top right: QR, the number, the box */
  const idbox=(no,x,y)=>{
   doc.setDrawColor(...INK);doc.setLineWidth(0.5);doc.roundedRect(x,y,56,30,2,2);
-  font(6.8,'bold',MUTED);T('NO. KLIEN / CLIENT NO.',x+3,y+4.6);
+  if(isMem(no)){doc.setFillColor(...BRASS);doc.rect(x,y+0.3,1.6,29.4,'F');}
+  font(6.8,'bold',isMem(no)?BRASS:MUTED);T(isMem(no)?'NO. MEMBER / MEMBER NO.':'NO. KLIEN / CLIENT NO.',x+3,y+4.6);
   if(no){pdfQR(doc,no,x+33,y+6.5,21);font(13.5,'bold');T(no,x+3,y+14);
    const bx=boxOf(no);font(7.5,'normal',MUTED);T(bx.label,x+3,y+19.5);T(bx.short,x+3,y+23.4);}
   else{doc.setDrawColor(...LINE);doc.line(x+3,y+16,x+53,y+16);font(6.8,'italic',MUTED);T('Diisi oleh kaunter / office use',x+3,y+21);}
@@ -6893,7 +6953,7 @@ function paperDoc(jsPDF){
 /* A4 registration form, pre-filled when there is a client */
 function drawForm(P,c){
  const {doc,T,font,head,idbox,foot,field,box,section,MUTED,LINE}=P;
- const no=c&&c.clientNo||'';
+ const no=idOf(c);
  head('BORANG PENDAFTARAN KLIEN','Client registration and consultation form');
  idbox(no,138,9);
  let y=46;
@@ -6949,7 +7009,7 @@ function drawForm(P,c){
 /* the visit log that lives in the folder */
 function drawSheet(P,c,page){
  const {doc,T,font,head,idbox,foot,LINE,SOFT,MUTED}=P;
- const no=c&&c.clientNo||'';
+ const no=idOf(c);
  head('REKOD RAWATAN','Treatment record · one line per visit');
  idbox(no,138,9);
  font(9.5,'bold');T(c?c.name:'Nama / Name: ______________________________',16,44);
@@ -6966,14 +7026,14 @@ function drawSheet(P,c,page){
 /* two labels to cut out: the folder front and the spine */
 function drawLabel(P,c){
  const {doc,T,font,MUTED,LINE,BRASS}=P;
- const no=c.clientNo,bx=boxOf(no);
+ const no=idOf(c),bx=boxOf(no);
  font(8,'normal',MUTED);T('Gunting pada garisan putus-putus · cut along the dashed lines',16,12);
  doc.setLineDashPattern([1.5,1.2],0);doc.setDrawColor(...MUTED);doc.setLineWidth(0.25);
  doc.rect(16,18,110,56);doc.rect(16,84,178,20);doc.setLineDashPattern([],0);
  /* front */
  doc.setFillColor(...BRASS);doc.rect(16,18,3,56,'F');
  pdfQR(doc,no,86,24,36);
- font(7,'bold',MUTED);T('NO. KLIEN / CLIENT NO.',24,27);
+ font(7,'bold',isMem(no)?BRASS:MUTED);T(isMem(no)?'NO. MEMBER / MEMBER NO.':'NO. KLIEN / CLIENT NO.',24,27);
  font(22,'bold');T(no,24,38);
  font(10.5,'normal');doc.text(doc.splitTextToSize(pdfText(c.name),58).slice(0,2),24,47);
  font(8,'normal',MUTED);T(bx.label+'  ·  '+bx.range,24,62);
@@ -7007,10 +7067,10 @@ window.paperPDF=async(kind,cid,how)=>{
  try{
   const [jsPDF]=await Promise.all([loadJsPDF(),loadQR().catch(()=>null)]);
   const P=paperDoc(jsPDF);
-  let tag=c?(c.clientNo||c.name):'blank';
+  let tag=c?(idOf(c)||c.name):'blank';
   if(kind==='form'){drawForm(P,c);if(c){P.doc.addPage();drawSheet(P,c,1);}}
   else if(kind==='sheet')drawSheet(P,c);
-  else if(kind==='label'){if(!c||!c.clientNo){toast('This client has no number yet');return;}drawLabel(P,c);}
+  else if(kind==='label'){if(!idOf(c)){toast('This client has no number yet');return;}drawLabel(P,c);}
   else if(kind==='pull'){
    const td=todayFiles().slice().sort(byBox);tag=today();
    drawTable(P,'FAIL UNTUK DITARIK · FILES TO PULL',dstr(today())+' · '+td.length+' booking'+(td.length===1?'':'s')+' · in box order',
@@ -7019,18 +7079,19 @@ window.paperPDF=async(kind,cid,how)=>{
   }
   else if(kind==='register'){
    const all=(await getDocs(query(collection(db,'customers'),limit(5000)))).docs.map(d=>({id:d.id,...d.data()}))
-    .filter(x=>x.clientNo&&x.active!==false).sort((a,b)=>String(a.clientNo).localeCompare(String(b.clientNo)));
+    .filter(x=>idOf(x)&&x.active!==false).sort((a,b)=>(isMem(idOf(a))?'0':'1').localeCompare(isMem(idOf(b))?'0':'1')||
+     noNum(idOf(a))-noNum(idOf(b)));
    tag=today();
-   drawTable(P,'DAFTAR KLIEN · CLIENT REGISTER',all.length+' numbered clients · '+dstr(today())+' · keep with the cabinet',
+   drawTable(P,'DAFTAR KLIEN · CLIENT REGISTER',all.filter(x=>x.memberNo).length+' members · '+all.filter(x=>!x.memberNo).length+' clients · '+dstr(today())+' · keep with the cabinet',
     [['No. klien',30],['Nama / Name',70],['Telefon / Phone',38],['Daftar / Since',40]],
-    all.map(x=>[x.clientNo,x.name||'',x.phone||'',x.createdAt?dstr(x.createdAt):'']),
+    all.map(x=>[idOf(x),x.name||'',x.phone||'',x.memberNo?'Member '+(x.memberSince?dstr(x.memberSince):''):(x.createdAt?dstr(x.createdAt):'')]),
     r=>{const bx=boxOf(r[0]);return bx.label+' · '+bx.range;});
    /* the same clients by name: when the app is down, the name is all the counter has */
    const byName=all.slice().sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'en',{sensitivity:'base'}));
    P.doc.addPage();
    drawTable(P,'INDEKS NAMA A–Z · NAME INDEX','Cari nama > dapat nombor > buka box  ·  find the name, then the number, then the box',
     [['Nama / Name',74],['Tel. (4 akhir)',28],['No. klien',34],['Box',42]],
-    byName.map(x=>[x.name||'',digits(x.phone).slice(-4)?'...'+digits(x.phone).slice(-4):'',x.clientNo,boxOf(x.clientNo).label]),
+    byName.map(x=>[x.name||'',digits(x.phone).slice(-4)?'...'+digits(x.phone).slice(-4):'',idOf(x),boxOf(idOf(x)).label]),
     r=>{const ch=String(r[0]||'#').trim().charAt(0).toUpperCase();return /[A-Z]/.test(ch)?ch:'#';});
   }
   const name=PDFNAMES[kind]+'-'+String(tag).replace(/[^A-Za-z0-9-]+/g,'-').replace(/^-|-$/g,'').slice(0,40)+'.pdf';
@@ -7040,7 +7101,7 @@ window.paperPDF=async(kind,cid,how)=>{
    if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name.replace('.pdf','')});return;}
   }
   P.doc.save(name);
-  await audit('Printed',PDFNAMES[kind].replace(/-/g,' ')+(c?' · '+(c.clientNo||'')+' '+c.name:''));
+  await audit('Printed',PDFNAMES[kind].replace(/-/g,' ')+(c?' · '+idOf(c)+' '+c.name:''));
  }catch(e){if(e&&e.name==='AbortError')return;console.error(e);toast(friendly(e));}
 };
 window.matchClients=matchClients;
@@ -7059,6 +7120,259 @@ function newClientSheet(cid){
    '<button class="btn sm ghost" onclick="closeModal();openCust(\''+cid+'\')">'+ic('user',14)+'Open client</button></div></div>');
  setTimeout(paintQRs,0);
 }
+
+/* ============ members: buying a package makes a client a member ============ */
+/* A client who only comes for single treatments keeps a client number (KUL-00123).
+   The first real package they buy gives them a member number from a separate series
+   (KUL-M00012), kept in clientSeq/{branch}_M. The old client number stays on record. */
+async function assignMemberNo(cid,extra){
+ const c=cust(cid);
+ const bid=(c&&c.branchId)||ME.branchId,code=brCode(bid);
+ const seqRef=doc(db,'clientSeq',bid+'_M'),cref=doc(db,'customers',cid);
+ const now=new Date().toISOString();
+ const res=await runTransaction(db,async tx=>{
+  const cs=await tx.get(cref);if(!cs.exists())throw new Error('Client not found.');
+  const d=cs.data();if(d.memberNo)return {no:d.memberNo,fresh:false};
+  const ss=await tx.get(seqRef);const n=(ss.exists()?(+ss.data().n||0):0)+1;
+  const no=fmtMem(code,n);
+  ss.exists()?tx.update(seqRef,{n,code,at:now}):tx.set(seqRef,{n,code,at:now});
+  tx.update(cref,{memberNo:no,memberSince:now,memberBy:UID,memberSaleId:(extra&&extra.saleId)||'',wantMember:false});
+  return {no,fresh:true};});
+ if(c){c.memberNo=res.no;c.wantMember=false;if(res.fresh){c.memberSince=now;c.memberSaleId=(extra&&extra.saleId)||'';}}
+ return res;
+}
+/* right after a package is paid for; offline, the client is flagged and numbered later */
+async function makeMember(cid,extra){
+ if(!cid)return null;
+ try{
+  const r=await Promise.race([assignMemberNo(cid,extra),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),6000))]);
+  if(r.fresh){const c=cust(cid)||{};
+   await audit('New member',r.no+' · '+(c.name||'')+(c.clientNo?' (was client '+c.clientNo+')':''));
+   logEvent('sale','New member '+r.no,(c.name||'')+' bought a package',{refType:'cust',refId:cid});}
+  return r;
+ }catch(e){
+  console.warn('member no',e);
+  try{await updateDoc(doc(db,'customers',cid),{wantMember:true});const c=cust(cid);if(c)c.wantMember=true;}catch(_){}
+  toast('Package saved — the member number is given once the tablet is back online');
+  return null;
+ }
+}
+let MEMTRY={};
+function retryMember(c){
+ if(!c||c.memberNo||!c.wantMember||MEMTRY[c.id]||(typeof navigator!=='undefined'&&navigator.onLine===false))return;
+ MEMTRY[c.id]=1;
+ assignMemberNo(c.id).then(r=>{if(r.fresh)audit('New member',r.no+' · '+c.name);rerenderClient(c.id);}).catch(e=>console.warn('member retry',e));
+}
+
+/* ---- the package purchase policy, printed on every confirmation form ---- */
+const PKG_POLICY_DEFAULT=[
+ 'Tempoh sah: Pakej sah digunakan sehingga tarikh luput yang dinyatakan dalam borang ini. Sesi yang tidak digunakan selepas tarikh luput akan luput dengan sendirinya tanpa sebarang bayaran balik atau pampasan.',
+ 'Tiada bayaran balik: Bayaran pakej tidak boleh dibatalkan, ditukar kepada wang tunai atau dikembalikan, sama ada sebahagian atau sepenuhnya, setelah pembelian disahkan.',
+ 'Sebab perubatan: Sekiranya member tidak dapat meneruskan rawatan atas sebab perubatan yang disahkan oleh doktor (termasuk kehamilan), pihak pengurusan boleh menangguhkan tempoh sah pakej atau membenarkan pertukaran rawatan, atas budi bicara pengurusan.',
+ 'Kegunaan peribadi: Pakej hanya untuk kegunaan member yang namanya tertera. Pakej tidak boleh dipindah milik, dikongsi atau dijual semula kecuali dengan kelulusan bertulis pihak pengurusan.',
+ 'Temujanji: Setiap sesi mesti ditempah terlebih dahulu tertakluk kepada kekosongan. Member perlu menyebut atau menunjukkan nombor member semasa menempah dan semasa hadir.',
+ 'Pembatalan dan tidak hadir: Pembatalan atau penukaran temujanji hendaklah dibuat sekurang-kurangnya 24 jam sebelum masa temujanji. Pembatalan kurang daripada 24 jam atau tidak hadir tanpa makluman boleh dikira sebagai satu sesi yang telah digunakan.',
+ 'Lewat hadir: Member yang lewat lebih daripada 15 minit mungkin menerima rawatan yang dipendekkan atau perlu menjadualkan semula temujanji, supaya temujanji klien lain tidak terjejas.',
+ 'Bayaran ansuran: Bagi pembelian secara ansuran, baki bayaran hendaklah dijelaskan sepenuhnya sebelum atau pada tarikh akhir yang ditetapkan. Pihak pengurusan berhak menangguhkan sesi seterusnya sehingga baki dijelaskan.',
+ 'Pertukaran rawatan: Sesi yang belum digunakan boleh ditukar kepada rawatan lain yang sama atau lebih rendah nilainya dengan kelulusan pengurusan. Perbezaan nilai tidak akan dikembalikan dalam bentuk tunai.',
+ 'Kesihatan dan keselamatan: Member wajib memaklumkan sebarang alahan, keadaan kesihatan, pengambilan ubat atau kehamilan sebelum setiap rawatan. Terapis berhak menangguhkan atau mengubah suai rawatan demi keselamatan member.',
+ 'Hasil rawatan: Hasil rawatan berbeza mengikut individu, jenis kulit, penjagaan di rumah dan gaya hidup. Pihak spa tidak menjamin sebarang hasil tertentu.',
+ 'Perubahan harga dan terma: Harga dan terma pakej boleh berubah dari semasa ke semasa untuk pembelian baharu. Perubahan tersebut tidak menjejaskan pakej yang telah dibeli.',
+ 'Data peribadi: Maklumat member disimpan dan digunakan untuk tujuan rawatan, rekod dan komunikasi berkaitan pakej, selaras dengan Akta Perlindungan Data Peribadi 2010.'];
+const pkgPolicy=()=>(D.meta&&Array.isArray(D.meta.pkgPolicy)&&D.meta.pkgPolicy.length)?D.meta.pkgPolicy:PKG_POLICY_DEFAULT;
+
+/* ---- which packages a bill bought, from the balances it created ---- */
+async function salePkgs(s){
+ let cps=HELD.filter(p=>p.saleId===s.id&&!p.prepaid);
+ if(!cps.length){
+  try{const q=await getDocs(query(collection(db,'customerPackages'),where('saleId','==',s.id),limit(20)));
+   cps=q.docs.map(d=>({id:d.id,...d.data()})).filter(p=>!p.prepaid);}catch(e){}
+ }
+ if(!cps.length)cps=(s.items||[]).filter(i=>i.kind==='package').flatMap(i=>{const pk=pkgOf(i.id);
+  return [...Array(i.qty||1)].map(()=>({packageId:i.id,price:i.price,soldAt:s.at,
+   expiry:ymd(addDays(new Date(s.at||Date.now()),pk.days||365)),
+   balances:(pk.items||[]).map(z=>({serviceId:z.serviceId,left:z.n,total:z.n}))}));});
+ return cps;
+}
+const saleHasPkg=s=>!!s&&(s.items||[]).some(i=>i.kind==='package');
+
+/* ---- Borang Pengesahan Pembelian Pakej ---- */
+function drawPkgConf(P,c,s,cps){
+ const {doc,T,font,head,idbox,foot,field,section,MUTED,LINE,SOFT,BRASS,INK}=P;
+ const no=c.memberNo||'';
+ let y,page=1;
+ const newPage=()=>{foot(no,String(page));doc.addPage();page++;
+  head('BORANG PENGESAHAN PEMBELIAN PAKEJ','Package purchase confirmation · sambungan / continued');idbox(no,138,9);y=46;};
+ const need=h=>{if(y+h>280)newPage();};
+ head('BORANG PENGESAHAN PEMBELIAN PAKEJ','Package purchase confirmation');
+ idbox(no,138,9);
+ y=46;
+ /* A. the member */
+ y=section('A. MAKLUMAT MEMBER · MEMBER DETAILS',y);
+ field('Nama penuh / Full name',c.name,16,y+2,120);
+ field('Member sejak / Member since',c.memberSince?dstr(c.memberSince):dstr(s.at),142,y+2,52);y+=11;
+ field('No. K/P atau pasport / IC or passport',c.idNo,16,y+2,70);field('Telefon / Phone',c.phone,92,y+2,48);
+ field('No. klien terdahulu / Previous client no.',c.clientNo,146,y+2,48);y+=11;
+ field('E-mel / Email',c.email,16,y+2,86);field('Tarikh lahir / Date of birth',c.dob?dstr(c.dob):'',108,y+2,86);y+=11;
+ field('Alamat / Address',[c.address,c.postcode,c.city,c.state].filter(Boolean).join(', '),16,y+2,178);y+=14;
+ /* B. the purchase */
+ const paid=salePaid(s),bal=saleBalance(s);
+ const methods=[...new Set((s.payments||[]).map(p=>p.method).filter(Boolean))].join(', ');
+ const seller=[...new Set((s.items||[]).filter(i=>i.kind==='package').map(i=>stf(i.staffId).name).filter(Boolean))].join(', ')||s.staffName||'';
+ y=section('B. BUTIRAN PEMBELIAN · PURCHASE',y);
+ field('No. invois / Invoice',s.invoiceNo,16,y+2,40);field('Tarikh / Date',dstr(s.at),62,y+2,34);
+ field('Konsultan / Consultant',seller,102,y+2,44);field('Cara bayaran / Paid by',methods,152,y+2,42);y+=11;
+ field('Jumlah bil / Bill total',pdfRM(s.total),16,y+2,40);field('Dibayar / Paid',pdfRM(paid),62,y+2,34);
+ field('Baki / Balance',bal>0?pdfRM(bal):'Tiada / None',102,y+2,44);
+ field('Tarikh akhir baki / Balance due',bal>0&&s.dueDate?dstr(s.dueDate):'—',152,y+2,42);y+=14;
+ /* C. the packages */
+ y=section('C. PAKEJ RAWATAN · PACKAGE'+(cps.length>1?'S':''),y);
+ cps.forEach((cp,k)=>{
+  const rows=(cp.balances||[]);
+  need(22+rows.length*6.2);
+  const days=daysBetween(String(cp.soldAt||s.at).slice(0,10),cp.expiry);
+  font(10,'bold');T((cps.length>1?(k+1)+'. ':'')+cpName(cp),16,y+2);
+  font(9,'bold');T(pdfRM(cp.price),194,y+2,{align:'right'});
+  font(7.6,'normal',MUTED);
+  T('Sah dari / Valid from '+dstr(cp.soldAt||s.at)+'  hingga / until '+dstr(cp.expiry)+'  ('+days+' hari / days)'+
+   (cp.listPrice&&cp.listPrice!==cp.price?'   ·   Harga asal / list price '+pdfRM(cp.listPrice):''),16,y+6.8);
+  y+=13;
+  doc.setFillColor(...SOFT);doc.rect(16,y-3.6,178,5.6,'F');
+  font(7,'bold',MUTED);T('Rawatan / Treatment',18,y);T('Bil. sesi / Sessions',150,y);y+=5;
+  rows.forEach(b=>{font(8.8);T(svc(b.serviceId).name||'Treatment',18,y+0.6);T(String(b.total),150,y+0.6);
+   doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(16,y+2.4,194,y+2.4);y+=6.2;});
+  font(7.6,'bold');T('Jumlah sesi / Total sessions: '+rows.reduce((a,b)=>a+(+b.total||0),0),150,y+1);y+=7;
+ });
+ y+=2;
+ /* D. the policy */
+ need(20);
+ y=section('D. POLISI PEMBELIAN PAKEJ · PACKAGE POLICY',y);
+ pkgPolicy().forEach((line,i)=>{
+  const lines=doc.splitTextToSize(pdfText(line),170);
+  need(lines.length*3.6+2);
+  font(7.8,'bold');T((i+1)+'.',16,y+0.5);font(7.8);doc.text(lines,24,y+0.5);y+=lines.length*3.6+2;
+ });
+ y+=3;
+ /* E. acknowledgement and signatures */
+ need(62);
+ y=section('E. PENGAKUAN DAN PERSETUJUAN · ACKNOWLEDGEMENT',y);
+ const ack='Saya, '+(c.name||'__________________')+(c.idNo?' (No. K/P '+c.idNo+')':'')+', mengesahkan bahawa saya telah membeli pakej di atas, '+
+  'telah membaca, memahami dan bersetuju dengan semua polisi pembelian pakej yang dinyatakan dalam borang ini, dan maklumat saya adalah benar.  /  '+
+  'I confirm that I have bought the package above, and have read, understood and agree to every clause of the package policy in this form.';
+ const al=doc.splitTextToSize(pdfText(ack),178);font(8);doc.text(al,16,y+1);y+=al.length*3.6+12;
+ doc.setDrawColor(...INK);doc.setLineWidth(0.3);
+ doc.line(16,y,90,y);doc.line(110,y,194,y);
+ font(6.8,'normal',MUTED);T('Tandatangan member / Member signature',16,y+3.6);T('Nama & tandatangan staf / Staff name & signature',110,y+3.6);
+ y+=12;doc.line(16,y,60,y);doc.line(110,y,150,y);
+ T('Tarikh / Date',16,y+3.6);T('Tarikh / Date',110,y+3.6);
+ y+=9;
+ need(16);
+ doc.setDrawColor(...MUTED);doc.setLineDashPattern([1,1],0);doc.rect(16,y,178,13);doc.setLineDashPattern([],0);
+ font(6.8,'bold',MUTED);T('KEGUNAAN PEJABAT / OFFICE USE',19,y+4.5);font(7.4,'normal',MUTED);
+ T('Disimpan dalam fail member / Filed in member folder: '+(no?boxOf(no).label:'______'),19,y+10);
+ T('Salinan kepada member / Copy given to member:  [ ] Ya / Yes',110,y+10);
+ foot(no,String(page));
+}
+/* the session log that goes into the member's folder with the form */
+function drawSessionLog(P,c,cps){
+ const {doc,T,font,head,idbox,foot,LINE,SOFT,MUTED}=P;
+ const no=c.memberNo||'';
+ head('REKOD PENGGUNAAN SESI PAKEJ','Package session log · one line per session used');
+ idbox(no,138,9);
+ font(9.5,'bold');T(c.name||'',16,44);
+ font(7.8,'normal',MUTED);T(cps.map(cp=>cpName(cp)+' (luput / expires '+dstr(cp.expiry)+')').join('  ·  ').slice(0,150),16,49);
+ const cols=[['Tarikh / Date',24],['Rawatan / Treatment',52],['Sesi ke- / Session',22],['Baki / Left',18],['Terapis / Therapist',30],['T/tangan member',32]];
+ let y=55;doc.setFillColor(...SOFT);doc.rect(16,y,178,8,'F');
+ let x=16;font(6.6,'bold',MUTED);cols.forEach(([t,w])=>{doc.text(doc.splitTextToSize(pdfText(t),w-3),x+1.5,y+3.3);x+=w;});
+ y+=8;doc.setDrawColor(...LINE);doc.setLineWidth(0.25);
+ const rows=19,rh=11;
+ for(let r=0;r<=rows;r++)doc.line(16,y+r*rh,194,y+r*rh);
+ x=16;cols.forEach(([,w])=>{doc.line(x,55,x,y+rows*rh);x+=w;});doc.line(194,55,194,y+rows*rh);
+ foot(no,'Rekod sesi / Session log');
+}
+window.pkgConfPDF=async(saleId,how)=>{
+ const s=findSale(saleId);if(!s){toast('Bill not found');return;}
+ let c=cust(s.customerId);
+ if(!c&&s.customerId){try{const d=await getDoc(doc(db,'customers',s.customerId));if(d.exists()){c={id:d.id,...d.data()};CUSTS.push(c);}}catch(e){}}
+ if(!c){toast('This bill has no registered client');return;}
+ if(!c.memberNo){const r=await makeMember(c.id,{saleId});if(!r){return;}}
+ toast('Preparing the PDF…');
+ try{
+  const [jsPDF]=await Promise.all([loadJsPDF(),loadQR().catch(()=>null)]);
+  const cps=await salePkgs(s);
+  const P=paperDoc(jsPDF);
+  drawPkgConf(P,c,s,cps);
+  P.doc.addPage();drawSessionLog(P,c,cps);
+  const name='Pengesahan-Pakej-'+c.memberNo+'-'+String(s.invoiceNo||'').replace(/[^\w-]/g,'')+'.pdf';
+  window.__lastPDF={kind:'pkgconf',name,doc:P.doc};
+  if(how==='share'&&navigator.canShare){
+   const file=new File([P.doc.output('blob')],name,{type:'application/pdf'});
+   if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name.replace('.pdf','')});return;}
+  }
+  P.doc.save(name);
+  await audit('Printed','Package confirmation · '+c.memberNo+' '+c.name+' · '+(s.invoiceNo||''));
+ }catch(e){if(e&&e.name==='AbortError')return;console.error(e);toast(friendly(e));}
+};
+/* signed and back in the member's folder: recorded on each package the bill bought */
+window.pkgSigned=async(saleId,from)=>{
+ const cps=HELD.filter(p=>p.saleId===saleId&&!p.prepaid);
+ if(!cps.length){toast('Package not loaded yet');return;}
+ const on=!cps.every(p=>p.confirmSigned);
+ const v=on?{at:new Date().toISOString(),by:(typeof actorId==='function'&&actorId())||UID,
+  byName:typeof actorName==='function'?actorName():ME.name}:null;
+ try{
+  for(const p of cps){await updateDoc(doc(db,'customerPackages',p.id),{confirmSigned:v});p.confirmSigned=v;}
+  const s=findSale(saleId)||{};
+  if(on)await audit('Package confirmation signed',cnoOf(s.customerId)+' '+(s.customerName||'')+' · '+(s.invoiceNo||''));
+  if(from==='list')window.pkgFormList();
+  else if(from==='receipt')window.showReceipt(saleId);
+  else rerenderClient(cps[0].customerId);
+ }catch(e){toast(friendly(e));}
+};
+/* the strip at the top of a receipt that bought a package */
+function pkgBanner(s){
+ if(!saleHasPkg(s)||!s.customerId||s.voided)return '';
+ const c=cust(s.customerId)||{};
+ const cps=HELD.filter(p=>p.saleId===s.id&&!p.prepaid);
+ const signed=cps.length&&cps.every(p=>p.confirmSigned);
+ const fresh=c.memberSaleId===s.id;
+ setTimeout(paintQRs,0);
+ return '<div class="card memban noprint">'+
+  (c.memberNo?'<span class="pfqr" data-qr="'+esc(c.memberNo)+'" data-px="64" style="width:64px;height:64px"></span>':'<span class="pfqr empty">'+ic('qr',24)+'</span>')+
+  '<div style="flex:1;min-width:0"><div class="tiny muted">'+(fresh?'<span class="memtag">'+ic('star',11)+'New member</span>':
+   '<span class="memtag">'+ic('star',11)+'Member</span>')+(fresh&&c.clientNo?' · <span style="white-space:nowrap">was client '+esc(c.clientNo)+'</span>':'')+'</div>'+
+  '<div class="pfno" style="font-size:19px">'+esc(c.memberNo||'number coming')+'</div>'+
+  '<div class="tiny muted">'+(signed?ic('check',12)+' Confirmation signed by the member':'Print the package confirmation for the member to sign')+'</div></div>'+
+  '<div class="membtns"><button class="btn sm" onclick="pkgConfPDF(\''+s.id+'\')">'+ic('print',14)+'Package confirmation form</button>'+
+  (cps.length?'<button class="btn sm ghost" onclick="pkgSigned(\''+s.id+'\',\'receipt\')">'+ic('check',14)+(signed?'Signed · undo':'Mark signed')+'</button>':'')+
+  '</div></div>';
+}
+/* on the client's package list, per package bought on a bill */
+function pkgConfLine(p){
+ return '<div class="row wrap2" style="margin:2px 0 6px;gap:6px">'+
+  '<button class="btn sm ghost" onclick="pkgConfPDF(\''+p.saleId+'\')">'+ic('print',13)+'Confirmation form</button>'+
+  (p.confirmSigned?'<span class="pill g">'+ic('check',11)+'signed '+dshort(p.confirmSigned.at)+'</span>'
+   :'<button class="btn sm ghost" onclick="pkgSigned(\''+p.saleId+'\')">'+ic('check',13)+'Mark signed</button>')+'</div>';
+}
+/* packages sold lately whose confirmation is not yet signed and filed */
+function pkgFormsDue(){
+ const by={};
+ HELD.filter(p=>p.saleId&&!p.prepaid&&p.branchId===ME.branchId&&!p.confirmSigned&&p.soldAt&&daysBetween(p.soldAt,new Date())<=30)
+  .forEach(p=>{(by[p.saleId]=by[p.saleId]||[]).push(p);});
+ return Object.entries(by).map(([saleId,ps])=>({saleId,ps,customerId:ps[0].customerId,name:ps[0].customerName||''}));
+}
+window.pkgFormList=()=>{
+ const xs=pkgFormsDue();
+ modal('Package forms to sign','<div class="card">'+
+  '<div class="tiny muted" style="margin-bottom:10px">Every package sold needs its confirmation form signed by the member and kept in their folder in the member cabinet.</div>'+
+  (xs.length?xs.map(x=>{const no=cnoOf(x.customerId);
+   return '<div class="pfrow" style="cursor:default"><span class="pchk warn">'+ic('package',13)+'</span>'+
+    '<span class="pftext"><b>'+(no?'<span class="cno'+(isMem(no)?' mem':'')+'">'+esc(no)+'</span> ':'')+esc(x.name)+'</b>'+
+    '<small>'+esc(x.ps.map(cpName).join(', '))+' · '+dshort(x.ps[0].soldAt)+(no?' · '+boxOf(no).label:'')+'</small></span>'+
+    '<button class="btn sm ghost" onclick="pkgConfPDF(\''+x.saleId+'\')">'+ic('print',13)+'Form</button>'+
+    '<button class="btn sm" onclick="pkgSigned(\''+x.saleId+'\',\'list\')">'+ic('check',13)+'Signed</button></div>';}).join('')
+   :'<div class="empty">'+ic('check',24)+'<div>Every package sold has its signed form.</div></div>')+'</div>');
+};
 
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
@@ -7716,7 +8030,7 @@ window.checkout=async()=>{
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
-   customerName:c?c.name:'Walk-in',customerNo:(c&&c.clientNo)||'',staffId:actorId()||UID,staffName:actorName(),items,
+   customerName:c?c.name:'Walk-in',customerNo:idOf(c),staffId:actorId()||UID,staffName:actorName(),items,
    cashierId:actorId()||UID,cashierName:actorName(),cashierVerified:cashierValid()||!isBranch(),
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
@@ -7756,6 +8070,8 @@ window.checkout=async()=>{
     newPkgs.push(pk.name);
    }
   }
+  /* the first real package makes the client a member, with a member number of their own */
+  const memb=(items.some(x=>x.kind==='package')&&cart.customerId)?await makeMember(cart.customerId,{saleId:ref.id}):null;
   /* treatments paid now, done later: each becomes a one-treatment balance to redeem */
   for(const i of items.filter(x=>x.later)){
    const sv=svc(i.id);
@@ -7815,6 +8131,7 @@ window.checkout=async()=>{
   else if(earned)toast('Bill saved · '+earned+' loyalty points earned');
   if(autoRV)toast('Bill saved · come-back voucher '+autoRV.id+' issued');
   window.openSale(ref.id);
+  if(memb&&memb.fresh)toast((c?c.name:'Client')+' is now a member · '+memb.no);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
 /* ---- deleting a client, with a mandatory reason ---- */
 window.deleteCust=id=>{
@@ -8021,7 +8338,7 @@ window.showReceipt=id=>{
  let s=SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id);
  if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
  if(!s){toast('Could not find that bill');return;}
- modal('Receipt '+(s.invoiceNo||''),receiptHTML(s)+
+ modal('Receipt '+(s.invoiceNo||''),pkgBanner(s)+receiptHTML(s)+
   '<div class="fabrow noprint">'+
   '<button class="btn sm" onclick="receiptPDF(\''+id+'\')">'+ic('download',14)+'Download PDF</button>'+
   (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
