@@ -1493,7 +1493,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21s';
+const BUILD='2026-09-21t';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -8277,6 +8277,7 @@ window.checkout=async()=>{
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
    const setBits=i.kind==='set'?{setItems:(src.items||[]).map(z=>({sku:z.sku,qty:+z.qty||1,name:prod(z.sku).name||z.sku}))}:{};
    return lineForSale(i,{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho,...ap,...setBits});});
+  items.forEach((it,k)=>{const src=cart.items[k];if(src&&src.tip)it.tip=src.tip;});
   if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
   const sub=r2(items.reduce((a,i)=>a+lineAmt(i),0));
@@ -8794,6 +8795,7 @@ function vRep(){
   '<div class="grid g3">'+kpi('Revenue',rm(rev),esc(branch().code))+
   kpi('Average bill',rm(mine.length?rev/mine.length:0),mine.length+' bills')+
   kpi('Unique clients',uniq,'')+'</div></div>';
+ h+=smartReport(mine);
  h+='<div class="card"><h2>Revenue mix</h2>'+Object.keys(cat).map(k=>
   '<div style="margin:9px 0"><div class="spread tiny"><span>'+k+'</span><span>'+rm(cat[k])+' · '+
   (rev?Math.round(cat[k]/rev*100):0)+'%</span></div><div class="bar"><i style="width:'+
@@ -11795,11 +11797,44 @@ window.smartNext=()=>{const L=SMART.list;if(!L.length)return;popSmart(L[(SMART.i
 window.smartDo=key=>{
  const s=SMART.list.find(x=>x.key===key);if(!s)return;
  hideSmart();SMART.gone.add(key);
- cart.upsell=[...(cart.upsell||[]),key.split(':')[0]];
+ const type=key.split(':')[0];
+ cart.upsell=[...(cart.upsell||[]),type];
+ const before=new Map(cart.items.map(i=>[i,i.qty]));
  s.run();
+ cart.items.forEach(i=>{if(!before.has(i)||i.qty>before.get(i))i.tip=type;});
  setTimeout(()=>{if(TAB==='pos')render();},30);
 };
 window.smartGone=key=>{SMART.gone.add(key);hideSmart();smartRun();};
 window.smartMute=()=>{SMART_OFF=!SMART_OFF;try{localStorage.setItem('luuna:smartOff',SMART_OFF?'1':'0');}catch(e){}
  if(SMART_OFF)hideSmart();smartRun();toast(SMART_OFF?'Pop-ups off — suggestions stay listed on the bill':'Pop-ups on');};
+
+/* ---- report: what the heads-up brought in ---- */
+const TIPNAME={addon:'Add-ons',pkg:'Package upgrades',co:'Bought-together items',refill:'Refills',promogap:'Items to reach a promotion',
+ rvgap:'Items to use a client voucher',own:'Package sessions used',promo:'Promotions applied',rv:'Client vouchers applied',pts:'Points used'};
+function smartReport(bills){
+ const took=bills.filter(s=>(s.upsell||[]).length);
+ const others=bills.filter(s=>!(s.upsell||[]).length);
+ const avg=a=>a.length?a.reduce((x,s)=>x+(+s.total||0),0)/a.length:0;
+ const by={};let extra=0;
+ took.forEach(s=>{
+  (s.items||[]).filter(i=>i.tip).forEach(i=>{const t=i.tip,v=lineAmt(i);by[t]=by[t]||{n:0,v:0,bills:new Set()};by[t].n+=i.qty||1;by[t].v+=v;by[t].bills.add(s.id);extra+=v;});
+  [...new Set(s.upsell)].filter(t=>!['addon','pkg','co','refill','promogap','rvgap'].includes(t)).forEach(t=>{by[t]=by[t]||{n:0,v:0,bills:new Set()};by[t].n++;by[t].bills.add(s.id);});
+ });
+ const who={};took.forEach(s=>{const k=s.cashierName||s.staffName||'—';who[k]=who[k]||{n:0,v:0};who[k].n+=(s.upsell||[]).length;
+  who[k].v+=(s.items||[]).filter(i=>i.tip).reduce((a,i)=>a+lineAmt(i),0);});
+ const rows=Object.entries(by).sort((a,b)=>b[1].v-a[1].v||b[1].n-a[1].n);
+ return '<div class="card" id="smartrep"><div class="sec-h"><h2>'+ic('spark',16)+' Smart suggestions at checkout</h2>'+
+  '<span class="pill">'+took.length+' of '+bills.length+' bills</span></div>'+
+  (took.length?'<div class="grid g3">'+
+   kpi('Sales from suggestions',rm(extra),'items the heads-up added','spark')+
+   kpi('Bills that took one',took.length+' · '+(bills.length?Math.round(took.length/bills.length*100):0)+'%',took.reduce((a,s)=>a+(s.upsell||[]).length,0)+' suggestions taken','check')+
+   kpi('Average bill',rm(avg(took)),'vs '+rm(avg(others))+' without','receipt')+'</div>'+
+   '<div class="scroll" style="margin-top:10px"><table><tr><th>Suggestion</th><th class="num">Taken</th><th class="num">Bills</th><th class="num">Sales added</th></tr>'+
+   rows.map(([t,x])=>'<tr><td>'+esc(TIPNAME[t]||t)+'</td><td class="num">'+x.n+'</td><td class="num">'+x.bills.size+'</td><td class="num">'+
+    (x.v?rm(x.v):'<span class="muted">—</span>')+'</td></tr>').join('')+'</table></div>'+
+   '<h3 style="margin:14px 0 6px">By cashier</h3><table><tr><th>Cashier</th><th class="num">Suggestions taken</th><th class="num">Sales added</th></tr>'+
+   Object.entries(who).sort((a,b)=>b[1].v-a[1].v).map(([n,x])=>'<tr><td>'+esc(n)+'</td><td class="num">'+x.n+'</td><td class="num">'+rm(x.v)+'</td></tr>').join('')+'</table>'+
+   '<p class="tiny muted" style="margin-top:8px">Sales added counts only the items a suggestion put on the bill. Promotions, vouchers and package sessions are counted but add no sales of their own.</p>'
+  :'<div class="empty">'+ic('spark',22)+'<div>No suggestions taken in this period yet. They are counted from build 2026-09-21t onwards.</div></div>')+'</div>';
+}
 </script>
