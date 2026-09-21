@@ -1179,6 +1179,41 @@ tr.fbmine td{background:var(--brass-soft)}
 @media print{.noprint{display:none!important}
   body{padding:0;background:#fff}.card{border:0;box-shadow:none;break-inside:avoid}
   *{animation:none!important}}
+
+/* ---- client numbers and the paper file ---- */
+.cno{display:inline-block;font:600 10.5px/1.5 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.03em;
+ padding:0 6px;border-radius:6px;background:var(--brass-soft);color:#6E4E1E;border:1px solid #E6D3B1;vertical-align:1px;white-space:nowrap}
+h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
+.pfile .pfhead{display:flex;align-items:center;gap:13px}
+.pfqr{flex:none;display:grid;place-items:center;width:76px;height:76px;border-radius:10px;background:#fff;
+ border:1px solid var(--line);overflow:hidden}
+.pfqr svg{display:block}
+.pfqr.empty,.pfqr.noqr{color:var(--ink-3);background:var(--surface-2)}
+.pfqr.noqr::after{content:"QR";font:600 11px ui-monospace,monospace;color:var(--ink-3)}
+.pfno{font:700 22px/1.15 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.02em;color:var(--ink);margin:2px 0 3px}
+.pfno.big{font-size:34px;margin:6px 0}
+.pfno.none{font:600 15px/1.3 inherit;font-family:inherit;color:var(--ink-2)}
+.pfbox{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.pfbox span{color:var(--ink-3)}
+.pflist{margin-top:12px;border-top:1px solid var(--line-2)}
+.pfrow{width:100%;display:flex;align-items:center;gap:11px;padding:10px 4px;border:0;border-bottom:1px solid var(--line-2);
+ background:none;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.pfrow:last-child{border-bottom:0}
+.pfrow:active{background:var(--surface-2)}
+.pchk{flex:none;width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;color:#fff;background:var(--surface)}
+.pfrow.on .pchk{background:var(--jade);border-color:var(--jade)}
+.pchk.warn{border-color:transparent;background:var(--amber-soft);color:var(--amber)}
+.pftext{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.pftext b{font-weight:600;font-size:13.5px}
+.pftext small{font-size:11.5px;color:var(--ink-3)}
+.pfrow.on .pftext b{color:var(--ink-2)}
+.pfacts{margin-top:10px}
+.scanbox{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3}
+.scanbox video{width:100%;height:100%;object-fit:cover;display:block}
+.scanframe{position:absolute;inset:18% 26%;border:2px solid rgba(255,255,255,.85);border-radius:14px;
+ box-shadow:0 0 0 999px rgba(0,0,0,.28)}
+.crow .crname+.cno{display:table;margin:3px 0 1px}
+.clhead .blankf{border:0;background:none;color:var(--brass);font:inherit;font-size:12px;padding:0;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1286,7 +1321,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21m';
+const BUILD='2026-09-21n';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1860,6 +1895,7 @@ function vHome(){
   ' overdue · '+rm(owedSum(late)),d:late.slice(0,3).map(x=>x.customerName).join(', '),go:"go('pos')"});
  if(f.noShow)alerts.push({i:'alert',t:f.noShow+' no-show'+(f.noShow>1?'s':'')+' today',
   d:'Follow up while it is still fresh.',go:"go('book')"});
+ paperAlerts(alerts);
  /* it sits in the same row as attendance and the programme widget */
  h=h.replace('<!--NEED-->','<div class="card wcard" id="wneed"><div class="wh"><span class="wico'+
   (alerts.length?' warn':' ok')+'">'+ic(alerts.length?'bell':'check',16)+'</span><h2>Needs attention</h2>'+
@@ -2158,7 +2194,8 @@ async function saveAppt(){
 window.openAppt=id=>{
  const a=APPTS.find(x=>x.id===id);if(!a)return;
  const c=cust(a.customerId);
- modal('Appointment','<div class="card"><div class="spread"><h3>'+esc(a.customerName||'')+'</h3>'+
+ const ano=c&&c.clientNo;
+ modal('Appointment','<div class="card"><div class="spread"><h3>'+esc(a.customerName||'')+cnoTag(c)+'</h3>'+
   (c&&c.phone?'<span class="pill">'+ic('user',12)+esc(c.phone)+'</span>':'')+'</div>'+
   '<div class="tiny muted" style="margin:8px 0 10px;line-height:1.7">'+
   ic('spark',13)+' '+esc(a.serviceName||'')+(a.undecided?' <span class="pill a">to decide</span>':'')+
@@ -2173,6 +2210,10 @@ window.openAppt=id=>{
   (a.deposit?'<br>'+ic('card',13)+' Deposit '+rm(a.deposit):'')+
   (c&&c.allergy?'<br><span style="color:var(--rose)">'+ic('alert',13)+' '+esc(c.allergy)+'</span>':'')+
   (a.notes?'<br>'+ic('note',13)+' '+esc(a.notes):'')+
+  (ano?'<br>'+ic('folder',13)+' Paper file in '+boxOf(ano).label:'')+
+  (a.status==='done'&&a.customerId?'<br><button class="pfrow'+(a.paperFiled?' on':'')+'" style="padding:8px 0" onclick="apptFiled(\''+id+'\')">'+
+   '<span class="pchk">'+(a.paperFiled?ic('check',13):'')+'</span><span class="pftext"><b>Treatment record written in the paper file</b>'+
+   '<small>'+(a.paperFiled?'Filed by '+esc(a.paperFiled.byName||'')+' · '+tstr(a.paperFiled.at):'Tap once the visit is written on the sheet')+'</small></span></button>':'')+
   ((a.concerns||[]).length?'<br>'+ic('spark',13)+' Wants help with: '+esc(a.concerns.map(concernLabel).join(', ')):'')+
   ((a.shortlist||[]).length&&a.undecided?'<br>'+ic('star',13)+' Shortlist: '+esc(a.shortlist.map(x=>svc(x).name).filter(Boolean).join(', ')):'')+
   '</div><div class="row wrap2">'+
@@ -2431,12 +2472,14 @@ async function saveCustForm(id,thenBook){
    Object.assign(cust(id),data);
    await audit('Client details updated',name);
   }else{
-   data.createdAt=new Date().toISOString();data.createdBy=UID;data.active=true;
+   data.createdAt=new Date().toISOString();data.createdBy=UID;data.active=true;data.wantNo=true;
    const r=await addDoc(collection(db,'customers'),data);
    CUSTS.unshift({id:r.id,...data});
-   await audit('Client registered',name);
-   if(thenBook){window.closeModal();toast('Client created — now pick a time');
+   const no=await newClientNo(r.id);
+   await audit('Client registered',name+(no?' · '+no:''));
+   if(thenBook){window.closeModal();toast('Client created'+(no?' · '+no:'')+' — now pick a time');
     window.newAppt({customerId:r.id,visitType:'new'});return;}
+   window.closeModal();render();bindCustSearch();newClientSheet(r.id);return;
   }
   window.closeModal();
   if(id)window.openCust(id);else{render();bindCustSearch();}
@@ -2451,7 +2494,7 @@ window.openCust=async(id,keep)=>{
  const c=cust(id);if(!c)return;
  if(!keep){custView='profile';HIST=null;HISTFOR=id;}
  const head='<div class="chead"><div class="avatar">'+esc(initials(c.name))+'</div>'+
-  '<div style="flex:1;min-width:0"><h2 style="margin-bottom:2px">'+esc(c.name)+'</h2>'+
+  '<div style="flex:1;min-width:0"><h2 style="margin-bottom:2px">'+esc(c.name)+cnoTag(c)+'</h2>'+
   '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.email?' · '+esc(c.email):'')+'</div>'+
   ((c.tags||[]).length?'<div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">'+
    c.tags.map(t=>'<span class="pill b">'+esc(t)+'</span>').join('')+'</div>':'')+'</div></div>'+
@@ -2478,7 +2521,7 @@ function custProfile(c){
  const row=(k,v,icon)=>v?'<div class="k">'+(icon?ic(icon,12)+' ':'')+k+'</div><div class="v">'+v+'</div>':'';
  const age=c.dob?Math.floor(daysBetween(c.dob,new Date())/365.25):null;
  const ref=c.referrerId&&cust(c.referrerId)?cust(c.referrerId).name:'';
- return '<div class="card"><div class="sec-h"><h3>Details</h3>'+
+ return paperCard(c)+'<div class="card"><div class="sec-h"><h3>Details</h3>'+
   '<button class="btn sm" onclick="editCust(\''+c.id+'\')">'+ic('edit',14)+'Edit</button></div>'+
   '<div class="kv">'+
    row('Mobile',esc(c.phone||''),'phone')+row('Alternate',esc(c.phone2||''),'phone')+
@@ -2669,15 +2712,16 @@ function matchClients(term,max){
  const pool=CUSTS.filter(c=>c.active!==false);
  if(!t)return pool.slice(0,max||8);
  const dg=digits(t),words=t.split(/\s+/).filter(Boolean);
+ const no=(/[a-z]/.test(t)||dg.length<=5)?normNo(t):'';
  const hits=pool.filter(c=>{
   const n=String(c.name||'').toLowerCase();
   const byName=words.every(w=>n.includes(w));
   const byPhone=dg.length>=3&&(digits(c.phone).includes(dg)||digits(c.phone2).includes(dg));
-  return byName||byPhone;});
+  return byName||byPhone||(!!no&&c.clientNo===no);});
  /* names that start with what was typed come first */
  hits.sort((a,b)=>{
-  const as=String(a.name||'').toLowerCase().startsWith(t)?0:1;
-  const bs=String(b.name||'').toLowerCase().startsWith(t)?0:1;
+  const as=no&&a.clientNo===no?-1:String(a.name||'').toLowerCase().startsWith(t)?0:1;
+  const bs=no&&b.clientNo===no?-1:String(b.name||'').toLowerCase().startsWith(t)?0:1;
   return as-bs||String(a.name).localeCompare(String(b.name));});
  return hits.slice(0,max||12);
 }
@@ -2686,6 +2730,8 @@ async function searchClients(term){
  if(!t)return;
  const qs=[];
  const dg=digits(t);
+ const no=(/[a-z]/.test(t)||dg.length<=5)?normNo(t):'';
+ if(no)qs.push(query(collection(db,'customers'),where('clientNo','==',no),limit(2)));
  if(dg.length>=3&&/^[0-9+\-\s()]+$/.test(t)){
   qs.push(query(collection(db,'customers'),orderBy('phoneDigits'),
    where('phoneDigits','>=',dg),where('phoneDigits','<=',dg+''),limit(20)));
@@ -2820,13 +2866,14 @@ window.cpNewSave=async(pid,force)=>{
  const b=g('ngo');b.disabled=true;
  const data={name,nameLower:name.toLowerCase(),phone,phoneDigits:dg,keywords:kwFor(name,phone),
   source:g('ns').value||'',allergy:(g('na').value||'').trim(),skin:'',branchId:ME.branchId,
-  pdpa:!!g('nd').checked,marketing:true,tags:[],notes:'',active:true,
+  pdpa:!!g('nd').checked,marketing:true,tags:[],notes:'',active:true,wantNo:true,
   createdAt:new Date().toISOString(),createdBy:UID};
  try{
   const r=await addDoc(collection(db,'customers'),data);
   CUSTS.unshift({id:r.id,...data});
   await audit('Client registered',name+' (quick add)');
   toast(name+' added');
+  newClientNo(r.id).then(no=>{if(no)toast(name+' added · client no. '+no);});
   window.cpNewClose(pid);window.cpPick(pid,r.id);
  }catch(e){err.textContent=friendly(e);b.disabled=false;}
 };
@@ -6066,7 +6113,7 @@ function custRow(c){
  return '<div class="item crow'+(c.id===CSEL?' sel':'')+'" data-id="'+c.id+'" onclick="openCust(\''+c.id+'\')">'+
   '<div class="row"><div class="avatar" style="width:38px;height:38px;border-radius:12px;font-size:13px">'+
   esc(initials(c.name))+'</div><div style="flex:1;min-width:0">'+
-  '<b class="crname">'+esc(c.name)+'</b>'+
+  '<b class="crname">'+esc(c.name)+'</b>'+cnoTag(c)+
   '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.skin?' · '+esc(c.skin):'')+'</div>'+
   (flags.length?'<div class="crflags">'+flags.join('')+'</div>':'')+
   '</div>'+ic('right',16)+'</div></div>';
@@ -6083,9 +6130,11 @@ function vCust(){
   '<aside class="card clist"><div class="clhead"><div class="row" style="margin-bottom:9px">'+
    '<div style="flex:1;position:relative"><span style="position:absolute;left:11px;top:10px;color:var(--ink-3)">'+
    ic('search',17)+'</span><input class="f" id="cq" style="margin:0;padding-left:36px" '+
-   'placeholder="Search name or phone number" value="'+esc(custQ)+'"></div>'+
+   'placeholder="Name, phone or no." value="'+esc(custQ)+'"></div>'+
+   '<button class="btn ghost" onclick="scanClient()" aria-label="Scan client number">'+ic('scan',16)+'</button>'+
    '<button class="btn" onclick="newCust()" aria-label="New client">'+ic('plus',16)+'</button></div>'+
-   '<div class="tiny muted">'+list.length+(custQ.trim()?' found':' shown')+'</div></div>'+
+   '<div class="tiny muted spread">'+list.length+(custQ.trim()?' found':' shown')+
+   '<button class="blankf" onclick="paperPDF(\'form\')">'+ic('print',12)+'Blank form</button></div></div>'+
   '<div class="clscroll">'+(list.length?list.map(custRow).join('')
    :'<div class="empty">'+ic('users',26)+'<div>No clients found. Try another spelling, or add a new one.</div></div>')+
   '</div></aside>'+
@@ -6097,7 +6146,7 @@ function custSkel(){return '<div class="card"><div class="skel" style="width:60%
 function custHeadHTML(c){
  const since=c.createdAt?'Client since '+dstr(c.createdAt):'';
  return '<div class="card cphead"><div class="avatar cpav">'+esc(initials(c.name))+'</div>'+
-  '<div style="flex:1;min-width:0"><h2>'+esc(c.name)+'</h2>'+
+  '<div style="flex:1;min-width:0"><h2>'+esc(c.name)+cnoTag(c)+'</h2>'+
   '<div class="tiny muted">'+esc(c.phone||'no phone')+(c.email?' · '+esc(c.email):'')+(since?' · '+since:'')+'</div>'+
   '<div class="cpflags">'+(c.allergy?'<span class="pill r">'+ic('alert',11)+esc(c.allergy)+'</span>':'')+
    (c.skin?'<span class="pill">'+esc(c.skin)+'</span>':'')+
@@ -6461,6 +6510,548 @@ window.ownerSignIn=()=>{
   '<button class="btn" style="width:100%;justify-content:center" onclick="closeModal();firebaseSignOut()">'+ic('out',15)+'Sign out and switch</button></div>');
 };
 
+/* ============ client numbers and the paper file ============ */
+/* Every client gets a short number, e.g. KUL-00123: branch code and a running count kept in
+   clientSeq/{branchId}, handed out one at a time in a transaction so no two clients share one.
+   The same number is written on the paper file at the spa, printed as a QR code on the forms
+   and the folder label, and scanning or typing it opens the client in the app. Folders are
+   kept in number order, a fixed count per box, so the number alone says which box to open. */
+ICONS.qr='M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2.5v2.5H14zM18 18h2v2h-2zM18 14h2M14 19.5h2';
+ICONS.folder='M3.5 6.5h6l2 2h9v10.5h-17z';
+ICONS.scan='M4 8.5V4h4.5M15.5 4H20v4.5M20 15.5V20h-4.5M8.5 20H4v-4.5M7 12h10';
+
+const CNO_RE=/^\s*([a-z]{2,5})?[\s\-]*0*(\d{1,6})\s*$/i;
+const brOf=bid=>D.branches.find(b=>b.id===bid)||branch();
+const brCode=bid=>{const b=brOf(bid)||{};
+ return (String(b.code||'').replace(/[^A-Za-z]/g,'')||String(b.name||'').replace(/[^A-Za-z]/g,'').slice(0,3)||'LU')
+  .toUpperCase().slice(0,5);};
+const fmtNo=(code,n)=>code+'-'+String(n).padStart(5,'0');
+/* 'kul 123', 'KUL-00123', '123' → 'KUL-00123' (a bare number is read as this branch) */
+function normNo(t){const m=String(t||'').match(CNO_RE);if(!m||!+m[2])return '';return fmtNo((m[1]||brCode(ME.branchId)).toUpperCase(),+m[2]);}
+const noNum=no=>+(String(no||'').split('-')[1]||0);
+const cnoOf=id=>(id&&(cust(id)||{}).clientNo)||'';
+const PAPER=()=>({per:50,...((D.meta&&D.meta.paper)||{})});
+function boxOf(no){
+ if(!no)return null;
+ const n=noNum(no),per=Math.max(1,+PAPER().per||50),b=Math.ceil(n/per),code=String(no).split('-')[0];
+ return {b,label:'Box '+b,range:fmtNo(code,(b-1)*per+1)+' – '+fmtNo(code,b*per),
+  short:code+' '+String((b-1)*per+1).padStart(5,'0')+'–'+String(b*per).padStart(5,'0')};
+}
+const cnoTag=c=>c&&c.clientNo?'<span class="cno">'+esc(c.clientNo)+'</span>':'';
+
+/* ---- handing out a number ---- */
+async function assignClientNo(cid){
+ const c=cust(cid);
+ const bid=(c&&c.branchId)||ME.branchId,code=brCode(bid);
+ const seqRef=doc(db,'clientSeq',bid),cref=doc(db,'customers',cid);
+ const now=new Date().toISOString();
+ const no=await runTransaction(db,async tx=>{
+  const cs=await tx.get(cref);
+  if(!cs.exists())throw new Error('Client not found.');
+  if(cs.data().clientNo)return cs.data().clientNo;
+  const ss=await tx.get(seqRef);
+  const n=(ss.exists()?(+ss.data().n||0):0)+1;
+  const no=fmtNo(code,n);
+  if(ss.exists())tx.update(seqRef,{n,code,at:now});else tx.set(seqRef,{n,code,at:now});
+  tx.update(cref,{clientNo:no,clientNoAt:now,clientNoBy:UID,wantNo:false});
+  return no;
+ });
+ if(c){c.clientNo=no;c.wantNo=false;}
+ return no;
+}
+/* straight after registering: wait a moment for the number, carry on without it if offline */
+async function newClientNo(cid){
+ try{
+  const no=await Promise.race([assignClientNo(cid),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),6000))]);
+  return no;
+ }catch(e){console.warn('client no',e);toast('Client saved — the client number is given once the tablet is back online');return '';}
+}
+window.giveClientNo=async cid=>{
+ try{const no=await assignClientNo(cid);await audit('Client number given',no+' · '+((cust(cid)||{}).name||''));
+  toast('Client number '+no);rerenderClient(cid);}
+ catch(e){toast(friendly(e));}
+};
+/* a client registered offline gets the number the next time they are opened online */
+let CNOTRY={};
+function retryClientNo(c){
+ if(!c||c.clientNo||!c.wantNo||CNOTRY[c.id]||(typeof navigator!=='undefined'&&navigator.onLine===false))return;
+ CNOTRY[c.id]=1;
+ assignClientNo(c.id).then(()=>rerenderClient(c.id)).catch(e=>console.warn('client no retry',e));
+}
+function rerenderClient(cid){
+ const c=cust(cid);if(!c)return;
+ const m=document.getElementById('modal');
+ if(m&&m.querySelector&&m.querySelector('.pfile[data-cid="'+cid+'"]')){
+  if(m.querySelector('.pfno.big')||m.querySelector('.pfno.none.big'))newClientSheet(cid);else window.openCust(cid,true);
+  return;}
+ if(TAB==='cust')render();
+}
+
+/* ---- QR codes: a small library, fetched the first time and kept for offline ---- */
+let QR_P=null;
+function loadQR(){
+ if(window.qrcode)return Promise.resolve(window.qrcode);
+ if(QR_P)return QR_P;
+ const srcs=['https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'];
+ QR_P=new Promise((res,rej)=>{
+  let i=0;
+  const next=()=>{
+   if(i>=srcs.length){QR_P=null;rej(new Error('Could not load the QR maker — check the internet connection.'));return;}
+   const sc=document.createElement('script');sc.src=srcs[i++];sc.async=true;
+   sc.onload=()=>window.qrcode?res(window.qrcode):next();sc.onerror=next;
+   (document.head||document.body).appendChild(sc);
+  };
+  next();
+ });
+ return QR_P;
+}
+function qrMods(text){const q=window.qrcode(0,'M');q.addData(String(text));q.make();
+ return {n:q.getModuleCount(),at:(r,c)=>q.isDark(r,c)};}
+function qrSVG(text,px){
+ const m=qrMods(text);let d='';
+ for(let r=0;r<m.n;r++)for(let c=0;c<m.n;c++)if(m.at(r,c))d+='M'+c+' '+r+'h1v1h-1z';
+ return '<svg viewBox="-2 -2 '+(m.n+4)+' '+(m.n+4)+'" width="'+px+'" height="'+px+'" shape-rendering="crispEdges" '+
+  'role="img" aria-label="QR code '+esc(text)+'"><rect x="-2" y="-2" width="'+(m.n+4)+'" height="'+(m.n+4)+'" fill="#fff"/>'+
+  '<path d="'+d+'" fill="#14120F"/></svg>';
+}
+/* fill every QR placeholder on screen */
+function paintQRs(){
+ if(typeof document==='undefined'||!document.querySelectorAll)return;
+ const els=[...document.querySelectorAll('[data-qr]')].filter(e=>!e.dataset.done);
+ if(!els.length)return;
+ loadQR().then(()=>els.forEach(e=>{e.innerHTML=qrSVG(e.dataset.qr,+e.dataset.px||84);e.dataset.done='1';}))
+  .catch(()=>els.forEach(e=>{e.classList.add('noqr');}));
+}
+/* draw a QR into a PDF, merging dark runs so the file stays small */
+function pdfQR(doc,text,x,y,size){
+ if(!window.qrcode)return false;
+ const m=qrMods(text),u=size/m.n;
+ doc.setFillColor(20,18,15);
+ for(let r=0;r<m.n;r++){let c=0;
+  while(c<m.n){if(!m.at(r,c)){c++;continue;}let e=c;while(e<m.n&&m.at(r,e))e++;
+   doc.rect(x+c*u,y+r*u,(e-c)*u+0.02,u+0.02,'F');c=e;}}
+ return true;
+}
+
+/* ---- the paper file card on the client profile ---- */
+const PAPER_ITEMS=[
+ ['form','Registration form signed and filed','Borang pendaftaran'],
+ ['label','Folder labelled with the number','Label fail']];
+function paperCard(c){
+ setTimeout(paintQRs,0);
+ retryClientNo(c);
+ const bx=boxOf(c.clientNo),pp=c.paper||{};
+ if(!c.clientNo)return '<div class="card pfile" data-cid="'+c.id+'"><div class="pfhead">'+
+  '<span class="pfqr empty">'+ic('qr',28)+'</span><div style="flex:1;min-width:0"><div class="pfno none">No client number yet</div>'+
+  '<div class="tiny muted">'+(c.wantNo?'Waiting for the tablet to be online.':'Give this client a number for the paper file.')+'</div></div>'+
+  '<button class="btn sm" onclick="giveClientNo(\''+c.id+'\')">'+ic('idcard',14)+'Give number</button></div></div>';
+ const done=PAPER_ITEMS.filter(([k])=>pp[k]).length;
+ return '<div class="card pfile" data-cid="'+c.id+'"><div class="pfhead">'+
+  '<span class="pfqr" data-qr="'+esc(c.clientNo)+'" data-px="76"></span>'+
+  '<div style="flex:1;min-width:0"><div class="tiny muted">Client no. · for the paper file</div>'+
+  '<div class="pfno">'+esc(c.clientNo)+'</div>'+
+  '<div class="pfbox">'+ic('folder',13)+'<b>'+bx.label+'</b><span>'+esc(bx.range)+'</span></div></div>'+
+  '<span class="pill'+(done===PAPER_ITEMS.length?' g':' a')+'">'+done+'/'+PAPER_ITEMS.length+'</span></div>'+
+  '<div class="pflist">'+PAPER_ITEMS.map(([k,t,bm])=>{const v=pp[k];
+   return '<button class="pfrow'+(v?' on':'')+'" onclick="paperTick(\''+c.id+'\',\''+k+'\')"><span class="pchk">'+(v?ic('check',13):'')+'</span>'+
+    '<span class="pftext"><b>'+t+'</b><small>'+(v?bm+' · '+esc(v.byName||'')+' · '+dshort(v.at):bm+' · tap when done')+'</small></span></button>';}).join('')+
+  '</div><div class="row wrap2 pfacts">'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'form\',\''+c.id+'\')">'+ic('print',14)+'Registration form</button>'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'sheet\',\''+c.id+'\')">'+ic('note',14)+'Treatment record sheet</button>'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'label\',\''+c.id+'\')">'+ic('tag',14)+'Folder label</button></div></div>';
+}
+window.paperTick=async(cid,key)=>{
+ const c=cust(cid);if(!c)return;
+ const pp={...(c.paper||{})};
+ pp[key]=pp[key]?null:{at:new Date().toISOString(),by:(typeof actorId==='function'&&actorId())||UID,
+  byName:typeof actorName==='function'?actorName():ME.name};
+ try{
+  await updateDoc(doc(db,'customers',cid),{paper:pp,updatedAt:new Date().toISOString(),updatedBy:UID});
+  c.paper=pp;
+  if(pp[key])await audit('Paper file',(PAPER_ITEMS.find(x=>x[0]===key)||[,key])[1]+' · '+(c.clientNo||'')+' '+c.name);
+  rerenderClient(cid);
+  const m=document.getElementById('pt-list');if(m)window.paperTodo();
+ }catch(e){toast(friendly(e));}
+};
+
+/* ---- finding a client by number: scan the QR or type it ---- */
+window.openByNo=async raw=>{
+ const hit=String(raw||'').match(/[A-Za-z]{2,5}\s*-?\s*\d{1,6}/);
+ const no=normNo(hit?hit[0]:raw);
+ if(!no)return false;
+ let c=CUSTS.find(x=>x.clientNo===no);
+ if(!c){
+  try{const s=await getDocs(query(collection(db,'customers'),where('clientNo','==',no),limit(2)));
+   s.docs.forEach(d=>{const x={id:d.id,...d.data()};const old=CUSTS.find(y=>y.id===x.id);
+    if(old)Object.assign(old,x);else CUSTS.push(x);});}catch(e){console.warn('by no',e);}
+  c=CUSTS.find(x=>x.clientNo===no);
+ }
+ if(!c||c.active===false)return false;
+ stopScan();window.closeModal();
+ custQ=no;CSEL=c.id;
+ if(TAB!=='cust')window.go('cust');else{render();}
+ if(typeof bindCustSearch==='function')bindCustSearch();
+ if(!custWide())window.openCust(c.id);
+ return true;
+};
+let SCAN=null;
+function stopScan(){
+ if(!SCAN)return;
+ clearInterval(SCAN.t);
+ try{(SCAN.stream.getTracks()||[]).forEach(t=>t.stop());}catch(e){}
+ SCAN=null;
+}
+window.scanClient=()=>{
+ const canScan=typeof window.BarcodeDetector==='function'&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia;
+ modal('Find by client number','<div class="card">'+
+  (canScan?'<div class="scanbox"><video id="sc-v" playsinline muted autoplay></video><span class="scanframe"></span></div>'+
+   '<div class="tiny muted" id="sc-msg" style="margin:8px 0 12px">Point the camera at the QR code on the form or the folder.</div>'
+   :'<div class="tiny muted" style="margin-bottom:12px">'+ic('scan',13)+' This browser cannot read QR codes — type the number from the form instead.</div>')+
+  '<label>Client number</label><div class="row"><input class="f" id="sc-no" autocomplete="off" '+
+   'placeholder="'+esc(brCode(ME.branchId))+'-00123 or just 123" style="margin:0;flex:1">'+
+  '<button class="btn" id="sc-go">'+ic('search',15)+'Open</button></div>'+
+  '<div id="sc-err" class="tiny" style="color:var(--rose);margin-top:8px"></div></div>',
+ ()=>{
+  const go=async()=>{const v=$('#sc-no').value;
+   if(!(await window.openByNo(v))){const e=document.getElementById('sc-err');if(e)e.textContent=normNo(v)?'No client has '+normNo(v)+'.':'That is not a client number.';}};
+  $('#sc-go').onclick=go;$('#sc-no').onkeydown=e=>{if(e.key==='Enter')go();};
+  if(!canScan)return;
+  stopScan();
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}).then(stream=>{
+   const v=document.getElementById('sc-v');if(!v){stream.getTracks().forEach(t=>t.stop());return;}
+   v.srcObject=stream;const p=v.play&&v.play();if(p&&p.catch)p.catch(()=>{});
+   const det=new window.BarcodeDetector({formats:['qr_code']});let busy=false;
+   SCAN={stream,t:setInterval(async()=>{
+    if(!document.getElementById('sc-v')){stopScan();return;}
+    if(busy||v.readyState<2)return;busy=true;
+    try{const r=await det.detect(v);
+     if(r&&r[0]){const txt=r[0].rawValue||'';const ok=await window.openByNo(txt);
+      if(!ok){const m=document.getElementById('sc-msg');if(m)m.textContent='Read "'+txt+'" — no client with that number.';}}}
+    catch(e){}
+    busy=false;},350)};
+  }).catch(()=>{const m=document.getElementById('sc-msg');if(m)m.textContent='The camera is not available — type the number below.';});
+ });
+};
+
+/* ---- today's files: pull them before clients arrive, file the visit after ---- */
+const PULLKEY=()=>'luuna:pull:'+today();
+function pulledSet(){try{return new Set(JSON.parse(localStorage.getItem(PULLKEY())||'[]'));}catch(e){return new Set();}}
+function savePulled(s){try{localStorage.setItem(PULLKEY(),JSON.stringify([...s]));}catch(e){}}
+const todayFiles=()=>onDay(today()).filter(a=>a.customerId&&a.branchId===ME.branchId&&!['cancel','no'].includes(a.status));
+const byBox=(x,y)=>{const a=cnoOf(x.customerId),b=cnoOf(y.customerId);
+ if(!a!==!b)return a?-1:1;return noNum(a)-noNum(b)||String(x.start).localeCompare(String(y.start));};
+function paperAlerts(al){
+ if(!(can('booking')||can('customer')))return;
+ const td=todayFiles(),pulled=pulledSet();
+ const toPull=td.filter(a=>a.status!=='done'&&!pulled.has(a.id));
+ if(toPull.length)al.push({i:'folder',t:'Pull '+toPull.length+' client file'+(toPull.length>1?'s':'')+' for today',
+  d:toPull.slice().sort(byBox).slice(0,3).map(a=>(cnoOf(a.customerId)||'no number')+' '+(a.customerName||'').split(' ')[0]).join(' · '),
+  go:'pullList()'});
+ const unfiled=td.filter(a=>a.status==='done'&&!a.paperFiled);
+ if(unfiled.length)al.push({i:'note',t:unfiled.length+' treatment record'+(unfiled.length>1?'s':'')+' to file',
+  d:'Write today’s visit on the paper record, then tick it off.',go:'fileList()'});
+ const fresh=newPaperTodo();
+ if(fresh.length)al.push({i:'idcard',t:fresh.length+' new client file'+(fresh.length>1?'s':'')+' not complete',
+  d:fresh.slice(0,3).map(c=>c.name.split(' ')[0]).join(', '),go:'paperTodo()'});
+}
+const newPaperTodo=()=>CUSTS.filter(c=>c.active!==false&&c.createdAt&&(!c.branchId||c.branchId===ME.branchId)&&
+ daysBetween(c.createdAt,new Date())<=14&&(!c.clientNo||PAPER_ITEMS.some(([k])=>!(c.paper||{})[k])));
+window.pullList=()=>{
+ const td=todayFiles().slice().sort(byBox),pulled=pulledSet();
+ modal('Files to pull · today','<div class="card">'+
+  '<div class="tiny muted" style="margin-bottom:10px">In box order, so one trip down the cabinet does it. Tick each folder as it comes out.</div>'+
+  (td.length?'<div id="pl-list">'+td.map(a=>{const no=cnoOf(a.customerId),bx=boxOf(no),on=pulled.has(a.id);
+   return '<button class="pfrow pullrow'+(on?' on':'')+'" onclick="pullTick(\''+a.id+'\')"><span class="pchk">'+(on?ic('check',13):'')+'</span>'+
+    '<span class="pftext"><b>'+(no?'<span class="cno">'+esc(no)+'</span> ':'<span class="pill a">no number</span> ')+esc(a.customerName||'')+'</b>'+
+    '<small>'+(bx?bx.label+' · ':'')+tstr(a.start)+' · '+esc(a.serviceName||'')+(a.status==='done'?' · done':'')+'</small></span></button>';}).join('')+'</div>'
+   :'<div class="empty">'+ic('folder',24)+'<div>No client bookings today.</div></div>')+
+  '<div class="row wrap2" style="margin-top:12px">'+
+   (td.length?'<button class="btn sm" onclick="paperPDF(\'pull\')">'+ic('print',14)+'Print the list</button>'+
+    '<button class="btn sm ghost" onclick="pullAll()">'+ic('check',14)+'All pulled</button>':'')+'</div></div>');
+};
+window.pullTick=id=>{const s=pulledSet();s.has(id)?s.delete(id):s.add(id);savePulled(s);window.pullList();};
+window.pullAll=()=>{const s=pulledSet();todayFiles().forEach(a=>s.add(a.id));savePulled(s);window.closeModal();render();toast('All files pulled');};
+window.fileList=()=>{
+ const xs=todayFiles().filter(a=>a.status==='done').sort(byBox);
+ modal('Treatment records · today','<div class="card">'+
+  '<div class="tiny muted" style="margin-bottom:10px">After each treatment the therapist writes the visit on the record sheet in the client’s folder. Tick it here once it is back in the box.</div>'+
+  (xs.length?xs.map(a=>{const no=cnoOf(a.customerId),bx=boxOf(no);
+   return '<button class="pfrow'+(a.paperFiled?' on':'')+'" onclick="apptFiled(\''+a.id+'\',1)"><span class="pchk">'+(a.paperFiled?ic('check',13):'')+'</span>'+
+    '<span class="pftext"><b>'+(no?'<span class="cno">'+esc(no)+'</span> ':'')+esc(a.customerName||'')+'</b>'+
+    '<small>'+esc(a.serviceName||'')+' · '+esc(a.staffName||'')+(bx?' · '+bx.label:'')+
+    (a.paperFiled?' · filed by '+esc(a.paperFiled.byName||''):'')+'</small></span></button>';}).join('')
+   :'<div class="empty">'+ic('note',24)+'<div>No completed treatments yet today.</div></div>')+'</div>');
+};
+window.apptFiled=async(id,fromList)=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ const v=a.paperFiled?null:{at:new Date().toISOString(),by:(typeof actorId==='function'&&actorId())||UID,
+  byName:typeof actorName==='function'?actorName():ME.name};
+ try{await updateDoc(doc(db,'appointments',id),{paperFiled:v,updatedBy:UID,updatedAt:new Date().toISOString()});
+  a.paperFiled=v;
+  if(v)await audit('Treatment record filed',(cnoOf(a.customerId)||'')+' '+(a.customerName||'')+' · '+(a.serviceName||''));
+  fromList?window.fileList():window.openAppt(id);
+ }catch(e){toast(friendly(e));}
+};
+window.paperTodo=()=>{
+ const xs=newPaperTodo();
+ modal('New client files','<div class="card" id="pt-list">'+
+  '<div class="tiny muted" style="margin-bottom:10px">Clients registered in the last two weeks whose paper file is not finished.</div>'+
+  (xs.length?xs.map(c=>{const miss=c.clientNo?PAPER_ITEMS.filter(([k])=>!(c.paper||{})[k]).map(x=>x[2]):['client number'];
+   return '<button class="pfrow" onclick="closeModal();openCust(\''+c.id+'\')"><span class="pchk warn">'+ic('idcard',13)+'</span>'+
+    '<span class="pftext"><b>'+cnoTag(c)+' '+esc(c.name)+'</b><small>Still to do: '+esc(miss.join(', '))+'</small></span>'+ic('right',15)+'</button>';}).join('')
+   :'<div class="empty">'+ic('check',24)+'<div>Every new client’s file is complete.</div></div>')+'</div>');
+};
+
+/* ---- paper settings and the whole-cabinet tools (owner) ---- */
+function paperPanel(){
+ const P=PAPER();
+ return '<div class="card" id="paperpanel"><h2 style="margin-bottom:6px">Paper records</h2>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Client folders are kept in number order. The box for each folder follows from its number.</p>'+
+  '<div class="grid g2"><div><label>Folders per box</label><input class="f" id="pp-per" type="number" min="1" max="1000" value="'+P.per+'"></div>'+
+  '<div><label>Next number here</label><div class="f" style="background:var(--surface-2)" id="pp-next">'+esc(brCode(ME.branchId))+'-…</div></div></div>'+
+  '<div class="row wrap2"><button class="btn sm" onclick="savePaper()">'+ic('check',14)+'Save</button>'+
+  '<button class="btn sm ghost" onclick="backfillNos()">'+ic('idcard',14)+'Number older clients</button>'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'register\')">'+ic('list',14)+'Print client register</button>'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'form\')">'+ic('print',14)+'Blank registration form</button></div></div>';
+}
+async function paintNextNo(){
+ const el=document.getElementById('pp-next');if(!el)return;
+ try{const s=await getDoc(doc(db,'clientSeq',ME.branchId));el.textContent=fmtNo(brCode(ME.branchId),(s.exists()?+s.data().n||0:0)+1);}catch(e){}
+}
+window.savePaper=async()=>{
+ const per=Math.round(+$('#pp-per').value);
+ if(!(per>=1&&per<=1000)){toast('Between 1 and 1000 folders per box');return;}
+ try{await setDoc(doc(db,'meta','settings'),{paper:{...PAPER(),per}},{merge:true});D.meta.paper={...PAPER(),per};
+  await audit('Paper records','folders per box '+per);toast('Saved');}catch(e){toast(friendly(e));}
+};
+/* number everyone who has none yet, oldest first, so the numbers follow the order they joined */
+window.backfillNos=async()=>{
+ toast('Looking for clients without a number…');
+ let all;
+ try{all=(await getDocs(query(collection(db,'customers'),limit(5000)))).docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){toast(friendly(e));return;}
+ const todo=all.filter(c=>!c.clientNo&&c.active!==false)
+  .sort((a,b)=>String(a.createdAt||'9').localeCompare(String(b.createdAt||'9'))||String(a.name).localeCompare(String(b.name)));
+ if(!todo.length){toast('Every client already has a number');return;}
+ if(!confirm('Give numbers to '+todo.length+' client'+(todo.length>1?'s':'')+', oldest first? Numbers are permanent once given.'))return;
+ const byBr={};todo.forEach(c=>{const b=c.branchId||ME.branchId;(byBr[b]=byBr[b]||[]).push(c);});
+ let done=0;
+ try{
+  for(const bid of Object.keys(byBr)){
+   const list=byBr[bid],code=brCode(bid),seqRef=doc(db,'clientSeq',bid);
+   for(let i=0;i<list.length;i+=200){
+    const chunk=list.slice(i,i+200),now=new Date().toISOString();
+    const got=await runTransaction(db,async tx=>{
+     const ss=await tx.get(seqRef);let n=ss.exists()?(+ss.data().n||0):0;
+     const out=chunk.map(c=>{n++;return [c.id,fmtNo(code,n)];});
+     ss.exists()?tx.update(seqRef,{n,code,at:now}):tx.set(seqRef,{n,code,at:now});
+     out.forEach(([id,no])=>tx.update(doc(db,'customers',id),{clientNo:no,clientNoAt:now,clientNoBy:UID,wantNo:false}));
+     return out;});
+    got.forEach(([id,no])=>{const c=cust(id);if(c)c.clientNo=no;});
+    done+=got.length;
+   }
+  }
+  await audit('Client numbers given',done+' older clients numbered');
+  toast(done+' clients numbered');render();paintNextNo();
+ }catch(e){toast(friendly(e));}
+};
+
+/* ============ the printed paper: forms, record sheets, labels, lists ============ */
+function paperDoc(jsPDF){
+ const doc=new jsPDF({unit:'mm',format:'a4'});
+ const INK=[20,18,15],MUTED=[111,106,96],BRASS=[166,124,61],LINE=[200,193,178],SOFT=[247,244,238];
+ const T=(t,x,y,o)=>doc.text(pdfText(t),x,y,o);
+ const font=(sz,st,col)=>{doc.setFontSize(sz);doc.setFont('helvetica',st||'normal');doc.setTextColor(...(col||INK));};
+ const b=D.meta.biz||{};
+ /* the letterhead strip every page carries */
+ const head=(title,sub)=>{
+  doc.setFillColor(...INK);doc.rect(0,0,210,4,'F');doc.setFillColor(...BRASS);doc.rect(0,4,210,0.9,'F');
+  font(13,'bold');T(b.name||'',16,15);font(7.8,'normal',MUTED);T(branch().name||'',16,19.5);
+  font(11,'bold',BRASS);T(title,16,29);if(sub){font(8,'normal',MUTED);T(sub,16,33.5);}
+ };
+ /* the number box, top right: QR, the number, the box */
+ const idbox=(no,x,y)=>{
+  doc.setDrawColor(...INK);doc.setLineWidth(0.5);doc.roundedRect(x,y,56,30,2,2);
+  font(6.8,'bold',MUTED);T('NO. KLIEN / CLIENT NO.',x+3,y+4.6);
+  if(no){pdfQR(doc,no,x+33,y+6.5,21);font(13.5,'bold');T(no,x+3,y+14);
+   const bx=boxOf(no);font(7.5,'normal',MUTED);T(bx.label,x+3,y+19.5);T(bx.short,x+3,y+23.4);}
+  else{doc.setDrawColor(...LINE);doc.line(x+3,y+16,x+53,y+16);font(6.8,'italic',MUTED);T('Diisi oleh kaunter / office use',x+3,y+21);}
+ };
+ const foot=(no,page)=>{font(7,'normal',MUTED);doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(16,286,194,286);
+  T((b.name||'')+' · '+(no||'No. klien: ____________'),16,290.5);T(page,194,290.5,{align:'right'});};
+ /* a labelled field: pre-filled value, or a line to write on */
+ const field=(label,val,x,y,w)=>{font(6.8,'normal',MUTED);T(label,x,y);
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.25);doc.line(x,y+6.2,x+w,y+6.2);
+  if(val){font(9.5,'normal');doc.text(doc.splitTextToSize(pdfText(val),w)[0],x+0.5,y+5.2);}};
+ const box=(x,y,on)=>{doc.setDrawColor(...INK);doc.setLineWidth(0.3);doc.rect(x,y-2.8,3.2,3.2);
+  if(on){doc.setLineWidth(0.5);doc.line(x+0.6,y-1.2,x+1.4,y-0.2);doc.line(x+1.4,y-0.2,x+2.8,y-2.3);}};
+ const section=(t,y)=>{doc.setFillColor(...SOFT);doc.rect(16,y-4.2,178,6.2,'F');font(8.2,'bold');T(t,18,y);return y+6;};
+ return {doc,INK,MUTED,BRASS,LINE,SOFT,T,font,head,idbox,foot,field,box,section};
+}
+/* A4 registration form, pre-filled when there is a client */
+function drawForm(P,c){
+ const {doc,T,font,head,idbox,foot,field,box,section,MUTED,LINE}=P;
+ const no=c&&c.clientNo||'';
+ head('BORANG PENDAFTARAN KLIEN','Client registration and consultation form');
+ idbox(no,138,9);
+ let y=46;
+ y=section('A. MAKLUMAT PERIBADI · PERSONAL DETAILS',y);
+ field('Nama penuh / Full name',c&&c.name,16,y+2,178);y+=11;
+ field('No. K/P atau pasport / IC or passport',c&&c.idNo,16,y+2,86);field('Tarikh lahir / Date of birth',c&&c.dob?dstr(c.dob):'',108,y+2,40);
+ field('Jantina / Gender',c&&c.gender,154,y+2,40);y+=11;
+ field('Telefon bimbit / Mobile',c&&c.phone,16,y+2,56);field('Telefon lain / Other phone',c&&c.phone2,78,y+2,50);
+ field('E-mel / Email',c&&c.email,134,y+2,60);y+=11;
+ field('Alamat / Address',c&&[c.address,c.postcode,c.city,c.state].filter(Boolean).join(', '),16,y+2,178);y+=11;
+ field('Pekerjaan / Occupation',c&&c.occupation,16,y+2,86);field('Waris kecemasan / Emergency contact',c&&c.emergency,108,y+2,86);y+=14;
+
+ y=section('B. KULIT DAN KESIHATAN · SKIN AND HEALTH',y);
+ font(6.8,'normal',MUTED);T('Jenis kulit / Skin type',16,y+2);
+ let x=16;y+=7;
+ SKINS.forEach(s=>{box(x,y,c&&c.skin===s);font(8.5);T(s,x+4.6,y);x+=doc.getTextWidth(pdfText(s))+11;});
+ y+=8;
+ font(6.8,'normal',MUTED);T('Tandakan jika berkenaan / Tick if it applies',16,y);y+=6;
+ const flags=['Hamil atau menyusu / Pregnant or breastfeeding','Ubat jerawat (isotretinoin) / Acne medication',
+  'Laser, peel, suntikan (2 minggu) / Laser, peel, injectables (2 weeks)',
+  'Luka, ruam, jangkitan kulit / Wounds, rash, skin infection','Darah tinggi, kencing manis, jantung / BP, diabetes, heart',
+  'Implan logam atau perentak jantung / Metal implants or pacemaker'];
+ flags.forEach((f,i)=>{const cx=i%2?108:16,cy=y+Math.floor(i/2)*6.5;box(cx,cy,false);font(7.6);
+  T(doc.splitTextToSize(pdfText(f),82)[0],cx+4.6,cy);});
+ y+=Math.ceil(flags.length/2)*6.5+2;
+ field('Alahan / Allergies',c&&c.allergy,16,y+2,178);y+=11;
+ field('Keadaan perubatan atau ubat semasa / Medical conditions or current medication',c&&c.medical,16,y+2,178);y+=14;
+
+ y=section('C. BAGAIMANA ANDA TAHU TENTANG KAMI · HOW DID YOU FIND US',y);
+ x=16;y+=3;
+ SOURCES.forEach(s=>{const w=doc.getTextWidth(pdfText(s))+11;if(x+w>194){x=16;y+=6.5;}
+  box(x,y,c&&c.source===s);font(8.2);T(s,x+4.6,y);x+=w;});
+ y+=10;
+
+ y=section('D. PERSETUJUAN · CONSENT',y);
+ font(7.6);
+ const pd='Saya mengesahkan maklumat di atas adalah benar dan akan memaklumkan sebarang perubahan kesihatan sebelum rawatan. '+
+  'Saya bersetuju '+(D.meta.biz&&D.meta.biz.name||'pihak spa')+' menyimpan dan menggunakan maklumat ini untuk rawatan dan rekod saya, '+
+  'selaras dengan Akta Perlindungan Data Peribadi 2010.  /  I confirm the details above are true and will tell the therapist of any change '+
+  'in my health before a treatment. I agree to my details being kept and used for my treatments and records under the Personal Data Protection Act 2010.';
+ const lines=doc.splitTextToSize(pdfText(pd),178);doc.text(lines,16,y+1);y+=lines.length*3.4+4;
+ box(16,y,c&&c.pdpa!==false&&!!c);font(8);T('Setuju menyimpan data (PDPA) / I consent to my data being kept',20.6,y);y+=6;
+ box(16,y,c&&c.marketing!==false&&!!c);T('Setuju menerima promosi / Happy to receive promotions',20.6,y);y+=12;
+ doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(16,y,90,y);doc.line(108,y,150,y);
+ font(6.8,'normal',MUTED);T('Tandatangan klien / Client signature',16,y+3.6);T('Tarikh / Date',108,y+3.6);
+ /* office strip */
+ y=266;doc.setDrawColor(...MUTED);doc.setLineDashPattern([1,1],0);doc.rect(16,y,178,15);doc.setLineDashPattern([],0);
+ font(6.8,'bold',MUTED);T('KEGUNAAN PEJABAT / OFFICE USE',19,y+4.5);font(7.4,'normal',MUTED);
+ T('Didaftar dalam app oleh / Registered by: ______________',19,y+10.5);
+ T('Tarikh / Date: __________',110,y+10.5);T(no?boxOf(no).label:'Box: ______',160,y+10.5);
+ foot(no,'1');
+}
+/* the visit log that lives in the folder */
+function drawSheet(P,c,page){
+ const {doc,T,font,head,idbox,foot,LINE,SOFT,MUTED}=P;
+ const no=c&&c.clientNo||'';
+ head('REKOD RAWATAN','Treatment record · one line per visit');
+ idbox(no,138,9);
+ font(9.5,'bold');T(c?c.name:'Nama / Name: ______________________________',16,44);
+ if(c&&c.allergy){font(8,'bold',[155,74,74]);T('ALAHAN / ALLERGY: '+c.allergy,16,49.5);}
+ const cols=[['Tarikh / Date',22],['Rawatan / Treatment',44],['Terapis / Therapist',28],['Produk, tetapan, pemerhatian / Products, settings, notes',60],['T/tangan / Sign',24]];
+ let y=55;doc.setFillColor(...SOFT);doc.rect(16,y,178,8,'F');
+ let x=16;font(6.6,'bold',MUTED);cols.forEach(([t,w])=>{doc.text(doc.splitTextToSize(pdfText(t),w-3),x+1.5,y+3.3);x+=w;});
+ y+=8;doc.setDrawColor(...LINE);doc.setLineWidth(0.25);
+ const rows=18,rh=11.4;
+ for(let r=0;r<=rows;r++)doc.line(16,y+r*rh,194,y+r*rh);
+ x=16;cols.forEach(([,w],i)=>{doc.line(x,55,x,y+rows*rh);x+=w;});doc.line(194,55,194,y+rows*rh);
+ foot(no,'Helaian / Sheet '+(page||'____'));
+}
+/* two labels to cut out: the folder front and the spine */
+function drawLabel(P,c){
+ const {doc,T,font,MUTED,LINE,BRASS}=P;
+ const no=c.clientNo,bx=boxOf(no);
+ font(8,'normal',MUTED);T('Gunting pada garisan putus-putus · cut along the dashed lines',16,12);
+ doc.setLineDashPattern([1.5,1.2],0);doc.setDrawColor(...MUTED);doc.setLineWidth(0.25);
+ doc.rect(16,18,110,56);doc.rect(16,84,178,20);doc.setLineDashPattern([],0);
+ /* front */
+ doc.setFillColor(...BRASS);doc.rect(16,18,3,56,'F');
+ pdfQR(doc,no,86,24,36);
+ font(7,'bold',MUTED);T('NO. KLIEN / CLIENT NO.',24,27);
+ font(22,'bold');T(no,24,38);
+ font(10.5,'normal');doc.text(doc.splitTextToSize(pdfText(c.name),58).slice(0,2),24,47);
+ font(8,'normal',MUTED);T(bx.label+'  ·  '+bx.range,24,62);
+ T('Daftar / Since '+(c.createdAt?dstr(c.createdAt):''),24,67);
+ /* spine */
+ pdfQR(doc,no,178,86,16);
+ font(15,'bold');T(no,20,96.5);font(10,'normal');T(doc.splitTextToSize(pdfText(c.name),90)[0],72,96.5);
+ font(8,'normal',MUTED);T(bx.label,150,96.5);
+}
+/* today's pull list and the whole-cabinet register */
+function drawTable(P,title,sub,cols,rows,groupOf){
+ const {doc,T,font,head,foot,LINE,SOFT,MUTED}=P;
+ let page=1,y;
+ const top=()=>{head(title,sub);y=42;doc.setFillColor(...SOFT);doc.rect(16,y-4.5,178,7,'F');
+  let x=16;font(7,'bold',MUTED);cols.forEach(([t,w])=>{T(t,x+1.5,y);x+=w;});y+=6;};
+ top();let lastG=null;
+ rows.forEach(r=>{
+  const g=groupOf?groupOf(r):null;
+  if(y>278||(g&&g!==lastG&&y>268)){foot('',String(page));doc.addPage();page++;top();lastG=null;}
+  if(g&&g!==lastG){font(8,'bold',P.BRASS);T(g,17.5,y+1);y+=6;lastG=g;}
+  let x=16;font(8.6);
+  r.forEach((v,i)=>{if(v==='[ ]'){P.box(x+2,y+0.6,false);}else T(doc.splitTextToSize(pdfText(v),cols[i][1]-3)[0]||'',x+1.5,y+0.8);x+=cols[i][1];});
+  doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(16,y+3,194,y+3);y+=7.2;
+ });
+ foot('',String(page));
+}
+const PDFNAMES={form:'Registration-form',sheet:'Treatment-record',label:'Folder-label',pull:'Files-to-pull',register:'Client-register'};
+window.paperPDF=async(kind,cid,how)=>{
+ const c=cid?cust(cid):null;
+ toast('Preparing the PDF…');
+ try{
+  const [jsPDF]=await Promise.all([loadJsPDF(),loadQR().catch(()=>null)]);
+  const P=paperDoc(jsPDF);
+  let tag=c?(c.clientNo||c.name):'blank';
+  if(kind==='form'){drawForm(P,c);if(c){P.doc.addPage();drawSheet(P,c,1);}}
+  else if(kind==='sheet')drawSheet(P,c);
+  else if(kind==='label'){if(!c||!c.clientNo){toast('This client has no number yet');return;}drawLabel(P,c);}
+  else if(kind==='pull'){
+   const td=todayFiles().slice().sort(byBox);tag=today();
+   drawTable(P,'FAIL UNTUK DITARIK · FILES TO PULL',dstr(today())+' · '+td.length+' booking'+(td.length===1?'':'s')+' · in box order',
+    [['',9],['No. klien',28],['Nama / Name',58],['Masa',16],['Rawatan / Treatment',49],['Box',18]],
+    td.map(a=>{const no=cnoOf(a.customerId);return ['[ ]',no||'—',a.customerName||'',tstr(a.start),a.serviceName||'',no?boxOf(no).label:'—'];}));
+  }
+  else if(kind==='register'){
+   const all=(await getDocs(query(collection(db,'customers'),limit(5000)))).docs.map(d=>({id:d.id,...d.data()}))
+    .filter(x=>x.clientNo&&x.active!==false).sort((a,b)=>String(a.clientNo).localeCompare(String(b.clientNo)));
+   tag=today();
+   drawTable(P,'DAFTAR KLIEN · CLIENT REGISTER',all.length+' numbered clients · '+dstr(today())+' · keep with the cabinet',
+    [['No. klien',30],['Nama / Name',70],['Telefon / Phone',38],['Daftar / Since',40]],
+    all.map(x=>[x.clientNo,x.name||'',x.phone||'',x.createdAt?dstr(x.createdAt):'']),
+    r=>{const bx=boxOf(r[0]);return bx.label+' · '+bx.range;});
+  }
+  const name=PDFNAMES[kind]+'-'+String(tag).replace(/[^A-Za-z0-9-]+/g,'-').replace(/^-|-$/g,'').slice(0,40)+'.pdf';
+  window.__lastPDF={kind,name,doc:P.doc};
+  if(how==='share'&&navigator.canShare){
+   const file=new File([P.doc.output('blob')],name,{type:'application/pdf'});
+   if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name.replace('.pdf','')});return;}
+  }
+  P.doc.save(name);
+  await audit('Printed',PDFNAMES[kind].replace(/-/g,' ')+(c?' · '+(c.clientNo||'')+' '+c.name:''));
+ }catch(e){if(e&&e.name==='AbortError')return;console.error(e);toast(friendly(e));}
+};
+window.matchClients=matchClients;
+/* after registering: the number, big, and the paper steps in one place */
+function newClientSheet(cid){
+ const c=cust(cid);if(!c)return;
+ modal('Client registered','<div class="card pfile" data-cid="'+cid+'" style="text-align:center">'+
+  (c.clientNo?'<div class="tiny muted">Write this number on the paper form</div>'+
+   '<div class="pfno big">'+esc(c.clientNo)+'</div>'+
+   '<div class="pfbox" style="justify-content:center">'+ic('folder',13)+'<b>'+boxOf(c.clientNo).label+'</b><span>'+esc(boxOf(c.clientNo).range)+'</span></div>'+
+   '<span class="pfqr" data-qr="'+esc(c.clientNo)+'" data-px="104" style="margin:12px auto;width:104px;height:104px"></span>'
+   :'<div class="pfno none big">Number coming</div><div class="tiny muted">The tablet is offline — the number is given as soon as it reconnects.</div>')+
+  '<div class="row wrap2" style="justify-content:center;margin-top:10px">'+
+   (c.clientNo?'<button class="btn sm" onclick="paperPDF(\'form\',\''+cid+'\')">'+ic('print',14)+'Pre-filled form to sign</button>'+
+    '<button class="btn sm ghost" onclick="paperPDF(\'label\',\''+cid+'\')">'+ic('tag',14)+'Folder label</button>':'')+
+   '<button class="btn sm ghost" onclick="closeModal();openCust(\''+cid+'\')">'+ic('user',14)+'Open client</button></div></div>');
+ setTimeout(paintQRs,0);
+}
+
 /* ============ hands-on therapist and commission ============ */
 /* Two different people can earn from one treatment: whoever sold it (the existing
    sales commission) and whoever actually performed it (hands-on commission). Each
@@ -6681,7 +7272,7 @@ function buildReceiptPDF(s,jsPDF){
    by+=4.6;});
   return by;};
  const y1=block(M,'Billed to',[['',s.customerName||'Walk-in customer'],['Phone',cl.phone||''],
-  ['Email',cl.email||''],['Member no.',s.customerId?String(s.customerId).slice(0,8).toUpperCase():'']]);
+  ['Email',cl.email||''],['Client no.',cnoOf(s.customerId)||s.customerNo||'']]);
  const hands=[...new Set((s.items||[]).map(i=>i.handsOnName).filter(Boolean))].join(', ');
  const y2=block(M+CW/2+4,'Details',[['Branch',brName],[s.cashierName?'Cashier':'Served by',s.cashierName||s.staffName||''],['Therapist',hands],
   ['Payment',bal>0?'Instalment':'In full']]);
@@ -7117,7 +7708,7 @@ window.checkout=async()=>{
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
-   customerName:c?c.name:'Walk-in',staffId:actorId()||UID,staffName:actorName(),items,
+   customerName:c?c.name:'Walk-in',customerNo:(c&&c.clientNo)||'',staffId:actorId()||UID,staffName:actorName(),items,
    cashierId:actorId()||UID,cashierName:actorName(),cashierVerified:cashierValid()||!isBranch(),
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
@@ -7370,7 +7961,7 @@ function receiptHTML(s){
   '<div class="rmeta">'+
    '<div><span>Receipt</span><b>'+esc(s.invoiceNo||'')+'</b></div>'+
    '<div><span>Date</span><b>'+dstr(s.at)+' '+tstr(s.at)+'</b></div>'+
-   '<div><span>Client</span><b>'+esc(s.customerName||'Walk-in')+'</b></div>'+
+   '<div><span>Client</span><b>'+esc(s.customerName||'Walk-in')+(cnoOf(s.customerId)?' · '+esc(cnoOf(s.customerId)):'')+'</b></div>'+
    '<div><span>'+(s.cashierName?'Cashier':'Served by')+'</span><b>'+esc(s.cashierName||s.staffName||'')+'</b></div>'+
   '</div>'+
   '<table class="rtab"><tr><th>Item</th><th class="num">Qty</th><th class="num">Price</th>'+
@@ -9610,6 +10201,7 @@ function vSet(){
   h+=fbPanel();
   h+=swPanel();
   h+=rvPanel();
+  h+=paperPanel();setTimeout(paintNextNo,0);
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" onclick="rebuildClientSearch()">'+ic('search',14)+'Rebuild client search</button>'+
