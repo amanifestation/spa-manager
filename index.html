@@ -1476,6 +1476,17 @@ details.pkdel summary b{display:inline-flex;gap:6px;align-items:center}
 .pkdelrow{padding:10px 0;border-top:1px solid var(--line-2);display:grid;gap:3px}.pkdelrow:first-of-type{margin-top:10px}
 .daywho{display:grid;gap:3px;margin-top:6px;font-size:12.5px;color:var(--ink-2)}
 .daywho span{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.daywho em{font-style:normal;color:var(--amber);font-size:11px}
+
+/* ---------- data refresh ---------- */
+#syncbtn.spin svg{animation:syncspin .9s linear infinite}
+@keyframes syncspin{to{transform:rotate(360deg)}}
+.syncinfo{display:flex;gap:10px;align-items:flex-start}.syncinfo b{display:block}.syncinfo small{display:block;color:var(--ink-3);font-size:12px;margin-top:2px}
+.syncbar{position:fixed;left:12px;right:12px;margin:0 auto;max-width:560px;top:70px;z-index:8500;display:flex;align-items:center;gap:8px;
+ background:var(--ink);color:var(--surface);padding:9px 10px 9px 14px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:13px;animation:syncin .35s var(--ease)}
+.syncbar>span{flex:0 0 auto;display:inline-flex}.syncbar .sbt{flex:1;min-width:0;line-height:1.35;display:block}.syncbar button{white-space:nowrap;flex-shrink:0;border:0;border-radius:99px;padding:6px 12px;font:inherit;font-weight:600;cursor:pointer;background:var(--brass);color:#fff}
+.syncbar button.x{background:transparent;color:var(--line)}
+@keyframes syncin{from{opacity:0;transform:translateY(-10px)}}
+body.demo .syncbar{top:106px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1733,7 +1744,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-23w';
+const BUILD='2026-09-23x';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2111,6 +2122,7 @@ function render(){
      '<div class="tsub">'+esc(branch().name)+' · '+new Date().toLocaleDateString('en-MY',
        {weekday:'short',day:'numeric',month:'short'})+'</div></div>'+
     '<div class="tacts">'+
+     '<button class="iconbtn" id="syncbtn" title="Refresh data" aria-label="Refresh data" onclick="syncSheet()">'+ic('refresh',18)+'</button>'+
      '<span id="bellwrap">'+bellHTML()+'</span>'+
      (can('booking')?'<button class="iconbtn" title="New booking" onclick="newAppt()">'+
       ic('plus',18)+'</button>':'')+
@@ -11204,6 +11216,7 @@ window.render=render;
    watchAppointments();
    watchEvents();
    watchReviews();
+   watchSync();
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm()]);
    render();
    if(TAB==='rep')buildReport();
@@ -12919,5 +12932,84 @@ window.openShift=()=>{
    await loadShift();logEvent('day','Day opened by '+who.name,'Float '+rm(data.openingFloat)+' · '+branch().name,{refType:'shift'});
    await audit('Day opened','By '+who.name+(who.verified?'':' (no code)')+' · float '+rm(data.openingFloat));
    window.closeModal();render();toast('Day opened by '+who.name);}catch(err){e.textContent=friendly(err);$('#os-go').disabled=false;}};});};
+
+
+/* ================= Data refresh: this device, or every device at once ================= */
+/* Tapping the refresh button reloads everything this screen shows straight from the
+   database (catalogue, prices, team, clients, packages, bills, the day, CRM) and checks for
+   a newer version of the app. The owner or a manager can also send a refresh to every
+   device: each one listens to meta/sync and reloads when it changes, unless someone is in
+   the middle of a bill, in which case it asks first so nothing on screen is lost. */
+let LASTSYNC=Date.now(),SYNCING=false,SYNCSEEN=null,SYNCPEND=null;
+async function dataRefresh(opt){
+ opt=opt||{};
+ if(SYNCING)return;
+ SYNCING=true;syncPaint();
+ try{
+  if(!DEMO)try{const p=await getDoc(doc(db,'users',UID));if(p.exists())ME={id:UID,...p.data()};}catch(e){}
+  await loadStatic();
+  if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
+  LASTV=null;MKTREV={};PKGDEL=null;
+  await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),
+   loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm()].map(p=>Promise.resolve(p).catch(e=>console.warn('refresh',e))));
+  try{watchAppointments();}catch(e){}
+  try{if('serviceWorker' in navigator){const r=await navigator.serviceWorker.getRegistration();if(r)r.update();}}catch(e){}
+  LASTSYNC=Date.now();SYNCPEND=null;
+  const bar=document.getElementById('syncbar');if(bar)bar.remove();
+  if(TAB==='rep'&&typeof buildReport==='function')try{buildReport();}catch(e){}
+  render();
+  toast(opt.by?'Data refreshed · sent by '+opt.by:(navigator.onLine===false?'Offline — showing the last saved data':'Data up to date · '+tstr(new Date())));
+ }catch(e){toast('Could not refresh: '+friendly(e));}
+ finally{SYNCING=false;syncPaint();}
+}
+function syncPaint(){
+ const b=document.getElementById('syncbtn');if(b)b.classList.toggle('spin',SYNCING);
+}
+window.dataRefresh=o=>dataRefresh(o);
+window.syncSheet=()=>{
+ const mins=Math.round((Date.now()-LASTSYNC)/6e4);
+ modal('Data refresh','<div class="card">'+
+  '<div class="syncinfo">'+ic('refresh',16)+'<div><b>Last refreshed '+(mins<1?'just now':mins+' min ago')+'</b>'+
+   '<small>'+(navigator.onLine===false?'This device is offline — changes will sync when it reconnects.':'Online · bookings, alerts and leads update live; this reloads everything else.')+'</small></div></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="closeModal();dataRefresh()">'+ic('refresh',16)+'Refresh this device</button>'+
+  (boss()&&!DEMO?'<button class="btn ghost" id="sy-all" style="width:100%;justify-content:center;margin-top:8px" onclick="syncAll()">'+ic('users',16)+'Refresh all devices</button>'+
+   '<p class="tiny muted" style="margin:8px 0 0">Use after changing prices, packages, staff or settings. Every open device reloads within seconds; '+
+   'a device in the middle of a bill is asked first so nothing is lost.</p>':'')+
+  (DEMO?'<p class="tiny muted" style="margin:8px 0 0">Training mode: this refreshes the training copy only.</p>':'')+'</div>');
+};
+window.syncAll=async()=>{
+ if(!boss())return;
+ const at=new Date().toISOString();SYNCSEEN=at;
+ const btn=document.getElementById('sy-all');if(btn)btn.disabled=true;
+ try{await setDoc(doc(db,'meta','sync'),{at,by:UID,byName:(typeof actorName==='function'?actorName():ME.name),branchId:ME.branchId});
+  await audit('Refresh sent to all devices','');
+  window.closeModal();await dataRefresh();toast('Refresh sent to every device');}
+ catch(e){toast(friendly(e));if(btn)btn.disabled=false;}
+};
+/* is someone in the middle of something that a reload would disturb? */
+const syncBusy=()=>!!document.querySelector('#modal .sheet')||(typeof cart!=='undefined'&&cart&&cart.items&&cart.items.length>0);
+function syncAsk(by){
+ SYNCPEND=by;
+ if(document.getElementById('syncbar'))return;
+ const b=document.createElement('div');b.id='syncbar';b.className='syncbar';
+ b.innerHTML=ic('refresh',15)+'<span class="sbt"><b>New data</b> · '+esc(by||'the owner')+' sent a refresh</span>'+
+  '<button onclick="dataRefresh({by:SYNCPEND_NAME()})">Refresh now</button><button class="x" onclick="this.parentNode.remove()">Later</button>';
+ document.body.appendChild(b);
+}
+window.SYNCPEND_NAME=()=>SYNCPEND||'';
+function watchSync(){
+ try{
+  unsub.push(onSnapshot(doc(db,'meta','sync'),s=>{
+   let d=null;
+   if(s&&typeof s.data==='function'&&!s.docs)d=s.exists()?s.data():null;
+   else if(s&&s.docs){const x=s.docs.find(z=>z.id==='sync');d=x?x.data():null;}
+   const at=d&&d.at||'';
+   if(SYNCSEEN===null){SYNCSEEN=at;return;}
+   if(!at||at<=SYNCSEEN)return;
+   SYNCSEEN=at;
+   if(syncBusy())syncAsk(d.byName);else dataRefresh({by:d.byName||''});
+  },e=>console.warn('sync watch',e)));
+ }catch(e){console.warn('sync watch',e);}
+}
 
 </script>
