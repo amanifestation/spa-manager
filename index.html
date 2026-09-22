@@ -1274,6 +1274,7 @@ h2 .cno,h3 .cno{font-size:11.5px;margin-left:6px;vertical-align:3px}
 .lnlist>.lnadd{border:1px solid var(--line);border-radius:12px}
 .lnaddp{width:20px;height:20px;border-radius:6px;background:var(--brass);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
 .lnadd b{font-size:13px;font-weight:600}
+.adedit{color:var(--brass);font-weight:600}.adedit s{color:var(--ink-3);font-weight:400}
 .lnaddamt{font-size:13px;min-width:62px;text-align:right}
 .qty.sm button{padding:2px 7px}
 .postot{margin-top:12px}
@@ -1451,6 +1452,21 @@ details.klost{display:block;border:0;margin-top:10px}
 .wfqr{display:flex;justify-content:center;margin:12px 0}.wfqr img,.wfqr canvas{width:180px;height:180px}
 .lfbox label{display:block;font-size:12.5px;margin:10px 0 4px;color:var(--ink-2)}
 .lfbox .f{width:100%}
+
+/* ---------- training mode ---------- */
+.demobar{position:fixed;top:0;left:0;right:0;z-index:9000;display:flex;align-items:center;gap:10px;padding:6px 12px;
+ background:repeating-linear-gradient(135deg,#F2C94C 0 14px,#EDBE35 14px 28px);color:#3A2A00;font-size:12.5px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.demobar b{letter-spacing:.08em}.demobar .demotxt{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demobar button{border:1px solid rgba(58,42,0,.35);background:rgba(255,255,255,.55);color:#3A2A00;border-radius:99px;padding:4px 11px;font:inherit;font-weight:600;cursor:pointer}
+.demobar button.x{background:#3A2A00;color:#F2C94C;border-color:#3A2A00}
+.demodot{width:9px;height:9px;border-radius:50%;background:#B3261E;animation:demopulse 1.4s infinite}
+@keyframes demopulse{50%{opacity:.25}}
+body.demo{padding-top:36px}
+body.demo #root{box-shadow:inset 0 0 0 4px #F2C94C}
+@media(max-width:600px){.demobar .demotxt{display:none}}
+.demohero{max-width:640px;margin:0 auto}.demohero .demoic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--amber-soft);color:var(--amber)}
+.demohero.on .demoic{background:#F2C94C;color:#3A2A00}
+.demolist{display:grid;gap:8px}.demolist div{display:flex;gap:9px;align-items:center;font-size:13.5px;color:var(--ink-2)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1464,10 +1480,160 @@ details.klost{display:block;border:0;margin-top:10px}
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut}
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {getFirestore,collection,collectionGroup,doc,getDoc,getDocs,setDoc,addDoc,updateDoc,deleteDoc,
-  query,where,orderBy,limit,onSnapshot,writeBatch,runTransaction,increment,serverTimestamp,
+import {getFirestore,collection as fsCollection,doc as fsDoc,getDoc as fsGetDoc,getDocs as fsGetDocs,
+  setDoc as fsSetDoc,addDoc as fsAddDoc,updateDoc as fsUpdateDoc,deleteDoc as fsDeleteDoc,
+  query as fsQuery,where as fsWhere,orderBy as fsOrderBy,limit as fsLimit,onSnapshot as fsOnSnapshot,
+  writeBatch as fsWriteBatch,runTransaction as fsRunTransaction,increment as fsIncrement,serverTimestamp as fsServerTimestamp,
   initializeFirestore,persistentLocalCache,persistentMultipleTabManager}
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+/* ============ Training mode: a private, in-memory copy of the database ============ */
+/* When training mode is on, every read and write the app makes goes to a copy held in
+   this browser tab's memory instead of Firestore. The copy starts with the real
+   catalogue, team and settings plus a handful of made-up clients and bookings, so staff
+   can practise the whole flow (booking, checkout, packages, CRM) and nothing they do
+   ever reaches the real records. Leaving training mode, or reloading, throws it away. */
+let DEMO=false;
+const DEMOKEY='spatify:demo';
+const DMEM={};
+const dClone=x=>x===undefined?x:JSON.parse(JSON.stringify(x));
+const dCol=n=>DMEM[n]||(DMEM[n]={});
+const dNewId=()=>'demo'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function dApply(old,data){
+ const o={...(old||{})};
+ for(const k in data){const v=data[k];
+  if(v&&typeof v==='object'&&v.__dinc!==undefined)o[k]=(+o[k]||0)+v.__dinc;
+  else if(v&&typeof v==='object'&&v.__dts)o[k]=new Date().toISOString();
+  else o[k]=dClone(v);}
+ return o;
+}
+function dSnapDoc(ref,d){return {id:ref.id,ref,exists:()=>d!==undefined,data:()=>dClone(d)};}
+function dRun(q){
+ let rows=Object.entries(dCol(q.col)).map(([id,d])=>({id,d}));
+ const W=(q.q||[]).filter(x=>x.t==='w'),O=(q.q||[]).filter(x=>x.t==='o'),L=(q.q||[]).find(x=>x.t==='l');
+ W.forEach(w=>{rows=rows.filter(r=>{const v=r.d[w.f];
+  switch(w.o){case '==':return v===w.v;case '!=':return v!==w.v;case '>=':return v>=w.v;case '<=':return v<=w.v;
+   case '>':return v>w.v;case '<':return v<w.v;case 'in':return (w.v||[]).includes(v);
+   case 'array-contains':return Array.isArray(v)&&v.includes(w.v);default:return true;}});});
+ rows.sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0);
+ if(O.length)rows.sort((a,b)=>{for(const o of O){const x=a.d[o.f],y=b.d[o.f];
+  if(x===y)continue;const c=(x===undefined?-1:y===undefined?1:x<y?-1:1);return o.d==='desc'?-c:c;}return 0;});
+ if(L)rows=rows.slice(0,L.n);
+ const docs=rows.map(r=>dSnapDoc({col:q.col,id:r.id,__d:1},r.d));
+ return {docs,size:docs.length,empty:!docs.length,forEach:f=>docs.forEach(f)};
+}
+const DLIS=new Set();
+function dEmit(l){
+ if(l.ref.id){const d=dCol(l.ref.col)[l.ref.id];l.cb(dSnapDoc(l.ref,d));return;}
+ const snap=dRun(l.ref);const prev=l.seen||new Map(),now=new Map(),ch=[];
+ snap.docs.forEach(d=>{const j=JSON.stringify(d.data());now.set(d.id,j);
+  if(!prev.has(d.id))ch.push({type:'added',doc:d});else if(prev.get(d.id)!==j)ch.push({type:'modified',doc:d});});
+ prev.forEach((v,k)=>{if(!now.has(k))ch.push({type:'removed',doc:{id:k,data:()=>JSON.parse(v),exists:()=>false}});});
+ l.seen=now;snap.docChanges=()=>ch;l.cb(snap);
+}
+let DFIRE=0;
+const dFire=()=>{clearTimeout(DFIRE);DFIRE=setTimeout(()=>DLIS.forEach(l=>{try{dEmit(l);}catch(e){console.warn('demo listener',e);}}),0);};
+const dSet=(r,data,o)=>{const c=dCol(r.col);c[r.id]=o&&o.merge?dApply(c[r.id],data):dApply({},data);};
+const dUpd=(r,data)=>{const c=dCol(r.col);if(!c[r.id])throw Object.assign(new Error('No document to update'),{code:'not-found'});c[r.id]=dApply(c[r.id],data);};
+
+/* the Firestore calls the app uses: the real ones normally, the in-memory copy in training */
+function collection(db,...p){return DEMO?{__d:1,col:p.join('/')}:fsCollection(db,...p);}
+function doc(a,...p){
+ if(!DEMO)return fsDoc(a,...p);
+ if(a&&a.__d&&!a.id)return {__d:1,col:a.col,id:p[0]||dNewId()};
+ const id=p.length>1?p[p.length-1]:dNewId();return {__d:1,col:p.slice(0,-1).join('/')||p[0],id};
+}
+function query(c,...q){return DEMO?{...c,q:[...(c.q||[]),...q]}:fsQuery(c,...q);}
+function where(f,o,v){return DEMO?{t:'w',f,o,v}:fsWhere(f,o,v);}
+function orderBy(f,d){return DEMO?{t:'o',f,d}:fsOrderBy(f,d);}
+function limit(n){return DEMO?{t:'l',n}:fsLimit(n);}
+function increment(n){return DEMO?{__dinc:n}:fsIncrement(n);}
+function serverTimestamp(){return DEMO?{__dts:1}:fsServerTimestamp();}
+async function getDoc(r){return DEMO?dSnapDoc(r,dClone(dCol(r.col)[r.id])):fsGetDoc(r);}
+async function getDocs(q){return DEMO?dRun(q):fsGetDocs(q);}
+async function setDoc(r,d,o){if(!DEMO)return fsSetDoc(r,d,o);dSet(r,d,o);dFire();}
+async function addDoc(c,d){if(!DEMO)return fsAddDoc(c,d);const r={__d:1,col:c.col,id:dNewId()};dSet(r,d);dFire();return r;}
+async function updateDoc(r,d){if(!DEMO)return fsUpdateDoc(r,d);dUpd(r,d);dFire();}
+async function deleteDoc(r){if(!DEMO)return fsDeleteDoc(r);delete dCol(r.col)[r.id];dFire();}
+function onSnapshot(ref,cb,err){
+ if(!DEMO)return fsOnSnapshot(ref,cb,err);
+ const l={ref,cb};DLIS.add(l);setTimeout(()=>{try{dEmit(l);}catch(e){err&&err(e);}},0);return ()=>DLIS.delete(l);
+}
+function writeBatch(db){
+ if(!DEMO)return fsWriteBatch(db);
+ const ops=[];
+ return {set:(r,d,o)=>{ops.push(()=>dSet(r,d,o));},update:(r,d)=>{ops.push(()=>dUpd(r,d));},
+  delete:r=>{ops.push(()=>{delete dCol(r.col)[r.id];});},
+  commit:async()=>{ops.forEach(f=>f());dFire();}};
+}
+async function runTransaction(db,fn){
+ if(!DEMO)return fsRunTransaction(db,fn);
+ const ops=[];
+ const tx={get:async r=>dSnapDoc(r,dClone(dCol(r.col)[r.id])),
+  set(r,d,o){ops.push(()=>dSet(r,d,o));return tx;},update(r,d){ops.push(()=>dUpd(r,d));return tx;},
+  delete(r){ops.push(()=>{delete dCol(r.col)[r.id];});return tx;}};
+ const out=await fn(tx);ops.forEach(f=>f());dFire();return out;
+}
+
+/* ---------------- switching it on and off ---------------- */
+function demoWanted(){
+ try{if(sessionStorage.getItem(DEMOKEY)==='1')return true;}catch(e){}
+ return location.hash==='#training';
+}
+function demoSwitch(on){
+ try{if(on)sessionStorage.setItem(DEMOKEY,'1');else sessionStorage.removeItem(DEMOKEY);}catch(e){}
+ const u=location.pathname+location.search+(on?'#training':'');
+ try{history.replaceState(null,'',u);}catch(e){}
+ location.reload();
+}
+/* the copy: the real catalogue, team and settings (read once), plus made-up clients */
+async function demoSeed(){
+ const cols=['users','branches','services','products','packages','bundles','rooms','meta','stock','library','campaigns','vouchers'];
+ for(const c of cols){
+  try{const s=await fsGetDocs(fsQuery(fsCollection(db,c),fsLimit(c==='stock'?3000:600)));
+   const m=dCol(c);s.docs.forEach(d=>{m[d.id]=d.data();});}
+  catch(e){console.warn('training copy: '+c,e);}
+ }
+ DEMO=true;
+ const br=ME.branchId||'b1',now=new Date(),iso=now.toISOString();
+ const td=ymd(now),dAgo=n=>ymd(addDays(now,-n));
+ const people=[['Aina Sofea','010-000 0101','1994-03-12'],['Nurul Izzah','010-000 0102','1990-'+td.slice(5)],['Farah Adlina','010-000 0103','1988-11-02'],
+  ['Mei Ling Tan','010-000 0104','1996-07-21'],['Siti Aisyah','010-000 0105','1992-01-30'],['Priya Nair','010-000 0106','1985-09-09'],
+  ['Hana Batrisyia','010-000 0107','2000-05-15'],['Zarina Hassan','010-000 0108','1979-12-24']];
+ const C=dCol('customers');
+ people.forEach(([name,phone,dob],k)=>{C['dc'+(k+1)]={name,nameLower:name.toLowerCase(),phone,phoneDigits:digits(phone),
+  keywords:kwFor(name,phone),dob,branchId:br,active:true,pdpa:true,marketing:true,tags:[],notes:'',note:'',source:'Instagram',
+  createdAt:new Date(+now-(40-k*4)*864e5).toISOString(),createdBy:UID,demo:true};});
+ /* a few bookings today with real treatments, therapists and rooms */
+ const svcs=Object.entries(dCol('services')).filter(([,s])=>s.active!==false).slice(0,4);
+ const thera=Object.entries(dCol('users')).filter(([,u])=>u.active!==false&&u.branchId===br&&u.takes!==false&&u.role!=='branch');
+ const rooms=Object.entries(dCol('rooms')).filter(([,r])=>!r.branchId||r.branchId===br);
+ const A=dCol('appointments');
+ [[11,'dc1'],[14,'dc2'],[16,'dc3']].forEach(([h,cid],k)=>{
+  const sv=svcs[k%Math.max(1,svcs.length)],th=thera[k%Math.max(1,thera.length)],rm_=rooms[k%Math.max(1,rooms.length)];
+  if(!sv||!th)return;
+  const st=new Date(now);st.setHours(h,0,0,0);const dur=+sv[1].dur||60;
+  A['da'+(k+1)]={branchId:br,customerId:cid,customerName:C[cid].name,date:td,start:st.toISOString(),
+   finish:new Date(+st+dur*6e4).toISOString(),duration:dur,buffer:+sv[1].buffer||0,serviceId:sv[0],serviceName:sv[1].name,
+   staffId:th[0],staffName:th[1].name,roomId:rm_?rm_[0]:'',status:'booked',createdAt:iso,createdBy:UID,demo:true};});
+ /* two enquiries waiting in the CRM */
+ const L=dCol('leads');
+ L.dl1={name:'Alya Qistina',phone:'010-000 0201',phoneDigits:'0100000201',source:'Instagram',interest:(svcs[0]||[,{name:'Facial'}])[1].name,
+  stage:'new',branchId:br,createdAt:new Date(+now-90*6e4).toISOString(),createdBy:UID,nextAt:td,demo:true,
+  acts:[{at:iso,by:UID,byName:ME.name,type:'stage',text:'Lead added'}]};
+ L.dl2={name:'Jessica Lim',phone:'010-000 0202',phoneDigits:'0100000202',source:'TikTok',interest:'Acne',
+  stage:'contacted',branchId:br,createdAt:new Date(+now-26*36e5).toISOString(),firstContactAt:new Date(+now-25*36e5).toISOString(),
+  createdBy:UID,nextAt:dAgo(-1),demo:true,acts:[{at:iso,by:UID,byName:ME.name,type:'wa',text:'WhatsApp sent'}]};
+}
+function demoBanner(){
+ if(!DEMO||document.getElementById('demobar'))return;
+ document.body.classList.add('demo');
+ const b=document.createElement('div');b.id='demobar';b.className='demobar';
+ b.innerHTML='<span class="demodot"></span><b>TRAINING MODE</b><span class="demotxt">Nothing here is saved — practise freely</span>'+
+  '<button onclick="demoReset()">Start over</button><button class="x" onclick="demoExit()">Exit training</button>';
+ document.body.appendChild(b);
+ try{document.title='[TRAINING] '+document.title;}catch(e){}
+}
+
 
 /* ============ icons ============ */
 const ICONS={
@@ -1558,7 +1724,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-21u';
+const BUILD='2026-09-22v';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1832,6 +1998,7 @@ const TABS=[
  {id:'shift',ic:'wallet',label:'Day',      perm:'pos',     group:'Today',  desc:'Open, close, cash and issues'},
  {id:'board',ic:'mega',  label:'Board',    perm:null,      group:'Today',  desc:'Notices for the team'},
  {id:'lib', ic:'note',   label:'Library',  perm:null,      group:'Today',  desc:'Guides, SOPs, aftercare, product notes'},
+ {id:'demo',ic:'award', label:'Training', perm:null,      group:'Today',  desc:'Practise checkout and bookings — nothing is saved'},
  {id:'cust',ic:'users',  label:'Clients',  perm:'customer',group:'Clients',desc:'Records and full history'},
  {id:'prog',ic:'spark',  label:'Programs', perm:'customer',group:'Clients',desc:'Match treatments to concerns'},
  {id:'pkg', ic:'package',label:'Packages', perm:'customer',group:'Clients',desc:'Sell and track balances'},
@@ -1943,7 +2110,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -3226,7 +3393,7 @@ async function doSellPkg(){
   const p=D.packages.find(x=>x.id===$('#sp-p').value);
   const c=cust($('#sp-c').value)||{};
   const expiry=ymd(addDays(new Date(),p.days||365));
-  const invoiceNo='INV-'+Date.now().toString().slice(-8),at=new Date().toISOString();
+  const invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8),at=new Date().toISOString();
   const sref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:c.id,customerName:c.name,customerNo:idOf(c),
    invoiceNo,staffId:UID,staffName:ME.name,items:[{kind:'package',id:p.id,name:'Package: '+p.name,price:p.price,qty:1,staffId:UID}],
    discount:0,sst:0,total:p.price,date:today(),at,voided:false,
@@ -8339,7 +8506,10 @@ window.checkout=async()=>{
     if(!a)throw new Error(i.name+' is no longer an add-on in the catalogue. Remove it and add it again.');
     const out=lineForSale({...i,commAmt:undefined},{kind:'addon',id:i.id,name:a.name,price:+a.price||0,qty:i.qty,staffId:i.staffId,
      parentName:i.parentName||''});
-    out.commAmt=addonComm(a,out);return out;}
+    if(i.commManual){if(!canComm())throw new Error('Only a manager can change commission on '+a.name+'.');
+     out.commAmt=r2(+i.commAmt||0);out.commManual=true;}
+    else out.commAmt=addonComm(a,out);
+    return out;}
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
    const setBits=i.kind==='set'?{setItems:(src.items||[]).map(z=>({sku:z.sku,qty:+z.qty||1,name:prod(z.sku).name||z.sku}))}:{};
@@ -8361,7 +8531,7 @@ window.checkout=async()=>{
   const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
   const total=net+sst;
   const c=cust(cart.customerId);
-  const invoiceNo='INV-'+Date.now().toString().slice(-8);
+  const invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8);
   /* what was handed over, what was given back, and what is still owed */
   const nowIso=new Date().toISOString();
   const tendered=r2(cart.payments.reduce((a,p)=>a+p.amount,0));
@@ -11005,8 +11175,10 @@ window.render=render;
    noteBranchDevice();bindIdleGuard();
    pwaShortcut();
    if(ME.active===false){await signOut(auth);loginScreen('This account has been deactivated.');return;}
+   if(demoWanted())await demoSeed();
    await loadStatic();
    try{document.title=((D.meta.biz||{}).name||'Spatify')+' · Spatify';}catch(e){}
+   demoBanner();
    if(!D.branches.length)D.branches=[{id:ME.branchId||'b1',name:'Main branch',code:'MAIN'}];
    if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
    render();
@@ -11183,15 +11355,89 @@ function lineHTML(i,x){
    '<button class="rm" onclick="dropItem('+x+')">'+ic('close',13)+'Remove</button></div></div>';
 }
 function addonLine(z,j){
- const a=addonOf(z.id);
+ const a=addonOf(z.id),list=a?+a.price||0:+z.price||0;
+ const pe=z.priceEdited&&Math.abs((+z.price||0)-list)>0.004;
  return '<div class="lnadd'+(uidOf(z)===LASTADD?' lnnew':'')+'"><span class="lnaddp">+</span>'+
-  '<div style="flex:1;min-width:0"><b>'+esc(z.name)+'</b><div class="tiny muted">Add-on · commission to '+
-   esc(stf(z.staffId).name||'—')+' '+rm(z.commAmt||0)+(a?' ('+commLabel(a)+')':'')+'</div></div>'+
+  '<div style="flex:1;min-width:0"><b>'+esc(z.name)+'</b><div class="tiny muted">Add-on · '+
+   (pe?'<span class="adedit">'+rm(z.price)+' <s>'+rm(list)+'</s></span> · ':'')+'commission to '+
+   esc(stf(z.staffId).name||'—')+' '+rm(z.commAmt||0)+(z.commManual?' <span class="adedit">custom</span>':a?' ('+commLabel(a)+')':'')+'</div></div>'+
   '<div class="qty sm"><button onclick="cartQty('+j+',-1)">−</button><span>'+z.qty+'</span><button onclick="cartQty('+j+',1)">+</button></div>'+
   '<b class="lnaddamt">'+rm(lineAmt(z))+'</b>'+
+  '<button class="iconbtn" style="padding:4px" onclick="addonEdit('+j+')" title="Price &amp; commission" aria-label="Edit add-on">'+ic('edit',13)+'</button>'+
   '<button class="iconbtn" style="padding:4px" onclick="addonWho('+j+')" title="Commission to">'+ic('user',13)+'</button>'+
   '<button class="iconbtn" style="padding:4px" onclick="dropItem('+j+')" aria-label="Remove">'+ic('close',13)+'</button></div>';
 }
+/* price and commission of one add-on on this bill only (the catalogue stays as it is) */
+let AEC='auto';
+window.addonEdit=j=>{
+ const z=cart.items[j];if(!z||z.kind!=='addon')return;
+ const a=addonOf(z.id)||{},list=+a.price||0;
+ const staff=handsOnStaff();
+ AEC=z.commManual?'rm':'auto';
+ modal('Add-on · '+z.name,'<div class="card">'+
+  (z.parentName?'<div class="tiny muted" style="margin:0 0 10px">On '+esc(z.parentName)+'</div>':'')+
+  '<div class="grid g2"><div><label>Price each (RM)'+(canPrice()?'':' <span class="muted">— manager only</span>')+'</label>'+
+   '<input class="f" type="number" step="0.01" min="0" id="ae-p" value="'+r2(z.price).toFixed(2)+'"'+(canPrice()?'':' disabled')+' oninput="aePrev('+j+')"></div>'+
+   '<div><label>Quantity</label><input class="f" type="number" min="1" id="ae-q" value="'+z.qty+'" oninput="aePrev('+j+')"></div></div>'+
+  '<div class="tiny muted" style="margin:-4px 0 10px">Catalogue price '+rm(list)+(canPrice()?' · <a href="javascript:void 0" onclick="document.getElementById(\'ae-p\').value=\''+
+   list.toFixed(2)+'\';aePrev('+j+')">use it</a>':'')+'</div>'+
+  '<label>Reason for the price'+(coRules().needNote?' <span class="muted">— needed when the price changes</span>':'')+'</label>'+
+  '<input class="f" id="ae-n" value="'+esc(z.discNote||'')+'" placeholder="e.g. Promo bundle, regular client" oninput="aePrev('+j+')">'+
+  '<label>Commission to</label><select class="f" id="ae-s" onchange="aePrev('+j+')">'+staff.map(s=>'<option value="'+esc(s.id)+'"'+(s.id===z.staffId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<label>Commission'+(canComm()?'':' <span class="muted">— manager only</span>')+'</label>'+
+  '<div class="seg" id="ae-ct">'+[['auto','Catalogue ('+commLabel(a)+')'],['rm','Custom RM']].map(o=>
+   '<button type="button" data-v="'+o[0]+'" class="'+(AEC===o[0]?'on':'')+'"'+(canComm()?'':' disabled')+' onclick="aeType('+j+',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  '<div id="ae-cw"'+(AEC==='rm'?'':' style="display:none"')+'><input class="f" type="number" step="0.01" min="0" id="ae-c" value="'+
+   (z.commManual?r2(z.commAmt).toFixed(2):'')+'" placeholder="Total commission for this line (RM)" oninput="aePrev('+j+')"'+(canComm()?'':' disabled')+'></div>'+
+  '<div class="fieldset" id="ae-pv" style="margin:6px 0 10px"></div>'+
+  '<div id="ae-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="ae-go" style="width:100%;justify-content:center" onclick="aeSave('+j+')">'+ic('check',16)+'Save add-on</button>'+
+  ((z.priceEdited||z.commManual)?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="aeReset('+j+')">'+
+   ic('refresh',14)+'Back to catalogue price and commission</button>':'')+'</div>',()=>window.aePrev(j));
+};
+window.aeType=(j,t)=>{AEC=t;const seg=document.getElementById('ae-ct');
+ if(seg)[...seg.querySelectorAll('button')].forEach(b=>b.className=b.dataset.v===t?'on':'');
+ const w=document.getElementById('ae-cw');if(w)w.style.display=t==='rm'?'':'none';window.aePrev(j);};
+function aeDraft(j){
+ const z=cart.items[j],g=id=>document.getElementById(id);
+ const d={...z,price:r2((g('ae-p')||{}).value),qty:Math.max(1,Math.round(+((g('ae-q')||{}).value)||1)),
+  staffId:(g('ae-s')||{}).value||z.staffId,discNote:String((g('ae-n')||{}).value||'').trim(),commManual:AEC==='rm'};
+ d.commRaw=String((g('ae-c')||{}).value||'').trim();
+ d.commAmt=d.commManual?r2(+d.commRaw||0):addonComm(addonOf(z.id),d);
+ return d;
+}
+function aeProblem(z,d){
+ const list=+((addonOf(z.id)||{}).price||0),changed=Math.abs(d.price-list)>0.004;
+ if(!(d.price>=0))return 'Enter a price.';
+ if(changed&&!canPrice())return 'Only a manager can change the price.';
+ if(changed&&coRules().needNote&&!d.discNote)return 'Add a short reason for the price.';
+ if(d.commManual&&!canComm())return 'Only a manager can change commission.';
+ if(d.commManual&&d.commRaw==='')return 'Enter the commission in RM.';
+ if(d.commManual&&d.commAmt>lineAmt(d)+0.004)return 'Commission cannot be more than the add-on itself ('+rm(lineAmt(d))+').';
+ return '';
+}
+window.aePrev=j=>{
+ const z=cart.items[j];if(!z)return;const d=aeDraft(j);
+ const pv=document.getElementById('ae-pv');
+ if(pv)pv.innerHTML='<table><tr><td>'+d.qty+' × '+rm(d.price)+'</td><td class="num"><b>'+rm(lineAmt(d))+'</b></td></tr>'+
+  '<tr><td class="muted">Commission to '+esc(stf(d.staffId).name||'')+(d.commManual?' (custom)':'')+'</td><td class="num muted">'+rm(d.commAmt)+'</td></tr></table>';
+ const e=document.getElementById('ae-e');if(e)e.textContent=aeProblem(z,d);
+};
+window.aeSave=j=>{
+ const z=cart.items[j];if(!z)return;const d=aeDraft(j),p=aeProblem(z,d);
+ if(p){const e=document.getElementById('ae-e');if(e)e.textContent=p;return;}
+ const list=+((addonOf(z.id)||{}).price||0);
+ Object.assign(z,{price:d.price,qty:d.qty,staffId:d.staffId,commManual:d.commManual,commAmt:d.commAmt});
+ z.priceEdited=Math.abs(z.price-list)>0.004;
+ if(z.priceEdited)z.discNote=d.discNote;else{delete z.priceEdited;delete z.discNote;}
+ if(!z.commManual)delete z.commManual;
+ window.closeModal();render();toast('Add-on updated');
+};
+window.aeReset=j=>{
+ const z=cart.items[j];if(!z)return;const a=addonOf(z.id)||{};
+ z.price=+a.price||0;['priceEdited','discNote','commManual'].forEach(k=>delete z[k]);
+ z.commAmt=addonComm(a,z);window.closeModal();render();toast('Add-on reset');
+};
 function addTiles(){
  const T=[['service','Treatment','spark'],['product','Product','stock'],['package','Package','package']];
  if((D.bundles||[]).some(b=>b.active!==false))T.push(['set','Set','gift']);
@@ -11265,7 +11511,7 @@ window.dropItem=x=>{const i=cart.items[x];if(!i)return;
 /* add-on quantities and commission follow the line */
 const cartQtyOrig=window.cartQty;
 window.cartQty=(x,d)=>{const i=cart.items[x];cartQtyOrig(x,d);
- if(i&&i.kind==='addon'&&cart.items.includes(i)){i.commAmt=addonComm(addonOf(i.id),i);render();}};
+ if(i&&i.kind==='addon'&&cart.items.includes(i)){if(!i.commManual)i.commAmt=addonComm(addonOf(i.id),i);render();}};
 
 /* ---------------- add-on picker for one line ---------------- */
 window.addonPick=x=>{
@@ -11293,7 +11539,7 @@ window.addonAdd=(x,id)=>{
  else{z={kind:'addon',id,name:a.name,price:+a.price||0,qty:1,staffId:who,parent:line.uid,parentName:line.name};uidOf(z);
   let at=x+1;while(cart.items[at]&&cart.items[at].kind==='addon'&&cart.items[at].parent===line.uid)at++;
   cart.items.splice(at,0,z);}
- z.commAmt=addonComm(a,z);LASTADD=z.uid;
+ if(!z.commManual)z.commAmt=addonComm(a,z);LASTADD=z.uid;
  flyToCart(document.getElementById('ad-'+id));
  const nb=document.getElementById('pk-n');if(nb)nb.textContent=cart.items.filter(q=>q.parent===line.uid).reduce((s,q)=>s+q.qty,0);
  const card=document.getElementById('ad-'+id);
@@ -12510,5 +12756,26 @@ function crmAlerts(al){
 window.crmTasksList=()=>crmTasks();
 window.crmState=()=>({LEADS,TICKETS,CAMPAIGNS,CRMTASKS});
 window.crmGo=v=>{CRMV=v;window.go('crm');if(v==='tasks')loadLapsed();};
+
+
+/* ================= Training mode screen ================= */
+function vDemo(){
+ const pts=[['calendar','Book, move and complete appointments'],['card','Ring up bills, add-ons, discounts, card and Atome payments'],
+  ['package','Sell and redeem packages, print the forms'],['target','Work leads, follow-ups and service cases in the CRM'],
+  ['users','Register clients and practise the client ID flow']];
+ return '<div class="card demohero'+(DEMO?' on':'')+'"><div class="demoic">'+ic('award',26)+'</div>'+
+  '<h2 style="margin:6px 0 4px">'+(DEMO?'You are in training mode':'Training mode')+'</h2>'+
+  '<p class="muted" style="margin:0 0 14px">'+(DEMO?'Everything you do now stays on this screen only. No bill, booking, client, stock or commission is written to the real records, and it all disappears when you leave.':
+   'A safe copy of the app for training new staff. It uses the real treatments, prices, packages and team, with made-up clients and bookings. Nothing done in training is saved.')+'</p>'+
+  '<div class="demolist">'+pts.map(x=>'<div>'+ic(x[0],15)+'<span>'+x[1]+'</span></div>').join('')+'</div>'+
+  (DEMO?'<div class="row wrap2" style="margin-top:14px"><button class="btn" onclick="demoReset()">'+ic('refresh',15)+'Start over with fresh demo data</button>'+
+    '<button class="btn ghost" onclick="demoExit()">'+ic('close',15)+'Exit training</button></div>':
+   '<button class="btn" style="margin-top:14px" onclick="demoStart()">'+ic('award',15)+'Start training mode</button>'+
+   '<p class="tiny muted" style="margin:10px 0 0">A yellow bar stays at the top the whole time. Bills made in training are numbered DEMO-… so they can never be mistaken for real ones.</p>')+
+  '</div>';
+}
+window.demoStart=()=>{if(confirm('Start training mode? The app will reload with demo data. Nothing you do in training is saved.'))demoSwitch(true);};
+window.demoExit=()=>{if(confirm('Leave training mode? Everything done in training will be thrown away.'))demoSwitch(false);};
+window.demoReset=()=>{if(confirm('Start over? The training data goes back to how it began.'))location.reload();};
 
 </script>
