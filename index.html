@@ -1467,6 +1467,15 @@ body.demo #root{box-shadow:inset 0 0 0 4px #F2C94C}
 .demohero{max-width:640px;margin:0 auto}.demohero .demoic{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--amber-soft);color:var(--amber)}
 .demohero.on .demoic{background:#F2C94C;color:#3A2A00}
 .demolist{display:grid;gap:8px}.demolist div{display:flex;gap:9px;align-items:center;font-size:13.5px;color:var(--ink-2)}
+
+/* ---------- package delete / day open-close names ---------- */
+.btn.danger{background:var(--rose);border-color:var(--rose);color:#fff}
+.pkdelbtn{margin:10px 0 0 0;display:flex;color:var(--rose)!important;border-color:var(--rose-soft)!important}
+details.pkdel summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none}
+details.pkdel summary b{display:inline-flex;gap:6px;align-items:center}
+.pkdelrow{padding:10px 0;border-top:1px solid var(--line-2);display:grid;gap:3px}.pkdelrow:first-of-type{margin-top:10px}
+.daywho{display:grid;gap:3px;margin-top:6px;font-size:12.5px;color:var(--ink-2)}
+.daywho span{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.daywho em{font-style:normal;color:var(--amber);font-size:11px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1724,7 +1733,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-22v';
+const BUILD='2026-09-23w';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2256,7 +2265,7 @@ function vHome(){
       return '<span class="hchip hol" onclick="pickDate(\''+up.d+'\');go(\'book\')">'+ic('flag',12)+esc(up.n)+' · '+
        (up.d===today()?'hari ini':n===1?'esok':'dalam '+n+' hari')+'</span>';})()+
      (SHIFT?'<span class="hchip'+(SHIFT.closedAt?'':' live')+'">'+ic('wallet',12)+
-      (SHIFT.closedAt?'day closed':'day open')+'</span>'
+      (SHIFT.closedAt?'day closed · '+esc(String(SHIFT.closedByName||'').split(' ')[0]):'day open · '+esc(String(SHIFT.openedByName||'').split(' ')[0]))+'</span>'
       :'<span class="hchip warn">'+ic('alert',12)+'day not opened</span>')+
     '</div></div>'+
    '<div class="heroInst" id="heroInst">'+
@@ -3318,6 +3327,7 @@ function vPkg(){
  h+='<div class="card"><div class="sec-h"><h2>Client packages</h2>'+
   '<button class="btn sm" onclick="sellPkg()">'+ic('plus',15)+'Sell</button></div>'+
   (HELD.length?HELD.map(p=>pkgRow(p,1)).join(''):'<div class="empty">No packages sold yet.</div>')+'</div>';
+ h+=pkgDeletedCard();
  h+='<div class="card"><h2 style="margin-bottom:10px">Catalogue</h2>'+D.packages.map(p=>{
   const val=(p.items||[]).reduce((a,i)=>a+svc(i.serviceId).price*i.n,0);
   return '<div class="item" style="cursor:default"><div class="spread"><b>'+esc(p.name)+'</b><span>'+rm(p.price)+'</span></div>'+
@@ -10041,6 +10051,8 @@ function dailyReportBody(d,shift){
 
  sec(3,'Cash reconciliation',
   shift?'<table class="rt">'+
+   '<tr><td>Day opened by</td><td class="n">'+esc(shift.openedByName||'—')+' · '+tstr(shift.openedAt)+'</td></tr>'+
+   (shift.closedAt?'<tr><td>Day closed by</td><td class="n">'+esc(shift.closedByName||'—')+' · '+tstr(shift.closedAt)+'</td></tr>':'')+
    '<tr><td>Opening float</td><td class="n">'+money(shift.openingFloat||0)+'</td></tr>'+
    '<tr><td>Cash takings</td><td class="n">'+money(f.cash)+'</td></tr>'+
    '<tr><td>Paid out of the drawer</td><td class="n">('+money(expTot)+')</td></tr>'+
@@ -10866,9 +10878,10 @@ function shiftHeader(){
   (closed?'var(--ink-3)':'var(--jade)')+'">'+
   '<div class="spread"><b>'+(closed?'Day closed':'Day open')+'</b>'+
   '<span class="pill '+(closed?'':'g')+'">'+dstr(today())+'</span></div>'+
-  '<div class="tiny muted" style="margin-top:4px">Opened '+tstr(SHIFT.openedAt)+' by '+
-  esc(SHIFT.openedByName||'')+' · float '+rm(SHIFT.openingFloat||0)+
-  (closed?'<br>Closed '+tstr(SHIFT.closedAt)+' by '+esc(SHIFT.closedByName||''):'')+'</div></div>';}
+  '<div class="daywho"><span>'+ic('login',13)+'Opened by <b>'+esc(SHIFT.openedByName||'—')+'</b> · '+tstr(SHIFT.openedAt)+
+   (SHIFT.openedVerified===false?' <em>no code</em>':'')+' · float '+rm(SHIFT.openingFloat||0)+'</span>'+
+  (closed?'<span>'+ic('out',13)+'Closed by <b>'+esc(SHIFT.closedByName||'—')+'</b> · '+tstr(SHIFT.closedAt)+
+   (SHIFT.closedVerified===false?' <em>no code</em>':'')+'</span>':'')+'</div></div>';}
 window.openShift=()=>{
  modal('Open the day','<div class="card">'+
   '<label>Opening cash float (RM)</label>'+
@@ -11025,25 +11038,28 @@ window.closeShift=()=>{
    '" style="font-size:22px;text-align:center" oninput="cshDiff('+expect+')">'+
   '<div id="cs-d" class="tiny" style="text-align:center;margin-bottom:11px"></div>'+
   '<label>Notes on the day</label><textarea class="f" id="cs-n" rows="3" '+
-   'placeholder="Anything the owner should know tomorrow"></textarea>'+
+   'placeholder="Anything the owner should know tomorrow"></textarea>'+dayWhoHTML('cs','Closed by')+
+  '<div id="cs-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="cs-go">'+ic('check',16)+
   'Close the day</button>'+
   '<p class="tiny muted" style="margin-top:9px">Once closed the figures are locked for the day. '+
   'A difference is not an accusation — record it honestly so patterns can be spotted.</p></div>',
- ()=>{window.cshDiff(expect);
+ ()=>{window.cshDiff(expect);window.dayWhoPaint('cs');
   $('#cs-go').onclick=async()=>{
-   const counted=+$('#cs-c').value||0;
+   const counted=+$('#cs-c').value||0;let who;
+   try{who=await dayWho('cs');}catch(err){$('#cs-e').textContent=err.message;return;}
+   $('#cs-go').disabled=true;
    try{await updateDoc(doc(db,'shifts',shiftId()),{closedAt:new Date().toISOString(),
-     closedBy:UID,closedByName:ME.name,countedCash:counted,expectedCash:expect,
+     closedBy:UID,closedById:who.id,closedByName:who.name,closedVerified:who.verified,closedOnAccount:ME.name,countedCash:counted,expectedCash:expect,
      variance:counted-expect,closeNote:$('#cs-n').value||'',
      revenue:f.revenue,bills:f.bills,cashTaken:f.cash,paidOut:expTotal(),
      showed:f.showed,booked:f.booked,noShow:f.noShow});
     await loadShift();
-    logEvent('day','Day closed · '+rm(f.revenue)+' taken',f.bills+' bills · counted '+rm(counted)+
+    logEvent('day','Day closed by '+who.name+' · '+rm(f.revenue)+' taken',f.bills+' bills · counted '+rm(counted)+
      ' · difference '+rm(counted-expect),{refType:'shift',urgent:Math.abs(counted-expect)>20});
-    await audit('Day closed','Counted '+rm(counted)+', difference '+rm(counted-expect));
-    window.closeModal();render();toast('Day closed');}
-   catch(e){toast(friendly(e));}};});};
+    await audit('Day closed','By '+who.name+(who.verified?'':' (no code)')+' · counted '+rm(counted)+', difference '+rm(counted-expect));
+    window.closeModal();render();toast('Day closed by '+who.name);}
+   catch(e){$('#cs-e').textContent=friendly(e);$('#cs-go').disabled=false;}};});};
 window.cshDiff=expect=>{
  const el=$('#cs-d');if(!el)return;
  const d=(+($('#cs-c')||{}).value||0)-expect;
@@ -12777,5 +12793,131 @@ function vDemo(){
 window.demoStart=()=>{if(confirm('Start training mode? The app will reload with demo data. Nothing you do in training is saved.'))demoSwitch(true);};
 window.demoExit=()=>{if(confirm('Leave training mode? Everything done in training will be thrown away.'))demoSwitch(false);};
 window.demoReset=()=>{if(confirm('Start over? The training data goes back to how it began.'))location.reload();};
+
+
+/* ================= owner: delete a client's package, with the reason kept ================= */
+/* The package record is removed so it no longer shows as sessions owed, but a full copy of
+   it, the reason and who removed it are kept in pkgDeleted (and the audit trail), so the
+   owner can always see what was deleted and why. The bill that sold it is not touched. */
+const isOwnerMe=()=>!!ME&&ME.role==='owner'&&ME.active!==false;
+const PKGDEL_REASONS=['Sold by mistake','Wrong package chosen','Duplicate record','Refunded to the client','Client cancelled','Transferred to another client','Other'];
+let PKGDEL=null;
+async function loadPkgDeleted(force){
+ if(!boss()||(PKGDEL&&!force))return;
+ try{const s=await getDocs(query(collection(db,'pkgDeleted'),limit(300)));
+  PKGDEL=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.branchId||x.branchId===ME.branchId)
+   .sort((a,b)=>String(b.deletedAt).localeCompare(String(a.deletedAt)));}
+ catch(e){PKGDEL=[];console.warn('deleted packages',e);}
+ if(TAB==='pkg')render();
+}
+function pkgDeletedCard(){
+ if(!boss())return '';
+ if(PKGDEL===null){setTimeout(()=>loadPkgDeleted(),0);return '';}
+ if(!PKGDEL.length)return '';
+ return '<div class="card"><details class="pkdel"><summary><b>'+ic('trash',14)+' Deleted packages</b><span class="pill">'+PKGDEL.length+'</span></summary>'+
+  PKGDEL.map(x=>'<div class="pkdelrow"><div class="spread"><b>'+esc(x.customerName||'')+' · '+esc(x.pkgName||'')+'</b><span class="tiny muted">'+rm(x.price||0)+'</span></div>'+
+   '<div class="tiny muted">'+(x.left!=null?x.left+' of '+x.total+' sessions left · ':'')+'sold '+dstr(x.soldAt)+(x.invoiceNo?' · '+esc(x.invoiceNo):'')+'</div>'+
+   '<div class="tiny"><span class="pill r">'+esc(x.reason||'')+'</span> '+esc(x.note||'')+'</div>'+
+   '<div class="tiny muted">Deleted by '+esc(x.deletedByName||'')+' · '+dstr(x.deletedAt)+' '+tstr(x.deletedAt)+'</div></div>').join('')+
+  '</details></div>';
+}
+const pkgDetailBase=window.pkgDetail;
+window.pkgDetail=id=>{
+ pkgDetailBase(id);
+ if(!isOwnerMe())return;
+ const card=document.querySelector('#modal .card');if(!card)return;
+ const b=document.createElement('button');b.className='btn sm ghost pkdelbtn';b.id='pk-del';
+ b.innerHTML=ic('trash',14)+'Delete package';b.onclick=()=>window.pkgDelete(id);
+ card.appendChild(b);
+};
+window.pkgDelete=id=>{
+ if(!isOwnerMe()){toast('Only the owner can delete a package.');return;}
+ const cp=HELD.find(x=>x.id===id);if(!cp)return;
+ const tot=(cp.balances||[]).reduce((a,b)=>a+(+b.total||0),0),left=(cp.balances||[]).reduce((a,b)=>a+(+b.left||0),0);
+ modal('Delete package','<div class="card">'+
+  '<div class="warnbox">'+ic('alert',14)+' <b>'+esc(cp.customerName||'')+' · '+esc(cpName(cp))+'</b><br>'+
+   rm(cp.price||0)+' · sold '+dstr(cp.soldAt)+' · '+(tot-left)+' used, '+left+' of '+tot+' sessions left</div>'+
+  '<label>Reason *</label><select class="f" id="pd-r"><option value="">— choose —</option>'+PKGDEL_REASONS.map(r=>'<option>'+esc(r)+'</option>').join('')+'</select>'+
+  '<label>Details *</label><textarea class="f" id="pd-n" rows="3" placeholder="What happened, who approved it, refund reference if any"></textarea>'+
+  '<p class="tiny muted" style="margin:0 0 10px">The client will no longer have these sessions. The bill that sold the package stays as it is — '+
+   'if money is going back to the client, void or refund that bill separately in Checkout. A copy of this package and your reason are kept under '+
+   '<b>Packages → Deleted packages</b> and in the audit trail.</p>'+
+  '<label class="row" style="gap:8px;align-items:flex-start"><input type="checkbox" id="pd-ok"> <span class="tiny">I understand the package is removed from the client and cannot be restored.</span></label>'+
+  '<div id="pd-e" class="tiny" style="color:var(--rose);margin:8px 0"></div>'+
+  '<button class="btn danger" id="pd-go" style="width:100%;justify-content:center" onclick="pkgDeleteGo(\''+id+'\')">'+ic('trash',16)+'Delete package</button></div>');
+};
+window.pkgDeleteGo=async id=>{
+ const cp=HELD.find(x=>x.id===id),e=$('#pd-e');if(!cp)return;
+ const reason=$('#pd-r').value,note=$('#pd-n').value.trim();
+ if(!reason){e.textContent='Choose the reason.';return;}
+ if(note.length<5){e.textContent='Write a short explanation (at least a few words).';return;}
+ if(!$('#pd-ok').checked){e.textContent='Tick the box to confirm.';return;}
+ const tot=(cp.balances||[]).reduce((a,b)=>a+(+b.total||0),0),left=(cp.balances||[]).reduce((a,b)=>a+(+b.left||0),0);
+ const {id:_i,...copy}=cp;
+ const rec={cpId:id,customerId:cp.customerId||'',customerName:cp.customerName||'',pkgName:cpName(cp),price:+cp.price||0,
+  total:tot,left,soldAt:cp.soldAt||'',invoiceNo:cp.invoiceNo||'',saleId:cp.saleId||'',branchId:cp.branchId||ME.branchId,
+  reason,note:note.slice(0,500),deletedBy:UID,deletedByName:ME.name,deletedAt:new Date().toISOString(),snapshot:JSON.parse(JSON.stringify(copy))};
+ $('#pd-go').disabled=true;
+ try{
+  await setDoc(doc(db,'pkgDeleted',id),rec);
+  await deleteDoc(doc(db,'customerPackages',id));
+  HELD=HELD.filter(x=>x.id!==id);
+  if(PKGDEL)PKGDEL.unshift({id,...rec});
+  await audit('Package deleted',rec.customerName+' — '+rec.pkgName+' ('+left+'/'+tot+' left, '+rm(rec.price)+') · '+reason+': '+rec.note);
+  window.closeModal();render();toast('Package deleted');
+ }catch(err){e.textContent=friendly(err);$('#pd-go').disabled=false;}
+};
+
+/* ================= who opened and who closed the day ================= */
+/* On a shared counter tablet the signed-in account is the branch, so the person has to be
+   named. They confirm with their attendance code, the same way a cashier does. */
+function dayWhoHTML(pre,label){
+ const list=people();
+ const def=isBranch()?(cashierValid()?CASHIER.id:''):UID;
+ return '<label>'+label+' *</label><select class="f" id="'+pre+'-w" onchange="dayWhoPaint(\''+pre+'\')"><option value="">— choose —</option>'+
+  list.map(s=>'<option value="'+esc(s.id)+'"'+(s.id===def?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<div id="'+pre+'-cw"></div>';
+}
+window.dayWhoPaint=pre=>{
+ const sid=($('#'+pre+'-w')||{}).value,box=document.getElementById(pre+'-cw');if(!box)return;
+ const s=sid?stf(sid):null;
+ const needCode=s&&s.attCode&&!(sid===UID&&!isBranch());
+ box.innerHTML=needCode?'<input class="f" id="'+pre+'-code" type="password" inputmode="numeric" autocomplete="off" placeholder="'+esc(s.name.split(' ')[0])+'\'s attendance code" style="letter-spacing:.3em;text-align:center">':
+  (s&&!s.attCode&&!(sid===UID&&!isBranch())?'<div class="tiny muted" style="margin:-4px 0 10px">'+esc(s.name)+' has no attendance code yet, so this is recorded without a check.</div>':'');
+};
+async function dayWho(pre){
+ const sid=($('#'+pre+'-w')||{}).value;
+ if(!sid)throw new Error('Choose who is doing this.');
+ const s=stf(sid);if(!s||!s.id)throw new Error('Choose who is doing this.');
+ let verified=sid===UID&&!isBranch();
+ if(!verified&&s.attCode){
+  const code=String(($('#'+pre+'-code')||{}).value||'').trim();
+  if(!code)throw new Error('Enter '+s.name.split(' ')[0]+'\'s attendance code.');
+  if(await hashCode(code,s.attSalt||'')!==s.attCode)throw new Error('That code does not match.');
+  verified=true;}
+ return {id:sid,name:s.name,verified};
+}
+window.openShift=()=>{
+ modal('Open the day','<div class="card">'+dayWhoHTML('os','Opened by')+
+  '<label>Opening cash float (RM)</label>'+
+  '<input class="f" type="number" step="0.01" id="os-f" value="0" style="font-size:20px;text-align:center">'+
+  '<label>Note <span class="muted">— optional</span></label>'+
+  '<input class="f" id="os-n" placeholder="Counted with Nurul">'+
+  '<div id="os-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="os-go">'+ic('login',16)+'Open the day</button>'+
+  '<p class="tiny muted" style="margin-top:9px">The float is the cash already in the drawer before '+
+  'trading starts. Closing compares it against takings and anything paid out.</p></div>',
+ ()=>{window.dayWhoPaint('os');$('#os-go').onclick=async()=>{
+  const e=$('#os-e');let who;
+  try{who=await dayWho('os');}catch(err){e.textContent=err.message;return;}
+  $('#os-go').disabled=true;
+  const data={branchId:ME.branchId,date:today(),openingFloat:+$('#os-f').value||0,
+   openNote:$('#os-n').value||'',openedAt:new Date().toISOString(),openedBy:UID,
+   openedById:who.id,openedByName:who.name,openedVerified:who.verified,openedOnAccount:ME.name,
+   expenses:[],issues:[],closedAt:''};
+  try{await setDoc(doc(db,'shifts',shiftId()),data,{merge:true});
+   await loadShift();logEvent('day','Day opened by '+who.name,'Float '+rm(data.openingFloat)+' · '+branch().name,{refType:'shift'});
+   await audit('Day opened','By '+who.name+(who.verified?'':' (no code)')+' · float '+rm(data.openingFloat));
+   window.closeModal();render();toast('Day opened by '+who.name);}catch(err){e.textContent=friendly(err);$('#os-go').disabled=false;}};});};
 
 </script>
