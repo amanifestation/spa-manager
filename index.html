@@ -1744,7 +1744,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-23x';
+const BUILD='2026-09-23y';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -11217,6 +11217,7 @@ window.render=render;
    watchEvents();
    watchReviews();
    watchSync();
+   watchLive();
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm()]);
    render();
    if(TAB==='rep')buildReport();
@@ -12970,7 +12971,7 @@ window.syncSheet=()=>{
  const mins=Math.round((Date.now()-LASTSYNC)/6e4);
  modal('Data refresh','<div class="card">'+
   '<div class="syncinfo">'+ic('refresh',16)+'<div><b>Last refreshed '+(mins<1?'just now':mins+' min ago')+'</b>'+
-   '<small>'+(navigator.onLine===false?'This device is offline — changes will sync when it reconnects.':'Online · bookings, alerts and leads update live; this reloads everything else.')+'</small></div></div>'+
+   '<small>'+(navigator.onLine===false?'This device is offline — changes will sync when it reconnects.':'Online · bookings, bills, packages, stock, the day, attendance, new clients and leads update live by themselves. This reloads everything else (prices, catalogue, team, settings).')+'</small></div></div>'+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="closeModal();dataRefresh()">'+ic('refresh',16)+'Refresh this device</button>'+
   (boss()&&!DEMO?'<button class="btn ghost" id="sy-all" style="width:100%;justify-content:center;margin-top:8px" onclick="syncAll()">'+ic('users',16)+'Refresh all devices</button>'+
    '<p class="tiny muted" style="margin:8px 0 0">Use after changing prices, packages, staff or settings. Every open device reloads within seconds; '+
@@ -13011,5 +13012,101 @@ function watchSync(){
   },e=>console.warn('sync watch',e)));
  }catch(e){console.warn('sync watch',e);}
 }
+
+
+/* ================= Live data: bills, packages, stock, the day, attendance, new clients ================= */
+/* Like the calendar, these now follow the database as it changes: a bill paid at one
+   counter shows in the other device's bill list and Day figures within a second or two,
+   a session redeemed on one tablet lowers the balance on every other screen, and so on.
+   The screen is redrawn only when nobody is in the middle of something — with a form or
+   sheet open, or while typing, the update waits and is applied the moment it is closed. */
+let LIVESUBS=[],LIVEPEND=false,LIVET=0,LIVEDAY='';
+const liveTabs=new Set();
+function liveBusy(){
+ if(document.querySelector('#modal .sheet'))return true;
+ const a=document.activeElement;
+ return !!(a&&a.closest&&a.closest('#root')&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
+}
+function liveRender(tabs){
+ (tabs||[]).forEach(t=>liveTabs.add(t));
+ clearTimeout(LIVET);
+ LIVET=setTimeout(()=>{
+  const hit=liveTabs.has(TAB);liveTabs.clear();
+  if(!hit){try{window.paintBotNav();}catch(e){}return;}
+  if(liveBusy()){LIVEPEND=true;return;}
+  LIVEPEND=false;render();
+ },250);
+}
+function liveFlush(){if(LIVEPEND&&!liveBusy()){LIVEPEND=false;render();}}
+const liveCloseBase=window.closeModal;
+window.closeModal=(...a)=>{const r=liveCloseBase(...a);if(LIVEPEND)setTimeout(liveFlush,60);return r;};
+document.addEventListener('focusout',()=>{if(LIVEPEND)setTimeout(liveFlush,400);});
+const liveMerge=(arr,docs,keep)=>{
+ const m=new Map(arr.map(x=>[x.id,x]));
+ docs.forEach(d=>m.set(d.id,d));
+ return [...m.values()].filter(x=>!keep||keep(x));
+};
+/* each listener only acts when what it watches really changed */
+function liveKey(s){
+ try{if(s&&s.docs)return JSON.stringify(s.docs.map(d=>[d.id,d.data()]));
+  return JSON.stringify(s&&s.exists&&s.exists()?s.data():null);}catch(e){return String(Math.random());}
+}
+function liveOn(q,fn,label){
+ let last=null;
+ try{const u=onSnapshot(q,s=>{const k=liveKey(s);if(k===last)return;last=k;
+   try{fn(s);}catch(e){console.warn('live '+label,e);}},e=>console.warn('live '+label,e));
+  LIVESUBS.push(u);unsub.push(u);}
+ catch(e){console.warn('live '+label,e);}
+}
+function watchLive(){
+ LIVESUBS.forEach(u=>{try{u();}catch(e){}});LIVESUBS=[];
+ LIVEDAY=today();
+ const from=ymd(addDays(new Date(),-2));
+ /* bills of the last few days, merged into what was loaded at start */
+ liveOn(query(collection(db,'sales'),where('date','>=',from)),s=>{
+  const fresh=s.docs.map(d=>({id:d.id,...d.data()}));
+  const gone=new Set((s.docChanges?s.docChanges():[]).filter(c=>c.type==='removed').map(c=>c.doc.id));
+  SALES=liveMerge(SALES,fresh,x=>!gone.has(x.id)).sort((a,b)=>String(b.at||b.date).localeCompare(String(a.at||a.date)));
+  liveRender(['home','pos','shift']);
+ },'sales');
+ /* instalments paid today on older bills */
+ liveOn(query(collection(db,'sales'),where('lastPaidDate','>=',from)),s=>{
+  SALES=liveMerge(SALES,s.docs.map(d=>({id:d.id,...d.data()})));liveRender(['home','pos','shift']);
+ },'instalments');
+ /* clients' packages and their balances */
+ liveOn(query(collection(db,'customerPackages'),limit(500)),s=>{
+  HELD=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.expiry).localeCompare(String(b.expiry)));
+  liveRender(['pkg','pos','home','cust']);
+ },'packages');
+ /* stock levels */
+ liveOn(collection(db,'stock'),s=>{
+  D.stock=s.docs.map(d=>({id:d.id,...d.data()}));liveRender(['inv','pos','home']);
+ },'stock');
+ /* today's shift: open, cash paid out, close */
+ liveOn(doc(db,'shifts',shiftId()),s=>{
+  let d=null;
+  if(s&&typeof s.data==='function'&&!s.docs)d=s.exists()?{id:s.id,...s.data()}:null;
+  else if(s&&s.docs){const x=s.docs.find(z=>z.id===shiftId());d=x?{id:x.id,...x.data()}:null;}
+  SHIFT=d;liveRender(['shift','home','pos']);
+ },'shift');
+ /* who is clocked in today */
+ liveOn(query(collection(db,'attendance'),where('date','==',today())),s=>{
+  const td=today(),fresh=s.docs.map(d=>({id:d.id,...d.data()}));
+  const ids=new Set(fresh.map(x=>x.id));
+  ATT=[...fresh,...ATT.filter(a=>a.date!==td&&!ids.has(a.id))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  liveRender(['home','team','shift','pos']);
+ },'attendance');
+ /* newly registered or edited clients */
+ liveOn(query(collection(db,'customers'),orderBy('createdAt','desc'),limit(30)),s=>{
+  const fresh=s.docs.map(d=>({id:d.id,...d.data()}));
+  const have=new Set(CUSTS.map(c=>c.id));
+  const added=fresh.filter(c=>!have.has(c.id));
+  CUSTS=CUSTS.map(c=>fresh.find(f=>f.id===c.id)||c);
+  if(added.length)CUSTS=[...added,...CUSTS];
+  liveRender(['cust','pos','home']);
+ },'customers');
+}
+/* a new day needs the new day's shift and attendance */
+setInterval(()=>{if(ME&&LIVEDAY&&today()!==LIVEDAY)watchLive();},60000);
 
 </script>
