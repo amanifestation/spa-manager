@@ -1531,6 +1531,19 @@ body.demo .syncbar{top:106px}
 .finexpbtn{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;color:var(--ink)}
 .finexpbtn b{display:flex;gap:6px;align-items:center;font-size:13px}.finexpbtn small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
 .acrow{display:flex;gap:12px;padding:6px 2px;border-bottom:1px solid var(--line-2);font-size:13px}.acrow code{min-width:44px;color:var(--brass);font-weight:600}
+.pltbl td,.pltbl th{white-space:nowrap}.pltbl td:first-child{white-space:normal}
+@media (max-width:620px){.pltbl .plb{display:none}.pltbl td,.pltbl th{font-size:12.5px;padding-left:4px;padding-right:4px}.plc{display:block;margin:0}}.pltbl .plsec td{font-weight:650;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:14px}
+.pltbl .pltot td{font-weight:600;border-top:1px solid var(--line)}.pltbl .plbig td{font-weight:700;background:var(--surface-2);border-top:2px solid var(--line)}
+.plc{color:var(--brass);font-size:11px;font-weight:600;margin-right:6px}.neg{color:var(--rose)}
+.pltrend{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;margin:6px 0 10px}
+.pltm{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;min-width:0}.pltm small{color:var(--ink-3)}.pltm b{white-space:nowrap}
+.plbars{height:110px;display:flex;align-items:flex-end;gap:3px;width:100%;justify-content:center}.plbars i{display:block;width:38%;max-width:22px;border-radius:5px 5px 0 0;min-height:2px}
+.plbars i.r,.lg.r{background:var(--brass)}.plbars i.c,.lg.c{background:var(--ink-3)}
+.lg{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 4px 0 10px;vertical-align:-1px}.lg:first-child{margin-left:0}
+.balrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-2)}.balrow>div{flex:1;min-width:0}
+.balmeta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:4px}
+.balrow small{display:block;font-size:11.5px;color:var(--ink-3)}.balmv{font-size:12px;color:var(--ink-3);white-space:nowrap}
+.obrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}.obrow span{flex:1;min-width:0}.obrow code{color:var(--brass);font-weight:600;margin-right:4px}.obrow input{max-width:130px;margin:0}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1788,7 +1801,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25a';
+const BUILD='2026-09-25b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14199,16 +14212,28 @@ const COA=[
  ['2000','Supplier bills to pay','liability'],['2100','Unredeemed packages','liability'],['2200','Client deposits','liability'],
  ['2300','KWSP payable','liability'],['2310','PERKESO payable','liability'],['2320','SIP payable','liability'],['2330','PCB payable','liability'],
  ['2500','SST payable','liability'],['3000','Owner capital','equity'],['3100','Owner drawings','equity'],
- ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package sales','revenue'],['4030','Add-on revenue','revenue'],
+ ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],
  ['5000','Cost of products used / sold','expense'],['5100','Salaries & wages','expense'],['5110','Commission','expense'],['5120','KWSP — employer','expense'],
  ['5130','PERKESO & SIP — employer','expense'],['5140','Staff welfare & claims','expense'],
  ['6000','Rent','expense'],['6010','Electricity & water','expense'],['6020','Internet & phone','expense'],['6030','Marketing & advertising','expense'],
  ['6040','Supplies & consumables','expense'],['6050','Repairs & maintenance','expense'],['6060','Cleaning & laundry','expense'],['6070','Licences, permits & fees','expense'],
  ['6080','Bank & payment fees','expense'],['6090','Software & subscriptions','expense'],['6100','Transport & parking','expense'],['6110','Insurance','expense'],
  ['6120','Accounting & legal','expense'],['6130','Training','expense'],['6190','Miscellaneous','expense']];
-let FINSET=null,EXPENSES=null,RECUR=null,FINV='',FINM='',FINSHIFTS={};
+let FINSET=null,EXPENSES=null,RECUR=null,TRANSFERS=null,FINV='',FINM='',FINSHIFTS={};
 const coa=()=>[...COA,...(((FINSET||{}).accounts)||[]).map(a=>[a.code,a.name,a.type||'expense'])];
 const acName=c=>(coa().find(a=>a[0]===c)||[c,c])[1];
+const acType=c=>(coa().find(a=>a[0]===c)||[])[2]||'';
+/* how the books are kept (finance settings): packages become revenue as sessions are used, from the month this
+   started; the cost of products comes from their cost prices unless the owner chooses to count purchases as cost */
+const pkgDefer=()=>(FINSET||{}).pkgDefer!==false;
+const pkgFrom=()=>(FINSET||{}).pkgFrom||today().slice(0,8)+'01';
+const cogsAuto=()=>(FINSET||{}).cogs!=='purchase';
+const depAcct=()=>(FINSET||{}).depAcct||'1010';
+const unitCost=sku=>{const p=prod(sku);return (+p.cost||0)/(+p.size||1);};
+const cpTot=cp=>(cp.balances||[]).reduce((t,b)=>t+(+b.total||0),0);
+const cpLeft=cp=>(cp.balances||[]).reduce((t,b)=>t+(+b.left||0),0);
+const cpSold=cp=>String(cp.soldAt||'').slice(0,10);
+const cpBooked=cp=>pkgDefer()&&cpSold(cp)>=pkgFrom();
 /* what an expense can be booked to: the costs, stock and equipment bought, and paying what is owed */
 const EXP_ACCTS=()=>[...coa().filter(a=>a[2]==='expense'&&!['5000','5100','5110','5120','5130'].includes(a[0])),
  ['1200','Stock purchase (products)','asset'],['1500','Equipment & renovation','asset'],['2300','Pay KWSP','liability'],['2310','Pay PERKESO','liability'],
@@ -14225,7 +14250,12 @@ async function finLoad(force){
  if(EXPENSES===null||force)jobs.push(getDocs(query(collection(db,'expenses'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>{
   EXPENSES=s.docs.map(d=>({id:d.id,...d.data()})).filter(myBranch).sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.createdAt).localeCompare(String(a.createdAt)));}).catch(e=>{EXPENSES=[];console.warn('expenses',e);}));
  if(RECUR===null||force)jobs.push(getDocs(collection(db,'recurring')).then(s=>{RECUR=s.docs.map(d=>({id:d.id,...d.data()})).filter(myBranch);}).catch(()=>{RECUR=[];}));
+ if(TRANSFERS===null||force)jobs.push(getDocs(query(collection(db,'transfers'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>{
+  TRANSFERS=s.docs.map(d=>({id:d.id,...d.data()})).filter(myBranch).sort((a,b)=>String(b.date).localeCompare(String(a.date)));}).catch(e=>{TRANSFERS=[];console.warn('transfers',e);}));
  await Promise.all(jobs);
+ /* the month package deferral starts is fixed the first time the owner opens Finance, so it never drifts */
+ if(isOwnerMe()&&FINSET&&!FINSET.pkgFrom){const pf=today().slice(0,8)+'01';FINSET.pkgFrom=pf;
+  setDoc(doc(db,'finance','settings'),{pkgFrom:pf},{merge:true}).catch(e=>console.warn('pkgFrom',e));}
  await recurRun();
  if(['fin','home'].includes(TAB))render();
 }
@@ -14252,9 +14282,10 @@ function vFin(){
  if(EXPENSES===null)setTimeout(()=>finLoad(),0);
  if(!FINM)FINM=today().slice(0,7);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
- const tabs=[['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['coa','Accounts','list','']];
- if(!tabs.some(t=>t[0]===FINV))FINV='exp';
- const V={exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
+  ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['coa','Accounts & settings','list','']];
+ if(!tabs.some(t=>t[0]===FINV))FINV='pl';
+ const V={pl:finPL,bal:finBal,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -14424,14 +14455,18 @@ async function finJournalOf(m){
  const qp=await getDocs(query(collection(db,'sales'),where('lastPaidDate','>=',from)));
  const older=qp.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===ME.branchId&&s.date<from);
  sales.forEach(s=>{
-  const cat={'4000':0,'4010':0,'4020':0,'4030':0};
-  (s.items||[]).forEach(i=>{const a=lineAmt(i);if(i.kind==='addon')cat['4030']+=a;else if(retailKind(i.kind))cat['4010']+=a;else if(i.kind==='package')cat['4020']+=a;else if(i.kind!=='redeem')cat['4000']+=a;});
+  /* packages and treatments paid now for later are held as Unredeemed packages until used */
+  const cat={'4000':0,'4010':0,'4020':0,'4030':0,'2100':0},hold=pkgDefer()&&s.date>=pkgFrom();
+  (s.items||[]).forEach(i=>{const a=lineAmt(i);if(i.kind==='addon')cat['4030']+=a;else if(retailKind(i.kind))cat['4010']+=a;
+   else if(i.kind==='package')cat[hold?'2100':'4020']+=a;else if(i.kind==='service'&&i.later)cat[hold?'2100':'4000']+=a;else if(i.kind!=='redeem')cat['4000']+=a;});
   const gross=Object.values(cat).reduce((t,v)=>t+v,0),sst=+s.sst||0,net=r2((+s.total||0)-sst);
   const k=gross?net/gross:0,lines=[['1100',+s.total||0,0]];let left=net;
   const keys=Object.keys(cat).filter(c=>cat[c]>0);keys.forEach((c,i)=>{const v=i===keys.length-1?r2(left):r2(cat[c]*k);left=r2(left-v);lines.push([c,0,v]);});
   if(!keys.length&&net)lines.push(['4000',0,net]);
   if(sst)lines.push(['2500',0,sst]);
   add(s.date,s.invoiceNo||s.id,'sale:'+s.id,'Bill '+(s.invoiceNo||'')+(s.customerName?' · '+s.customerName:''),lines);
+  /* what the products sold and used on this bill cost, at their cost price */
+  if(cogsAuto()){const c=r2(saleCost(s));if(c>0)add(s.date,s.invoiceNo||s.id,'cogs:'+s.id,'Cost of products · '+(s.invoiceNo||''),[['5000',c,0],['1200',0,c]]);}
  });
  [...sales,...older].forEach(s=>{
   const pays=(s.payments||[]).map(p=>({...p,date:p.date||s.date}));
@@ -14448,14 +14483,16 @@ async function finJournalOf(m){
   const bd=e.date,pd=e.paidAt||e.date;
   const onBill=bd>=from&&bd<=to,onPay=e.status==='paid'&&pd>=from&&pd<=to;
   const label=(e.supplier||'')+(e.desc?' · '+e.desc:'');
-  if(e.status==='paid'&&(!e.dueDate||pd===bd)){if(onPay)add(pd,e.ref||e.id,'exp:'+e.id,label,[[e.account,e.amount,0],[e.paidFrom||'1010',0,e.amount]]);return;}
-  if(onBill)add(bd,e.ref||e.id,'bill:'+e.id,label,[[e.account,e.amount,0],['2000',0,e.amount]]);
+  const ac=(!cogsAuto()&&e.account==='1200')?'5000':e.account;
+  if(e.status==='paid'&&(!e.dueDate||pd===bd)){if(onPay)add(pd,e.ref||e.id,'exp:'+e.id,label,[[ac,e.amount,0],[e.paidFrom||'1010',0,e.amount]]);return;}
+  if(onBill)add(bd,e.ref||e.id,'bill:'+e.id,label,[[ac,e.amount,0],['2000',0,e.amount]]);
   if(onPay)add(pd,e.payRef||e.ref||e.id,'billpay:'+e.id,'Paid · '+label,[['2000',e.amount,0],[e.paidFrom||'1010',0,e.amount]]);
  });
  /* drawer paid-outs and claims */
  if(FINSHIFTS[m]==null){try{const s=await getDocs(query(collection(db,'shifts'),where('date','>=',from),where('date','<=',to)));FINSHIFTS[m]=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.branchId===ME.branchId);}catch(e){FINSHIFTS[m]=[];}}
  finAuto(m).forEach(a=>{if(a.account==='4000')add(a.date,a.id,a.id,'Refund from drawer · '+a.desc,[['4000',a.amount,0],[a.paidFrom,0,a.amount]]);
   else add(a.date,a.id,a.id,a.src+' · '+a.desc,[[a.account,a.amount,0],[a.paidFrom,0,a.amount]]);});
+ await finJournalB(m,add);
  /* payroll, once locked (owner only) */
  if(isOwnerMe()){try{const s=await getDoc(doc(db,'payrolls',payId(m)));const P=s.exists()?s.data():null;
   if(P&&P.status==='final'){const t={sal:0,com:0,erE:0,erS:0,cl:0,net:0,epf:0,socso:0,eis:0,pcb:0,adv:0,oth:0};
@@ -14469,7 +14506,7 @@ async function finJournalOf(m){
 let FINJ={};
 function finJournal(){
  const m=FINM,J=FINJ[m];
- if(J===undefined){FINJ[m]=null;finJournalOf(m).then(j=>{FINJ[m]=j;if(TAB==='fin')render();}).catch(e=>{FINJ[m]=[];toast(friendly(e));});}
+ if(!J&&!FINJP[m])finJGet(m).then(()=>{if(TAB==='fin'&&FINV==='jnl')render();});
  const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!J)return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
  const tb={};J.forEach(l=>{const x=tb[l.account]=tb[l.account]||{dr:0,cr:0};x.dr+=l.debit;x.cr+=l.credit;});
@@ -14483,28 +14520,37 @@ function finJournal(){
   (isOwnerMe()?'':'<p class="tiny muted" style="margin:8px 0 0">Payroll lines are added only when the owner opens this.</p>')+'</div>'+
   '<div class="card"><h3 style="margin:0 0 6px">'+ic('download',15)+' Export for your accountant or accounting software</h3>'+
   '<p class="tiny muted" style="margin:0 0 10px">Plain CSV files that Bukku, SQL Account, AutoCount, Financio, Xero or QuickBooks can import, or your accountant can key in. Each line keeps the app\'s own id.</p>'+
-  '<div class="finexp">'+[['jnl','Journal (double-entry)','Every movement: date, account, debit, credit'],['sales','Daily takings','Per day: revenue by type and money by payment method'],
+  '<button class="btn" style="width:100%;justify-content:center;margin-bottom:10px" onclick="finPack()">'+ic('download',16)+'Month-end pack for '+mLabel(m)+' (PDF)</button>'+
+  '<div class="finexp">'+[['jnl','Journal (double-entry)','Every movement: date, account, debit, credit'],['pl','Profit & loss','This month, last month and year to date'],
+   ['tb','Trial balance','Balance of every account at the end of the month'],['sales','Daily takings','Per day: revenue by type and money by payment method'],
    ['exp','Expenses & bills','Supplier, category, amount, paid or owing'],['coa','Chart of accounts','Account codes to match in your software'],['contacts','Suppliers & clients','Names and phone numbers']]
    .map(x=>'<button class="finexpbtn" onclick="finCSV(\''+x[0]+'\')"><b>'+ic('download',14)+x[1]+'</b><small>'+x[2]+'</small></button>').join('')+'</div>'+
   '<div class="spread" style="margin-top:12px"><span class="tiny muted">'+(ex?ic('check',12)+' Marked as sent '+dstr(ex.at)+' by '+esc(ex.byName||''):'Not marked as sent yet.')+'</span>'+
    '<button class="btn sm'+(ex?' ghost':'')+'" onclick="finMarkSent()">'+ic('check',13)+(ex?'Mark again':'Mark '+mLabel(m)+' as sent')+'</button></div></div>';
 }
-window.FINJ_RESET=()=>{delete FINJ[FINM];FINSHIFTS[FINM]=undefined;render();};
+window.FINJ_RESET=async()=>{FINJ={};FINSHIFTS={};for(const k in CPC)delete CPC[k];toast('Rebuilding from the records…');await Promise.all([finLoad(true),loadOutstanding()]);render();};
 const csvOf=rows=>rows.map(r=>r.map(v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
 function csvDownload(name,rows){const csv=csvOf(rows);window.__lastCSV=csv;window.__lastCSVName=name;
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=name;a.click();}
 window.finCSV=async kind=>{
  const m=FINM,biz=String((D.meta.biz||{}).name||'spa').replace(/[^A-Za-z0-9]+/g,'-');
  try{
-  if(kind==='jnl'){const J=FINJ[m]||await finJournalOf(m);
+  if(kind==='jnl'){const J=await finJGet(m);
    csvDownload(biz+'-journal-'+m+'.csv',[['Date','Reference','Account code','Account name','Debit','Credit','Description','Source id'],...J.map(l=>[l.date,l.ref,l.account,acName(l.account),l.debit||'',l.credit||'',l.desc,l.src])]);}
-  if(kind==='sales'){const J=FINJ[m]||await finJournalOf(m);const days={};
-   J.forEach(l=>{const d=days[l.date]=days[l.date]||{};if(['4000','4010','4020','4030','2500'].includes(l.account))d[l.account]=(d[l.account]||0)+l.credit-l.debit;
-    if(String(l.src).startsWith('pay:'))d['p'+l.account]=(d['p'+l.account]||0)+l.debit;});
+  if(kind==='sales'){const J=await finJGet(m);const days={};
+   J.forEach(l=>{const d=days[l.date]=days[l.date]||{};const s=String(l.src);
+    if(s.startsWith('sale:')||s.startsWith('drawer_')){const k=l.account==='2100'?'4020':l.account;if(['4000','4010','4020','4030','2500'].includes(k))d[k]=(d[k]||0)+l.credit-l.debit;}
+    if(s.startsWith('pay:'))d['p'+l.account]=(d['p'+l.account]||0)+l.debit;});
    csvDownload(biz+'-daily-takings-'+m+'.csv',[['Date','Treatments','Retail','Packages','Add-ons','SST','Cash','Bank / transfer','Card & e-wallet','Deposits used'],
     ...Object.keys(days).sort().map(d=>{const x=days[d];return [d,...['4000','4010','4020','4030','2500'].map(k=>r2(x[k]||0)),...['p1000','p1010','p1020','p2200'].map(k=>r2(x[k]||0))];}).filter(r=>r.slice(1).some(v=>v))]);}
   if(kind==='exp'){csvDownload(biz+'-expenses-'+m+'.csv',[['Date','Supplier','Description','Account code','Account name','Amount','Status','Due date','Paid on','Paid from','Invoice no','Id'],
    ...[...finMonthExp(m),...finAuto(m).map(a=>({...a,status:'paid',paidAt:a.date,supplier:a.src}))].map(e=>[e.date,e.supplier||'',e.desc||'',e.account,acName(e.account),e.amount,e.status,e.dueDate||'',e.paidAt||'',e.paidFrom?acName(e.paidFrom):'',e.ref||'',e.id])]);}
+  if(kind==='pl'){const P=await plData(m);
+   csvDownload(biz+'-profit-and-loss-'+m+'.csv',[['Section','Account code','Account name',mLabel(m),mLabel(mShift(m,-1)),'Year to date'],
+    ...P.rows.map(r=>[r.sec,r.code||'',r.name,r2(r.a),r2(r.b),r2(r.y)])]);}
+  if(kind==='tb'){const B=await balData(m);
+   csvDownload(biz+'-trial-balance-'+m+'.csv',[['Account code','Account name','Type','Debit','Credit'],
+    ...B.tb.map(r=>[r.code,acName(r.code),acType(r.code),r.v>0?r2(r.v):'',r.v<0?r2(-r.v):'']),['','Total','',r2(B.tb.reduce((t,r)=>t+Math.max(0,r.v),0)),r2(B.tb.reduce((t,r)=>t+Math.max(0,-r.v),0))]]);}
   if(kind==='coa')csvDownload(biz+'-chart-of-accounts.csv',[['Code','Name','Type'],...coa()]);
   if(kind==='contacts'){const sup=[...new Set((EXPENSES||[]).map(x=>x.supplier).filter(Boolean))];if(!CUSTS.length)await loadCustomers('');
    csvDownload(biz+'-contacts.csv',[['Type','Name','Phone','Email','Client no.'],...sup.map(s=>['Supplier',s,'','','']),...CUSTS.map(c=>['Customer',c.name,c.phone||'',c.email||'',idOf(c)||''])]);}
@@ -14537,5 +14583,342 @@ function finAlerts(al){
   d:U.slice(0,3).map(e=>(e.supplier||e.desc)+' '+rm(e.amount)).join(', '),go:"finGo('bills')"});
 }
 window.finGo=v=>{FINV=v;window.go('fin');};
+
+/* ============ Finance phase B: profit & loss, money & balances, package liability, month-end pack ============ */
+/* Packages: money for sessions not done yet is owed to the client, not earned. From the month set in settings,
+   a package (or a treatment paid now for later) is held as Unredeemed packages when sold; each session used
+   moves its share (price paid ÷ sessions) to revenue; sessions left when a package expires or is deleted
+   become revenue then. Packages sold before that month were counted as revenue when sold, so their sessions
+   are not counted again.
+   Cost of products: each bill carries the cost of the retail products sold and the backbar its treatments
+   use, at cost price (cost ÷ size, per unit used); stock bought is held as Stock until then.
+   Balances: every month's journal added to the starting balances the owner enters once. */
+const CPC={},FINJP={};let FINNEED=null;
+function finJGet(m){
+ if(FINJ[m])return Promise.resolve(FINJ[m]);
+ return FINJP[m]||(FINJP[m]=finJournalOf(m).then(j=>{FINJ[m]=j;delete FINJP[m];return j;})
+  .catch(e=>{console.warn('journal',m,e);const j=[];j.err=friendly(e);FINJ[m]=j;delete FINJP[m];return j;}));
+}
+/* true when every month is ready; otherwise starts loading them and redraws when done */
+function finNeed(list){
+ if(!list.filter(m=>!FINJ[m]).length)return true;
+ if(!FINNEED)FINNEED=Promise.all(list.map(finJGet)).then(()=>{FINNEED=null;if(TAB==='fin')render();});
+ return false;
+}
+function saleCost(s){
+ let c=0;
+ (s.items||[]).forEach(i=>{const q=+i.qty||1;
+  if(i.kind==='product')c+=unitCost(i.id)*q;
+  else if(i.kind==='set')(i.setItems||[]).forEach(z=>{c+=unitCost(z.sku)*(+z.qty||1)*q;});
+  else if((i.kind==='service'&&!i.later)||i.kind==='redeem')(svc(i.id).use||[]).forEach(u=>{c+=unitCost(u.sku)*(+u.qty||0)*q;});});
+ return c;
+}
+/* a client package by id: from memory, the database, or the copy kept when it was deleted */
+async function cpGet(id){
+ if(!id)return null;if(CPC[id]!==undefined)return CPC[id];
+ const h=(HELD||[]).find(x=>x.id===id);if(h)return CPC[id]=h;
+ try{const s=await getDoc(doc(db,'customerPackages',id));if(s.exists())return CPC[id]={id,...s.data()};}catch(e){}
+ try{const s=await getDoc(doc(db,'pkgDeleted',id));if(s.exists()){const x=s.data();return CPC[id]={id,...(x.snapshot||{}),price:x.price,soldAt:x.soldAt||(x.snapshot||{}).soldAt};}}catch(e){}
+ return CPC[id]=null;
+}
+const MOVES=[['bankin','Cash from the drawer banked in','1000','1010'],['settle','Card / e-wallet payout reached the bank','1020','1010'],
+ ['petty','Petty cash topped up from the bank','1010','1030'],['float','Cash taken from the bank for the drawer','1010','1000'],
+ ['capital','Owner put money into the business','3000','1010'],['draw','Owner took money out','1010','3100'],['other','Other move','','']];
+const MOVE_AC=[['1000','Cash in drawer'],['1010','Bank'],['1020','Card & e-wallet settlement'],['1030','Petty cash'],['3000','Owner capital (money put in)'],['3100','Owner drawings (money taken out)']];
+const trLabel=t=>{const x=MOVES.find(y=>y[0]===t.kind);return x&&x[2]?x[1]:acName(t.from)+' → '+acName(t.to);};
+
+/* the rest of the month's journal: sessions used, packages expired or deleted, booking deposits, money moved */
+async function finJournalB(m,add){
+ const from=m+'-01',to=mEnd(m),hi=to+'~',mine=x=>(x.branchId||ME.branchId)===ME.branchId;
+ const grab=async(q,lab)=>{try{return (await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).filter(mine);}catch(e){console.warn(lab,e);return [];}};
+ const [reds,exps,dels,appts]=await Promise.all([
+  grab(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)),'redemptions'),
+  pkgDefer()?grab(query(collection(db,'customerPackages'),where('expiry','>=',from),where('expiry','<=',to)),'expiring'):[],
+  pkgDefer()?grab(query(collection(db,'pkgDeleted'),where('deletedAt','>=',from),where('deletedAt','<=',hi)),'pkgDeleted'):[],
+  grab(query(collection(db,'appointments'),where('createdAt','>=',from),where('createdAt','<=',hi)),'deposits')]);
+ await Promise.all([...new Set(reds.map(r=>r.customerPackageId))].map(cpGet));
+ for(const r of reds){
+  const cp=await cpGet(r.customerPackageId);
+  if(cp&&cpBooked(cp)){const v=(+cp.price||0)/(cpTot(cp)||1);
+   if(v>0)add(r.date,r.invoiceNo||cp.invoiceNo||r.id,'redeem:'+r.id,'Session used · '+(r.serviceName||'')+' · '+(r.customerName||''),[['2100',v,0],[cp.prepaid?'4000':'4020',0,v]]);}
+  if(cogsAuto()&&!r.saleId){const c=(svc(r.serviceId).use||[]).reduce((t,u)=>t+unitCost(u.sku)*(+u.qty||0),0);
+   if(c>0)add(r.date,r.id,'rcogs:'+r.id,'Cost of products · session '+(r.serviceName||''),[['5000',c,0],['1200',0,c]]);}
+ }
+ const td=today();
+ exps.filter(cp=>String(cp.expiry)<td&&cpBooked(cp)&&cpLeft(cp)>0).forEach(cp=>{const v=(+cp.price||0)*cpLeft(cp)/(cpTot(cp)||1);
+  if(v>0)add(cp.expiry,cp.invoiceNo||cp.id,'expire:'+cp.id,'Package expired with '+cpLeft(cp)+' session(s) unused · '+(cp.customerName||''),[['2100',v,0],['4040',0,v]]);});
+ for(const x of dels){
+  const cp={...(x.snapshot||{}),price:x.price,soldAt:x.soldAt||(x.snapshot||{}).soldAt};
+  if(!cpBooked(cp)||!(+x.left>0))continue;
+  if(x.saleId){try{const s=await getDoc(doc(db,'sales',x.saleId));if(s.exists()&&s.data().voided)continue;}catch(e){}}
+  const v=(+x.price||0)*(+x.left)/((+x.total)||1);
+  if(v>0)add(String(x.deletedAt).slice(0,10),x.invoiceNo||x.id,'pkgdel:'+x.id,'Package deleted with '+x.left+' session(s) unused ('+(x.reason||'')+') · '+(x.customerName||''),[['2100',v,0],['4040',0,v]]);
+ }
+ appts.filter(a=>+a.deposit>0).forEach(a=>add(String(a.createdAt).slice(0,10),a.id,'dep:'+a.id,'Booking deposit · '+(a.customerName||'')+(a.serviceName?' · '+a.serviceName:''),
+  [[depAcct(),+a.deposit,0],['2200',0,+a.deposit]]));
+ (TRANSFERS||[]).filter(t=>t.date>=from&&t.date<=to).forEach(t=>{const a=+t.amount||0,fee=Math.min(a,+t.fee||0);
+  add(t.date,t.ref||t.id,'tr:'+t.id,trLabel(t)+(t.ref?' · '+t.ref:''),[[t.to,a-fee,0],['6080',fee,0],[t.from,0,a]]);});
+}
+
+/* ---------------- profit & loss ---------------- */
+const PL_SECS=[['rev','Revenue'],['cogs','Cost of products'],['staff','Staff costs'],['opex','Operating expenses']];
+const plSec=c=>{const t=acType(c);if(t==='revenue')return 'rev';if(t!=='expense')return '';if(c==='5000')return 'cogs';if(/^51/.test(c))return 'staff';return 'opex';};
+function plOf(J){const o={};(J||[]).forEach(l=>{const s=plSec(l.account);if(!s)return;o[l.account]=(o[l.account]||0)+(s==='rev'?l.credit-l.debit:l.debit-l.credit);});return o;}
+const plMonths=m=>{const ytd=[];for(let k=m.slice(0,4)+'-01';k<=m;k=mShift(k,1))ytd.push(k);
+ const trend=[];for(let i=5;i>=0;i--)trend.push(mShift(m,-i));return {ytd,trend,all:[...new Set([...ytd,mShift(m,-1),...trend])]};};
+function plBuild(m){
+ const M=plMonths(m),A=plOf(FINJ[m]),B=plOf(FINJ[mShift(m,-1)]),Y={};
+ M.ytd.forEach(k=>Object.entries(plOf(FINJ[k])).forEach(([a,v])=>{Y[a]=(Y[a]||0)+v;}));
+ const S=o=>{const t=s=>Object.keys(o).filter(c=>plSec(c)===s).reduce((x,c)=>x+o[c],0);
+  const rev=t('rev'),cogs=t('cogs'),staff=t('staff'),opex=t('opex');return {rev,cogs,gp:rev-cogs,staff,opex,cost:cogs+staff+opex,net:rev-cogs-staff-opex};};
+ const a=S(A),b=S(B),y=S(Y),codes=[...new Set([...Object.keys(A),...Object.keys(B),...Object.keys(Y)])].sort(),rows=[];
+ PL_SECS.forEach(([s,label])=>{const cs=codes.filter(c=>plSec(c)===s);if(!cs.length&&s!=='rev')return;
+  cs.forEach(c=>rows.push({sec:label,code:c,name:acName(c),a:A[c]||0,b:B[c]||0,y:Y[c]||0}));
+  rows.push({sec:label,name:'Total '+label.toLowerCase(),a:a[s],b:b[s],y:y[s],tot:1});
+  if(s==='cogs')rows.push({sec:'',name:'Gross profit',a:a.gp,b:b.gp,y:y.gp,big:1});});
+ rows.push({sec:'',name:'Net profit',a:a.net,b:b.net,y:y.net,big:1});
+ return {rows,a,b,y,M,trend:M.trend.map(k=>({m:k,...S(plOf(FINJ[k]))}))};
+}
+async function plData(m){await Promise.all(plMonths(m).all.map(finJGet));return plBuild(m);}
+const fmtS=v=>(v<-0.004?'−':'')+rm(Math.abs(v));
+const rmk=v=>{const a=Math.abs(v);return (v<-0.004?'−':'')+'RM'+(a>=1000?(a/1000).toFixed(a>=10000?0:1)+'k':Math.round(a));};
+function finNotes(m){
+ const n=[];
+ n.push(pkgDefer()?'Packages count as revenue as sessions are used (since '+mLabel(pkgFrom().slice(0,7))+'). Sessions left unused count when a package expires or is deleted.'
+  :'Packages count as revenue on the day they are sold.');
+ if(!isOwnerMe())n.push('Salaries and contributions are added only when the owner opens this.');
+ else if(m<=today().slice(0,7)&&!(FINJ[m]||[]).some(l=>String(l.src).startsWith('payroll:')))n.push('Payroll for '+mLabel(m)+' is not locked yet, so salaries are not in this month.');
+ const noCost=(D.products||[]).filter(p=>p.active!==false&&!(+p.cost>0)).length;
+ if(cogsAuto()&&noCost)n.push(noCost+' product'+(noCost>1?'s have':' has')+' no cost price, so '+(noCost>1?'their':'its')+' cost counts as zero. Add cost prices in the product list.');
+ if(!cogsAuto())n.push('Stock bought counts as a cost in the month it is bought.');
+ const err=Object.values(FINJ).find(j=>j&&j.err);if(err)n.push('Some records could not be read: '+err.err);
+ return n;
+}
+function finPL(){
+ const m=FINM,M=plMonths(m);
+ const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ if(!finNeed(M.all))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up '+M.all.length+' months of records…</p></div></div>';
+ const P=plBuild(m),{a,b}=P,pm=mLabel(mShift(m,-1)).split(' ')[0];
+ const chg=(x,y)=>{if(!y)return '';const p=Math.round((x-y)/Math.abs(y)*100);return (p>=0?'+':'')+p+'% vs '+pm;};
+ const mg=x=>a.rev?Math.round(x/a.rev*100)+'% of revenue':'';
+ let last='';
+ const trs=P.rows.map(r=>{let h='';if(r.sec&&r.sec!==last){last=r.sec;h='<tr class="plsec"><td colspan="4">'+r.sec+'</td></tr>';}
+  return h+'<tr class="'+(r.big?'plbig':r.tot?'pltot':'')+'"><td>'+(r.code?'<span class="plc">'+r.code+'</span>':'')+esc(r.name)+'</td>'+
+   [r.a,r.b,r.y].map((v,i)=>'<td class="num'+(i===1?' plb':'')+((r.big||r.tot)&&v<-0.004?' neg':'')+'">'+(Math.abs(v)<0.005&&!r.big&&!r.tot?'—':fmtS(v))+'</td>').join('')+'</tr>';}).join('');
+ const mx=Math.max(1,...P.trend.map(t=>Math.max(t.rev,t.cost)));
+ return head+'<div class="crmkpis">'+kpi('Revenue',rm(a.rev),chg(a.rev,b.rev)||'this month','money')+
+   kpi('Costs',rm(a.cost),mg(a.cost)||chg(a.cost,b.cost),'receipt')+
+   kpi('Net profit','<span class="'+(a.net<0?'neg':'')+'">'+fmtS(a.net)+'</span>',mg(a.net)||chg(a.net,b.net),'chart')+
+   kpi('Year to date',fmtS(P.y.net),(P.y.net<0?'loss':'profit')+' on '+rm(P.y.rev)+' revenue','award')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Profit &amp; loss</h3><div class="scroll"><table class="pltbl"><tr><th></th><th class="num">'+mLabel(m)+'</th><th class="num plb">'+mLabel(mShift(m,-1))+'</th><th class="num">Year to date</th></tr>'+trs+'</table></div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Last 6 months</h3><div class="pltrend">'+P.trend.map(t=>
+   '<div class="pltm"><div class="plbars"><i class="r" style="height:'+(t.rev/mx*100)+'%"></i><i class="c" style="height:'+(t.cost/mx*100)+'%"></i></div>'+
+   '<b class="'+(t.net<0?'neg':'')+'">'+rmk(t.net)+'</b><small>'+mLabel(t.m).slice(0,3)+'</small></div>').join('')+'</div>'+
+   '<div class="tiny muted"><span class="lg r"></span>Revenue<span class="lg c"></span>Costs · the figure under each month is its profit</div></div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('note',15)+' How these figures are worked out</h3>'+finNotes(m).map(x=>'<p class="tiny muted" style="margin:4px 0">• '+esc(x)+'</p>').join('')+'</div>';
+}
+
+/* ---------------- money & balances ---------------- */
+function balMonths(m){
+ const O=(FINSET||{}).opening,ok=O&&O.month&&O.month<=m,start=ok?O.month:m,L=[];
+ for(let k=start;k<=m;k=mShift(k,1))L.push(k);
+ return {L:L.slice(-36),O:ok?O:null,cut:L.length>36};
+}
+function balBuild(m){
+ const {L,O,cut}=balMonths(m),cl={},mv={};
+ if(O&&!cut)Object.entries(O.bal||{}).forEach(([a,v])=>{v=+v||0;if(v)cl[a]=(cl[a]||0)+(['asset','expense'].includes(acType(a))?v:-v);});
+ L.forEach(k=>(FINJ[k]||[]).forEach(l=>{const d=l.debit-l.credit;cl[l.account]=(cl[l.account]||0)+d;if(k===m)mv[l.account]=(mv[l.account]||0)+d;}));
+ const sg=a=>['asset','expense'].includes(acType(a))?1:-1;
+ return {bal:a=>r2((cl[a]||0)*sg(a)),mov:a=>r2((mv[a]||0)*sg(a)),O,L,cut,
+  tb:Object.keys(cl).filter(a=>Math.abs(cl[a])>0.004).sort().map(a=>({code:a,v:r2(cl[a])}))};
+}
+async function balData(m){await Promise.all(balMonths(m).L.map(finJGet));return balBuild(m);}
+/* what the app itself shows right now, to check the books against */
+function liveChecks(){
+ const mine=x=>(x.branchId||ME.branchId)===ME.branchId,td=today();
+ const owed=r2((OUTSTANDING||[]).filter(mine).reduce((t,s)=>t+saleBalance(s),0));
+ const act=(HELD||[]).filter(mine).filter(p=>String(p.expiry)>=td&&cpLeft(p)>0),val=p=>(+p.price||0)*cpLeft(p)/(cpTot(p)||1);
+ const soon=act.filter(p=>daysBetween(td,p.expiry)<=30);
+ const pk={n:act.length,sessions:act.reduce((t,p)=>t+cpLeft(p),0),all:r2(act.reduce((t,p)=>t+val(p),0)),
+  books:r2(act.filter(cpBooked).reduce((t,p)=>t+val(p),0)),soon:soon.length,soonV:r2(soon.reduce((t,p)=>t+val(p),0))};
+ const stock=r2((D.stock||[]).filter(s=>s.branchId===ME.branchId).reduce((t,s)=>t+Math.max(0,+s.qty||0)*unitCost(s.sku),0));
+ const bills=r2((EXPENSES||[]).filter(e=>e.status==='unpaid').reduce((t,e)=>t+(+e.amount||0),0));
+ return {owed,pk,stock,bills};
+}
+function finBal(){
+ const m=FINM,{L}=balMonths(m);
+ const head='<div class="card"><div class="spread" style="flex-wrap:wrap;gap:8px">'+finNav()+'<div class="row" style="gap:6px"><button class="btn sm" onclick="trForm()">'+ic('transfer',14)+'Move money</button>'+
+  '<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div></div>';
+ if(!finNeed(L))return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const B=balBuild(m),C=liveChecks(),now=m===today().slice(0,7);
+ const row=(a,label,hint,live)=>{const v=B.bal(a),mv=B.mov(a);let chk='';
+  if(live!==undefined&&now&&B.O){const d=r2(v-live);chk=Math.abs(d)<1?'<span class="pill g">'+ic('check',10)+' matches</span>':'<span class="pill a">app shows '+rm(live)+'</span>';}
+  const meta=(Math.abs(mv)>0.004?'<span class="balmv">'+(mv>0?'+':'−')+rm(Math.abs(mv))+' this month</span>':'')+chk;
+  return '<div class="balrow" data-ac="'+a+'"><div><b>'+label+'</b><small>'+a+' · '+esc(hint||acName(a))+'</small>'+(meta?'<div class="balmeta">'+meta+'</div>':'')+'</div>'+
+   '<b class="finamt'+(v<-0.004?' neg':'')+'">'+fmtS(v)+'</b></div>';};
+ const money=['1000','1010','1020','1030'].reduce((t,a)=>t+B.bal(a),0);
+ const owe=['2000','2100','2200','2300','2310','2320','2330','2500'].reduce((t,a)=>t+B.bal(a),0);
+ const stat=['2300','2310','2320','2330','2500'].filter(a=>Math.abs(B.bal(a))>0.004||Math.abs(B.mov(a))>0.004);
+ const TR=(TRANSFERS||[]).filter(t=>String(t.date).slice(0,7)===m);
+ const OW=(OUTSTANDING||[]).filter(s=>(s.branchId||ME.branchId)===ME.branchId&&saleBalance(s)>0);
+ return head+(B.O?(B.cut?'<div class="card"><p class="tiny" style="margin:0;color:var(--rose)">Starting balances are more than 3 years before this month — showing movements of the last 36 months only.</p></div>':'')
+   :'<div class="card" style="border-color:var(--brass)"><div class="spread"><div><b>'+ic('alert',14)+' Enter your starting balances</b><p class="tiny muted" style="margin:4px 0 0">Right now these are only '+mLabel(m)+'\'s movements. Enter once what was in the bank and drawer, what clients owed and what you owed at the start of a month, and every balance here becomes the real one.</p></div>'+
+   (isOwnerMe()?'<button class="btn sm" onclick="openBalForm()">Enter</button>':'')+'</div></div>')+
+  '<div class="crmkpis">'+kpi('Money in the business',rm(money),'drawer, bank, payouts, petty cash','wallet')+kpi('Owed by clients',rm(B.bal('1100')),OW.length+' bill(s) on instalment','users')+
+   kpi('You owe',rm(owe),'bills, packages, deposits, statutory','clock')+kpi('Unused sessions',String(C.pk.sessions),rm(C.pk.all)+' · '+C.pk.n+' package(s)','package')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('wallet',15)+' Money</h3>'+
+   row('1000','Cash in the drawer')+row('1010','Bank')+row('1020','Card & e-wallet payouts on the way','paid by card or e-wallet, not in the bank yet')+row('1030','Petty cash')+
+   '<h4 class="payh" style="margin-top:14px">Money moved in '+mLabel(m)+'</h4>'+
+   (TR.length?TR.map(t=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(trLabel(t))+'</b><small>'+dshort(t.date)+' · '+esc(acName(t.from))+' → '+esc(acName(t.to))+
+    (+t.fee?' · fees '+rm(t.fee):'')+(t.ref?' · '+esc(t.ref):'')+'</small></div><b class="finamt">'+rm(t.amount)+'</b><button class="iconbtn" style="padding:4px" onclick="trForm(\''+t.id+'\')">'+ic('edit',14)+'</button></div>').join('')
+    :'<p class="tiny muted" style="margin:4px 0">Nothing moved yet. Use Move money when you bank in the drawer cash, when a card or e-wallet payout reaches the bank, or when you put in or take out money.</p>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('users',15)+' Owed to the business</h3>'+
+   row('1100','Clients paying by instalment','',C.owed)+(Math.abs(B.bal('1300'))>0.004?row('1300','Staff advances'):'')+
+   (cogsAuto()?row('1200','Stock at cost','',C.stock):'')+(Math.abs(B.bal('1500'))>0.004?row('1500','Equipment & renovation'):'')+
+   (OW.length?'<h4 class="payh" style="margin-top:14px">Clients who owe</h4>'+OW.slice(0,8).map(s=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(s.customerName||'')+'</b><small>'+esc(s.invoiceNo||'')+' · '+dshort(s.date)+
+    (s.dueDate?' · due '+dshort(s.dueDate):'')+'</small></div>'+(isOverdue(s)?'<span class="pill r">overdue</span>':'')+'<b class="finamt">'+rm(saleBalance(s))+'</b></div>').join('')+
+    (OW.length>8?'<p class="tiny muted">and '+(OW.length-8)+' more</p>':''):'')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('clock',15)+' What the business owes</h3>'+
+   row('2000','Supplier bills to pay','',C.bills)+row('2100','Unredeemed packages','sessions clients paid for and have not used',C.pk.books)+row('2200','Booking deposits','deposits taken for bookings not yet done')+
+   stat.map(a=>row(a,acName(a).replace(' payable',''),'collected or due, not yet paid over')).join('')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('package',15)+' Packages clients have paid for</h3>'+
+   '<div class="aprsnap"><div><small>Sessions not used</small><b>'+C.pk.sessions+'</b></div><div><small>Their value</small><b>'+rm(C.pk.all)+'</b></div>'+
+   '<div><small>Expire in 30 days</small><b>'+C.pk.soon+' · '+rm(C.pk.soonV)+'</b></div><div><small>On the books</small><b>'+rm(C.pk.books)+'</b></div></div>'+
+   '<p class="tiny muted" style="margin:8px 0 0">'+(pkgDefer()?'Packages sold since '+mLabel(pkgFrom().slice(0,7))+' are held as Unredeemed packages until used. '+(C.pk.all-C.pk.books>0.5?rm(C.pk.all-C.pk.books)+' is from older packages, counted as revenue when they were sold.':'')
+    :'Packages count as revenue when sold; this is what you still owe clients in sessions.')+'</p></div>';
+}
+/* money moved between the drawer, bank, payouts and petty cash, or in and out by the owner */
+window.trForm=id=>{
+ const t=id?(TRANSFERS||[]).find(x=>x.id===id):{date:today(),kind:'bankin',from:'1000',to:'1010'};if(!t)return;
+ const opt=v=>MOVE_AC.map(a=>'<option value="'+a[0]+'"'+(v===a[0]?' selected':'')+'>'+a[1]+'</option>').join('');
+ modal(id?'Edit money moved':'Move money','<div class="card"><label>What happened</label><select class="f" id="tr-k" onchange="trKind()">'+
+  MOVES.map(x=>'<option value="'+x[0]+'"'+(t.kind===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>From</label><select class="f" id="tr-f">'+opt(t.from)+'</select></div><div><label>To</label><select class="f" id="tr-t">'+opt(t.to)+'</select></div></div>'+
+  '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="tr-d" value="'+t.date+'"></div><div><label>Amount (RM)</label><input class="f" type="number" step="0.01" id="tr-a" value="'+(t.amount||'')+'"></div></div>'+
+  '<label>Fees taken off (RM)</label><input class="f" type="number" step="0.01" id="tr-fee" value="'+(t.fee||'')+'" placeholder="e.g. card terminal or e-wallet charges">'+
+  '<label>Reference / note</label><input class="f" id="tr-r" value="'+esc(t.ref||'')+'" placeholder="e.g. bank-in slip no.">'+
+  '<div id="tr-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="trSave(\''+(id||'')+'\')">'+ic('check',16)+'Save</button>'+
+  (id&&isOwnerMe()?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="trDelete(\''+id+'\')">'+ic('trash',14)+'Delete</button>':'')+'</div>');
+};
+window.trKind=()=>{const x=MOVES.find(y=>y[0]===$('#tr-k').value);if(x&&x[2]){$('#tr-f').value=x[2];$('#tr-t').value=x[3];}};
+window.trSave=async id=>{
+ const e=$('#tr-e'),a=r2(+$('#tr-a').value||0),fee=r2(+$('#tr-fee').value||0),f=$('#tr-f').value,t=$('#tr-t').value;
+ if(!(a>0)){e.textContent='Enter the amount.';return;}
+ if(f===t){e.textContent='From and To must be different.';return;}
+ if(fee<0||fee>=a){e.textContent='Fees must be less than the amount.';return;}
+ const now=new Date().toISOString();
+ const d={kind:$('#tr-k').value,from:f,to:t,amount:a,fee,date:$('#tr-d').value||today(),ref:$('#tr-r').value.trim().slice(0,80),branchId:ME.branchId,
+  updatedAt:now,updatedBy:UID,...(id?{}:{createdAt:now,createdBy:UID,createdByName:ME.name})};
+ try{if(id){await updateDoc(doc(db,'transfers',id),d);Object.assign(TRANSFERS.find(x=>x.id===id),d);}
+  else{const r=await addDoc(collection(db,'transfers'),d);TRANSFERS.unshift({id:r.id,...d});}
+  FINJ={};await audit(id?'Money move edited':'Money moved',trLabel(d)+' · '+rm(a));window.closeModal();render();toast('Saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+window.trDelete=async id=>{
+ const t=(TRANSFERS||[]).find(x=>x.id===id);if(!t||!confirm('Delete this money move?'))return;
+ try{await deleteDoc(doc(db,'transfers',id));TRANSFERS=TRANSFERS.filter(x=>x.id!==id);FINJ={};
+  await audit('Money move deleted',trLabel(t)+' · '+rm(t.amount));window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+/* starting balances: what the business had and owed at the start of a month, entered once */
+const OPEN_AC=['1000','1010','1020','1030','1100','1200','1300','1500','2000','2100','2200','2300','2310','2320','2330','2500'];
+window.openBalForm=()=>{
+ const O=(FINSET||{}).opening||{month:today().slice(0,7),bal:{}},C=liveChecks();
+ const sug={'1100':C.owed,'2000':C.bills,'2100':C.pk.books,'1200':C.stock};
+ modal('Starting balances','<div class="card"><p class="tiny muted" style="margin:0 0 8px">What the business had and owed at the very start of the month you pick — from the bank statement, a drawer count, unpaid bills and so on. Leave blank what does not apply. The app adds every month after it.</p>'+
+  '<label>As at the start of</label><input class="f" type="month" id="ob-m" value="'+O.month+'">'+
+  '<h4 class="payh">What you have</h4>'+OPEN_AC.filter(a=>acType(a)==='asset').map(obRow(O,sug)).join('')+
+  '<h4 class="payh">What you owe</h4>'+OPEN_AC.filter(a=>acType(a)==='liability').map(obRow(O,sug)).join('')+
+  '<p class="tiny muted">The grey figures are what the app shows today, as a guide. Owner capital is worked out as what you have minus what you owe.</p>'+
+  '<div id="ob-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="openBalSave()">'+ic('check',16)+'Save starting balances</button></div>');
+};
+const obRow=(O,sug)=>a=>'<div class="obrow"><span><code>'+a+'</code> '+esc(acName(a))+'</span><input class="f obin" type="number" step="0.01" data-a="'+a+'" value="'+
+ ((O.bal||{})[a]!=null?O.bal[a]:'')+'" placeholder="'+(sug[a]?r2(sug[a]).toFixed(2):'0.00')+'"></div>';
+window.openBalSave=async()=>{
+ const month=$('#ob-m').value,e=$('#ob-e');
+ if(!/^\d{4}-\d{2}$/.test(month)){e.textContent='Pick the month.';return;}
+ const bal={};document.querySelectorAll('.obin').forEach(i=>{const v=r2(+i.value||0);if(v)bal[i.dataset.a]=v;});
+ const sum=t=>Object.entries(bal).filter(([a])=>acType(a)===t).reduce((x,[,v])=>x+v,0);
+ bal['3000']=r2(sum('asset')-sum('liability'));
+ const opening={month,bal,at:new Date().toISOString(),by:UID,byName:ME.name};
+ try{await setDoc(doc(db,'finance','settings'),{opening},{merge:true});FINSET={...(FINSET||{}),opening};
+  await audit('Starting balances set','as at '+mLabel(month));window.closeModal();render();toast('Starting balances saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+/* ---------------- settings ---------------- */
+function finSettings(){
+ const own=isOwnerMe(),dis=own?'':' disabled',O=(FINSET||{}).opening;
+ const sel=(id,v,opts)=>'<select class="f" id="'+id+'"'+dis+'>'+opts.map(o=>'<option value="'+o[0]+'"'+(v===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>';
+ return '<div class="card"><h3 style="margin:0 0 6px">'+ic('gear',15)+' How the books are kept</h3>'+
+  '<label>Package revenue is counted</label>'+sel('fs-pk',pkgDefer()?'use':'sale',[['use','When each session is used (recommended)'],['sale','When the package is sold']])+
+  '<label>Starting from</label><input class="f" type="month" id="fs-pf" value="'+pkgFrom().slice(0,7)+'"'+dis+'>'+
+  '<p class="tiny muted" style="margin:4px 0 8px">Packages sold before this month were already counted as revenue when sold, so their sessions are not counted again.</p>'+
+  '<label>Cost of products</label>'+sel('fs-cg',cogsAuto()?'auto':'purchase',[['auto','From each product\'s cost price, when sold or used (recommended)'],['purchase','Count stock bought as a cost when bought']])+
+  '<label>Booking deposits are received into</label>'+sel('fs-dep',depAcct(),[['1010','Bank'],['1020','Card & e-wallet settlement'],['1000','Cash in drawer']])+
+  '<div class="spread" style="margin-top:12px"><span class="tiny muted">'+(O?'Starting balances as at '+mLabel(O.month):'No starting balances yet')+'</span>'+
+  (own?'<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="openBalForm()">'+ic('wallet',14)+'Starting balances</button><button class="btn sm" onclick="finSetSave()">'+ic('check',14)+'Save</button></div>':'')+'</div>'+
+  (own?'':'<p class="tiny muted" style="margin:8px 0 0">Only the owner can change these.</p>')+'</div>';
+}
+window.finSetSave=async()=>{
+ const pf=$('#fs-pf').value;if(!/^\d{4}-\d{2}$/.test(pf)){toast('Pick the month packages start from');return;}
+ const s={pkgDefer:$('#fs-pk').value==='use',pkgFrom:pf+'-01',cogs:$('#fs-cg').value,depAcct:$('#fs-dep').value};
+ try{await setDoc(doc(db,'finance','settings'),s,{merge:true});FINSET={...(FINSET||{}),...s};FINJ={};
+  await audit('Finance settings changed','packages '+(s.pkgDefer?'when used from '+pf:'when sold')+' · cost '+s.cogs+' · deposits '+s.depAcct);render();toast('Saved — figures worked out again');}
+ catch(e){toast(friendly(e));}
+};
+{const _acc=finAccounts;finAccounts=()=>finSettings()+_acc();}
+
+/* ---------------- month-end pack for the accountant ---------------- */
+window.finPack=async()=>{
+ const m=FINM;toast('Preparing the month-end pack…');
+ try{
+  const [P,B]=await Promise.all([plData(m),balData(m)]),J=FINJ[m]||[],C=liveChecks();
+  const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'}),b=D.meta.biz||{},W=210,G=16;let y=0;
+  const T=(s,x,yy,o)=>d.text(String(s==null?'':s),x,yy,o||{});
+  const n=v=>(v<-0.004?'(':'')+Math.abs(r2(v)).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})+(v<-0.004?')':'');
+  const top=()=>{d.setFillColor(20,18,15);d.rect(0,0,W,26,'F');d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(14);T(b.name||'',G,12);
+   d.setFont('helvetica','normal');d.setFontSize(8.5);T([b.ssm?'SSM '+b.ssm:'',b.phone||''].filter(Boolean).join(' · '),G,19);
+   d.setFont('helvetica','bold');d.setFontSize(11);T('MONTH-END PACK',W-G,12,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(9);T(mLabel(m),W-G,19,{align:'right'});
+   d.setTextColor(20,18,15);y=36;};
+  const need=h=>{if(y+h>280){d.addPage();top();}};
+  const h2=t=>{need(16);y+=2;d.setFont('helvetica','bold');d.setFontSize(11);T(t,G,y);y+=2.5;d.setDrawColor(200,190,170);d.line(G,y,W-G,y);y+=6;};
+  const X3=[W-G-70,W-G-35,W-G-1],X2=[W-G-35,W-G-1],X1=[W-G-1];
+  const row=(c,o={})=>{need(7);d.setFont('helvetica',o.b?'bold':'normal');d.setFontSize(o.s||9);
+   if(o.fill){d.setFillColor(243,233,216);d.rect(G,y-4.6,W-2*G,6.8,'F');}
+   T(c[0],G+(o.ind?4:1),y);c.slice(1).forEach((v,i)=>T(v,(o.xs||X3)[i],y,{align:'right'}));y+=6;};
+  const para=t=>{d.setFont('helvetica','normal');d.setFontSize(8.5);d.splitTextToSize(t,W-2*G-2).forEach(l=>{need(5);T(l,G+1,y);y+=4.4;});y+=1;};
+  top();
+  h2('1. Profit and loss');
+  row(['',mLabel(m),mLabel(mShift(m,-1)),'Year to date'],{b:1,s:8});
+  let last='';P.rows.forEach(r=>{if(r.sec&&r.sec!==last){last=r.sec;row([r.sec.toUpperCase()],{b:1,s:8});}
+   row([(r.code?r.code+'   ':'')+r.name,n(r.a),n(r.b),n(r.y)],{ind:!!r.code,b:r.tot||r.big,fill:r.big});});
+  h2('2. Balances at '+dshort(mEnd(m))+' '+m.slice(0,4));
+  row(['','Movement in '+mLabel(m).split(' ')[0],'Balance'],{b:1,s:8,xs:X2});
+  [['WHAT THE BUSINESS HAS',['1000','1010','1020','1030','1100','1200','1300','1500']],['WHAT THE BUSINESS OWES',['2000','2100','2200','2300','2310','2320','2330','2500']]].forEach(([t,list])=>{
+   row([t],{b:1,s:8});let tot=0;
+   list.forEach(a=>{const v=B.bal(a),mv=B.mov(a);tot+=v;if(Math.abs(v)<0.005&&Math.abs(mv)<0.005&&!['1000','1010'].includes(a))return;row([a+'   '+acName(a),n(mv),n(v)],{ind:1,xs:X2});});
+   row(['Total',' ',n(tot)],{b:1,xs:X2});});
+  if(!B.O)para('No starting balances have been entered, so the balances above are only the movements of '+mLabel(B.L[0])+(B.L.length>1?' onwards':'')+'.');
+  else para('Starting balances as at 1 '+mLabel(B.O.month)+', entered by '+(B.O.byName||'the owner')+'.');
+  h2('3. Packages and money owed (as at '+dstr(new Date().toISOString())+')');
+  [['Sessions clients have paid for and not used',String(C.pk.sessions)],['Value of those sessions (all active packages)',n(C.pk.all)],
+   ['   held on the books as Unredeemed packages',n(C.pk.books)],['Expiring in the next 30 days ('+C.pk.soon+' package'+(C.pk.soon!==1?'s':'')+')',n(C.pk.soonV)],
+   ['Clients owe on instalment bills',n(C.owed)],['Supplier bills not yet paid',n(C.bills)]].forEach(r=>row(r,{xs:X1}));
+  const U=(EXPENSES||[]).filter(e=>e.status==='unpaid').sort((a,b)=>String(a.dueDate||a.date).localeCompare(String(b.dueDate||b.date)));
+  if(U.length){y+=2;row(['Unpaid bills','Due','Amount'],{b:1,s:8,xs:X2});U.slice(0,25).forEach(e=>row([(e.supplier||e.desc||'')+(e.ref?' · '+e.ref:''),dshort(e.dueDate||e.date),n(e.amount)],{ind:1,xs:X2}));}
+  h2('4. Basis of these figures');
+  const dr=r2(J.reduce((t,l)=>t+l.debit,0)),cr=r2(J.reduce((t,l)=>t+l.credit,0)),ex=((FINSET||{}).exported||{})[m];
+  para('The journal for '+mLabel(m)+' has '+J.length+' lines; debits '+n(dr)+', credits '+n(cr)+(Math.abs(dr-cr)<0.01?' (balanced).':' (NOT balanced).')+' It is in the Journal CSV exported with this pack, with the chart of accounts.');
+  finNotes(m).forEach(para);
+  para('Sales are recorded on the bill date and owed by the client until paid; payments are recorded on the day received. Cash kept is the amount taken less change given. Card and e-wallet takings wait in account 1020 until the payout is recorded as reaching the bank.');
+  para('Prepared by '+ME.name+' on '+dstr(new Date().toISOString())+'.'+(ex?' Month marked as sent '+dstr(ex.at)+'.':''));
+  const name=String(b.name||'spa').replace(/[^A-Za-z0-9]+/g,'-')+'-month-end-'+m+'.pdf';
+  window.__lastPDF={kind:'finpack',name,doc:d};d.save(name);audit('Finance export','month-end pack · '+mLabel(m));
+ }catch(e){console.warn(e);toast(friendly(e));}
+};
+/* figures are worked out again whenever money is recorded or Finance is opened afresh */
+['expSave','expDelete','billPaid','recSave'].forEach(k=>{const f=window[k];window[k]=async(...a)=>{const r=await f(...a);FINJ={};if(TAB==='fin')render();return r;};});
+{const _go=window.go;window.go=(t,...a)=>{if(t==='fin'&&TAB!=='fin')FINJ={};return _go(t,...a);};}
 
 </script>
