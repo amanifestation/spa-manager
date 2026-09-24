@@ -1056,6 +1056,19 @@ tr.fbmine td{background:var(--brass-soft)}
 .wtreat .pr{font-weight:650;font-size:13px;flex:none}
 .wempty{display:grid;justify-items:center;gap:8px;text-align:center;color:var(--ink-3);padding:10px 6px}
 .wempty p{margin:0;font-size:12.5px;line-height:1.5}
+.bdlink{display:flex;align-items:center;gap:6px;margin:10px 0 0;background:none;border:0;padding:4px 0;cursor:pointer;font:inherit;font-size:12.5px;color:var(--ink-3)}
+.bdbox{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--amber-soft);color:var(--amber);border:1px solid rgba(156,107,21,.25)}
+.bdbox b{display:block;font-size:13.5px}.bdbox small{display:block;font-size:11.5px;color:var(--ink-2)}
+.bdnote{display:flex;gap:8px;align-items:flex-start;margin:0 0 10px;padding:9px 12px;border-radius:12px;background:var(--amber-soft);color:var(--amber);font-size:12.5px}
+.attqr{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;align-items:center;padding:12px;margin:0 0 12px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2)}
+.attqrimg{width:132px;flex:none;aspect-ratio:1;background:#fff;border-radius:10px;padding:4px;display:grid;place-items:center}.attqrimg svg{width:100%;height:auto;display:block}
+.attqrtx{flex:1;min-width:190px}.attqrtx b{display:block;font-size:14px;line-height:1.3}.attqrtx small{display:block;font-size:11.5px;color:var(--ink-3);margin:3px 0}
+.attqrcode{font:700 20px/1.2 ui-monospace,Menlo,monospace;letter-spacing:.1em;margin:6px 0 4px;white-space:nowrap}
+.attqrbar{height:5px;border-radius:99px;background:var(--line-2);overflow:hidden;margin:4px 0}.attqrbar i{display:block;height:100%;background:var(--brass);transition:width 1s linear}
+.attqr.big{flex-direction:column;text-align:center;background:none;border:0;margin:0}.attqr.big .attqrimg{width:min(78vw,380px)}.attqr.big .attqrcode{font-size:30px}
+.attdone{text-align:center}.attdone h2{margin:10px 0 4px}.attdone p{margin:0 0 14px;color:var(--ink-2);font-size:14px}
+.attdoneic{width:72px;height:72px;margin:6px auto 0;border-radius:99px;display:grid;place-items:center;background:var(--jade-soft);color:var(--jade)}
+.attdone.no .attdoneic{background:var(--rose-soft,#f6e3e3);color:var(--rose)}.attdone.done .attdoneic{background:var(--amber-soft);color:var(--amber)}
 .wtt{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
 .wbig+.wtt{margin-top:0}
 .wtth{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.wtth b{font-size:13px}.wtth span{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
@@ -1840,7 +1853,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25e';
+const BUILD='2026-09-25f';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -6339,7 +6352,7 @@ function wAttend(){
  const on=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false)
   .filter(x=>{const r=attToday(x.id);return r&&r.clockIn&&!r.clockOut;});
  let state,title,sub,btn='',pill='';
- if(!me.attCode){
+ if(!me.attCode&&!qrMode()){
   state='none';title='No attendance code yet';pill='<span class="pill">not set</span>';
   sub=can('staff')?'Set your personal code, then clock in from here.'
    :'Ask the owner to set your attendance code.';
@@ -6359,6 +6372,9 @@ function wAttend(){
   state='done';title='Done for today';pill='<span class="pill g">'+ic('check',11)+' done</span>';
   sub=tstr(a.clockIn)+' – '+tstr(a.clockOut)+' · '+worked(a);
  }
+ if(qrMode()&&(state==='out'||state==='in'))btn='<button class="btn '+(state==='out'?'brass ':'')+'wbig" onclick="qrScanOpen()">'+
+  ic('scan',17)+(state==='out'?'Scan the QR to clock in':'Scan the QR to clock out')+'</button>';
+ if(qrMode()&&state==='out')sub='Scan the code on the counter tablet with this phone.';
  const pct=state==='in'?(Date.now()-new Date(a.clockIn))/6e4/SHIFTMIN:(state==='done'?1:0);
  return '<div class="card wcard" id="watt">'+
   '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Attendance</h2>'+pill+'</div>'+
@@ -7022,14 +7038,16 @@ function wTeamClock(){
     runFor(a.clockIn)+'</span></span>';
    btn='<button class="btn sm" onclick="clockPrompt(\''+s.id+'\',\'out\')">'+ic('out',13)+'Out</button>';}
   else{st='<span class="muted">Done · '+tstr(a.clockIn)+'–'+tstr(a.clockOut)+' · '+worked(a)+'</span>';btn='';}
+  if(qrMode())btn='';
   return '<div class="tcrow'+(a&&!a.clockOut?' on':'')+' s-'+attState(s.id).k+'"><span class="cav">'+esc(initials(s.name))+'<span class="attdot"></span></span>'+
    '<div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b><div class="tiny">'+st+'</div></div>'+btn+'</div>';}).join('');
  const n=ps.filter(s=>onShiftNow(s.id)).length;
  return '<div class="card wcard" id="watt">'+
   '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Team attendance</h2>'+
   '<span class="pill'+(n?' g':'')+'">'+ps.filter(s=>{const a=attToday(s.id);return a&&a.clockIn;}).length+' of '+ps.length+' clocked in</span></div>'+
+  (qrMode()?attQrPanel():'')+
   (ps.length?'<div class="tclist">'+rows+'</div>':'<div class="wempty">'+ic('users',22)+'<p>No staff set up for this branch yet.</p></div>')+
-  '<div class="wfoot"><span class="tiny muted">'+n+' on shift now · each person clocks in with their own code</span>'+
+  '<div class="wfoot"><span class="tiny muted">'+n+' on shift now · '+(qrMode()?'each person scans with their own phone':'each person clocks in with their own code')+'</span>'+
   '<button class="wlink" onclick="addIssue()">'+ic('tool',13)+'Report an issue</button></div></div>';
 }
 
@@ -8654,6 +8672,7 @@ window.addPay=m=>{
 window.checkout=async()=>{
  const btn=$('#co-go');if(btn)btn.disabled=true;
  const t=cartTotals();
+ const billDate=boss()&&cart.billDate&&cart.billDate<today()?cart.billDate:'',billWhy=cart.billDateWhy||'';
  if(isBranch()&&!cashierValid()){if(btn)btn.disabled=false;toast('Choose the cashier first');window.pickCashier();return;}
  try{
   // prices are re-read from the catalogue, never trusted from the cart UI
@@ -8840,6 +8859,8 @@ window.checkout=async()=>{
    (items.some(x=>x.later)?' — redeem at the visit':''));
   else if(earned)toast('Bill saved · '+earned+' loyalty points earned');
   if(autoRV)toast('Bill saved · come-back voucher '+autoRV.id+' issued');
+  if(billDate){try{await saleRedate(ref.id,billDate,billWhy);await loadRecentSales();render();toast('Bill saved and dated '+dstr(billDate));}
+   catch(e){toast('Bill saved today — could not date it '+dstr(billDate)+': '+friendly(e));}}
   window.openSale(ref.id);
   if(memb&&memb.fresh)toast((c?c.name:'Client')+' is now a member · '+memb.no);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
@@ -9049,7 +9070,7 @@ window.showReceipt=id=>{
  let s=SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id);
  if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
  if(!s){toast('Could not find that bill');return;}
- modal('Receipt '+(s.invoiceNo||''),pkgBanner(s)+receiptHTML(s)+
+ modal('Receipt '+(s.invoiceNo||''),pkgBanner(s)+dateNote(s)+receiptHTML(s)+
   '<div class="fabrow noprint">'+
   '<button class="btn sm" onclick="receiptPDF(\''+id+'\')">'+ic('download',14)+'Download PDF</button>'+
   (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
@@ -9063,6 +9084,7 @@ window.showReceipt=id=>{
    'onclick="issueReturnVoucher(\''+id+'\')">'+ic('gift',14)+'Generate come-back voucher</button>':''))+
   (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
    ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
+  (!s.voided&&boss()?'<button class="btn sm ghost" onclick="saleDateForm(\''+id+'\')">'+ic('calendar',14)+'Change date</button>':'')+
   (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
    '\')">'+ic('close',14)+'Void bill</button>':'')+'</div>');
 };
@@ -9990,6 +10012,7 @@ function teamToday(){
      'Adjust</button>':'')+'</div></div>';}).join('')
    :'<div class="empty">'+ic('users',26)+'<div>No active team members at this branch.</div></div>');}
 window.clockPrompt=(sid,dir)=>{
+ if(qrMode()&&!boss()){toast('Clock in and out by scanning the QR on the tablet with your own phone');if(!isBranch())window.qrScanOpen();return;}
  const s=stf(sid);
  if(!s.attCode){toast('No attendance code set for '+s.name+' yet');
   if(boss())window.editStaff(sid);return;}
@@ -11274,6 +11297,7 @@ function vSet(){
   h+=swPanel();
   h+=rvPanel();
   h+=paperPanel();setTimeout(paintNextNo,0);
+  h+=attQrSetPanel();
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" onclick="rebuildClientSearch()">'+ic('search',14)+'Rebuild client search</button>'+
@@ -11393,6 +11417,7 @@ window.render=render;
    watchLeaves();
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm(),loadClaims(),loadAppraisals(),finLoad()]);
    render();
+   if(typeof window.attCheckHash==='function')window.attCheckHash();
    if(TAB==='rep')buildReport();
   }catch(e){
    console.error(e);
@@ -11687,9 +11712,10 @@ function posCartCard(t){
     payNeedsRef(p.method)?'<div class="tiny odue">Reference number missing</div>':'')+'</div>'+
    '<b>'+rm(p.amount)+'</b><button class="iconbtn" style="padding:3px" onclick="dropPay('+i+')" aria-label="Remove">'+ic('close',13)+'</button></div>').join('')+
    '</div>':'')+
-  instalBox(t)+
+  instalBox(t)+billDateBox()+
   '<button class="btn copay" '+(canComplete(t)?'':'disabled')+' id="co-go" onclick="checkout()">'+ic('check',17)+
-  (cart.instal&&t.balance>0.009?'Save bill · '+rm(t.balance)+' outstanding':'Complete payment · '+rm(t.total))+'</button></div>';
+  (cart.instal&&t.balance>0.009?'Save bill · '+rm(t.balance)+' outstanding':'Complete payment · '+rm(t.total))+
+  (boss()&&cart.billDate&&cart.billDate<today()?' · dated '+dshort(cart.billDate):'')+'</button></div>';
  return h;
 }
 window.posClear=()=>{if(!confirm('Clear this bill?'))return;
@@ -15836,4 +15862,315 @@ function docAlerts(al){
   if(due.length)al.push({i:'check',t:'Probation ending — confirmation letter due',d:due.map(s=>s.name+' '+dshort((HRSTAFF[s.id]||{}).confirmDate)).join(', '),go:"hrGo('docs')"});}
 }
 {const _ha=hrAlerts;hrAlerts=al=>{_ha(al);docAlerts(al);};}
+
+/* ============ backdated bills: key in a sale on the day it really happened ============ */
+/* The owner or a manager can give a bill an earlier date — at checkout for a sale keyed in late,
+   or afterwards from the receipt. The bill, its payments, the package sessions redeemed on it and
+   the packages it sold all move to that day, so the Day report, Finance and payroll count it there.
+   The day it was really keyed in, who moved it, from which date and why are kept on the bill and
+   in the audit trail. Future dates are refused. */
+const redShift=(iso,nd)=>{if(!iso)return iso;const o=new Date(iso),n=new Date(nd+'T00:00:00');
+ if(isNaN(o))return new Date(nd+'T12:00:00').toISOString();n.setHours(o.getHours(),o.getMinutes(),o.getSeconds(),0);return n.toISOString();};
+/* things worth knowing before a bill lands on an earlier day */
+async function redateWarnings(d){
+ const w=[],m=d.slice(0,7);
+ try{const s=await getDoc(doc(db,'shifts',shiftId(d)));if(s.exists()&&s.data().closedAt)
+  w.push('The day for '+dstr(d)+' was already closed — cash on this bill was not in that day\'s cash count.');}catch(e){}
+ if(isOwnerMe()){try{const p=await getDoc(doc(db,'payrolls',m+'_'+ME.branchId));if(p.exists()&&p.data().status==='final')
+  w.push('Payroll for '+mLabel(m)+' is locked — commission on this bill is added only if payroll is unlocked and recalculated.');}catch(e){}}
+ const ex=((typeof FINSET!=='undefined'&&FINSET)||{}).exported||{};
+ if(ex[m])w.push(mLabel(m)+' was marked as sent to the accountant on '+dstr(ex[m].at)+'.');
+ if(d<ymd(addDays(new Date(),-60)))w.push('That is more than 60 days ago.');
+ return w;
+}
+const warnHTML=w=>w.length?'<div class="warnbox" style="margin-top:8px">'+w.map(x=>ic('alert',13)+' '+esc(x)).join('<br>')+'</div>':'';
+
+/* ---- at checkout ---- */
+function billDateBox(){
+ if(!boss())return '';
+ const bd=cart.billDate&&cart.billDate<today()?cart.billDate:'';
+ return bd?'<div class="bdbox">'+ic('calendar',15)+'<div style="flex:1;min-width:0"><b>Backdated bill · '+dstr(bd)+'</b><small>'+esc(cart.billDateWhy||'')+'</small></div>'+
+   '<button class="btn sm ghost" onclick="billDateForm()">Change</button></div>'
+  :'<button class="bdlink" onclick="billDateForm()">'+ic('calendar',13)+'Bill date: today · key in an earlier sale</button>';
+}
+window.billDateForm=()=>{
+ if(!boss())return;
+ modal('Date of this bill','<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 8px">For a sale that happened on an earlier day but was not keyed in then. The bill, its payments and anything it sells are counted on that day.</p>'+
+  '<label>Date of the sale</label><input class="f" type="date" id="bd-d" max="'+today()+'" value="'+(cart.billDate||today())+'" onchange="billDateCheck()">'+
+  '<label>Why is it keyed in late? *</label><input class="f" id="bd-r" value="'+esc(cart.billDateWhy||'')+'" placeholder="e.g. paper bill while the tablet was down">'+
+  '<div id="bd-w"></div><div id="bd-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="billDateSave()">'+ic('check',15)+'Use this date</button>'+
+  (cart.billDate?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="billDateClear()">Back to today</button>':'')+'</div>');
+ setTimeout(()=>window.billDateCheck(),20);
+};
+window.billDateCheck=async()=>{const i=$('#bd-d'),box=$('#bd-w');if(!i||!box)return;const d=i.value;
+ box.innerHTML=d&&d<today()?warnHTML(await redateWarnings(d)):'';};
+window.billDateSave=()=>{
+ const d=$('#bd-d').value,r=$('#bd-r').value.trim(),e=$('#bd-e');
+ if(!d){e.textContent='Pick the date.';return;}
+ if(d>today()){e.textContent='A bill cannot be dated in the future.';return;}
+ if(d===today()){window.billDateClear();return;}
+ if(r.length<3){e.textContent='Say why it is keyed in late.';return;}
+ cart.billDate=d;cart.billDateWhy=r.slice(0,200);window.closeModal();render();toast('This bill will be dated '+dstr(d));
+};
+window.billDateClear=()=>{delete cart.billDate;delete cart.billDateWhy;window.closeModal();render();};
+
+/* ---- moving a bill (and what hangs off it) to another day ---- */
+async function saleRedate(id,nd,why){
+ if(!boss())throw new Error('Only the owner or a manager can change the date of a bill.');
+ const ref=doc(db,'sales',id),snap=await getDoc(ref);if(!snap.exists())throw new Error('Bill not found.');
+ const s=snap.data(),od=s.date;if(!nd||nd===od)return false;
+ if(nd>today())throw new Error('A bill cannot be dated in the future.');
+ if(s.voided)throw new Error('This bill is voided.');
+ const later=(s.payments||[]).filter(p=>p.date&&p.date!==od).map(p=>p.date).sort();
+ if(later.length&&later[0]<nd)throw new Error('A later payment on this bill was taken on '+dstr(later[0])+' — the bill cannot be dated after it.');
+ const now=new Date().toISOString(),entered=s.enteredAt||s.at||now;
+ const upd={date:nd,at:redShift(s.at,nd),payments:(s.payments||[]).map(p=>(p.date||od)===od?{...p,date:nd,at:redShift(p.at||s.at,nd)}:p),
+  enteredAt:entered,backdated:nd<ymd(new Date(entered)),
+  dateLog:[...(s.dateLog||[]),{from:od,to:nd,why:String(why||'').slice(0,200),by:UID,byName:ME.name,at:now}]};
+ if((s.lastPaidDate||'')===od){upd.lastPaidDate=nd;upd.lastPaidAt=redShift(s.lastPaidAt||s.at,nd);}
+ await updateDoc(ref,upd);
+ const dd=daysBetween(od+'T00:00:00',nd+'T00:00:00');
+ /* package sessions used on this bill, and packages it sold, move with it */
+ try{const r=await getDocs(query(collection(db,'redemptions'),where('saleId','==',id)));
+  for(const x of r.docs)await updateDoc(doc(db,'redemptions',x.id),{date:nd,at:redShift(x.data().at,nd)});}catch(e){console.warn('redate redemptions',e);}
+ try{const c=await getDocs(query(collection(db,'customerPackages'),where('saleId','==',id)));
+  for(const x of c.docs){const v=x.data(),p={soldAt:redShift(v.soldAt,nd)};if(v.expiry)p.expiry=ymd(addDays(new Date(v.expiry+'T00:00:00'),dd));
+   await updateDoc(doc(db,'customerPackages',x.id),p);const h=(HELD||[]).find(y=>y.id===x.id);if(h)Object.assign(h,p);}}catch(e){console.warn('redate packages',e);}
+ const loc=SALES.find(x=>x.id===id);if(loc)Object.assign(loc,upd);else SALES.push({id,...s,...upd});
+ if(typeof finDirty==='function')finDirty();
+ await audit(upd.backdated&&!s.dateLog?'Backdated bill':'Bill date changed',(s.invoiceNo||id)+' · '+dstr(od)+' → '+dstr(nd)+' · '+why);
+ return true;
+}
+window.saleDateForm=id=>{
+ const s=SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id);if(!s||!boss())return;
+ modal('Change the date of '+(s.invoiceNo||'this bill'),'<div class="card">'+
+  '<table><tr><td class="muted">Now dated</td><td class="num"><b>'+dstr(s.date)+'</b></td></tr>'+
+  '<tr><td class="muted">Total</td><td class="num">'+rm(s.total)+'</td></tr></table>'+
+  '<label>New date</label><input class="f" type="date" id="sd-d" max="'+today()+'" value="'+s.date+'" onchange="saleDateCheck()">'+
+  '<label>Reason *</label><input class="f" id="sd-r" placeholder="e.g. keyed in on the wrong day">'+
+  '<div id="sd-w"></div><div id="sd-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="sd-go" style="width:100%;justify-content:center" onclick="saleDateSave(\''+id+'\')">'+ic('calendar',15)+'Change the date</button>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Payments taken on the bill\'s day, package sessions used on it and packages it sold move with it. Later instalments stay on their own days. The change is kept on the bill and in the audit trail.</p></div>');
+};
+window.saleDateCheck=async()=>{const i=$('#sd-d'),box=$('#sd-w');if(!i||!box)return;box.innerHTML=warnHTML(await redateWarnings(i.value));};
+window.saleDateSave=async id=>{
+ const d=$('#sd-d').value,r=$('#sd-r').value.trim(),e=$('#sd-e');
+ if(!d){e.textContent='Pick the date.';return;}
+ if(r.length<3){e.textContent='Give the reason.';return;}
+ $('#sd-go').disabled=true;
+ try{const ch=await saleRedate(id,d,r);if(!ch){e.textContent='That is already the date of the bill.';$('#sd-go').disabled=false;return;}
+  await loadRecentSales();window.closeModal();render();toast('Bill moved to '+dstr(d));window.showReceipt(id);}
+ catch(err){e.textContent=friendly(err);$('#sd-go').disabled=false;}
+};
+function dateNote(s){
+ const L=(s.dateLog||[]);if(!L.length)return '';const x=L[L.length-1];
+ return '<div class="bdnote noprint">'+ic('calendar',13)+'<span>'+(s.backdated?'Backdated':'Date changed')+' from '+dstr(x.from)+' to '+dstr(x.to)+' by '+esc(x.byName||'')+
+  ' on '+dstr(x.at)+(x.why?' · '+esc(x.why):'')+'</span></div>';
+}
+
+/* ============ QR attendance: clock in on your own phone, at the spa ============ */
+/* When the owner turns it on, nobody can clock anyone else in. The counter tablet shows a QR code
+   that changes every few seconds (the owner sets how many); each person scans it with their own
+   phone, signed in to their own account, and that clocks them in or out. The tablet keeps the
+   current code in attTokens/{branch}, which staff phones cannot read — the database rules check
+   the scanned code against it, so a code photographed and sent to someone at home expires before
+   it is any use, and a code cannot be made up. The tablet and staff can no longer clock people in
+   with attendance codes; the owner or a manager can still correct a record, with a reason.
+   Optional: the phone must be within a set distance of the spa. Each phone is remembered, so the
+   owner is told if one phone clocked in more than one person. */
+const attQr=()=>({on:false,ttl:20,geo:false,radius:150,loc:{},...((D.meta||{}).attQr||{})});
+const qrMode=()=>!!attQr().on;
+let QRT={tok:'',prev:'',at:0,svg:'',busy:false,timer:null};
+const qrTok=()=>{const a=new Uint8Array(8),A='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';(crypto.getRandomValues?crypto.getRandomValues(a):a.forEach((_,i)=>a[i]=Math.random()*256|0));
+ return [...a].map(x=>A[x%A.length]).join('');};
+const qrPretty=t=>String(t||'').replace(/(.{4})(.{4})/,'$1-$2');
+const attQrUrl=tok=>{let base='';try{base=location.origin+location.pathname;}catch(e){}return base+'#att='+ME.branchId+'.'+tok;};
+const devId=()=>{try{let d=localStorage.getItem('luuna:dev');if(!d){d=qrTok()+qrTok();localStorage.setItem('luuna:dev',d);}return d;}catch(e){return 'nodev';}};
+
+/* ---- the counter tablet: show the code, change it every few seconds ---- */
+function attQrPanel(big){
+ const s=Math.max(0,Math.ceil(attQr().ttl-(Date.now()-QRT.at)/1000));
+ return '<div class="attqr'+(big?' big':'')+'"><div class="attqrimg" data-attqr="1">'+(QRT.svg||'<div class="spin"></div>')+'</div>'+
+  '<div class="attqrtx"><b>Scan with your own phone to clock in or out</b>'+
+  '<small>Open the camera, or '+esc((D.meta.biz||{}).name||'the app')+' → Attendance → Scan. Or type the code.</small>'+
+  '<div class="attqrcode" data-attqrcode="1">'+qrPretty(QRT.tok)+'</div>'+
+  '<div class="attqrbar"><i data-attqrbar="1" style="width:'+(QRT.at?s/attQr().ttl*100:100)+'%"></i></div>'+
+  '<small>New code in <span data-attqrs="1">'+(QRT.at?s:attQr().ttl)+'</span>s</small>'+
+  (big?'':'<button class="btn sm ghost" onclick="attQrBig()">'+ic('scan',13)+'Full screen</button>')+'</div></div>';
+}
+window.attQrBig=()=>{modal('Clock in / out',attQrPanel(true));attQrPaint();};
+function attQrPaint(){
+ if(typeof document==='undefined'||!document.querySelectorAll)return;
+ const s=Math.max(0,Math.ceil(attQr().ttl-(Date.now()-QRT.at)/1000));
+ document.querySelectorAll('[data-attqr]').forEach(e=>{if(QRT.svg&&e.dataset.tok!==QRT.tok){e.innerHTML=QRT.svg;e.dataset.tok=QRT.tok;}});
+ document.querySelectorAll('[data-attqrcode]').forEach(e=>{e.textContent=qrPretty(QRT.tok);});
+ document.querySelectorAll('[data-attqrs]').forEach(e=>{e.textContent=s;});
+ document.querySelectorAll('[data-attqrbar]').forEach(e=>{e.style.width=(s/attQr().ttl*100)+'%';});
+}
+async function attQrRotate(){
+ if(QRT.busy||!ME||!isBranch()||!qrMode())return;QRT.busy=true;
+ const tok=qrTok(),ttl=Math.min(120,Math.max(10,+attQr().ttl||20));
+ try{await setDoc(doc(db,'attTokens',ME.branchId),{token:tok,prev:QRT.tok||'',at:serverTimestamp(),atMs:Date.now(),ttl,branchId:ME.branchId});
+  QRT.prev=QRT.tok;QRT.tok=tok;QRT.at=Date.now();
+  try{await loadQR();QRT.svg=qrSVG(attQrUrl(tok),240);}catch(e){QRT.svg='<div class="tiny muted">QR could not be drawn — use the code.</div>';}
+  attQrPaint();}
+ catch(e){console.warn('attendance code',e);}
+ QRT.busy=false;
+}
+window.attQrRotate=attQrRotate;
+function attQrTick(){
+ if(!ME||!isBranch()||!qrMode())return;
+ const shown=typeof document!=='undefined'&&document.querySelector&&document.querySelector('[data-attqr]');
+ const vis=typeof document==='undefined'||document.visibilityState!=='hidden';
+ if(!shown||!vis)return;   /* the code only changes while someone can see it, so no writes overnight */
+ if(!QRT.tok||(Date.now()-QRT.at)/1000>=attQr().ttl)attQrRotate();else attQrPaint();
+}
+if(typeof setInterval==='function'&&!QRT.timer)QRT.timer=setInterval(attQrTick,1000);
+
+/* ---- a staff member's phone: scan, or open the link from the phone camera ---- */
+window.qrScanOpen=()=>{
+ if(isBranch()){toast('Scan with your own phone, signed in as yourself');return;}
+ const canBD=typeof window.BarcodeDetector==='function';
+ const canCam=!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
+ modal('Scan to clock in / out','<div class="card">'+
+  (canCam?'<div class="scanbox"><video id="qs-v" playsinline muted autoplay></video><span class="scanframe"></span></div>'+
+   '<div class="tiny muted" id="qs-msg" style="margin:8px 0 12px">Point the camera at the QR code on the counter tablet.</div>':'')+
+  '<label>Or type the code under the QR</label><div class="row"><input class="f" id="qs-c" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX" style="margin:0;flex:1;letter-spacing:.12em;text-transform:uppercase">'+
+  '<button class="btn" id="qs-go" onclick="qrTyped()">'+ic('check',15)+'Go</button></div>'+
+  '<div id="qs-e" class="tiny" style="color:var(--rose);margin-top:8px"></div></div>',
+ ()=>{
+  if(!canCam)return;
+  stopScan();
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false}).then(async stream=>{
+   const v=document.getElementById('qs-v');if(!v){stream.getTracks().forEach(t=>t.stop());return;}
+   v.srcObject=stream;const p=v.play&&v.play();if(p&&p.catch)p.catch(()=>{});
+   let det=null,jsqr=null,cv=null;
+   if(canBD)det=new window.BarcodeDetector({formats:['qr_code']});
+   else{try{jsqr=await loadJsQR();cv=document.createElement('canvas');}catch(e){const m=document.getElementById('qs-msg');if(m)m.textContent='This phone cannot read QR codes here — type the code instead, or open your camera app and scan.';}}
+   let busy=false;
+   SCAN={stream,t:setInterval(async()=>{
+    if(!document.getElementById('qs-v')){stopScan();return;}
+    if(busy||v.readyState<2)return;busy=true;
+    try{let txt='';
+     if(det){const r=await det.detect(v);if(r&&r[0])txt=r[0].rawValue||'';}
+     else if(jsqr&&cv){cv.width=v.videoWidth;cv.height=v.videoHeight;const g=cv.getContext('2d');g.drawImage(v,0,0);
+      const img=g.getImageData(0,0,cv.width,cv.height),r=jsqr(img.data,img.width,img.height);if(r)txt=r.data||'';}
+     const m=/att=([^.&#]+)\.([A-Z0-9]+)/.exec(txt);
+     if(m){stopScan();window.closeModal();await attScanned(m[1],m[2]);}
+     else if(txt){const x=document.getElementById('qs-msg');if(x)x.textContent='That is not the attendance QR.';}}
+    catch(e){}
+    busy=false;},300)};
+  }).catch(()=>{const m=document.getElementById('qs-msg');if(m)m.textContent='The camera is not available — type the code instead.';});
+ });
+};
+let JSQR_P=null;
+function loadJsQR(){
+ if(window.jsQR)return Promise.resolve(window.jsQR);if(JSQR_P)return JSQR_P;
+ const srcs=['https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js','https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js'];
+ JSQR_P=new Promise((res,rej)=>{let i=0;const next=()=>{if(i>=srcs.length){JSQR_P=null;rej(new Error('no QR reader'));return;}
+  const sc=document.createElement('script');sc.src=srcs[i++];sc.async=true;sc.onload=()=>window.jsQR?res(window.jsQR):next();sc.onerror=next;(document.head||document.body).appendChild(sc);};next();});
+ return JSQR_P;
+}
+window.qrTyped=async()=>{
+ const t=String($('#qs-c').value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+ if(t.length!==8){$('#qs-e').textContent='The code has 8 letters and numbers.';return;}
+ stopScan();window.closeModal();await attScanned(ME.branchId,t);
+};
+/* how far the phone is from the spa, when the owner asked for it */
+function geoHere(){return new Promise((res,rej)=>{
+ if(!navigator.geolocation)return rej(new Error('This phone cannot share its location.'));
+ navigator.geolocation.getCurrentPosition(p=>res({lat:p.coords.latitude,lon:p.coords.longitude,acc:Math.round(p.coords.accuracy||0)}),
+  ()=>rej(new Error('Allow location for this app to clock in — the owner asks for it.')),{enableHighAccuracy:true,timeout:10000,maximumAge:30000});});}
+const geoDist=(a,b)=>{const R=6371e3,r=x=>x*Math.PI/180,dl=r(b.lat-a.lat),dn=r(b.lon-a.lon);
+ const h=Math.sin(dl/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dn/2)**2;return Math.round(2*R*Math.asin(Math.sqrt(h)));};
+async function attScanned(br,tok){
+ if(!ME)return;
+ if(isBranch()){toast('Scan with your own phone, signed in as yourself');return;}
+ if(!qrMode()){toast('QR attendance is not switched on');return;}
+ const bn=(D.branches.find(b=>b.id===br)||{}).name||br,now=new Date().toISOString();
+ let recs=[];
+ try{recs=(await getDocs(query(collection(db,'attendance'),where('staffId','==',UID),where('date','==',today())))).docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){recs=ATT.filter(a=>a.staffId===UID&&a.date===today());}
+ const open=recs.find(a=>a.clockIn&&!a.clockOut),done=recs.find(a=>a.clockIn&&a.clockOut);
+ if(!open&&done){attDone('done','Already clocked out today','You clocked out at '+tstr(done.clockOut)+'. If you came back to work, ask the manager to adjust it.');return;}
+ const Q=attQr();let geo=null;
+ if(Q.geo){const loc=(Q.loc||{})[br];
+  if(loc&&loc.lat){try{const g=await geoHere();geo={...g,dist:geoDist(g,loc)};
+   if(geo.dist>(+Q.radius||150)+Math.min(geo.acc,100)){attDone('no','Too far from the spa','You are about '+(geo.dist>=1000?(geo.dist/1000).toFixed(1)+' km':geo.dist+' m')+' from '+bn+'. Clock in when you are at the spa.');return;}}
+   catch(e){attDone('no','Location needed',e.message);return;}}}
+ const base={method:'qr',deviceId:devId(),...(geo?{geo}:{})};
+ try{
+  if(open){
+   await updateDoc(doc(db,'attendance',open.id),{clockOut:now,closedBy:UID,closedByName:ME.name,methodOut:'qr',qrTokenOut:tok,deviceOut:base.deviceId,...(geo?{geoOut:geo}:{})});
+   Object.assign(ATT.find(a=>a.id===open.id)||{},{clockOut:now});
+   await audit('Clock out (QR)',ME.name+' at '+tstr(now)+' · '+bn);
+   logEvent('attendance',ME.name+' clocked out',tstr(now)+' · '+bn+' · QR',{refType:'attendance',refId:UID});
+   attDone('ok','Clocked out · '+tstr(now),'Worked '+runFor(open.clockIn).replace(/ /,' ')+' today at '+bn+'. Thank you, '+String(ME.name||'').split(' ')[0]+'!');}
+  else{
+   const rec={staffId:UID,staffName:ME.name,branchId:br,date:today(),clockIn:now,clockOut:'',verified:true,qrToken:tok,recordedBy:UID,recordedByName:ME.name,...base};
+   const r=await addDoc(collection(db,'attendance'),rec);ATT.unshift({id:r.id,...rec});
+   await audit('Clock in (QR)',ME.name+' at '+tstr(now)+' · '+bn);
+   logEvent('attendance',ME.name+' clocked in',tstr(now)+' · '+bn+' · QR',{refType:'attendance',refId:UID});
+   attDone('ok','Clocked in · '+tstr(now),'At '+bn+'. Have a good day, '+String(ME.name||'').split(' ')[0]+'!');}
+  render();
+ }catch(e){
+  const denied=/permission|insufficient/i.test(String(e&&(e.code||e.message)));
+  attDone('no',denied?'That code has expired':'Could not clock you in',denied?'The code changes every '+Q.ttl+' seconds. Scan the code on the tablet again.':friendly(e));
+ }
+}
+window.attScanned=attScanned;
+function attDone(kind,title,sub){
+ modal(kind==='ok'?'Done':'Attendance','<div class="card attdone '+kind+'"><div class="attdoneic">'+ic(kind==='ok'?'check':kind==='done'?'clock':'alert',34)+'</div>'+
+  '<h2>'+esc(title)+'</h2><p>'+esc(sub)+'</p>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="closeModal()">OK</button>'+
+  (kind==='no'?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="qrScanOpen()">'+ic('scan',14)+'Scan again</button>':'')+'</div>');
+}
+/* the link inside the QR opens the app on the phone and clocks the person in */
+window.attCheckHash=()=>{
+ let h='';try{h=location.hash||'';}catch(e){}
+ const m=/att=([^.&#]+)\.([A-Z0-9]+)/.exec(h);if(!m||!ME)return;
+ try{history.replaceState(null,'',location.pathname+location.search);}catch(e){try{location.hash='';}catch(_){}}
+ attScanned(m[1],m[2]);
+};
+if(typeof window.addEventListener==='function')window.addEventListener('hashchange',()=>window.attCheckHash());
+
+/* ---- settings (owner / manager) ---- */
+function attQrSetPanel(){
+ const Q=attQr(),loc=(Q.loc||{})[ME.branchId];
+ return '<div class="card"><h2 style="margin-bottom:6px">'+ic('scan',16)+' Attendance by QR</h2>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Staff clock in and out by scanning a code on the counter tablet with their own phone, signed in as themselves — so nobody can clock in for someone else. The tablet shows the code on its home screen.</p>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="aq-on"'+(Q.on?' checked':'')+'> <b>Clock in only by scanning the QR with your own phone</b></label>'+
+  '<div class="grid g2" style="margin-top:8px"><div><label>The code changes every (seconds)</label><input class="f" type="number" min="10" max="120" id="aq-ttl" value="'+Q.ttl+'"></div>'+
+  '<div><label>Must be near the spa</label><select class="f" id="aq-geo"><option value="">No location check</option>'+
+   [100,150,300,500].map(m=>'<option value="'+m+'"'+(Q.geo&&+Q.radius===m?' selected':'')+'>Within '+m+' m</option>').join('')+'</select></div></div>'+
+  '<div class="spread" style="margin:4px 0 10px"><span class="tiny muted">'+(loc&&loc.lat?'Spa location for '+esc(branch().name)+' set '+dstr(loc.at):'Spa location not set for '+esc(branch().name))+'</span>'+
+   '<button class="btn sm ghost" onclick="attQrLoc()">'+ic('pin',13)+'Use this device\'s location</button></div>'+
+  '<div id="aq-e" class="tiny" style="color:var(--rose);margin-bottom:6px"></div>'+
+  '<button class="btn sm" onclick="attQrSave()">'+ic('check',14)+'Save</button>'+
+  '<p class="tiny muted" style="margin:8px 0 0">While this is on, attendance codes on the tablet stop working. You or a manager can still adjust a record from Team, with a reason.</p></div>';
+}
+window.attQrLoc=async()=>{
+ try{const g=await geoHere();const Q=attQr(),loc={...(Q.loc||{}),[ME.branchId]:{lat:g.lat,lon:g.lon,acc:g.acc,at:new Date().toISOString()}};
+  const q={...Q,loc};await setDoc(doc(db,'meta','settings'),{attQr:q},{merge:true});D.meta.attQr=q;render();toast('Spa location saved (±'+g.acc+' m)');}
+ catch(e){toast(e.message||friendly(e));}
+};
+window.attQrSave=async()=>{
+ const ttl=Math.round(+$('#aq-ttl').value||20),g=$('#aq-geo').value;
+ if(!(ttl>=10&&ttl<=120)){$('#aq-e').textContent='Between 10 and 120 seconds.';return;}
+ const q={...attQr(),on:$('#aq-on').checked,ttl,geo:!!g,radius:+g||attQr().radius};
+ if(q.geo&&!((q.loc||{})[ME.branchId]||{}).lat){$('#aq-e').textContent='Set the spa location first — tap "Use this device\'s location" while at the spa.';return;}
+ try{await setDoc(doc(db,'meta','settings'),{attQr:q},{merge:true});D.meta.attQr=q;
+  await audit('Attendance by QR',(q.on?'on':'off')+' · every '+ttl+'s'+(q.geo?' · within '+q.radius+' m':''));render();toast('Saved');}
+ catch(e){$('#aq-e').textContent=friendly(e);}
+};
+/* ---- the owner is told when one phone clocked in more than one person ---- */
+function attQrAlerts(al){
+ if(!boss()||!qrMode())return;
+ const by={};ATT.filter(a=>a.date===today()&&a.branchId===ME.branchId&&a.deviceId&&a.method==='qr').forEach(a=>{(by[a.deviceId]=by[a.deviceId]||new Set()).add(a.staffName||a.staffId);});
+ const sh=Object.values(by).filter(s=>s.size>1);
+ if(sh.length)al.push({i:'alert',t:'One phone clocked in '+[...sh[0]].length+' people today',d:[...sh[0]].join(', ')+' — check who was really in',go:"go('team')"});
+}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);attQrAlerts(al);};}
 </script>
