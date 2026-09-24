@@ -1508,6 +1508,21 @@ body.demo .syncbar{top:106px}
 .paytbl td,.paytbl th{white-space:nowrap}.paytbl .prrow{cursor:pointer}.paytbl .prrow:hover td{background:var(--surface-2)}
 .paytbl .paytot td{font-weight:650;border-top:2px solid var(--line)}
 .payh{margin:14px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--brass)}
+
+/* ---------- performance ---------- */
+.perfgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;margin-bottom:12px}
+.perfcard{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px;cursor:pointer;font:inherit;color:var(--ink);box-shadow:var(--shadow)}
+.perfcard b{display:block}.perfcard small{display:block;font-size:11.5px;color:var(--ink-3)}
+.perfsc{font-size:24px;font-weight:650;font-variant-numeric:tabular-nums}.perfsc small{display:inline;font-size:12px}
+.perfsc.g{color:var(--jade)}.perfsc.a{color:var(--amber)}.perfsc.r{color:var(--rose)}
+.kpibar{margin:8px 0}.kpibar .spread span{white-space:nowrap}.kpibar .bar{height:7px;margin-top:3px}
+.kpitbl td,.kpitbl th{white-space:nowrap;padding:4px}.kpitbl .kpiin{width:92px;margin:0;padding:7px 8px}.kpitbl .kpidef td{background:var(--brass-soft)}
+.aprsnap{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px}
+.aprsnap div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:10px;padding:7px 9px}.aprsnap small{display:block;font-size:10.5px;color:var(--ink-3)}.aprsnap b{font-size:14px}
+.aprrow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.aprstars{display:flex;gap:4px}.aprstars button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:12px;color:var(--ink-3)}
+.aprstars button.on{background:var(--brass);border-color:var(--brass);color:#fff}
+.aprtext{margin:2px 0 8px;font-size:13px;white-space:pre-wrap}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1765,7 +1780,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-24z2';
+const BUILD='2026-09-24z3';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -11245,7 +11260,7 @@ window.render=render;
    watchSync();
    watchLive();
    watchLeaves();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm(),loadClaims()]);
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm(),loadClaims(),loadAppraisals()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
@@ -13205,9 +13220,10 @@ function vHR(){
  const pendC=(CLAIMS||[]).filter(c=>c.status==='pending'&&myBranch(c)).length;
  const tabs=[['me','My HR','user','']];
  if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
+ if(boss())tabs.push(['perf','Performance','star','']);
  if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard','']);
  if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
- const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll};
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
 }
@@ -13242,6 +13258,7 @@ function hrMe(){
    kpi('Medical leave left',(q.MC-u.MC)+' / '+q.MC,'days this year','shield')+'</div>'+
   '<div class="row wrap2" style="margin-top:12px"><button class="btn" onclick="leaveForm(\''+s.id+'\')">'+ic('leave',15)+'Apply for leave</button>'+
    '<button class="btn ghost" onclick="claimForm(\''+s.id+'\')">'+ic('receipt',15)+'Submit a claim</button></div></div>'+
+  myKpiCard(s.id)+myApprCard(s.id)+
   '<div class="grid g2" style="align-items:start"><div class="card"><h3 style="margin:0 0 8px">'+ic('leave',15)+' My leave</h3>'+
    (myL.length?myL.map(l=>lvRow(l,true)).join(''):'<div class="empty">'+ic('leave',22)+'<div>No leave applied yet.</div></div>')+'</div>'+
   '<div class="card"><h3 style="margin:0 0 8px">'+ic('receipt',15)+' My claims</h3>'+
@@ -13578,6 +13595,8 @@ function hrAlerts(al){
  if(isOwnerMe()&&HRSTAFF){const soon=ymd(addDays(new Date(),30)),td=today();
   const ce=hrPeople().filter(s=>{const f=HRSTAFF[s.id]||{};return f.contractEnd&&f.contractEnd>=td&&f.contractEnd<=soon;});
   if(ce.length)al.push({i:'idcard',t:ce.length+' contract'+(ce.length>1?'s':'')+' ending within 30 days',d:ce.map(s=>s.name).join(', '),go:"hrGo('staff')"});}
+ const ack=(APPRAISALS||[]).filter(a=>a.staffId===UID&&a.status==='shared'&&!isBranch());
+ if(ack.length)al.push({i:'note',t:'Your appraisal is ready to read',d:ack.map(a=>a.period).join(', '),go:"hrGo('me')"});
  const off=hrPeople().filter(s=>onLeave(s.id,today()));
  if(off.length&&can('booking'))al.push({i:'leave',t:off.length+' on leave today',d:off.map(s=>s.name+' ('+onLeave(s.id,today()).type+')').join(', '),go:"go('book')"});
 }
@@ -13633,10 +13652,12 @@ function socsoOf(wage,f,m){
  if(foreign||old)return {ee:0,er:r2(w*PAYRATE.socsoER_EI),eisEE:0,eisER:0};
  return {ee:r2(w*PAYRATE.socsoEE),er:r2(w*PAYRATE.socsoER),eisEE:r2(w*PAYRATE.eis),eisER:r2(w*PAYRATE.eis)};
 }
-const MAN=['bonus','otherAdd','otherAddNote','advance','otherDed','otherDedNote','otHours','pcb','epfEE','epfER','socsoEE','socsoER','eisEE','eisER','note'];
+const MAN=['kpiBonus','bonus','otherAdd','otherAddNote','advance','otherDed','otherDedNote','otHours','pcb','epfEE','epfER','socsoEE','socsoER','eisEE','eisER','note'];
 /* the figures the records give for one person and one month */
 async function payAuto(m,sales){
  const from=m+'-01',to=mEnd(m),F=HRSTAFF||{};
+ if(KPIT[m]===undefined){try{const k=await getDoc(doc(db,'kpiTargets',kpiId(m)));KPIT[m]=k.exists()?k.data():{};}catch(e){KPIT[m]={};}}
+ const bn=(KPIT[m]||{}).bonus||{};
  return hrPeople().map(s=>{
   const f=F[s.id]||{};
   const c=hrCommOf(s.id,sales);
@@ -13648,7 +13669,9 @@ async function payAuto(m,sales){
   return {staffId:s.id,name:f.fullName||s.name,position:f.position||s.position||'',ic:f.ic||'',bank:f.bank||'',bankAcc:f.bankAcc||'',
    epfNo:f.epf||'',socsoNo:f.socso||'',taxNo:f.tax||'',citizen:f.citizen||'Malaysian / PR',dob:f.dob||'',
    basic:+f.basic||0,allowance:+f.allowance||0,commSales:c.sc,commHands:c.ho,days:att.length,otSuggest:otSug,
-   unpaidDays:ul,claims:r2(cl.reduce((t,x)=>t+x.amount,0)),claimIds:cl.map(x=>x.id),pcbDefault:+f.pcb||0,noFile:!F[s.id]};
+   unpaidDays:ul,claims:r2(cl.reduce((t,x)=>t+x.amount,0)),claimIds:cl.map(x=>x.id),pcbDefault:+f.pcb||0,noFile:!F[s.id],
+   kpiScore:kpiScore(kpiActual(s.id,sales,from,to),kpiTarget(m,s.id)),
+   kpiBonus:(()=>{const sc=kpiScore(kpiActual(s.id,sales,from,to),kpiTarget(m,s.id));return bn.amount&&sc!=null&&sc>=bn.min?bn.amount:0;})()};
  });
 }
 function hrCommOf(sid,sales){
@@ -13664,7 +13687,7 @@ function payCalc(L,m){
  const otPay=r2(otHours*hour*PAYRATE.otMult);
  const unpaid=r2(day*(+L.unpaidDays||0));
  const comm=r2((+L.commSales||0)+(+L.commHands||0));
- const gross=r2(L.basic+L.allowance+comm+otPay+(+L.bonus||0)+(+L.otherAdd||0)-unpaid);
+ const gross=r2(L.basic+L.allowance+comm+otPay+(+L.bonus||0)+(+L.kpiBonus||0)+(+L.otherAdd||0)-unpaid);
  const f={citizen:L.citizen,dob:L.dob};
  const e=epfOf(gross-otPay,f,m),so=socsoOf(gross,f,m);
  const pick=(k,v)=>L[k]!=null&&L[k]!==''?r2(+L[k]):v;
@@ -13734,7 +13757,7 @@ function hrPayroll(){
    '<th class="num">Other −</th><th class="num">Claims</th><th class="num">Net pay</th><th></th></tr>'+
    L.map(x=>{const c=payCalc(x,PAYM);return '<tr'+(final?'':' class="prrow" onclick="prEdit(\''+x.staffId+'\')"')+'><td><b>'+esc(x.name)+'</b><div class="tiny muted">'+esc(x.position||'')+'</div></td>'+
     '<td class="num">'+rm(x.basic+x.allowance)+'</td><td class="num">'+rm(c.comm)+'</td><td class="num">'+(c.otPay?rm(c.otPay)+'<div class="tiny muted">'+c.otHours+' h</div>':(x.otSuggest&&!final?'<span class="tiny" style="color:var(--amber)">'+x.otSuggest+' h?</span>':'—'))+'</td>'+
-    '<td class="num">'+rm((+x.bonus||0)+(+x.otherAdd||0))+'</td><td class="num">'+(c.unpaid?'−'+rm(c.unpaid)+'<div class="tiny muted">'+x.unpaidDays+' d</div>':'—')+'</td>'+
+    '<td class="num">'+rm((+x.bonus||0)+(+x.kpiBonus||0)+(+x.otherAdd||0))+(x.kpiBonus?'<div class="tiny" style="color:var(--jade)">KPI '+rm(x.kpiBonus)+'</div>':'')+'</td><td class="num">'+(c.unpaid?'−'+rm(c.unpaid)+'<div class="tiny muted">'+x.unpaidDays+' d</div>':'—')+'</td>'+
     '<td class="num"><b>'+rm(c.gross)+'</b></td><td class="num">'+rm(c.epfEE)+'</td><td class="num">'+rm(r2(c.socsoEE+c.eisEE))+'</td><td class="num">'+rm(c.pcb)+'</td>'+
     '<td class="num">'+rm((+x.advance||0)+(+x.otherDed||0))+'</td><td class="num">'+rm(+x.claims||0)+'</td><td class="num"><b>'+rm(c.net)+'</b></td>'+
     '<td>'+(final?'<button class="btn sm ghost" onclick="event.stopPropagation();payslipPDF(\''+x.staffId+'\')">'+ic('download',13)+'Slip</button>':ic('edit',14))+'</td></tr>';}).join('')+
@@ -13769,7 +13792,7 @@ window.prEdit=sid=>{
   '<tr><td>Approved claims paid with salary</td><td class="num">'+rm(x.claims||0)+'</td></tr></table>'+
   '<h4 class="payh">Additions</h4><div class="grid g2">'+
    f('otHours','Overtime hours','','0',x.otSuggest?'Attendance shows about '+x.otSuggest+' h over '+PAYRATE.stdDay+' h days':'1.5× the hourly rate (basic ÷ 26 ÷ 8)')+
-   f('bonus','Bonus / incentive (RM)','','0')+f('otherAdd','Other addition (RM)','','0')+
+   f('kpiBonus','KPI bonus (RM)','','0',x.kpiScore!=null?'KPI score '+x.kpiScore+'%':'No KPI targets this month')+f('bonus','Bonus / incentive (RM)','','0')+f('otherAdd','Other addition (RM)','','0')+
    '<div><label>What for</label><input class="f" id="pe-otherAddNote" value="'+esc(x.otherAddNote||'')+'"></div></div>'+
   '<h4 class="payh">Deductions</h4><div class="grid g2">'+
    f('advance','Salary advance (RM)','','0')+f('otherDed','Other deduction (RM)','','0')+
@@ -13785,7 +13808,7 @@ window.prEdit=sid=>{
 };
 function peDraft(sid){
  const x={...PAYDOC.lines[sid]};
- ['otHours','bonus','otherAdd','advance','otherDed','pcb','epfEE','epfER','socsoEE','socsoER','eisEE','eisER'].forEach(k=>{const e=$('#pe-'+k);if(e){const v=String(e.value).trim();x[k]=v===''?'':r2(+v);}});
+ ['otHours','kpiBonus','bonus','otherAdd','advance','otherDed','pcb','epfEE','epfER','socsoEE','socsoER','eisEE','eisER'].forEach(k=>{const e=$('#pe-'+k);if(e){const v=String(e.value).trim();x[k]=v===''?'':r2(+v);}});
  ['otherAddNote','otherDedNote','note'].forEach(k=>{const e=$('#pe-'+k);if(e)x[k]=String(e.value).trim().slice(0,120);});
  return x;
 }
@@ -13820,9 +13843,9 @@ window.payUnlock=async()=>{
 };
 window.payCSV=()=>{
  const L=Object.values(PAYDOC.lines||{});
- const H=['Name','IC','Position','Bank','Account no','KWSP no','PERKESO no','Tax no','Basic','Allowance','Commission','OT hours','OT pay','Bonus','Other addition','Unpaid leave days','Unpaid deduction','Gross',
+ const H=['Name','IC','Position','Bank','Account no','KWSP no','PERKESO no','Tax no','Basic','Allowance','Commission','OT hours','OT pay','KPI bonus','Bonus','Other addition','Unpaid leave days','Unpaid deduction','Gross',
   'KWSP employee','KWSP employer','PERKESO employee','PERKESO employer','SIP employee','SIP employer','PCB','Advance','Other deduction','Claims','Net pay','Employer cost'];
- const rows=L.map(x=>{const c=payCalc(x,PAYM);return [x.name,x.ic,x.position,x.bank,x.bankAcc,x.epfNo,x.socsoNo,x.taxNo,x.basic,x.allowance,c.comm,c.otHours,c.otPay,+x.bonus||0,+x.otherAdd||0,
+ const rows=L.map(x=>{const c=payCalc(x,PAYM);return [x.name,x.ic,x.position,x.bank,x.bankAcc,x.epfNo,x.socsoNo,x.taxNo,x.basic,x.allowance,c.comm,c.otHours,c.otPay,+x.kpiBonus||0,+x.bonus||0,+x.otherAdd||0,
   x.unpaidDays||0,c.unpaid,c.gross,c.epfEE,c.epfER,c.socsoEE,c.socsoER,c.eisEE,c.eisER,c.pcb,+x.advance||0,+x.otherDed||0,+x.claims||0,c.net,c.cost];});
  const csv=[H,...rows].map(r=>r.map(v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
  window.__lastCSV=csv;
@@ -13848,7 +13871,7 @@ function drawPayslip(d,P,first){
  const head=(t,xx)=>{d.setFillColor(243,233,216);d.rect(xx,y-5,colW,8,'F');d.setFont('helvetica','bold');d.setFontSize(9);T(t,xx+3,y);};
  head('PENDAPATAN / EARNINGS',L1);head('POTONGAN / DEDUCTIONS',L2);y+=8;
  const E=[['Gaji pokok / Basic',x.basic],['Elaun / Allowances',x.allowance],['Komisyen jualan / Sales commission',x.commSales],['Komisyen rawatan / Hands-on',x.commHands],
-  [c.otPay?'Kerja lebih masa / OT ('+c.otHours+' h)':'',c.otPay],['Bonus / Insentif',+x.bonus||0],[x.otherAddNote||'Lain-lain / Other',+x.otherAdd||0],
+  [c.otPay?'Kerja lebih masa / OT ('+c.otHours+' h)':'',c.otPay],['Bonus KPI',+x.kpiBonus||0],['Bonus / Insentif',+x.bonus||0],[x.otherAddNote||'Lain-lain / Other',+x.otherAdd||0],
   [c.unpaid?'Cuti tanpa gaji / Unpaid leave ('+x.unpaidDays+' d)':'',-c.unpaid]].filter(r=>r[0]&&r[1]);
  const Dd=[['KWSP / EPF',c.epfEE],['PERKESO / SOCSO',c.socsoEE],['SIP / EIS',c.eisEE],['PCB / MTD',c.pcb],['Pendahuluan / Advance',+x.advance||0],[x.otherDedNote||'Lain-lain / Other',+x.otherDed||0]].filter(r=>r[1]);
  d.setFont('helvetica','normal');d.setFontSize(9);
@@ -13900,5 +13923,253 @@ window.myPayslip=async id=>{
  const p=(PAYSLIPS||[]).find(x=>x.id===id);if(!p)return;
  try{const d=await payslipDoc([p]);const name='Payslip-'+p.month+'.pdf';window.__lastPDF={kind:'payslip',name,doc:d};d.save(name);}catch(e){toast(friendly(e));}
 };
+
+
+/* ============ HR phase 3: KPI targets, performance and appraisals ============ */
+/* Targets are set per month — one set for everyone, with changes per person — and each
+   person's month is scored from the records: sales credited to them, treatments they did
+   (hands-on), retail, add-ons, client ratings and merit points. Everyone sees their own
+   progress in My HR; the owner and managers see the whole team. A KPI bonus rule can pay a
+   fixed amount to whoever reaches the score, and it lands in that month's payroll.
+   Appraisals are written by the owner or a manager with the period's figures attached,
+   shared with the person, who reads it and acknowledges it with a comment. */
+let KPIM='',KPIT={},KPISALES={},APPRAISALS=null;
+const KPI_METRICS=[['sales','Sales credited','RM'],['sessions','Treatments done',''],['retail','Retail sales','RM'],['addons','Add-ons sold',''],['rating','Client rating','★']];
+const APPR_CRIT=[['skill','Treatment skill & results'],['service','Client care & communication'],['sales','Sales & recommending'],['sop','Hygiene & SOP'],
+ ['team','Teamwork'],['time','Punctuality & attendance'],['initiative','Initiative & learning']];
+const kpiId=m=>m+'_'+ME.branchId;
+async function kpiLoad(m){
+ if(KPIT[m]===undefined){KPIT[m]=null;
+  try{const s=await getDoc(doc(db,'kpiTargets',kpiId(m)));KPIT[m]=s.exists()?s.data():{};}catch(e){KPIT[m]={};}}
+ if(KPISALES[m]===undefined){KPISALES[m]=null;
+  try{KPISALES[m]=m===today().slice(0,7)?[]:await monthSales(m);}
+  catch(e){KPISALES[m]=[];}}
+ if(TAB==='hr')render();
+}
+const kpiSales=m=>m===today().slice(0,7)?SALES.filter(s=>!s.voided&&s.branchId===ME.branchId&&s.date>=m+'-01'&&s.date<=mEnd(m)):(KPISALES[m]||[]);
+const kpiReady=m=>KPIT[m]&&(m===today().slice(0,7)||KPISALES[m]);
+function kpiTarget(m,sid){
+ const t=KPIT[m]||{},d=t.default||{},o=(t.staff||{})[sid]||{};
+ const out={};KPI_METRICS.forEach(([k])=>{const v=o[k]!=null&&o[k]!==''?o[k]:d[k];out[k]=v==null||v===''?0:+v;});return out;
+}
+/* what one person did in a period, from bills, feedback and merit points */
+function kpiActual(sid,sales,from,to){
+ let s=0,r=0,a=0;const clients=new Set();
+ sales.forEach(b=>(b.items||[]).forEach(i=>{
+  if((i.staffId||b.staffId)===sid){s+=lineAmt(i);if(retailKind(i.kind))r+=lineAmt(i);if(i.kind==='addon')a+=(i.qty||1);}
+  if(i.handsOnId===sid&&b.customerId)clients.add(b.customerId);}));
+ const ho=handsOnTotals(sales)[sid]||{};
+ const fb=FEEDBACK.filter(f=>!f.hidden&&(f.staffIds||[]).includes(sid)&&String(f.at).slice(0,10)>=from&&String(f.at).slice(0,10)<=to);
+ const st=fb.map(f=>staffStar(f,sid)).filter(Boolean);
+ const merit=MERITS.filter(x=>x.staffId===sid&&String(x.at).slice(0,10)>=from&&String(x.at).slice(0,10)<=to).reduce((t,x)=>t+(+x.points||0),0)+
+  st.reduce((t,v)=>t+fbPoints(v),0);
+ const days=ATT.filter(x=>x.staffId===sid&&x.date>=from&&x.date<=to&&x.clockIn).length;
+ return {sales:r2(s),sessions:ho.sessions||0,retail:r2(r),addons:a,rating:st.length?r2(st.reduce((t,v)=>t+v,0)/st.length):0,
+  reviews:st.length,merit,clients:clients.size,days};
+}
+function kpiScore(act,tgt){
+ const parts=KPI_METRICS.filter(([k])=>tgt[k]>0).map(([k])=>Math.min(1.2,act[k]/tgt[k]));
+ return parts.length?Math.round(parts.reduce((t,v)=>t+v,0)/parts.length*100):null;
+}
+const kpiBand=sc=>sc==null?['No targets','']:sc>=100?['Target reached','g']:sc>=80?['On track','a']:['Below target','r'];
+function kpiRow(m,sid){
+ const from=m+'-01',to=mEnd(m),tgt=kpiTarget(m,sid),act=kpiActual(sid,kpiSales(m),from,to),sc=kpiScore(act,tgt);
+ return {sid,name:stf(sid).name||'',tgt,act,sc};
+}
+const kpiFmt=(k,v)=>k==='sales'||k==='retail'?rm(v):k==='rating'?(v?(+v).toFixed(1)+'★':'—'):String(v);
+function kpiBars(r){
+ return KPI_METRICS.filter(([k])=>r.tgt[k]>0||r.act[k]).map(([k,l])=>{const t=r.tgt[k],v=r.act[k],pc=t?Math.min(100,v/t*100):0;
+  return '<div class="kpibar"><div class="spread tiny"><span>'+l+'</span><span><b>'+kpiFmt(k,v)+'</b>'+(t?' / '+kpiFmt(k,t):'')+'</span></div>'+
+   '<div class="bar"><i style="width:'+pc+'%;'+(t&&v>=t?'background:var(--jade)':'')+'"></i></div></div>';}).join('');
+}
+/* ---------------- My HR: my targets ---------------- */
+function myKpiCard(sid){
+ const m=today().slice(0,7);
+ if(!kpiReady(m)){setTimeout(()=>kpiLoad(m),0);return '';}
+ const r=kpiRow(m,sid),b=kpiBand(r.sc);
+ if(r.sc==null&&!r.act.sales&&!r.act.sessions)return '';
+ const bonus=(KPIT[m].bonus||{});
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('target',15)+' My targets · '+mLabel(m)+'</h3>'+
+  (r.sc!=null?'<span class="pill '+b[1]+'">'+r.sc+'% · '+b[0]+'</span>':'')+'</div>'+kpiBars(r)+
+  (bonus.amount&&r.sc!=null?'<p class="tiny muted" style="margin:8px 0 0">'+ic('award',12)+' Reach '+bonus.min+'% to earn a KPI bonus of '+rm(bonus.amount)+'.'+(r.sc>=bonus.min?' <b style="color:var(--jade)">You are there!</b>':'')+'</p>':'')+
+  '<p class="tiny muted" style="margin:6px 0 0">'+r.act.reviews+' client review'+(r.act.reviews!==1?'s':'')+' · '+r.act.merit+' merit points · '+r.act.clients+' clients treated</p></div>';
+}
+/* ---------------- Performance tab (owner & managers) ---------------- */
+function hrPerf(){
+ if(!KPIM)KPIM=today().slice(0,7);
+ if(!kpiReady(KPIM))setTimeout(()=>kpiLoad(KPIM),0);
+ if(APPRAISALS===null)setTimeout(loadAppraisals,0);
+ const nav='<div class="card"><div class="spread"><div class="row" style="gap:8px"><button class="iconbtn" onclick="kpiMonth(-1)">'+ic('left',16)+'</button>'+
+  '<h2 style="margin:0;min-width:170px;text-align:center">'+mLabel(KPIM)+'</h2><button class="iconbtn" onclick="kpiMonth(1)">'+ic('right',16)+'</button></div>'+
+  '<button class="btn sm" onclick="kpiTargets()">'+ic('target',14)+'Set targets</button></div></div>';
+ if(!kpiReady(KPIM))return nav+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const rows=hrPeople().map(s=>kpiRow(KPIM,s.id)).sort((a,b)=>(b.sc??-1)-(a.sc??-1)||b.act.sales-a.act.sales);
+ const has=rows.some(r=>r.sc!=null),bonus=KPIT[KPIM].bonus||{};
+ const ap=(APPRAISALS||[]).filter(myBranch);
+ return nav+(has?'':'<div class="warnbox">'+ic('alert',13)+' No targets set for '+mLabel(KPIM)+' yet — the figures below are what each person did. <a href="javascript:void 0" onclick="kpiTargets()">Set targets</a></div>')+
+  '<div class="perfgrid">'+rows.map((r,i)=>{const b=kpiBand(r.sc);
+   return '<button class="perfcard" onclick="kpiPerson(\''+r.sid+'\')"><div class="spread"><div class="row" style="gap:9px"><span class="avatar">'+esc(initials(r.name))+'</span>'+
+    '<div style="text-align:left"><b>'+esc(r.name)+'</b><small>'+(r.sc!=null?'#'+(i+1)+' · ':'')+r.act.days+' days · '+r.act.reviews+' reviews</small></div></div>'+
+    (r.sc!=null?'<div class="perfsc '+b[1]+'">'+r.sc+'<small>%</small></div>':'')+'</div>'+kpiBars(r)+
+    (bonus.amount&&r.sc!=null&&r.sc>=bonus.min?'<div class="pill g" style="margin-top:8px">'+ic('award',11)+'KPI bonus '+rm(bonus.amount)+'</div>':'')+'</button>';}).join('')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('note',15)+' Appraisals</h3><button class="btn sm" onclick="apprNew()">'+ic('plus',14)+'New appraisal</button></div>'+
+   (APPRAISALS===null?'<div class="center"><div class="spin"></div></div>':ap.length?ap.slice(0,30).map(a=>apprRow(a,false)).join(''):'<div class="tiny muted">No appraisals yet. Quarterly works well for a small team.</div>')+'</div>';
+}
+window.kpiMonth=n=>{KPIM=mShift(KPIM,n);render();};
+window.kpiTargets=()=>{
+ const t=KPIT[KPIM]||{},d=t.default||{},S=t.staff||{},bn=t.bonus||{};
+ const cell=(k,v,sid)=>'<input class="f kpiin" type="number" step="'+(k==='rating'?'0.1':'1')+'" min="0" data-k="'+k+'" data-s="'+(sid||'')+'" value="'+(v==null?'':esc(v))+'"'+(sid?' placeholder="'+(d[k]==null||d[k]===''?'—':esc(d[k]))+'"':'')+'>';
+ modal('Targets · '+mLabel(KPIM),'<div class="card"><p class="tiny muted" style="margin:0 0 10px">Set the targets for everyone in the first row. Fill a person\'s row only where their target is different — empty boxes follow the first row. Leave a target empty or 0 to not score it.</p>'+
+  '<div class="scroll"><table class="kpitbl"><tr><th>Staff</th>'+KPI_METRICS.map(([k,l,u])=>'<th>'+l+(u?' ('+u+')':'')+'</th>').join('')+'</tr>'+
+  '<tr class="kpidef"><td><b>Everyone</b></td>'+KPI_METRICS.map(([k])=>'<td>'+cell(k,d[k],'')+'</td>').join('')+'</tr>'+
+  hrPeople().map(s=>'<tr><td>'+esc(s.name)+'</td>'+KPI_METRICS.map(([k])=>'<td>'+cell(k,(S[s.id]||{})[k],s.id)+'</td>').join('')+'</tr>').join('')+'</table></div>'+
+  '<h4 class="payh">KPI bonus (optional)</h4><div class="grid g2"><div><label>Score needed (%)</label><input class="f" type="number" id="kb-min" value="'+esc(bn.min||100)+'"></div>'+
+  '<div><label>Bonus (RM)</label><input class="f" type="number" step="0.01" id="kb-amt" value="'+esc(bn.amount||'')+'" placeholder="0 = no bonus"></div></div>'+
+  '<p class="tiny muted" style="margin:-4px 0 10px">Whoever reaches the score gets the bonus added to this month\'s payroll when it is prepared.</p>'+
+  '<div class="row wrap2"><button class="btn" id="kt-go" onclick="kpiSave()">'+ic('check',15)+'Save targets</button>'+
+  '<button class="btn ghost sm" onclick="kpiCopyPrev()">'+ic('refresh',14)+'Copy from '+mLabel(mShift(KPIM,-1))+'</button></div></div>');
+};
+window.kpiCopyPrev=async()=>{
+ const pm=mShift(KPIM,-1);
+ try{const s=await getDoc(doc(db,'kpiTargets',kpiId(pm)));if(!s.exists()){toast('No targets in '+mLabel(pm));return;}
+  KPIT[KPIM]={...s.data(),month:KPIM};window.kpiTargets();toast('Copied — press Save to keep them');}catch(e){toast(friendly(e));}
+};
+window.kpiSave=async()=>{
+ const d={},S={};
+ document.querySelectorAll('.kpiin').forEach(el=>{const v=String(el.value).trim();if(v==='')return;const k=el.dataset.k,sid=el.dataset.s;
+  if(sid)(S[sid]=S[sid]||{})[k]=+v;else d[k]=+v;});
+ const amt=+($('#kb-amt').value||0),min=+($('#kb-min').value||100);
+ const rec={month:KPIM,branchId:ME.branchId,default:d,staff:S,bonus:amt>0?{min,amount:r2(amt)}:{},updatedAt:new Date().toISOString(),updatedBy:UID};
+ try{await setDoc(doc(db,'kpiTargets',kpiId(KPIM)),rec);KPIT[KPIM]=rec;
+  await audit('KPI targets set',mLabel(KPIM)+(amt>0?' · bonus '+rm(amt)+' at '+min+'%':''));window.closeModal();render();toast('Targets saved');}
+ catch(e){toast(friendly(e));}
+};
+window.kpiPerson=sid=>{
+ const r=kpiRow(KPIM,sid),b=kpiBand(r.sc);
+ const from=KPIM+'-01',to=mEnd(KPIM);
+ const tags={};FEEDBACK.filter(f=>!f.hidden&&(f.staffIds||[]).includes(sid)&&String(f.at).slice(0,10)>=from&&String(f.at).slice(0,10)<=to).forEach(f=>(f.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1));
+ const lv=LEAVES.filter(l=>l.staffId===sid&&l.status==='approved'&&l.to>=from&&l.from<=to).reduce((t,l)=>t+lvDays(l),0);
+ modal(r.name+' · '+mLabel(KPIM),'<div class="card">'+(r.sc!=null?'<div class="spread"><b>Overall</b><span class="pill '+b[1]+'">'+r.sc+'% · '+b[0]+'</span></div>':'')+
+  kpiBars(r)+'<table style="margin-top:10px"><tr><td>Clients treated</td><td class="num">'+r.act.clients+'</td></tr><tr><td>Reviews · average</td><td class="num">'+r.act.reviews+' · '+kpiFmt('rating',r.act.rating)+'</td></tr>'+
+  '<tr><td>Merit points</td><td class="num">'+r.act.merit+'</td></tr><tr><td>Days worked · leave</td><td class="num">'+r.act.days+' · '+lv+'</td></tr></table>'+
+  (Object.keys(tags).length?'<div class="tiny muted" style="margin-top:8px">What clients said: '+Object.entries(tags).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([t,n])=>esc(t)+' ×'+n).join(' · ')+'</div>':'')+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="apprNew(\''+sid+'\')">'+ic('note',15)+'Start an appraisal</button></div>');
+};
+
+/* ---------------- appraisals ---------------- */
+async function loadAppraisals(){
+ try{const q=boss()?query(collection(db,'appraisals'),limit(300)):query(collection(db,'appraisals'),where('staffId','==',UID),where('status','in',['shared','acknowledged']));
+  APPRAISALS=(await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).filter(a=>boss()||['shared','acknowledged'].includes(a.status))
+   .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));}
+ catch(e){APPRAISALS=[];console.warn('appraisals',e);}
+ if(TAB==='hr')render();
+}
+const APST={draft:['Draft',''],shared:['Waiting for acknowledgement','a'],acknowledged:['Acknowledged','g']};
+function apprRow(a,own){
+ const st=APST[a.status]||[a.status,''];
+ return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+(own?'':esc(a.staffName||'')+' · ')+esc(a.period||'')+'</b>'+
+  '<small>Overall '+(a.overall?(+a.overall).toFixed(1)+' / 5':'—')+' · by '+esc(a.reviewerName||'')+' · '+dshort(a.createdAt)+'</small></div>'+
+  '<span class="pill '+st[1]+'">'+st[0]+'</span><button class="btn sm ghost" onclick="apprOpen(\''+a.id+'\')">Open</button></div>';
+}
+const apPeriods=()=>{const m=today().slice(0,7),y=+m.slice(0,4),q=Math.floor((+m.slice(5)-1)/3)+1;
+ const pq=q===1?[y-1,4]:[y,q-1];return [['q',pq[0]+' Q'+pq[1],qRange(pq[0],pq[1])],['c',y+' Q'+q,qRange(y,q)],['h',y+' Jan–Jun',[y+'-01',y+'-06']],['y','Year '+(y-1),[(y-1)+'-01',(y-1)+'-12']]];};
+function qRange(y,q){const a=(q-1)*3+1;return [y+'-'+String(a).padStart(2,'0'),y+'-'+String(a+2).padStart(2,'0')];}
+window.apprNew=async sid=>{
+ const ps=apPeriods();
+ modal('New appraisal','<div class="card"><label>Staff</label><select class="f" id="ap-s">'+hrPeople().map(s=>'<option value="'+s.id+'"'+(s.id===sid?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<label>Period</label><select class="f" id="ap-p">'+ps.map((p,i)=>'<option value="'+i+'">'+p[1]+' ('+mLabel(p[2][0])+' – '+mLabel(p[2][1])+')</option>').join('')+'</select>'+
+  '<div id="ap-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="ap-go" style="width:100%;justify-content:center" onclick="apprCreate()">'+ic('right',15)+'Continue</button>'+
+  '<p class="tiny muted" style="margin:8px 0 0">The figures for the whole period (sales, treatments, ratings, merit, attendance, leave) are attached automatically.</p></div>');
+};
+window.apprCreate=async()=>{
+ const sid=$('#ap-s').value,p=apPeriods()[+$('#ap-p').value],s=stf(sid);
+ const from=p[2][0]+'-01',to=mEnd(p[2][1]);
+ $('#ap-go').disabled=true;
+ try{
+  const q=await getDocs(query(collection(db,'sales'),where('date','>=',from),where('date','<=',to)));
+  const sales=q.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.voided&&x.branchId===ME.branchId);
+  const act=kpiActual(sid,sales,from,to);
+  act.leave=LEAVES.filter(l=>l.staffId===sid&&l.status==='approved'&&l.to>=from&&l.from<=to).reduce((t,l)=>t+lvDays(l),0);
+  const rec={staffId:sid,staffName:s.name,branchId:ME.branchId,period:p[1],from,to,snapshot:act,scores:{},strengths:'',improve:'',goals:'',
+   status:'draft',createdAt:new Date().toISOString(),reviewer:UID,reviewerName:ME.name};
+  const r=await addDoc(collection(db,'appraisals'),rec);(APPRAISALS=APPRAISALS||[]).unshift({id:r.id,...rec});
+  window.apprOpen(r.id);
+ }catch(e){$('#ap-e').textContent=friendly(e);$('#ap-go').disabled=false;}
+};
+window.apprOpen=id=>{
+ const a=(APPRAISALS||[]).find(x=>x.id===id);if(!a)return;
+ const edit=boss()&&a.status==='draft',sn=a.snapshot||{};
+ const own=a.staffId===UID&&!isBranch();
+ const stars=(k,v)=>'<div class="aprstars" data-k="'+k+'">'+[1,2,3,4,5].map(n=>'<button type="button" class="'+(v>=n?'on':'')+'"'+(edit?' onclick="apprStar(\''+id+'\',\''+k+'\','+n+')"':' disabled')+'>'+n+'</button>').join('')+'</div>';
+ modal('Appraisal · '+(a.staffName||'')+' · '+(a.period||''),'<div class="card">'+
+  '<h4 class="payh" style="margin-top:0">The period in figures</h4><div class="aprsnap">'+
+   [['Sales credited',rm(sn.sales||0)],['Treatments',sn.sessions||0],['Retail',rm(sn.retail||0)],['Add-ons',sn.addons||0],['Clients',sn.clients||0],
+    ['Rating',sn.rating?(+sn.rating).toFixed(1)+'★ ('+sn.reviews+')':'—'],['Merit points',sn.merit||0],['Days worked',sn.days||0],['Leave days',sn.leave||0]]
+    .map(x=>'<div><small>'+x[0]+'</small><b>'+x[1]+'</b></div>').join('')+'</div>'+
+  '<h4 class="payh">Ratings (1 = needs a lot of work, 5 = excellent)</h4>'+
+  APPR_CRIT.map(([k,l])=>'<div class="aprrow"><span>'+l+'</span>'+stars(k,(a.scores||{})[k]||0)+'</div>').join('')+
+  '<div class="spread" style="margin:8px 0"><b>Overall</b><b id="ap-ov">'+(apprOverall(a)?apprOverall(a).toFixed(1)+' / 5':'—')+'</b></div>'+
+  ['strengths','improve','goals'].map(k=>'<label>'+({strengths:'Strengths',improve:'To improve',goals:'Goals for next period'}[k])+'</label>'+
+   (edit?'<textarea class="f" rows="2" id="ap-'+k+'">'+esc(a[k]||'')+'</textarea>':'<p class="aprtext">'+(esc(a[k]||'')||'—')+'</p>')).join('')+
+  (a.status==='acknowledged'?'<div class="warnbox" style="background:var(--jade-soft)">'+ic('check',13)+' Acknowledged by '+esc(a.staffName||'')+' on '+dstr(a.ackAt)+(a.ackComment?' — “'+esc(a.ackComment)+'”':'')+'</div>':'')+
+  '<div id="ap-e2" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  (edit?'<div class="row wrap2"><button class="btn ghost" onclick="apprSave(\''+id+'\',false)">'+ic('check',15)+'Save draft</button>'+
+    '<button class="btn" onclick="apprSave(\''+id+'\',true)">'+ic('right',15)+'Share with '+esc(String(a.staffName||'').split(' ')[0])+'</button></div>':'')+
+  (own&&a.status==='shared'?'<label>Your comment <span class="muted">— optional</span></label><textarea class="f" rows="2" id="ap-ack"></textarea>'+
+    '<button class="btn" style="width:100%;justify-content:center" onclick="apprAck(\''+id+'\')">'+ic('check',15)+'I have read this appraisal</button>':'')+
+  '<button class="btn ghost sm" style="margin-top:10px" onclick="apprPDF(\''+id+'\')">'+ic('download',13)+'PDF</button></div>');
+};
+function apprOverall(a){const v=APPR_CRIT.map(([k])=>(a.scores||{})[k]).filter(x=>x>0);return v.length?v.reduce((t,x)=>t+x,0)/v.length:0;}
+window.apprStar=(id,k,n)=>{const a=(APPRAISALS||[]).find(x=>x.id===id);if(!a)return;
+ ['strengths','improve','goals'].forEach(f=>{const e=$('#ap-'+f);if(e)a[f]=e.value;});
+ a.scores={...(a.scores||{}),[k]:n};window.apprOpen(id);};
+window.apprSave=async(id,share)=>{
+ const a=(APPRAISALS||[]).find(x=>x.id===id);if(!a)return;
+ ['strengths','improve','goals'].forEach(f=>{const e=$('#ap-'+f);if(e)a[f]=e.value.trim().slice(0,1500);});
+ if(share&&APPR_CRIT.some(([k])=>!(a.scores||{})[k])){$('#ap-e2').textContent='Rate every line before sharing.';return;}
+ const p={scores:a.scores||{},strengths:a.strengths,improve:a.improve,goals:a.goals,overall:r2(apprOverall(a)),updatedAt:new Date().toISOString(),
+  ...(share?{status:'shared',sharedAt:new Date().toISOString()}:{})};
+ try{await updateDoc(doc(db,'appraisals',id),p);Object.assign(a,p);
+  if(share){logEvent('attendance','Appraisal shared · '+(a.staffName||''),a.period,{refType:'hr'});await audit('Appraisal shared',(a.staffName||'')+' · '+a.period+' · '+p.overall.toFixed(1)+'/5');}
+  window.closeModal();render();toast(share?'Shared — '+(a.staffName||'')+' will see it in My HR':'Draft saved');}
+ catch(e){$('#ap-e2').textContent=friendly(e);}
+};
+window.apprAck=async id=>{
+ const a=(APPRAISALS||[]).find(x=>x.id===id);if(!a)return;
+ const p={status:'acknowledged',ackAt:new Date().toISOString(),ackComment:(($('#ap-ack')||{}).value||'').trim().slice(0,800)};
+ try{await updateDoc(doc(db,'appraisals',id),p);Object.assign(a,p);await audit('Appraisal acknowledged',(a.staffName||'')+' · '+a.period);
+  window.closeModal();render();toast('Thank you — acknowledged');}catch(e){toast(friendly(e));}
+};
+window.apprPDF=async id=>{
+ const a=(APPRAISALS||[]).find(x=>x.id===id);if(!a)return;
+ try{const jsPDF=await loadJsPDF();const d=new jsPDF({unit:'mm',format:'a4'});const b=D.meta.biz||{},W=210,M=16,sn=a.snapshot||{};
+  const T=(s,x,y,o)=>d.text(String(s==null?'':s),x,y,o||{});
+  d.setFillColor(20,18,15);d.rect(0,0,W,28,'F');d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(14);T(b.name||'',M,13);
+  d.setFontSize(11);T('PENILAIAN PRESTASI / APPRAISAL',W-M,13,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(9);T(a.period||'',W-M,20,{align:'right'});
+  d.setTextColor(20,18,15);let y=40;d.setFont('helvetica','bold');d.setFontSize(11);T(a.staffName||'',M,y);d.setFont('helvetica','normal');d.setFontSize(9);
+  T('Reviewer: '+(a.reviewerName||'')+'   ·   '+dstr(a.from)+' – '+dstr(a.to),M,y+6);y+=16;
+  d.setFont('helvetica','bold');T('The period in figures',M,y);y+=6;d.setFont('helvetica','normal');
+  T('Sales '+rm(sn.sales||0)+'   Treatments '+(sn.sessions||0)+'   Retail '+rm(sn.retail||0)+'   Add-ons '+(sn.addons||0),M,y);y+=5;
+  T('Rating '+(sn.rating?(+sn.rating).toFixed(1)+' ('+sn.reviews+' reviews)':'-')+'   Merit '+(sn.merit||0)+'   Days worked '+(sn.days||0)+'   Leave '+(sn.leave||0),M,y);y+=10;
+  d.setFont('helvetica','bold');T('Ratings (1-5)',M,y);y+=6;d.setFont('helvetica','normal');
+  APPR_CRIT.forEach(([k,l])=>{T(l,M,y);T(String((a.scores||{})[k]||'-'),W-M,y,{align:'right'});y+=6;});
+  d.setFont('helvetica','bold');T('Overall',M,y);T(a.overall?(+a.overall).toFixed(1)+' / 5':'-',W-M,y,{align:'right'});y+=10;
+  [['Strengths',a.strengths],['To improve',a.improve],['Goals for next period',a.goals]].forEach(([h,t])=>{d.setFont('helvetica','bold');T(h,M,y);y+=5;d.setFont('helvetica','normal');
+   const lines=d.splitTextToSize(t||'-',W-2*M);d.text(lines,M,y);y+=lines.length*4.6+4;});
+  if(a.status==='acknowledged'){d.setFont('helvetica','italic');const l=d.splitTextToSize('Acknowledged by '+a.staffName+' on '+dstr(a.ackAt)+(a.ackComment?': "'+a.ackComment+'"':''),W-2*M);d.text(l,M,y);y+=l.length*4.6+6;}
+  d.setDrawColor(180,170,150);y=Math.max(y+10,250);d.line(M,y,M+70,y);d.line(W-M-70,y,W-M,y);d.setFontSize(8);d.setFont('helvetica','normal');
+  T('Reviewer',M,y+5);T('Staff',W-M-70,y+5);
+  const name='Appraisal-'+String(a.staffName||'').replace(/[^A-Za-z0-9]+/g,'-')+'-'+String(a.period).replace(/\s+/g,'-')+'.pdf';
+  window.__lastPDF={kind:'appraisal',name,doc:d};d.save(name);}
+ catch(e){toast(friendly(e));}
+};
+function myApprCard(sid){
+ if(isBranch()||sid!==UID)return '';
+ if(APPRAISALS===null){setTimeout(loadAppraisals,0);return '';}
+ const mine=APPRAISALS.filter(a=>a.staffId===UID&&['shared','acknowledged'].includes(a.status));
+ if(!mine.length)return '';
+ return '<div class="card"><h3 style="margin:0 0 8px">'+ic('note',15)+' My appraisals</h3>'+mine.map(a=>apprRow(a,true)).join('')+'</div>';
+}
 
 </script>
