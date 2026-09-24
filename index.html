@@ -1056,6 +1056,36 @@ tr.fbmine td{background:var(--brass-soft)}
 .wtreat .pr{font-weight:650;font-size:13px;flex:none}
 .wempty{display:grid;justify-items:center;gap:8px;text-align:center;color:var(--ink-3);padding:10px 6px}
 .wempty p{margin:0;font-size:12.5px;line-height:1.5}
+.webmark{display:inline-block;font-size:8.5px;font-weight:750;letter-spacing:.04em;padding:1px 4px;border-radius:4px;background:#1f5f8b;color:#fff;margin-right:4px;vertical-align:1px}
+.webmark.pend{background:var(--amber);min-width:12px;text-align:center}
+.wbappt{background:#EAF2F8;border:1px solid #CFE0EC;border-radius:12px;padding:10px 12px;margin:-2px 0 12px}
+.wbpage .fbbox.wbbox{padding:6px 16px 18px}
+.wbstep{padding:14px 0;border-bottom:1px solid var(--line-2)}.wbstep:last-child{border-bottom:0}
+.wbstep h3{display:flex;align-items:center;gap:8px;font-size:15px;margin:0 0 10px}
+.wbstep h3>span{width:24px;height:24px;border-radius:99px;display:grid;place-items:center;background:var(--ink);color:var(--cream);font-size:12px}
+.wbstep.done h3>span{background:var(--jade)}
+.wbcats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.wbsvcs{display:grid;gap:8px}
+.wbsvc{display:flex;gap:10px;align-items:center;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:11px 13px;cursor:pointer;font:inherit;color:var(--ink)}
+.wbsvc>div{flex:1;min-width:0}.wbsvc b{display:block;font-size:14px}.wbsvc small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}.wbsvc>span{font-weight:650;white-space:nowrap}
+.wbpick{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}.wbpick>div{flex:1}.wbpick b{display:block}.wbpick small{color:var(--ink-3);font-size:12px}
+.wbdays{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
+.wbday{flex:none;width:58px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:7px 0;cursor:pointer;font:inherit;color:var(--ink);display:grid;justify-items:center;gap:1px}
+.wbday b{font-size:17px}.wbday small{font-size:10.5px;color:var(--ink-3)}.wbday i{font-style:normal;font-size:9.5px;color:var(--rose)}
+.wbday.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.wbday.on small{color:#cfc6b6}.wbday.full:not(.on){opacity:.55}
+.wbtimes{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px;margin-top:6px}
+.wbtime{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 0;cursor:pointer;font:inherit;font-weight:600;color:var(--ink)}
+.wbtime.on{background:var(--brass);border-color:var(--brass);color:#fff}
+.wbfull{display:flex;gap:8px;align-items:center;color:var(--ink-3);font-size:13.5px}
+.wbsum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0;padding:12px;border-radius:12px;background:var(--surface-2)}
+.wbsum small{display:block;font-size:11px;color:var(--ink-3)}.wbsum b{font-size:13.5px}
+.wbpol{margin:8px 0;font-size:12.5px}.wbpol summary{cursor:pointer;color:var(--ink-2)}.wbpol p{color:var(--ink-3);margin:6px 0}
+.wbfoot{text-align:center;margin-top:14px;font-size:12px;color:var(--ink-3);display:grid;gap:4px}.wbfoot a{color:var(--ink-2)}
+.wbdow{display:flex;gap:10px;flex-wrap:wrap;margin:2px 0 6px;font-size:13px}
+.wbsvctbl{display:grid;gap:4px;margin:4px 0 10px;max-height:320px;overflow-y:auto}
+.wbsvcrow{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}.wbsvcrow span{flex:1;min-width:0}.wbsvcrow small{display:block;color:var(--ink-3);font-size:11.5px}
+.wbsvcrow label{margin:0;font-size:12px;white-space:nowrap;display:flex;gap:4px;align-items:center}
+.wblinkbox{margin:10px 0;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
 .bdlink{display:flex;align-items:center;gap:6px;margin:10px 0 0;background:none;border:0;padding:4px 0;cursor:pointer;font:inherit;font-size:12.5px;color:var(--ink-3)}
 .bdbox{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border-radius:12px;background:var(--amber-soft);color:var(--amber);border:1px solid rgba(156,107,21,.25)}
 .bdbox b{display:block;font-size:13.5px}.bdbox small{display:block;font-size:11.5px;color:var(--ink-2)}
@@ -1853,7 +1883,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25f';
+const BUILD='2026-09-25g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2547,7 +2577,7 @@ function calDay(){
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+(a.undecided?' undec':'')+
     (LN[a.id]&&LN[a.id].of>1?' lane':'')+
     '" style="top:'+top+'px;height:'+hh+'px'+laneCss(LN[a.id])+(plain?'':';background:'+P.bg+';color:'+P.fg+
-     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
+     ';border-left-color:'+P.bd)+'" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+webMark(a)+
     '<b>'+esc(a.customerName||'')+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
      tstr(a.start)+' · '+esc(a.serviceName||'')+'</small>'+
     (hh>52?'<small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
@@ -2583,7 +2613,7 @@ function calWeek(){
    h+='<div class="blk '+(a.status==='done'?'done':a.status==='no'?'no':'')+(LN[a.id]&&LN[a.id].of>1?' lane':'')+
     '" style="top:'+top+'px;height:'+Math.max((a.duration||30)*px,24)+'px'+laneCss(LN[a.id])+
     (plain?'':';background:'+P.bg+';color:'+P.fg+';border-left-color:'+P.bd)+
-    '" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+
+    '" onclick="openAppt(\''+a.id+'\')">'+doneMark(a)+webMark(a)+
     '<b>'+tstr(a.start)+'</b><small'+(plain?'':' style="color:'+P.fg+';opacity:.78"')+'>'+
     esc((a.customerName||'').split(' ')[0])+'</small></div>';});
   h+='</div>';});
@@ -11298,6 +11328,7 @@ function vSet(){
   h+=rvPanel();
   h+=paperPanel();setTimeout(paintNextNo,0);
   h+=attQrSetPanel();
+  h+=wbSetPanel();setTimeout(paintQRs,0);
   h+='<div class="card"><h2 style="margin-bottom:10px">Data</h2><div class="row wrap2">'+
    '<button class="btn sm ghost" id="seed">'+ic('download',14)+'Load demo data</button>'+
    '<button class="btn sm ghost" onclick="rebuildClientSearch()">'+ic('search',14)+'Rebuild client search</button>'+
@@ -11372,7 +11403,7 @@ window.render=render;
   app=initializeApp(cfg);auth=getAuth(app);
   /* the staff app keeps a copy of its records on the device, so a dropped line does not
      stop the counter; the client's feedback page has nothing to keep, so it stays plain */
-  const pub=new URLSearchParams(location.search).has('fb')||new URLSearchParams(location.search).has('lead');
+  const pub=['fb','lead','book'].some(k=>new URLSearchParams(location.search).has(k));
   if(pub)db=getFirestore(app);
   else{
    try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
@@ -11387,6 +11418,7 @@ window.render=render;
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  const lq=new URLSearchParams(location.search);
  if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
+ if(lq.has('book')){bookingPage(String(lq.get('book')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),String(lq.get('m')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
   if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];APPTSUB=null;
    EVENTS=[];EVIDS=new Set();loginScreen();return;}
@@ -11418,6 +11450,7 @@ window.render=render;
    await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm(),loadClaims(),loadAppraisals(),finLoad()]);
    render();
    if(typeof window.attCheckHash==='function')window.attCheckHash();
+   if(typeof window.wbStart==='function')window.wbStart();
    if(TAB==='rep')buildReport();
   }catch(e){
    console.error(e);
@@ -16173,4 +16206,376 @@ function attQrAlerts(al){
  if(sh.length)al.push({i:'alert',t:'One phone clocked in '+[...sh[0]].length+' people today',d:[...sh[0]].join(', ')+' — check who was really in',go:"go('team')"});
 }
 {const _ha=hrAlerts;hrAlerts=al=>{_ha(al);attQrAlerts(al);};}
+
+/* ============ Online booking (tahap 2): clients book a free slot on the web, straight into the calendar ============ */
+/* The booking page is this same app opened at ?book=<branch>. It cannot read the staff data, so the app
+   keeps two public things for it:
+   · public/booking — the treatments offered online, rooms, therapists' first names, hours and rules;
+   · busy/{branch}_{date} — only the busy times of each room and therapist (no client names or phones),
+     rewritten by any open staff device whenever the calendar changes.
+   A booking is written straight into appointments (source 'web') together with a lock on every 15-minute
+   cell of the room and therapist it takes. Locks can only be created, or taken over when the booking that
+   held them is cancelled or moved, so two people pressing the same slot at once cannot both get it.
+   Treatments the owner marks "needs approval" arrive as a request the counter approves. The client gets a
+   reference and a link to see or cancel the booking (up to the cut-off). */
+const WBTZ='+08:00',WBZONE='Asia/Kuala_Lumpur';
+const WB_DEF={on:false,days:[0,1,2,3,4,5,6],step:30,lead:2,horizon:30,cutoff:24,chooseStaff:true,services:null,approval:[],hol:false,closed:'',intro:'',policy:''};
+const wbSet=()=>({...WB_DEF,...((D.meta||{}).webBook||{})});
+const wbSvcs=()=>{const W=wbSet();return D.services.filter(s=>s.active!==false&&s.id&&s.dur&&(W.services?W.services.includes(s.id):true));};
+const wbEpoch=(d,min)=>Date.parse(d+'T'+String(Math.floor(min/60)).padStart(2,'0')+':'+String(min%60).padStart(2,'0')+':00'+WBTZ);
+const wbHM=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:WBZONE});
+const wbT=ms=>new Date(ms).toLocaleTimeString('en-MY',{hour:'numeric',minute:'2-digit',timeZone:WBZONE});
+const wbToday=()=>new Date(Date.now()+8*3600e3).toISOString().slice(0,10);
+const wbAdd=(d,n)=>{const x=new Date(d+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10);};
+const wbDow=d=>new Date(d+'T12:00:00Z').getUTCDay();
+const wbId=n=>{const A='abcdefghijkmnpqrstuvwxyz23456789',a=new Uint8Array(n);try{crypto.getRandomValues(a);}catch(e){a.forEach((_,i)=>a[i]=Math.random()*256|0);}return [...a].map(x=>A[x%A.length]).join('');};
+
+/* ---------------- what the booking page is allowed to know ---------------- */
+function wbConfig(){
+ const W=wbSet(),b=D.meta.biz||{},svs=wbSvcs(),td=today();
+ const closed=String(W.closed||'').split(/[\s,]+/).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x));
+ if(W.hol)for(let i=0;i<120;i++){const d=ymd(addDays(new Date(),i));if(isHoliday(d))closed.push(d);}
+ return {on:!!W.on,v:2,biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',whatsapp:b.whatsapp||b.phone||'',email:b.email||'',
+   address:[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', '),instagram:b.instagram||''},
+  open:+D.meta.open||9,close:+D.meta.close||20,days:W.days,step:+W.step||30,lead:+W.lead||0,horizon:+W.horizon||30,cutoff:+W.cutoff||24,
+  chooseStaff:!!W.chooseStaff,intro:String(W.intro||'').slice(0,400),policy:String(W.policy||'').slice(0,1200),closed:[...new Set(closed)].filter(d=>d>=td).sort(),
+  branches:D.branches.map(br=>({id:br.id,name:br.name||'',rooms:D.rooms.filter(r=>r.branchId===br.id).map(r=>({id:r.id,t:r.type||''})),
+   staff:D.staff.filter(s=>s.branchId===br.id&&s.active!==false&&s.takes&&s.role!=='branch').map(s=>({id:s.id,n:W.chooseStaff?String(s.name||'').split(' ')[0]:''}))})),
+  services:svs.map(s=>({id:s.id,n:s.name,c:s.cat||'',p:+s.price||0,d:+s.dur||60,b:+s.buffer||0,r:s.room||'',a:(W.approval||[]).includes(s.id),x:String(s.desc||'').slice(0,240)})),
+  svcIds:svs.map(s=>s.id)};
+}
+let WBPUB=null;
+const wbHash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return s.length+':'+(h>>>0).toString(36);};
+async function wbPublish(force){
+ if(!boss())return;
+ const c=wbConfig(),h=wbHash(JSON.stringify(c));
+ if(!force){if(WBPUB===null){try{const s=await getDoc(doc(db,'public','booking'));WBPUB=s.exists()?(s.data().h||''):'';}catch(e){WBPUB='';}}
+  if(WBPUB===h)return;}
+ try{await setDoc(doc(db,'public','booking'),{...c,h,updatedAt:new Date().toISOString()});WBPUB=h;}catch(e){console.warn('booking page',e);}
+}
+
+/* ---------------- the busy feed, kept by every open staff device ---------------- */
+let WBAPPTS=[],WBBUSY={},WBQ=null,WBBOOT=Date.now(),WBWATCHED=false;
+function wbWatch(){
+ if(WBWATCHED||!ME||!wbSet().on||!(can('booking')||boss()||isBranch()))return;WBWATCHED=true;
+ const from=today(),to=ymd(addDays(new Date(),(+wbSet().horizon||30)+1));
+ liveOn(query(collection(db,'busy'),where('d','>=',from)),s=>{s.docs.forEach(d=>{WBBUSY[d.id]=d.data().h||'';});},'busyfeed');
+ liveOn(query(collection(db,'appointments'),where('date','>=',from),where('date','<=',to)),s=>{
+  const prev=new Set(WBAPPTS.map(a=>a.id));
+  WBAPPTS=s.docs.map(d=>({id:d.id,...d.data()}));
+  WBAPPTS.filter(a=>a.source==='web'&&!prev.has(a.id)&&prev.size&&Date.parse(a.createdAt||0)>WBBOOT&&a.branchId===ME.branchId)
+   .forEach(a=>{toast('New online booking · '+(a.customerName||'')+' · '+dshort(a.start)+' '+tstr(a.start));try{if(typeof chime==='function')chime();}catch(e){}});
+  clearTimeout(WBQ);WBQ=setTimeout(wbSync,1500);
+  liveRender(['home','book']);
+ },'webappts');
+}
+async function wbSync(){
+ const W=wbSet();if(!W.on)return;
+ const dates=[...Array((+W.horizon||30)+1)].map((_,i)=>ymd(addDays(new Date(),i)));
+ for(const br of D.branches)for(const d of dates){
+  const items=WBAPPTS.filter(a=>a.branchId===br.id&&a.date===d&&!['cancel','no'].includes(a.status))
+   .map(a=>({s:+new Date(a.start),e:+new Date(a.finish)+(+a.buffer||0)*6e4,r:a.roomId||'',t:a.staffId||''})).sort((x,y)=>x.s-y.s||String(x.r).localeCompare(y.r));
+  const leave=[...new Set(LEAVES.filter(l=>l.status==='approved'&&l.from<=d&&l.to>=d).map(l=>l.staffId).filter(id=>(stf(id)||{}).branchId===br.id))].sort();
+  const h=JSON.stringify([items,leave]),id=br.id+'_'+d;
+  if(WBBUSY[id]===h)continue;
+  try{await setDoc(doc(db,'busy',id),{b:br.id,d,items,leave,h,at:new Date().toISOString()});WBBUSY[id]=h;}catch(e){console.warn('busy',e);return;}
+ }
+}
+window.wbSyncNow=wbSync;
+
+/* ---------------- the booking page (no login) ---------------- */
+let WB={cfg:null,br:null,svc:null,staff:'',day:'',slot:null,busy:{},step:1};
+async function bookingPage(branchId,manageId){
+ document.title='Tempahan';
+ const root=document.getElementById('root');
+ root.innerHTML='<div class="fbpage wbpage"><div class="center"><div class="spin"></div></div></div>';
+ let c=null;try{const s=await getDoc(doc(db,'public','booking'));if(s.exists())c=s.data();}catch(e){}
+ if(!c||!c.on){root.innerHTML='<div class="fbpage"><div class="fbbox" style="text-align:center"><p>Tempahan dalam talian belum dibuka. Sila hubungi kami melalui WhatsApp.</p></div></div>';return;}
+ WB={cfg:c,br:(c.branches||[]).find(b=>b.id===branchId)||(c.branches||[])[0],svc:null,staff:'',day:'',slot:null,busy:{},cat:''};
+ if(manageId)return wbManage(manageId);
+ wbPaint();
+}
+window.bookingPage=bookingPage;
+function wbHead(){const c=WB.cfg,b=c.biz||{};
+ return '<div class="fbhead">'+(b.logo?'<img src="'+b.logo+'" alt="">':'<div class="fbmark">'+ic('spark',22)+'</div>')+
+  '<div class="fbbiz">'+esc(b.name||'')+'</div>'+(WB.br&&(c.branches||[]).length>1?'<div class="fbbr">'+esc(WB.br.name)+'</div>':
+   b.tagline?'<div class="fbbr">'+esc(b.tagline)+'</div>':'')+'</div>';}
+function wbDays(){
+ const c=WB.cfg,t=wbToday(),out=[];
+ for(let i=0;i<=c.horizon;i++){const d=wbAdd(t,i);if(!(c.days||[]).includes(wbDow(d))||(c.closed||[]).includes(d))continue;out.push(d);}
+ return out;
+}
+/* free start times for a treatment on a day, each with a room and therapist that are free */
+function wbSlots(d){
+ const c=WB.cfg,s=WB.svc,br=WB.br,bz=WB.busy[d];if(!s||!br||!bz)return null;
+ const rooms=(br.rooms||[]).filter(r=>!s.r||r.t===s.r);if(!rooms.length)return [];
+ const staff=(WB.staff?[WB.staff]:(br.staff||[]).map(x=>x.id)).filter(id=>!(bz.leave||[]).includes(id));if(!staff.length)return [];
+ const items=bz.items||[],earliest=Date.now()+(c.lead||0)*3600e3,out=[];
+ const load={};items.forEach(i=>{load[i.t]=(load[i.t]||0)+(i.e-i.s);});
+ for(let m=c.open*60;m+s.d<=c.close*60;m+=c.step){
+  const st=wbEpoch(d,m),en=st+s.d*6e4,eb=en+s.b*6e4;if(st<earliest)continue;
+  const ov=items.filter(i=>!(eb<=i.s||st>=i.e));
+  const fr=rooms.filter(r=>!ov.some(i=>i.r===r.id)),fs=staff.filter(t=>!ov.some(i=>i.t===t)).sort((a,b)=>(load[a]||0)-(load[b]||0));
+  if(fr.length&&fs.length)out.push({m,st,en,eb,room:fr[0].id,staff:fs[0]});
+ }
+ return out;
+}
+async function wbLoadBusy(days){
+ const need=days.filter(d=>WB.busy[d]===undefined);
+ need.forEach(d=>{WB.busy[d]=null;});
+ await Promise.all(need.map(d=>getDoc(doc(db,'busy',WB.br.id+'_'+d)).then(s=>{WB.busy[d]=s.exists()?s.data():{items:[],leave:[]};}).catch(()=>{WB.busy[d]={items:[],leave:[]};})));
+}
+function wbPaint(){
+ const c=WB.cfg,root=document.getElementById('root'),svs=c.services||[];
+ const cats=[...new Set(svs.map(s=>s.c).filter(Boolean))];
+ const steps=[];
+ /* 1. treatment */
+ steps.push('<div class="wbstep'+(WB.svc?' done':'')+'"><h3><span>1</span>Pilih rawatan</h3>'+
+  (WB.svc?'<div class="wbpick"><div><b>'+esc(WB.svc.n)+'</b><small>'+WB.svc.d+' minit · '+rm(WB.svc.p)+'</small></div><button class="btn sm ghost" onclick="wbSvc(\'\')">Tukar</button></div>':
+   (c.intro?'<p class="tiny muted" style="margin:0 0 10px">'+esc(c.intro)+'</p>':'')+
+   (cats.length>1?'<div class="wbcats"><button class="chip'+(!WB.cat?' on':'')+'" onclick="wbCat(\'\')">Semua</button>'+cats.map(k=>'<button class="chip'+(WB.cat===k?' on':'')+'" onclick="wbCat(\''+esc(k)+'\')">'+esc(k)+'</button>').join('')+'</div>':'')+
+   '<div class="wbsvcs">'+svs.filter(s=>!WB.cat||s.c===WB.cat).map(s=>'<button class="wbsvc" onclick="wbSvc(\''+esc(s.id)+'\')"><div><b>'+esc(s.n)+'</b>'+
+    (s.x?'<small>'+esc(s.x)+'</small>':'')+'<small>'+s.d+' minit'+(s.a?' · perlu pengesahan':'')+'</small></div><span>'+rm(s.p)+'</span></button>').join('')+'</div>')+'</div>');
+ if(WB.svc){
+  /* 2. therapist */
+  if(c.chooseStaff&&(WB.br.staff||[]).length>1)steps.push('<div class="wbstep"><h3><span>2</span>Therapist</h3><div class="wbcats">'+
+   '<button class="chip'+(!WB.staff?' on':'')+'" onclick="wbStaff(\'\')">Sesiapa sahaja</button>'+
+   (WB.br.staff||[]).map(t=>'<button class="chip'+(WB.staff===t.id?' on':'')+'" onclick="wbStaff(\''+esc(t.id)+'\')">'+esc(t.n||'Therapist')+'</button>').join('')+'</div></div>');
+  /* 3. day and time */
+  const days=wbDays();if(!WB.day)WB.day=days[0]||'';
+  const sl=WB.day?wbSlots(WB.day):[];
+  steps.push('<div class="wbstep"><h3><span>'+(c.chooseStaff&&(WB.br.staff||[]).length>1?3:2)+'</span>Pilih tarikh & masa</h3>'+
+   '<div class="wbdays">'+days.map(d=>{const x=WB.busy[d]?wbSlots(d):null;const dt=new Date(d+'T12:00:00Z');
+    return '<button class="wbday'+(WB.day===d?' on':'')+(x&&!x.length?' full':'')+'" onclick="wbDay(\''+d+'\')"><small>'+
+     dt.toLocaleDateString('ms-MY',{weekday:'short',timeZone:'UTC'})+'</small><b>'+dt.getUTCDate()+'</b><small>'+dt.toLocaleDateString('ms-MY',{month:'short',timeZone:'UTC'})+'</small>'+
+     (x&&!x.length?'<i>penuh</i>':'')+'</button>';}).join('')+'</div>'+
+   (!WB.day?'<p class="tiny muted">Tiada tarikh dibuka buat masa ini.</p>':sl===null?'<div class="center"><div class="spin"></div></div>':
+    sl.length?'<div class="wbtimes">'+sl.map(x=>'<button class="wbtime'+(WB.slot&&WB.slot.st===x.st?' on':'')+'" onclick="wbTime('+x.st+')">'+wbT(x.st)+'</button>').join('')+'</div>'
+    :'<p class="wbfull">'+ic('calendar',16)+' Slot pada hari ini sudah penuh. Sila pilih tarikh lain.</p>')+'</div>');
+ }
+ if(WB.slot){
+  const s=WB.svc;
+  steps.push('<div class="wbstep"><h3><span>'+ic('user',13)+'</span>Maklumat anda</h3>'+
+   '<label>Nama penuh *</label><input class="f" id="wb-n" autocomplete="name" value="'+esc(WB.n||'')+'">'+
+   '<label>No. telefon (WhatsApp) *</label><input class="f" id="wb-p" type="tel" autocomplete="tel" placeholder="012-3456789" value="'+esc(WB.p||'')+'">'+
+   '<label>E-mel <span class="muted">(pilihan)</span></label><input class="f" id="wb-e" type="email" autocomplete="email" value="'+esc(WB.e||'')+'">'+
+   '<label>Nota untuk kami <span class="muted">(pilihan)</span></label><textarea class="f" id="wb-x" rows="2" placeholder="Contoh: kulit sensitif, kali pertama">'+esc(WB.x||'')+'</textarea>'+
+   (c.policy?'<details class="wbpol"><summary>Terma & polisi pembatalan</summary><p>'+esc(c.policy).replace(/\n/g,'<br>')+'</p></details>':'')+
+   '<label class="row" style="gap:9px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="wb-ok"> <span class="tiny">Saya bersetuju dengan terma tempahan dan '+esc(c.biz.name||'spa')+
+    ' menyimpan maklumat ini untuk urusan tempahan (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+   '<div class="wbsum"><div><small>Rawatan</small><b>'+esc(s.n)+'</b></div><div><small>Tarikh</small><b>'+new Date(WB.slot.st).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:WBZONE})+'</b></div>'+
+    '<div><small>Masa</small><b>'+wbT(WB.slot.st)+' – '+wbT(WB.slot.en)+'</b></div><div><small>Harga</small><b>'+rm(s.p)+'</b></div></div>'+
+   '<div id="wb-err" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+   '<button class="btn" id="wb-go" style="width:100%;justify-content:center" onclick="wbBook()">'+ic('check',16)+(s.a?'Hantar permintaan tempahan':'Sahkan tempahan')+'</button>'+
+   (s.a?'<p class="tiny muted" style="margin:8px 0 0;text-align:center">Rawatan ini perlu disahkan oleh kami — kami akan WhatsApp anda.</p>':'')+'</div>');
+ }
+ root.innerHTML='<div class="fbpage wbpage">'+wbHead()+'<div class="fbbox wbbox">'+steps.join('')+'</div>'+wbFoot()+'</div>';
+ if(WB.svc){const days=wbDays(),want=days.slice(0,14).concat(WB.day&&!days.slice(0,14).includes(WB.day)?[WB.day]:[]),need=want.filter(d=>WB.busy[d]===undefined);
+  if(need.length)wbLoadBusy(need).then(()=>{if(document.querySelector('.wbpage'))wbPaintKeep();});}
+}
+/* repaint without losing what the client typed */
+function wbPaintKeep(){const g=id=>{const e=document.getElementById(id);return e?e.value:undefined;};
+ ['n','p','e','x'].forEach(k=>{const v=g('wb-'+k);if(v!==undefined)WB[k]=v;});wbPaint();}
+function wbFoot(){const b=WB.cfg.biz||{};
+ return '<div class="wbfoot">'+(b.address?'<div>'+ic('pin',12)+' '+esc(b.address)+'</div>':'')+
+  (b.whatsapp?'<a href="https://wa.me/'+String(b.whatsapp).replace(/\D/g,'').replace(/^0/,'60')+'" target="_blank" rel="noopener">'+ic('msg',12)+' WhatsApp '+esc(b.whatsapp)+'</a>':'')+'</div>';}
+window.wbCat=k=>{WB.cat=k;wbPaintKeep();};
+window.wbSvc=id=>{WB.svc=(WB.cfg.services||[]).find(s=>s.id===id)||null;WB.slot=null;if(!WB.svc)WB.day='';wbPaintKeep();if(WB.svc)setTimeout(()=>{const e=document.querySelector('.wbstep:nth-child(2)');if(e&&e.scrollIntoView)e.scrollIntoView({behavior:'smooth',block:'start'});},60);};
+window.wbStaff=id=>{WB.staff=id;WB.slot=null;wbPaintKeep();};
+window.wbDay=d=>{WB.day=d;WB.slot=null;wbPaintKeep();};
+window.wbTime=st=>{const x=(wbSlots(WB.day)||[]).find(z=>z.st===st);WB.slot=x||null;wbPaintKeep();
+ setTimeout(()=>{const e=document.getElementById('wb-n');if(e&&e.scrollIntoView)e.scrollIntoView({behavior:'smooth',block:'center'});},60);};
+window.wbBook=async()=>{
+ const c=WB.cfg,s=WB.svc,x=WB.slot,e=$('#wb-err'),br=WB.br;
+ const n=$('#wb-n').value.trim(),p=$('#wb-p').value.trim(),em=$('#wb-e').value.trim(),nt=$('#wb-x').value.trim();
+ if(n.length<2){e.textContent='Sila isi nama penuh.';return;}
+ if(digits(p).length<9||digits(p).length>15){e.textContent='Sila isi nombor telefon yang betul.';return;}
+ if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){e.textContent='Semak alamat e-mel.';return;}
+ if(!$('#wb-ok').checked){e.textContent='Sila tandakan persetujuan.';return;}
+ $('#wb-go').disabled=true;
+ const id=wbId(20),ref=wbId(6).toUpperCase(),d=new Date(x.st+8*3600e3).toISOString().slice(0,10),now=new Date().toISOString();
+ const stn=((br.staff||[]).find(t=>t.id===x.staff)||{}).n||'';
+ const appt={branchId:br.id,customerId:'',customerName:n.slice(0,80),phone:p.slice(0,20),email:em.slice(0,100),
+  staffId:x.staff,staffName:stn,serviceId:s.id,serviceName:s.n,roomId:x.room,date:d,
+  start:new Date(x.st).toISOString(),finish:new Date(x.en).toISOString(),duration:s.d,buffer:s.b,status:'booked',deposit:0,
+  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff};
+ const b=writeBatch(db);b.set(doc(db,'appointments',id),appt);
+ /* lock every 15 minutes the room and the therapist are held, so nobody else can take them at the same moment */
+ const cells=[];for(let t=Math.floor(x.st/9e5)*9e5;t<x.eb;t+=9e5)cells.push(t);
+ cells.forEach(t=>{const hm=wbHM(t).replace(':','');
+  [['r',x.room],['s',x.staff]].forEach(([k,v])=>b.set(doc(db,'slotLocks',br.id+'_'+d+'_'+k+'_'+v+'_'+hm),{appt:id,t:new Date(t).toISOString(),k,x:v,b:br.id,d,at:now}));});
+ try{await b.commit();}
+ catch(err){console.warn(err);WB.busy[WB.day]=undefined;WB.slot=null;
+  ['n','p','e','x'].forEach(k=>{WB[k]=({n,p,e:em,x:nt})[k];});
+  await wbLoadBusy([WB.day]);wbPaint();const ee=$('#wb-err')||document.querySelector('.wbstep:last-child');
+  toast('Maaf, slot itu baru sahaja diambil. Sila pilih masa lain.');return;}
+ wbDone({id,...appt});
+};
+function wbIcs(a){
+ const f=t=>new Date(t).toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
+ const b=WB.cfg.biz||{};
+ return 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Spatify//Booking//EN\r\nBEGIN:VEVENT\r\nUID:'+a.id+'@spatify\r\nDTSTAMP:'+f(Date.now())+'\r\nDTSTART:'+f(a.start)+'\r\nDTEND:'+f(a.finish)+
+  '\r\nSUMMARY:'+(a.serviceName+' · '+(b.name||'')).replace(/[,;]/g,' ')+'\r\nLOCATION:'+String(b.address||'').replace(/[,;]/g,' ')+'\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n';
+}
+window.wbIcsGet=id=>{const a=WB.last;if(!a)return;const u=URL.createObjectURL(new Blob([wbIcs(a)],{type:'text/calendar'}));const l=document.createElement('a');l.href=u;l.download='tempahan.ics';l.click();};
+function wbLink(id){let base='';try{base=location.origin+location.pathname;}catch(e){}return base+'?book='+encodeURIComponent(WB.br.id)+'&m='+id;}
+function wbDone(a){
+ WB.last=a;const b=WB.cfg.biz||{},root=document.getElementById('root');
+ const wa=b.whatsapp?'https://wa.me/'+String(b.whatsapp).replace(/\D/g,'').replace(/^0/,'60')+'?text='+encodeURIComponent('Hi, saya '+a.customerName+'. Tempahan '+a.webRef+' — '+a.serviceName+' pada '+
+  new Date(a.start).toLocaleDateString('ms-MY',{day:'numeric',month:'short',timeZone:WBZONE})+' '+wbT(a.start)+'.'):'';
+ root.innerHTML='<div class="fbpage wbpage">'+wbHead()+'<div class="fbbox" style="text-align:center"><div class="fbicon ok">'+ic(a.webPending?'clock':'check',26)+'</div>'+
+  '<h2>'+(a.webPending?'Permintaan diterima':'Tempahan disahkan')+'</h2>'+
+  '<p>'+(a.webPending?'Kami akan sahkan melalui WhatsApp tidak lama lagi.':'Jumpa anda nanti, '+esc(a.customerName.split(' ')[0])+'!')+'</p>'+
+  '<div class="wbsum" style="text-align:left"><div><small>Rujukan</small><b>'+esc(a.webRef)+'</b></div><div><small>Rawatan</small><b>'+esc(a.serviceName)+'</b></div>'+
+   '<div><small>Tarikh</small><b>'+new Date(a.start).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:WBZONE})+'</b></div>'+
+   '<div><small>Masa</small><b>'+wbT(a.start)+' – '+wbT(a.finish)+'</b></div></div>'+
+  '<div class="row wrap2" style="justify-content:center;margin-top:12px"><button class="btn sm ghost" onclick="wbIcsGet()">'+ic('calendar',14)+'Simpan dalam kalendar</button>'+
+   (wa?'<a class="btn sm ghost" href="'+wa+'" target="_blank" rel="noopener">'+ic('msg',14)+'WhatsApp kami</a>':'')+'</div>'+
+  '<p class="tiny muted" style="margin-top:14px">Simpan pautan ini untuk lihat atau batalkan tempahan:<br><a href="'+esc(wbLink(a.id))+'" id="wb-mlink">'+esc(wbLink(a.id))+'</a></p></div>'+wbFoot()+'</div>';
+}
+async function wbManage(id){
+ const root=document.getElementById('root'),c=WB.cfg;
+ let a=null;try{const s=await getDoc(doc(db,'appointments',String(id).replace(/[^a-z0-9]/gi,'').slice(0,40)));if(s.exists())a={id:s.id,...s.data()};}catch(e){}
+ if(!a||a.source!=='web'){root.innerHTML='<div class="fbpage wbpage">'+wbHead()+'<div class="fbbox" style="text-align:center"><p>Tempahan tidak dijumpai.</p></div></div>';return;}
+ WB.last=a;
+ const cancelled=a.status==='cancel',canCancel=!cancelled&&!['done','in','no'].includes(a.status)&&Date.parse(a.start)-Date.now()>(c.cutoff||24)*3600e3;
+ root.innerHTML='<div class="fbpage wbpage">'+wbHead()+'<div class="fbbox">'+
+  '<h2 style="margin-top:0">Tempahan '+esc(a.webRef||'')+'</h2>'+
+  (cancelled?'<div class="warnbox">'+ic('alert',14)+' Tempahan ini telah dibatalkan.</div>':a.webPending?'<div class="warnbox">'+ic('clock',14)+' Menunggu pengesahan daripada kami.</div>':'')+
+  '<div class="wbsum"><div><small>Nama</small><b>'+esc(a.customerName)+'</b></div><div><small>Rawatan</small><b>'+esc(a.serviceName)+'</b></div>'+
+   '<div><small>Tarikh</small><b>'+new Date(a.start).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:WBZONE})+'</b></div>'+
+   '<div><small>Masa</small><b>'+wbT(a.start)+' – '+wbT(a.finish)+'</b></div></div>'+
+  (canCancel?'<label>Sebab batal <span class="muted">(pilihan)</span></label><input class="f" id="wb-cr">'+
+   '<div id="wb-err" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+   '<button class="btn warn" id="wb-cx" style="width:100%;justify-content:center" onclick="wbCancel(\''+a.id+'\')">'+ic('close',15)+'Batalkan tempahan</button>':
+   !cancelled?'<p class="tiny muted">Untuk tukar atau batal kurang dari '+(c.cutoff||24)+' jam sebelum temujanji, sila WhatsApp kami.</p>':'')+
+  (!cancelled?'<button class="btn sm ghost" style="margin-top:10px" onclick="wbIcsGet()">'+ic('calendar',14)+'Simpan dalam kalendar</button>':
+   '<a class="btn sm" style="margin-top:10px" href="?book='+encodeURIComponent(WB.br.id)+'">'+ic('calendar',14)+'Buat tempahan baru</a>')+'</div>'+wbFoot()+'</div>';
+}
+window.wbCancel=async id=>{
+ if(!confirm('Batalkan tempahan ini?'))return;$('#wb-cx').disabled=true;
+ try{await updateDoc(doc(db,'appointments',id),{status:'cancel',cancelledBy:'client',cancelledAt:new Date().toISOString(),cancelReason:String(($('#wb-cr')||{}).value||'').trim().slice(0,200)});
+  toast('Tempahan dibatalkan');wbManage(id);}
+ catch(e){$('#wb-err').textContent='Tidak dapat dibatalkan sekarang. Sila WhatsApp kami.';$('#wb-cx').disabled=false;}
+};
+
+/* ---------------- in the app: online bookings on the calendar ---------------- */
+const webMark=a=>a.source==='web'?'<span class="webmark'+(a.webPending?' pend':'')+'" title="'+(a.webPending?'Online request — needs approval':'Booked online')+'">'+(a.webPending?'?':'WEB')+'</span>':'';
+function wbFind(id){return APPTS.find(x=>x.id===id)||WBAPPTS.find(x=>x.id===id);}
+{const _oa=window.openAppt;window.openAppt=id=>{
+ if(!APPTS.find(x=>x.id===id)){const w=WBAPPTS.find(x=>x.id===id);if(w)APPTS.push({...w});}
+ const r=_oa(id);const a=APPTS.find(x=>x.id===id);
+ if(a&&a.source==='web'){const card=document.querySelector('#modal .card');if(card)card.insertAdjacentHTML('afterbegin',wbApptBox(a));}
+ return r;};}
+function wbApptBox(a){
+ const c=a.customerId?cust(a.customerId):null;
+ return '<div class="wbappt"><div class="spread"><b>'+ic('calendar',14)+' '+(a.webPending?'Online request — needs approval':'Booked online')+'</b><span class="pill">'+esc(a.webRef||'')+'</span></div>'+
+  '<div class="tiny" style="margin:6px 0">'+ic('phone',12)+' '+esc(a.phone||'')+(a.email?' · '+esc(a.email):'')+' · '+dstr(a.createdAt)+' '+tstr(a.createdAt)+
+   (a.anyStaff?' · any therapist':'')+(a.status==='cancel'&&a.cancelledBy==='client'?'<br><b style="color:var(--rose)">Cancelled by the client'+(a.cancelReason?': '+esc(a.cancelReason):'')+'</b>':'')+'</div>'+
+  '<div class="row wrap2">'+
+   (a.webPending&&a.status!=='cancel'?'<button class="btn sm" onclick="wbApprove(\''+a.id+'\')">'+ic('check',14)+'Approve</button><button class="btn sm ghost" onclick="wbDecline(\''+a.id+'\')">Decline</button>':'')+
+   (!a.customerId?'<button class="btn sm'+(a.webPending?' ghost':'')+'" onclick="wbMatch(\''+a.id+'\')">'+ic('user',14)+'Match or add client</button>':'<span class="tiny muted">'+ic('check',12)+' Client: '+esc((c||{}).name||a.customerName)+'</span>')+
+   '<button class="btn sm ghost" onclick="wbWa(\''+a.id+'\')">'+ic('msg',14)+'WhatsApp</button></div></div>';
+}
+window.wbApprove=async id=>{const a=wbFind(id);if(!a)return;
+ try{await updateDoc(doc(db,'appointments',id),{webPending:false,webApprovedBy:UID,webApprovedByName:ME.name,webApprovedAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  a.webPending=false;const x=APPTS.find(y=>y.id===id);if(x)x.webPending=false;await audit('Online booking approved',(a.customerName||'')+' · '+a.serviceName+' · '+dstr(a.start));
+  window.closeModal();render();toast('Approved — send the WhatsApp confirmation');window.wbWa(id);}catch(e){toast(friendly(e));}};
+window.wbDecline=async id=>{const a=wbFind(id);if(!a)return;const why=prompt('Why decline? (sent in the WhatsApp message)','Slot tidak sesuai untuk rawatan ini');if(why===null)return;
+ try{await updateDoc(doc(db,'appointments',id),{status:'cancel',webPending:false,cancelledBy:'spa',cancelReason:why.slice(0,200),updatedBy:UID,updatedAt:new Date().toISOString()});
+  a.status='cancel';await audit('Online booking declined',(a.customerName||'')+' · '+why);window.closeModal();render();window.wbWa(id,why);}catch(e){toast(friendly(e));}};
+window.wbWa=(id,declined)=>{const a=wbFind(id);if(!a)return;const b=D.meta.biz||{};
+ const when=new Date(a.start).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'})+', '+tstr(a.start);
+ const msg=declined?'Hi '+String(a.customerName||'').split(' ')[0]+', maaf, tempahan '+(a.webRef||'')+' untuk '+a.serviceName+' pada '+when+' tidak dapat kami terima ('+declined+'). Boleh kami cadangkan masa lain?'
+  :'Hi '+String(a.customerName||'').split(' ')[0]+', tempahan anda di '+(b.name||'kami')+' telah disahkan ✅\n'+a.serviceName+'\n'+when+'\nRujukan: '+(a.webRef||'')+'\nJumpa nanti!';
+ const ph=String(a.phone||'').replace(/\D/g,'').replace(/^0/,'60');
+ try{window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(msg),'_blank');}catch(e){}};
+window.wbMatch=async id=>{
+ const a=wbFind(id);if(!a)return;const dg=digits(a.phone);
+ let m=CUSTS.filter(c=>c.active!==false&&digits(c.phone)===dg);
+ if(!m.length){try{const s=await getDocs(query(collection(db,'customers'),where('phoneDigits','==',dg),limit(5)));m=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.active!==false);}catch(e){}}
+ modal('Who is '+(a.customerName||'')+'?','<div class="card"><p class="tiny muted" style="margin:0 0 8px">Booked online with '+esc(a.phone||'')+'.</p>'+
+  (m.length?m.map(c=>'<button class="pkrow" onclick="wbLink2(\''+id+'\',\''+c.id+'\')"><span class="cpmeta"><b>'+esc(c.name)+'</b><small>'+esc(c.phone||'')+(c.clientNo?' · '+esc(c.clientNo):'')+'</small></span>'+ic('right',14)+'</button>').join('')
+   :'<p class="tiny muted">No client has this phone number yet.</p>')+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="wbNewClient(\''+id+'\')">'+ic('plus',15)+'Add '+esc(a.customerName||'')+' as a new client</button></div>');
+};
+window.wbLink2=async(id,cid)=>{const a=wbFind(id),c=cust(cid)||CUSTS.find(x=>x.id===cid)||{};
+ try{await updateDoc(doc(db,'appointments',id),{customerId:cid,customerName:c.name||a.customerName,visitType:'return',updatedBy:UID,updatedAt:new Date().toISOString()});
+  Object.assign(a,{customerId:cid,customerName:c.name||a.customerName});const x=APPTS.find(y=>y.id===id);if(x)Object.assign(x,{customerId:cid,customerName:c.name||a.customerName});
+  window.closeModal();render();toast('Linked to '+(c.name||'the client'));}catch(e){toast(friendly(e));}};
+window.wbNewClient=async id=>{const a=wbFind(id);if(!a)return;
+ const data={name:a.customerName,nameLower:String(a.customerName).toLowerCase(),phone:a.phone,phoneDigits:digits(a.phone),keywords:kwFor(a.customerName,a.phone),email:a.email||'',
+  source:'Other',branchId:a.branchId||ME.branchId,pdpa:true,marketing:false,tags:['Online booking'],notes:'',note:a.notes||'',active:true,wantNo:true,createdAt:new Date().toISOString(),createdBy:UID};
+ try{const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});await newClientNo(r.id);
+  await updateDoc(doc(db,'appointments',id),{customerId:r.id,visitType:'new',updatedBy:UID,updatedAt:new Date().toISOString()});
+  a.customerId=r.id;const x=APPTS.find(y=>y.id===id);if(x){x.customerId=r.id;x.visitType='new';}
+  await audit('Client registered',a.customerName+' (online booking)');window.closeModal();render();toast(a.customerName+' added as a client');}catch(e){toast(friendly(e));}};
+{const _co=window.checkoutFromAppt;window.checkoutFromAppt=async id=>{const a=wbFind(id);
+ if(a&&a.source==='web'&&!a.customerId){toast('Match this online booking to a client first');window.wbMatch(id);return;}return _co(id);};}
+/* home: online bookings that need someone */
+function wbAlerts(al){
+ if(!wbSet().on||!(can('booking')||boss()))return;
+ const td=today(),mine=WBAPPTS.filter(a=>a.source==='web'&&a.branchId===ME.branchId&&a.date>=td);
+ const need=mine.filter(a=>a.status!=='cancel'&&(a.webPending||!a.customerId));
+ const cx=mine.filter(a=>a.status==='cancel'&&a.cancelledBy==='client'&&Date.now()-Date.parse(a.cancelledAt||0)<2*864e5);
+ if(need.length)al.push({i:'calendar',t:need.length+' online booking'+(need.length>1?'s':'')+' to review',
+  d:need.slice(0,3).map(a=>(a.webPending?'? ':'')+String(a.customerName||'').split(' ')[0]+' '+dshort(a.start)).join(', '),go:'wbReview()'});
+ if(cx.length)al.push({i:'alert',t:cx.length+' online booking'+(cx.length>1?'s':'')+' cancelled by the client',d:cx.slice(0,3).map(a=>String(a.customerName||'').split(' ')[0]+' '+dshort(a.start)+' '+tstr(a.start)).join(', '),go:'wbReview()'});
+}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);wbAlerts(al);};}
+window.wbReview=()=>{
+ const td=today(),L=WBAPPTS.filter(a=>a.source==='web'&&a.branchId===ME.branchId&&a.date>=td).sort((a,b)=>String(a.start).localeCompare(b.start));
+ modal('Online bookings','<div class="card">'+(L.length?L.map(a=>'<button class="pkrow" onclick="closeModal();openAppt(\''+a.id+'\')"><span class="cpmeta"><b>'+esc(a.customerName||'')+'</b>'+
+  '<small>'+dshort(a.start)+' '+tstr(a.start)+' · '+esc(a.serviceName||'')+' · '+esc(a.webRef||'')+'</small></span>'+
+  (a.status==='cancel'?'<span class="pill r">cancelled</span>':a.webPending?'<span class="pill a">needs approval</span>':!a.customerId?'<span class="pill">new client?</span>':'<span class="pill g">ok</span>')+'</button>').join('')
+  :'<div class="empty">No upcoming online bookings.</div>')+'</div>');
+};
+
+/* ---------------- settings ---------------- */
+const DOWS=['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
+function wbSetPanel(){
+ const W=wbSet(),svs=D.services.filter(s=>s.active!==false&&s.id),on=W.services?new Set(W.services):new Set(svs.map(s=>s.id)),ap=new Set(W.approval||[]);
+ const link=wbBookLink();
+ return '<div class="card"><h2 style="margin-bottom:6px">'+ic('calendar',16)+' Online booking</h2>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Clients pick a treatment and a free time on the booking page and it lands straight in the calendar. Only free and busy times are shared with the page — never client names or phone numbers.</p>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="wb-on"'+(W.on?' checked':'')+'> <b>Open online booking</b></label>'+
+  (W.on?'<div class="wblinkbox"><label>Booking page</label><div class="row"><input class="f" id="wb-l" readonly value="'+esc(link)+'" style="margin:0;flex:1"><button class="btn sm" onclick="wbCopy()">Copy</button></div>'+
+   '<div class="wfqr"><span class="pfqr" data-qr="'+esc(link)+'" data-px="150" style="width:150px;height:150px"></span><small>For Instagram bio, WhatsApp, flyers, or the "Book now" button on your website.</small></div>'+
+   '<a class="btn ghost sm" target="_blank" href="'+esc(link)+'">'+ic('right',13)+'Open the booking page</a></div>':'')+
+  '<label style="margin-top:10px">Open for booking on</label><div class="wbdow">'+DOWS.map((d,i)=>'<label><input type="checkbox" class="wb-dw" value="'+i+'"'+((W.days||[]).includes(i)?' checked':'')+'> '+d+'</label>').join('')+'</div>'+
+  '<p class="tiny muted" style="margin:2px 0 8px">Hours follow the business hours in Settings ('+D.meta.open+':00 – '+D.meta.close+':00). A treatment must finish by closing.</p>'+
+  '<div class="grid g2"><div><label>Times offered every</label><select class="f" id="wb-st">'+[15,30,60].map(m=>'<option value="'+m+'"'+(+W.step===m?' selected':'')+'>'+m+' minutes</option>').join('')+'</select></div>'+
+  '<div><label>Earliest booking (hours from now)</label><input class="f" type="number" min="0" max="72" id="wb-ld" value="'+W.lead+'"></div>'+
+  '<div><label>How far ahead (days)</label><input class="f" type="number" min="1" max="90" id="wb-hz" value="'+W.horizon+'"></div>'+
+  '<div><label>Clients can cancel up to (hours before)</label><input class="f" type="number" min="0" max="168" id="wb-co" value="'+W.cutoff+'"></div></div>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="wb-cs"'+(W.chooseStaff?' checked':'')+'> Clients may choose their therapist (first names shown)</label>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="wb-hl"'+(W.hol?' checked':'')+'> Closed on public holidays</label>'+
+  '<label>Other closed dates <span class="muted">(YYYY-MM-DD, comma between)</span></label><input class="f" id="wb-cl" value="'+esc(W.closed||'')+'" placeholder="2026-12-25, 2027-01-01">'+
+  '<label>Treatments offered online</label><div class="wbsvctbl">'+svs.map(s=>'<div class="wbsvcrow"><span><b>'+esc(s.name)+'</b><small>'+(s.dur||0)+' min · '+rm(+s.price||0)+(s.room?' · '+esc(s.room)+' room':'')+'</small></span>'+
+   '<label><input type="checkbox" class="wb-sv" value="'+esc(s.id)+'"'+(on.has(s.id)?' checked':'')+'> online</label>'+
+   '<label><input type="checkbox" class="wb-ap" value="'+esc(s.id)+'"'+(ap.has(s.id)?' checked':'')+'> needs approval</label></div>').join('')+'</div>'+
+  '<label>Welcome line on the page <span class="muted">(optional)</span></label><input class="f" id="wb-in" value="'+esc(W.intro||'')+'" placeholder="Tempah rawatan anda dalam 1 minit">'+
+  '<label>Booking terms & cancellation policy</label><textarea class="f" id="wb-po" rows="3" placeholder="Sila hadir 10 minit awal. Pembatalan kurang 24 jam sebelum temujanji...">'+esc(W.policy||'')+'</textarea>'+
+  '<div id="wb-se" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn sm" onclick="wbSave()">'+ic('check',14)+'Save & update the booking page</button></div>';
+}
+function wbBookLink(){let u='';try{u=location.origin+location.pathname.replace(/index\.html$/,'');}catch(e){}return u+'?book='+encodeURIComponent(ME.branchId);}
+window.wbCopy=()=>{const i=$('#wb-l');try{navigator.clipboard.writeText(i.value);}catch(e){i.select();document.execCommand&&document.execCommand('copy');}toast('Link copied');};
+window.wbSave=async()=>{
+ const e=$('#wb-se'),num=(id,a,b,def)=>{const v=Math.round(+$('#'+id).value);return v>=a&&v<=b?v:def;};
+ const W={...wbSet(),on:$('#wb-on').checked,days:[...document.querySelectorAll('.wb-dw:checked')].map(x=>+x.value),step:+$('#wb-st').value||30,
+  lead:num('wb-ld',0,72,2),horizon:num('wb-hz',1,90,30),cutoff:num('wb-co',0,168,24),chooseStaff:$('#wb-cs').checked,hol:$('#wb-hl').checked,
+  closed:$('#wb-cl').value.trim().slice(0,600),services:[...document.querySelectorAll('.wb-sv:checked')].map(x=>x.value),
+  approval:[...document.querySelectorAll('.wb-ap:checked')].map(x=>x.value),intro:$('#wb-in').value.trim().slice(0,200),policy:$('#wb-po').value.trim().slice(0,1200)};
+ if(W.on&&!W.days.length){e.textContent='Pick at least one day.';return;}
+ if(W.on&&!W.services.length){e.textContent='Pick at least one treatment to offer online.';return;}
+ if(W.on&&!D.rooms.length){e.textContent='Set up your rooms first (Catalogue → Rooms).';return;}
+ try{await setDoc(doc(db,'meta','settings'),{webBook:W},{merge:true});D.meta.webBook=W;
+  await wbPublish(true);WBWATCHED=false;wbWatch();await wbSync();
+  await audit('Online booking settings',(W.on?'open':'closed')+' · '+W.services.length+' treatments');render();toast(W.on?'Booking page updated':'Online booking closed');}
+ catch(err){e.textContent=friendly(err);}
+};
+/* start the feed once the app has loaded, and keep the page in step with the catalogue */
+function wbStart(){if(!ME||!wbSet().on)return;wbWatch();if(boss())setTimeout(()=>wbPublish(false),2500);}
+window.wbStart=wbStart;
 </script>
