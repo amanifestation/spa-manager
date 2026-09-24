@@ -1531,6 +1531,14 @@ body.demo .syncbar{top:106px}
 .finexpbtn{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;color:var(--ink)}
 .finexpbtn b{display:flex;gap:6px;align-items:center;font-size:13px}.finexpbtn small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
 .acrow{display:flex;gap:12px;padding:6px 2px;border-bottom:1px solid var(--line-2);font-size:13px}.acrow code{min-width:44px;color:var(--brass);font-weight:600}
+.docgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.docbtn{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;font:inherit;color:var(--ink)}
+.docbtn b{display:flex;gap:6px;align-items:center;font-size:13px}.docbtn small{display:block;font-size:11.5px;color:var(--brass);margin-top:2px}.docbtn em{display:block;font-style:normal;font-size:11.5px;color:var(--ink-3);margin-top:4px}
+.docsig{max-width:220px;max-height:70px;background:#fff;border:1px solid var(--line-2);border-radius:8px;padding:4px}
+.sigpad{display:block;width:100%;height:auto;aspect-ratio:3/1;background:#fff!important;border:1.5px dashed var(--line)!important;border-radius:12px;touch-action:none;cursor:crosshair}
+.onbrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line-2);font-size:13.5px}.onbrow input{margin-top:3px}
+.onbrow small{display:block;font-size:11px;color:var(--ink-3)}.onbrow.done span{color:var(--ink-2)}
+.infochg td{background:rgba(166,124,61,.08)}
 .pltbl td,.pltbl th{white-space:nowrap}.pltbl td:first-child{white-space:normal}
 @media (max-width:620px){.pltbl .plb,.budtbl .budb{display:none}.pltbl td,.pltbl th{font-size:12.5px;padding-left:4px;padding-right:4px}.plc{display:block;margin:0}}.pltbl .plsec td{font-weight:650;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:14px}
 .pltbl .pltot td{font-weight:600;border-top:1px solid var(--line)}.pltbl .plbig td{font-weight:700;background:var(--surface-2);border-top:2px solid var(--line)}
@@ -1811,7 +1819,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25c';
+const BUILD='2026-09-25d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -13254,9 +13262,9 @@ function vHR(){
  const tabs=[['me','My HR','user','']];
  if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
  if(boss())tabs.push(['perf','Performance','star','']);
- if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard','']);
+ if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard',''],['docs','Documents','note',(HRINFO||[]).filter(i=>i.status==='submitted').length||'']);
  if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
- const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf};
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
 }
@@ -13291,12 +13299,12 @@ function hrMe(){
    kpi('Medical leave left',(q.MC-u.MC)+' / '+q.MC,'days this year','shield')+'</div>'+
   '<div class="row wrap2" style="margin-top:12px"><button class="btn" onclick="leaveForm(\''+s.id+'\')">'+ic('leave',15)+'Apply for leave</button>'+
    '<button class="btn ghost" onclick="claimForm(\''+s.id+'\')">'+ic('receipt',15)+'Submit a claim</button></div></div>'+
-  myKpiCard(s.id)+myApprCard(s.id)+
+  myDocsCard(s.id)+myKpiCard(s.id)+myApprCard(s.id)+
   '<div class="grid g2" style="align-items:start"><div class="card"><h3 style="margin:0 0 8px">'+ic('leave',15)+' My leave</h3>'+
    (myL.length?myL.map(l=>lvRow(l,true)).join(''):'<div class="empty">'+ic('leave',22)+'<div>No leave applied yet.</div></div>')+'</div>'+
   '<div class="card"><h3 style="margin:0 0 8px">'+ic('receipt',15)+' My claims</h3>'+
    (CLAIMS===null?'<div class="center"><div class="spin"></div></div>':myC.length?myC.map(x=>clRow(x,true)).join(''):'<div class="empty">'+ic('receipt',22)+'<div>No claims yet.</div></div>')+'</div></div>'+
-  myPayslipsCard(s.id)+
+  myPayslipsCard(s.id)+myDetailsCard(s.id)+
   '<div class="card"><h3 style="margin:0 0 8px">'+ic('clock',15)+' Attendance this month</h3>'+
    (att.length?'<div class="scroll"><table><tr><th>Date</th><th>In</th><th>Out</th><th class="num">Hours</th></tr>'+
     att.sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(a=>'<tr><td>'+dshort(a.date)+'</td><td>'+hhmm(a.clockIn)+'</td><td>'+hhmm(a.clockOut)+
@@ -13560,7 +13568,8 @@ function hrMonth(){
 
 /* ---------------- staff files (owner only) ---------------- */
 const HRF=[['fullName','Full name (as in IC)','text'],['ic','IC / passport no.','text'],['dob','Date of birth','date'],['gender','Gender','sel:Female,Male'],
- ['phone','Phone','tel'],['email','Email','email'],['address','Home address','area'],['emgName','Emergency contact — name','text'],['emgPhone','Emergency contact — phone','tel'],
+ ['phone','Phone','tel'],['email','Email','email'],['address','Home address','area'],['emgName','Emergency contact — name','text'],['emgRel','Emergency contact — relationship','text'],['emgPhone','Emergency contact — phone','tel'],
+ ['marital','Marital status','sel:Single,Married,Divorced,Widowed'],['spouseWorks','Spouse working','sel:Yes,No'],['children','Number of children','num'],
  ['position','Position','text'],['empType','Employment type','sel:Full-time,Part-time,Contract,Probation,Intern'],['joinDate','Date joined','date'],['confirmDate','Confirmation date','date'],['contractEnd','Contract ends','date'],
  ['basic','Basic salary (RM / month)','num'],['allowance','Fixed allowances (RM / month)','num'],
  ['bank','Bank','text'],['bankAcc','Bank account no.','text'],['epf','KWSP no.','text'],['socso','PERKESO no.','text'],['tax','Income tax no.','text'],
@@ -13592,7 +13601,8 @@ window.hrFile=sid=>{
  const grp=(t,ks)=>'<div class="hrgrp"><h4>'+t+'</h4><div class="grid g2">'+HRF.filter(x=>ks.includes(x[0])).map(x=>'<div>'+inp(x)+'</div>').join('')+'</div></div>';
  modal('Staff file · '+s.name,'<div class="card">'+
   grp('Personal',['fullName','ic','dob','gender','phone','email'])+inp(HRF.find(x=>x[0]==='address'))+
-  grp('Emergency contact',['emgName','emgPhone'])+
+  grp('Emergency contact',['emgName','emgRel','emgPhone'])+
+  grp('Family (for PCB)',['marital','spouseWorks','children'])+
   grp('Employment',['position','empType','joinDate','confirmDate','contractEnd','basic','allowance'])+
   grp('Bank & statutory',['bank','bankAcc','epf','socso','tax','citizen','pcb'])+
   grp('Leave entitlement',['leaveAL','leaveMC'])+
@@ -13610,8 +13620,8 @@ window.hrFileSave=async sid=>{
  d.updatedAt=new Date().toISOString();d.updatedBy=UID;
  /* what the rest of the app may know (position, join date, leave entitlement) goes on the profile */
  const pub={position:d.position||'',joinDate:d.joinDate||'',empType:d.empType||'',leaveAL:d.leaveAL,leaveMC:d.leaveMC};
- try{await setDoc(doc(db,'hrStaff',sid),d);await updateDoc(doc(db,'users',sid),pub);
-  HRSTAFF[sid]=d;Object.assign(stf(sid),pub);
+ try{await setDoc(doc(db,'hrStaff',sid),d,{merge:true});await updateDoc(doc(db,'users',sid),pub);
+  HRSTAFF[sid]={...(HRSTAFF[sid]||{}),...d};Object.assign(stf(sid),pub);
   await audit('Staff file updated',stf(sid).name||sid);
   window.closeModal();render();toast('Staff file saved');}
  catch(e){$('#hf-e').textContent=friendly(e);$('#hf-go').disabled=false;}
@@ -15173,4 +15183,567 @@ function packExtra(d,h2,row,para,n,X2,X3){
  if(E.be>0)para('Break-even revenue for '+mLabel(m)+': '+n(E.be)+' (fixed costs '+n(E.fixed)+' '+(E.fromBud?'from the budget':'averaged over '+E.basis.map(mLabel).join(', '))+
   '; product cost, commission and payment fees at '+Math.round(E.ratio*100)+'% of revenue). Revenue in the month: '+n(E.rev)+(E.hit?', break-even reached on '+E.hit+'.':'.'));
 }
+
+/* ============ HR documents: onboarding forms, letters, signing and the onboarding checklist ============ */
+/* The owner produces the paperwork of hiring from what the app already knows: a blank job application
+   form, the employee information form (filled from the staff file), offer letter, confirmation letter,
+   confidentiality agreement, acknowledgement of company rules and an employment verification letter —
+   in Bahasa Malaysia or English, as a proper A4 PDF on the letterhead. A letter issued to someone with a
+   login waits in their My HR, where they read it and sign on the screen; the signed copy is kept.
+   Staff can also send their own details (IC, bank, KWSP, emergency contact) for the owner to copy into
+   the staff file. The onboarding checklist ticks itself from the staff file and signed documents.
+   These are templates: have a lawyer look at them once before relying on them. */
+let HRDOCS=null,MYDOCS=null,HRINFO=null,MYINFO,DOCALOAD=0;
+const DOCT={
+ app:{bm:'Borang Permohonan Pekerjaan',en:'Job Application Form',form:1,d:'Blank form for walk-in or online applicants',ic:'note'},
+ info:{bm:'Borang Maklumat Pekerja',en:'Employee Information Form',form:1,d:'Personal, emergency, bank and statutory details — filled from the staff file',ic:'idcard'},
+ offer:{bm:'Surat Tawaran Pekerjaan',en:'Letter of Offer of Employment',sign:1,code:'OFR',d:'Position, salary, probation, hours, leave, notice — with acceptance',ic:'mail'},
+ confirm:{bm:'Surat Pengesahan Jawatan',en:'Letter of Confirmation',sign:1,code:'CNF',d:'After probation, with any salary adjustment',ic:'check'},
+ nda:{bm:'Perjanjian Kerahsiaan',en:'Confidentiality & Non-Disclosure Agreement',sign:1,code:'NDA',d:'Client data (PDPA), photos, pricing, SOP, non-solicitation',ic:'shield'},
+ rules:{bm:'Akuan Peraturan Syarikat & SOP',en:'Acknowledgement of Company Rules & SOP',sign:1,code:'ACK',d:'The house rules the staff member agrees to follow',ic:'list'},
+ verify:{bm:'Surat Pengesahan Bekerja',en:'Employment Verification Letter',code:'VER',d:'For bank loans, visas or rental — with or without salary',ic:'award'}};
+const docTitle=(t,l)=>(DOCT[t]||{})[l==='en'?'en':'bm']||t;
+const LX=(lang,bm,en)=>lang==='en'?en:bm;
+const BM_MON=['Januari','Februari','Mac','April','Mei','Jun','Julai','Ogos','September','Oktober','November','Disember'];
+const EN_MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const dLong=(v,lang)=>{if(!v)return '';const [y,m,d]=String(v).slice(0,10).split('-');if(!d)return v;return (+d)+' '+(lang==='en'?EN_MON:BM_MON)[+m-1]+' '+y;};
+const rmL=v=>'RM '+(+v||0).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
+const EMPT={'Full-time':['tetap sepenuh masa','permanent full-time'],'Part-time':['separuh masa','part-time'],'Contract':['kontrak','contract'],
+ 'Probation':['tetap (dalam percubaan)','permanent (on probation)'],'Intern':['latihan industri','internship']};
+const empL=(v,lang)=>(EMPT[v]||[v,v])[lang==='en'?1:0];
+const RULES={bm:['Hadir tepat pada masanya dan merekod kehadiran (clock in / clock out) melalui aplikasi setiap hari bekerja.',
+  'Memakai pakaian seragam yang bersih dan kemas, serta menjaga kebersihan diri.',
+  'Mematuhi SOP kebersihan, sanitasi dan keselamatan bagi setiap rawatan tanpa mengambil jalan pintas.',
+  'Merahsiakan maklumat dan data peribadi klien, dan tidak menyimpannya dalam telefon peribadi.',
+  'Tidak menggunakan telefon bimbit peribadi semasa melayan klien.',
+  'Merekod setiap jualan, rawatan dan bayaran dengan betul dalam sistem. Tiada transaksi di luar sistem.',
+  'Tidak menerima bayaran, hadiah wang atau pindahan peribadi daripada klien.',
+  'Memohon cuti dan membuat tuntutan melalui aplikasi mengikut prosedur.',
+  'Melaporkan sebarang aduan, kecederaan, reaksi kulit atau kejadian kepada pengurus dengan segera.',
+  'Membaca dan mengikuti SOP dalam Library aplikasi, termasuk setiap kemas kini.'],
+ en:['Be on time and record attendance (clock in / clock out) in the app every working day.',
+  'Wear a clean, neat uniform and keep good personal hygiene.',
+  'Follow the hygiene, sanitation and safety SOP for every treatment without shortcuts.',
+  'Keep client information and personal data confidential, and never store it on a personal phone.',
+  'Do not use a personal mobile phone while attending to clients.',
+  'Record every sale, treatment and payment correctly in the system. No transactions outside the system.',
+  'Do not accept personal payments, cash gifts or transfers from clients.',
+  'Apply for leave and submit claims through the app according to procedure.',
+  'Report any complaint, injury, skin reaction or incident to the manager immediately.',
+  'Read and follow the SOPs in the app Library, including every update.']};
+
+async function loadHrDocs(force){
+ if(!isOwnerMe()||(HRDOCS&&!force))return;
+ try{HRDOCS=(await getDocs(collection(db,'hrDocs'))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.issuedAt).localeCompare(String(a.issuedAt)));}
+ catch(e){HRDOCS=[];console.warn('hr docs',e);}
+ try{HRINFO=(await getDocs(collection(db,'hrInfo'))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){HRINFO=[];}
+ if(TAB==='hr'||TAB==='home')render();
+}
+async function loadMyDocs(){
+ if(isBranch()){MYDOCS=[];return;}
+ try{MYDOCS=(await getDocs(query(collection(db,'hrDocs'),where('staffId','==',UID)))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.issuedAt).localeCompare(String(a.issuedAt)));}
+ catch(e){MYDOCS=[];console.warn('my docs',e);}
+ try{const s=await getDoc(doc(db,'hrInfo',UID));MYINFO=s.exists()?s.data():null;}catch(e){MYINFO=null;}
+ if(TAB==='hr'||TAB==='home')render();
+}
+
+/* ---------------- what goes into each document ---------------- */
+function docDefaults(type,sid,lang){
+ const f=sid?((HRSTAFF||{})[sid]||{}):{},s=sid?stf(sid):{},q=sid?lvQuota({...s,leaveAL:f.leaveAL,leaveMC:f.leaveMC,joinDate:f.joinDate}):{AL:8,MC:14};
+ const me=(HRSTAFF||{})[UID]||{};
+ return {name:f.fullName||s.name||'',ic:f.ic||'',address:f.address||'',position:f.position||s.position||'',branch:branch().name||'',
+  date:today(),start:f.joinDate||ymd(addDays(new Date(),14)),joinDate:f.joinDate||'',empType:f.empType&&f.empType!=='Probation'?f.empType:'Full-time',prob:3,
+  basic:f.basic||'',allowance:f.allowance||'',allowanceNote:'',payday:7,AL:q.AL,MC:q.MC,HL:60,
+  comm:LX(lang,'Komisyen jualan dan rawatan mengikut skim komisyen syarikat yang berkuat kuasa dari semasa ke semasa.','Sales and treatment commission according to the company commission scheme in force from time to time.'),
+  hours:LX(lang,'6 hari seminggu, 9 jam sehari termasuk 1 jam rehat, mengikut jadual giliran.','6 days a week, 9 hours a day including a 1-hour break, according to the duty roster.'),
+  rest:LX(lang,'1 hari rehat seminggu mengikut jadual giliran.','1 rest day a week according to the duty roster.'),
+  benefits:LX(lang,'Rawatan untuk staf pada kadar istimewa, latihan dalaman dan pakaian seragam.','Staff treatments at a special rate, in-house training and uniforms.'),
+  reportTo:LX(lang,'Pengurus Cawangan','the Branch Manager'),noticeProb:LX(lang,'2 minggu','2 weeks'),noticeConf:LX(lang,'1 bulan','1 month'),
+  acceptBy:ymd(addDays(new Date(),7)),confirmDate:f.confirmDate||today(),newBasic:'',remarks:'',nonSol:12,
+  rules:RULES[lang==='en'?'en':'bm'].join('\n'),purpose:'',addressee:LX(lang,'Kepada Sesiapa Yang Berkenaan','To Whom It May Concern'),withSalary:'',
+  signName:me.fullName||ME.name||'',signTitle:LX(lang,'Pemilik','Owner'),
+  dob:f.dob||'',gender:f.gender||'',citizen:f.citizen||'',phone:f.phone||'',email:f.email||'',emgName:f.emgName||'',emgRel:f.emgRel||'',emgPhone:f.emgPhone||'',
+  bank:f.bank||'',bankAcc:f.bankAcc||'',epf:f.epf||'',socso:f.socso||'',tax:f.tax||'',marital:f.marital||'',spouseWorks:f.spouseWorks||'',children:f.children??'',confirmOn:f.confirmDate||''};
+}
+/* the form in the app, per document: [key, label, kind] */
+const DF_PERSON=[['name','Full name (as in IC)','text'],['ic','IC / passport no.','text'],['address','Address','area'],['position','Position','text'],['branch','Branch','text']];
+const DF_SIGN=[['signName','Signed for the company by','text'],['signTitle','Their title','text']];
+const DOCF={
+ offer:[...DF_PERSON,['date','Letter date','date'],['start','Start date','date'],['empType','Employment type','sel:Full-time,Part-time,Contract,Intern'],['prob','Probation (months, 0 = none)','num'],
+  ['reportTo','Reports to','text'],['basic','Basic salary (RM / month)','num'],['allowance','Fixed allowance (RM / month)','num'],['allowanceNote','Allowance is for (optional)','text'],
+  ['comm','Commission','area'],['payday','Salary paid by day of the month','num'],['hours','Working hours','area'],['rest','Rest day','text'],
+  ['AL','Annual leave (days)','num'],['MC','Sick leave (days)','num'],['HL','Hospitalisation (days)','num'],['benefits','Other benefits','area'],
+  ['noticeProb','Notice during probation','text'],['noticeConf','Notice after confirmation','text'],['acceptBy','Accept by','date'],...DF_SIGN],
+ confirm:[...DF_PERSON,['date','Letter date','date'],['start','Date of the offer letter / joining','date'],['confirmDate','Confirmed from','date'],['newBasic','New basic salary (optional)','num'],
+  ['noticeConf','Notice after confirmation','text'],['remarks','Anything else to say (optional)','area'],...DF_SIGN],
+ nda:[...DF_PERSON,['date','Agreement date','date'],['nonSol','No soliciting clients or staff for (months after leaving)','num'],...DF_SIGN],
+ rules:[...DF_PERSON,['date','Date','date'],['rules','Rules (one per line)','area'],...DF_SIGN],
+ verify:[...DF_PERSON,['date','Letter date','date'],['addressee','Addressed to','text'],['joinDate','Employed since','date'],['empType','Employment type','sel:Full-time,Part-time,Contract,Probation,Intern'],
+  ['withSalary','Show salary','sel:,Yes'],['basic','Basic salary (RM / month)','num'],['allowance','Fixed allowance (RM / month)','num'],['purpose','Purpose (optional, e.g. bank loan)','text'],...DF_SIGN],
+ app:[['name','Applicant name (optional)','text'],['position','Position applied for (optional)','text']],
+ info:[]};
+
+/* the words of each document, as blocks the PDF drawer lays out */
+function docBlocks(type,lang,x,biz){
+ const B=[],bn=biz.name||'',en=lang==='en';
+ const letter=(title,addr=true)=>{B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]});
+  if(addr)B.push({addr:[x.name,x.ic?LX(lang,'No. KP: ','IC no.: ')+x.ic:'',...String(x.address||'').split('\n')].filter(Boolean)});
+  B.push({p:LX(lang,'Tuan/Puan,','Dear '+(x.name||'Sir/Madam')+',')},{title});};
+ const yours=()=>{B.push({p:LX(lang,'Sekian, terima kasih.','Thank you.')},{p:LX(lang,'Yang benar,','Yours sincerely,')},
+  {sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+bn}]});};
+ if(type==='offer'){
+  letter(LX(lang,'TAWARAN PEKERJAAN SEBAGAI ','OFFER OF EMPLOYMENT AS ')+String(x.position||'').toUpperCase());
+  B.push({p:LX(lang,'Dengan sukacitanya kami menawarkan anda jawatan '+x.position+' di '+bn+' tertakluk kepada terma dan syarat berikut:',
+   'We are pleased to offer you the position of '+x.position+' at '+bn+' on the following terms and conditions:')});
+  const prob=+x.prob>0;
+  const C=[[LX(lang,'Jawatan dan tempat bertugas','Position and place of work'),LX(lang,'Anda akan bertugas sebagai '+x.position+' di '+x.branch+' dan melapor kepada '+x.reportTo+'. Syarikat boleh menempatkan anda di cawangan lain mengikut keperluan operasi dengan notis yang munasabah.',
+    'You will work as '+x.position+' at '+x.branch+' and report to '+x.reportTo+'. The company may place you at another branch as operations require, with reasonable notice.')],
+   [LX(lang,'Tarikh mula bertugas','Start date'),LX(lang,'Tarikh mula bertugas anda ialah '+dLong(x.start,lang)+'.','Your employment starts on '+dLong(x.start,lang)+'.')],
+   [LX(lang,'Jenis pekerjaan dan tempoh percubaan','Type of employment and probation'),LX(lang,'Jawatan ini adalah secara '+empL(x.empType,lang)+'.'+(prob?' Anda akan menjalani tempoh percubaan selama '+x.prob+' bulan. Prestasi anda akan dinilai sebelum tempoh ini tamat, dan syarikat boleh mengesahkan jawatan anda, melanjutkan tempoh percubaan atau menamatkan perkhidmatan anda.':''),
+    'This is a '+empL(x.empType,lang)+' position.'+(prob?' You will be on probation for '+x.prob+' months. Your performance will be reviewed before it ends, and the company may confirm you, extend the probation or end your employment.':''))],
+   [LX(lang,'Gaji dan elaun','Salary and allowances'),{kv:[[LX(lang,'Gaji pokok','Basic salary'),rmL(x.basic)+LX(lang,' sebulan',' a month')],
+     ...(+x.allowance?[[LX(lang,'Elaun tetap','Fixed allowance'),rmL(x.allowance)+LX(lang,' sebulan',' a month')+(x.allowanceNote?' ('+x.allowanceNote+')':'')]]:[]),
+     [LX(lang,'Komisyen','Commission'),x.comm]],
+    p:LX(lang,'Gaji dibayar melalui pindahan bank selewat-lewatnya pada '+x.payday+' haribulan setiap bulan berikutnya.','Salary is paid by bank transfer no later than the '+x.payday+ordEn(+x.payday)+' of the following month.')}],
+   [LX(lang,'Waktu bekerja','Working hours'),LX(lang,x.hours+' '+x.rest+' Kerja lebih masa hendaklah diluluskan terlebih dahulu dan dibayar mengikut Akta Kerja 1955.',
+    x.hours+' '+x.rest+' Overtime must be approved beforehand and is paid according to the Employment Act 1955.')],
+   [LX(lang,'Cuti','Leave'),LX(lang,'Anda layak mendapat cuti tahunan '+x.AL+' hari, cuti sakit '+x.MC+' hari dan cuti hospitalisasi sehingga '+x.HL+' hari setahun, serta cuti umum mengikut Akta Kerja 1955. Cuti dipohon melalui aplikasi syarikat.',
+    'You are entitled to '+x.AL+' days of annual leave, '+x.MC+' days of sick leave and up to '+x.HL+' days of hospitalisation leave a year, and public holidays under the Employment Act 1955. Leave is applied for through the company app.')],
+   [LX(lang,'Caruman berkanun','Statutory contributions'),LX(lang,'Syarikat akan mencarum KWSP, PERKESO dan SIP bagi pihak anda mengikut kadar yang ditetapkan undang-undang. Potongan cukai bulanan (PCB) dibuat jika berkenaan.',
+    'The company will contribute to KWSP (EPF), PERKESO (SOCSO) and SIP (EIS) for you at the statutory rates. Monthly tax deduction (PCB) is made where it applies.')],
+   ...(x.benefits?[[LX(lang,'Faedah lain','Other benefits'),x.benefits]]:[]),
+   [LX(lang,'Notis penamatan','Notice of termination'),LX(lang,(prob?'Semasa tempoh percubaan, mana-mana pihak boleh menamatkan perkhidmatan dengan memberi notis '+x.noticeProb+' atau gaji sebagai ganti notis. Selepas jawatan disahkan, tempoh notis ialah '+x.noticeConf+'.':'Mana-mana pihak boleh menamatkan perkhidmatan dengan memberi notis '+x.noticeConf+' atau gaji sebagai ganti notis.'),
+    (prob?'During probation either party may end the employment with '+x.noticeProb+'\'s notice or salary in lieu. After confirmation, the notice period is '+x.noticeConf+'.':'Either party may end the employment with '+x.noticeConf+'\'s notice or salary in lieu.'))],
+   [LX(lang,'Kerahsiaan dan peraturan','Confidentiality and company rules'),LX(lang,'Anda dikehendaki menandatangani Perjanjian Kerahsiaan dan mematuhi peraturan, SOP serta polisi syarikat yang berkuat kuasa dari semasa ke semasa.',
+    'You will be required to sign a Confidentiality Agreement and to follow the company rules, SOPs and policies in force from time to time.')],
+   [LX(lang,'Dokumen pada hari pertama','Documents on your first day'),LX(lang,'Sila bawa salinan kad pengenalan, butiran akaun bank, nombor KWSP dan PERKESO (jika ada), sijil kelayakan dan sekeping gambar berukuran pasport.',
+    'Please bring a copy of your IC, your bank account details, your KWSP and PERKESO numbers (if any), your certificates and one passport-size photo.')]];
+  C.forEach((c,i)=>B.push({n:(i+1)+'.',h:c[0],...(typeof c[1]==='string'?{p:c[1]}:c[1])}));
+  B.push({p:LX(lang,'Tawaran ini sah sehingga '+dLong(x.acceptBy,lang)+'. Sila tandatangani salinan surat ini sebagai tanda penerimaan. Kami mengalu-alukan anda ke dalam pasukan '+bn+'.',
+   'This offer is valid until '+dLong(x.acceptBy,lang)+'. Please sign a copy of this letter to accept it. We look forward to welcoming you to the '+bn+' team.')});
+  yours();
+  B.push({h2:LX(lang,'PENERIMAAN TAWARAN','ACCEPTANCE')},{p:LX(lang,'Saya, '+x.name+' (No. KP: '+(x.ic||'..................')+'), telah membaca, memahami dan menerima tawaran pekerjaan ini berserta terma dan syarat di atas.',
+   'I, '+x.name+' (IC no.: '+(x.ic||'..................')+'), have read, understood and accept this offer of employment on the terms and conditions above.')},{sign:[{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')}]});
+ }
+ if(type==='confirm'){
+  letter(LX(lang,'PENGESAHAN JAWATAN SEBAGAI ','CONFIRMATION OF EMPLOYMENT AS ')+String(x.position||'').toUpperCase());
+  B.push({p:LX(lang,'Merujuk kepada pelantikan anda bermula '+dLong(x.start,lang)+', sukacita dimaklumkan bahawa anda telah berjaya menamatkan tempoh percubaan. Jawatan anda sebagai '+x.position+' disahkan berkuat kuasa mulai '+dLong(x.confirmDate,lang)+'.',
+   'With reference to your appointment from '+dLong(x.start,lang)+', we are pleased to inform you that you have completed your probation successfully. Your appointment as '+x.position+' is confirmed with effect from '+dLong(x.confirmDate,lang)+'.')});
+  if(+x.newBasic)B.push({p:LX(lang,'Sehubungan itu, gaji pokok anda diselaraskan kepada '+rmL(x.newBasic)+' sebulan berkuat kuasa tarikh yang sama.','Your basic salary is revised to '+rmL(x.newBasic)+' a month from the same date.')});
+  B.push({p:LX(lang,'Mulai tarikh ini, tempoh notis penamatan perkhidmatan bagi mana-mana pihak ialah '+x.noticeConf+'. Terma dan syarat lain dalam surat tawaran anda kekal tidak berubah.',
+   'From this date the notice period for either party is '+x.noticeConf+'. The other terms and conditions of your offer letter remain unchanged.')});
+  if(x.remarks)B.push({p:x.remarks});
+  B.push({p:LX(lang,'Syarikat menghargai sumbangan dan komitmen anda, dan berharap anda terus memberikan perkhidmatan yang cemerlang kepada klien kami.','We appreciate your contribution and commitment, and look forward to your continued excellent service to our clients.')});
+  yours();
+  B.push({h2:LX(lang,'AKUAN PENERIMAAN','ACKNOWLEDGEMENT')},{p:LX(lang,'Saya mengaku menerima surat ini.','I acknowledge receipt of this letter.')},{sign:[{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')}]});
+ }
+ if(type==='nda'){
+  B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{title:LX(lang,'PERJANJIAN KERAHSIAAN DAN TANPA PENDEDAHAN','CONFIDENTIALITY AND NON-DISCLOSURE AGREEMENT'),center:1});
+  B.push({p:LX(lang,'Perjanjian ini dibuat pada '+dLong(x.date,lang)+' antara '+bn+(biz.ssm?' (No. Pendaftaran: '+biz.ssm+')':'')+' ("Syarikat") dan '+x.name+' (No. KP: '+(x.ic||'..................')+') ("Pekerja").',
+   'This agreement is made on '+dLong(x.date,lang)+' between '+bn+(biz.ssm?' (Registration no.: '+biz.ssm+')':'')+' ("the Company") and '+x.name+' (IC no.: '+(x.ic||'..................')+') ("the Employee").')});
+  const n=x.nonSol||12;
+  [[LX(lang,'Maklumat Sulit','Confidential Information'),LX(lang,'Maklumat Sulit termasuk tetapi tidak terhad kepada: rekod dan data peribadi klien (nama, nombor telefon, alamat, gambar, sejarah rawatan, keadaan kulit dan maklumat kesihatan); senarai klien dan ahli; harga, promosi dan strategi pemasaran; prosedur rawatan, SOP dan formula; maklumat pembekal dan kos; maklumat kewangan dan jualan; maklumat pekerja lain; serta akaun, kata laluan dan kod akses sistem Syarikat.',
+    'Confidential Information includes but is not limited to: client records and personal data (names, phone numbers, addresses, photos, treatment history, skin condition and health information); client and member lists; prices, promotions and marketing plans; treatment procedures, SOPs and formulas; supplier and cost information; financial and sales information; information about other employees; and the Company\'s system accounts, passwords and access codes.')],
+   [LX(lang,'Kewajipan Pekerja','Employee\'s obligations'),LX(lang,'Pekerja hendaklah merahsiakan Maklumat Sulit, menggunakannya hanya untuk menjalankan tugas bagi pihak Syarikat, dan tidak mendedahkannya kepada mana-mana pihak ketiga tanpa kebenaran bertulis Syarikat.',
+    'The Employee shall keep the Confidential Information secret, use it only to carry out duties for the Company, and not disclose it to any third party without the Company\'s written consent.')],
+   [LX(lang,'Data peribadi klien','Clients\' personal data'),LX(lang,'Pekerja hendaklah mematuhi Akta Perlindungan Data Peribadi 2010. Pekerja tidak boleh menyalin, mengambil gambar, memuat turun atau menyimpan data klien dalam telefon atau peranti peribadi, dan tidak boleh menghubungi klien melalui saluran peribadi bagi urusan perniagaan.',
+    'The Employee shall comply with the Personal Data Protection Act 2010. The Employee shall not copy, photograph, download or keep client data on a personal phone or device, and shall not contact clients through personal channels for business.')],
+   [LX(lang,'Gambar dan media sosial','Photos and social media'),LX(lang,'Gambar atau video klien, termasuk gambar sebelum dan selepas rawatan, tidak boleh diambil atau dikongsi tanpa persetujuan bertulis klien dan kebenaran Syarikat.',
+    'Photos or videos of clients, including before-and-after photos, shall not be taken or shared without the client\'s written consent and the Company\'s permission.')],
+   [LX(lang,'Tidak memujuk klien dan pekerja','No soliciting clients or staff'),LX(lang,'Semasa bekerja dan dalam tempoh '+n+' bulan selepas perkhidmatan tamat, Pekerja tidak boleh menggunakan Maklumat Sulit untuk memujuk atau cuba memujuk klien Syarikat beralih kepada pihak lain, atau memujuk pekerja Syarikat supaya berhenti kerja.',
+    'During employment and for '+n+' months after it ends, the Employee shall not use Confidential Information to persuade or try to persuade the Company\'s clients to move to another party, or persuade the Company\'s employees to leave.')],
+   [LX(lang,'Pemulangan harta Syarikat','Return of Company property'),LX(lang,'Apabila perkhidmatan tamat, Pekerja hendaklah memulangkan semua harta, dokumen, peralatan dan pakaian seragam Syarikat, menyerahkan semua akses sistem, dan memadam sebarang Maklumat Sulit dalam simpanan peribadi.',
+    'When employment ends, the Employee shall return all Company property, documents, equipment and uniforms, give up all system access, and delete any Confidential Information kept personally.')],
+   [LX(lang,'Pengecualian','Exceptions'),LX(lang,'Kewajipan ini tidak terpakai kepada maklumat yang telah diketahui umum bukan kerana pelanggaran oleh Pekerja, atau yang wajib didedahkan di bawah undang-undang.',
+    'These obligations do not apply to information that is public other than through the Employee\'s breach, or that must be disclosed by law.')],
+   [LX(lang,'Tempoh','Duration'),LX(lang,'Kewajipan kerahsiaan ini berterusan semasa perkhidmatan dan selepas perkhidmatan tamat.','These confidentiality obligations continue during employment and after it ends.')],
+   [LX(lang,'Pelanggaran','Breach'),LX(lang,'Pelanggaran perjanjian ini boleh menyebabkan tindakan tatatertib termasuk pembuangan kerja, serta tindakan undang-undang untuk menuntut ganti rugi atau injunksi.',
+    'A breach of this agreement may lead to disciplinary action up to dismissal, and legal action for damages or an injunction.')],
+   [LX(lang,'Undang-undang','Governing law'),LX(lang,'Perjanjian ini tertakluk kepada undang-undang Malaysia.','This agreement is governed by the laws of Malaysia.')]]
+   .forEach((c,i)=>B.push({n:(i+1)+'.',h:c[0],p:c[1]}));
+  B.push({p:LX(lang,'Ditandatangani oleh pihak-pihak pada tarikh di atas.','Signed by the parties on the date above.')},
+   {sign:[{who:'co',name:x.signName,sub:x.signTitle+LX(lang,', bagi pihak ',', for ')+bn},{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')}]});
+ }
+ if(type==='rules'){
+  B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{title:LX(lang,'AKUAN PENERIMAAN PERATURAN SYARIKAT DAN SOP','ACKNOWLEDGEMENT OF COMPANY RULES AND SOP'),center:1});
+  B.push({p:LX(lang,'Saya, '+x.name+' (No. KP: '+(x.ic||'..................')+'), '+x.position+' di '+bn+', mengaku bahawa saya telah menerima, membaca dan memahami peraturan syarikat dan SOP berikut, dan bersetuju untuk mematuhinya:',
+   'I, '+x.name+' (IC no.: '+(x.ic||'..................')+'), '+x.position+' at '+bn+', confirm that I have received, read and understood the following company rules and SOP, and agree to follow them:')});
+  String(x.rules||'').split('\n').map(s=>s.trim()).filter(Boolean).forEach((r,i)=>B.push({n:(i+1)+'.',p:r,tight:1}));
+  B.push({p:LX(lang,'Saya faham bahawa peraturan dan SOP boleh dikemas kini dari semasa ke semasa, dan pelanggarannya boleh menyebabkan tindakan tatatertib.',
+   'I understand that the rules and SOP may be updated from time to time, and that breaking them may lead to disciplinary action.')},
+   {sign:[{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')},{who:'co',name:x.signName,sub:x.signTitle+LX(lang,' (saksi)',' (witness)')}]});
+ }
+ if(type==='verify'){
+  B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{addr:[x.addressee]},{title:LX(lang,'PENGESAHAN PEKERJAAN: ','EMPLOYMENT VERIFICATION: ')+String(x.name||'').toUpperCase()});
+  B.push({p:LX(lang,'Dengan ini disahkan bahawa '+x.name+' (No. KP: '+(x.ic||'—')+') adalah pekerja '+bn+(biz.ssm?' ('+biz.ssm+')':'')+' sejak '+dLong(x.joinDate,lang)+' dan kini memegang jawatan '+x.position+' secara '+empL(x.empType,lang)+' di '+x.branch+'.',
+   'This is to confirm that '+x.name+' (IC no.: '+(x.ic||'—')+') has been employed by '+bn+(biz.ssm?' ('+biz.ssm+')':'')+' since '+dLong(x.joinDate,lang)+' and currently holds the '+empL(x.empType,lang)+' position of '+x.position+' at '+x.branch+'.')});
+  if(x.withSalary==='Yes')B.push({p:LX(lang,'Gaji pokok bulanan beliau ialah '+rmL(x.basic)+(+x.allowance?' dengan elaun tetap '+rmL(x.allowance)+' sebulan':'')+'.',
+   'Their monthly basic salary is '+rmL(x.basic)+(+x.allowance?' with a fixed allowance of '+rmL(x.allowance)+' a month':'')+'.')});
+  if(x.purpose)B.push({p:LX(lang,'Surat ini dikeluarkan atas permintaan beliau bagi tujuan '+x.purpose+'.','This letter is issued at their request for the purpose of '+x.purpose+'.')});
+  B.push({p:LX(lang,'Sebarang pertanyaan boleh diajukan kepada kami'+(biz.phone?' di '+biz.phone:'')+(biz.email?' atau '+biz.email:'')+'.','For any enquiry please contact us'+(biz.phone?' at '+biz.phone:'')+(biz.email?' or '+biz.email:'')+'.')});
+  B.push({p:LX(lang,'Yang benar,','Yours faithfully,')},{sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+bn}]});
+ }
+ if(type==='app'){
+  B.push({title:'BORANG PERMOHONAN PEKERJAAN',sub:'JOB APPLICATION FORM',center:1});
+  B.push({h:'A. Jawatan dipohon / Position applied for'},{fields:[['Jawatan / Position',x.position],['Boleh mula pada / Available from'],['Gaji dijangka / Expected salary (RM)'],['Cawangan pilihan / Preferred branch']],cols:2});
+  B.push({h:'B. Maklumat peribadi / Personal details'},{fields:[['Nama penuh (seperti KP) / Full name (as in IC)',x.name]],cols:1},
+   {fields:[['No. KP / IC no.'],['Tarikh lahir / Date of birth'],['Jantina / Gender'],['Warganegara / Nationality'],['Status perkahwinan / Marital status'],['No. telefon / Phone'],['E-mel / Email'],['Lesen & kenderaan / Licence & transport']],cols:2},
+   {fields:[['Alamat / Address'],['']],cols:1});
+  B.push({h:'C. Pendidikan / Education'},{table:{head:['Institusi / Institution','Kelayakan / Qualification','Tahun / Year'],w:[.45,.4,.15],rows:3}});
+  B.push({h:'D. Sijil kecantikan & latihan / Beauty certificates & training'},{note:'cth. / e.g. SKM, CIDESCO, CIBTAC, ITEC, kursus mesin / machine courses'},{table:{head:['Kursus / Course','Penganjur / Provider','Tahun / Year'],w:[.45,.4,.15],rows:3}});
+  B.push({h:'E. Pengalaman kerja / Work experience'},{table:{head:['Majikan / Employer','Jawatan / Position','Tempoh / Period','Gaji akhir / Last pay','Sebab berhenti / Reason left'],w:[.26,.2,.16,.14,.24],rows:3}});
+  B.push({h:'F. Kemahiran / Skills'},{checks:['Facial','Urutan badan / Body massage','Mesin estetik / Aesthetic machines','Waxing / threading','Bulu mata & kening / Lash & brow','Kuku / Nails','Jualan & layanan / Sales & service','Media sosial / Social media','Bahasa Melayu','English','Mandarin','Tamil'],cols:3});
+  B.push({h:'G. Rujukan / References'},{table:{head:['Nama / Name','Hubungan / Relationship','Telefon / Phone'],w:[.45,.3,.25],rows:2}});
+  B.push({fields:[['Dari mana anda tahu tentang jawatan ini? / How did you hear about this job?']],cols:1});
+  B.push({h:'H. Akuan / Declaration'},{p:'Saya mengaku semua maklumat di atas adalah benar. Maklumat palsu boleh menyebabkan permohonan ditolak atau perkhidmatan ditamatkan. Saya bersetuju maklumat ini digunakan oleh '+bn+' bagi tujuan pengambilan pekerja selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
+   {p:'I declare that the information above is true. False information may lead to rejection or dismissal. I agree to '+bn+' using this information for recruitment in line with the Personal Data Protection Act 2010.',sz:8.6,it:1},
+   {sign:[{who:'emp',name:'',sub:'Tandatangan pemohon / Applicant\'s signature'}]});
+  B.push({office:[['Ditemuduga oleh / Interviewed by'],['Tarikh / Date'],['Keputusan / Result'],['Gaji ditawarkan / Salary offered']]});
+ }
+ if(type==='info'){
+  B.push({title:'BORANG MAKLUMAT PEKERJA',sub:'EMPLOYEE INFORMATION FORM',center:1});
+  B.push({h:'A. Maklumat peribadi / Personal details'},{fields:[['Nama penuh (seperti KP) / Full name (as in IC)',x.name]],cols:1},
+   {fields:[['No. KP / IC no.',x.ic],['Tarikh lahir / Date of birth',dLong(x.dob,'en')],['Jantina / Gender',x.gender],['Warganegara / Citizenship',x.citizen],['No. telefon / Phone',x.phone],['E-mel / Email',x.email]],cols:2},
+   {fields:[['Alamat rumah / Home address',x.address]],cols:1,tall:1});
+  B.push({h:'B. Kenalan kecemasan / Emergency contact'},{fields:[['Nama / Name',x.emgName],['Hubungan / Relationship',x.emgRel],['Telefon / Phone',x.emgPhone]],cols:3});
+  B.push({h:'C. Pekerjaan / Employment'},{fields:[['Jawatan / Position',x.position],['Cawangan / Branch',x.branch],['Jenis / Type',x.empType?empL(x.empType,'en'):''],['Tarikh mula / Date joined',dLong(x.joinDate,'en')],['Tarikh pengesahan / Confirmation',dLong(x.confirmOn,'en')]],cols:2});
+  B.push({h:'D. Bank & berkanun / Bank & statutory'},{fields:[['Bank',x.bank],['No. akaun / Account no.',x.bankAcc],['No. KWSP / EPF no.',x.epf],['No. PERKESO / SOCSO no.',x.socso],['No. cukai pendapatan / Income tax no.',x.tax]],cols:2});
+  B.push({h:'E. Keluarga (untuk PCB) / Family (for PCB)'},{fields:[['Status perkahwinan / Marital status',x.marital],['Pasangan bekerja? / Spouse working?',x.spouseWorks],['Bilangan anak / Number of children',x.children===''?'':String(x.children)]],cols:3});
+  B.push({h:'F. Akuan & persetujuan / Declaration & consent'},{p:'Saya mengaku maklumat di atas adalah benar dan akan memaklumkan syarikat jika berlaku perubahan. Saya bersetuju '+bn+' memproses maklumat ini bagi tujuan pekerjaan, gaji, caruman berkanun dan urusan berkaitan selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
+   {p:'I declare that the information above is true and will tell the company of any change. I consent to '+bn+' processing it for employment, payroll, statutory contributions and related purposes under the Personal Data Protection Act 2010.',sz:8.6,it:1},
+   {sign:[{who:'emp',name:x.name,sub:'Tandatangan pekerja / Employee\'s signature'}]});
+  B.push({office:[['Diterima oleh / Received by'],['Tarikh / Date'],['Dimasukkan ke sistem / Entered in system']]});
+ }
+ return B;
+}
+const ordEn=n=>[11,12,13].includes(n%100)?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th');
+
+/* ---------------- the PDF ---------------- */
+async function docPDF(rec){
+ const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'}),b=D.meta.biz||{};
+ const W=210,M=18,CW=W-2*M,INK=[20,18,15],MUT=[111,106,96],BR=[166,124,61],LN=[205,197,183],SOFT=[247,244,238];
+ const x=rec.data||{},lang=rec.lang||'bm',isForm=!!(DOCT[rec.type]||{}).form;
+ const T=(s,xx,yy,o)=>d.text(pdfText(s),xx,yy,o||{});
+ const font=(sz,st,col)=>{d.setFontSize(sz);d.setFont('helvetica',st||'normal');d.setTextColor(...(col||INK));};
+ const title=isForm?docTitle(rec.type,'bm')+' / '+docTitle(rec.type,'en'):docTitle(rec.type,lang);
+ let y=0;
+ const photo=rec.type==='app';
+ const head=first=>{
+  d.setFillColor(...INK);d.rect(0,0,W,3.5,'F');d.setFillColor(...BR);d.rect(0,3.5,W,0.8,'F');
+  if(!first){font(8,'normal',MUT);T(b.name||'',M,11);T(title,W-M,11,{align:'right'});y=20;return;}
+  y=15;let lx=M;
+  if(b.logo){try{const pr=d.getImageProperties(b.logo),h=Math.min(16,pr.height*32/pr.width),w=h*pr.width/pr.height;
+   d.addImage(b.logo,/png/i.test(b.logo.slice(0,30))?'PNG':'JPEG',M,y-4,w,h);lx=M+w+5;}catch(e){}}
+  font(14,'bold');T(b.name||'',lx,y+1);let hy=y+5.6;
+  const Lz=bizLines(b,x.branch||'');font(7.6,'normal',MUT);
+  [Lz.addr,Lz.contact,Lz.reg].filter(Boolean).forEach(l=>{d.splitTextToSize(pdfText(l),CW-(lx-M)).slice(0,2).forEach(p=>{d.text(p,lx,hy);hy+=3.5;});});
+  if(photo){d.setDrawColor(...LN);d.setLineWidth(0.3);d.rect(W-M-25,9,25,31);font(6.5,'normal',MUT);T('Gambar / Photo',W-M-12.5,26,{align:'center'});y=Math.max(hy,44);}
+  y=Math.max(hy,y+12)+2;d.setDrawColor(...LN);d.setLineWidth(0.3);d.line(M,y,W-M,y);y+=8;
+ };
+ const need=h=>{if(y+h>279){const fs=d.getFontSize(),fo=d.getFont(),tc=d.getTextColor();d.addPage();head(false);d.setFontSize(fs);d.setFont(fo.fontName,fo.fontStyle);d.setTextColor(tc);}};
+ const lines=(t,w,sz,st)=>{font(sz,st);return d.splitTextToSize(pdfText(t),w);};
+ const para=(t,o={})=>{const ind=o.ind||0,sz=o.sz||(isForm?9:10),lh=sz*0.47;
+  const ls=lines(t,CW-ind,sz,o.b?'bold':o.it?'italic':'normal');font(sz,o.b?'bold':o.it?'italic':'normal',o.col||(o.it?MUT:INK));
+  ls.forEach(l=>{need(lh+1);d.text(l,M+ind,y);y+=lh;});y+=o.after??2.6;};
+ const sigBlock=(list)=>{
+  const n=list.length,w=n>1?(CW-12)/2:78;need(46);const top=y;
+  list.forEach((s,i)=>{const sx=M+i*(w+12);let img=s.who==='emp'?rec.sig:s.who==='co'?rec.issuerSig:'';
+   if(img){try{d.addImage(img,'PNG',sx,top+1,Math.min(w,56),18);}catch(e){}}
+   d.setDrawColor(...INK);d.setLineWidth(0.3);d.line(sx,top+21,sx+w,top+21);
+   font(9.5,'bold');T(s.name||'',sx,top+26);font(8,'normal',MUT);d.splitTextToSize(pdfText(s.sub||''),w).slice(0,2).forEach((l,k)=>d.text(l,sx,top+30.5+k*3.6));
+   const dt=s.who==='emp'&&rec.signedAt?dLong(ymd(new Date(rec.signedAt)),lang):s.who==='co'&&!isForm?dLong(x.date,lang):'';
+   font(8,'normal',MUT);T(LX(isForm?'bm':lang,'Tarikh','Date')+(isForm?' / Date':'')+': '+(dt||'....................'),sx,top+38.5);
+   if(s.who==='emp'&&rec.sig&&rec.signedAt){font(6.6,'italic',MUT);T(LX(lang,'Ditandatangan secara elektronik dalam aplikasi','Signed electronically in the app'),sx,top+42);}});
+  y=top+47;};
+ head(true);
+ const blocks=docBlocks(rec.type,lang,{...x,ref:rec.ref},b);
+ for(const k of blocks){
+  if(k.meta){font(9,'normal',MUT);k.meta.forEach(([a,v],i)=>{T(a+': ',W-M-52,y+i*4.6);font(9,'bold');T(v,W-M,y+i*4.6,{align:'right'});font(9,'normal',MUT);});y+=k.meta.length*4.6+2;}
+  else if(k.addr){font(10,'normal');k.addr.forEach((l,i)=>{need(5);T(l,M,y);y+=4.8;});y+=3;}
+  else if(k.title){need(14);font(isForm?13:11.5,'bold');const tl=d.splitTextToSize(pdfText(k.title),CW);
+   tl.forEach(l=>{T(l,k.center?W/2:M,y,k.center?{align:'center'}:{});if(!k.center&&!isForm){const tw=d.getTextWidth(l);d.setDrawColor(...INK);d.setLineWidth(0.3);d.line(M,y+1,M+tw,y+1);}y+=5.6;});
+   if(k.sub){font(9.5,'normal',BR);T(k.sub,W/2,y,{align:'center'});y+=5;}y+=2.5;}
+  else if(k.h&&!k.n){need(12);y+=1.5;d.setFillColor(...SOFT);d.rect(M,y-4.4,CW,6.6,'F');font(9.5,'bold',BR);T(k.h,M+2,y);y+=6;}
+  else if(k.h2){need(16);y+=3;d.setDrawColor(...LN);d.line(M,y-5,W-M,y-5);font(10.5,'bold');T(k.h2,M,y);y+=6;}
+  else if(k.note){font(7.8,'italic',MUT);T(k.note,M+1,y);y+=4.5;}
+  else if(k.n){need(12);if(k.h){font(10,'bold');T(k.n,M,y);T(k.h,M+7,y);y+=5;}
+   else{font(10,'normal');T(k.n,M,y);}
+   if(k.kv){k.kv.forEach(([a,v])=>{const ls=lines(v,CW-55,9.6,'bold');need(ls.length*4.6+1);font(9.6,'normal',MUT);T(a,M+7,y);font(9.6,'bold');ls.forEach((l,i)=>d.text(l,M+55,y+i*4.6));y+=ls.length*4.6+1;});y+=1.5;}
+   if(k.p)para(k.p,{ind:7,after:k.tight?1.4:3});}
+  else if(k.p)para(k.p,{sz:k.sz,it:k.it});
+  else if(k.fields||k.office){
+   const F=k.fields||k.office,cols=k.cols||2,gw=(CW-(cols-1)*6)/cols,rh=k.tall?16:11.5;
+   if(k.office){need(12+Math.ceil(F.length/2)*rh);y+=2;font(8,'bold',MUT);T('UNTUK KEGUNAAN PEJABAT / OFFICE USE',M,y);y+=2;d.setDrawColor(...LN);d.setLineDashPattern([1,1],0);d.rect(M,y,CW,Math.ceil(F.length/2)*rh+2);d.setLineDashPattern([],0);y+=1;}
+   const C=k.office?2:cols,cw=k.office?(CW-12)/2:gw;
+   for(let i=0;i<F.length;i+=C){need(rh+1);F.slice(i,i+C).forEach(([lab,val],j)=>{const fx=M+(k.office?3:0)+j*(cw+6);
+     font(7,'normal',MUT);if(lab)T(lab,fx,y+3);
+     if(val){font(9.5,'bold');d.splitTextToSize(pdfText(val),cw).slice(0,k.tall?2:1).forEach((l,q)=>d.text(l,fx,y+8+q*4.4));}
+     d.setDrawColor(...LN);d.setLineWidth(0.25);d.line(fx,y+rh-1.5,fx+cw-(k.office?3:0),y+rh-1.5);});y+=rh;}
+   y+=k.office?4:2;}
+  else if(k.table){const t=k.table,rh=8.5;need(8+rh*t.rows);let cx=M;
+   d.setFillColor(...SOFT);d.rect(M,y,CW,7,'F');font(7.2,'bold',MUT);
+   t.head.forEach((h,i)=>{d.splitTextToSize(pdfText(h),t.w[i]*CW-2).slice(0,2).forEach((l,q)=>d.text(l,cx+1.5,y+3+q*3));cx+=t.w[i]*CW;});
+   d.setDrawColor(...LN);d.setLineWidth(0.25);
+   for(let r=0;r<=t.rows;r++)d.line(M,y+7+r*rh,W-M,y+7+r*rh);
+   cx=M;t.w.forEach(w=>{d.line(cx,y,cx,y+7+t.rows*rh);cx+=w*CW;});d.line(W-M,y,W-M,y+7+t.rows*rh);d.line(M,y,W-M,y);
+   y+=7+t.rows*rh+4;}
+  else if(k.checks){const cols=k.cols||3,cw=CW/cols;for(let i=0;i<k.checks.length;i+=cols){need(6);k.checks.slice(i,i+cols).forEach((c,j)=>{const cx=M+j*cw;
+    d.setDrawColor(...INK);d.setLineWidth(0.25);d.rect(cx,y-3,3.2,3.2);font(8.6,'normal');T(c,cx+5,y);});y+=5.6;}y+=2;}
+  else if(k.sign){y+=2;sigBlock(k.sign);}
+ }
+ const pages=d.getNumberOfPages();
+ for(let i=1;i<=pages;i++){d.setPage(i);font(7,'normal',MUT);
+  T((rec.ref?rec.ref+'  ·  ':'')+title,M,290);T(LX(isForm?'bm':lang,'Muka ','Page ')+i+LX(isForm?'bm':lang,' / ',' of ')+pages,W-M,290,{align:'right'});}
+ return d;
+}
+const docFile=rec=>(docTitle(rec.type,rec.lang||'bm')+'-'+(rec.data&&rec.data.name||'blank')).replace(/[^A-Za-z0-9]+/g,'-').replace(/-+$/,'')+'.pdf';
+async function docDownload(rec){
+ try{const d=await docPDF(rec),name=docFile(rec);window.__lastPDF={kind:'hrdoc',name,doc:d};d.save(name);}catch(e){console.warn(e);toast(friendly(e));}
+}
+
+/* ---------------- the Documents tab (owner) ---------------- */
+const ONB=[['app','Application form or resume received'],['ic','Copy of IC or passport','ic'],['info','Employee information complete','info'],
+ ['offer','Offer letter signed','doc:offer'],['nda','Confidentiality agreement signed','doc:nda'],['rules','Company rules & SOP acknowledged','doc:rules'],
+ ['bank','Bank account details','bankAcc'],['epf','KWSP number','epf'],['socso','Registered with PERKESO (within 30 days of joining)','socso'],
+ ['tax','Income tax number (if taxable)','tax'],['login','App login and attendance code set up'],['uniform','Uniform and locker given'],
+ ['sop','Must-read SOPs read in Library'],['train','Training plan and buddy assigned'],['review','Probation review date set','confirmDate']];
+function onbState(sid){
+ const f=(HRSTAFF||{})[sid]||{},man=f.onboard||{},docs=(HRDOCS||[]).filter(x=>x.staffId===sid);
+ return ONB.map(([k,l,auto])=>{let a=false;
+  if(auto==='info')a=!!(f.fullName&&f.ic&&f.address&&f.emgPhone);
+  else if(auto&&auto.startsWith('doc:'))a=docs.some(x=>x.type===auto.slice(4)&&(x.status==='signed'||x.paperSigned));
+  else if(auto)a=!!f[auto];
+  return {k,l,auto:!!auto,done:a||!!man[k],when:man[k]||''};});
+}
+let DOCPICK={type:'',sid:'',lang:'bm'};
+function hrDocsView(){
+ if(!isOwnerMe())return '';
+ if(HRDOCS===null){setTimeout(()=>loadHrDocs(),0);return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ if(HRSTAFF===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const me=(HRSTAFF||{})[UID]||{},wait=HRDOCS.filter(x=>x.status==='issued'&&x.staffId&&DOCT[x.type]&&DOCT[x.type].sign);
+ const sub=(HRINFO||[]).filter(i=>i.status==='submitted');
+ const recent=hrPeople().filter(s=>s.role!=='owner').filter(s=>{const f=(HRSTAFF||{})[s.id]||{};return !f.joinDate||daysBetween(f.joinDate,today())<=180;});
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('note',15)+' Create a document</h3><span class="pill">owner only</span></div>'+
+   '<div class="docgrid">'+Object.entries(DOCT).map(([k,t])=>'<button class="docbtn" onclick="docStart(\''+k+'\')"><b>'+ic(t.ic,15)+t.en+'</b><small>'+t.bm+'</small><em>'+t.d+'</em></button>').join('')+'</div>'+
+   '<p class="tiny muted" style="margin:10px 0 0">Letters come in Bahasa Malaysia or English on your letterhead. These are sensible templates — have a lawyer read them once before relying on them.</p></div>'+
+  (sub.length?'<div class="card"><h3 style="margin:0 0 8px">'+ic('user',15)+' Details sent by staff</h3>'+sub.map(i=>'<div class="hrrow"><div style="flex:1"><b>'+esc(stf(i.id).name||i.fullName||'')+'</b><small>Sent '+dstr(i.submittedAt)+'</small></div>'+
+   '<button class="btn sm" onclick="infoReview(\''+i.id+'\')">Review</button></div>').join('')+'</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('check',15)+' Onboarding</h3>'+
+   (recent.length?recent.map(s=>{const st=onbState(s.id),n=st.filter(z=>z.done).length,f=(HRSTAFF||{})[s.id]||{};
+    return '<button class="hrfile" onclick="onbOpen(\''+s.id+'\')"><span class="avatar">'+esc(initials(s.name))+'</span><div style="flex:1;min-width:0"><b>'+esc(f.fullName||s.name)+'</b>'+
+     '<small>'+(f.joinDate?'Joined '+dstr(f.joinDate):'No join date yet')+' · '+n+' of '+st.length+' done</small><div class="bar" style="margin-top:5px"><i class="brass" style="width:'+(n/st.length*100)+'%"></i></div></div>'+
+     (n===st.length?'<span class="pill g">'+ic('check',11)+'done</span>':'<span class="pill a">'+(st.length-n)+' to do</span>')+'</button>';}).join('')
+    :'<p class="tiny muted" style="margin:0">Staff who joined in the last 6 months appear here.</p>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('signature',15)+' Your signature for letters</h3>'+
+   '<button class="btn sm ghost" onclick="sigOpen(\'owner\')">'+ic('edit',14)+(me.sig?'Change':'Draw it')+'</button></div>'+
+   (me.sig?'<img class="docsig" src="'+me.sig+'" alt="Your signature">':'<p class="tiny muted" style="margin:0">Draw it once and it is printed on every letter you issue. Without it, letters print with a line to sign by hand.</p>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Issued documents</h3>'+(wait.length?'<span class="pill a">'+wait.length+' waiting for signature</span>':'')+'</div>'+
+   (HRDOCS.length?HRDOCS.map(docRow).join(''):'<div class="empty">'+ic('note',24)+'<div>Nothing issued yet.</div></div>')+'</div>';
+}
+function docRow(x){
+ const t=DOCT[x.type]||{},signed=x.status==='signed';
+ const st=signed?'<span class="pill g">'+ic('check',11)+'signed '+dshort(String(x.signedAt).slice(0,10))+'</span>':
+  x.paperSigned?'<span class="pill g">signed on paper</span>':t.sign&&x.staffId?'<span class="pill a">waiting for signature</span>':t.sign?'<span class="pill">print to sign</span>':'';
+ return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(docTitle(x.type,x.lang))+'</b><small>'+esc((x.data||{}).name||'')+' · '+esc(x.ref||'')+' · '+dstr(x.issuedAt)+'</small></div>'+st+
+  '<button class="iconbtn" style="padding:4px" onclick="docOpen(\''+x.id+'\')">'+ic('download',14)+'</button>'+
+  (t.sign&&!signed&&!x.paperSigned?'<button class="iconbtn" style="padding:4px" title="Signed on paper" onclick="docPaper(\''+x.id+'\')">'+ic('check',14)+'</button>':'')+
+  '<button class="iconbtn" style="padding:4px" onclick="docDel(\''+x.id+'\')">'+ic('trash',14)+'</button></div>';
+}
+window.docStart=type=>{
+ const t=DOCT[type];DOCPICK={type,sid:'',lang:DOCPICK.lang||'bm'};
+ modal(t.en,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">'+esc(t.d)+'</p>'+
+  '<label>'+(t.form?'Fill in for':'For')+'</label><select class="f" id="dp-s">'+(t.form?'<option value="">— blank form —</option>':'')+
+   hrPeople().map(s=>'<option value="'+s.id+'">'+esc(((HRSTAFF||{})[s.id]||{}).fullName||s.name)+'</option>').join('')+
+   (t.form?'':'<option value="">Someone not in the app yet (e.g. a candidate)</option>')+'</select>'+
+  (t.form?'':'<label>Language</label><div class="seg" id="dp-l">'+[['bm','Bahasa Malaysia'],['en','English']].map(o=>'<button data-v="'+o[0]+'" class="'+(DOCPICK.lang===o[0]?'on':'')+'" onclick="dpLang(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>')+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:6px" onclick="docNext()">'+ic('right',15)+'Continue</button></div>');
+};
+window.dpLang=v=>{DOCPICK.lang=v;[...document.querySelectorAll('#dp-l button')].forEach(b=>b.className=b.dataset.v===v?'on':'');};
+window.docNext=()=>{DOCPICK.sid=$('#dp-s').value;docForm(DOCPICK.type,DOCPICK.sid,DOCPICK.lang);};
+function docForm(type,sid,lang){
+ const t=DOCT[type],F=DOCF[type]||[],x=docDefaults(type,sid,lang);
+ if(type==='info'){window.closeModal();docDownload({type,lang:'bm',data:x,ref:''});return;}
+ const inp=([k,l,kind])=>{const v=x[k]==null?'':x[k];
+  if(kind==='area')return '<label>'+l+'</label><textarea class="f" rows="'+(k==='rules'?8:k==='address'?2:3)+'" id="df-'+k+'">'+esc(v)+'</textarea>';
+  if(kind.startsWith('sel:'))return '<label>'+l+'</label><select class="f" id="df-'+k+'">'+kind.slice(4).split(',').map(o=>'<option value="'+o+'"'+(String(v)===o?' selected':'')+'>'+(o||'No')+'</option>').join('')+'</select>';
+  return '<label>'+l+'</label><input class="f" id="df-'+k+'" type="'+(kind==='num'?'number" step="0.01':kind)+'" value="'+esc(v)+'">';};
+ const miss=sid&&!t.form?['ic','address'].filter(k=>!x[k]):[];
+ modal(t.en+(t.form?'':' · '+(lang==='en'?'English':'Bahasa Malaysia')),'<div class="card">'+
+  (miss.length?'<p class="tiny" style="color:var(--rose);margin:0 0 8px">'+ic('alert',12)+' The staff file has no '+miss.join(' or ').replace('ic','IC number')+' — fill it in here or in Staff files.</p>':'')+
+  '<div class="grid g2">'+F.map(f=>'<div'+(f[2]==='area'?' style="grid-column:1/-1"':'')+'>'+inp(f)+'</div>').join('')+'</div>'+
+  '<div id="df-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<div class="row wrap2"><button class="btn ghost" onclick="docPreview()">'+ic('download',15)+(t.form?'Download PDF':'Preview PDF')+'</button>'+
+  (t.form?'':'<button class="btn" id="df-go" onclick="docIssue()">'+ic('check',15)+(sid&&t.sign?'Issue & send for signature':'Issue')+'</button>')+'</div>'+
+  (t.form?'':'<p class="tiny muted" style="margin:8px 0 0">'+(sid&&t.sign?'It appears in their My HR to read and sign on the screen. You can also print it.':t.sign?'Print it to be signed by hand, then mark it as signed.':'Issued letters are kept under Issued documents.')+'</p>')+'</div>');
+ window.DOCDRAFT={type,sid,lang,base:x};
+}
+function docRead(){
+ const {type,base}=window.DOCDRAFT,x={...base};
+ (DOCF[type]||[]).forEach(([k,,kind])=>{const el=$('#df-'+k);if(!el)return;const v=String(el.value||'').trim();x[k]=kind==='num'?(v===''?'':+v):v;});
+ return x;
+}
+window.docPreview=()=>{const {type,lang}=window.DOCDRAFT,x=docRead();
+ docDownload({type,lang,data:x,ref:DOCT[type].form?'':LX(lang,'(draf)','(draft)'),issuerSig:((HRSTAFF||{})[UID]||{}).sig||''});};
+function docRef(type){
+ const b=D.meta.biz||{},pre=String(b.name||'HR').split(/\s+/)[0].toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'HR',yr=today().slice(0,4);
+ const n=(HRDOCS||[]).filter(x=>x.type===type&&String(x.issuedAt).slice(0,4)===yr).length+1;
+ return pre+'/HR/'+DOCT[type].code+'/'+yr+'/'+String(n).padStart(3,'0');
+}
+window.docIssue=async()=>{
+ const {type,sid,lang}=window.DOCDRAFT,x=docRead(),e=$('#df-e');
+ if(!x.name||x.name.length<3){e.textContent='Enter the full name.';return;}
+ if(['offer','verify'].includes(type)&&!(+x.basic>0)&&(type==='offer'||x.withSalary==='Yes')){e.textContent='Enter the basic salary.';return;}
+ if(type==='offer'&&!x.position){e.textContent='Enter the position.';return;}
+ $('#df-go').disabled=true;
+ const rec={type,lang,ref:docRef(type),staffId:sid||'',branchId:ME.branchId,data:x,status:'issued',issuedAt:new Date().toISOString(),issuedBy:UID,issuedByName:ME.name,
+  issuerSig:((HRSTAFF||{})[UID]||{}).sig||''};
+ try{const r=await addDoc(collection(db,'hrDocs'),rec);HRDOCS.unshift({id:r.id,...rec});
+  /* what the letter settles goes back into the staff file */
+  if(sid){const f=(HRSTAFF||{})[sid]||{},p={};
+   if(type==='offer'){if(!f.joinDate)p.joinDate=x.start;if(!f.basic&&+x.basic)p.basic=+x.basic;if(!f.allowance&&+x.allowance)p.allowance=+x.allowance;if(!f.position)p.position=x.position;
+    if(!f.empType)p.empType=+x.prob>0?'Probation':x.empType;if(!f.confirmDate&&+x.prob>0)p.confirmDate=ymd(addDays(new Date(x.start+'T00:00:00'),Math.round(+x.prob*30.4)));}
+   if(type==='confirm'){p.empType=x.empType&&x.empType!=='Probation'?x.empType:'Full-time';p.confirmDate=x.confirmDate;if(+x.newBasic)p.basic=+x.newBasic;}
+   if(Object.keys(p).length){try{await setDoc(doc(db,'hrStaff',sid),p,{merge:true});HRSTAFF[sid]={...f,...p};}catch(err){console.warn('staff file',err);}}}
+  await audit('HR document issued',docTitle(type,'en')+' · '+x.name+' · '+rec.ref);
+  window.closeModal();render();toast(sid&&DOCT[type].sign?'Issued — waiting for '+x.name.split(' ')[0]+' to sign':'Issued');
+  docDownload({id:r.id,...rec});
+ }catch(err){e.textContent=friendly(err);$('#df-go').disabled=false;}
+};
+window.docOpen=id=>{const x=(HRDOCS||[]).find(d=>d.id===id)||(MYDOCS||[]).find(d=>d.id===id);if(x)docDownload(x);};
+window.docPaper=async id=>{
+ const x=(HRDOCS||[]).find(d=>d.id===id);if(!x||!confirm('Mark this as signed on paper? Keep the signed copy in their file.'))return;
+ try{await updateDoc(doc(db,'hrDocs',id),{paperSigned:today()});x.paperSigned=today();await audit('HR document signed on paper',docTitle(x.type,'en')+' · '+(x.data||{}).name);render();}catch(e){toast(friendly(e));}
+};
+window.docDel=async id=>{
+ const x=(HRDOCS||[]).find(d=>d.id===id);if(!x||!confirm('Delete this document record? The PDF already downloaded is not affected.'))return;
+ try{await deleteDoc(doc(db,'hrDocs',id));HRDOCS=HRDOCS.filter(d=>d.id!==id);await audit('HR document deleted',docTitle(x.type,'en')+' · '+(x.data||{}).name+' · '+(x.ref||''));render();}catch(e){toast(friendly(e));}
+};
+/* onboarding checklist */
+window.onbOpen=sid=>{
+ const st=onbState(sid),s=stf(sid);
+ modal('Onboarding · '+s.name,'<div class="card">'+st.map(z=>'<label class="onbrow'+(z.done?' done':'')+'"><input type="checkbox" '+(z.done?'checked ':'')+(z.auto&&z.done&&!z.when?'disabled ':'')+
+  'onchange="onbTick(\''+sid+'\',\''+z.k+'\',this.checked)"><span>'+esc(z.l)+(z.auto&&z.done&&!z.when?'<small>from the records</small>':z.when?'<small>ticked '+dshort(z.when)+'</small>':'')+'</span></label>').join('')+
+  '<p class="tiny muted" style="margin:10px 0 0">Items marked "from the records" tick themselves from the staff file and signed documents.</p></div>');
+};
+window.onbTick=async(sid,k,on)=>{
+ const f=(HRSTAFF||{})[sid]||{},ob={...(f.onboard||{})};if(on)ob[k]=today();else delete ob[k];
+ try{await setDoc(doc(db,'hrStaff',sid),{onboard:ob},{merge:true});HRSTAFF[sid]={...f,onboard:ob};render();}catch(e){toast(friendly(e));}
+};
+/* details staff sent from My HR, copied into the staff file by the owner */
+const INFOF=[['fullName','Full name (as in IC)','text'],['ic','IC / passport no.','text'],['dob','Date of birth','date'],['gender','Gender','sel:,Female,Male'],['phone','Phone','tel'],['email','Email','email'],
+ ['address','Home address','area'],['emgName','Emergency contact — name','text'],['emgRel','Emergency contact — relationship','text'],['emgPhone','Emergency contact — phone','tel'],
+ ['bank','Bank','text'],['bankAcc','Bank account no.','text'],['epf','KWSP no.','text'],['socso','PERKESO no.','text'],['tax','Income tax no.','text'],
+ ['marital','Marital status','sel:,Single,Married,Divorced,Widowed'],['spouseWorks','Spouse working?','sel:,Yes,No'],['children','Number of children','num']];
+window.infoReview=sid=>{
+ const i=(HRINFO||[]).find(x=>x.id===sid),f=(HRSTAFF||{})[sid]||{};if(!i)return;
+ modal('Details from '+(stf(sid).name||''),'<div class="card"><div class="scroll"><table><tr><th></th><th>Sent</th><th>In the staff file now</th></tr>'+
+  INFOF.map(([k,l])=>{const a=i[k]==null?'':String(i[k]),b=f[k]==null?'':String(f[k]);return '<tr'+(a&&a!==b?' class="infochg"':'')+'><td class="muted">'+l+'</td><td><b>'+esc(a)+'</b></td><td>'+esc(b)+'</td></tr>';}).join('')+'</table></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="infoCopy(\''+sid+'\')">'+ic('check',15)+'Copy into the staff file</button></div>');
+};
+window.infoCopy=async sid=>{
+ const i=(HRINFO||[]).find(x=>x.id===sid);if(!i)return;const p={};INFOF.forEach(([k])=>{if(i[k]!==undefined&&i[k]!=='')p[k]=i[k];});
+ try{await setDoc(doc(db,'hrStaff',sid),p,{merge:true});HRSTAFF[sid]={...((HRSTAFF||{})[sid]||{}),...p};
+  await updateDoc(doc(db,'hrInfo',sid),{status:'reviewed',reviewedAt:new Date().toISOString(),reviewedBy:UID});i.status='reviewed';
+  await audit('Staff details copied to file',stf(sid).name||sid);window.closeModal();render();toast('Staff file updated');}catch(e){toast(friendly(e));}
+};
+
+/* ---------------- signing on the screen ---------------- */
+let SIGCTX=null;
+window.sigOpen=(mode,id)=>{
+ const x=mode==='doc'?(MYDOCS||[]).find(d=>d.id===id):null;
+ modal(mode==='owner'?'Your signature':LX(x.lang,'Tandatangan','Sign')+' · '+docTitle(x.type,x.lang),'<div class="card">'+
+  (x?'<p style="margin:0 0 8px;font-size:13.5px">'+esc(docTitle(x.type,x.lang))+' <span class="muted">· '+esc(x.ref||'')+'</span></p>'+
+   '<button class="btn sm ghost" style="margin-bottom:10px" onclick="docMyOpen(\''+id+'\')">'+ic('download',14)+LX(x.lang,'Baca dokumen (PDF)','Read the document (PDF)')+'</button>':'')+
+  '<p class="tiny muted" style="margin:0 0 6px">'+(x?LX(x.lang,'Tandatangan dengan jari anda di dalam kotak:','Sign with your finger in the box:'):'Sign with your finger or a stylus in the box:')+'</p>'+
+  '<canvas id="sigpad" class="sigpad" width="600" height="200"></canvas>'+
+  '<div class="spread" style="margin:6px 0 10px"><button class="btn sm ghost" onclick="sigClear()">'+ic('refresh',13)+'Clear</button><span class="tiny muted" id="sig-st"></span></div>'+
+  (x?'<label class="row" style="gap:8px;align-items:flex-start;font-size:13px"><input type="checkbox" id="sig-ok" style="margin-top:3px"> '+
+   LX(x.lang,'Saya telah membaca dan memahami dokumen ini dan bersetuju dengan kandungannya.','I have read and understood this document and agree to its contents.')+'</label>':'')+
+  '<div id="sig-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="sig-go" style="width:100%;justify-content:center" onclick="sigSave(\''+mode+'\',\''+(id||'')+'\')">'+ic('check',15)+(x?LX(x.lang,'Tandatangan','Sign'):'Save signature')+'</button></div>');
+ setTimeout(sigInit,30);
+};
+function sigInit(){
+ const cv=document.getElementById('sigpad');if(!cv||!cv.getContext)return;
+ const g=cv.getContext('2d');g.lineWidth=3.2;g.lineCap='round';g.lineJoin='round';g.strokeStyle='#14120f';
+ SIGCTX={cv,g,ink:0,down:false};
+ const pt=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height];};
+ cv.onpointerdown=e=>{SIGCTX.down=true;const [a,b]=pt(e);g.beginPath();g.moveTo(a,b);try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();};
+ cv.onpointermove=e=>{if(!SIGCTX.down)return;const [a,b]=pt(e);g.lineTo(a,b);g.stroke();SIGCTX.ink++;e.preventDefault();};
+ cv.onpointerup=cv.onpointerleave=()=>{SIGCTX.down=false;};
+}
+window.sigClear=()=>{if(!SIGCTX)return;SIGCTX.g.clearRect(0,0,SIGCTX.cv.width,SIGCTX.cv.height);SIGCTX.ink=0;};
+window.sigSave=async(mode,id)=>{
+ const e=$('#sig-e');if(!SIGCTX||SIGCTX.ink<8){e.textContent='Please sign in the box first.';return;}
+ const png=SIGCTX.cv.toDataURL('image/png');
+ if(mode==='owner'){
+  try{await setDoc(doc(db,'hrStaff',UID),{sig:png},{merge:true});HRSTAFF[UID]={...((HRSTAFF||{})[UID]||{}),sig:png};await audit('Letter signature saved','');window.closeModal();render();toast('Signature saved');}
+  catch(err){e.textContent=friendly(err);}return;}
+ const x=(MYDOCS||[]).find(d=>d.id===id);if(!x)return;
+ if(!$('#sig-ok').checked){e.textContent=LX(x.lang,'Tandakan kotak pengesahan dahulu.','Tick the box to confirm first.');return;}
+ const p={status:'signed',sig:png,signedAt:new Date().toISOString(),signedName:ME.name};
+ $('#sig-go').disabled=true;
+ try{await updateDoc(doc(db,'hrDocs',id),p);Object.assign(x,p);await audit('HR document signed',docTitle(x.type,'en')+' · '+ME.name);
+  window.closeModal();render();toast(LX(x.lang,'Terima kasih — dokumen telah ditandatangani','Thank you — the document is signed'));}
+ catch(err){e.textContent=friendly(err);$('#sig-go').disabled=false;}
+};
+window.docMyOpen=id=>{const x=(MYDOCS||[]).find(d=>d.id===id);if(x)docDownload(x);};
+
+/* ---------------- My HR: my documents and my details ---------------- */
+function myDocsCard(sid){
+ if(isBranch()||sid!==UID)return '';
+ if(MYDOCS===null){setTimeout(loadMyDocs,0);return '';}
+ if(!MYDOCS.length)return '';
+ const w=MYDOCS.filter(x=>x.status==='issued'&&(DOCT[x.type]||{}).sign&&!x.paperSigned);
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('note',15)+' My documents</h3>'+(w.length?'<span class="pill a">'+w.length+' to sign</span>':'')+'</div>'+
+  MYDOCS.map(x=>{const need=x.status==='issued'&&(DOCT[x.type]||{}).sign&&!x.paperSigned;
+   return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(docTitle(x.type,x.lang))+'</b><small>'+esc(x.ref||'')+' · '+dstr(x.issuedAt)+(x.status==='signed'?' · signed '+dshort(String(x.signedAt).slice(0,10)):'')+'</small></div>'+
+    (need?'<button class="btn sm" onclick="sigOpen(\'doc\',\''+x.id+'\')">'+ic('signature',13)+LX(x.lang,'Baca & tandatangan','Read & sign')+'</button>':'')+
+    '<button class="btn sm ghost" onclick="docMyOpen(\''+x.id+'\')">'+ic('download',13)+'PDF</button></div>';}).join('')+'</div>';
+}
+function myDetailsCard(sid){
+ if(isBranch()||sid!==UID||isOwnerMe())return '';
+ if(MYDOCS===null)return '';
+ const i=MYINFO;
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('idcard',15)+' My details</h3>'+
+  (i?'<span class="pill '+(i.status==='reviewed'?'g':'a')+'">'+(i.status==='reviewed'?'received by HR':'sent '+dshort(String(i.submittedAt).slice(0,10)))+'</span>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Your IC, address, emergency contact, bank and KWSP / PERKESO numbers — needed for your salary and contributions. Only the owner sees them.</p>'+
+  '<button class="btn sm'+(i?' ghost':'')+'" onclick="infoForm()">'+ic('edit',14)+(i?'Update my details':'Fill in my details')+'</button></div>';
+}
+window.infoForm=()=>{
+ const i=MYINFO||{fullName:ME.name};
+ const inp=([k,l,t])=>{const v=i[k]==null?'':i[k];
+  if(t==='area')return '<label>'+l+'</label><textarea class="f" rows="2" id="if-'+k+'">'+esc(v)+'</textarea>';
+  if(t.startsWith('sel:'))return '<label>'+l+'</label><select class="f" id="if-'+k+'">'+t.slice(4).split(',').map(o=>'<option value="'+o+'"'+(String(v)===o?' selected':'')+'>'+(o||'—')+'</option>').join('')+'</select>';
+  return '<label>'+l+'</label><input class="f" id="if-'+k+'" type="'+(t==='num'?'number':t)+'" value="'+esc(v)+'">';};
+ modal('My details','<div class="card"><div class="grid g2">'+INFOF.map(f=>'<div'+(f[2]==='area'?' style="grid-column:1/-1"':'')+'>'+inp(f)+'</div>').join('')+'</div>'+
+  '<label class="row" style="gap:8px;align-items:flex-start;font-size:13px;margin-top:8px"><input type="checkbox" id="if-ok" style="margin-top:3px"> I confirm these details are true, and agree to the company using them for my employment, salary and statutory contributions (Personal Data Protection Act 2010).</label>'+
+  '<div id="if-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="if-go" style="width:100%;justify-content:center" onclick="infoSave()">'+ic('check',15)+'Send to HR</button></div>');
+};
+window.infoSave=async()=>{
+ const e=$('#if-e'),d={};INFOF.forEach(([k,,t])=>{const el=$('#if-'+k);if(!el)return;const v=String(el.value||'').trim().slice(0,300);d[k]=t==='num'?(v===''?'':+v):v;});
+ if(!d.fullName||!d.ic){e.textContent='Full name and IC number are needed.';return;}
+ if(!/^[0-9A-Za-z\-]{6,20}$/.test(d.ic)){e.textContent='Check the IC / passport number.';return;}
+ if(!$('#if-ok').checked){e.textContent='Tick the box to confirm.';return;}
+ d.status='submitted';d.submittedAt=new Date().toISOString();d.name=ME.name;
+ $('#if-go').disabled=true;
+ try{await setDoc(doc(db,'hrInfo',UID),d);MYINFO=d;await audit('Staff sent their details',ME.name);window.closeModal();render();toast('Sent to HR — thank you');}
+ catch(err){e.textContent=friendly(err);$('#if-go').disabled=false;}
+};
+/* home: documents to sign, details to review, confirmation letters due */
+function docAlerts(al){
+ if(!isBranch()){if(MYDOCS===null)setTimeout(loadMyDocs,0);
+  const w=(MYDOCS||[]).filter(x=>x.status==='issued'&&(DOCT[x.type]||{}).sign&&!x.paperSigned);
+  if(w.length)al.push({i:'signature',t:w.length+' document'+(w.length>1?'s':'')+' for you to sign',d:w.map(x=>docTitle(x.type,x.lang)).join(', '),go:"hrGo('me')"});}
+ if(isOwnerMe()&&(HRSTAFF===null||HRDOCS===null)&&!DOCALOAD){DOCALOAD=1;
+  setTimeout(()=>Promise.all([loadHrStaff(),loadHrDocs()]).then(()=>{DOCALOAD=0;if(TAB==='home')render();}),0);}
+ if(isOwnerMe()&&HRSTAFF&&HRDOCS){
+  const sub=(HRINFO||[]).filter(i=>i.status==='submitted');
+  if(sub.length)al.push({i:'idcard',t:sub.length+' staff sent their details',d:sub.map(i=>stf(i.id).name||i.name).join(', '),go:"hrGo('docs')"});
+  const soon=ymd(addDays(new Date(),14));
+  const due=hrPeople().filter(s=>{const f=HRSTAFF[s.id]||{};return f.empType==='Probation'&&f.confirmDate&&f.confirmDate<=soon&&!(HRDOCS||[]).some(x=>x.staffId===s.id&&x.type==='confirm');});
+  if(due.length)al.push({i:'check',t:'Probation ending — confirmation letter due',d:due.map(s=>s.name+' '+dshort((HRSTAFF[s.id]||{}).confirmDate)).join(', '),go:"hrGo('docs')"});}
+}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);docAlerts(al);};}
 </script>
