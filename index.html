@@ -1487,6 +1487,22 @@ details.pkdel summary b{display:inline-flex;gap:6px;align-items:center}
 .syncbar button.x{background:transparent;color:var(--line)}
 @keyframes syncin{from{opacity:0;transform:translateY(-10px)}}
 body.demo .syncbar{top:106px}
+
+/* ---------- HR ---------- */
+.hrrow{display:flex;gap:8px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line-2)}
+.hrrow b{display:block;font-size:13.5px}.hrrow small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.hrfile{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin-bottom:7px;cursor:pointer;font:inherit;color:var(--ink)}
+.hrfile b{display:block}.hrfile small{display:block;font-size:11.5px;color:var(--ink-3)}
+.hrgrp h4{margin:12px 0 2px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--brass)}
+.lvstrip{display:grid;grid-template-columns:repeat(14,minmax(38px,1fr));gap:4px;overflow-x:auto}
+.lvstrip>div{border:1px solid var(--line-2);border-radius:10px;padding:5px 3px;text-align:center;min-height:62px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--ink-3)}
+.lvstrip>div b{font-weight:600;color:var(--ink-2);font-size:10.5px}.lvstrip>div span{font-size:13px;color:var(--ink)}
+.lvstrip>div.today{border-color:var(--brass)}.lvstrip>div.has{background:var(--rose-soft)}
+.lvstrip i{font-style:normal;font-size:9.5px;font-weight:700;background:var(--rose);color:#fff;border-radius:99px;padding:1px 5px}
+.clthumb{display:block;max-width:160px;max-height:200px;border-radius:10px;margin:6px 0 10px;border:1px solid var(--line)}
+.clthumb.big{max-width:100%;max-height:360px}
+.tlh.onleave{color:var(--rose)}.tlh.onleave small{color:var(--rose)!important}
+.tlcol.onleave{background:repeating-linear-gradient(135deg,rgba(155,74,74,.05) 0 10px,transparent 10px 20px)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1744,7 +1760,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-23y';
+const BUILD='2026-09-24z';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2019,6 +2035,7 @@ const TABS=[
  {id:'board',ic:'mega',  label:'Board',    perm:null,      group:'Today',  desc:'Notices for the team'},
  {id:'lib', ic:'note',   label:'Library',  perm:null,      group:'Today',  desc:'Guides, SOPs, aftercare, product notes'},
  {id:'demo',ic:'award', label:'Training', perm:null,      group:'Today',  desc:'Practise checkout and bookings — nothing is saved'},
+ {id:'hr',  ic:'hr',     label:'HR',       perm:null,      group:'Today',   desc:'Leave, claims, staff files and your own HR'},
  {id:'cust',ic:'users',  label:'Clients',  perm:'customer',group:'Clients',desc:'Records and full history'},
  {id:'prog',ic:'spark',  label:'Programs', perm:'customer',group:'Clients',desc:'Match treatments to concerns'},
  {id:'pkg', ic:'package',label:'Packages', perm:'customer',group:'Clients',desc:'Sell and track balances'},
@@ -2131,7 +2148,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -2323,6 +2340,7 @@ function vHome(){
   d:'Follow up while it is still fresh.',go:"go('book')"});
  paperAlerts(alerts);
  crmAlerts(alerts);
+ hrAlerts(alerts);
  /* it sits in the same row as attendance and the programme widget */
  h=h.replace('<!--NEED-->','<div class="card wcard" id="wneed"><div class="wh"><span class="wico'+
   (alerts.length?' warn':' ok')+'">'+ic(alerts.length?'bell':'check',16)+'</span><h2>Needs attention</h2>'+
@@ -2417,12 +2435,13 @@ function calDay(){
  h+='<div class="tl"><div class="tlg" style="grid-template-columns:46px repeat('+cols.length+
   ',minmax(132px,1fr));grid-template-rows:auto '+(hrs*ROW)+'px"><div class="tlh first"></div>'+
   cols.map(c=>{const mins=ap.filter(a=>colOf(a)===c.id).reduce((t,a)=>t+(a.duration||0),0);
-   return '<div class="tlh">'+esc(c.name)+'<small>'+Math.round(mins/(hrs*60)*100)+'% booked</small></div>';}).join('')+
+   const lv=calBy==='staff'?onLeave(c.id,calDate):null;
+   return '<div class="tlh'+(lv?' onleave':'')+'">'+esc(c.name)+'<small>'+(lv?'On leave'+(lv.half?' ('+lv.half+')':'')+' · '+esc(lv.type):Math.round(mins/(hrs*60)*100)+'% booked')+'</small></div>';}).join('')+
   '<div class="tlgut">'+[...Array(hrs+1)].map((_,i)=>'<span style="top:'+(i*ROW)+'px">'+
    String(O+i).padStart(2,'0')+':00</span>').join('')+'</div>';
  const nowMin=(new Date().getHours()-O)*60+new Date().getMinutes();
  cols.forEach((c,ci)=>{
-  h+='<div class="tlcol'+(ci===0?' first':'')+'">'+
+  h+='<div class="tlcol'+(ci===0?' first':'')+(calBy==='staff'&&onLeave(c.id,calDate)&&!onLeave(c.id,calDate).half?' onleave':'')+'">'+
    [...Array(hrs*2)].map((_,i)=>'<div class="hline'+(i%2?' half':'')+'" style="top:'+(i*ROW/2)+'px"></div>').join('')+
    (calDate===today()&&nowMin>0&&nowMin<hrs*60?'<div class="nowline" style="top:'+(nowMin*px)+'px"></div>':'');
   const inCol=ap.filter(a=>colOf(a)===c.id),LN=apptLanes(inCol);
@@ -2536,7 +2555,7 @@ window.newAppt=async(pre)=>{
   const sync=()=>{const s=UNDEC.on?{dur:UNDEC.dur||60,buffer:15}:svc($('#n-s').value);
    const o=roomOptions(s,UNDEC.on,$('#n-d').value,$('#n-t').value,'',$('#n-r').value);
    $('#n-r').innerHTML=o.html;
-   $('#n-note').innerHTML=slotNote(o.busy,o.free,o.total,$('#n-st').value);
+   $('#n-note').innerHTML=leaveNote($('#n-st').value,$('#n-d').value)+slotNote(o.busy,o.free,o.total,$('#n-st').value);
    $('#n-hol').innerHTML=holNote($('#n-d').value);
    NWARN='';};
   window.nSync=sync;
@@ -2582,6 +2601,7 @@ async function saveAppt(){
   const finish=new Date(+start+s.dur*6e4);
   const staffId=$('#n-st').value,roomId=$('#n-r').value;
   if(!staffId)throw new Error('No therapist selected.');
+  {const lb=leaveBlock(staffId,start,finish);if(lb)throw new Error(lb);}
   if(!roomId)throw new Error(D.rooms.some(r=>r.branchId===ME.branchId&&(und||!s.room||r.type===s.room))
    ?'Every suitable room is taken at that time. Try another time.':'No room is set up for this treatment type yet.');
   const date=ymd(start);
@@ -6735,7 +6755,7 @@ window.editApptTime=id=>{
    const o=roomOptions({room:s.room,dur,buffer:buf},!!a.undecided||!a.serviceId,$('#mv-d').value,$('#mv-t').value,id,
     ($('#mv-r').value||a.roomId));
    $('#mv-r').innerHTML=o.html;
-   $('#mv-note').innerHTML=slotNote(o.busy,o.free,o.total,$('#mv-st').value);
+   $('#mv-note').innerHTML=leaveNote($('#mv-st').value,$('#mv-d').value)+slotNote(o.busy,o.free,o.total,$('#mv-st').value);
    $('#mv-hol').innerHTML=holNote($('#mv-d').value);
    warned='';$('#mv-err').textContent='';};
   ['mv-d','mv-t','mv-st'].forEach(k=>{const el=$('#'+k);el.onchange=sync;el.oninput=sync;});
@@ -6747,6 +6767,7 @@ window.editApptTime=id=>{
     if(isNaN(+start))throw new Error('Please pick a valid date and time.');
     const finish=new Date(+start+dur*6e4);
     const staffId=$('#mv-st').value,roomId=$('#mv-r').value;
+    {const lb=leaveBlock(staffId,start,finish);if(lb)throw new Error(lb);}
     if(!roomId)throw new Error('Every suitable room is taken at that time. Try another time.');
     const date=ymd(start);
     const day=await getDocs(query(collection(db,'appointments'),where('date','==',date)));
@@ -11218,7 +11239,8 @@ window.render=render;
    watchReviews();
    watchSync();
    watchLive();
-   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm()]);
+   watchLeaves();
+   await Promise.all([loadCustomers(''),loadRecentSales(),loadHeld(),loadNotes(),loadAttendance(),loadShift(),loadLoyalty(),loadPrograms(),loadOutstanding(),loadLibrary(),loadFeedback(),loadCrm(),loadClaims()]);
    render();
    if(TAB==='rep')buildReport();
   }catch(e){
@@ -13108,5 +13130,462 @@ function watchLive(){
 }
 /* a new day needs the new day's shift and attendance */
 setInterval(()=>{if(ME&&LIVEDAY&&today()!==LIVEDAY)watchLive();},60000);
+
+
+/* ============ HR: staff files, leave, claims and each person's own portal ============ */
+/* Phase 1 of HR inside the same app.
+   - Staff files (IC, bank, KWSP/PERKESO, salary, contract) live in hrStaff and only the owner
+     can read or write them; they are never loaded on other devices.
+   - Leave is applied for by the staff member (or on the counter tablet with their attendance
+     code), approved by the owner or a manager, and an approved leave blocks that therapist
+     on the calendar.
+   - Claims are submitted with a photo of the receipt and approved, then marked paid.
+   - "My HR" shows each person their own attendance, commission this month, leave balance,
+     leave and claims. Leave balances start from the Employment Act 1955 minimums by years of
+     service unless the owner sets a different number. */
+ICONS.leave='M4 20h16M6.5 20V9.5L12 5l5.5 4.5V20M9.5 20v-5h5v5';
+ICONS.hr='M8.5 11a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zM3.5 19.5c.6-3.2 2.6-5 5-5s4.4 1.8 5 5M16 8.5h5M16 12h5M16 15.5h3';
+let LEAVES=[],CLAIMS=null,HRSTAFF=null,HRV='',HRME=null,HRMONTH='';
+const LEAVE_TYPES=[['AL','Annual leave'],['EL','Emergency leave (from annual)'],['MC','Medical leave'],['HL','Hospitalisation'],
+ ['UL','Unpaid leave'],['ML','Maternity leave'],['PL','Paternity leave'],['RL','Replacement leave'],['OL','Other']];
+const lvName=k=>(LEAVE_TYPES.find(x=>x[0]===k)||[k,k])[1];
+const CLAIM_CATS=['Transport / parking','Supplies','Staff meal','Training / course','Phone / internet','Medical','Other'];
+const lvDays=l=>l.half?0.5:Math.max(1,daysBetween(l.from,l.to)+1);
+const yrsOf=j=>j?(Date.now()-new Date(j).getTime())/(365.25*864e5):0;
+/* Employment Act 1955 minimums: annual 8/12/16 days and sick 14/18/22 days for
+   under 2, 2 to 5, and 5 or more years of service */
+function lvQuota(s){
+ const y=yrsOf(s.joinDate);
+ return {AL:s.leaveAL!=null&&s.leaveAL!==''?+s.leaveAL:(y>=5?16:y>=2?12:8),
+  MC:s.leaveMC!=null&&s.leaveMC!==''?+s.leaveMC:(y>=5?22:y>=2?18:14),HL:60};
+}
+function lvUsed(sid,year){
+ const y=String(year||today().slice(0,4)),u={AL:0,MC:0,HL:0,pendAL:0,pendMC:0};
+ LEAVES.filter(l=>l.staffId===sid&&String(l.from).slice(0,4)===y).forEach(l=>{
+  const k=(l.type==='EL'?'AL':l.type),d=lvDays(l);
+  if(l.status==='approved'&&u[k]!=null)u[k]+=d;
+  if(l.status==='pending'&&(k==='AL'||k==='MC'))u['pend'+k]+=d;});
+ return u;
+}
+function onLeave(sid,date){
+ return LEAVES.find(l=>l.staffId===sid&&l.status==='approved'&&l.from<=date&&l.to>=date)||null;
+}
+function watchLeaves(){
+ try{liveOn(query(collection(db,'leaves'),where('to','>=',ymd(addDays(new Date(),-400)))),s=>{
+  LEAVES=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  liveRender(['hr','book','home']);},'leaves');}catch(e){console.warn('leaves',e);}
+}
+async function loadClaims(force){
+ if(CLAIMS&&!force)return;
+ try{
+  const q=boss()||isBranch()?query(collection(db,'claims'),where('date','>=',ymd(addDays(new Date(),-400))))
+   :query(collection(db,'claims'),where('staffId','==',UID));
+  CLAIMS=(await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+ }catch(e){CLAIMS=[];console.warn('claims',e);}
+ if(TAB==='hr')render();
+}
+async function loadHrStaff(force){
+ if(!isOwnerMe()||(HRSTAFF&&!force))return;
+ try{HRSTAFF={};(await getDocs(collection(db,'hrStaff'))).docs.forEach(d=>{HRSTAFF[d.id]=d.data();});}
+ catch(e){HRSTAFF={};console.warn('hr staff',e);}
+ if(TAB==='hr')render();
+}
+const hrPeople=()=>people().filter(s=>s.role!=='branch');
+
+/* ---------------- the HR screen ---------------- */
+function vHR(){
+ if(CLAIMS===null)setTimeout(()=>loadClaims(),0);
+ if(isOwnerMe()&&HRSTAFF===null)setTimeout(()=>loadHrStaff(),0);
+ const pendL=LEAVES.filter(l=>l.status==='pending'&&myBranch(l)).length;
+ const pendC=(CLAIMS||[]).filter(c=>c.status==='pending'&&myBranch(c)).length;
+ const tabs=[['me','My HR','user','']];
+ if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
+ if(isOwnerMe())tabs.push(['staff','Staff files','idcard','']);
+ if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView};
+ return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
+  ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
+}
+window.hrTab=v=>{HRV=v;if(v!=='me')HRME=null;render();};
+
+/* ---------------- My HR ---------------- */
+function hrWho(){
+ if(!isBranch())return stf(UID).id?stf(UID):{...ME,id:UID};
+ return HRME?stf(HRME):null;
+}
+function hrMe(){
+ const s=hrWho();
+ if(!s)return '<div class="card" style="max-width:520px;margin:0 auto"><h2 style="margin-top:0">'+ic('user',17)+' My HR</h2>'+
+  '<p class="tiny muted">This tablet is shared. Choose your name and enter your attendance code to see your own attendance, commission, leave and claims.</p>'+
+  dayWhoHTML('hm','Who are you?')+'<div id="hm-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="hm-go" style="width:100%;justify-content:center" onclick="hrMeOpen()">'+ic('check',15)+'Open my HR</button></div>';
+ const td=today(),m0=td.slice(0,8)+'01';
+ const q=lvQuota(s),u=lvUsed(s.id);
+ const att=ATT.filter(a=>a.staffId===s.id&&a.date>=m0);
+ const mins=att.reduce((t,a)=>t+(a.clockIn&&a.clockOut?(new Date(a.clockOut)-new Date(a.clockIn))/6e4:0),0);
+ const c=hrComm(s.id,m0,td);
+ const myL=LEAVES.filter(l=>l.staffId===s.id).slice(0,12);
+ const myC=(CLAIMS||[]).filter(x=>x.staffId===s.id).slice(0,12);
+ return '<div class="card"><div class="ldhead"><span class="avatar">'+esc(initials(s.name))+'</span><div style="flex:1">'+
+   '<b style="font-size:16px">'+esc(s.name)+'</b><div class="tiny muted">'+esc(s.position||ROLE[s.role]||s.role||'')+
+   (s.joinDate?' · joined '+dstr(s.joinDate):'')+'</div></div>'+
+   (isBranch()?'<button class="btn sm ghost" onclick="HRME_OUT()">'+ic('close',13)+'Close</button>':'')+'</div>'+
+  '<div class="crmkpis" style="margin:12px 0 0">'+
+   kpi('Commission this month',rm(c.total),c.sessions+' treatments · '+rm(c.sales)+' sales','wallet')+
+   kpi('Days worked',att.filter(a=>a.clockIn).length,Math.floor(mins/60)+'h '+String(Math.round(mins%60)).padStart(2,'0')+'m this month','clock')+
+   kpi('Annual leave left',(q.AL-u.AL)+' / '+q.AL,u.pendAL?u.pendAL+' day(s) waiting approval':'days this year','leave')+
+   kpi('Medical leave left',(q.MC-u.MC)+' / '+q.MC,'days this year','shield')+'</div>'+
+  '<div class="row wrap2" style="margin-top:12px"><button class="btn" onclick="leaveForm(\''+s.id+'\')">'+ic('leave',15)+'Apply for leave</button>'+
+   '<button class="btn ghost" onclick="claimForm(\''+s.id+'\')">'+ic('receipt',15)+'Submit a claim</button></div></div>'+
+  '<div class="grid g2" style="align-items:start"><div class="card"><h3 style="margin:0 0 8px">'+ic('leave',15)+' My leave</h3>'+
+   (myL.length?myL.map(l=>lvRow(l,true)).join(''):'<div class="empty">'+ic('leave',22)+'<div>No leave applied yet.</div></div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('receipt',15)+' My claims</h3>'+
+   (CLAIMS===null?'<div class="center"><div class="spin"></div></div>':myC.length?myC.map(x=>clRow(x,true)).join(''):'<div class="empty">'+ic('receipt',22)+'<div>No claims yet.</div></div>')+'</div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('clock',15)+' Attendance this month</h3>'+
+   (att.length?'<div class="scroll"><table><tr><th>Date</th><th>In</th><th>Out</th><th class="num">Hours</th></tr>'+
+    att.sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(a=>'<tr><td>'+dshort(a.date)+'</td><td>'+hhmm(a.clockIn)+'</td><td>'+hhmm(a.clockOut)+
+     '</td><td class="num">'+(worked(a)||'—')+'</td></tr>').join('')+'</table></div>':'<div class="tiny muted">No clock-ins this month yet.</div>')+'</div>';
+}
+window.HRME_OUT=()=>{HRME=null;render();};
+window.hrMeOpen=async()=>{
+ try{const w=await dayWho('hm');HRME=w.id;render();}
+ catch(e){const el=$('#hm-e');if(el)el.textContent=e.message;}
+};
+/* commission for one person over a period, worked out the same way as the Reports screen */
+function hrComm(sid,from,to){
+ const mine=SALES.filter(s=>!s.voided&&s.branchId===ME.branchId&&s.date>=from&&s.date<=to);
+ let c=0,sales=0;
+ mine.forEach(s=>(s.items||[]).forEach(i=>{const who=i.staffId||s.staffId;if(who!==sid)return;
+  const u=stf(who);if(!u.id)return;c+=lineComm(i,salesRate(i,u));sales+=lineAmt(i);}));
+ const ho=(handsOnTotals(mine)||{})[sid]||Object.values(handsOnTotals(mine)||{}).find(o=>o.id===sid)||{};
+ return {total:r2(c+(ho.comm||0)),sales:r2(sales),sessions:ho.sessions||0,sc:r2(c),ho:r2(ho.comm||0)};
+}
+const LVST={pending:['Waiting','a'],approved:['Approved','g'],rejected:['Rejected','r'],cancelled:['Cancelled','']};
+function lvRow(l,own){
+ const st=LVST[l.status]||[l.status,''];
+ return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+(own?'':esc(l.staffName||'')+' · ')+esc(lvName(l.type))+'</b>'+
+  '<small>'+dshort(l.from)+(l.to!==l.from?' – '+dshort(l.to):'')+(l.half?' (half day '+esc(l.half)+')':'')+' · '+lvDays(l)+' day'+(lvDays(l)!==1?'s':'')+
+  (l.reason?' · '+esc(l.reason):'')+(l.decisionNote?' · “'+esc(l.decisionNote)+'”':'')+'</small></div>'+
+  '<span class="pill '+st[1]+'">'+st[0]+'</span>'+
+  (own&&l.status==='pending'?'<button class="btn sm ghost" onclick="leaveCancel(\''+l.id+'\')">Cancel</button>':'')+
+  (!own&&boss()&&l.status==='pending'?'<button class="btn sm" onclick="leaveDecide(\''+l.id+'\')">Review</button>':'')+'</div>';
+}
+const CLST={pending:['Waiting','a'],approved:['Approved','g'],paid:['Paid','g'],rejected:['Rejected','r'],cancelled:['Cancelled','']};
+function clRow(x,own){
+ const st=CLST[x.status]||[x.status,''];
+ return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+(own?'':esc(x.staffName||'')+' · ')+esc(x.category||'')+' · '+rm(x.amount)+'</b>'+
+  '<small>'+dshort(x.date)+(x.note?' · '+esc(x.note):'')+(x.decisionNote?' · “'+esc(x.decisionNote)+'”':'')+'</small></div>'+
+  (x.receipt?'<button class="iconbtn" style="padding:4px" onclick="claimReceipt(\''+x.id+'\')" title="Receipt">'+ic('receipt',14)+'</button>':'')+
+  '<span class="pill '+st[1]+'">'+st[0]+'</span>'+
+  (own&&x.status==='pending'?'<button class="btn sm ghost" onclick="claimCancel(\''+x.id+'\')">Cancel</button>':'')+
+  (!own&&boss()&&x.status==='pending'?'<button class="btn sm" onclick="claimDecide(\''+x.id+'\')">Review</button>':'')+
+  (!own&&boss()&&x.status==='approved'?'<button class="btn sm ghost" onclick="claimPaid(\''+x.id+'\')">Mark paid</button>':'')+'</div>';
+}
+
+/* ---------------- applying for leave ---------------- */
+window.leaveForm=sid=>{
+ const s=stf(sid);if(!s.id)return;
+ const q=lvQuota(s),u=lvUsed(sid);
+ modal('Apply for leave · '+s.name,'<div class="card">'+
+  '<div class="tiny muted" style="margin:0 0 10px">Annual leave left: <b>'+(q.AL-u.AL)+'</b> of '+q.AL+' · Medical: <b>'+(q.MC-u.MC)+'</b> of '+q.MC+'</div>'+
+  '<label>Type</label><select class="f" id="lv-t" onchange="lvPrev(\''+sid+'\')">'+LEAVE_TYPES.map(t=>'<option value="'+t[0]+'">'+t[1]+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>From</label><input class="f" type="date" id="lv-f" value="'+today()+'" onchange="lvPrev(\''+sid+'\')"></div>'+
+  '<div><label>To</label><input class="f" type="date" id="lv-to" value="'+today()+'" onchange="lvPrev(\''+sid+'\')"></div></div>'+
+  '<label>Half day?</label><select class="f" id="lv-h" onchange="lvPrev(\''+sid+'\')"><option value="">No — full day(s)</option><option value="AM">Morning only</option><option value="PM">Afternoon only</option></select>'+
+  '<label>Reason</label><input class="f" id="lv-r" placeholder="e.g. Family matter, balik kampung">'+
+  '<div class="fieldset" id="lv-pv" style="margin:6px 0 10px"></div>'+
+  '<div id="lv-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="lv-go" style="width:100%;justify-content:center" onclick="leaveSave(\''+sid+'\')">'+ic('check',16)+'Send for approval</button>'+
+  '<p class="tiny muted" style="margin:8px 0 0">For medical leave, hand the MC to the counter or the owner.</p></div>',()=>window.lvPrev(sid));
+};
+function lvDraft(){
+ const f=$('#lv-f').value,t=$('#lv-to').value,h=$('#lv-h').value;
+ return {type:$('#lv-t').value,from:f,to:h?f:t,half:h||'',reason:$('#lv-r')?$('#lv-r').value.trim():''};
+}
+window.lvPrev=sid=>{
+ const d=lvDraft(),s=stf(sid),q=lvQuota(s),u=lvUsed(sid);
+ const pv=$('#lv-pv'),e=$('#lv-e');if(!pv)return;
+ if(!d.from||!d.to||d.to<d.from){pv.innerHTML='';if(e)e.textContent=d.to<d.from?'The end date is before the start date.':'';return;}
+ const n=lvDays(d),k=d.type==='EL'?'AL':d.type;
+ const left=k==='AL'?q.AL-u.AL-u.pendAL:k==='MC'?q.MC-u.MC-u.pendMC:null;
+ const clash=LEAVES.filter(l=>l.staffId===sid&&['pending','approved'].includes(l.status)&&l.from<=d.to&&l.to>=d.from);
+ pv.innerHTML='<table><tr><td>'+esc(lvName(d.type))+'</td><td class="num"><b>'+n+' day'+(n!==1?'s':'')+'</b></td></tr>'+
+  (left!=null?'<tr><td class="muted">Left after this</td><td class="num'+(left-n<0?'" style="color:var(--rose)':'')+'">'+(left-n)+' days</td></tr>':'')+'</table>';
+ if(e)e.textContent=clash.length?'You already have leave on these dates ('+dshort(clash[0].from)+').':left!=null&&left-n<0?'Not enough '+(k==='AL'?'annual':'medical')+' leave left — the owner may still approve it as unpaid.':'';
+};
+window.leaveSave=async sid=>{
+ const d=lvDraft(),s=stf(sid),e=$('#lv-e');
+ if(!d.from||!d.to||d.to<d.from){e.textContent='Check the dates.';return;}
+ if(LEAVES.some(l=>l.staffId===sid&&['pending','approved'].includes(l.status)&&l.from<=d.to&&l.to>=d.from)){e.textContent='You already have leave on these dates.';return;}
+ $('#lv-go').disabled=true;
+ const rec={...d,days:lvDays(d),staffId:sid,staffName:s.name,branchId:s.branchId||ME.branchId,status:'pending',
+  createdAt:new Date().toISOString(),requestedBy:UID,requestedByName:(typeof actorName==='function'?actorName():ME.name)};
+ try{const r=await addDoc(collection(db,'leaves'),rec);if(!LEAVES.some(l=>l.id===r.id))LEAVES.unshift({id:r.id,...rec});
+  logEvent('attendance','Leave request · '+s.name,lvName(d.type)+' · '+dshort(d.from)+(d.to!==d.from?' – '+dshort(d.to):'')+' · '+rec.days+' day(s)',{refType:'hr'});
+  await audit('Leave requested',s.name+' · '+lvName(d.type)+' '+d.from+(d.to!==d.from?' to '+d.to:'')+' ('+rec.days+'d)');
+  window.closeModal();render();toast('Leave sent for approval');}
+ catch(err){e.textContent=friendly(err);$('#lv-go').disabled=false;}
+};
+window.leaveCancel=async id=>{
+ const l=LEAVES.find(x=>x.id===id);if(!l||l.status!=='pending')return;
+ if(!confirm('Cancel this leave request?'))return;
+ try{const p={status:'cancelled',cancelledAt:new Date().toISOString(),cancelledBy:UID};
+  await updateDoc(doc(db,'leaves',id),p);Object.assign(l,p);render();toast('Request cancelled');}catch(e){toast(friendly(e));}
+};
+
+/* ---------------- approving leave ---------------- */
+window.leaveDecide=async id=>{
+ const l=LEAVES.find(x=>x.id===id);if(!l)return;
+ const s=stf(l.staffId),q=lvQuota(s),u=lvUsed(l.staffId),k=l.type==='EL'?'AL':l.type;
+ const left=k==='AL'?q.AL-u.AL:k==='MC'?q.MC-u.MC:null;
+ modal('Leave · '+(l.staffName||''),'<div class="card"><div id="ld-body">'+
+  '<table><tr><td>Type</td><td class="num"><b>'+esc(lvName(l.type))+'</b></td></tr>'+
+  '<tr><td>Dates</td><td class="num">'+dstr(l.from)+(l.to!==l.from?' – '+dstr(l.to):'')+(l.half?' ('+l.half+')':'')+'</td></tr>'+
+  '<tr><td>Days</td><td class="num">'+lvDays(l)+'</td></tr>'+
+  (left!=null?'<tr><td>'+(k==='AL'?'Annual':'Medical')+' leave left before this</td><td class="num'+(left-lvDays(l)<0?'" style="color:var(--rose)':'')+'">'+left+' of '+(k==='AL'?q.AL:q.MC)+'</td></tr>':'')+
+  (l.reason?'<tr><td>Reason</td><td class="num">'+esc(l.reason)+'</td></tr>':'')+
+  '<tr><td>Asked</td><td class="num">'+dshort(l.createdAt)+' '+tstr(l.createdAt)+'</td></tr></table>'+
+  '<div id="ld-clash" class="tiny muted" style="margin:8px 0">Checking bookings…</div>'+
+  '<label>Note to '+esc(String(l.staffName||'').split(' ')[0])+' <span class="muted">— optional, needed to reject</span></label>'+
+  '<input class="f" id="ld-n" placeholder="e.g. Approved, please pass your clients to Hana">'+
+  '<div id="ld-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<div class="grid g2"><button class="btn" id="ld-ok" onclick="leaveSet(\''+id+'\',\'approved\')">'+ic('check',15)+'Approve</button>'+
+  '<button class="btn ghost" onclick="leaveSet(\''+id+'\',\'rejected\')">'+ic('close',15)+'Reject</button></div></div></div>');
+ /* bookings the therapist already has during the leave */
+ try{const s1=await getDocs(query(collection(db,'appointments'),where('date','>=',l.from),where('date','<=',l.to)));
+  const hit=s1.docs.map(d=>({id:d.id,...d.data()})).filter(a=>a.staffId===l.staffId&&!['cancelled','no','done'].includes(a.status));
+  const el=$('#ld-clash');if(el)el.innerHTML=hit.length?'<div class="warnbox">'+ic('alert',13)+' '+esc(l.staffName||'')+' has <b>'+hit.length+' booking'+(hit.length>1?'s':'')+
+   '</b> in this period: '+hit.slice(0,5).map(a=>esc(a.customerName||'')+' '+dshort(a.date)+' '+tstr(a.start)).join(', ')+
+   '. Move them to another therapist after approving.</div>':ic('check',12)+' No bookings for '+esc(l.staffName||'')+' on these dates.';}
+ catch(e){const el=$('#ld-clash');if(el)el.textContent='';}
+};
+window.leaveSet=async(id,st)=>{
+ const l=LEAVES.find(x=>x.id===id);if(!l)return;
+ const note=($('#ld-n')||{}).value||'';
+ if(st==='rejected'&&note.trim().length<3){$('#ld-e').textContent='Say why it is rejected.';return;}
+ const p={status:st,decidedBy:UID,decidedByName:ME.name,decidedAt:new Date().toISOString(),...(note.trim()?{decisionNote:note.trim()}:{})};
+ try{await updateDoc(doc(db,'leaves',id),p);Object.assign(l,p);
+  logEvent('attendance','Leave '+st+' · '+(l.staffName||''),lvName(l.type)+' · '+dshort(l.from)+(l.to!==l.from?' – '+dshort(l.to):''),{refType:'hr'});
+  await audit('Leave '+st,(l.staffName||'')+' · '+lvName(l.type)+' '+l.from+(l.to!==l.from?' to '+l.to:'')+(note?' · '+note:''));
+  window.closeModal();render();toast('Leave '+st);}
+ catch(e){$('#ld-e').textContent=friendly(e);}
+};
+function hrLeave(){
+ const mine=LEAVES.filter(myBranch);
+ const pend=mine.filter(l=>l.status==='pending');
+ const td=today(),d14=[...Array(14)].map((_,i)=>ymd(addDays(new Date(),i)));
+ const staff=hrPeople();
+ const off=d14.map(d=>[d,staff.filter(s=>onLeave(s.id,d))]);
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('leave',15)+' Waiting for approval</h3><span class="pill'+(pend.length?' a':'')+'">'+pend.length+'</span></div>'+
+   (pend.length?pend.map(l=>lvRow(l,false)).join(''):'<div class="tiny muted">Nothing waiting.</div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('calendar',15)+' Who is off — next 14 days</h3><div class="lvstrip">'+
+   off.map(([d,xs])=>'<div class="'+(d===td?'today':'')+(xs.length?' has':'')+'"><b>'+new Date(d).toLocaleDateString('en-MY',{weekday:'short'})+'</b><span>'+
+    d.slice(8)+'</span>'+xs.map(s=>'<i title="'+esc(s.name)+'">'+esc(initials(s.name))+'</i>').join('')+'</div>').join('')+'</div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('users',15)+' Leave this year</h3><div class="scroll"><table><tr><th>Staff</th><th class="num">Annual</th><th class="num">Medical</th><th class="num">Other</th></tr>'+
+   staff.map(s=>{const q=lvQuota(s),u=lvUsed(s.id);
+    const other=LEAVES.filter(l=>l.staffId===s.id&&l.status==='approved'&&!['AL','EL','MC'].includes(l.type)&&String(l.from).slice(0,4)===td.slice(0,4)).reduce((t,l)=>t+lvDays(l),0);
+    return '<tr><td>'+esc(s.name)+'</td><td class="num">'+u.AL+' / '+q.AL+'</td><td class="num">'+u.MC+' / '+q.MC+'</td><td class="num">'+other+'</td></tr>';}).join('')+
+   '</table></div><p class="tiny muted" style="margin-top:8px">Used / entitled. Entitlement follows the Employment Act minimum for years of service unless set in Staff files.</p></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('history',15)+' Recent</h3>'+
+   (mine.filter(l=>l.status!=='pending').slice(0,20).map(l=>lvRow(l,false)).join('')||'<div class="tiny muted">No leave yet.</div>')+
+   '<button class="btn sm ghost" style="margin-top:10px" onclick="leaveForOther()">'+ic('plus',13)+'Record leave for a staff member</button></div>';
+}
+window.leaveForOther=()=>{
+ modal('Record leave','<div class="card"><label>Staff</label><select class="f" id="lo-s">'+hrPeople().map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="leaveForm($(\'#lo-s\').value)">'+ic('right',15)+'Continue</button></div>');
+};
+
+/* ---------------- claims ---------------- */
+let CLRCPT='';
+window.claimForm=sid=>{
+ const s=stf(sid);if(!s.id)return;CLRCPT='';
+ modal('Submit a claim · '+s.name,'<div class="card">'+
+  '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="cl-d" value="'+today()+'"></div>'+
+  '<div><label>Amount (RM)</label><input class="f" type="number" step="0.01" min="0" id="cl-a"></div></div>'+
+  '<label>Category</label><select class="f" id="cl-c">'+CLAIM_CATS.map(c=>'<option>'+c+'</option>').join('')+'</select>'+
+  '<label>What for</label><input class="f" id="cl-n" placeholder="e.g. Grab to supplier, 2 boxes of cotton">'+
+  '<label>Receipt photo</label><input class="f" type="file" accept="image/*" capture="environment" id="cl-f" onchange="claimPhoto(this)">'+
+  '<div id="cl-pv"></div>'+
+  '<div id="cl-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="cl-go" style="width:100%;justify-content:center" onclick="claimSave(\''+sid+'\')">'+ic('check',16)+'Send for approval</button></div>');
+};
+/* receipts are shrunk on the phone before saving, so each one stays small */
+window.claimPhoto=inp=>{
+ const f=inp.files&&inp.files[0];if(!f)return;
+ const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{
+  const k=Math.min(1,1100/Math.max(img.width,img.height)),c=document.createElement('canvas');
+  c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  CLRCPT=c.toDataURL('image/jpeg',.62);
+  const pv=$('#cl-pv');if(pv)pv.innerHTML='<img src="'+CLRCPT+'" class="clthumb" alt="Receipt">';};img.src=r.result;};r.readAsDataURL(f);
+};
+window.claimSave=async sid=>{
+ const s=stf(sid),e=$('#cl-e'),amt=r2(+$('#cl-a').value||0);
+ if(!(amt>0)){e.textContent='Enter the amount.';return;}
+ if(amt>10000){e.textContent='That is more than a claim can be — check the amount.';return;}
+ const note=$('#cl-n').value.trim();if(note.length<3){e.textContent='Say what the claim is for.';return;}
+ if(CLRCPT.length>900000){e.textContent='The photo is too large — take it again closer to the receipt.';return;}
+ $('#cl-go').disabled=true;
+ const rec={staffId:sid,staffName:s.name,branchId:s.branchId||ME.branchId,date:$('#cl-d').value||today(),amount:amt,category:$('#cl-c').value,
+  note:note.slice(0,300),status:'pending',createdAt:new Date().toISOString(),submittedBy:UID,
+  submittedByName:(typeof actorName==='function'?actorName():ME.name),...(CLRCPT?{receipt:CLRCPT}:{})};
+ try{const r=await addDoc(collection(db,'claims'),rec);(CLAIMS=CLAIMS||[]).unshift({id:r.id,...rec});
+  logEvent('attendance','Claim · '+s.name,rec.category+' · '+rm(amt),{refType:'hr'});
+  await audit('Claim submitted',s.name+' · '+rec.category+' · '+rm(amt));
+  window.closeModal();render();toast('Claim sent for approval');}
+ catch(err){e.textContent=friendly(err);$('#cl-go').disabled=false;}
+};
+window.claimReceipt=id=>{const x=(CLAIMS||[]).find(c=>c.id===id);if(!x||!x.receipt)return;
+ modal('Receipt · '+(x.staffName||''),'<div class="card" style="text-align:center"><img src="'+x.receipt+'" style="max-width:100%;border-radius:10px" alt="Receipt">'+
+  '<div class="tiny muted" style="margin-top:6px">'+esc(x.category||'')+' · '+rm(x.amount)+' · '+dstr(x.date)+'</div></div>');};
+window.claimCancel=async id=>{
+ const x=(CLAIMS||[]).find(c=>c.id===id);if(!x||x.status!=='pending'||!confirm('Cancel this claim?'))return;
+ try{const p={status:'cancelled',cancelledAt:new Date().toISOString(),cancelledBy:UID};await updateDoc(doc(db,'claims',id),p);Object.assign(x,p);render();}
+ catch(e){toast(friendly(e));}
+};
+window.claimDecide=id=>{
+ const x=(CLAIMS||[]).find(c=>c.id===id);if(!x)return;
+ modal('Claim · '+(x.staffName||''),'<div class="card"><table><tr><td>Amount</td><td class="num"><b>'+rm(x.amount)+'</b></td></tr>'+
+  '<tr><td>Category</td><td class="num">'+esc(x.category)+'</td></tr><tr><td>Date</td><td class="num">'+dstr(x.date)+'</td></tr>'+
+  '<tr><td>For</td><td class="num">'+esc(x.note||'')+'</td></tr></table>'+
+  (x.receipt?'<img src="'+x.receipt+'" class="clthumb big" alt="Receipt">':'<div class="warnbox">'+ic('alert',13)+' No receipt photo attached.</div>')+
+  '<label>Note <span class="muted">— needed to reject</span></label><input class="f" id="cd-n">'+
+  '<div id="cd-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<div class="grid g2"><button class="btn" onclick="claimSet(\''+id+'\',\'approved\')">'+ic('check',15)+'Approve</button>'+
+  '<button class="btn ghost" onclick="claimSet(\''+id+'\',\'rejected\')">'+ic('close',15)+'Reject</button></div></div>');
+};
+window.claimSet=async(id,st)=>{
+ const x=(CLAIMS||[]).find(c=>c.id===id);if(!x)return;
+ const note=(($('#cd-n')||{}).value||'').trim();
+ if(st==='rejected'&&note.length<3){$('#cd-e').textContent='Say why it is rejected.';return;}
+ const p={status:st,decidedBy:UID,decidedByName:ME.name,decidedAt:new Date().toISOString(),...(note?{decisionNote:note}:{})};
+ try{await updateDoc(doc(db,'claims',id),p);Object.assign(x,p);
+  await audit('Claim '+st,(x.staffName||'')+' · '+x.category+' · '+rm(x.amount)+(note?' · '+note:''));
+  window.closeModal();render();toast('Claim '+st);}catch(e){const el=$('#cd-e');if(el)el.textContent=friendly(e);}
+};
+window.claimPaid=async id=>{
+ const x=(CLAIMS||[]).find(c=>c.id===id);if(!x)return;
+ const how=prompt('Paid how? (e.g. cash from drawer, bank transfer, with salary)','With salary');if(how===null)return;
+ const p={status:'paid',paidAt:new Date().toISOString(),paidBy:UID,paidHow:String(how).slice(0,80)};
+ try{await updateDoc(doc(db,'claims',id),p);Object.assign(x,p);await audit('Claim paid',(x.staffName||'')+' · '+rm(x.amount)+' · '+p.paidHow);render();toast('Marked paid');}
+ catch(e){toast(friendly(e));}
+};
+function hrClaims(){
+ const L=(CLAIMS||[]).filter(myBranch);
+ if(CLAIMS===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const pend=L.filter(x=>x.status==='pending'),appr=L.filter(x=>x.status==='approved');
+ const m0=today().slice(0,8)+'01';
+ const paidM=L.filter(x=>x.status==='paid'&&String(x.paidAt).slice(0,10)>=m0).reduce((t,x)=>t+x.amount,0);
+ return '<div class="crmkpis">'+kpi('Waiting',pend.length,rm(pend.reduce((t,x)=>t+x.amount,0)),'receipt')+
+   kpi('Approved, not paid',appr.length,rm(appr.reduce((t,x)=>t+x.amount,0)),'wallet')+kpi('Paid this month',rm(paidM),'','check')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">Waiting for approval</h3>'+(pend.map(x=>clRow(x,false)).join('')||'<div class="tiny muted">Nothing waiting.</div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">Approved — to pay</h3>'+(appr.map(x=>clRow(x,false)).join('')||'<div class="tiny muted">Nothing to pay.</div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">History</h3>'+(L.filter(x=>!['pending','approved'].includes(x.status)).slice(0,25).map(x=>clRow(x,false)).join('')||'<div class="tiny muted">None yet.</div>')+'</div>';
+}
+
+/* ---------------- this month, per person ---------------- */
+function hrMonth(){
+ const td=today(),m0=td.slice(0,8)+'01';
+ const rows=hrPeople().map(s=>{
+  const att=ATT.filter(a=>a.staffId===s.id&&a.date>=m0&&a.clockIn);
+  const mins=att.reduce((t,a)=>t+(a.clockOut?(new Date(a.clockOut)-new Date(a.clockIn))/6e4:0),0);
+  const lv=LEAVES.filter(l=>l.staffId===s.id&&l.status==='approved'&&l.to>=m0&&l.from<=td);
+  const lvd=lv.reduce((t,l)=>{let n=0;for(let d=l.from;d<=l.to&&d<=td;d=ymd(addDays(d,1)))if(d>=m0)n++;return t+(l.half?Math.min(n,.5):n);},0);
+  const unpaid=lv.filter(l=>l.type==='UL').reduce((t,l)=>t+lvDays(l),0);
+  const c=hrComm(s.id,m0,td);
+  const cl=(CLAIMS||[]).filter(x=>x.staffId===s.id&&['approved','paid'].includes(x.status)&&x.date>=m0).reduce((t,x)=>t+x.amount,0);
+  return {s,days:att.length,mins,lvd,unpaid,c,cl};});
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('chart',15)+' '+new Date(td).toLocaleDateString('en-MY',{month:'long',year:'numeric'})+' so far</h3></div>'+
+  '<div class="scroll"><table><tr><th>Staff</th><th class="num">Days</th><th class="num">Hours</th><th class="num">Leave</th><th class="num">Sales comm.</th><th class="num">Hands-on</th><th class="num">Commission</th><th class="num">Claims</th></tr>'+
+  rows.map(r=>'<tr><td>'+esc(r.s.name)+'</td><td class="num">'+r.days+'</td><td class="num">'+Math.floor(r.mins/60)+'h'+String(Math.round(r.mins%60)).padStart(2,'0')+'</td>'+
+   '<td class="num">'+r.lvd+(r.unpaid?'<div class="tiny" style="color:var(--rose)">'+r.unpaid+' unpaid</div>':'')+'</td><td class="num">'+rm(r.c.sc)+'</td><td class="num">'+rm(r.c.ho)+'</td>'+
+   '<td class="num"><b>'+rm(r.c.total)+'</b></td><td class="num">'+rm(r.cl)+'</td></tr>').join('')+'</table></div>'+
+  '<p class="tiny muted" style="margin-top:8px">A working view for the month. Salary, KWSP, PERKESO, SIP and PCB are not worked out here yet — that is the next step (payroll).</p></div>';
+}
+
+/* ---------------- staff files (owner only) ---------------- */
+const HRF=[['fullName','Full name (as in IC)','text'],['ic','IC / passport no.','text'],['dob','Date of birth','date'],['gender','Gender','sel:Female,Male'],
+ ['phone','Phone','tel'],['email','Email','email'],['address','Home address','area'],['emgName','Emergency contact — name','text'],['emgPhone','Emergency contact — phone','tel'],
+ ['position','Position','text'],['empType','Employment type','sel:Full-time,Part-time,Contract,Probation,Intern'],['joinDate','Date joined','date'],['confirmDate','Confirmation date','date'],['contractEnd','Contract ends','date'],
+ ['basic','Basic salary (RM / month)','num'],['allowance','Fixed allowances (RM / month)','num'],
+ ['bank','Bank','text'],['bankAcc','Bank account no.','text'],['epf','KWSP no.','text'],['socso','PERKESO no.','text'],['tax','Income tax no.','text'],
+ ['leaveAL','Annual leave (days / year)','num'],['leaveMC','Medical leave (days / year)','num'],['notes','Notes','area']];
+function hrStaffView(){
+ if(!isOwnerMe())return '';
+ if(HRSTAFF===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const td=today(),soon=ymd(addDays(new Date(),30));
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('idcard',15)+' Staff files</h3><span class="pill">owner only</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">IC, bank, KWSP, PERKESO and salary are kept here and can only be opened by the owner — not by managers, staff or the counter tablet.</p>'+
+  hrPeople().map(s=>{const f=HRSTAFF[s.id]||{};const miss=['ic','bankAcc','epf','socso'].filter(k=>!f[k]).length;
+   const warn=f.contractEnd&&f.contractEnd>=td&&f.contractEnd<=soon?'<span class="pill a">contract ends '+dshort(f.contractEnd)+'</span>':
+    f.empType==='Probation'&&f.confirmDate&&f.confirmDate<=soon?'<span class="pill a">confirm by '+dshort(f.confirmDate)+'</span>':'';
+   return '<button class="hrfile" onclick="hrFile(\''+s.id+'\')"><span class="avatar">'+esc(initials(s.name))+'</span><div style="flex:1;min-width:0"><b>'+esc(f.fullName||s.name)+'</b>'+
+    '<small>'+esc(f.position||s.position||ROLE[s.role]||'')+(f.joinDate?' · since '+dstr(f.joinDate):'')+(f.basic?' · '+rm(+f.basic)+'/month':'')+'</small></div>'+warn+
+    (miss?'<span class="pill">'+miss+' missing</span>':'<span class="pill g">'+ic('check',11)+'complete</span>')+'</button>';}).join('')+'</div>';
+}
+window.hrFile=sid=>{
+ if(!isOwnerMe())return;
+ const s=stf(sid),f={...(HRSTAFF||{})[sid]||{}};
+ if(!f.fullName)f.fullName=s.name;if(!f.position&&s.position)f.position=s.position;if(!f.joinDate&&s.joinDate)f.joinDate=s.joinDate;
+ const q=lvQuota({...s,leaveAL:'',leaveMC:'',joinDate:f.joinDate});
+ const inp=([k,l,t])=>{const v=f[k]==null?'':f[k];
+  if(t==='area')return '<label>'+l+'</label><textarea class="f" rows="2" id="hf-'+k+'">'+esc(v)+'</textarea>';
+  if(t.startsWith('sel:'))return '<label>'+l+'</label><select class="f" id="hf-'+k+'"><option value="">—</option>'+t.slice(4).split(',').map(o=>'<option'+(v===o?' selected':'')+'>'+o+'</option>').join('')+'</select>';
+  return '<label>'+l+'</label><input class="f" id="hf-'+k+'" type="'+(t==='num'?'number" step="0.01':t)+'" value="'+esc(v)+'"'+
+   (k==='leaveAL'?' placeholder="Default '+q.AL+'"':k==='leaveMC'?' placeholder="Default '+q.MC+'"':'')+'>';};
+ const grp=(t,ks)=>'<div class="hrgrp"><h4>'+t+'</h4><div class="grid g2">'+HRF.filter(x=>ks.includes(x[0])).map(x=>'<div>'+inp(x)+'</div>').join('')+'</div></div>';
+ modal('Staff file · '+s.name,'<div class="card">'+
+  grp('Personal',['fullName','ic','dob','gender','phone','email'])+inp(HRF.find(x=>x[0]==='address'))+
+  grp('Emergency contact',['emgName','emgPhone'])+
+  grp('Employment',['position','empType','joinDate','confirmDate','contractEnd','basic','allowance'])+
+  grp('Bank & statutory',['bank','bankAcc','epf','socso','tax'])+
+  grp('Leave entitlement',['leaveAL','leaveMC'])+
+  '<p class="tiny muted" style="margin:-4px 0 10px">Leave blank to follow the Employment Act minimum for their years of service.</p>'+
+  inp(HRF.find(x=>x[0]==='notes'))+
+  '<div id="hf-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="hf-go" style="width:100%;justify-content:center" onclick="hrFileSave(\''+sid+'\')">'+ic('check',16)+'Save staff file</button></div>');
+};
+window.hrFileSave=async sid=>{
+ if(!isOwnerMe())return;
+ const d={};HRF.forEach(([k,,t])=>{const el=$('#hf-'+k);if(!el)return;let v=String(el.value||'').trim();
+  d[k]=t==='num'?(v===''?'':r2(+v)):v.slice(0,500);});
+ if(d.ic&&!/^[0-9A-Za-z\-]{6,20}$/.test(d.ic)){$('#hf-e').textContent='Check the IC / passport number.';return;}
+ $('#hf-go').disabled=true;
+ d.updatedAt=new Date().toISOString();d.updatedBy=UID;
+ /* what the rest of the app may know (position, join date, leave entitlement) goes on the profile */
+ const pub={position:d.position||'',joinDate:d.joinDate||'',empType:d.empType||'',leaveAL:d.leaveAL,leaveMC:d.leaveMC};
+ try{await setDoc(doc(db,'hrStaff',sid),d);await updateDoc(doc(db,'users',sid),pub);
+  HRSTAFF[sid]=d;Object.assign(stf(sid),pub);
+  await audit('Staff file updated',stf(sid).name||sid);
+  window.closeModal();render();toast('Staff file saved');}
+ catch(e){$('#hf-e').textContent=friendly(e);$('#hf-go').disabled=false;}
+};
+
+/* ---------------- home: what HR needs today ---------------- */
+function hrAlerts(al){
+ if(boss()){
+  const pl=LEAVES.filter(l=>l.status==='pending'&&myBranch(l));
+  if(pl.length)al.push({i:'leave',t:pl.length+' leave request'+(pl.length>1?'s':'')+' to approve',d:pl.slice(0,3).map(l=>(l.staffName||'').split(' ')[0]+' '+dshort(l.from)).join(', '),go:"hrGo('leave')"});
+  const pc=(CLAIMS||[]).filter(c=>c.status==='pending'&&myBranch(c));
+  if(pc.length)al.push({i:'receipt',t:pc.length+' claim'+(pc.length>1?'s':'')+' to approve',d:rm(pc.reduce((t,c)=>t+c.amount,0)),go:"hrGo('claims')"});
+ }
+ if(isOwnerMe()&&HRSTAFF){const soon=ymd(addDays(new Date(),30)),td=today();
+  const ce=hrPeople().filter(s=>{const f=HRSTAFF[s.id]||{};return f.contractEnd&&f.contractEnd>=td&&f.contractEnd<=soon;});
+  if(ce.length)al.push({i:'idcard',t:ce.length+' contract'+(ce.length>1?'s':'')+' ending within 30 days',d:ce.map(s=>s.name).join(', '),go:"hrGo('staff')"});}
+ const off=hrPeople().filter(s=>onLeave(s.id,today()));
+ if(off.length&&can('booking'))al.push({i:'leave',t:off.length+' on leave today',d:off.map(s=>s.name+' ('+onLeave(s.id,today()).type+')').join(', '),go:"go('book')"});
+}
+window.hrGo=v=>{HRV=v;window.go('hr');};
+
+/* ---------------- the calendar respects approved leave ---------------- */
+function leaveBlock(sid,start,finish){
+ const l=onLeave(sid,ymd(new Date(start)));if(!l)return '';
+ if(l.half==='AM'&&new Date(start).getHours()>=13)return '';
+ if(l.half==='PM'&&new Date(finish).getHours()<13)return '';
+ return (stf(sid).name||'')+' is on '+lvName(l.type).toLowerCase()+(l.half?' ('+(l.half==='AM'?'morning':'afternoon')+')':'')+' on '+dstr(ymd(new Date(start)))+'. Choose another therapist or day.';
+}
+function leaveNote(sid,date){
+ const l=sid&&date?onLeave(sid,date):null;
+ return l?'<span class="pill r">'+ic('leave',11)+esc(stf(sid).name||'')+' on leave'+(l.half?' ('+l.half+')':'')+'</span>':'';
+}
 
 </script>
