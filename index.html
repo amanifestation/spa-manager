@@ -1532,7 +1532,7 @@ body.demo .syncbar{top:106px}
 .finexpbtn b{display:flex;gap:6px;align-items:center;font-size:13px}.finexpbtn small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px}
 .acrow{display:flex;gap:12px;padding:6px 2px;border-bottom:1px solid var(--line-2);font-size:13px}.acrow code{min-width:44px;color:var(--brass);font-weight:600}
 .pltbl td,.pltbl th{white-space:nowrap}.pltbl td:first-child{white-space:normal}
-@media (max-width:620px){.pltbl .plb{display:none}.pltbl td,.pltbl th{font-size:12.5px;padding-left:4px;padding-right:4px}.plc{display:block;margin:0}}.pltbl .plsec td{font-weight:650;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:14px}
+@media (max-width:620px){.pltbl .plb,.budtbl .budb{display:none}.pltbl td,.pltbl th{font-size:12.5px;padding-left:4px;padding-right:4px}.plc{display:block;margin:0}}.pltbl .plsec td{font-weight:650;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:14px}
 .pltbl .pltot td{font-weight:600;border-top:1px solid var(--line)}.pltbl .plbig td{font-weight:700;background:var(--surface-2);border-top:2px solid var(--line)}
 .plc{color:var(--brass);font-size:11px;font-weight:600;margin-right:6px}.neg{color:var(--rose)}
 .pltrend{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;margin:6px 0 10px}
@@ -1544,6 +1544,16 @@ body.demo .syncbar{top:106px}
 .balmeta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;margin-top:4px}
 .balrow small{display:block;font-size:11.5px;color:var(--ink-3)}.balmv{font-size:12px;color:var(--ink-3);white-space:nowrap}
 .obrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}.obrow span{flex:1;min-width:0}.obrow code{color:var(--brass);font-weight:600;margin-right:4px}.obrow input{max-width:130px;margin:0}
+.tptbl td,.tptbl th{white-space:nowrap}.tptbl td:first-child{white-space:normal;min-width:130px}.tptbl td small{display:block;font-size:11px;color:var(--ink-3)}
+.tpnote p{margin:4px 0;font-size:13px;display:flex;gap:6px;align-items:flex-start}.tpnote p svg{flex:0 0 auto;margin-top:2px}
+.bebar{position:relative;height:12px;background:var(--line-2);border-radius:99px;overflow:visible;margin:4px 0 8px}
+.bebar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--brass),#C79A55)}
+.bebar>b,.budbar>b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:2px}
+.bemsg{margin:0;font-size:13.5px;display:flex;gap:6px;align-items:center}
+.bgood{color:#2f7d4f;font-weight:600}.bbad{color:var(--rose);font-weight:600}
+.budbar{position:relative;overflow:visible;height:8px}.budbar>i{background:var(--brass)}.budbar>i.over{background:var(--rose)}
+.brcrow{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}.brcrow>b{min-width:110px}.brcbars{flex:1;min-width:0}
+.brcbars small{display:block;font-size:11.5px;color:var(--ink-3);margin:2px 0 6px}.bar>i.neg{background:var(--rose)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1801,7 +1811,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25b';
+const BUILD='2026-09-25c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14219,7 +14229,7 @@ const COA=[
  ['6040','Supplies & consumables','expense'],['6050','Repairs & maintenance','expense'],['6060','Cleaning & laundry','expense'],['6070','Licences, permits & fees','expense'],
  ['6080','Bank & payment fees','expense'],['6090','Software & subscriptions','expense'],['6100','Transport & parking','expense'],['6110','Insurance','expense'],
  ['6120','Accounting & legal','expense'],['6130','Training','expense'],['6190','Miscellaneous','expense']];
-let FINSET=null,EXPENSES=null,RECUR=null,TRANSFERS=null,FINV='',FINM='',FINSHIFTS={};
+let FINSET=null,EXPENSES=null,RECUR=null,TRANSFERS=null,FINV='',FINM='',FINSHIFTS={},FINBR='',FINBUD=null,FINBUDM={};
 const coa=()=>[...COA,...(((FINSET||{}).accounts)||[]).map(a=>[a.code,a.name,a.type||'expense'])];
 const acName=c=>(coa().find(a=>a[0]===c)||[c,c])[1];
 const acType=c=>(coa().find(a=>a[0]===c)||[])[2]||'';
@@ -14245,6 +14255,8 @@ const payAcct=m=>/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfe
 
 async function finLoad(force){
  if(!boss())return;
+ FINBR=ME.branchId;
+ if(FINBUD===null||force)getDoc(doc(db,'finance','budget')).then(s=>{FINBUD=s.exists()?s.data():{};FINBUDM={};if(TAB==='fin')render();}).catch(()=>{FINBUD={};});
  const jobs=[];
  if(FINSET===null||force)jobs.push(getDoc(doc(db,'finance','settings')).then(s=>{FINSET=s.exists()?s.data():{};}).catch(()=>{FINSET={};}));
  if(EXPENSES===null||force)jobs.push(getDocs(query(collection(db,'expenses'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>{
@@ -14279,13 +14291,16 @@ async function recurRun(){
 const finMonthExp=m=>(EXPENSES||[]).filter(e=>String(e.date).slice(0,7)===m);
 function vFin(){
  if(!boss())return '<div class="card"><div class="empty">Finance is for the owner and managers.</div></div>';
+ /* the owner switched branch: everything is worked out again for the new one */
+ if(FINBR&&FINBR!==ME.branchId){FINBR=ME.branchId;EXPENSES=null;RECUR=null;TRANSFERS=null;FINBUD=null;FINSHIFTS={};finDirty();}
  if(EXPENSES===null)setTimeout(()=>finLoad(),0);
  if(!FINM)FINM=today().slice(0,7);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
- const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
+ const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
+  ...(isOwnerMe()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
   ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['coa','Accounts & settings','list','']];
  if(!tabs.some(t=>t[0]===FINV))FINV='pl';
- const V={pl:finPL,bal:finBal,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const V={pl:finPL,bal:finBal,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -14296,16 +14311,17 @@ const finNav=()=>'<div class="row" style="gap:8px"><button class="iconbtn" oncli
 window.finMonth=n=>{FINM=mShift(FINM,n);render();};
 
 /* ---------------- expenses ---------------- */
-function finAuto(m){
- /* what other parts of the app already recorded as spending this month */
- const out=[];
- const sh=FINSHIFTS[m];
- if(sh===undefined){FINSHIFTS[m]=null;
-  getDocs(query(collection(db,'shifts'),where('date','>=',m+'-01'),where('date','<=',mEnd(m)))).then(s=>{
-   FINSHIFTS[m]=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.branchId===ME.branchId);if(TAB==='fin')render();}).catch(()=>{FINSHIFTS[m]=[];});}
- (FINSHIFTS[m]||[]).forEach(s=>(s.expenses||[]).forEach((e,i)=>out.push({id:'drawer_'+s.id+'_'+i,date:s.date,desc:(e.category||'')+(e.note?' · '+e.note:''),
+function finAuto(m,br,shifts){
+ /* what other parts of the app already recorded as spending this month (a branch's own day records and claims) */
+ const out=[];br=br||ME.branchId;
+ if(!shifts){const sh=FINSHIFTS[m];
+  if(sh===undefined){FINSHIFTS[m]=null;
+   getDocs(query(collection(db,'shifts'),where('date','>=',m+'-01'),where('date','<=',mEnd(m)))).then(s=>{
+    FINSHIFTS[m]=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.branchId===ME.branchId);if(TAB==='fin')render();}).catch(()=>{FINSHIFTS[m]=[];});}
+  shifts=FINSHIFTS[m]||[];}
+ shifts.forEach(s=>(s.expenses||[]).forEach((e,i)=>out.push({id:'drawer_'+s.id+'_'+i,date:s.date,desc:(e.category||'')+(e.note?' · '+e.note:''),
   account:DRAWER_MAP[e.category]||'6190',amount:+e.amount||0,src:'Drawer',by:e.byName||'',paidFrom:'1000'})));
- (CLAIMS||[]).filter(c=>c.status==='paid'&&String(c.paidAt||c.date).slice(0,7)===m&&!/^With salary/.test(c.paidHow||'')).forEach(c=>out.push({id:'claim_'+c.id,
+ (CLAIMS||[]).filter(c=>(c.branchId||br)===br&&c.status==='paid'&&String(c.paidAt||c.date).slice(0,7)===m&&!/^With salary/.test(c.paidHow||'')).forEach(c=>out.push({id:'claim_'+c.id,
   date:String(c.paidAt).slice(0,10),desc:(c.staffName||'')+' · '+(c.note||c.category),account:CLAIM_MAP[c.category]||'6190',amount:c.amount,src:'Claim',paidFrom:/cash|drawer|tunai/i.test(c.paidHow||'')?'1000':'1010'}));
  return out;
 }
@@ -14446,14 +14462,17 @@ window.recSave=async id=>{
 
 /* ---------------- the journal ---------------- */
 /* every movement of the month as double-entry lines: date, account, debit, credit */
-async function finJournalOf(m){
+async function finJournalOf(m,br){
+ /* one branch's month; the branch the owner is in unless another is asked for (branch comparison) */
+ const own=!br||br===ME.branchId;br=br||ME.branchId;
+ const SRC=own?{exp:EXPENSES||[],tr:TRANSFERS||[]}:await cmpSrc(br);
  const from=m+'-01',to=mEnd(m),J=[];
  const add=(date,ref,src,desc,lines)=>{lines.filter(l=>Math.abs(l[1])>0.004||Math.abs(l[2])>0.004).forEach(([ac,dr,cr])=>J.push({date,ref,src,desc,account:ac,debit:r2(dr),credit:r2(cr)}));};
  /* takings: each bill is owed by the client on its date; each payment then settles it */
  const qs=await getDocs(query(collection(db,'sales'),where('date','>=',from),where('date','<=',to)));
- const sales=qs.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===ME.branchId);
+ const sales=qs.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===br);
  const qp=await getDocs(query(collection(db,'sales'),where('lastPaidDate','>=',from)));
- const older=qp.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===ME.branchId&&s.date<from);
+ const older=qp.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===br&&s.date<from);
  sales.forEach(s=>{
   /* packages and treatments paid now for later are held as Unredeemed packages until used */
   const cat={'4000':0,'4010':0,'4020':0,'4030':0,'2100':0},hold=pkgDefer()&&s.date>=pkgFrom();
@@ -14479,7 +14498,7 @@ async function finJournalOf(m){
   });
  });
  /* expenses and bills */
- (EXPENSES||[]).forEach(e=>{
+ SRC.exp.forEach(e=>{
   const bd=e.date,pd=e.paidAt||e.date;
   const onBill=bd>=from&&bd<=to,onPay=e.status==='paid'&&pd>=from&&pd<=to;
   const label=(e.supplier||'')+(e.desc?' · '+e.desc:'');
@@ -14489,12 +14508,15 @@ async function finJournalOf(m){
   if(onPay)add(pd,e.payRef||e.ref||e.id,'billpay:'+e.id,'Paid · '+label,[['2000',e.amount,0],[e.paidFrom||'1010',0,e.amount]]);
  });
  /* drawer paid-outs and claims */
- if(FINSHIFTS[m]==null){try{const s=await getDocs(query(collection(db,'shifts'),where('date','>=',from),where('date','<=',to)));FINSHIFTS[m]=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.branchId===ME.branchId);}catch(e){FINSHIFTS[m]=[];}}
- finAuto(m).forEach(a=>{if(a.account==='4000')add(a.date,a.id,a.id,'Refund from drawer · '+a.desc,[['4000',a.amount,0],[a.paidFrom,0,a.amount]]);
+ let shifts;
+ if(own&&FINSHIFTS[m]!=null)shifts=FINSHIFTS[m];
+ else{try{const s=await getDocs(query(collection(db,'shifts'),where('date','>=',from),where('date','<=',to)));shifts=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.branchId===br);}catch(e){shifts=[];}
+  if(own)FINSHIFTS[m]=shifts;}
+ finAuto(m,br,shifts).forEach(a=>{if(a.account==='4000')add(a.date,a.id,a.id,'Refund from drawer · '+a.desc,[['4000',a.amount,0],[a.paidFrom,0,a.amount]]);
   else add(a.date,a.id,a.id,a.src+' · '+a.desc,[[a.account,a.amount,0],[a.paidFrom,0,a.amount]]);});
- await finJournalB(m,add);
+ await finJournalB(m,add,br,SRC.tr);
  /* payroll, once locked (owner only) */
- if(isOwnerMe()){try{const s=await getDoc(doc(db,'payrolls',payId(m)));const P=s.exists()?s.data():null;
+ if(isOwnerMe()){try{const s=await getDoc(doc(db,'payrolls',m+'_'+br));const P=s.exists()?s.data():null;
   if(P&&P.status==='final'){const t={sal:0,com:0,erE:0,erS:0,cl:0,net:0,epf:0,socso:0,eis:0,pcb:0,adv:0,oth:0};
    Object.values(P.lines||{}).forEach(L=>{const c=payCalc(L,m);if(!(c.gross>0))return;
     t.com+=c.comm;t.sal+=c.gross-c.comm;t.erE+=c.epfER;t.erS+=c.socsoER+c.eisER;t.cl+=+L.claims||0;t.net+=c.net;
@@ -14503,7 +14525,8 @@ async function finJournalOf(m){
     ['1010',0,t.net],['2300',0,t.epf],['2310',0,t.socso],['2320',0,t.eis],['2330',0,t.pcb],['1300',0,t.adv],['6190',0,t.oth]]);}}catch(e){console.warn('payroll journal',e);}}
  return J.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
 }
-let FINJ={};
+let FINJ={},FINJB={},CMPALL=null,TPD={};
+const finDirty=()=>{FINJ={};FINJB={};TPD={};};
 function finJournal(){
  const m=FINM,J=FINJ[m];
  if(!J&&!FINJP[m])finJGet(m).then(()=>{if(TAB==='fin'&&FINV==='jnl')render();});
@@ -14528,7 +14551,7 @@ function finJournal(){
   '<div class="spread" style="margin-top:12px"><span class="tiny muted">'+(ex?ic('check',12)+' Marked as sent '+dstr(ex.at)+' by '+esc(ex.byName||''):'Not marked as sent yet.')+'</span>'+
    '<button class="btn sm'+(ex?' ghost':'')+'" onclick="finMarkSent()">'+ic('check',13)+(ex?'Mark again':'Mark '+mLabel(m)+' as sent')+'</button></div></div>';
 }
-window.FINJ_RESET=async()=>{FINJ={};FINSHIFTS={};for(const k in CPC)delete CPC[k];toast('Rebuilding from the records…');await Promise.all([finLoad(true),loadOutstanding()]);render();};
+window.FINJ_RESET=async()=>{FINJ={};FINJB={};CMPALL=null;TPD={};FINSHIFTS={};for(const k in CPC)delete CPC[k];toast('Rebuilding from the records…');await Promise.all([finLoad(true),loadOutstanding()]);render();};
 const csvOf=rows=>rows.map(r=>r.map(v=>{const s=String(v==null?'':v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',')).join('\n');
 function csvDownload(name,rows){const csv=csvOf(rows);window.__lastCSV=csv;window.__lastCSVName=name;
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=name;a.click();}
@@ -14628,8 +14651,9 @@ const MOVE_AC=[['1000','Cash in drawer'],['1010','Bank'],['1020','Card & e-walle
 const trLabel=t=>{const x=MOVES.find(y=>y[0]===t.kind);return x&&x[2]?x[1]:acName(t.from)+' → '+acName(t.to);};
 
 /* the rest of the month's journal: sessions used, packages expired or deleted, booking deposits, money moved */
-async function finJournalB(m,add){
- const from=m+'-01',to=mEnd(m),hi=to+'~',mine=x=>(x.branchId||ME.branchId)===ME.branchId;
+async function finJournalB(m,add,br,tr){
+ br=br||ME.branchId;
+ const from=m+'-01',to=mEnd(m),hi=to+'~',mine=x=>(x.branchId||br)===br;
  const grab=async(q,lab)=>{try{return (await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).filter(mine);}catch(e){console.warn(lab,e);return [];}};
  const [reds,exps,dels,appts]=await Promise.all([
   grab(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)),'redemptions'),
@@ -14656,7 +14680,7 @@ async function finJournalB(m,add){
  }
  appts.filter(a=>+a.deposit>0).forEach(a=>add(String(a.createdAt).slice(0,10),a.id,'dep:'+a.id,'Booking deposit · '+(a.customerName||'')+(a.serviceName?' · '+a.serviceName:''),
   [[depAcct(),+a.deposit,0],['2200',0,+a.deposit]]));
- (TRANSFERS||[]).filter(t=>t.date>=from&&t.date<=to).forEach(t=>{const a=+t.amount||0,fee=Math.min(a,+t.fee||0);
+ (tr||TRANSFERS||[]).filter(t=>t.date>=from&&t.date<=to).forEach(t=>{const a=+t.amount||0,fee=Math.min(a,+t.fee||0);
   add(t.date,t.ref||t.id,'tr:'+t.id,trLabel(t)+(t.ref?' · '+t.ref:''),[[t.to,a-fee,0],['6080',fee,0],[t.from,0,a]]);});
 }
 
@@ -14812,12 +14836,12 @@ window.trSave=async id=>{
   updatedAt:now,updatedBy:UID,...(id?{}:{createdAt:now,createdBy:UID,createdByName:ME.name})};
  try{if(id){await updateDoc(doc(db,'transfers',id),d);Object.assign(TRANSFERS.find(x=>x.id===id),d);}
   else{const r=await addDoc(collection(db,'transfers'),d);TRANSFERS.unshift({id:r.id,...d});}
-  FINJ={};await audit(id?'Money move edited':'Money moved',trLabel(d)+' · '+rm(a));window.closeModal();render();toast('Saved');}
+  finDirty();await audit(id?'Money move edited':'Money moved',trLabel(d)+' · '+rm(a));window.closeModal();render();toast('Saved');}
  catch(err){e.textContent=friendly(err);}
 };
 window.trDelete=async id=>{
  const t=(TRANSFERS||[]).find(x=>x.id===id);if(!t||!confirm('Delete this money move?'))return;
- try{await deleteDoc(doc(db,'transfers',id));TRANSFERS=TRANSFERS.filter(x=>x.id!==id);FINJ={};
+ try{await deleteDoc(doc(db,'transfers',id));TRANSFERS=TRANSFERS.filter(x=>x.id!==id);finDirty();
   await audit('Money move deleted',trLabel(t)+' · '+rm(t.amount));window.closeModal();render();}catch(e){toast(friendly(e));}
 };
 /* starting balances: what the business had and owed at the start of a month, entered once */
@@ -14863,7 +14887,7 @@ function finSettings(){
 window.finSetSave=async()=>{
  const pf=$('#fs-pf').value;if(!/^\d{4}-\d{2}$/.test(pf)){toast('Pick the month packages start from');return;}
  const s={pkgDefer:$('#fs-pk').value==='use',pkgFrom:pf+'-01',cogs:$('#fs-cg').value,depAcct:$('#fs-dep').value};
- try{await setDoc(doc(db,'finance','settings'),s,{merge:true});FINSET={...(FINSET||{}),...s};FINJ={};
+ try{await setDoc(doc(db,'finance','settings'),s,{merge:true});FINSET={...(FINSET||{}),...s};finDirty();
   await audit('Finance settings changed','packages '+(s.pkgDefer?'when used from '+pf:'when sold')+' · cost '+s.cogs+' · deposits '+s.depAcct);render();toast('Saved — figures worked out again');}
  catch(e){toast(friendly(e));}
 };
@@ -14913,12 +14937,240 @@ window.finPack=async()=>{
   finNotes(m).forEach(para);
   para('Sales are recorded on the bill date and owed by the client until paid; payments are recorded on the day received. Cash kept is the amount taken less change given. Card and e-wallet takings wait in account 1020 until the payout is recorded as reaching the bank.');
   para('Prepared by '+ME.name+' on '+dstr(new Date().toISOString())+'.'+(ex?' Month marked as sent '+dstr(ex.at)+'.':''));
+  packExtra(d,h2,row,para,n,X2,X3);
   const name=String(b.name||'spa').replace(/[^A-Za-z0-9]+/g,'-')+'-month-end-'+m+'.pdf';
   window.__lastPDF={kind:'finpack',name,doc:d};d.save(name);audit('Finance export','month-end pack · '+mLabel(m));
  }catch(e){console.warn(e);toast(friendly(e));}
 };
 /* figures are worked out again whenever money is recorded or Finance is opened afresh */
-['expSave','expDelete','billPaid','recSave'].forEach(k=>{const f=window[k];window[k]=async(...a)=>{const r=await f(...a);FINJ={};if(TAB==='fin')render();return r;};});
-{const _go=window.go;window.go=(t,...a)=>{if(t==='fin'&&TAB!=='fin')FINJ={};return _go(t,...a);};}
+['expSave','expDelete','billPaid','recSave'].forEach(k=>{const f=window[k];window[k]=async(...a)=>{const r=await f(...a);finDirty();if(TAB==='fin')render();return r;};});
+{const _go=window.go;window.go=(t,...a)=>{if(t==='fin'&&TAB!=='fin')finDirty();return _go(t,...a);};}
 
+/* ============ Finance phase C: treatment profitability, budget, break-even, branch comparison ============ */
+/* Treatments: what each treatment earns after the products it uses and the commission paid on it, per session
+   and per hour of room time. A session from a package is valued at the package price paid ÷ its sessions.
+   Budget: an amount per account for every month, with any month changed on its own; compared with the actuals.
+   Break-even: the fixed costs (salaries, rent and the other running costs) divided by what is left of each
+   ringgit after product cost, commission and payment fees. Branches: the same P&L, side by side. */
+
+/* ---------------- treatments ---------------- */
+async function tpData(m){
+ if(TPD[m])return TPD[m];
+ const from=m+'-01',to=mEnd(m),br=ME.branchId;
+ const [qs,qr]=await Promise.all([getDocs(query(collection(db,'sales'),where('date','>=',from),where('date','<=',to))),
+  getDocs(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)))]);
+ const sales=qs.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===br);
+ const reds=qr.docs.map(d=>({id:d.id,...d.data()})).filter(r=>(r.branchId||br)===br);
+ await Promise.all([...new Set(reds.map(r=>r.customerPackageId))].map(cpGet));
+ const T={},P={};
+ const tg=id=>T[id]=T[id]||{id,name:svc(id).name||id,n:0,nPkg:0,rev:0,cost:0,comm:0,mins:0};
+ const pg=(k,name,kind)=>P[k]=P[k]||{id:k,name,kind,n:0,rev:0,cost:0,comm:0};
+ const useCost=id=>(svc(id).use||[]).reduce((t,u)=>t+unitCost(u.sku)*(+u.qty||0),0);
+ const mins=id=>(+svc(id).dur||60)+(+svc(id).buffer||0);
+ sales.forEach(s=>{
+  const gross=(s.items||[]).reduce((t,i)=>t+(i.kind==='redeem'?0:lineAmt(i)),0),k=gross?((+s.total||0)-(+s.sst||0))/gross:0;
+  (s.items||[]).forEach(i=>{
+   const q=+i.qty||1,amt=lineAmt(i)*k,u=stf(i.staffId||s.staffId),sc=u.id?lineComm(i,salesRate(i,u)):0,ho=+i.handsOnComm||0;
+   if(i.kind==='service'&&!i.later){const x=tg(i.id);x.n+=q;x.rev+=amt;x.cost+=useCost(i.id)*q;x.comm+=sc+ho;x.mins+=mins(i.id)*q;}
+   else if(i.kind==='redeem'){tg(i.id).comm+=ho;}
+   else if(i.kind==='product'){const x=pg('p:'+i.id,prod(i.id).name||i.name||i.id,'Product');x.n+=q;x.rev+=amt;x.cost+=unitCost(i.id)*q;x.comm+=sc;}
+   else if(i.kind==='set'){const x=pg('s:'+i.id,i.name||'Set','Set');x.n+=q;x.rev+=amt;(i.setItems||[]).forEach(z=>{x.cost+=unitCost(z.sku)*(+z.qty||1)*q;});x.comm+=sc;}
+   else if(i.kind==='addon'){const x=pg('a:'+(i.id||i.name),i.name||'Add-on','Add-on');x.n+=q;x.rev+=amt;x.comm+=sc;}
+  });
+ });
+ for(const r of reds){const x=tg(r.serviceId),cp=await cpGet(r.customerPackageId);
+  x.n++;x.nPkg++;x.rev+=cp?(+cp.price||0)/(cpTot(cp)||1):0;x.cost+=useCost(r.serviceId);x.mins+=mins(r.serviceId);}
+ const fin=x=>{x.profit=x.rev-x.cost-x.comm;x.margin=x.rev?x.profit/x.rev:0;x.per=x.n?x.profit/x.n:0;x.hour=x.mins?x.profit/(x.mins/60):0;return x;};
+ const out={svc:Object.values(T).filter(x=>x.n>0).map(fin).sort((a,b)=>b.profit-a.profit),
+  ret:Object.values(P).filter(x=>x.n>0).map(fin).sort((a,b)=>b.profit-a.profit)};
+ out.noUse=out.svc.filter(x=>!(svc(x.id).use||[]).length).length;
+ return TPD[m]=out;
+}
+let TPBUSY='';
+function finTP(){
+ const m=FINM,D0=TPD[m];
+ const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ if(!D0){if(TPBUSY!==m){TPBUSY=m;tpData(m).then(()=>{TPBUSY='';if(TAB==='fin'&&FINV==='tp')render();}).catch(e=>{TPBUSY='';TPD[m]={svc:[],ret:[],err:friendly(e)};render();});}
+  return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const S=D0.svc,R=D0.ret,tot=a=>a.reduce((t,x)=>({n:t.n+x.n,rev:t.rev+x.rev,cost:t.cost+x.cost,comm:t.comm+x.comm,profit:t.profit+x.profit,mins:t.mins+(x.mins||0)}),{n:0,rev:0,cost:0,comm:0,profit:0,mins:0});
+ const ts=tot(S),tr=tot(R),pct=v=>Math.round(v*100)+'%';
+ const best=[...S].filter(x=>x.n>=1).sort((a,b)=>b.hour-a.hour)[0],low=[...S].filter(x=>x.rev>0).sort((a,b)=>a.margin-b.margin)[0];
+ const tbl=(list,cols)=>'<div class="scroll"><table class="tptbl"><tr><th></th>'+cols.map(c=>'<th class="num">'+c[0]+'</th>').join('')+'</tr>'+
+  list.map(x=>'<tr><td><b>'+esc(x.name)+'</b>'+(x.kind?'<small>'+x.kind+'</small>':x.nPkg?'<small>'+x.nPkg+' from packages</small>':'')+'</td>'+cols.map(c=>'<td class="num'+(c[2]&&c[1](x)<0?' neg':'')+'">'+c[2](c[1](x))+'</td>').join('')+'</tr>').join('')+'</table></div>';
+ const money=v=>fmtS(v),n0=v=>String(Math.round(v));
+ return head+(D0.err?'<div class="card"><p class="tiny" style="color:var(--rose);margin:0">'+esc(D0.err)+'</p></div>':'')+
+  '<div class="crmkpis">'+kpi('Treatments done',n0(ts.n),rm(ts.rev)+' earned','spark')+
+   kpi('Left after products & commission',fmtS(ts.profit),ts.rev?pct(ts.profit/ts.rev)+' of treatment revenue':'','money')+
+   kpi('Per hour of room time',ts.mins?fmtS(ts.profit/(ts.mins/60)):'—',ts.mins?Math.round(ts.mins/60)+' hours booked':'','clock')+
+   kpi('Retail & add-ons',fmtS(tr.profit),tr.rev?pct(tr.profit/tr.rev)+' of '+rm(tr.rev):'nothing sold','bag')+'</div>'+
+  ((best||low)?'<div class="card tpnote">'+(best?'<p>'+ic('award',14)+'<span><b>'+esc(best.name)+'</b> earns the most for the time it takes: '+fmtS(best.hour)+' an hour after products and commission.</span></p>':'')+
+   (low&&low!==best?'<p>'+ic('alert',14)+'<span><b>'+esc(low.name)+'</b> keeps the least of its price: '+pct(low.margin)+' ('+fmtS(low.per)+' a session). Check its price, products used or commission.</span></p>':'')+'</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('spark',15)+' Treatments · '+mLabel(m)+'</h3>'+
+   (S.length?tbl(S,[['Sessions',x=>x.n,n0],['Revenue',x=>x.rev,money],['Products',x=>x.cost,money],['Commission',x=>x.comm,money],['Left',x=>x.profit,money],
+    ['Margin',x=>x.margin,pct],['Per session',x=>x.per,money],['Per hour',x=>x.hour,money]]):'<div class="empty">'+ic('spark',24)+'<div>No treatments in '+mLabel(m)+'.</div></div>')+
+   '<p class="tiny muted" style="margin:8px 0 0">A package session counts at the price paid for the package ÷ its sessions. Hours are the treatment time plus the gap after it. Salaries and rent are not shared out here — see Budget &amp; break-even.'+
+   (D0.noUse?' '+D0.noUse+' treatment'+(D0.noUse>1?'s have':' has')+' no products listed, so their product cost is zero (Catalogue → treatment → products used).':'')+'</p></div>'+
+  (R.length?'<div class="card"><h3 style="margin:0 0 8px">'+ic('bag',15)+' Retail &amp; add-ons</h3>'+
+   tbl(R,[['Sold',x=>x.n,n0],['Revenue',x=>x.rev,money],['Cost',x=>x.cost,money],['Commission',x=>x.comm,money],['Left',x=>x.profit,money],['Margin',x=>x.margin,pct]])+'</div>':'');
+}
+
+/* ---------------- budget ---------------- */
+const budKey=m=>'budget_'+m;
+function budOf(m){
+ const ov=FINBUDM[m];
+ if(ov===undefined){FINBUDM[m]=null;getDoc(doc(db,'finance',budKey(m))).then(s=>{FINBUDM[m]=s.exists()?s.data():false;if(TAB==='fin')render();}).catch(()=>{FINBUDM[m]=false;});}
+ return {...(((FINBUD||{}).every)||{}),...((ov&&ov.acc)||{})};
+}
+const budReady=m=>FINBUD!==null&&FINBUDM[m]!==undefined&&FINBUDM[m]!==null;
+const plAccts=()=>coa().filter(a=>plSec(a[0]));
+const FIXED=c=>plSec(c)==='staff'&&c!=='5110'||plSec(c)==='opex'&&c!=='6080';
+const VARC=c=>['5000','5110','6080'].includes(c);
+/* break-even from the 3 months before (or this month if there is nothing before), fixed costs from the budget when set */
+function beCalc(m){
+ const prev=[1,2,3].map(i=>mShift(m,-i)).filter(k=>FINJ[k]&&Object.entries(plOf(FINJ[k])).some(([c,v])=>plSec(c)==='rev'&&v>0));
+ const use=prev.length?prev:[m],n=use.length;
+ let rev=0,fix=0,vr=0,bills=0,pay=0;
+ use.forEach(k=>{const o=plOf(FINJ[k]);Object.entries(o).forEach(([c,v])=>{if(plSec(c)==='rev')rev+=v;else if(VARC(c))vr+=v;else if(FIXED(c))fix+=v;});
+  const J=FINJ[k]||[];bills+=new Set(J.filter(l=>String(l.src).startsWith('sale:')).map(l=>l.src)).size;if(J.some(l=>String(l.src).startsWith('payroll:')))pay++;});
+ const B=budOf(m),bFix=Object.entries(B).filter(([c])=>FIXED(c)).reduce((t,[,v])=>t+(+v||0),0);
+ const fixed=bFix>0?bFix:fix/n,ratio=rev>0?Math.min(0.95,vr/rev):0,be=fixed>0?fixed/(1-ratio):0;
+ const J=FINJ[m]||[],byDay={};J.forEach(l=>{if(plSec(l.account)==='rev')byDay[l.date]=(byDay[l.date]||0)+l.credit-l.debit;});
+ let cum=0,hit='';Object.keys(byDay).sort().forEach(d=>{cum+=byDay[d];if(!hit&&be>0&&cum>=be)hit=d;});
+ const td=today(),cur=m===td.slice(0,7),dim=+mEnd(m).slice(8),el=cur?+td.slice(8):dim;
+ const proj=cur&&el>0?cum/el*dim:cum;
+ let when='';if(cur&&!hit&&be>cum&&cum>0){const perDay=cum/el,dd=Math.ceil((be-cum)/perDay)+el;if(dd<=dim)when=m+'-'+String(dd).padStart(2,'0');}
+ return {basis:use,fromBud:bFix>0,fixed,ratio,be,rev:cum,proj,hit,when,dim,cur,avgBill:bills?rev/bills:0,noPay:isOwnerMe()&&pay<n&&!(bFix>0)};
+}
+function finBud(){
+ const m=FINM,basis=[1,2,3].map(i=>mShift(m,-i));
+ const head='<div class="card"><div class="spread">'+finNav()+(isOwnerMe()?'<button class="btn sm" onclick="budForm()">'+ic('edit',14)+'Set budget</button>':'')+'</div></div>';
+ const B=budOf(m);
+ if(!finNeed([m,...basis])||!budReady(m))return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const A=plOf(FINJ[m]),E=beCalc(m),has=Object.keys(B).some(k=>+B[k]),ov=FINBUDM[m]&&FINBUDM[m].acc;
+ const codes=[...new Set([...Object.keys(B).filter(k=>+B[k]),...Object.keys(A)])].filter(plSec).sort();
+ const td=today(),cur=m===td.slice(0,7),frac=cur?(+td.slice(8))/E.dim:1;
+ let h=head;
+ /* break-even */
+ const pctBE=E.be?Math.min(100,E.rev/E.be*100):0;
+ h+='<div class="card"><h3 style="margin:0 0 8px">'+ic('target',15)+' Break-even · '+mLabel(m)+'</h3>'+
+  (E.be>0?'<div class="crmkpis" style="margin:0 0 10px">'+kpi('Revenue needed',rm(E.be),'to cover every cost this month','target')+
+    kpi('About a day',rm(E.be/E.dim),'over '+E.dim+' days','calendar')+
+    (E.avgBill?kpi('Bills needed',String(Math.ceil(E.be/E.avgBill)),'at an average bill of '+rm(E.avgBill),'receipt'):'')+
+    kpi('Revenue so far',rm(E.rev),Math.round(pctBE)+'% of break-even','money')+'</div>'+
+   '<div class="bebar"><i style="width:'+pctBE+'%"></i>'+(cur?'<b style="left:'+Math.min(100,frac*100)+'%" title="today"></b>':'')+'</div>'+
+   '<p class="bemsg">'+(E.hit?ic('check',14)+' Break-even reached on '+dshort(E.hit)+'. Everything after that is profit.':
+    E.when?ic('clock',14)+' '+rm(E.be-E.rev)+' more to go. At this pace you reach it around '+dshort(E.when)+'.':
+    cur&&E.rev>0?ic('alert',14)+' At this pace the month ends about '+rm(E.proj)+', '+rm(E.be-E.proj)+' short of break-even.':
+    !cur?ic('alert',14)+' Not reached: '+rm(E.be-E.rev)+' short.':'No revenue yet this month.')+'</p>'+
+   '<p class="tiny muted" style="margin:6px 0 0">Fixed costs '+rm(E.fixed)+' a month '+(E.fromBud?'(from your budget)':'(average of '+E.basis.map(k=>mLabel(k).split(' ')[0]).join(', ')+')')+
+    '. Product cost, commission and payment fees take '+Math.round(E.ratio*100)+' sen of every RM1 of revenue, so each RM1 leaves '+Math.round((1-E.ratio)*100)+' sen towards fixed costs.'+
+    (E.noPay?' Salaries are not in yet for some of those months (payroll not locked) — set a salary budget to include them.':'')+(!isOwnerMe()?' Salaries are included only when the owner opens this.':'')+'</p>'
+  :'<p class="tiny muted" style="margin:0">Not enough records yet. It is worked out from the running costs of the last 3 months, or from your budget.</p>')+'</div>';
+ /* budget vs actual */
+ const secs=[['rev','Revenue'],['cogs','Cost of products'],['staff','Staff costs'],['opex','Operating expenses']];
+ const tot={};secs.forEach(([s])=>{tot[s]={b:0,a:0};});codes.forEach(c=>{const s=plSec(c);tot[s].b+=+B[c]||0;tot[s].a+=A[c]||0;});
+ const diff=(s,b,a)=>{if(!b&&!a)return '';const d=s==='rev'?a-b:b-a,good=d>=-0.004;
+  return '<span class="'+(good?'bgood':'bbad')+'">'+rm(Math.abs(d))+' '+(s==='rev'?(good?'above':'below'):(good?'under':'over'))+'</span>';};
+ const bar=(s,b,a)=>b?'<div class="bar budbar"><i class="'+((s==='rev'?a<b*frac-0.004:a>b)?'over':'')+'" style="width:'+Math.min(100,a/b*100)+'%"></i>'+(cur?'<b style="left:'+Math.min(100,frac*100)+'%"></b>':'')+'</div>':'';
+ const netB=tot.rev.b-tot.cogs.b-tot.staff.b-tot.opex.b,netA=tot.rev.a-tot.cogs.a-tot.staff.a-tot.opex.a;
+ h+='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Budget vs actual</h3>'+(ov?'<span class="pill a">set for this month only</span>':'')+'</div>'+
+  (has?'<div class="scroll"><table class="pltbl budtbl"><tr><th></th><th class="num">Budget</th><th class="num">Actual</th><th class="num">Difference</th><th class="budb" style="min-width:120px"></th></tr>'+
+   secs.map(([s,label])=>{const cs=codes.filter(c=>plSec(c)===s);if(!cs.length)return '';
+    return '<tr class="plsec"><td colspan="5">'+label+'</td></tr>'+cs.map(c=>'<tr><td><span class="plc">'+c+'</span>'+esc(acName(c))+'</td><td class="num">'+(+B[c]?rm(B[c]):'—')+'</td><td class="num">'+rm(A[c]||0)+'</td><td class="num">'+(+B[c]?diff(s,+B[c],A[c]||0):'<span class="muted">no budget</span>')+'</td><td class="budb">'+bar(s,+B[c]||0,A[c]||0)+'</td></tr>').join('')+
+     '<tr class="pltot"><td>Total '+label.toLowerCase()+'</td><td class="num">'+rm(tot[s].b)+'</td><td class="num">'+rm(tot[s].a)+'</td><td class="num">'+diff(s,tot[s].b,tot[s].a)+'</td><td class="budb">'+bar(s,tot[s].b,tot[s].a)+'</td></tr>';}).join('')+
+   '<tr class="plbig"><td>Net profit</td><td class="num">'+fmtS(netB)+'</td><td class="num'+(netA<0?' neg':'')+'">'+fmtS(netA)+'</td><td class="num">'+diff('rev',netB,netA)+'</td><td class="budb"></td></tr></table></div>'+
+   (cur?'<p class="tiny muted" style="margin:8px 0 0">'+Math.round(frac*100)+'% of the month has gone (the line on each bar). At this pace revenue ends around '+rm(tot.rev.a/frac)+(tot.rev.b?' against a budget of '+rm(tot.rev.b):'')+'.</p>':'')
+  :'<div class="empty">'+ic('target',24)+'<div>No budget yet.'+(isOwnerMe()?' Tap <b>Set budget</b> — you can start from last month\'s figures.':'')+'</div></div>')+'</div>';
+ return h;
+}
+window.budForm=()=>{
+ const m=FINM,ov=FINBUDM[m]&&FINBUDM[m].acc,scope=ov?'month':'every',cur=ov||(FINBUD||{}).every||{};
+ const G=[['rev','Revenue you aim for'],['cogs','Cost of products'],['staff','Staff costs'],['opex','Operating expenses']];
+ modal('Budget','<div class="card"><label>This budget is for</label><div class="seg" id="bf-sc">'+
+  [['every','Every month'],['month',mLabel(m)+' only']].map(o=>'<button data-v="'+o[0]+'" class="'+(scope===o[0]?'on':'')+'" onclick="budScope(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  '<button class="btn sm ghost" style="margin:10px 0" onclick="budFill()">'+ic('history',14)+'Fill in from '+mLabel(mShift(m,-1))+'\'s actual figures</button>'+
+  G.map(([s,l])=>'<h4 class="payh">'+l+'</h4>'+plAccts().filter(a=>plSec(a[0])===s).map(a=>'<div class="obrow"><span><code>'+a[0]+'</code> '+esc(a[1])+'</span>'+
+   '<input class="f bfin" type="number" step="1" data-a="'+a[0]+'" value="'+(+cur[a[0]]?cur[a[0]]:'')+'" placeholder="0"></div>').join('')).join('')+
+  '<div id="bf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="budSave()">'+ic('check',16)+'Save budget</button>'+
+  (ov?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="budClear()">Use the every-month budget for '+mLabel(m)+'</button>':'')+'</div>');
+ window.BUDSC=scope;
+};
+window.budScope=v=>{window.BUDSC=v;[...document.querySelectorAll('#bf-sc button')].forEach(b=>b.className=b.dataset.v===v?'on':'');};
+window.budFill=async()=>{
+ const pm=mShift(FINM,-1),o=plOf(await finJGet(pm));
+ document.querySelectorAll('.bfin').forEach(i=>{const v=o[i.dataset.a];if(v>0)i.value=Math.round(v);});
+ toast('Filled in from '+mLabel(pm));
+};
+window.budSave=async()=>{
+ const m=FINM,acc={};document.querySelectorAll('.bfin').forEach(i=>{const v=Math.round((+i.value||0)*100)/100;if(v>0)acc[i.dataset.a]=v;});
+ const meta={updatedAt:new Date().toISOString(),updatedBy:UID,updatedByName:ME.name};
+ try{
+  if(window.BUDSC==='month'){await setDoc(doc(db,'finance',budKey(m)),{month:m,acc,...meta});FINBUDM[m]={month:m,acc};}
+  else{await setDoc(doc(db,'finance','budget'),{every:acc,...meta});FINBUD={every:acc};}
+  await audit('Budget set',(window.BUDSC==='month'?mLabel(m):'every month')+' · revenue '+rm(Object.entries(acc).filter(([c])=>plSec(c)==='rev').reduce((t,[,v])=>t+v,0)));
+  window.closeModal();render();toast('Budget saved');
+ }catch(e){$('#bf-e').textContent=friendly(e);}
+};
+window.budClear=async()=>{
+ const m=FINM;try{await deleteDoc(doc(db,'finance',budKey(m)));FINBUDM[m]=false;await audit('Budget for one month removed',mLabel(m));window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+
+/* ---------------- branch comparison (owner) ---------------- */
+async function cmpSrc(br){
+ if(!CMPALL)CMPALL=Promise.all([
+  getDocs(query(collection(db,'expenses'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(()=>[]),
+  getDocs(query(collection(db,'transfers'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(()=>[])]);
+ const [e,t]=await CMPALL;return {exp:e.filter(x=>x.branchId===br),tr:t.filter(x=>x.branchId===br)};
+}
+const FINJBP={};let FINNEEDB=null;
+function finJGetB(m,br){
+ if(br===ME.branchId)return finJGet(m);
+ const k=br+'|'+m;if(FINJB[k])return Promise.resolve(FINJB[k]);
+ return FINJBP[k]||(FINJBP[k]=finJournalOf(m,br).then(j=>{FINJB[k]=j;delete FINJBP[k];return j;}).catch(e=>{const j=[];j.err=friendly(e);FINJB[k]=j;delete FINJBP[k];return j;}));
+}
+const jOf=(m,br)=>br===ME.branchId?FINJ[m]:FINJB[br+'|'+m];
+function finBrc(){
+ const m=FINM,Y=plMonths(m).ytd,BR=D.branches||[];
+ const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ if(!isOwnerMe()||BR.length<2)return head+'<div class="card"><div class="empty">Branch comparison is for the owner, once there is more than one branch.</div></div>';
+ const pairs=BR.flatMap(b=>Y.map(k=>[k,b.id]));
+ if(pairs.some(([k,b])=>!jOf(k,b))){if(!FINNEEDB)FINNEEDB=Promise.all(pairs.map(([k,b])=>finJGetB(k,b))).then(()=>{FINNEEDB=null;if(TAB==='fin'&&FINV==='brc')render();});
+  return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Working out '+BR.length+' branches…</p></div></div>';}
+ const sum=o=>{const t=s=>Object.keys(o).filter(c=>plSec(c)===s).reduce((x,c)=>x+o[c],0);const r=t('rev'),c=t('cogs'),st=t('staff'),op=t('opex');return {rev:r,cogs:c,gp:r-c,staff:st,opex:op,net:r-c-st-op};};
+ const cols=BR.map(b=>{const J=jOf(m,b.id)||[],a=sum(plOf(J)),y={};Y.forEach(k=>Object.entries(plOf(jOf(k,b.id))).forEach(([c,v])=>{y[c]=(y[c]||0)+v;}));
+  const bills=new Set(J.filter(l=>String(l.src).startsWith('sale:')).map(l=>l.src)).size;return {b,a,y:sum(y),bills};});
+ const T={a:{},y:{}};['rev','cogs','gp','staff','opex','net'].forEach(k=>{T.a[k]=cols.reduce((t,c)=>t+c.a[k],0);T.y[k]=cols.reduce((t,c)=>t+c.y[k],0);});
+ const bills=cols.reduce((t,c)=>t+c.bills,0);
+ const R=[['Revenue',c=>c.a.rev],['Cost of products',c=>c.a.cogs],['Gross profit',c=>c.a.gp,1],['Staff costs',c=>c.a.staff],['Operating expenses',c=>c.a.opex],['Net profit',c=>c.a.net,2],
+  ['Net margin',c=>c.a.rev?Math.round(c.a.net/c.a.rev*100)+'%':'—',0,1],['Bills',c=>String(c.bills),0,1],['Average bill',c=>c.bills?rm(c.a.rev/c.bills):'—',0,1],
+  ['Revenue, year to date',c=>c.y.rev],['Net profit, year to date',c=>c.y.net,2]];
+ const all={a:T.a,y:T.y,bills};
+ const mx=Math.max(1,...cols.map(c=>Math.max(c.a.rev,Math.abs(c.a.net))));
+ return head+'<div class="card"><h3 style="margin:0 0 8px">'+ic('grid',15)+' Branches · '+mLabel(m)+'</h3><div class="scroll"><table class="pltbl"><tr><th></th>'+
+  cols.map(c=>'<th class="num">'+esc(c.b.name)+'</th>').join('')+'<th class="num">All branches</th></tr>'+
+  R.map(([l,f,big,raw])=>'<tr class="'+(big===2?'plbig':big===1?'pltot':'')+'"><td>'+l+'</td>'+[...cols,all].map(c=>{const v=f(c);return '<td class="num'+(!raw&&v<-0.004?' neg':'')+'">'+(raw?v:fmtS(v))+'</td>';}).join('')+'</tr>').join('')+
+  '</table></div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Revenue and profit</h3>'+cols.map(c=>'<div class="brcrow"><b>'+esc(c.b.name)+'</b>'+
+   '<div class="brcbars"><div class="bar"><i class="brass" style="width:'+(c.a.rev/mx*100)+'%"></i></div><small>Revenue '+rm(c.a.rev)+'</small>'+
+   '<div class="bar"><i class="'+(c.a.net<0?'neg':'')+'" style="width:'+(Math.abs(c.a.net)/mx*100)+'%"></i></div><small>Net profit '+fmtS(c.a.net)+'</small></div></div>').join('')+
+  '<p class="tiny muted" style="margin:8px 0 0">Each branch keeps its own takings, expenses and payroll. A cost shared by all branches is counted under the branch it was recorded in.</p></div>';
+}
+
+/* the month-end pack gets budget and break-even too */
+{const _pack=window.finPack;window.finPack=async()=>{
+ const m=FINM;await Promise.all([m,...[1,2,3].map(i=>mShift(m,-i))].map(finJGet));budOf(m);
+ const t0=Date.now();while(!budReady(m)&&Date.now()-t0<3000)await new Promise(r=>setTimeout(r,100));
+ return _pack();};}
+function packExtra(d,h2,row,para,n,X2,X3){
+ const m=FINM,E=beCalc(m),B=budOf(m),A=plOf(FINJ[m]);
+ h2('5. Budget and break-even');
+ const codes=Object.keys(B).filter(c=>+B[c]&&plSec(c)).sort();
+ if(codes.length){row(['','Budget','Actual','Difference'],{b:1,s:8});
+  codes.forEach(c=>{const b=+B[c],a=A[c]||0,s=plSec(c);row([c+'   '+acName(c),n(b),n(a),n(s==='rev'?a-b:b-a)],{ind:1});});
+  para('Difference: above zero means revenue above budget, or costs under budget.');}
+ else para('No budget set for '+mLabel(m)+'.');
+ if(E.be>0)para('Break-even revenue for '+mLabel(m)+': '+n(E.be)+' (fixed costs '+n(E.fixed)+' '+(E.fromBud?'from the budget':'averaged over '+E.basis.map(mLabel).join(', '))+
+  '; product cost, commission and payment fees at '+Math.round(E.ratio*100)+'% of revenue). Revenue in the month: '+n(E.rev)+(E.hit?', break-even reached on '+E.hit+'.':'.'));
+}
 </script>
