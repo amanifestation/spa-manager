@@ -1056,6 +1056,27 @@ tr.fbmine td{background:var(--brass-soft)}
 .wtreat .pr{font-weight:650;font-size:13px;flex:none}
 .wempty{display:grid;justify-items:center;gap:8px;text-align:center;color:var(--ink-3);padding:10px 6px}
 .wempty p{margin:0;font-size:12.5px;line-height:1.5}
+.wtt{margin-top:12px;border-top:1px solid var(--line-2);padding-top:10px}
+.wbig+.wtt{margin-top:0}
+.wtth{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.wtth b{font-size:13px}.wtth span{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.wttlist{display:grid;gap:2px;max-height:210px;overflow-y:auto;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
+.wttrow{display:flex;align-items:center;gap:9px;padding:5px 2px;font-size:13px}
+.wttn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wttn i{font-style:normal;color:var(--ink-3);font-size:11.5px}
+.wtts{font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+.attdot{width:10px;height:10px;border-radius:99px;flex:none;border:2px solid var(--line);background:transparent;display:inline-block;box-sizing:border-box}
+.s-in .attdot{background:var(--jade);border-color:var(--jade);box-shadow:0 0 0 3px var(--jade-soft)}
+.s-done .attdot{background:#9DBFAA;border-color:#9DBFAA}
+.s-leave .attdot{background:var(--amber-soft);border-color:var(--amber)}
+.s-in .wtts{color:var(--jade);font-weight:560}.s-out .wttn{color:var(--ink-2)}
+.tcrow .cav{position:relative}.tcrow .cav .attdot{position:absolute;right:-3px;bottom:-3px;width:12px;height:12px;border:2px solid var(--surface);box-shadow:none}
+.tcrow.s-out .cav .attdot{background:var(--line)}
+.wdayt{width:100%;margin-top:12px;font-size:13px}.wdayt td{padding:6px 0;border-bottom:1px solid var(--line-2)}.wdayt tr:last-child td{border-bottom:0;font-weight:650}
+.wdayt small{display:block;font-size:10.5px;color:var(--ink-3);font-weight:400}
+#wday .wbig{margin-bottom:0}
+.rptchips{display:flex;gap:6px;flex-wrap:wrap}
+.rptgo{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.rptgo input{margin:0;max-width:190px}
+.rptdate{display:flex;align-items:center;gap:6px}.rptdate input{margin:0;padding:6px 8px;width:auto;background:#fff;color:#14120f;border-color:#fff}
+.rptdate .iconbtn{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.22)}.rptdate .iconbtn:disabled{opacity:.35}
 
 /* ---------- clients: side by side on a landscape tablet ---------- */
 .crname{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1819,7 +1840,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25d';
+const BUILD='2026-09-25e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2375,8 +2396,8 @@ function vHome(){
     ic('right',15)+'</button>')+
  '</section>';
 
- /* ---- attendance and programme suggestion ---- */
- h+='<div class="wgrid">'+wAttend()+wProgram()+'<!--NEED--></div>';
+ /* ---- attendance and the day ---- */
+ h+='<div class="wgrid">'+wAttend()+wDay()+'<!--NEED--></div>';
  setTimeout(()=>{wxNowLoad();wxLoad();},0);
 
  /* ---- things that need a decision ---- */
@@ -6339,16 +6360,13 @@ function wAttend(){
   sub=tstr(a.clockIn)+' – '+tstr(a.clockOut)+' · '+worked(a);
  }
  const pct=state==='in'?(Date.now()-new Date(a.clockIn))/6e4/SHIFTMIN:(state==='done'?1:0);
- const faces=on.slice(0,5).map(x=>'<span title="'+esc(x.name)+'">'+esc(initials(x.name))+'</span>').join('');
  return '<div class="card wcard" id="watt">'+
   '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Attendance</h2>'+pill+'</div>'+
   '<div class="wattmain">'+attRing(state,pct)+
    '<div style="min-width:0"><b>'+esc(title)+'</b><span class="tiny muted">'+sub+'</span></div></div>'+
-  btn+
+  btn+wTeamToday()+
   '<div class="wfoot">'+
-   (on.length?'<button class="wteam" '+(can('staff')?'onclick="go(\'team\')"':'')+'>'+
-     '<span class="wav">'+faces+'</span><span>'+on.length+' on shift now</span></button>'
-    :'<span class="tiny muted">Nobody on shift yet</span>')+
+   '<span class="tiny muted">'+(on.length?on.length+' on shift now':'Nobody on shift yet')+'</span>'+
    '<button class="wlink" onclick="addIssue()">'+ic('tool',13)+'Report an issue</button>'+
   '</div></div>';
 }
@@ -7004,17 +7022,61 @@ function wTeamClock(){
     runFor(a.clockIn)+'</span></span>';
    btn='<button class="btn sm" onclick="clockPrompt(\''+s.id+'\',\'out\')">'+ic('out',13)+'Out</button>';}
   else{st='<span class="muted">Done · '+tstr(a.clockIn)+'–'+tstr(a.clockOut)+' · '+worked(a)+'</span>';btn='';}
-  return '<div class="tcrow'+(a&&!a.clockOut?' on':'')+'"><span class="cav">'+esc(initials(s.name))+'</span>'+
+  return '<div class="tcrow'+(a&&!a.clockOut?' on':'')+' s-'+attState(s.id).k+'"><span class="cav">'+esc(initials(s.name))+'<span class="attdot"></span></span>'+
    '<div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b><div class="tiny">'+st+'</div></div>'+btn+'</div>';}).join('');
  const n=ps.filter(s=>onShiftNow(s.id)).length;
  return '<div class="card wcard" id="watt">'+
   '<div class="wh"><span class="wico">'+ic('clock',16)+'</span><h2>Team attendance</h2>'+
-  '<span class="pill'+(n?' g':'')+'">'+n+' on shift</span></div>'+
+  '<span class="pill'+(n?' g':'')+'">'+ps.filter(s=>{const a=attToday(s.id);return a&&a.clockIn;}).length+' of '+ps.length+' clocked in</span></div>'+
   (ps.length?'<div class="tclist">'+rows+'</div>':'<div class="wempty">'+ic('users',22)+'<p>No staff set up for this branch yet.</p></div>')+
-  '<div class="wfoot"><span class="tiny muted">Each person clocks in with their own code</span>'+
+  '<div class="wfoot"><span class="tiny muted">'+n+' on shift now · each person clocks in with their own code</span>'+
   '<button class="wlink" onclick="addIssue()">'+ic('tool',13)+'Report an issue</button></div></div>';
 }
 
+/* ---- everyone in the branch today, with who has clocked in ---- */
+function attState(sid){
+ const a=attToday(sid);
+ if(a&&a.clockIn&&!a.clockOut)return {k:'in',t:'In since '+tstr(a.clockIn),o:0};
+ if(a&&a.clockIn)return {k:'done',t:'Done · '+tstr(a.clockIn)+'–'+tstr(a.clockOut),o:1};
+ if(typeof onLeave==='function'&&onLeave(sid,today()))return {k:'leave',t:'On leave',o:3};
+ return {k:'out',t:'Not clocked in',o:2};
+}
+function wTeamToday(){
+ const ps=people();if(!ps.length)return '';
+ const rows=ps.map(s=>({s,st:attState(s.id)})).sort((a,b)=>a.st.o-b.st.o||String(a.s.name).localeCompare(String(b.s.name)));
+ const n=rows.filter(r=>r.st.k==='in'||r.st.k==='done').length;
+ return '<div class="wtt"><div class="wtth"><b>Team today</b><span>'+n+' of '+ps.length+' clocked in</span></div>'+
+  '<div class="wttlist">'+rows.map(({s,st})=>'<div class="wttrow s-'+st.k+'" data-sid="'+esc(s.id)+'">'+
+   '<span class="attdot" title="'+esc(st.t)+'"></span><span class="wttn">'+esc(s.name)+(s.id===UID?' <i>(you)</i>':'')+'</span>'+
+   '<span class="wtts">'+esc(st.t)+'</span></div>').join('')+'</div></div>';
+}
+/* ---- open / close the day ---- */
+function wDay(){
+ const S=SHIFT,pos=can('pos'),f=dayFigures();
+ let pill,title,sub,btn='',rows='';
+ if(!S){pill='<span class="pill a">not opened</span>';title='The day has not been opened';
+  sub='Count the cash in the drawer and open the day before the first bill.';
+  if(pos)btn='<button class="btn brass wbig" onclick="openShift()">'+ic('login',17)+'Open the day</button>';}
+ else if(!S.closedAt){pill='<span class="pill g">open</span>';title='Open since '+tstr(S.openedAt);
+  sub='by '+esc(S.openedByName||'—')+(S.openedVerified===false?' (no code)':'')+(pos?' · float '+rm(S.openingFloat||0):'');
+  if(pos){rows=[['Takings so far',rm(f.revenue),f.bills+' bill'+(f.bills!==1?'s':'')],['Cash taken',rm(f.cash),''],['Paid out of the drawer',rm(expTotal()),''],
+   ['Should be in the drawer',rm(expectedCash(f)),'float + cash − paid out']];
+   btn='<button class="btn wbig" onclick="closeShift()">'+ic('out',17)+'Close the day</button>';}}
+ else{const v=+S.variance||0;pill='<span class="pill">closed</span>';title='Closed at '+tstr(S.closedAt);
+  sub='by '+esc(S.closedByName||'—')+(S.closedVerified===false?' (no code)':'')+' · opened by '+esc(S.openedByName||'—');
+  if(pos)rows=[['Takings',rm(f.revenue),f.bills+' bill'+(f.bills!==1?'s':'')],['Cash counted',rm(S.countedCash||0),''],['Expected',rm(S.expectedCash||0),''],
+   ['Difference','<span style="color:'+(Math.abs(v)<0.01?'var(--jade)':'var(--rose)')+'">'+(v>0.004?'+':'')+rm(v)+'</span>',Math.abs(v)<0.01?'balanced':v>0?'over':'short']];}
+ const state=!S?'none':S.closedAt?'done':'in';
+ return '<div class="card wcard" id="wday">'+
+  '<div class="wh"><span class="wico'+(!S?' warn':'')+'">'+ic('wallet',16)+'</span><h2>The day</h2>'+pill+'</div>'+
+  '<div class="wattmain"><div class="wring s-'+state+'"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="'+
+   (state==='in'?'var(--brass)':state==='done'?'var(--jade)':'var(--line-2)')+'" stroke-width="5"/></svg><span>'+ic(!S?'alert':S.closedAt?'check':'wallet',20)+'</span></div>'+
+   '<div style="min-width:0"><b>'+esc(title)+'</b><span class="tiny muted">'+sub+'</span></div></div>'+
+  (rows?'<table class="wdayt">'+rows.map(r=>'<tr><td>'+r[0]+(r[2]?'<small>'+r[2]+'</small>':'')+'</td><td class="num">'+r[1]+'</td></tr>').join('')+'</table>':'')+
+  btn+
+  '<div class="wfoot">'+(pos||boss()?'<button class="wlink" style="margin-left:0" onclick="openDailyReport()">'+ic('receipt',13)+'Today\'s report</button>':'')+
+   '<button class="wlink" onclick="go(\'shift\')">Day screen'+ic('right',13)+'</button></div></div>';
+}
 /* ---- on the tablet, a personal sign-in times out so the owner's access is not left open ---- */
 const PERSONAL_IDLE=10*60e3;
 let LASTACT=Date.now(),IDLEBOUND=false;
@@ -10036,29 +10098,43 @@ function myClockCard(){
   '</div></div>';}
 
 /* ============ A4 daily report ============ */
+/* any day can be previewed: today from what is on screen, an earlier day read fresh from the records */
+async function dayData(d){
+ const q=(c,f)=>getDocs(query(collection(db,c),where(f,'==',d))).then(s=>s.docs.map(x=>({id:x.id,...x.data()}))).catch(e=>{console.warn('day data',c,e);return [];});
+ const [sales,appts,att,loy]=await Promise.all([q('sales','date'),q('appointments','date'),q('attendance','date'),q('loyalty','date')]);
+ const have=new Set(sales.map(s=>s.id));
+ /* bills from earlier days that took an instalment that day are already in memory */
+ return {sales:[...sales,...SALES.filter(s=>!have.has(s.id))],appts,att,loy};
+}
+let RPTSEQ=0;
 window.openDailyReport=async d=>{
- d=d||today();
- const wrap=document.getElementById('reportwrap');
+ d=d&&/^\d{4}-\d{2}-\d{2}$/.test(d)?d:today();if(d>today())d=today();
+ const seq=++RPTSEQ,wrap=document.getElementById('reportwrap');
+ const prev=ymd(addDays(new Date(d+'T00:00:00'),-1)),next=ymd(addDays(new Date(d+'T00:00:00'),1));
  wrap.innerHTML='<div class="rptveil"><div class="rptbar">'+
   '<button class="btn sm ghost" onclick="closeReport()">'+ic('close',14)+'Close</button>'+
-  '<div class="tiny muted">Daily summary · '+dstr(d)+'</div>'+
+  '<div class="rptdate"><button class="iconbtn" title="Previous day" onclick="openDailyReport(\''+prev+'\')">'+ic('left',15)+'</button>'+
+   '<input type="date" class="f" id="rpt-d" value="'+d+'" max="'+today()+'" onchange="openDailyReport(this.value)">'+
+   '<button class="iconbtn" title="Next day" onclick="openDailyReport(\''+next+'\')"'+(d>=today()?' disabled':'')+'>'+ic('right',15)+'</button></div>'+
   '<button class="btn sm" onclick="window.print()">'+ic('print',14)+'Print / save PDF</button>'+
   '</div><div class="a4"><div class="skel" style="width:50%"></div><div class="skel"></div>'+
   '<div class="skel" style="width:70%"></div></div></div>';
- let shift=SHIFT;
- if(d!==today()){try{const r=await getDoc(doc(db,'shifts',shiftId(d)));
-  shift=r.exists()?{id:r.id,...r.data()}:null;}catch(e){shift=null;}}
- wrap.querySelector('.a4').innerHTML=dailyReportBody(d,shift);
+ let shift=SHIFT,src=null;
+ if(d!==today()){
+  const [r,dd]=await Promise.all([getDoc(doc(db,'shifts',shiftId(d))).catch(()=>null),dayData(d)]);
+  shift=r&&r.exists()?{id:r.id,...r.data()}:null;src=dd;}
+ if(seq!==RPTSEQ)return;
+ const a4=wrap.querySelector('.a4');if(a4)a4.innerHTML=dailyReportBody(d,shift,src);
 };
 window.closeReport=()=>{document.getElementById('reportwrap').innerHTML='';};
-function dailyReportBody(d,shift){
+function dailyReportBody(d,shift,src){
  const b=D.meta.biz||{};
  const L=bizLines(b,branch().name);
- const f=dayFiguresFor(d);
- const att=ATT.filter(a=>a.date===d&&a.branchId===ME.branchId);
+ const f=dayFiguresFor(d,src);
+ const att=(src?src.att:ATT).filter(a=>a.date===d&&a.branchId===ME.branchId);
  const exp=(shift&&shift.expenses)||[];
  const iss=(shift&&shift.issues)||[];
- const pts=LOYLEDGER.filter(l=>l.date===d);
+ const pts=(src?src.loy:LOYLEDGER).filter(l=>l.date===d&&(l.branchId||ME.branchId)===ME.branchId);
  const earned=pts.filter(l=>l.points>0).reduce((a,l)=>a+l.points,0);
  const spent=pts.filter(l=>l.points<0).reduce((a,l)=>a-l.points,0);
  const expTot=exp.reduce((a,e)=>a+(e.amount||0),0);
@@ -10237,9 +10313,9 @@ function dailyReportBody(d,shift){
   ' · generated by Spatify on '+dstr(new Date())+' at '+tstr(new Date())+'</footer>';
 }
 /* the same figures as the Day tab, but for any date */
-function dayFiguresFor(d){
- const f=dayFigures(d);
- f.appts=APPTS.filter(a=>a.date===d&&a.branchId===ME.branchId);
+function dayFiguresFor(d,src){
+ const f=dayFigures(d,src);
+ f.appts=(src?src.appts:APPTS).filter(a=>a.date===d&&a.branchId===ME.branchId);
  return f;
 }
 
@@ -10921,21 +10997,22 @@ async function loadShift(d){
  try{const r=await getDoc(doc(db,'shifts',shiftId(d)));
   SHIFT=r.exists()?{id:r.id,...r.data()}:null;}catch(e){SHIFT=null;console.warn('shift',e);}
 }
-function dayFigures(d){
+function dayFigures(d,src){
  d=d||today();
- const sales=SALES.filter(s=>s.date===d&&s.branchId===ME.branchId);
+ const SS=src?src.sales:SALES,AP=src?src.appts:APPTS;
+ const sales=SS.filter(s=>s.date===d&&s.branchId===ME.branchId);
  const live=sales.filter(s=>!s.voided);
  /* money is counted on the day it was paid, so an instalment collected today on an
     older bill lands in today's drawer, and the unpaid part of today's bill does not */
  const byMethod={};let cash=0,collected=0,instalments=0;
- SALES.filter(s=>s.branchId===ME.branchId&&!s.voided).forEach(s=>(s.payments||[]).forEach(p=>{
+ SS.filter(s=>s.branchId===ME.branchId&&!s.voided).forEach(s=>(s.payments||[]).forEach(p=>{
   if((p.date||s.date)!==d)return;
   byMethod[p.method]=(byMethod[p.method]||0)+p.amount;
   collected+=p.amount;
   if(s.date!==d)instalments+=p.amount;
   if(isCashMethod(p.method))cash+=p.amount;}));
  const owedToday=live.reduce((a,s)=>a+saleBalance(s),0);
- const ap=APPTS.filter(a=>a.date===d);
+ const ap=AP.filter(a=>a.date===d&&(a.branchId||ME.branchId)===ME.branchId);
  const cats={};ap.forEach(a=>{const k=(visitOf(a.visitType)||{}).label||'Unspecified';
   cats[k]=(cats[k]||0)+1;});
  const items={service:0,product:0,package:0};
@@ -10953,7 +11030,7 @@ const expTotal=()=>((SHIFT&&SHIFT.expenses)||[]).reduce((a,e)=>a+(e.amount||0),0
 const expectedCash=f=>((SHIFT&&SHIFT.openingFloat)||0)+f.cash-expTotal();
 function vShift(){
  const f=dayFigures();
- let h='<div class="card"><div class="seg">'+
+ let h=rptPicker()+'<div class="card"><div class="seg">'+
   '<button class="'+(shiftView==='summary'?'on':'')+'" onclick="setShiftView(\'summary\')">'+
    ic('chart',14)+'Summary</button>'+
   '<button class="'+(shiftView==='cash'?'on':'')+'" onclick="setShiftView(\'cash\')">'+
@@ -10976,6 +11053,20 @@ function shiftHeader(){
    (SHIFT.openedVerified===false?' <em>no code</em>':'')+' · float '+rm(SHIFT.openingFloat||0)+'</span>'+
   (closed?'<span>'+ic('out',13)+'Closed by <b>'+esc(SHIFT.closedByName||'—')+'</b> · '+tstr(SHIFT.closedAt)+
    (SHIFT.closedVerified===false?' <em>no code</em>':'')+'</span>':'')+'</div></div>';}
+/* the Day screen: pick any day and preview its A4 report */
+let RPTD='';
+function rptPicker(){
+ const td=today();if(!RPTD||RPTD>td)RPTD=td;
+ const days=[...Array(7)].map((_,i)=>ymd(addDays(new Date(),-i)));
+ return '<div class="card rptpick"><div class="sec-h"><h3 style="margin:0">'+ic('receipt',15)+' Daily report</h3>'+
+  '<span class="tiny muted">A4 · print or save as PDF</span></div>'+
+  '<div class="rptchips">'+days.map((d,i)=>'<button class="chip'+(RPTD===d?' on':'')+'" onclick="rptPick(\''+d+'\')">'+
+   (i===0?'Today':i===1?'Yesterday':new Date(d+'T00:00:00').toLocaleDateString('en-MY',{weekday:'short',day:'numeric',month:'short'}))+'</button>').join('')+'</div>'+
+  '<div class="rptgo"><input type="date" class="f" id="rp-d" value="'+RPTD+'" max="'+td+'" onchange="rptPick(this.value)">'+
+  '<button class="btn" id="rp-go" onclick="openDailyReport(RPTD_GET())">'+ic('receipt',15)+'Preview '+(RPTD===td?'today\'s report':'report for '+dstr(RPTD))+'</button></div></div>';
+}
+window.rptPick=d=>{if(!d)return;RPTD=d>today()?today():d;render();};
+window.RPTD_GET=()=>RPTD||today();
 window.openShift=()=>{
  modal('Open the day','<div class="card">'+
   '<label>Opening cash float (RM)</label>'+
@@ -11029,7 +11120,6 @@ function shiftSummary(f){
     '<span>'+esc(k)+'</span><b>'+f.cats[k]+'</b></div>').join('')
     :'<div class="tiny muted">No appointments today.</div>')+'</div>'+
   '<div class="fabrow">'+
-  '<button class="btn sm" onclick="openDailyReport()">'+ic('receipt',14)+'Daily report (A4)</button>'+
   (SHIFT&&!SHIFT.closedAt&&can('pos')?'<button class="btn sm" onclick="closeShift()">'+
    ic('out',14)+'Close the day</button>':'')+'</div>';}
 function shiftCash(f){
