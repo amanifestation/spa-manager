@@ -1687,6 +1687,15 @@ body.demo .syncbar{top:106px}
 .mjhead{font-size:11px;color:var(--ink-3);margin:6px 0 2px}.mjline .f{margin:0 0 6px;min-width:0}
 .qtrow{gap:6px;margin:0 0 8px}
 @media (max-width:520px){.mjhead,.mjline{grid-template-columns:minmax(0,1fr) 70px 70px auto}}
+.bkrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 2px;font:inherit;color:inherit;cursor:pointer}
+.bkrow .bkd{flex:0 0 52px;font-size:12px;color:var(--ink-3)}
+.bkrow .bkdesc{flex:1;min-width:0;font-size:13px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}
+.bkrow .bkdesc small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.bkamt{white-space:nowrap;font-variant-numeric:tabular-nums}.bkamt.in,.bkin{color:var(--jade)}
+.bkcand{display:flex;align-items:center;gap:8px}.bkcand .bkrow{flex:1;min-width:0}
+.bksug{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--brass-soft);border-radius:12px;padding:9px 12px;font-size:13px}
+.bkmap label{font-size:12px}.bklink{color:var(--brass);font-weight:600}.bkpv{font-size:12px;width:100%}.bkpv td{padding:4px 6px;vertical-align:top}
+@media (max-width:520px){.bkrow .bkd{flex-basis:44px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1944,7 +1953,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26b';
+const BUILD='2026-09-26c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14484,7 +14493,7 @@ const COA=[
  ['2000','Supplier bills to pay','liability'],['2100','Unredeemed packages','liability'],['2200','Client deposits','liability'],
  ['2300','KWSP payable','liability'],['2310','PERKESO payable','liability'],['2320','SIP payable','liability'],['2330','PCB payable','liability'],
  ['2500','SST payable','liability'],['3000','Owner capital','equity'],['3100','Owner drawings','equity'],
- ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],['4090','Refunds & returns','revenue'],
+ ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],['4090','Refunds & returns','revenue'],['4900','Other income (bank profit, rebates)','revenue'],
  ['5000','Cost of products used / sold','expense'],['5100','Salaries & wages','expense'],['5110','Commission','expense'],['5120','KWSP — employer','expense'],
  ['5130','PERKESO & SIP — employer','expense'],['5140','Staff welfare & claims','expense'],
  ['6000','Rent','expense'],['6010','Electricity & water','expense'],['6020','Internet & phone','expense'],['6030','Marketing & advertising','expense'],
@@ -14558,11 +14567,11 @@ function vFin(){
  if(EXPENSES===null)setTimeout(()=>finLoad(),0);
  if(!FINM)FINM=today().slice(0,7);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
- const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
+ const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['bank','Bank','bank',(()=>{try{return bkOpenCount()||'';}catch(e){return '';}})()],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
   ...(isOwnerMe()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
   ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['tax','Tax & compliance','flag',(()=>{try{return compItems().filter(x=>x.late||x.soon).length||'';}catch(e){return '';}})()],['coa','Accounts & settings','list','']];
  if(!tabs.some(t=>t[0]===FINV))FINV='pl';
- const V={pl:finPL,bal:finBal,cf:finCash,tax:finTax,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const V={pl:finPL,bal:finBal,cf:finCash,bank:finBank,tax:finTax,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -18296,7 +18305,7 @@ window.cnShow=async saleId=>{
  const L=await cnFor(saleId);if(!L.length)return;
  modal('Credit notes','<div class="card">'+L.map(c=>'<div class="cnbox"><div class="spread"><b>'+esc(c.no)+'</b><span class="tiny muted">'+dstr(c.date)+' · '+esc(c.byName||'')+'</span></div>'+
   '<div class="tiny muted">Against '+esc(c.invoiceNo)+' · '+esc(c.customerName||'')+'</div>'+
-  '<table style="margin-top:6px">'+(c.lines||[]).map(l=>'<tr><td>'+esc(l.name)+(l.restockQty?' <span class="muted">· back in stock</span>':'')+(l.cancel?' <span class="muted">· sessions cancelled</span>':'')+'</td><td class="num">−'+rm(l.amount)+'</td></tr>').join('')+
+  '<table style="margin-top:6px">'+(c.lines||[]).map(l=>'<tr><td>'+esc(l.name)+(l.restockQty?' <span class="muted">· back in stock</span>':'')+(l.cancel?' <span class="muted">· sessions cancelled</span>':'')+'</td><td class="num">−'+fmtS(l.amount)+'</td></tr>').join('')+
   (c.sst?'<tr><td class="muted">incl. SST</td><td class="num muted">'+rm(c.sst)+'</td></tr>':'')+
   '<tr class="paytot"><td>Refunded by '+esc(c.method)+(c.ref?' · '+esc(c.ref):'')+'</td><td class="num">−'+rm(c.amount)+'</td></tr></table>'+
   '<div class="tiny" style="margin-top:4px">Reason: '+esc(c.reason)+'</div></div>').join('')+
@@ -18532,5 +18541,587 @@ window.stmtOpen=async cid=>{
 };
 function stmtCard(c){return '<div class="card"><div class="spread"><h3 style="margin:0">'+ic('receipt',15)+' Statement of account</h3><button class="btn sm ghost" onclick="stmtOpen(\''+c.id+'\')">Open</button></div>'+
  '<p class="tiny muted" style="margin:6px 0 0">Every bill, payment and refund for this client, with what is still owed.</p></div>';}
+
+/* ============ Finance phase F: bank statements, matching and reconciliation ============ */
+/* The bank's own statement is imported (CSV from any Malaysian bank's online banking) and each
+   line is matched to what the app already knows moved through the bank — client transfers,
+   expenses and bills paid, card payouts, money moved, refunds, adjustments. Most match by
+   themselves (same amount, a few days apart). What is left is either something missing from
+   the app — recorded from the line in one tap — or something in the app the bank has not
+   shown yet. The month is reconciled when the statement balance and the books agree once
+   those two lists are allowed for. Cash in the drawer and petty cash are counted against the
+   books the same way. */
+ICONS.bank='M3 9.5 12 4l9 5.5M5 10.5v7M9.5 10.5v7M14.5 10.5v7M19 10.5v7M3.5 20h17';
+ICONS.link='M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1';
+const BK_ACCTS=()=>{const c=coa().filter(a=>a[2]==='asset'&&/^10\d\d$/.test(a[0])&&!['1000','1020','1030'].includes(a[0]));return c.length?c:[['1010','Bank','asset']];};
+let BKA='1010',BKL=null,BKI=null,BKR=null,BKV='open',BKP=null,BKPEND=null;
+const BKWIN=5;                                   /* days either side for matching by itself */
+async function bkLoad(){
+ const from=ymd(addDays(new Date(),-430)),mine=x=>(x.branchId||ME.branchId)===ME.branchId;
+ try{const [a,b,c]=await Promise.all([getDocs(query(collection(db,'bankLines'),where('date','>=',from))),
+   getDocs(query(collection(db,'bankImports'),where('at','>=',from))),getDocs(collection(db,'bankRecon'))]);
+  BKL=a.docs.map(d=>({id:d.id,...d.data()})).filter(mine);
+  BKI=b.docs.map(d=>({id:d.id,...d.data()})).filter(mine).sort((x,y)=>String(y.at).localeCompare(String(x.at)));
+  BKR={};c.docs.forEach(d=>{const v=d.data();if(mine(v))BKR[d.id]=v;});}
+ catch(e){console.warn('bank',e);BKL=BKL||[];BKI=BKI||[];BKR=BKR||{};}
+}
+{const _fl=finLoad;finLoad=async f=>{await _fl(f);if(boss()&&(BKL===null||f)){await bkLoad();if(TAB==='fin'||TAB==='home')render();}};}
+const bkLines=()=>(BKL||[]).filter(l=>(l.acct||'1010')===BKA);
+const bkStart=()=>{const L=bkLines();return L.length?L.reduce((a,l)=>l.date<a?l.date:a,L[0].date):'';};
+function bkMonthsList(){
+ const s=bkStart(),end=today().slice(0,7),L=[];
+ let k=mShift((s?s.slice(0,7):FINM)<FINM?(s?s.slice(0,7):FINM):FINM,-1);
+ for(;k<=end;k=mShift(k,1))L.push(k);
+ return L.slice(-15);
+}
+/* what the books say moved through the bank: one item per record (a payment, an expense, a move…) */
+function bkBook(months){
+ const out=[];(months||bkMonthsList()).forEach(m=>{const by={};
+  (FINJ[m]||[]).forEach(l=>{if(l.account!==BKA)return;const x=by[l.src]=by[l.src]||{src:l.src,date:l.date,desc:l.desc,ref:l.ref,amount:0};x.amount+=l.debit-l.credit;});
+  Object.values(by).forEach(x=>{x.amount=r2(x.amount);if(Math.abs(x.amount)>0.004)out.push(x);});});
+ return out;
+}
+const bkIdx=B=>{const o={};B.forEach(b=>{o[b.src]=b;});return o;};
+/* a matched line whose record has since gone or changed amount goes back to "to check" */
+function bkState(l,idx,cover){
+ if(l.status!=='matched')return l.status||'open';
+ const got=(l.srcs||[]).map(s=>idx[s]);
+ if(got.some(x=>!x))return cover&&cover(l)?'lost':'matched';
+ return Math.abs(r2(got.reduce((t,b)=>t+b.amount,0))-l.amount)<0.005?'matched':'lost';
+}
+const bkTok=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').split(' ').filter(w=>w.length>=4&&!/^\d{1,5}$/.test(w));
+function bkCands(l,pool,win){
+ const lt=new Set(bkTok(l.desc+' '+(l.ref||'')));
+ return pool.filter(b=>Math.abs(b.amount-l.amount)<0.005&&Math.abs(daysBetween(l.date,b.date))<=win).map(b=>{
+  const dd=Math.abs(daysBetween(l.date,b.date)),hit=bkTok(b.desc+' '+(b.ref||'')).filter(w=>lt.has(w)).length;return {b,dd,hit,score:dd-hit*3};})
+  .sort((x,y)=>x.score-y.score||String(x.b.date).localeCompare(y.b.date));
+}
+function bkCtx(){
+ const months=bkMonthsList(),B=bkBook(months),idx=bkIdx(B),first=months[0]+'-01';
+ const cover=l=>l.date>=first;
+ const L=bkLines().map(l=>({...l,st:bkState(l,idx,cover)}));
+ const used=new Set();L.filter(l=>l.st==='matched').forEach(l=>(l.srcs||[]).forEach(s=>used.add(s)));
+ return {months,B,idx,L,used,pool:B.filter(b=>!used.has(b.src))};
+}
+async function bkBatch(ops){                        /* writes in batches under the 500 limit */
+ for(let i=0;i<ops.length;i+=400){const bt=writeBatch(db);ops.slice(i,i+400).forEach(f=>f(bt));await bt.commit();}
+}
+/* matching by itself: same amount, within a few days, the closest (and any shared words) first */
+async function bkAuto(){
+ await Promise.all(bkMonthsList().map(finJGet));
+ const C=bkCtx(),taken=new Set(),plan=[];
+ C.L.filter(l=>l.st==='open'||l.st==='lost').map(l=>({l,c:bkCands(l,C.pool,BKWIN)})).filter(x=>x.c.length).sort((a,b)=>a.c.length-b.c.length||String(a.l.date).localeCompare(b.l.date))
+  .forEach(({l,c})=>{const f=c.find(x=>!taken.has(x.b.src));if(!f)return;taken.add(f.b.src);plan.push([l,f.b]);});
+ if(!plan.length)return 0;
+ const now=new Date().toISOString();
+ await bkBatch(plan.map(([l,b])=>bt=>{const p={status:'matched',srcs:[b.src],auto:true,matchedAt:now,matchedBy:UID,matchedByName:ME.name};
+  bt.update(doc(db,'bankLines',l.id),p);Object.assign((BKL||[]).find(x=>x.id===l.id)||{},p);}));
+ return plan.length;
+}
+window.bkRematch=async()=>{toast('Matching…');try{const n=await bkAuto();await audit('Bank lines matched',n+' by amount and date');toast(n?n+' line'+(n>1?'s':'')+' matched':'Nothing new to match');}catch(e){toast(friendly(e));}render();};
+async function bkSetLine(id,p){await updateDoc(doc(db,'bankLines',id),p);Object.assign((BKL||[]).find(x=>x.id===id)||{},p);}
+window.bkMatch=async(id,srcs)=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;
+ try{await bkSetLine(id,{status:'matched',srcs,auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name,ignoredReason:''});
+  await audit('Bank line matched',dshort(l.date)+' · '+rm(l.amount)+' · '+srcs.join(', '));window.closeModal();render();toast('Matched');}
+ catch(e){toast(friendly(e));}
+};
+window.bkUnmatch=async id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;
+ try{await bkSetLine(id,{status:'open',srcs:[],auto:false,ignoredReason:'',matchedAt:'',matchedBy:'',matchedByName:''});
+  await audit('Bank line unmatched',dshort(l.date)+' · '+rm(l.amount));window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+window.bkIgnore=async id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;
+ const why=prompt('Why leave this line out? (e.g. a payment that bounced and came back the same day). Lines left out should cancel each other out.');if(!why||!why.trim())return;
+ try{await bkSetLine(id,{status:'ignored',ignoredReason:why.trim().slice(0,160),srcs:[],auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name});
+  await audit('Bank line left out',dshort(l.date)+' · '+rm(l.amount)+' · '+why.trim());window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+
+/* ---------- what an unmatched line probably is ---------- */
+const BK_HINTS=[
+ [/\b(FEES?|CHARGES?|CHRG|CAJ|SVC ?CHG|SERVICE CHARGE|STAMP DUTY|DUTI SETEM|COMM(ISSION)?)\b/,'out','exp','6080'],
+ [/TNB|TENAGA|SYABAS|RANHILL|\bSAJ\b|AIR SELANGOR|INDAH WATER/,'out','exp','6010'],
+ [/UNIFI|\bTM\b|TELEKOM|MAXIS|CELCOM|\bDIGI\b|U ?MOBILE|TIME DOTCOM|YES ?4G/,'out','exp','6020'],
+ [/FACEBK|FACEBOOK|META ?PLATFORMS|GOOGLE|TIKTOK/,'out','exp','6030'],
+ [/KWSP|\bEPF\b/,'out','exp','2300'],[/PERKESO|SOCSO/,'out','exp','2310'],[/LHDN|HASIL|\bPCB\b/,'out','exp','2330'],
+ [/SHOPEE|LAZADA/,'out','exp','6040'],
+ [/MERCHANT|SETTLE|STLMT|\bMDR\b|IPAY88|STRIPE|BILLPLZ|REVENUE ?MONSTER|GRAB ?PAY|\bTNG\b|TOUCH ?N ?GO|\bBOOST\b|SHOPEE ?PAY|MPOS|TERMINAL/,'in','tr','settle'],
+ [/CASH ?DEP|\bCDM\b|DEPOSIT MESIN|DEP TUNAI/,'in','tr','bankin'],
+ [/\bATM\b|CASH ?(WITHDRAWAL|WDL)|PENGELUARAN TUNAI/,'out','tr','float'],
+ [/PROFIT|INTEREST|HIBAH|FAEDAH|DIVIDEN|REBATE/,'in','inc','4900']];
+const bkDir=l=>l.amount<0?'out':'in';
+function bkSuggest(l){
+ const D=String(l.desc||'').toUpperCase()+' '+String(l.ref||'').toUpperCase(),dir=bkDir(l);
+ const r=(((FINSET||{}).bankRules)||[]).find(x=>x.kw&&D.includes(String(x.kw).toUpperCase())&&(!x.dir||x.dir===dir));
+ if(r)return {...r,from:'rule'};
+ const h=BK_HINTS.find(x=>x[0].test(D)&&x[1]===dir);
+ return h?{kind:h[2],account:h[2]==='tr'?'':h[3],move:h[2]==='tr'?h[3]:'',from:'hint'}:null;
+}
+const bkSugLabel=s=>!s?'':s.kind==='exp'?'Expense · '+acName(s.account):s.kind==='tr'?((MOVES.find(m=>m[0]===s.move)||[])[1]||'Money move'):'Other income · '+acName(s.account);
+const BK_STOP=new Set(['TRANSFER','DUITNOW','PAYMENT','INSTANT','INTERBANK','ONLINE','DEBIT','CREDIT','CARD','FUND','FUNDS','FROM','ACCOUNT','BILL','BILLS','SDN','BHD','ENTERPRISE','TRADING','MAYBANK','CIMB','PUBLIC','BANK','BERHAD','IBFT','GIRO','PURCHASE','RETAIL','TRANSACTION','TRX','REF','INV','INVOICE','MISC','OTHER','OTHERS','PYMT','PAYMT','TRSF','TRF','QR']);
+const bkKw=l=>bkTok(l.desc).find(w=>!BK_STOP.has(w)&&!/\d{4,}/.test(w))||'';
+const bkPayee=d=>String(d||'').replace(/\b(DUITNOW( QR| TRANSFER| TRF)?|INSTANT TRANSFER|IBG|IBFT|FPX|TRANSFER (TO|FR(OM)?)|TRF (TO|FR)|PAYMENT (TO|FR(OM)?)|POS PURCHASE|DEBIT CARD|SALE DEBIT|FUND TRANSFER|INTERBANK GIRO|\*)\b/gi,' ').replace(/\s+/g,' ').trim().slice(0,60);
+function bkMoveFor(l,move){const x=MOVES.find(m=>m[0]===move)||MOVES.find(m=>m[0]==='other');
+ let f=x[2]||'',t=x[3]||'';if(f==='1010')f=BKA;if(t==='1010')t=BKA;
+ if(bkDir(l)==='in'&&t!==BKA){t=BKA;if(!f||f===BKA)f='1020';}if(bkDir(l)==='out'&&f!==BKA){f=BKA;if(!t||t===BKA)t='1000';}
+ return {kind:x[0],from:f,to:t};}
+/* records the line as the suggestion says, and matches it: returns the book record id */
+async function bkMake(l,s){
+ if(isLocked(l.date))throw new Error(lockMsg(l.date));
+ const now=new Date().toISOString(),amt=Math.abs(l.amount);
+ if(s.kind==='exp'){
+  const d={date:l.date,amount:amt,supplier:bkPayee(l.desc)||'Bank',desc:String(l.desc||'').slice(0,160),account:s.account,lines:[],ref:String(l.ref||'').slice(0,40),status:'paid',
+   paidFrom:BKA,paidAt:l.date,dueDate:'',branchId:ME.branchId,updatedAt:now,updatedBy:UID,createdAt:now,createdBy:UID,source:'bank',bankLine:l.id};
+  const r=await addDoc(collection(db,'expenses'),d);(EXPENSES=EXPENSES||[]).unshift({id:r.id,...d});return 'exp:'+r.id;}
+ if(s.kind==='tr'){
+  const mv=bkMoveFor(l,s.move);
+  const d={kind:mv.kind,from:mv.from,to:mv.to,amount:amt,fee:0,date:l.date,ref:String(l.ref||l.desc||'').slice(0,80),branchId:ME.branchId,updatedAt:now,updatedBy:UID,createdAt:now,createdBy:UID,createdByName:ME.name,bankLine:l.id};
+  const r=await addDoc(collection(db,'transfers'),d);(TRANSFERS=TRANSFERS||[]).unshift({id:r.id,...d});return 'tr:'+r.id;}
+ const acc=s.account||(bkDir(l)==='in'?'4900':'6190');
+ const j={date:l.date,desc:String(s.desc||l.desc||'Bank').slice(0,160),lines:bkDir(l)==='in'?[{account:BKA,debit:amt,credit:0},{account:acc,debit:0,credit:amt}]:[{account:acc,debit:amt,credit:0},{account:BKA,debit:0,credit:amt}],
+  no:'ADJ-'+Date.now().toString().slice(-8),branchId:ME.branchId,by:UID,byName:ME.name,at:now,bankLine:l.id};
+ const r=await addDoc(collection(db,'journals'),j);const m=l.date.slice(0,7);if(typeof MJ!=='undefined'&&MJ[m])MJ[m].push({id:r.id,...j});return 'mj:'+r.id;
+}
+async function bkRule(l,s,kw){
+ kw=String(kw||'').trim().toUpperCase();if(kw.length<3)return;
+ const R=(((FINSET||{}).bankRules)||[]).filter(x=>!(x.kw===kw&&x.dir===bkDir(l)));
+ R.unshift({kw,dir:bkDir(l),kind:s.kind,account:s.account||'',move:s.move||''});
+ await setDoc(doc(db,'finance','settings'),{bankRules:R.slice(0,80)},{merge:true});FINSET={...(FINSET||{}),bankRules:R.slice(0,80)};
+}
+window.bkQuick=async id=>{
+ const l=(BKL||[]).find(x=>x.id===id),s=l&&bkSuggest(l);if(!s)return;
+ try{const src=await bkMake(l,s);const kw=(document.getElementById('bk-kw')||{}).value,rem=(document.getElementById('bk-rem')||{}).checked;
+  if(rem&&s.from!=='rule')await bkRule(l,s,kw);
+  await bkSetLine(id,{status:'matched',srcs:[src],auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name});finDirty();
+  await audit('Recorded from the bank',bkSugLabel(s)+' · '+dshort(l.date)+' · '+rm(Math.abs(l.amount)));window.closeModal();render();toast('Recorded and matched');}
+ catch(e){toast(friendly(e));}
+};
+window.bkBulk=async()=>{
+ const C=bkCtx(),m=FINM,L=C.L.filter(l=>l.st==='open'&&l.date.slice(0,7)===m&&!isLocked(l.date)).map(l=>({l,s:bkSuggest(l)})).filter(x=>x.s&&x.s.from==='rule');
+ if(!L.length)return;
+ if(!confirm('Record '+L.length+' line'+(L.length>1?'s':'')+' the way your saved rules say?\n\n'+L.slice(0,8).map(x=>dshort(x.l.date)+' '+rm(Math.abs(x.l.amount))+' → '+bkSugLabel(x.s)).join('\n')+(L.length>8?'\n…':'')))return;
+ let n=0;for(const {l,s} of L){try{const src=await bkMake(l,s);await bkSetLine(l.id,{status:'matched',srcs:[src],auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name});n++;}catch(e){console.warn(e);}}
+ finDirty();await audit('Recorded from the bank',n+' lines by saved rules');render();toast(n+' recorded and matched');
+};
+/* record it by hand: the usual expense or money-move form, filled in from the line */
+window.bkExp=id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;const s=bkSuggest(l),kw=(document.getElementById('bk-kw')||{}).value,rem=(document.getElementById('bk-rem')||{}).checked;
+ window.expForm();
+ const set=(k,v)=>{const e=document.getElementById(k);if(e&&v!==undefined&&v!==null)e.value=v;};
+ set('ex-d',l.date);set('ex-a',Math.abs(l.amount).toFixed(2));set('ex-s',bkPayee(l.desc));set('ex-n',String(l.desc||'').slice(0,160));set('ex-r',String(l.ref||'').slice(0,40));
+ if(s&&s.kind==='exp')set('ex-c',s.account);
+ const pf=document.getElementById('ex-pf');if(pf&&[...pf.options].some(o=>o.value===BKA))pf.value=BKA;
+ try{window.expTip&&window.expTip();}catch(e){}
+ const c=document.querySelector('#modal .card');if(c)c.insertAdjacentHTML('afterbegin','<div class="cnnote tiny">'+ic('bank',13)+' From the bank: '+dshort(l.date)+' · '+esc(l.desc||'')+' · <b>'+rm(Math.abs(l.amount))+'</b></div>');
+ BKPEND={id,acct:BKA,at:Date.now(),kind:'exp',kw,rem};
+};
+window.bkMove=id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;const s=bkSuggest(l),kw=(document.getElementById('bk-kw')||{}).value,rem=(document.getElementById('bk-rem')||{}).checked;
+ const mv=bkMoveFor(l,s&&s.kind==='tr'?s.move:(bkDir(l)==='in'?'settle':'float'));
+ window.trForm();
+ const set=(k,v)=>{const e=document.getElementById(k);if(e)e.value=v;};
+ set('tr-k',mv.kind);set('tr-f',mv.from);set('tr-t',mv.to);set('tr-d',l.date);set('tr-a',Math.abs(l.amount).toFixed(2));set('tr-r',String(l.ref||l.desc||'').slice(0,80));
+ const c=document.querySelector('#modal .card');if(c)c.insertAdjacentHTML('afterbegin','<div class="cnnote tiny">'+ic('bank',13)+' From the bank: '+dshort(l.date)+' · '+esc(l.desc||'')+' · <b>'+rm(Math.abs(l.amount))+'</b>'+
+  (bkDir(l)==='in'&&mv.from==='1020'?'<br>For a card or e-wallet payout the bank gets the amount after fees: put the full takings in Amount and the fees below, so what reaches the bank is still '+rm(l.amount)+'.':'')+'</div>');
+ BKPEND={id,acct:BKA,at:Date.now(),kind:'tr',kw,rem};
+};
+{const _c=window.closeModal;window.closeModal=(...a)=>{BKPEND=null;return _c(...a);};}
+async function bkAfter(P,src,effect,s){
+ const l=(BKL||[]).find(x=>x.id===P.id);if(!l)return;
+ if(effect===null||Math.abs(effect-l.amount)>0.005){toast('Saved. It does not come to the bank line\'s '+rm(l.amount)+', so the line is left to check.');return;}
+ try{await bkSetLine(l.id,{status:'matched',srcs:[src],auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name});
+  if(P.rem)await bkRule(l,s,P.kw);finDirty();render();toast('Saved and matched to the bank line');}catch(e){toast(friendly(e));}
+}
+{const _s=window.expSave;window.expSave=async id=>{
+ const P=BKPEND&&BKPEND.kind==='exp'&&!id&&Date.now()-BKPEND.at<3600e3?BKPEND:null,before=new Set((EXPENSES||[]).map(e=>e.id));
+ await _s(id);if(!P)return;
+ const e=(EXPENSES||[]).find(x=>!before.has(x.id));if(!e)return;
+ const eff=e.status==='paid'&&!e.dueDate&&(e.paidFrom||'1010')===P.acct?-r2(+e.amount||0):null;
+ await bkAfter(P,'exp:'+e.id,eff,{kind:'exp',account:e.account});};}
+{const _s=window.trSave;window.trSave=async id=>{
+ const P=BKPEND&&BKPEND.kind==='tr'&&!id&&Date.now()-BKPEND.at<3600e3?BKPEND:null,before=new Set((TRANSFERS||[]).map(t=>t.id));
+ await _s(id);if(!P)return;
+ const t=(TRANSFERS||[]).find(x=>!before.has(x.id));if(!t)return;
+ const a=+t.amount||0,fee=Math.min(a,+t.fee||0),eff=t.to===P.acct?r2(a-fee):t.from===P.acct?-r2(a):null;
+ await bkAfter(P,'tr:'+t.id,eff,{kind:'tr',move:t.kind});};}
+window.bkOther=id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;const dir=bkDir(l),s=bkSuggest(l);
+ const opts=coa().filter(a=>a[0]!==BKA&&(dir==='in'?['revenue','equity','liability','asset'].includes(a[2]):true));
+ const def=s&&s.kind==='inc'?s.account:(dir==='in'?'4900':'6190');
+ modal('Record another way','<div class="card"><p class="tiny muted" style="margin:0 0 8px">'+dshort(l.date)+' · '+esc(l.desc||'')+' · <b>'+fmtS(l.amount)+'</b><br>'+
+  (dir==='in'?'Money in that is not from a client or a money move — bank profit or interest, a rebate, a loan received.':'Money out that is not an expense or a money move — a loan repayment, a deposit paid.')+
+  ' It is posted as an adjustment in the journal.</p>'+
+  '<label>'+(dir==='in'?'Where it came from':'What it was for')+'</label><select class="f" id="bo-a">'+opts.map(a=>'<option value="'+a[0]+'"'+(a[0]===def?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
+  '<label>Description</label><input class="f" id="bo-d" value="'+esc(String(l.desc||'').slice(0,120))+'">'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="bkOtherSave(\''+id+'\')">'+ic('check',16)+'Post and match</button></div>');
+};
+window.bkOtherSave=async id=>{
+ const l=(BKL||[]).find(x=>x.id===id);if(!l)return;
+ try{const s={kind:'inc',account:$('#bo-a').value,desc:$('#bo-d').value.trim()};const src=await bkMake(l,s);
+  await bkSetLine(id,{status:'matched',srcs:[src],auto:false,matchedAt:new Date().toISOString(),matchedBy:UID,matchedByName:ME.name});finDirty();
+  await audit('Recorded from the bank','Adjustment · '+acName(s.account)+' · '+rm(l.amount));window.closeModal();render();toast('Posted and matched');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- one bank line ---------- */
+window.bkLine=id=>{
+ const C=bkCtx(),l=C.L.find(x=>x.id===id);if(!l)return;
+ const dir=bkDir(l),s=bkSuggest(l);
+ const bookRow=b=>'<div class="bkrow" style="cursor:default"><span class="bkd">'+dshort(b.date)+'</span><span class="bkdesc">'+esc(b.desc||'')+'<small>'+esc(b.ref||'')+'</small></span><b class="bkamt'+(b.amount>0?' in':'')+'">'+fmtS(b.amount)+'</b></div>';
+ let body='';
+ if(l.st==='matched'||l.st==='lost'){const got=(l.srcs||[]).map(x=>C.idx[x]).filter(Boolean);
+  body='<h3 style="margin:10px 0 4px">'+ic('link',14)+' Matched to</h3>'+(got.length?got.map(bookRow).join(''):'')+
+   (l.st==='lost'?'<p class="tiny" style="color:var(--rose)">The record it was matched to has been changed or removed. Match it again.</p>':'')+
+   '<p class="tiny muted">'+(l.auto?'Matched by itself':'Matched by '+esc(l.matchedByName||''))+(l.matchedAt?' · '+dshort(l.matchedAt):'')+'</p>'+
+   '<button class="btn sm ghost" onclick="bkUnmatch(\''+id+'\')">'+ic('close',13)+'Unmatch</button>';}
+ if(l.st==='ignored')body='<p class="tiny" style="margin:10px 0">Left out: '+esc(l.ignoredReason||'')+' · '+esc(l.matchedByName||'')+'</p><button class="btn sm ghost" onclick="bkUnmatch(\''+id+'\')">Put back to check</button>';
+ if(l.st==='open'||l.st==='lost'){
+  const cands=bkCands(l,C.pool,15).slice(0,5);
+  body+=(cands.length?'<h3 style="margin:12px 0 4px">'+ic('search',14)+' Same amount in the app</h3>'+cands.map(c=>'<div class="bkcand">'+bookRow(c.b)+'<button class="btn sm" onclick="bkMatch(\''+id+'\',[\''+esc(c.b.src)+'\'])">Match</button></div>').join(''):'')+
+   '<button class="btn sm ghost" style="margin:6px 0" onclick="bkPick(\''+id+'\')">'+ic('list',13)+'Pick records (several can add up to it)</button>'+
+   '<h3 style="margin:12px 0 4px">'+ic('plus',14)+' Not in the app yet? Record it</h3>'+
+   (s?'<div class="bksug"><span>Looks like <b>'+esc(bkSugLabel(s))+'</b>'+(s.from==='rule'?' <span class="pill b">your rule</span>':'')+'</span>'+
+     '<button class="btn sm" onclick="bkQuick(\''+id+'\')">'+ic('check',13)+'Record as this</button></div>':'')+
+   '<div class="row wrap2" style="gap:6px;margin:6px 0">'+(dir==='out'?'<button class="btn sm ghost" onclick="bkExp(\''+id+'\')">'+ic('receipt',13)+'Expense…</button>':'')+
+    '<button class="btn sm ghost" onclick="bkMove(\''+id+'\')">'+ic('transfer',13)+'Money move…</button>'+
+    '<button class="btn sm ghost" onclick="bkOther(\''+id+'\')">'+ic('edit',13)+'Other…</button>'+
+    '<button class="btn sm ghost" onclick="bkIgnore(\''+id+'\')">Leave out…</button></div>'+
+   (s&&s.from==='rule'?'':'<label class="tiny row" style="gap:6px;margin-top:6px"><input type="checkbox" id="bk-rem"> Next time, suggest the same for lines with</label>'+
+    '<input class="f" id="bk-kw" value="'+esc(bkKw(l))+'" style="margin-top:4px" placeholder="a word from the description">');
+ }
+ modal('Bank line','<div class="card"><div class="spread"><b>'+dstr(l.date)+'</b><b class="bkamt'+(l.amount>0?' in':'')+'" style="font-size:18px">'+(l.amount>0?'+':'')+fmtS(l.amount)+'</b></div>'+
+  '<div style="margin:4px 0">'+esc(l.desc||'')+'</div><div class="tiny muted">'+(l.ref?'Ref '+esc(l.ref)+' · ':'')+(l.bal!=null?'Balance after '+rm(l.bal)+' · ':'')+(l.createdAt?'imported '+dshort(l.createdAt):'')+'</div>'+body+'</div>');
+};
+window.bkPick=id=>{
+ const C=bkCtx(),l=C.L.find(x=>x.id===id);if(!l)return;
+ const P=C.pool.filter(b=>Math.sign(b.amount)===Math.sign(l.amount)&&Math.abs(daysBetween(l.date,b.date))<=31).sort((a,b)=>Math.abs(daysBetween(l.date,a.date))-Math.abs(daysBetween(l.date,b.date)));
+ window.__bkPick={id,amt:l.amount,P};
+ modal('Pick records · '+rm(l.amount),'<div class="card"><p class="tiny muted" style="margin:0 0 6px">Tick the records in the app that make up this bank line ('+dshort(l.date)+').</p>'+
+  (P.length?P.slice(0,60).map((b,k)=>'<label class="bkrow"><input type="checkbox" onchange="bkPickSum()" data-k="'+k+'"><span class="bkd">'+dshort(b.date)+'</span><span class="bkdesc">'+esc(b.desc||'')+'</span><b class="bkamt'+(b.amount>0?' in':'')+'">'+fmtS(b.amount)+'</b></label>').join('')
+   :'<div class="empty">Nothing in the app within a month of this line. Record it instead.</div>')+
+  '<div class="pkdsum" id="bkp-s" style="margin-top:8px"></div><button class="btn" id="bkp-go" disabled style="width:100%;justify-content:center" onclick="bkPickGo()">'+ic('link',15)+'Match</button></div>');
+ window.bkPickSum();
+};
+window.bkPickSum=()=>{const W=window.__bkPick;if(!W)return;
+ const k=[...document.querySelectorAll('#modal input[data-k]:checked')].map(i=>+i.dataset.k),t=r2(k.reduce((a,i)=>a+W.P[i].amount,0)),ok=k.length&&Math.abs(t-W.amt)<0.005;
+ const b=$('#bkp-s');if(b)b.innerHTML='Ticked '+rm(t)+' of '+rm(W.amt)+(ok?' · <b style="color:var(--jade)">adds up</b>':k.length?' · <span class="odue">'+rm(r2(W.amt-t))+' to go</span>':'');
+ const g=$('#bkp-go');if(g)g.disabled=!ok;};
+window.bkPickGo=()=>{const W=window.__bkPick;const k=[...document.querySelectorAll('#modal input[data-k]:checked')].map(i=>+i.dataset.k);
+ if(Math.abs(r2(k.reduce((a,i)=>a+W.P[i].amount,0))-W.amt)>0.005)return;window.bkMatch(W.id,k.map(i=>W.P[i].src));};
+
+/* ---------- importing a statement ---------- */
+function bkCsv(t){
+ t=String(t||'').replace(/^﻿/,'');
+ const head=t.split(/\r?\n/).slice(0,40).join('\n'),cnt=c=>head.split(c).length-1;
+ const sep=[',',';','\t','|'].sort((a,b)=>cnt(b)-cnt(a))[0];
+ const out=[];let row=[],cell='',q=false;
+ for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch==='"'){if(t[i+1]==='"'){cell+='"';i++;}else q=false;}else cell+=ch;continue;}
+  if(ch==='"'&&!cell.trim()){q=true;cell='';continue;}
+  if(ch===sep){row.push(cell.trim());cell='';continue;}
+  if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;row.push(cell.trim());out.push(row);row=[];cell='';continue;}
+  cell+=ch;}
+ if(cell!==''||row.length){row.push(cell.trim());out.push(row);}
+ return out.filter(r=>r.some(c=>c!==''));
+}
+function bkNum(v){
+ let s=String(v==null?'':v).replace(/RM|MYR|\s/gi,'');if(!s)return null;let sg=1;
+ if(/^\(.*\)$/.test(s)){sg=-1;s=s.slice(1,-1);}
+ const tl=s.match(/(DR|CR|-|\+)$/i);if(tl&&s.length>tl[0].length){if(/^(DR|-)$/i.test(tl[0]))sg=-sg;s=s.slice(0,-tl[0].length);}
+ if(s[0]==='-'){sg=-sg;s=s.slice(1);}else if(s[0]==='+')s=s.slice(1);
+ s=s.replace(/,/g,'');if(!/^\d*\.?\d+$/.test(s))return null;return r2(sg*parseFloat(s));
+}
+const BK_MON={JAN:1,FEB:2,MAR:3,APR:4,MAY:5,MEI:5,JUN:6,JUL:7,AUG:8,OGO:8,SEP:9,OCT:10,OKT:10,NOV:11,DEC:12,DIS:12};
+function bkDate(v,order){
+ const s=String(v||'').trim().toUpperCase();if(!s)return null;
+ const yr=y=>{y=+y;return y<100?2000+y:y;},mk=(y,m,d)=>(y>=2000&&y<=2100&&m>=1&&m<=12&&d>=1&&d<=31)?y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'):null;
+ let m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/);if(m)return mk(+m[1],+m[2],+m[3]);
+ m=s.match(/^(\d{1,2})[-\/. ]([A-Z]{3})[A-Z]*[-\/. ,]*(\d{2,4})\b/);if(m&&BK_MON[m[2]])return mk(yr(m[3]),BK_MON[m[2]],+m[1]);
+ m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})\b/);if(m)return order==='mdy'?mk(yr(m[3]),+m[1],+m[2]):mk(yr(m[3]),+m[2],+m[1]);
+ m=s.match(/^(\d{2})(\d{2})(\d{4})$/);if(m)return mk(+m[3],+m[2],+m[1]);
+ return null;
+}
+const BKH={date:/date|tarikh|\btkh\b/i,bal:/balance|baki/i,debit:/debit|withdraw|keluar|\bdr\b|pengeluaran/i,credit:/credit|deposit|masuk|\bcr\b|kemasukan/i,
+ amount:/amount|amaun|jumlah|\bamt\b/i,ref:/ref|cheque|\bcek\b/i,desc:/desc|particular|butiran|keterangan|detail|narrat|transaction|remark|recipient|beneficiary|payee|maklumat/i};
+function bkGuess(rows){
+ let h=-1;
+ for(let i=0;i<Math.min(rows.length,40);i++){const r=rows[i];
+  if(r.some(c=>BKH.date.test(c))&&r.some(c=>BKH.debit.test(c)||BKH.credit.test(c)||BKH.amount.test(c))&&r.filter(c=>bkNum(c)!==null).length<=1){h=i;break;}}
+ const map={date:-1,desc:[],ref:-1,debit:-1,credit:-1,amount:-1,bal:-1,flip:false};
+ if(h>=0){const H=rows[h],used=new Set();const take=(k,i)=>{map[k]=i;used.add(i);};
+  H.forEach((c,i)=>{if(map.date<0&&BKH.date.test(c))take('date',i);});
+  H.forEach((c,i)=>{if(!used.has(i)&&map.bal<0&&BKH.bal.test(c))take('bal',i);});
+  H.forEach((c,i)=>{if(!used.has(i)&&map.debit<0&&BKH.debit.test(c))take('debit',i);});
+  H.forEach((c,i)=>{if(!used.has(i)&&map.credit<0&&BKH.credit.test(c))take('credit',i);});
+  if(map.debit<0||map.credit<0){if(map.debit>=0&&map.credit<0){map.amount=map.debit;map.debit=-1;}else if(map.credit>=0&&map.debit<0){map.amount=map.credit;map.credit=-1;}
+   else H.forEach((c,i)=>{if(!used.has(i)&&map.amount<0&&BKH.amount.test(c))take('amount',i);});}
+  H.forEach((c,i)=>{if(!used.has(i)&&map.ref<0&&BKH.ref.test(c)&&!BKH.desc.test(c))take('ref',i);});
+  H.forEach((c,i)=>{if(!used.has(i)&&BKH.desc.test(c)&&!BKH.date.test(c)){map.desc.push(i);used.add(i);}});
+  if(!map.desc.length)H.forEach((c,i)=>{if(!used.has(i)&&!BKH.date.test(c))map.desc.push(i);});
+ }else{                                           /* no header: go by what the columns hold */
+  const data=rows.slice(0,60),n=Math.max(...data.map(r=>r.length));
+  const frac=(i,f)=>data.filter(r=>f(r[i])).length/data.length;
+  for(let i=0;i<n;i++)if(map.date<0&&frac(i,v=>bkDate(v))>0.6)map.date=i;
+  const nums=[];for(let i=0;i<n;i++)if(i!==map.date&&frac(i,v=>v===''||bkNum(v)!==null)>0.9&&frac(i,v=>bkNum(v)!==null)>0.3)nums.push(i);
+  if(nums.length>=3){map.debit=nums[0];map.credit=nums[1];map.bal=nums[2];}else if(nums.length===2){map.amount=nums[0];map.bal=nums[1];}else if(nums.length)map.amount=nums[0];
+  let best=-1,bl=0;for(let i=0;i<n;i++){if(i===map.date||nums.includes(i))continue;const L=data.reduce((t,r)=>t+String(r[i]||'').length,0);if(L>bl){bl=L;best=i;}}
+  if(best>=0)map.desc=[best];
+ }
+ return {h,map};
+}
+function bkBuild(P){
+ const {rows,h,map}=P,body=rows.slice(h+1);
+ const cells=body.map(r=>String(r[map.date]||'').match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.]/)).filter(Boolean);
+ const order=cells.some(m=>+m[2]>12)?'mdy':'dmy';
+ const L=[];let open=null;
+ body.forEach(r=>{
+  const date=map.date>=0?bkDate(r[map.date],order):null;
+  const desc=map.desc.map(i=>r[i]).filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  let amt=null;
+  if(map.debit>=0||map.credit>=0){const d=map.debit>=0?bkNum(r[map.debit]):null,c=map.credit>=0?bkNum(r[map.credit]):null;if(d!==null||c!==null)amt=r2((c?Math.abs(c):0)-(d?Math.abs(d):0));}
+  else if(map.amount>=0)amt=bkNum(r[map.amount]);
+  const bal=map.bal>=0?bkNum(r[map.bal]):null;
+  if(!date){if(L.length&&desc&&(amt===null||amt===0)&&!/total|jumlah|closing|baki akhir/i.test(desc))L[L.length-1].desc+=' '+desc;return;}
+  if(amt===null||amt===0){if(/opening|beginning|b\/f|brought|baki (awal|mula)|balance b/i.test(desc)&&bal!==null)open=bal;return;}
+  L.push({date,desc:desc.slice(0,200),ref:map.ref>=0?String(r[map.ref]||'').slice(0,60):'',amount:amt,bal});});
+ if(map.flip)L.forEach(l=>{l.amount=-l.amount;});
+ /* which way the file runs and whether amounts carry the right sign: the balance column tells */
+ let dir='asc',flip=1,hits=0,tot=0;
+ const withBal=L.filter(l=>l.bal!==null).length>L.length*0.8&&L.length>1;
+ if(withBal){let best=-1;
+  [['asc',1],['asc',-1],['desc',1],['desc',-1]].forEach(([d,f])=>{const A=d==='asc'?L:[...L].reverse();let n=0;
+   for(let i=1;i<A.length;i++)if(Math.abs(A[i-1].bal+f*A[i].amount-A[i].bal)<0.011)n++;if(n>best){best=n;dir=d;flip=f;}});
+  hits=best;tot=L.length-1;}
+ else if(L.length>1&&L[0].date>L[L.length-1].date)dir='desc';
+ let out=dir==='asc'?L:[...L].reverse();
+ if(flip<0&&!map.flip)out.forEach(l=>{l.amount=-l.amount;});
+ out=out.map((l,i)=>({...l,seq:i})).sort((a,b)=>a.date.localeCompare(b.date)||a.seq-b.seq).map((l,i)=>({...l,seq:i}));
+ const first=out[0],last=out[out.length-1];
+ return {lines:out,withBal,hits,tot,flipped:flip<0,opening:open!==null?open:(first&&first.bal!==null?r2(first.bal-first.amount):null),closing:last&&last.bal!==null?last.bal:null,order};
+}
+const bkHash=s=>{let h=5381;s=String(s||'');for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36);};
+window.bkImport=()=>{
+ BKP=null;const A=BK_ACCTS();
+ modal('Import bank statement','<div class="card">'+
+  (A.length>1?'<label>Bank account</label><select class="f" id="bk-ac">'+A.map(a=>'<option value="'+a[0]+'"'+(a[0]===BKA?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>':'')+
+  '<p class="tiny muted" style="margin:0 0 8px">In your online banking (Maybank2u / M2U Biz, CIMB Clicks / BizChannel, Public Bank, RHB, Bank Islam, Hong Leong, AmBank, BSN…) download the account history as <b>CSV</b>. An Excel file can be saved as CSV first. Importing the same days again is safe — lines already here are skipped.</p>'+
+  '<input class="f" type="file" accept=".csv,.txt,text/csv,text/plain" onchange="bkFile(this)">'+
+  '<details class="exhelp"><summary>'+ic('note',13)+' Or paste the lines</summary><textarea class="f" id="bk-tx" rows="5" placeholder="Date, Description, Debit, Credit, Balance"></textarea>'+
+   '<button type="button" class="btn sm ghost" onclick="bkRead(document.getElementById(\'bk-tx\').value,\'pasted\')">Read</button></details>'+
+  '<div id="bk-pv"></div></div>');
+};
+window.bkFile=inp=>{const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>window.bkRead(String(r.result),f.name);r.readAsText(f);};
+window.bkRead=(text,name)=>{
+ const rows=bkCsv(text);if(!rows.length){$('#bk-pv').innerHTML='<p class="tiny" style="color:var(--rose)">Nothing could be read from that file.</p>';return;}
+ const g=bkGuess(rows),sig=g.h>=0?rows[g.h].join('|').toLowerCase():'';
+ const saved=sig&&(((FINSET||{}).bankMaps)||{})[bkHash(sig)];
+ BKP={name,rows,h:g.h,map:saved?{...g.map,...saved}:g.map,sig,acct:($('#bk-ac')||{}).value||BKA};
+ bkPrev();
+};
+window.bkMapSet=(k,v)=>{if(!BKP)return;if(k==='desc')BKP.map.desc=v===''?[]:[+v];else if(k==='flip')BKP.map.flip=!!v;else if(k==='h'){BKP.h=+v;}else BKP.map[k]=v===''?-1:+v;bkPrev();};
+function bkPrev(){
+ const P=BKP,box=$('#bk-pv');if(!P||!box)return;
+ const R=bkBuild(P),H=P.h>=0?P.rows[P.h]:(P.rows[0]||[]).map((_,i)=>'Column '+(i+1));
+ const sel=(k,label,v)=>'<div><label>'+label+'</label><select class="f" onchange="bkMapSet(\''+k+'\',this.value)"><option value="">—</option>'+H.map((c,i)=>'<option value="'+i+'"'+(v===i?' selected':'')+'>'+esc(c||('Column '+(i+1)))+'</option>').join('')+'</select></div>';
+ const ok=P.map.date>=0&&(P.map.amount>=0||P.map.debit>=0||P.map.credit>=0)&&R.lines.length;
+ const known=new Set((BKL||[]).map(l=>l.id)),ids=bkIds(R.lines,P.acct),fresh=ids.filter(i=>!known.has(i)).length;
+ const tooOld=R.lines.filter(l=>daysBetween(l.date,today())>420).length;
+ const inn=r2(R.lines.filter(l=>l.amount>0).reduce((t,l)=>t+l.amount,0)),out=r2(R.lines.filter(l=>l.amount<0).reduce((t,l)=>t+l.amount,0));
+ box.innerHTML='<details class="exhelp"'+(ok?'':' open')+'><summary>'+ic('gear',13)+' Columns '+(ok?'(found)':'— please check')+'</summary><div class="grid g2 bkmap">'+
+   sel('date','Date',P.map.date)+sel('desc','Description',P.map.desc[0])+sel('debit','Money out (debit)',P.map.debit)+sel('credit','Money in (credit)',P.map.credit)+
+   sel('amount','Or one amount column',P.map.amount)+sel('bal','Balance',P.map.bal)+sel('ref','Reference',P.map.ref)+
+   '<div><label>Header row</label><input class="f" type="number" min="0" value="'+(P.h+1)+'" onchange="bkMapSet(\'h\',this.value-1)"></div></div>'+
+   '<label class="tiny row" style="gap:6px"><input type="checkbox"'+(P.map.flip?' checked':'')+' onchange="bkMapSet(\'flip\',this.checked)"> Money out is shown as a plus in the amount column</label></details>'+
+  (ok?'<div class="aprsnap" style="margin:10px 0"><div><small>Lines</small><b>'+R.lines.length+'</b></div><div><small>Money in</small><b>'+rm(inn)+'</b></div><div><small>Money out</small><b>'+rm(-out)+'</b></div><div><small>New</small><b>'+fresh+'</b></div></div>'+
+   '<div class="tiny muted">'+dstr(R.lines[0].date)+' to '+dstr(R.lines[R.lines.length-1].date)+(R.opening!==null?' · opening '+rm(R.opening):'')+(R.closing!==null?' · closing '+rm(R.closing):'')+'</div>'+
+   (R.withBal?(R.hits===R.tot?'<p class="tiny" style="color:var(--jade);margin:4px 0">'+ic('check',12)+' Every line follows from the balance before it — nothing is missing.</p>'
+    :'<p class="tiny" style="color:var(--rose);margin:4px 0">'+(R.tot-R.hits)+' line(s) do not follow from the balance before — check the columns, or that no lines are missing.</p>')
+    :'<p class="tiny muted" style="margin:4px 0">No balance column, so the statement balance is typed in when you reconcile.</p>')+
+   (tooOld?'<p class="tiny muted">'+tooOld+' line(s) older than 14 months are left out.</p>':'')+
+   '<div class="scroll"><table class="bkpv"><tr><th>Date</th><th>Description</th><th class="num">Amount</th><th class="num">Balance</th></tr>'+
+    R.lines.slice(0,6).map(l=>'<tr><td>'+dshort(l.date)+'</td><td>'+esc(l.desc)+'</td><td class="num'+(l.amount>0?' bkin':'')+'">'+fmtS(l.amount)+'</td><td class="num">'+(l.bal!==null?rm(l.bal):'')+'</td></tr>').join('')+'</table></div>'+
+   '<button class="btn" id="bk-go" style="width:100%;justify-content:center;margin-top:10px"'+(fresh?'':' disabled')+' onclick="bkCommit()">'+ic('upload',15)+(fresh?'Import '+fresh+' new line'+(fresh>1?'s':''):'All these lines are already here')+'</button>'
+  :'<p class="tiny" style="color:var(--rose)">Pick which column has the date and which has the amounts.</p>');
+}
+function bkIds(lines,acct){const seen={};return lines.map(l=>{const k=l.date+'|'+Math.round(l.amount*100)+'|'+bkHash(l.desc);seen[k]=(seen[k]||0)+1;
+ return acct+'_'+l.date.replace(/-/g,'')+'_'+Math.round(l.amount*100)+'_'+bkHash(l.desc)+'_'+seen[k];});}
+window.bkCommit=async()=>{
+ const P=BKP;if(!P)return;const R=bkBuild(P),ids=bkIds(R.lines,P.acct),known=new Set((BKL||[]).map(l=>l.id));
+ const now=new Date().toISOString(),iref=doc(collection(db,'bankImports'));
+ const add=R.lines.map((l,i)=>({id:ids[i],...l})).filter(l=>!known.has(l.id)&&daysBetween(l.date,today())<=420);
+ if(!add.length)return;
+ const imp={acct:P.acct,branchId:ME.branchId,file:String(P.name||'').slice(0,80),from:R.lines[0].date,to:R.lines[R.lines.length-1].date,rows:R.lines.length,added:add.length,
+  skipped:R.lines.length-add.length,opening:R.opening,closing:R.closing,balOk:R.withBal?R.hits===R.tot:null,by:UID,byName:ME.name,at:now};
+ const btn=$('#bk-go');if(btn)btn.disabled=true;
+ try{
+  await bkBatch([bt=>bt.set(iref,imp),...add.map(l=>bt=>bt.set(doc(db,'bankLines',l.id),{acct:P.acct,branchId:ME.branchId,date:l.date,desc:l.desc,ref:l.ref||'',amount:l.amount,
+   ...(l.bal!==null&&l.bal!==undefined?{bal:l.bal}:{}),seq:l.seq,importId:iref.id,status:'open',srcs:[],createdAt:now}))]);
+  (BKL=BKL||[]).push(...add.map(l=>({acct:P.acct,branchId:ME.branchId,date:l.date,desc:l.desc,ref:l.ref||'',amount:l.amount,...(l.bal!==null?{bal:l.bal}:{}),seq:l.seq,importId:iref.id,status:'open',srcs:[],createdAt:now,id:l.id})));
+  (BKI=BKI||[]).unshift({id:iref.id,...imp});
+  if(P.sig){const maps={...(((FINSET||{}).bankMaps)||{}),[bkHash(P.sig)]:{date:P.map.date,desc:P.map.desc,ref:P.map.ref,debit:P.map.debit,credit:P.map.credit,amount:P.map.amount,bal:P.map.bal,flip:!!P.map.flip}};
+   setDoc(doc(db,'finance','settings'),{bankMaps:maps},{merge:true}).then(()=>{FINSET={...(FINSET||{}),bankMaps:maps};}).catch(()=>{});}
+  BKA=P.acct;
+  await audit('Bank statement imported',imp.file+' · '+add.length+' lines · '+imp.from+' to '+imp.to);
+  window.closeModal();FINV='bank';FINM=imp.to.slice(0,7);render();toast(add.length+' lines imported · matching…');
+  const n=await bkAuto();render();toast(add.length+' lines imported · '+n+' matched by themselves');
+ }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}
+};
+window.bkUndo=async iid=>{
+ if(!isOwnerMe())return;const L=(BKL||[]).filter(l=>l.importId===iid),m=L.filter(l=>l.status!=='open');
+ if(m.length){toast(m.length+' line(s) from this import are matched or left out — unmatch them first');return;}
+ if(!confirm('Remove this import and its '+L.length+' line(s)?'))return;
+ try{await bkBatch([...L.map(l=>bt=>bt.delete(doc(db,'bankLines',l.id))),bt=>bt.delete(doc(db,'bankImports',iid))]);
+  BKL=BKL.filter(l=>l.importId!==iid);BKI=BKI.filter(i=>i.id!==iid);await audit('Bank import removed',L.length+' lines');window.closeModal();render();}catch(e){toast(friendly(e));}
+};
+window.bkImports=()=>{
+ modal('Imported statements','<div class="card">'+((BKI||[]).filter(i=>(i.acct||'1010')===BKA).map(i=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(i.file||'')+'</b><small>'+dshort(i.from)+' – '+dshort(i.to)+' · '+i.added+' new of '+i.rows+
+  ' · '+esc(i.byName||'')+' · '+dshort(i.at)+(i.balOk===false?' · <span class="odue">balance gaps</span>':'')+'</small></div>'+
+  (isOwnerMe()?'<button class="btn sm ghost" onclick="bkUndo(\''+i.id+'\')">'+ic('trash',13)+'</button>':'')+'</div>').join('')||'<div class="empty">None yet.</div>')+'</div>');
+};
+
+/* ---------- the month: statement against books ---------- */
+function bkStmtBal(E){
+ const man=(BKR||{})[BKA+'_'+E.slice(0,7)];
+ const L=bkLines().filter(l=>l.date<=E&&l.bal!=null).sort((a,b)=>a.date.localeCompare(b.date)||String(a.importId).localeCompare(String(b.importId))||a.seq-b.seq);
+ const fromLines=L.length?L[L.length-1].bal:null;
+ return {v:man&&man.stmtManual!=null?+man.stmtManual:fromLines,manual:!!(man&&man.stmtManual!=null),fromLines};
+}
+function bkRecon(m,C){
+ const E=mEnd(m),start=bkStart(),dateOf={};C.L.forEach(l=>{dateOf[l.id]=l.date;});
+ const lineOf={};C.L.filter(l=>l.st==='matched').forEach(l=>(l.srcs||[]).forEach(s=>{lineOf[s]=l;}));
+ const bankNot=C.L.filter(l=>l.date<=E&&(l.st==='open'||l.st==='lost'||l.st==='ignored'||(l.st==='matched'&&(l.srcs||[]).every(s=>C.idx[s]&&C.idx[s].date>E))));
+ const bookNot=C.B.filter(b=>start&&b.date>=start&&b.date<=E&&(!lineOf[b.src]||lineOf[b.src].date>E));
+ const B=balBuild(m),book=B.O?B.bal(BKA):null,S=bkStmtBal(E);
+ const sB=r2(bankNot.reduce((t,l)=>t+l.amount,0)),sK=r2(bookNot.reduce((t,b)=>t+b.amount,0));
+ const adjBank=S.v!=null?r2(S.v+sK):null,adjBook=book!=null?r2(book+sB):null;
+ return {E,start,bankNot,bookNot,book,S,sB,sK,adjBank,adjBook,diff:adjBank!=null&&adjBook!=null?r2(adjBank-adjBook):null};
+}
+window.bkStmtSet=async m=>{
+ const v=prompt('Balance on the bank statement at '+dstr(mEnd(m))+' (RM):');if(v===null)return;const n=bkNum(v);
+ const k=BKA+'_'+m,d={...((BKR||{})[k]||{}),acct:BKA,m,branchId:ME.branchId,stmtManual:n};
+ try{await setDoc(doc(db,'bankRecon',k),d);(BKR=BKR||{})[k]=d;render();}catch(e){toast(friendly(e));}
+};
+window.bkReconcile=async m=>{
+ const C=bkCtx(),R=bkRecon(m,C);if(R.diff!==0){toast('It does not balance yet');return;}
+ const k=BKA+'_'+m,d={...((BKR||{})[k]||{}),acct:BKA,m,branchId:ME.branchId,done:true,stmt:R.S.v,book:R.book,bankNot:R.bankNot.length,bookNot:R.bookNot.length,at:new Date().toISOString(),by:UID,byName:ME.name};
+ try{await setDoc(doc(db,'bankRecon',k),d);(BKR=BKR||{})[k]=d;await audit('Bank reconciled',acName(BKA)+' · '+mLabel(m)+' · statement '+rm(R.S.v));render();toast(mLabel(m)+' reconciled');}catch(e){toast(friendly(e));}
+};
+window.bkAcct=v=>{BKA=v;render();};
+window.bkView=v=>{BKV=v;render();};
+window.bkCSV=()=>{const C=bkCtx(),m=FINM;
+ csvDownload((bizC().name||'spa').replace(/\W+/g,'-')+'-bank-'+BKA+'-'+m+'.csv',[['Date','Description','Reference','Amount','Balance','Status','Matched to'],
+  ...C.L.filter(l=>l.date.slice(0,7)===m).sort((a,b)=>a.date.localeCompare(b.date)||a.seq-b.seq).map(l=>[l.date,l.desc,l.ref||'',l.amount.toFixed(2),l.bal!=null?(+l.bal).toFixed(2):'',
+   {open:'To check',lost:'To check',matched:'Matched',ignored:'Left out'}[l.st],(l.srcs||[]).map(s=>(C.idx[s]||{}).desc||s).join(' + ')+(l.ignoredReason||'')])]);};
+const bkOpenCount=()=>(BKL||[]).filter(l=>l.status==='open').length;
+function finBank(){
+ const m=FINM,A=BK_ACCTS();if(!A.some(a=>a[0]===BKA))BKA=A[0][0];
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<div class="row" style="gap:6px;flex-wrap:wrap">'+
+  (A.length>1?'<select class="f" style="margin:0;width:auto" onchange="bkAcct(this.value)">'+A.map(a=>'<option value="'+a[0]+'"'+(a[0]===BKA?' selected':'')+'>'+esc(a[1])+'</option>').join('')+'</select>':'')+
+  '<button class="btn sm" onclick="bkImport()">'+ic('upload',14)+'Import statement</button></div></div></div>';
+ if(BKL===null){bkLoad().then(()=>{if(TAB==='fin'&&FINV==='bank')render();});return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const months=[...new Set([...bkMonthsList(),...balMonths(m).L])];
+ if(!bkLines().length)return head+'<div class="card"><div class="empty">'+ic('bank',26)+'<div><b>No bank statement yet.</b></div>'+
+  '<p class="tiny muted" style="max-width:480px;margin:6px auto">Download the account history from your online banking as CSV and import it. Each line is matched to the payments, expenses and money moves already in the app; what is left shows you what is missing.</p>'+
+  '<button class="btn" onclick="bkImport()">'+ic('upload',15)+'Import statement</button></div></div>'+bkCashCard();
+ if(!finNeed(months))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Reading the books…</p></div></div>';
+ const C=bkCtx(),R=bkRecon(m,C),rec=(BKR||{})[BKA+'_'+m];
+ const ML=C.L.filter(l=>l.date.slice(0,7)===m).sort((a,b)=>a.date.localeCompare(b.date)||a.seq-b.seq);
+ const cnt=k=>ML.filter(l=>k==='open'?(l.st==='open'||l.st==='lost'):l.st===k).length;
+ const shown=ML.filter(l=>BKV==='all'||(BKV==='open'?(l.st==='open'||l.st==='lost'):l.st===BKV));
+ const rules=ML.filter(l=>l.st==='open'&&!isLocked(l.date)).map(l=>bkSuggest(l)).filter(s=>s&&s.from==='rule').length;
+ const inM=r2(ML.filter(l=>l.amount>0).reduce((t,l)=>t+l.amount,0)),outM=r2(ML.filter(l=>l.amount<0).reduce((t,l)=>t+l.amount,0));
+ const pill=l=>l.st==='matched'?'<span class="pill g">'+ic(l.auto?'link':'check',11)+'</span>':l.st==='ignored'?'<span class="pill">left out</span>':l.st==='lost'?'<span class="pill r">re-check</span>':'<span class="pill a">check</span>';
+ const openE=R.bankNot.filter(l=>l.st==='open'||l.st==='lost').length,done=rec&&rec.done,stale=done&&(R.diff!==0||openE>0);
+ const line=(label,v,cls)=>'<tr class="'+(cls||'')+'"><td>'+label+'</td><td class="num">'+(v==null?'—':fmtS(v))+'</td></tr>';
+ return head+
+  '<div class="crmkpis">'+kpi('Statement balance',R.S.v!=null?rm(R.S.v):'—','at '+dshort(R.E)+(R.S.manual?' · typed in':''),'bank')+
+   kpi('In the books',R.book!=null?rm(R.book):'—',acName(BKA)+' at '+dshort(R.E),'wallet')+
+   kpi('To check',String(cnt('open')),'lines in '+mLabel(m).split(' ')[0],'alert')+
+   kpi('Difference',R.diff==null?'—':'<span class="'+(R.diff?'neg':'')+'">'+fmtS(R.diff)+'</span>',R.diff===0?(cnt('open')?'balances — lines still to record':'balances'):'after timing items','check')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('bank',15)+' Statement lines · '+mLabel(m)+'</h3><div class="row wrap2" style="gap:6px;margin:0 0 8px">'+
+   '<button class="btn sm ghost" onclick="bkRematch()">'+ic('link',13)+'Match again</button><button class="btn sm ghost" onclick="bkImports()">'+ic('list',13)+'Imports</button>'+
+   '<button class="btn sm ghost" onclick="bkCSV()">'+ic('download',13)+'CSV</button></div>'+
+   '<div class="tiny muted" style="margin:0 0 8px">In '+rm(inM)+' · out '+rm(-outM)+' · '+ML.length+' lines</div>'+
+   '<div class="seg" style="margin:0 0 8px">'+[['open','To check'],['matched','Matched'],['ignored','Left out'],['all','All']].map(([k,t])=>'<button type="button" class="'+(BKV===k?'on':'')+'" onclick="bkView(\''+k+'\')">'+t+(k!=='all'?' ('+cnt(k)+')':'')+'</button>').join('')+'</div>'+
+   (rules?'<button class="btn sm" style="margin:0 0 8px" onclick="bkBulk()">'+ic('check',13)+'Record '+rules+' by your rules</button>':'')+
+   (shown.length?shown.map(l=>{const s=(l.st==='open'||l.st==='lost')?bkSuggest(l):null,mt=l.st==='matched'?(l.srcs||[]).map(x=>(C.idx[x]||{}).desc).filter(Boolean).join(' + '):'';
+    return '<button class="bkrow" onclick="bkLine(\''+l.id+'\')"><span class="bkd">'+dshort(l.date)+'</span><span class="bkdesc">'+esc(l.desc||'')+
+     '<small>'+(mt?ic('link',10)+' '+esc(mt):s?'Looks like '+esc(bkSugLabel(s)):l.st==='ignored'?esc(l.ignoredReason||''):(l.ref?esc(l.ref):''))+'</small></span>'+
+     '<b class="bkamt'+(l.amount>0?' in':'')+'">'+(l.amount>0?'+':'')+fmtS(l.amount)+'</b>'+pill(l)+'</button>';}).join('')
+    :'<div class="empty">'+(BKV==='open'?ic('check',22)+'<div>Nothing to check in '+mLabel(m)+'.</div>':'None.')+'</div>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('shield',15)+' Reconciliation · '+mLabel(m)+'</h3>'+
+   (done&&!stale?'<span class="pill g">'+ic('check',11)+' reconciled '+dshort(rec.at)+'</span>':stale?'<span class="pill r">changed since reconciled</span>':'')+'</div>'+
+   '<div class="scroll"><table class="pltbl">'+
+    line('Balance on the statement at '+dshort(R.E),R.S.v,'pltot')+
+    line('In the app, not in the bank yet — money in',r2(R.bookNot.filter(b=>b.amount>0).reduce((t,b)=>t+b.amount,0)))+
+    line('In the app, not in the bank yet — money out',r2(R.bookNot.filter(b=>b.amount<0).reduce((t,b)=>t+b.amount,0)))+
+    line('Adjusted statement balance',R.adjBank,'plbig')+
+    line('Balance in the books',R.book,'pltot')+
+    line('In the bank, not in the app — money in',r2(R.bankNot.filter(l=>l.amount>0).reduce((t,l)=>t+l.amount,0)))+
+    line('In the bank, not in the app — money out',r2(R.bankNot.filter(l=>l.amount<0).reduce((t,l)=>t+l.amount,0)))+
+    line('Adjusted books balance',R.adjBook,'plbig')+
+    line('Difference',R.diff,'plbig')+'</table></div>'+
+   (R.S.v==null?'<p class="tiny muted">This statement has no balance column. <a href="#" class="bklink" onclick="bkStmtSet(\''+m+'\');return false">Type the statement balance at '+dshort(R.E)+'</a>.</p>':
+    '<p class="tiny muted" style="margin:6px 0 0">'+(R.S.manual?'Statement balance typed in · ':'')+'<a href="#" class="bklink" onclick="bkStmtSet(\''+m+'\');return false">'+(R.S.manual?'Change':'Type it in instead')+'</a></p>')+
+   (R.book==null?'<p class="tiny muted">The books need a starting bank balance. <a href="#" class="bklink" onclick="finTab(\'bal\');setTimeout(()=>openBalForm(),50);return false">Enter starting balances</a> — use the statement\'s balance on the day before the first imported line'+(BKI&&BKI.length&&BKI[BKI.length-1].opening!=null?' ('+rm(BKI[BKI.length-1].opening)+' on '+dstr(addDaysStr(bkStart(),-1))+')':'')+'.</p>':'')+
+   (R.diff===0&&openE?'<p class="tiny muted">It balances, but '+openE+' bank line(s) up to '+dshort(R.E)+' are not in the app yet. Record or match them, then mark the month reconciled.</p>':'')+
+   (R.diff!=null&&R.diff!==0?'<p class="tiny" style="color:var(--rose)">Still '+fmtS(R.diff)+' apart. Match or record the lines to check; if the difference was there from the first statement, the starting bank balance in Money &amp; balances is not the statement\'s.</p>':'')+
+   (R.bookNot.length?'<details class="exhelp"><summary>'+R.bookNot.length+' record(s) in the app not in the bank by '+dshort(R.E)+'</summary>'+
+    R.bookNot.slice(0,60).map(b=>'<div class="bkrow" style="cursor:default"><span class="bkd">'+dshort(b.date)+'</span><span class="bkdesc">'+esc(b.desc||'')+'<small>'+(daysBetween(b.date,R.E)>7?'<span class="odue">more than a week old</span>':'')+'</small></span><b class="bkamt'+(b.amount>0?' in':'')+'">'+fmtS(b.amount)+'</b></div>').join('')+'</details>':'')+
+   (R.diff===0&&(!done||stale)&&R.E<=today()&&!openE?'<button class="btn" style="width:100%;justify-content:center;margin-top:8px" onclick="bkReconcile(\''+m+'\')">'+ic('check',15)+'Mark '+mLabel(m)+' reconciled</button>':'')+
+  '</div>'+bkCashCard()+
+  ((((FINSET||{}).bankRules)||[]).length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('flag',15)+' Your rules</h3>'+((FINSET||{}).bankRules).map((r,k)=>'<div class="spread tiny" style="padding:4px 0;border-bottom:1px solid var(--line)"><span>“'+esc(r.kw)+'” · '+(r.dir==='in'?'money in':'money out')+' → '+esc(bkSugLabel(r))+'</span>'+
+   '<button class="iconbtn" onclick="bkRuleDrop('+k+')">'+ic('close',12)+'</button></div>').join('')+'</div>':'')+
+  (!isOwnerMe()?'<p class="tiny muted" style="margin:0 12px 12px">Salaries are only in the books when the owner opens Finance, so salary payments show as lines to check for managers.</p>':'');
+}
+const addDaysStr=(d,n)=>d?ymd(addDays(new Date(d+'T00:00:00'),n)):'';
+window.bkRuleDrop=async k=>{const R=[...(((FINSET||{}).bankRules)||[])];R.splice(k,1);
+ try{await setDoc(doc(db,'finance','settings'),{bankRules:R},{merge:true});FINSET={...(FINSET||{}),bankRules:R};render();}catch(e){toast(friendly(e));}};
+
+/* ---------- counting cash: the drawer and petty cash against the books ---------- */
+function bkCashCard(){
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('wallet',15)+' Count cash</h3><button class="btn sm ghost" onclick="cashCount()">'+ic('check',13)+'Count now</button></div>'+
+  '<p class="tiny muted" style="margin:0">Count the petty cash (or the drawer after banking) and compare with the books. A difference is posted as an adjustment to Miscellaneous, with the count in the audit trail.</p></div>';
+}
+window.cashCount=()=>{
+ const m=FINM,cur=m===today().slice(0,7),B=balBuild(m);
+ if(!B.O){toast('Enter starting balances first (Money & balances)');return;}
+ const acs=[['1030','Petty cash'],['1000','Cash in drawer']];
+ modal('Count cash','<div class="card"><p class="tiny muted" style="margin:0 0 8px">Books as at '+(cur?'now':dstr(mEnd(m)))+'.</p>'+
+  '<label>Which cash</label><select class="f" id="ck-a" onchange="cashCountSum()">'+acs.map(a=>'<option value="'+a[0]+'">'+a[1]+' · books '+rm(B.bal(a[0]))+'</option>').join('')+'</select>'+
+  '<label>Counted (RM)</label><input class="f" type="number" step="0.01" min="0" id="ck-n" oninput="cashCountSum()">'+
+  '<div class="pkdsum" id="ck-s"></div><div id="ck-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="cashCountSave()">'+ic('check',16)+'Save the count</button></div>');
+ window.cashCountSum();
+};
+window.cashCountSum=()=>{const B=balBuild(FINM),a=$('#ck-a').value,b=B.bal(a),v=$('#ck-n').value,s=$('#ck-s');if(!s)return;
+ if(v===''){s.innerHTML='Books: <b>'+rm(b)+'</b>';return;}const d=r2(+v-b);
+ s.innerHTML='Books '+rm(b)+' · counted '+rm(+v)+' · '+(Math.abs(d)<0.005?'<b style="color:var(--jade)">matches</b>':'<b class="odue">'+(d>0?'over by ':'short by ')+rm(Math.abs(d))+'</b>');};
+window.cashCountSave=async()=>{
+ const m=FINM,B=balBuild(m),a=$('#ck-a').value,v=$('#ck-n').value,e=$('#ck-e');
+ if(v===''||+v<0){e.textContent='Enter what you counted.';return;}
+ const b=B.bal(a),d=r2(+v-b),date=m===today().slice(0,7)?today():mEnd(m);
+ if(isLocked(date)){e.textContent=lockMsg(date);return;}
+ try{
+  if(Math.abs(d)>=0.005){const r=await mjPost({date,desc:'Cash count · '+acName(a)+' · counted '+rm(+v)+' vs books '+rm(b),
+    lines:d>0?[{account:a,debit:d,credit:0},{account:'6190',debit:0,credit:d}]:[{account:'6190',debit:-d,credit:0},{account:a,debit:0,credit:-d}]});if(!r)return;}
+  else{await audit('Cash counted',acName(a)+' · '+rm(+v)+' · matches the books');toast('Matches the books');}
+  window.closeModal();render();
+ }catch(err){e.textContent=friendly(err);}
+};
+
+/* ---------- reminders ---------- */
+{const _fa=finAlerts;finAlerts=al=>{_fa(al);try{bkAlerts(al);}catch(e){console.warn('bank alerts',e);}};}
+function bkAlerts(al){
+ if(!boss()||!BKL||!BKL.length)return;
+ const td=today(),old=BKL.filter(l=>l.status==='open'&&daysBetween(l.date,td)>7);
+ if(old.length)al.push({i:'bank',t:old.length+' bank line'+(old.length>1?'s':'')+' to check',d:'In the bank statement but not matched to anything in the app',go:"finGo('bank')"});
+ const last=(BKI||[])[0];
+ if(last&&daysBetween(String(last.at).slice(0,10),td)>14)al.push({i:'bank',t:'Bank statement last imported '+dshort(last.at),d:'Import the latest lines to keep the books checked',go:"finGo('bank')"});
+ const pm=mShift(td.slice(0,7),-1);
+ if(+td.slice(8,10)>10&&BKL.some(l=>l.date<=mEnd(pm))&&!Object.values(BKR||{}).some(r=>r.m===pm&&r.done))
+  al.push({i:'bank',t:'Bank for '+mLabel(pm)+' not reconciled',d:'Match the lines and mark the month reconciled',go:"finGo('bank')"});
+}
 
 </script>
