@@ -1658,6 +1658,19 @@ body.demo .syncbar{top:106px}
 .ccsum{background:var(--brass-soft);border-radius:12px;padding:10px 12px;margin-bottom:6px}.ccsum table{width:100%}.ccsum td{padding:3px 0;font-size:13px}
 .ccsum tr.cctot td{border-top:1px solid var(--line);padding-top:6px;font-size:14.5px}
 .cftbl td small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:400;margin-top:2px;line-height:1.35}
+.kpi .big{white-space:nowrap;overflow:hidden;max-width:100%}.crmkpis>*{min-width:0}
+.aprsnap b{display:block;white-space:nowrap;overflow:hidden}
+.segwrap{position:relative;margin-bottom:12px}.segwrap .crmseg{margin-bottom:0;scroll-behavior:smooth}
+.segarr{display:none;position:absolute;top:calc(50% - 2px);transform:translateY(-50%);z-index:2;width:34px;height:34px;border-radius:50%;
+ border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);align-items:center;justify-content:center;color:var(--ink);cursor:pointer;padding:0}
+.segarr.l{left:-4px}.segarr.r{right:-4px}
+.segwrap.canl .segarr.l,.segwrap.canr .segarr.r{display:inline-flex}
+.segwrap::before,.segwrap::after{content:'';position:absolute;top:0;bottom:4px;width:52px;pointer-events:none;z-index:1;opacity:0;transition:opacity .2s}
+.segwrap::before{left:0;background:linear-gradient(270deg,rgba(244,240,231,0),var(--cream) 65%)}
+.segwrap::after{right:0;background:linear-gradient(90deg,rgba(244,240,231,0),var(--cream) 65%)}
+.segwrap.canl::before,.segwrap.canr::after{opacity:1}
+.finhead{flex-wrap:wrap;gap:8px}
+@media (max-width:560px){.pltbl td,.pltbl th{font-size:12.5px}.pltbl td:first-child{min-width:110px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1915,7 +1928,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25n';
+const BUILD='2026-09-25o';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14556,7 +14569,7 @@ function finExpenses(){
  const tot=E.reduce((t,e)=>t+(+e.amount||0),0)+A.reduce((t,e)=>t+e.amount,0);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid'),due7=unpaid.filter(e=>daysBetween(today(),e.dueDate||e.date)<=7);
  const byAc={};[...E,...A].forEach(e=>expLines(e).forEach(l=>{byAc[l.account]=(byAc[l.account]||0)+(+l.amount||0);}));
- return '<div class="card"><div class="spread">'+finNav()+'<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="finGuide()">'+ic('note',14)+'Guide</button><button class="btn sm" onclick="expForm()">'+ic('plus',14)+'Add expense or bill</button></div></div></div>'+
+ return '<div class="card"><div class="spread finhead">'+finNav()+'<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="finGuide()">'+ic('note',14)+'Guide</button><button class="btn sm" onclick="expForm()">'+ic('plus',14)+'Add expense or bill</button></div></div></div>'+
   '<div class="crmkpis">'+kpi('Spent in '+mLabel(m),rm(tot),(E.length+A.length)+' entries','receipt')+
    kpi('Bills to pay',rm(unpaid.reduce((t,e)=>t+(+e.amount||0),0)),unpaid.length+' bill'+(unpaid.length!==1?'s':''),'clock')+
    kpi('Due in 7 days',rm(due7.reduce((t,e)=>t+(+e.amount||0),0)),due7.length?due7.length+' bill(s)':'nothing due','alert')+'</div>'+
@@ -14768,7 +14781,7 @@ const finDirty=()=>{FINJ={};FINJB={};TPD={};};
 function finJournal(){
  const m=FINM,J=FINJ[m];
  if(!J&&!FINJP[m])finJGet(m).then(()=>{if(TAB==='fin'&&FINV==='jnl')render();});
- const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!J)return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
  const tb={};J.forEach(l=>{const x=tb[l.account]=tb[l.account]||{dr:0,cr:0};x.dr+=l.debit;x.cr+=l.credit;});
  const dr=r2(J.reduce((t,l)=>t+l.debit,0)),cr=r2(J.reduce((t,l)=>t+l.credit,0));
@@ -14959,7 +14972,7 @@ function finNotes(m){
 }
 function finPL(){
  const m=FINM,M=plMonths(m);
- const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!finNeed(M.all))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up '+M.all.length+' months of records…</p></div></div>';
  const P=plBuild(m),{a,b}=P,pm=mLabel(mShift(m,-1)).split(' ')[0];
  const chg=(x,y)=>{if(!y)return '';const p=Math.round((x-y)/Math.abs(y)*100);return (p>=0?'+':'')+p+'% vs '+pm;};
@@ -15228,7 +15241,7 @@ async function tpData(m){
 let TPBUSY='';
 function finTP(){
  const m=FINM,D0=TPD[m];
- const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!D0){if(TPBUSY!==m){TPBUSY=m;tpData(m).then(()=>{TPBUSY='';if(TAB==='fin'&&FINV==='tp')render();}).catch(e=>{TPBUSY='';TPD[m]={svc:[],ret:[],err:friendly(e)};render();});}
   return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';}
  const S=D0.svc,R=D0.ret,tot=a=>a.reduce((t,x)=>({n:t.n+x.n,rev:t.rev+x.rev,cost:t.cost+x.cost,comm:t.comm+x.comm,profit:t.profit+x.profit,mins:t.mins+(x.mins||0)}),{n:0,rev:0,cost:0,comm:0,profit:0,mins:0});
@@ -15282,7 +15295,7 @@ function beCalc(m){
 }
 function finBud(){
  const m=FINM,basis=[1,2,3].map(i=>mShift(m,-i));
- const head='<div class="card"><div class="spread">'+finNav()+(isOwnerMe()?'<button class="btn sm" onclick="budForm()">'+ic('edit',14)+'Set budget</button>':'')+'</div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+(isOwnerMe()?'<button class="btn sm" onclick="budForm()">'+ic('edit',14)+'Set budget</button>':'')+'</div></div>';
  const B=budOf(m);
  if(!finNeed([m,...basis])||!budReady(m))return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
  const A=plOf(FINJ[m]),E=beCalc(m),has=Object.keys(B).some(k=>+B[k]),ov=FINBUDM[m]&&FINBUDM[m].acc;
@@ -15371,7 +15384,7 @@ function finJGetB(m,br){
 const jOf=(m,br)=>br===ME.branchId?FINJ[m]:FINJB[br+'|'+m];
 function finBrc(){
  const m=FINM,Y=plMonths(m).ytd,BR=D.branches||[];
- const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!isOwnerMe()||BR.length<2)return head+'<div class="card"><div class="empty">Branch comparison is for the owner, once there is more than one branch.</div></div>';
  const pairs=BR.flatMap(b=>Y.map(k=>[k,b.id]));
  if(pairs.some(([k,b])=>!jOf(k,b))){if(!FINNEEDB)FINNEEDB=Promise.all(pairs.map(([k,b])=>finJGetB(k,b))).then(()=>{FINNEEDB=null;if(TAB==='fin'&&FINV==='brc')render();});
@@ -17830,7 +17843,7 @@ function cfBridge(m){
 function finCash(){
  const m=FINM,trend=[];for(let i=5;i>=0;i--)trend.push(mShift(m,-i));
  const {L}=balMonths(m);
- const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
  if(!finNeed([...new Set([...trend,...L])]))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up the money in and out…</p></div></div>';
  const C=cfBuild(m),Bg=cfBridge(m),B=balBuild(m);
  const hasOpen=!!B.O,close=r2(CF_CASH.reduce((t,a)=>t+B.bal(a),0)),open=r2(close-C.change);
@@ -17867,5 +17880,49 @@ function finCash(){
     'Card and e-wallet takings count as money in when paid; use Move money when the payout reaches the bank so the bank balance is right.',
     ...(isOwnerMe()?[]:['Salaries are only included when the owner opens Finance.'])].map(x=>'<p class="tiny muted" style="margin:4px 0">• '+esc(x)+'</p>').join('')+'</div>';
 }
+
+
+/* ============ after every screen: big figures fit their box, long tab bars get arrows ============ */
+/* Large ringgit figures shrink to fit their tile instead of spilling out on a phone, and a
+   row of tabs wider than the screen (Finance, HR, CRM) gets ‹ › buttons, turns with the
+   mouse wheel, and keeps the open tab in view. */
+function fitFigures(root){
+ (root||document).querySelectorAll('#app .kpi .big, #app .aprsnap b').forEach(el=>{
+  el.style.fontSize='';
+  const w=el.clientWidth;if(!w||el.scrollWidth<=w+1)return;
+  const base=parseFloat(getComputedStyle(el).fontSize)||24;
+  let fs=Math.max(12,Math.floor(base*w/el.scrollWidth*0.97));el.style.fontSize=fs+'px';
+  while(el.scrollWidth>el.clientWidth+1&&fs>12){fs--;el.style.fontSize=fs+'px';}
+ });
+}
+function segArrows(seg){
+ const w=seg.parentElement;if(!w)return;
+ const max=seg.scrollWidth-seg.clientWidth;
+ w.classList.toggle('canl',seg.scrollLeft>2);
+ w.classList.toggle('canr',seg.scrollLeft<max-2);
+}
+window.segGo=(btn,dir)=>{const seg=btn.parentElement.querySelector('.crmseg');if(!seg)return;
+ const to=seg.scrollLeft+dir*Math.max(160,seg.clientWidth*0.7);
+ if(seg.scrollTo)seg.scrollTo({left:to,behavior:'smooth'});else seg.scrollLeft=to;
+ setTimeout(()=>segArrows(seg),350);};
+function segEnhance(){
+ document.querySelectorAll('#app .crmseg').forEach(seg=>{
+  if(!seg.parentElement.classList.contains('segwrap')){
+   const w=document.createElement('div');w.className='segwrap';seg.parentElement.insertBefore(w,seg);w.appendChild(seg);
+   w.insertAdjacentHTML('afterbegin','<button type="button" class="segarr l" aria-label="Previous tabs" onclick="segGo(this,-1)">'+ic('left',16)+'</button>');
+   w.insertAdjacentHTML('beforeend','<button type="button" class="segarr r" aria-label="More tabs" onclick="segGo(this,1)">'+ic('right',16)+'</button>');
+   seg.addEventListener('scroll',()=>segArrows(seg),{passive:true});
+   seg.addEventListener('wheel',e=>{if(seg.scrollWidth<=seg.clientWidth)return;
+    if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){seg.scrollLeft+=e.deltaY;e.preventDefault();}},{passive:false});
+  }
+  const on=seg.querySelector('button.on');
+  if(on&&seg.scrollWidth>seg.clientWidth){const l=on.offsetLeft-seg.offsetLeft,r=l+on.offsetWidth;
+   if(l<seg.scrollLeft||r>seg.scrollLeft+seg.clientWidth)seg.scrollLeft=Math.max(0,l-seg.clientWidth/2+on.offsetWidth/2);}
+  segArrows(seg);
+ });
+}
+function uiAfter(){try{segEnhance();fitFigures();}catch(e){console.warn('ui',e);}}
+{const _r=render;render=function(){_r();uiAfter();};window.render=render;}
+if(typeof window.addEventListener==='function'){let t=null;window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(uiAfter,120);});}
 
 </script>
