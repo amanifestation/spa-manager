@@ -1650,6 +1650,13 @@ body.demo .syncbar{top:106px}
 .exsrow{display:grid;grid-template-columns:minmax(0,1.6fr) 96px minmax(0,1.2fr) auto;gap:6px;align-items:center;margin-bottom:6px}.exsrow .f{margin:0}
 @media (max-width:560px){.exsrow{grid-template-columns:minmax(0,1fr) 88px auto}.exsrow .exsdesc{grid-column:1/3;grid-row:2}}
 .exsleft{margin:0 0 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ccpart{border:1px solid var(--line);border-radius:14px;padding:10px 11px 8px;margin-bottom:9px;background:var(--surface)}
+.ccpart .spread{gap:8px;align-items:center;margin-bottom:4px}.ccname{margin:0;flex:1;font-weight:650}
+.ccgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 8px}.ccgrid .f{margin-bottom:6px}.ccgrid label{font-size:11.5px}
+@media (max-width:560px){.ccgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ccout{font-size:12px;color:var(--ink-2);padding:2px 2px 0}.ccout b{color:var(--ink)}
+.ccsum{background:var(--brass-soft);border-radius:12px;padding:10px 12px;margin-bottom:6px}.ccsum table{width:100%}.ccsum td{padding:3px 0;font-size:13px}
+.ccsum tr.cctot td{border-top:1px solid var(--line);padding-top:6px;font-size:14.5px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1907,7 +1914,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25l';
+const BUILD='2026-09-25m';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -9532,7 +9539,9 @@ window.editProduct=id=>{
   '<label>Category</label>'+catSelect('product','pr-cat',p.cat||'')+
   '<div class="grid g2"><div><label>Selling price (RM)</label><input class="f" type="number" step="0.01" id="pr-p" value="'+
    (+p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
-   (+p.cost||0)+'"></div></div>'+
+   (+p.cost||0)+'">'+(id&&boss()?'<button type="button" class="btn ghost sm" style="margin:-4px 0 8px" onclick="costCalc(\''+esc(id)+'\')">'+ic('chart',13)+(p.costCalc?'Cost calculator · '+rm(p.costCalc.total):'Cost calculator')+'</button>'+
+    (p.costCalc?'<div class="tiny muted" style="margin:-4px 0 8px">Worked out '+dshort(p.costCalc.updatedAt)+' from '+esc((p.costCalc.parts||[]).map(x=>x.name).filter(Boolean).join(', '))+'</div>':''):
+    (!id?'<div class="tiny muted" style="margin:-4px 0 8px">Save the product first to use the cost calculator.</div>':''))+'</div></div>'+
   '<div class="grid g2"><div><label>Unit</label><input class="f" id="pr-u" value="'+esc(p.unit||'pcs')+
    '" placeholder="pcs, ml, g"></div><div><label>Size per unit</label><input class="f" type="number" id="pr-s" value="'+
    (+p.size||1)+'"></div></div>'+
@@ -17631,5 +17640,116 @@ function exsFinal(total){
 }
 
 window.exsLeft=exsLeft;
+
+
+/* ============ cost of a product the spa packs itself ============ */
+/* For retail products made in-house from bulk: the content bought in bulk, the bottle, the
+   label, the box… each with what it cost to land (price + shipping), how many it came as,
+   how much is lost, and how much goes into one finished unit. The calculator adds them up
+   to a cost per unit, shows the margin at the selling price and how many units the
+   materials make, and saves both the cost and the working on the product — so it can be
+   opened again and updated when a supplier changes price. */
+const CC_TYPES=[['fill','Content (bulk)'],['item','Packaging (bottle, label, box…)'],['fixed','Fixed cost per unit']];
+let CC=null;
+const ccNum=v=>Math.max(0,+v||0);
+const ccBase=u=>u==='g'||u==='kg'?'g':'ml';                 /* what one finished unit is measured in */
+const ccMul=u=>u==='L'||u==='kg'?1000:1;
+/* the cost of one part in one finished unit, and how many units the purchase makes */
+function ccPart(x){
+ const landed=ccNum(x.price)+ccNum(x.ship),waste=Math.min(90,ccNum(x.waste))/100;
+ if(x.type==='fixed')return{cost:r2(ccNum(x.price)),makes:Infinity,landed:ccNum(x.price)};
+ const qty=ccNum(x.qty)*(x.type==='fill'?ccMul(x.unit):1),use=x.type==='fill'?ccNum(x.use):(ccNum(x.use)||1);
+ if(!qty||!use)return{cost:0,makes:0,landed,bad:true};
+ const good=qty*(1-waste);
+ return{cost:landed/good*use,makes:Math.floor(good/use),landed,per:landed/good};
+}
+function ccCalc(){
+ const P=CC.parts.map(ccPart),total=r2(P.reduce((t,p)=>t+p.cost,0));
+ const makes=Math.min(...P.filter(p=>p.makes!==Infinity).map(p=>p.makes).concat([Infinity]));
+ return{P,total,makes:makes===Infinity?0:makes};
+}
+const ccBlank=t=>t==='fill'?{type:'fill',name:'',price:'',ship:'',qty:'',unit:'ml',waste:5,use:''}:
+ t==='fixed'?{type:'fixed',name:'',price:''}:{type:'item',name:'',price:'',ship:'',qty:'',waste:2,use:1};
+window.costCalc=id=>{
+ const p=prod(id);if(!p||!p.id){toast('Save the product first');return;}
+ if(!boss()){toast('Only the owner or a manager can change cost prices');return;}
+ const s=p.costCalc||{};
+ CC={id,parts:(s.parts||[]).map(x=>({...x}))};
+ if(!CC.parts.length)CC.parts=[{...ccBlank('fill'),name:'Bulk content'},{...ccBlank('item'),name:'Bottle'},{...ccBlank('item'),name:'Label',waste:5}];
+ ccPaint();
+};
+function ccRow(x,k){
+ const f=(key,label,ph,step,w)=>'<div'+(w?' style="grid-column:span '+w+'"':'')+'><label>'+label+'</label><input class="f" type="number" min="0" step="'+(step||'0.01')+'" value="'+(x[key]===undefined?'':esc(x[key]))+
+  '" placeholder="'+(ph||'')+'" oninput="ccSet('+k+',\''+key+'\',this.value)"></div>';
+ const head='<div class="spread"><input class="f ccname" value="'+esc(x.name||'')+'" placeholder="'+(x.type==='fill'?'e.g. Vitamin C serum (bulk)':x.type==='fixed'?'e.g. Repacking labour':'e.g. Bottle 30 ml')+
+  '" oninput="ccSet('+k+',\'name\',this.value)"><span class="tiny muted" style="white-space:nowrap">'+esc((CC_TYPES.find(t=>t[0]===x.type)||[])[1]||'')+'</span>'+
+  '<button type="button" class="iconbtn" onclick="ccDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>';
+ if(x.type==='fixed')return '<div class="ccpart">'+head+'<div class="grid g2">'+f('price','Cost per unit (RM)','0.50')+'</div><div class="ccout" id="cco-'+k+'"></div></div>';
+ return '<div class="ccpart">'+head+'<div class="ccgrid">'+
+  f('price','Price paid (RM)','1500')+f('ship','Shipping (RM)','0')+
+  (x.type==='fill'?f('qty','Pack size','5000','1')+
+    '<div><label>Measured in</label><select class="f" onchange="ccSet('+k+',\'unit\',this.value)">'+['ml','g','L','kg'].map(u=>'<option'+(x.unit===u?' selected':'')+'>'+u+'</option>').join('')+'</select></div>'+
+    f('use','Per finished unit ('+ccBase(x.unit)+')','30','0.01')+f('waste','Loss %','5','0.5')
+   :f('qty','Pieces bought','200','1')+f('use','Per finished unit','1','1')+f('waste','Damaged / wasted %','2','0.5'))+
+  '</div><div class="ccout" id="cco-'+k+'"></div></div>';
+}
+function ccPaint(){
+ const p=prod(CC.id);
+ modal('Cost calculator · '+(p.name||''),'<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 10px">What one finished unit costs you: the content from the bulk pack, the bottle, the label and anything else. '+
+  'Use the landed cost — price plus shipping — and allow for what is lost when filling or damaged.</p>'+
+  '<div id="cc-parts">'+CC.parts.map(ccRow).join('')+'</div>'+
+  '<div class="row wrap2" style="margin:4px 0 12px">'+CC_TYPES.map(t=>'<button type="button" class="btn ghost sm" onclick="ccAdd(\''+t[0]+'\')">'+ic('plus',13)+esc(t[1].split(' (')[0])+'</button>').join('')+
+   (D.products.some(x=>x.id!==CC.id&&x.costCalc&&(x.costCalc.parts||[]).length)?'<select class="f" style="margin:0;max-width:220px" onchange="ccCopy(this.value);this.value=\'\'"><option value="">Copy parts from…</option>'+
+    D.products.filter(x=>x.id!==CC.id&&x.costCalc&&(x.costCalc.parts||[]).length).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('')+'</select>':'')+'</div>'+
+  '<div class="ccsum" id="cc-sum"></div>'+
+  '<div id="cc-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="cc-go" style="width:100%;justify-content:center" onclick="ccSave()">'+ic('check',16)+'Use this as the cost price</button>'+
+  '<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="editProduct(\''+esc(CC.id)+'\')">Back to the product</button></div>');
+ ccShow();
+}
+function ccShow(){
+ const R=ccCalc(),p=prod(CC.id),price=+p.price||0;
+ R.P.forEach((r,k)=>{const b=document.getElementById('cco-'+k);if(!b)return;const x=CC.parts[k];
+  b.innerHTML=r.bad?'<span class="muted">Fill in the pack size and how much goes into one unit.</span>':
+   x.type==='fixed'?'<b>'+rm(r.cost)+'</b> per unit':
+   (x.type==='fill'?rm(r.per)+' per '+ccBase(x.unit)+' after loss · ':rm(r.per)+' each after damage · ')+'<b>'+rm(r.cost)+'</b> per unit · makes '+r.makes+' unit'+(r.makes===1?'':'s');});
+ const s=document.getElementById('cc-sum');if(!s)return;
+ const margin=price>0?(price-R.total)/price*100:null,cur=+p.cost||0;
+ s.innerHTML='<table>'+R.P.map((r,k)=>'<tr><td>'+esc(CC.parts[k].name||((CC_TYPES.find(t=>t[0]===CC.parts[k].type)||[])[1]))+'</td><td class="num">'+rm(r.cost)+'</td></tr>').join('')+
+  '<tr class="cctot"><td><b>Cost of one unit</b></td><td class="num"><b>'+rm(R.total)+'</b></td></tr>'+
+  (price>0?'<tr><td>Selling price</td><td class="num">'+rm(price)+'</td></tr><tr><td>Gross profit per unit</td><td class="num"><b>'+rm(price-R.total)+'</b> ('+Math.round(margin)+'%)</td></tr>':'')+
+  '</table>'+
+  (R.makes?'<div class="tiny muted" style="margin-top:6px">'+ic('package',12)+' These purchases make about <b>'+R.makes+'</b> finished units'+
+   (R.P.length>1?' — '+esc(CC.parts[R.P.findIndex(r=>r.makes===R.makes)].name||'one part')+' runs out first':'')+'.</div>':'')+
+  (Math.abs(cur-R.total)>0.004?'<div class="tiny" style="margin-top:4px">Cost price now: '+rm(cur)+' → <b>'+rm(R.total)+'</b></div>':'')+
+  (price>0&&margin<50?'<div class="warnbox" style="margin-top:8px">'+ic('alert',13)+' Margin under 50%. Check the selling price.</div>':'');
+}
+window.ccSet=(k,key,v)=>{const x=CC.parts[k];if(!x)return;x[key]=['name','unit','type'].includes(key)?v:v;
+ if(key==='unit'){ccPaintKeep();return;}ccShow();};
+function ccPaintKeep(){const b=document.getElementById('cc-parts');if(b){b.innerHTML=CC.parts.map(ccRow).join('');ccShow();}}
+window.ccAdd=t=>{CC.parts.push(ccBlank(t));ccPaintKeep();};
+window.ccDrop=k=>{CC.parts.splice(k,1);ccPaintKeep();};
+window.ccCopy=id=>{const x=prod(id);if(!x||!x.costCalc)return;
+ (x.costCalc.parts||[]).forEach(q=>{if(!CC.parts.some(y=>y.name&&y.name===q.name))CC.parts.push({...q});});
+ CC.parts=CC.parts.filter(y=>y.name||ccNum(y.price));ccPaintKeep();toast('Parts copied from '+x.name+' — check the amounts');};
+window.ccSave=async()=>{
+ const e=document.getElementById('cc-e'),R=ccCalc();
+ const parts=CC.parts.filter(x=>x.name||ccNum(x.price));
+ if(!parts.length){e.textContent='Add at least one part.';return;}
+ const bad=parts.findIndex(x=>ccPart(x).bad);
+ if(bad>=0){e.textContent=(parts[bad].name||'A part')+': fill in the pack size and how much goes into one unit.';return;}
+ if(!(R.total>0)){e.textContent='The cost comes to RM0 — fill in the prices.';return;}
+ const clean=parts.map(x=>x.type==='fixed'?{type:'fixed',name:String(x.name||'').slice(0,60),price:r2(ccNum(x.price))}:
+  {type:x.type,name:String(x.name||'').slice(0,60),price:r2(ccNum(x.price)),ship:r2(ccNum(x.ship)),qty:ccNum(x.qty),use:ccNum(x.use)||(x.type==='item'?1:0),
+   waste:Math.min(90,ccNum(x.waste)),...(x.type==='fill'?{unit:x.unit||'ml'}:{})});
+ const p=prod(CC.id),before=+p.cost||0;
+ const data={cost:R.total,costCalc:{parts:clean,total:R.total,makes:R.makes,updatedAt:new Date().toISOString(),updatedBy:UID,updatedByName:ME.name}};
+ const btn=document.getElementById('cc-go');btn.disabled=true;
+ try{await setDoc(doc(db,'products',CC.id),data,{merge:true});Object.assign(p,data);
+  await audit('Product cost calculated',(p.name||CC.id)+' · '+rm(before)+' → '+rm(R.total)+' · '+clean.map(x=>x.name+' '+rm(ccPart(x).cost)).join(', '));
+  toast('Cost price set to '+rm(R.total));window.editProduct(CC.id);}
+ catch(err){e.textContent=friendly(err);btn.disabled=false;}
+};
 
 </script>
