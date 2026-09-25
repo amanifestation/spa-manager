@@ -1735,6 +1735,20 @@ body.ro [onclick^="astForm("],body.ro [onclick^="astDispose("],body.ro [onclick^
 body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{display:none!important}
 .robar{background:var(--brass-soft);border-color:transparent}.robar small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
 .asttbl{width:100%;font-size:13px}.asttbl td small{display:block;font-size:11.5px;color:var(--ink-3)}.asttbl tr{cursor:pointer}.asttbl tr.astgone td{color:var(--ink-3)}
+.prbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.prchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;border-radius:999px;background:var(--surface-2);border:1px dashed var(--line);color:var(--ink-2)}
+.prchip.on{background:var(--brass-soft);border:0;color:var(--ink)}.prchip.ghost{cursor:pointer;font:inherit;font-size:12px}
+.prline{display:inline-flex;align-items:center;gap:4px;color:var(--brass)}
+.prx{border:0;background:var(--surface-2);border-radius:50%;width:18px;height:18px;display:inline-grid;place-items:center;cursor:pointer;padding:0;margin-left:2px;color:var(--ink-3)}
+.pk2promo{position:absolute;top:6px;right:6px;font-size:10.5px;font-weight:700;background:var(--rose);color:#fff;border-radius:999px;padding:2px 7px}
+.pk2card{position:relative}
+.prrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:10px 0;font:inherit;color:inherit;cursor:pointer}
+.prrow .prname{flex:1;min-width:0}.prrow .prname small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.prq{display:block;height:5px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin:6px 0 2px;max-width:320px}.prq i{display:block;height:100%;background:var(--brass);border-radius:5px}
+.prcard{cursor:pointer}
+.pritems{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px;margin:0 0 10px}
+.pritem{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:9px;font-size:13px;cursor:pointer}.pritem.on{background:var(--brass-soft)}
+.pritem small{display:block;font-size:11px;color:var(--ink-3)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1994,7 +2008,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26d';
+const BUILD='2026-09-26e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2387,7 +2401,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -4845,6 +4859,7 @@ function recalcLine(i){
  else if(i.dType==='rm')d=+i.dVal||0;
  else if(i.dType==='code'&&i.discCode){const v=findVoucher(i.discCode);
   if(v)d=v.type==='pct'?g*(+v.value||0)/100:(+v.value||0);}
+ else if(i.dType==='promo')d=+i.promoDisc||0;
  i.lineDisc=r2(Math.min(g,Math.max(0,d)));
  return i;
 }
@@ -4854,7 +4869,8 @@ function lineInfo(i){
  const list=+((itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{}).price||0);
  if(i.priceEdited&&i.kind!=='redeem'&&Math.abs(list-(+i.price||0))>0.004)
   bits.push('price '+rm(i.price)+' <s class="muted">'+rm(list)+'</s>');
- if(i.lineDisc>0)bits.push((i.dType==='pct'?(+i.dVal)+'% off':i.dType==='code'?'code '+esc(i.discCode):'discount')+
+ if(i.lineDisc>0&&i.dType==='promo')bits.push('<span class="prline">'+ic('tag',11)+'promo '+esc(i.promoName||'')+' −'+rm(i.lineDisc)+promoLineInfo(i,cart.items.indexOf(i))+'</span>');
+ else if(i.lineDisc>0)bits.push((i.dType==='pct'?(+i.dVal)+'% off':i.dType==='code'?'code '+esc(i.discCode):'discount')+
   ' −'+rm(i.lineDisc)+(i.discNote?' · '+esc(i.discNote):''));
  if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!=='')bits.push('commission '+rm(i.commAmt));
  if(i.lineNote)bits.push('“'+esc(i.lineNote)+'”');
@@ -5001,7 +5017,7 @@ function lineForSale(i,base){
  if(i.priceEdited&&Math.abs((+i.price||0)-list)>0.004){
   if(!canPrice())throw new Error('Only a manager can change the price of '+base.name+'.');
   out.price=r2(i.price);out.listPrice=list;}
- const draft={...out,qty:i.qty,dType:i.dType||'',dVal:+i.dVal||0,discCode:i.discCode||''};
+ const draft={...out,qty:i.qty,dType:i.dType||'',dVal:+i.dVal||0,discCode:i.discCode||'',promoDisc:+i.promoDisc||0};
  recalcLine(draft);
  if(draft.lineDisc>0){
   const g=lineGross(draft);
@@ -5013,8 +5029,9 @@ function lineForSale(i,base){
   out.lineDisc=draft.lineDisc;out.discType=draft.dType;
   if(['pct','rm'].includes(draft.dType))out.discVal=draft.dVal;
   if(draft.dType==='code')out.discCode=draft.discCode;
+  if(draft.dType==='promo'){out.promoId=i.promoId||'';out.promoName=i.promoName||'';}
  }
- const changed=out.listPrice!==undefined||(out.lineDisc>0&&out.discType!=='code');
+ const changed=out.listPrice!==undefined||(out.lineDisc>0&&out.discType!=='code'&&out.discType!=='promo');
  if(changed&&coRules().needNote&&!i.discNote)throw new Error('Add a note saying why '+base.name+' was discounted.');
  if(i.discNote&&(changed||out.lineDisc>0))out.discNote=i.discNote;
  if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''){
@@ -5027,7 +5044,7 @@ function lineForSale(i,base){
 function lineNotes(i){
  const n=[];
  if(i.listPrice!==undefined&&i.listPrice>i.price)n.push('Usual price '+rm(i.listPrice));
- if(i.lineDisc>0)n.push((i.discType==='pct'?(+i.discVal)+'% discount':i.discType==='code'?'Code '+i.discCode:'Discount')+
+ if(i.lineDisc>0)n.push(i.discType==='promo'?'Promo '+(i.promoName||'')+' −'+rm(i.lineDisc):(i.discType==='pct'?(+i.discVal)+'% discount':i.discType==='code'?'Code '+i.discCode:'Discount')+
   (i.discNote?' ('+i.discNote+')':'')+' −'+rm(i.lineDisc));
  if(i.kind==='set'){const b=setOf(i.id);const it=i.setItems||b.items||[];
   if(it.length)n.push('Set: '+it.map(z=>z.qty+'× '+(z.name||prod(z.sku).name||z.sku)).join(' + '));}
@@ -11862,7 +11879,7 @@ function posCartCard(t){
   addTiles()+
   (cart.items.filter(needsHandsOn).length>1?'<button class="btn sm ghost" style="margin:4px 0 8px" onclick="handsOnAll()">'+
    ic('user',13)+'Hands-on for all</button>':'')+
-  quoteBar()+'<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
+  promoBar()+quoteBar()+'<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
    :'<div class="empty">'+ic('bag',24)+'<div>'+(cart.customerId||cart.walkin?'Add a treatment, product or package above.':'Choose the client first, then add items.')+'</div></div>')+'</div>'+
   smartBox()+
   '<table class="postot">'+
@@ -19540,5 +19557,312 @@ window.finXLSX=async()=>{
   const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}catch(e){console.warn(e);}
  audit('Finance export','Excel workbook · '+mLabel(m));toast('Workbook ready · '+sheets.length+' sheets');
 };
+
+/* ============ Promotions ============ */
+/* The owner sets up offers — a percentage or ringgit off, a special price, buy X get Y, or
+   spend-and-save — on chosen treatments, products, packages, a category or everything; for
+   everyone, new clients only or returning clients; for the first N buyers, a number of times
+   per client, between dates and on chosen days. At checkout every offer that applies is put
+   on the bill by itself (the best one per line), with a hint when one more item or a little
+   more spend would unlock one. The quota counts down live, so the 50th buyer really is the
+   last. Home shows what is running now. */
+let PROMOS=null,PROMOSUB=null,PROMOCLI={},PROMOHINTS=[];
+const PR_TYPES=[['pct','% off'],['amt','RM off'],['price','Special price'],['bxgy','Buy X get Y'],['spend','Spend & save']];
+const PR_KINDS=['service','product','package','set','addon'];
+const PR_KLAB={service:'treatment',product:'product',package:'package',set:'product set',addon:'add-on'};
+function promoWatch(){
+ if(PROMOSUB&&unsub.includes(PROMOSUB))return;
+ try{PROMOSUB=onSnapshot(collection(db,'promos'),s=>{PROMOS=s.docs.map(d=>({id:d.id,...d.data()}));
+   if(['home','pos','promo'].includes(TAB))render();},e=>{console.warn('promos',e);PROMOS=PROMOS||[];});unsub.push(PROMOSUB);}
+ catch(e){PROMOS=[];}
+}
+{const _w=watchReviews;watchReviews=(...a)=>{const r=_w(...a);try{promoWatch();}catch(e){}return r;};}
+const prDay=d=>new Date(d+'T00:00:00').getDay();
+function promoLive(p,d){d=d||today();
+ if(!p||p.active===false)return false;if(p.start&&d<p.start)return false;if(p.end&&d>p.end)return false;
+ if((p.days||[]).length&&!p.days.includes(prDay(d)))return false;
+ if((p.branchIds||[]).length&&!p.branchIds.includes(ME.branchId))return false;return true;}
+const promoLeft=p=>+p.limit>0?Math.max(0,+p.limit-(+p.used||0)):Infinity;
+const promoState=p=>p.active===false?['','Paused']:p.end&&today()>p.end?['','Ended']:+p.limit>0&&promoLeft(p)<=0?['r','Sold out']:p.start&&today()<p.start?['b','Starts '+dshort(p.start)]:promoLive(p)?['g','Running']:['a','Not today'];
+/* does a bill line fall under the offer */
+function promoHits(p,i){
+ const T=p.target||{scope:'all'};if(!PR_KINDS.includes(i.kind))return false;
+ if(T.scope==='all')return true;
+ if(T.scope==='kind')return (T.kinds||[]).includes(i.kind);
+ if(T.scope==='cat')return T.kind===i.kind&&catOf(itemSrc(i.kind,i.id))===T.cat;
+ return (T.items||[]).some(x=>x.kind===i.kind&&x.id===i.id);
+}
+/* the client's history: whether they are new, and how often they used each offer */
+function promoCli(cid){
+ if(!cid)return {ready:true,n:0,uses:{},walkin:true};
+ const c=PROMOCLI[cid];if(c)return c;
+ if(c===undefined){PROMOCLI[cid]=null;
+  getDocs(query(collection(db,'sales'),where('customerId','==',cid),limit(400))).then(s=>{const uses={};let n=0;
+   s.docs.forEach(d=>{const v=d.data();if(v.voided)return;n++;[...new Set((v.items||[]).map(i=>i.promoId).filter(Boolean))].forEach(id=>{uses[id]=(uses[id]||0)+1;});});
+   PROMOCLI[cid]={ready:true,n,uses};if(TAB==='pos')render();}).catch(()=>{PROMOCLI[cid]={ready:true,n:0,uses:{},err:true};});}
+ return {ready:false,n:0,uses:{}};
+}
+function promoWho(p,C){
+ const need=p.audience==='new'||p.audience==='return'||+p.perClient>0;
+ if(!need)return '';
+ if(C.walkin)return 'choose the client first';
+ if(!C.ready)return 'checking the client…';
+ if(p.audience==='new'&&C.n>0)return 'new clients only';
+ if(p.audience==='return'&&C.n===0)return 'returning clients only';
+ if(+p.perClient>0&&(C.uses[p.id]||0)>=+p.perClient)return 'already used '+(C.uses[p.id]||0)+'×';
+ return '';
+}
+const prFree=i=>PR_KINDS.includes(i.kind)&&!i.dType&&!i.priceEdited&&!i.noPromo&&(+i.price||0)>0;
+const prGet=p=>p.getId?{kind:p.getKind||'service',id:p.getId}:null;
+/* puts every offer that applies on the bill: the best one per line, then one spend-and-save */
+function promoRun(){
+ PROMOHINTS=[];
+ cart.items.forEach(i=>{if(i.dType==='promo'){['dType','promoId','promoName','promoDisc'].forEach(k=>delete i[k]);i.dVal=0;if(i.promoNote){delete i.discNote;delete i.promoNote;}}});
+ if(!PROMOS||!PROMOS.length||!cart.items.length)return;
+ const d=cart.billDate||today(),C=promoCli(cart.customerId);
+ const L=PROMOS.filter(p=>promoLive(p,d)&&promoLeft(p)>0);if(!L.length)return;
+ const free=cart.items.filter(prFree),best=new Map();
+ const offer=(i,p,v)=>{v=r2(Math.min(lineGross(i),v));if(v<=0.004)return;const b=best.get(i);if(!b||v>b.v)best.set(i,{p,v});};
+ L.filter(p=>p.type!=='spend').forEach(p=>{
+  const hits=free.filter(i=>promoHits(p,i));
+  const G=prGet(p),gets=G?free.filter(i=>i.kind===G.kind&&i.id===G.id):[];
+  if(!hits.length&&!(p.type==='bxgy'&&G&&gets.length))return;
+  const why=promoWho(p,C);if(why){if(hits.length)PROMOHINTS.push({p,t:why});return;}
+  if(p.type==='pct')hits.forEach(i=>offer(i,p,lineGross(i)*Math.min(100,+p.value||0)/100));
+  else if(p.type==='amt')hits.forEach(i=>offer(i,p,Math.min(+i.price||0,+p.value||0)*(i.qty||1)));
+  else if(p.type==='price')hits.forEach(i=>offer(i,p,Math.max(0,(+i.price||0)-(+p.value||0))*(i.qty||1)));
+  else if(p.type==='bxgy'){const bq=Math.max(1,+p.buyQty||1),gq=Math.max(1,+p.getQty||1),gp=Math.min(100,+p.getPct||100)/100;
+   if(!G){hits.forEach(i=>{const q=i.qty||1,sets=Math.floor(q/(bq+gq));
+     if(sets)offer(i,p,sets*gq*(+i.price||0)*gp);
+     const r=q%(bq+gq);if(r>=bq)PROMOHINTS.push({p,t:'add '+(bq+gq-r)+' more '+i.name+' to get '+(gp>=1?'it free':'the deal')});
+     else if(!sets)PROMOHINTS.push({p,t:'buy '+(bq-r)+' more '+i.name+' for the deal'});});}
+   else{const units=hits.reduce((t,i)=>t+(i.qty||1),0),ent=Math.floor(units/bq)*gq;
+    if(ent>0){let left=ent;gets.forEach(i=>{const n=Math.min(left,i.qty||1);left-=n;if(n)offer(i,p,n*(+i.price||0)*gp);});
+     if(!gets.length){const g=itemSrc(G.kind,G.id)||{};PROMOHINTS.push({p,t:'add '+(g.name||'the free item')+' — '+ent+' '+(gp>=1?'free':'at '+Math.round(gp*100)+'% off')});}}
+    else if(hits.length)PROMOHINTS.push({p,t:'buy '+(bq-units%bq)+' more for the deal'});}}
+ });
+ best.forEach(({p,v},i)=>{i.dType='promo';i.promoId=p.id;i.promoName=p.name;i.promoDisc=r2(v);if(!i.discNote){i.discNote='Promo: '+p.name;i.promoNote=1;}});
+ /* spend-and-save on what is left: the one worth most */
+ let sp=null;
+ L.filter(p=>p.type==='spend').forEach(p=>{
+  const base=free.filter(i=>!best.has(i)&&promoHits(p,i));if(!base.length)return;
+  const why=promoWho(p,C);if(why){PROMOHINTS.push({p,t:why});return;}
+  const tot=r2(base.reduce((t,i)=>t+lineGross(i),0)),min=+p.minSpend||0;
+  if(tot+0.004<min){PROMOHINTS.push({p,t:'spend '+rm(r2(min-tot))+' more to get '+(p.unit==='rm'?rm(p.value):(+p.value)+'%')+' off'});return;}
+  const v=r2(Math.min(tot,p.unit==='rm'?+p.value||0:tot*Math.min(100,+p.value||0)/100));
+  if(v>0&&(!sp||v>sp.v))sp={p,v,base,tot};});
+ if(sp){let left=sp.v;sp.base.forEach((i,k)=>{const s=k===sp.base.length-1?r2(left):r2(sp.v*lineGross(i)/sp.tot);left=r2(left-s);
+  i.dType='promo';i.promoId=sp.p.id;i.promoName=sp.p.name;i.promoDisc=s;if(!i.discNote){i.discNote='Promo: '+sp.p.name;i.promoNote=1;}});}
+}
+{const _ct=cartTotals;cartTotals=()=>{try{promoRun();}catch(e){console.warn('promo',e);}return _ct();};}
+window.promoOff=(x,on)=>{const i=cart.items[x];if(!i)return;if(on)delete i.noPromo;else i.noPromo=true;render();};
+/* on the bill: what was applied and what is within reach */
+function promoBar(){
+ if(!PROMOS)return '';
+ const used=new Map();cart.items.forEach(i=>{if(i.dType==='promo'){const u=used.get(i.promoId)||{n:i.promoName,v:0};u.v+=+i.promoDisc||0;used.set(i.promoId,u);}});
+ const off=cart.items.map((i,x)=>[i,x]).filter(([i])=>i.noPromo);
+ const hints=PROMOHINTS.filter((h,k,a)=>a.findIndex(z=>z.p.id===h.p.id&&z.t===h.t)===k&&!used.has(h.p.id)).slice(0,3);
+ if(!used.size&&!hints.length&&!off.length)return '';
+ return '<div class="prbar">'+[...used.values()].map(u=>'<span class="prchip on">'+ic('tag',12)+esc(u.n)+' <b>−'+rm(r2(u.v))+'</b></span>').join('')+
+  hints.map(h=>'<span class="prchip">'+ic('tag',12)+esc(h.p.name)+': '+esc(h.t)+'</span>').join('')+
+  off.map(([i,x])=>'<button type="button" class="prchip ghost" onclick="promoOff('+x+',1)">'+ic('refresh',11)+'Put the promo back on '+esc(i.name)+'</button>').join('')+'</div>';
+}
+/* line label, receipt wording and the saved line */
+function promoLineInfo(i,x){return i.dType==='promo'?'<button type="button" class="prx" title="Take the promo off this line" onclick="event.stopPropagation();promoOff('+x+')">'+ic('close',10)+'</button>':'';}
+/* the picker: a tag on anything with an offer running */
+function promoTag(kind,x){
+ if(!PROMOS||kind==='redeem')return '';
+ const i={kind,id:x.id,price:+x.price||0,qty:1};
+ const L=PROMOS.filter(p=>promoLive(p)&&promoLeft(p)>0&&promoHits(p,i));if(!L.length)return '';
+ const p=L[0];return p.type==='pct'?'−'+(+p.value)+'%':p.type==='amt'?'−'+rm(p.value):p.type==='price'?'Promo '+rm(p.value):p.type==='bxgy'?'Buy '+(p.buyQty||1)+' get '+(p.getQty||1):'Promo';
+}
+{const _c=pk2Card;pk2Card=(kind,x)=>{const h=_c(kind,x),t=promoTag(kind,x);return t?h.replace('<span class="pk2price">','<span class="pk2promo">'+esc(t)+'</span><span class="pk2price">'):h;};}
+/* checkout: the quota is checked against the database first; afterwards each offer used counts one buyer */
+{const _co=window.checkout;window.checkout=async(...a)=>{
+ cartTotals();
+ const ids=[...new Set(cart.items.filter(i=>i.dType==='promo').map(i=>i.promoId))];
+ for(const id of ids){try{const s=await getDoc(doc(db,'promos',id));if(!s.exists())continue;const v={id,...s.data()};
+  const k=(PROMOS||[]).findIndex(p=>p.id===id);if(k>=0)PROMOS[k]=v;
+  if(!promoLive(v,cart.billDate||today())||promoLeft(v)<=0){render();toast('“'+v.name+'” has just '+(promoLeft(v)<=0?'sold out':'ended')+' — the bill has been updated. Check the total and tap again.');return;}}catch(e){}}
+ const had=new Set((SALES||[]).map(s=>s.id)),cid=cart.customerId;
+ const r=await _co(...a);
+ const s=(SALES||[]).find(x=>!had.has(x.id));
+ if(s){const used=[...new Set((s.items||[]).map(i=>i.promoId).filter(Boolean))];
+  for(const id of used){try{await updateDoc(doc(db,'promos',id),{used:increment(1)});}catch(e){console.warn('promo count',e);}}
+  if(cid)delete PROMOCLI[cid];}
+ return r;};}
+{const _v=window.voidSale;window.voidSale=async id=>{
+ const s0=findSale(id),was=s0&&s0.voided;const r=await _v(id);const s=findSale(id);
+ if(s&&s.voided&&!was&&boss()){for(const pid of [...new Set((s.items||[]).map(i=>i.promoId).filter(Boolean))]){try{await updateDoc(doc(db,'promos',pid),{used:increment(-1)});}catch(e){}}
+  if(s.customerId)delete PROMOCLI[s.customerId];}
+ return r;};}
+
+/* ---------- describing an offer ---------- */
+function promoWhat(p){
+ const T=p.target||{scope:'all'};
+ const on=T.scope==='all'?'everything':T.scope==='kind'?'all '+(T.kinds||[]).map(k=>PR_KLAB[k]+'s').join(' & '):T.scope==='cat'?esc(T.cat)+' ('+PR_KLAB[T.kind]+'s)':
+  (T.items||[]).slice(0,3).map(x=>esc((itemSrc(x.kind,x.id)||{}).name||'?')).join(', ')+((T.items||[]).length>3?' +'+((T.items||[]).length-3):'');
+ const G=prGet(p),gn=G?esc((itemSrc(G.kind,G.id)||{}).name||'?'):'';
+ const deal=p.type==='pct'?(+p.value)+'% off '+on:p.type==='amt'?rm(p.value)+' off '+on:p.type==='price'?on+' at '+rm(p.value):
+  p.type==='bxgy'?'Buy '+(p.buyQty||1)+' '+on+', get '+(p.getQty||1)+' '+(G?gn:'more')+' '+((+p.getPct||100)>=100?'free':(+p.getPct)+'% off'):
+  'Spend '+rm(p.minSpend||0)+' on '+on+', get '+(p.unit==='rm'?rm(p.value):(+p.value)+'%')+' off';
+ const bits=[p.audience==='new'?'new clients only':p.audience==='return'?'returning clients':'',
+  +p.limit>0?'first '+p.limit+' buyers':'',+p.perClient>0?p.perClient+'× per client':'',
+  (p.days||[]).length?p.days.map(d=>['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d]).join('/'):'',
+  p.end?'until '+dshort(p.end):''].filter(Boolean);
+ return deal+(bits.length?' · '+bits.join(' · '):'');
+}
+function promoWa(p){
+ const b=bizC(),bm=p.type==='pct'?'Diskaun '+(+p.value)+'%':p.type==='amt'?'Potongan '+rm(p.value):p.type==='price'?'Harga promo '+rm(p.value):p.type==='bxgy'?'Beli '+(p.buyQty||1)+' Percuma '+(p.getQty||1):'Belanja '+rm(p.minSpend||0)+', jimat '+(p.unit==='rm'?rm(p.value):(+p.value)+'%');
+ return '✨ '+p.name+' ✨\n'+bm+(p.desc?'\n'+p.desc:'')+
+  (+p.limit>0?'\nTerhad kepada '+p.limit+' pembeli pertama sahaja!':'')+(p.audience==='new'?'\nKhas untuk pelanggan baharu.':'')+
+  (p.end?'\nSah sehingga '+dstr(p.end)+'.':'')+'\n\n'+(b.name||'')+(b.phone?' · '+b.phone:'');
+}
+
+/* ---------- Home: what is running now ---------- */
+function promoHome(){
+ if(!PROMOS||isAcct())return '';
+ const L=PROMOS.filter(p=>promoLive(p)&&promoLeft(p)>0).sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999')));
+ const soon=PROMOS.filter(p=>p.active!==false&&p.start&&p.start>today()&&daysBetween(today(),p.start)<=7);
+ if(!L.length&&!soon.length)return '';
+ return '<div class="card prhome"><div class="sec-h"><h3 style="margin:0">'+ic('tag',15)+' Promotions now</h3><button class="btn sm ghost" onclick="go(\'promo\')">All</button></div>'+
+  L.slice(0,5).map(p=>{const dl=p.end?daysBetween(today(),p.end):null,lim=+p.limit>0,left=promoLeft(p);
+   return '<button class="prrow" onclick="promoShow(\''+p.id+'\')"><span class="prname"><b>'+esc(p.name)+'</b><small>'+promoWhat(p)+'</small>'+
+    (lim?'<span class="prq"><i style="width:'+Math.max(2,left/p.limit*100)+'%"></i></span><small class="'+(left<=Math.max(3,p.limit*0.1)?'odue':'')+'">'+left+' of '+p.limit+' left</small>':'')+'</span>'+
+    '<span class="pill '+(dl!=null&&dl<=2?'r':'g')+'">'+(dl==null?'ongoing':dl===0?'last day':dl+' day'+(dl>1?'s':'')+' left')+'</span></button>';}).join('')+
+  (soon.length?'<div class="tiny muted" style="margin-top:6px">Coming: '+soon.map(p=>esc(p.name)+' ('+dshort(p.start)+')').join(', ')+'</div>':'')+'</div>';
+}
+{const _vh=vHome;vHome=(...a)=>{const h=_vh(...a),w=promoHome();if(!w)return h;
+ const k=[h.indexOf('<div class="grid g3" style="margin-bottom:12px">'),h.indexOf('<div class="card"><div class="sec-h"><h2>Takings')].find(x=>x>=0);
+ return k===undefined?h+w:h.slice(0,k)+w+h.slice(k);};}
+
+/* ---------- the Promotions screen ---------- */
+TABS.splice(TABS.findIndex(t=>t.id==='loy')+1,0,{id:'promo',ic:'tag',label:'Promotions',perm:'pos',group:'Clients',desc:'Offers running now, and their rules'});
+let PRV='live';
+window.promoView=v=>{PRV=v;render();};
+function vPromo(){
+ if(PROMOS===null){promoWatch();return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const grp={live:p=>promoLive(p)&&promoLeft(p)>0,next:p=>p.active!==false&&p.start&&p.start>today(),old:p=>!(promoLive(p)&&promoLeft(p)>0)&&!(p.active!==false&&p.start&&p.start>today())};
+ const L=PROMOS.filter(grp[PRV]).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+ return '<div class="card"><div class="sec-h"><h2 style="margin:0">Promotions</h2>'+(boss()?'<button class="btn sm" onclick="promoForm()">'+ic('plus',14)+'New promotion</button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:4px 0 10px">Running offers go on the bill by themselves at checkout — the best one for each line. Staff can take one off a line if the client does not want it.</p>'+
+  '<div class="seg">'+[['live','Running'],['next','Coming'],['old','Ended & paused']].map(([k,t])=>'<button type="button" class="'+(PRV===k?'on':'')+'" onclick="promoView(\''+k+'\')">'+t+' ('+PROMOS.filter(grp[k]).length+')</button>').join('')+'</div></div>'+
+  (L.length?L.map(p=>{const st=promoState(p),lim=+p.limit>0,left=promoLeft(p);
+   return '<div class="card prcard" onclick="promoShow(\''+p.id+'\')"><div class="spread"><b>'+esc(p.name)+'</b><span class="pill '+st[0]+'">'+st[1]+'</span></div>'+
+    '<div class="tiny" style="margin:4px 0">'+promoWhat(p)+'</div>'+
+    (lim?'<div class="prq"><i style="width:'+Math.max(2,left/p.limit*100)+'%"></i></div><div class="tiny muted">'+(+p.used||0)+' used · '+left+' of '+p.limit+' left</div>':'<div class="tiny muted">'+(+p.used||0)+' bill'+((+p.used||0)===1?'':'s')+' so far</div>')+'</div>';}).join('')
+   :'<div class="card"><div class="empty">'+ic('tag',24)+'<div>'+(PRV==='live'?'No promotion running.':'None.')+'</div>'+(boss()&&PRV==='live'?'<button class="btn" style="margin-top:8px" onclick="promoForm()">'+ic('plus',14)+'New promotion</button>':'')+'</div></div>');
+}
+window.promoShow=async id=>{
+ const p=(PROMOS||[]).find(x=>x.id===id);if(!p)return;const st=promoState(p);
+ modal(p.name,'<div class="card"><div class="spread"><span class="pill '+st[0]+'">'+st[1]+'</span><span class="tiny muted">'+(p.start?dstr(p.start):'')+(p.end?' – '+dstr(p.end):'')+'</span></div>'+
+  '<p style="margin:8px 0">'+promoWhat(p)+'</p>'+(p.desc?'<p class="tiny muted">'+esc(p.desc)+'</p>':'')+
+  '<div class="aprsnap" id="pr-st" style="margin:10px 0"><div><small>Bills</small><b>'+(+p.used||0)+'</b></div><div><small>Discount given</small><b>…</b></div><div><small>Sales on those bills</small><b>…</b></div><div><small>Clients</small><b>…</b></div></div>'+
+  '<div class="row wrap2" style="gap:6px">'+(boss()?'<button class="btn sm" onclick="promoForm(\''+id+'\')">'+ic('edit',13)+'Edit</button>'+
+   '<button class="btn sm ghost" onclick="promoPause(\''+id+'\')">'+(p.active===false?'Resume':'Pause')+'</button>':'')+
+   '<button class="btn sm ghost" onclick="promoCopy(\''+id+'\')">'+ic('msg',13)+'Copy for WhatsApp</button></div></div>');
+ try{const from=p.start||ymd(addDays(new Date(),-365));const s=await getDocs(query(collection(db,'sales'),where('date','>=',from)));
+  const S=s.docs.map(d=>d.data()).filter(v=>!v.voided&&(v.items||[]).some(i=>i.promoId===id));
+  const disc=r2(S.reduce((t,v)=>t+(v.items||[]).filter(i=>i.promoId===id).reduce((a,i)=>a+(+i.lineDisc||0),0),0)),val=r2(S.reduce((t,v)=>t+(+v.total||0),0));
+  const cl=new Set(S.map(v=>v.customerId).filter(Boolean)).size;
+  const b=document.getElementById('pr-st');if(b)b.innerHTML='<div><small>Bills</small><b>'+S.length+'</b></div><div><small>Discount given</small><b>'+rm(disc)+'</b></div><div><small>Sales on those bills</small><b>'+rm(val)+'</b></div><div><small>Clients</small><b>'+cl+'</b></div>';}
+ catch(e){}
+};
+window.promoCopy=id=>{const p=(PROMOS||[]).find(x=>x.id===id);if(!p)return;const t=promoWa(p);
+ try{navigator.clipboard.writeText(t).then(()=>toast('Copied — paste it into WhatsApp'),()=>prompt('Copy this:',t));}catch(e){prompt('Copy this:',t);}window.__lastPromoText=t;};
+window.promoPause=async id=>{const p=(PROMOS||[]).find(x=>x.id===id);if(!p||!boss())return;
+ try{await updateDoc(doc(db,'promos',id),{active:p.active===false});p.active=p.active===false;await audit(p.active?'Promotion resumed':'Promotion paused',p.name);window.closeModal();render();}catch(e){toast(friendly(e));}};
+
+/* ---------- setting one up ---------- */
+let PF=null;
+window.promoForm=id=>{
+ if(!boss()){toast('Only the owner or a manager can set up promotions');return;}
+ const p=id?(PROMOS||[]).find(x=>x.id===id):null;
+ PF=p?JSON.parse(JSON.stringify(p)):{name:'',desc:'',type:'pct',value:'',buyQty:1,getQty:1,getPct:100,getKind:'',getId:'',minSpend:'',unit:'pct',
+  target:{scope:'items',items:[],kinds:['service'],kind:'service',cat:''},audience:'all',limit:'',perClient:'',start:today(),end:'',days:[],branchIds:[],active:true};
+ PF.target=PF.target||{scope:'all'};PF.target.items=PF.target.items||[];PF.target.kinds=PF.target.kinds||['service'];PF._id=id||'';PF._q='';
+ promoPaint();
+};
+function prAllItems(){return [...D.services.filter(s=>s.active!==false).map(x=>({kind:'service',x})),...D.products.filter(x=>x.type!=='backbar'&&x.active!==false).map(x=>({kind:'product',x})),
+ ...D.packages.filter(x=>x.active!==false).map(x=>({kind:'package',x})),...(D.bundles||[]).filter(x=>x.active!==false).map(x=>({kind:'set',x}))];}
+function promoPaint(){
+ const f=PF,T=f.target,seg=(k,opts,v)=>'<div class="seg">'+opts.map(o=>'<button type="button" class="'+(v===o[0]?'on':'')+'" onclick="pfSet(\''+k+'\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>';
+ const num=(k,label,v,ph,step)=>'<div><label>'+label+'</label><input class="f" type="number" min="0" step="'+(step||'1')+'" value="'+(v===undefined||v===null?'':v)+'" placeholder="'+(ph||'')+'" oninput="pfSet(\''+k+'\',this.value,1)"></div>';
+ const items=prAllItems(),q=String(f._q||'').toLowerCase();
+ const itemOpts=items.map(({kind,x})=>'<option value="'+kind+':'+x.id+'"'+(f.getKind===kind&&f.getId===x.id?' selected':'')+'>'+esc(x.name)+' ('+PR_KLAB[kind]+')</option>').join('');
+ const vals=f.type==='pct'?'<div class="grid g2">'+num('value','Percent off',f.value,'e.g. 50')+'</div>':
+  f.type==='amt'?'<div class="grid g2">'+num('value','RM off each',f.value,'e.g. 30','0.01')+'</div>':
+  f.type==='price'?'<div class="grid g2">'+num('value','Promo price (RM each)',f.value,'e.g. 99','0.01')+'</div>':
+  f.type==='bxgy'?'<div class="grid g3">'+num('buyQty','Buy',f.buyQty)+num('getQty','Get',f.getQty)+num('getPct','At % off',f.getPct,'100 = free')+'</div>'+
+   '<label>What they get</label><select class="f" onchange="pfSet(\'get\',this.value)"><option value="">The same item</option>'+itemOpts+'</select>':
+  '<div class="grid g3">'+num('minSpend','Spend at least (RM)',f.minSpend,'e.g. 300','0.01')+num('value','Save',f.value,'e.g. 10','0.01')+
+   '<div><label>as</label><select class="f" onchange="pfSet(\'unit\',this.value)"><option value="pct"'+(f.unit!=='rm'?' selected':'')+'>% off</option><option value="rm"'+(f.unit==='rm'?' selected':'')+'>RM off</option></select></div></div>';
+ const tgt=T.scope==='kind'?'<div class="row wrap2" style="gap:10px;margin:0 0 8px">'+['service','product','package','set'].map(k=>'<label class="tiny row" style="gap:5px"><input type="checkbox"'+((T.kinds||[]).includes(k)?' checked':'')+' onchange="pfKind(\''+k+'\',this.checked)"> All '+PR_KLAB[k]+'s</label>').join('')+'</div>':
+  T.scope==='cat'?'<div class="grid g2"><div><label>In</label><select class="f" onchange="pfSet(\'tkind\',this.value)">'+['service','product','package'].map(k=>'<option value="'+k+'"'+(T.kind===k?' selected':'')+'>'+PR_KLAB[k]+'s</option>').join('')+'</select></div>'+
+   '<div><label>Category</label><select class="f" onchange="pfSet(\'tcat\',this.value)"><option value="">—</option>'+catList(T.kind||'service').map(c=>'<option'+(T.cat===c?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select></div></div>':
+  T.scope==='items'?'<input class="f" placeholder="Search" value="'+esc(f._q||'')+'" oninput="pfQ(this.value)" id="pf-q"><div class="pritems" id="pf-items">'+pfItemsHTML()+'</div>':'';
+ const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+ modal(f._id?'Edit promotion':'New promotion','<div class="card">'+
+  '<label>Name *</label><input class="f" id="pf-n" value="'+esc(f.name)+'" oninput="pfSet(\'name\',this.value,1)" placeholder="e.g. Merdeka 50% Hydra Facial">'+
+  '<label>Short description <span class="muted">— optional, for staff and the WhatsApp text</span></label><input class="f" value="'+esc(f.desc||'')+'" oninput="pfSet(\'desc\',this.value,1)">'+
+  '<label>The offer</label>'+seg('type',PR_TYPES,f.type)+vals+
+  '<label>On</label>'+seg('scope',[['items','Chosen items'],['cat','A category'],['kind','A whole type'],['all','Everything']],T.scope)+tgt+
+  '<label>For</label>'+seg('audience',[['all','Everyone'],['new','New clients only'],['return','Returning clients']],f.audience||'all')+
+  '<div class="grid g2">'+num('limit','Only the first … buyers',f.limit,'blank = no limit')+num('perClient','Times per client',f.perClient,'blank = no limit')+'</div>'+
+  '<div class="grid g2"><div><label>From</label><input class="f" type="date" value="'+esc(f.start||'')+'" onchange="pfSet(\'start\',this.value,1)"></div><div><label>Until <span class="muted">— optional</span></label><input class="f" type="date" value="'+esc(f.end||'')+'" onchange="pfSet(\'end\',this.value,1)"></div></div>'+
+  '<label>Only on <span class="muted">— none ticked = every day</span></label><div class="row wrap2" style="gap:8px;margin:0 0 8px">'+days.map((d,k)=>'<label class="tiny row" style="gap:4px"><input type="checkbox"'+((f.days||[]).includes(k)?' checked':'')+' onchange="pfDay('+k+',this.checked)">'+d+'</label>').join('')+'</div>'+
+  ((D.branches||[]).length>1?'<label>Branches <span class="muted">— none ticked = all</span></label><div class="row wrap2" style="gap:8px;margin:0 0 8px">'+D.branches.map(b=>'<label class="tiny row" style="gap:4px"><input type="checkbox"'+((f.branchIds||[]).includes(b.id)?' checked':'')+' onchange="pfBr(\''+b.id+'\',this.checked)">'+esc(b.name)+'</label>').join('')+'</div>':'')+
+  (+f.limit>0||+f.perClient>0||f.audience!=='all'?'<p class="tiny muted" style="margin:0 0 8px">'+(f.audience!=='all'||+f.perClient>0?'The client has to be chosen on the bill for this offer. ':'')+(+f.limit>0?'Each bill that uses it counts as one buyer.':'')+'</p>':'')+
+  '<div class="pkdsum" id="pf-sum">'+esc(pfPreview())+'</div><div id="pf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="promoSave()">'+ic('check',16)+'Save promotion</button>'+
+  (f._id&&isOwnerMe()?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px;color:var(--rose)" onclick="promoDel(\''+f._id+'\')">'+ic('trash',13)+'Delete</button>':'')+'</div>');
+}
+function pfPreview(){try{return promoWhat({...PF,limit:+PF.limit||0,perClient:+PF.perClient||0}).replace(/<[^>]+>/g,'');}catch(e){return '';}}
+function pfItemsHTML(){const T=PF.target,q=String(PF._q||'').toLowerCase();
+ return prAllItems().filter(({x})=>!q||String(x.name).toLowerCase().includes(q)).slice(0,120).map(({kind,x})=>{const on=(T.items||[]).some(z=>z.kind===kind&&z.id===x.id);
+  return '<label class="pritem'+(on?' on':'')+'"><input type="checkbox"'+(on?' checked':'')+' onchange="pfItem(\''+kind+'\',\''+esc(x.id)+'\',this.checked)"><span>'+esc(x.name)+'<small>'+PR_KLAB[kind]+' · '+rm(x.price)+'</small></span></label>';}).join('')||'<div class="tiny muted">Nothing matches.</div>';}
+window.pfQ=v=>{PF._q=v;const b=document.getElementById('pf-items');if(b)b.innerHTML=pfItemsHTML();};
+window.pfItem=(kind,id,on)=>{const T=PF.target;T.items=(T.items||[]).filter(z=>!(z.kind===kind&&z.id===id));if(on)T.items.push({kind,id});const b=document.getElementById('pf-sum');if(b)b.textContent=pfPreview();};
+window.pfKind=(k,on)=>{const T=PF.target;T.kinds=(T.kinds||[]).filter(x=>x!==k);if(on)T.kinds.push(k);const b=document.getElementById('pf-sum');if(b)b.textContent=pfPreview();};
+window.pfDay=(k,on)=>{PF.days=(PF.days||[]).filter(x=>x!==k);if(on)PF.days.push(k);PF.days.sort();const b=document.getElementById('pf-sum');if(b)b.textContent=pfPreview();};
+window.pfBr=(id,on)=>{PF.branchIds=(PF.branchIds||[]).filter(x=>x!==id);if(on)PF.branchIds.push(id);};
+window.pfSet=(k,v,quiet)=>{
+ if(k==='scope'){PF.target.scope=v;if(v==='cat'&&!PF.target.kind)PF.target.kind='service';}
+ else if(k==='tkind'){PF.target.kind=v;PF.target.cat='';}
+ else if(k==='tcat')PF.target.cat=v;
+ else if(k==='get'){const [a,b]=String(v).split(':');PF.getKind=b?a:'';PF.getId=b||'';}
+ else PF[k]=v;
+ if(quiet){const b=document.getElementById('pf-sum');if(b)b.textContent=pfPreview();return;}
+ promoPaint();
+};
+window.promoSave=async()=>{
+ const f=PF,e=document.getElementById('pf-e'),T=f.target;
+ const name=String(f.name||'').trim(),val=+f.value||0;
+ if(name.length<3){e.textContent='Give it a name.';return;}
+ if(['pct','amt','price','spend'].includes(f.type)&&!(val>0)){e.textContent='Enter the '+(f.type==='price'?'promo price':'amount')+'.';return;}
+ if(f.type==='pct'&&val>100||f.type==='spend'&&f.unit!=='rm'&&val>100){e.textContent='A percentage cannot be more than 100.';return;}
+ if(f.type==='bxgy'&&(!(+f.buyQty>=1)||!(+f.getQty>=1)||!(+f.getPct>0&&+f.getPct<=100))){e.textContent='Buy and get at least 1, at 1–100% off.';return;}
+ if(f.type==='spend'&&!(+f.minSpend>0)){e.textContent='How much must they spend?';return;}
+ if(T.scope==='items'&&!(T.items||[]).length){e.textContent='Tick at least one item.';return;}
+ if(T.scope==='kind'&&!(T.kinds||[]).length){e.textContent='Tick at least one type.';return;}
+ if(T.scope==='cat'&&!T.cat){e.textContent='Pick the category.';return;}
+ if(!f.start){e.textContent='When does it start?';return;}
+ if(f.end&&f.end<f.start){e.textContent='It ends before it starts.';return;}
+ if(f.type==='price'&&T.scope==='items'){const hi=(T.items||[]).find(z=>(+((itemSrc(z.kind,z.id)||{}).price)||0)<=val);if(hi){e.textContent=(itemSrc(hi.kind,hi.id)||{}).name+' already costs '+rm((itemSrc(hi.kind,hi.id)||{}).price)+' or less.';return;}}
+ const now=new Date().toISOString();
+ const d={name:name.slice(0,60),desc:String(f.desc||'').trim().slice(0,200),type:f.type,value:r2(val),buyQty:Math.round(+f.buyQty||1),getQty:Math.round(+f.getQty||1),getPct:Math.round(+f.getPct||100),
+  getKind:f.getKind||'',getId:f.getId||'',minSpend:r2(+f.minSpend||0),unit:f.unit==='rm'?'rm':'pct',
+  target:{scope:T.scope,items:T.scope==='items'?T.items:[],kinds:T.scope==='kind'?T.kinds:[],kind:T.scope==='cat'?T.kind:'',cat:T.scope==='cat'?T.cat:''},
+  audience:f.audience||'all',limit:Math.max(0,Math.round(+f.limit||0)),perClient:Math.max(0,Math.round(+f.perClient||0)),start:f.start,end:f.end||'',days:f.days||[],branchIds:f.branchIds||[],
+  active:f.active!==false,updatedAt:now,updatedBy:UID};
+ try{if(f._id){await updateDoc(doc(db,'promos',f._id),d);const p=(PROMOS||[]).find(x=>x.id===f._id);if(p)Object.assign(p,d);}
+  else{d.used=0;d.createdAt=now;d.createdBy=UID;d.createdByName=ME.name;const r=await addDoc(collection(db,'promos'),d);if(PROMOS&&!PROMOS.some(x=>x.id===r.id))PROMOS.push({id:r.id,...d});}
+  await audit(f._id?'Promotion edited':'Promotion created',d.name+' · '+promoWhat(d).replace(/<[^>]+>/g,''));window.closeModal();PRV=promoLive(d)?'live':'next';render();toast('Promotion saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+window.promoDel=async id=>{const p=(PROMOS||[]).find(x=>x.id===id);if(!p||!isOwnerMe())return;
+ if(+p.used>0&&!confirm(p.name+' has been used on '+p.used+' bill(s). Those bills keep their discount. Delete the promotion?'))return;
+ else if(!(+p.used>0)&&!confirm('Delete '+p.name+'?'))return;
+ try{await deleteDoc(doc(db,'promos',id));PROMOS=PROMOS.filter(x=>x.id!==id);await audit('Promotion deleted',p.name);window.closeModal();render();}catch(e){toast(friendly(e));}};
 
 </script>
