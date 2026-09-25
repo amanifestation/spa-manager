@@ -1677,6 +1677,16 @@ body.demo .syncbar{top:106px}
 .compi{display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);cursor:pointer}.compi:last-child{border-bottom:0}
 .compi small{display:block;color:var(--ink-3);font-size:12px;line-height:1.35}.compd{font-size:12px;font-weight:650;min-width:52px;color:var(--ink-2)}
 .compi.done b{text-decoration:line-through;color:var(--ink-3)}.compi.late .compd{color:var(--rose)}
+.cnrow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.cnrow span small{display:block;font-size:12px;color:var(--ink-3)}
+.cnbox{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 10px}
+.cnnote{background:var(--brass-soft);border-radius:12px;padding:9px 12px;margin:0 0 10px;font-size:13px}
+.mjrow{border-top:1px solid var(--line);padding:10px 0}.mjrow:first-of-type{border-top:0}
+.mjt{width:100%;font-size:12px;margin:6px 0}.mjt td{padding:2px 4px}
+.mjhead,.mjline{display:grid;grid-template-columns:minmax(0,2fr) 90px 90px auto;gap:6px;align-items:center}
+.mjhead{font-size:11px;color:var(--ink-3);margin:6px 0 2px}.mjline .f{margin:0 0 6px;min-width:0}
+.qtrow{gap:6px;margin:0 0 8px}
+@media (max-width:520px){.mjhead,.mjline{grid-template-columns:minmax(0,1fr) 70px 70px auto}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1934,7 +1944,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26a';
+const BUILD='2026-09-26b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3145,7 +3155,7 @@ window.openCust=async(id,keep)=>{
  modal(c.name,head+custHistory(c));
 };
 function custProfile(c){
- const money=memberOweCard(c.id)+memberPkgCard(c.id)+memberVoucherCard(c.id)+refCard(c);
+ const money=memberOweCard(c.id)+memberPkgCard(c.id)+memberVoucherCard(c.id)+refCard(c)+(boss()?stmtCard(c):'');
  const row=(k,v,icon)=>v?'<div class="k">'+(icon?ic(icon,12)+' ':'')+k+'</div><div class="v">'+v+'</div>':'';
  const age=c.dob?Math.floor(daysBetween(c.dob,new Date())/365.25):null;
  const ref=c.referrerId&&cust(c.referrerId)?cust(c.referrerId).name:'';
@@ -9164,7 +9174,7 @@ window.showReceipt=id=>{
  let s=SALES.find(x=>x.id===id)||OUTSTANDING.find(x=>x.id===id);
  if(!s&&HIST)s=(HIST.sales||[]).find(x=>x.id===id);
  if(!s){toast('Could not find that bill');return;}
- modal('Receipt '+(s.invoiceNo||''),pkgBanner(s)+dateNote(s)+receiptHTML(s)+
+ modal('Receipt '+(s.invoiceNo||''),pkgBanner(s)+dateNote(s)+refundNote(s)+receiptHTML(s)+
   '<div class="fabrow noprint">'+
   '<button class="btn sm" onclick="receiptPDF(\''+id+'\')">'+ic('download',14)+'Download PDF</button>'+
   (typeof navigator!=='undefined'&&navigator.canShare?'<button class="btn sm ghost" onclick="receiptPDF(\''+id+
@@ -9179,8 +9189,9 @@ window.showReceipt=id=>{
   refBtn(s)+
   (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
    ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
-  (!s.voided&&boss()?'<button class="btn sm ghost" onclick="saleDateForm(\''+id+'\')">'+ic('calendar',14)+'Change date</button>':'')+
-  (!s.voided&&boss()&&SALES.find(x=>x.id===id)?'<button class="btn sm warn" onclick="voidSale(\''+id+
+  (!s.voided&&boss()&&salePaid(s)>saleRefunded(s)+0.004?'<button class="btn sm ghost" onclick="refundForm(\''+id+'\')">'+ic('refresh',14)+'Refund</button>':'')+
+  (!s.voided&&boss()&&!isLocked(s.date)?'<button class="btn sm ghost" onclick="saleDateForm(\''+id+'\')">'+ic('calendar',14)+'Change date</button>':'')+
+  (!s.voided&&boss()&&SALES.find(x=>x.id===id)&&!saleRefunded(s)&&!isLocked(s.date)?'<button class="btn sm warn" onclick="voidSale(\''+id+
    '\')">'+ic('close',14)+'Void bill</button>':'')+'</div>');
 };
 window.openSale=id=>window.showReceipt(id);
@@ -9203,6 +9214,8 @@ window.redeemDetail=id=>{
   'so the count of sessions used always matches what the client was given.</p></div>');};
 
 window.voidSale=async id=>{
+ {const s0=findSale(id);if(s0&&isLocked(s0.date)){toast(lockMsg(s0.date)+' Give a refund instead.');return;}
+  if(s0&&saleRefunded(s0)>0){toast('This bill has a refund recorded — it cannot be voided.');return;}}
  const why=prompt('Reason for voiding (required for the audit trail):');
  if(!why)return;
  try{await updateDoc(doc(db,'sales',id),{voided:true,voidReason:why,voidedBy:UID,voidedAt:new Date().toISOString()});
@@ -11794,7 +11807,7 @@ function posCartCard(t){
   addTiles()+
   (cart.items.filter(needsHandsOn).length>1?'<button class="btn sm ghost" style="margin:4px 0 8px" onclick="handsOnAll()">'+
    ic('user',13)+'Hands-on for all</button>':'')+
-  '<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
+  quoteBar()+'<div class="lnlist">'+(lines.length?lines.map(([i,x])=>i.kind==='addon'?addonLine(i,x):lineHTML(i,x)).join('')
    :'<div class="empty">'+ic('bag',24)+'<div>'+(cart.customerId||cart.walkin?'Add a treatment, product or package above.':'Choose the client first, then add items.')+'</div></div>')+'</div>'+
   smartBox()+
   '<table class="postot">'+
@@ -14471,7 +14484,7 @@ const COA=[
  ['2000','Supplier bills to pay','liability'],['2100','Unredeemed packages','liability'],['2200','Client deposits','liability'],
  ['2300','KWSP payable','liability'],['2310','PERKESO payable','liability'],['2320','SIP payable','liability'],['2330','PCB payable','liability'],
  ['2500','SST payable','liability'],['3000','Owner capital','equity'],['3100','Owner drawings','equity'],
- ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],
+ ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],['4090','Refunds & returns','revenue'],
  ['5000','Cost of products used / sold','expense'],['5100','Salaries & wages','expense'],['5110','Commission','expense'],['5120','KWSP — employer','expense'],
  ['5130','PERKESO & SIP — employer','expense'],['5140','Staff welfare & claims','expense'],
  ['6000','Rent','expense'],['6010','Electricity & water','expense'],['6020','Internet & phone','expense'],['6030','Marketing & advertising','expense'],
@@ -14537,7 +14550,7 @@ async function recurRun(){
  }
  if(made.length)toast('Bills added: '+made.join(', '));
 }
-const finMonthExp=m=>(EXPENSES||[]).filter(e=>String(e.date).slice(0,7)===m);
+const finMonthExp=m=>(EXPENSES||[]).filter(e=>e.status!=='void'&&String(e.date).slice(0,7)===m);
 function vFin(){
  if(!boss())return '<div class="card"><div class="empty">Finance is for the owner and managers.</div></div>';
  /* the owner switched branch: everything is worked out again for the new one */
@@ -14587,6 +14600,7 @@ function finExpenses(){
    '<div style="margin:7px 0"><div class="spread tiny"><span>'+esc(acName(k))+'</span><span>'+rm(v)+'</span></div><div class="bar"><i style="width:'+(tot?v/tot*100:0)+'%"></i></div></div>').join('')+'</div>':'')+
   '<div class="card"><h3 style="margin:0 0 8px">Entries</h3>'+
   ([...E.map(e=>({...e,src:e.source==='recurring'?'Recurring':''})),...A].sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(finRow).join('')||'<div class="empty">'+ic('receipt',24)+'<div>Nothing recorded for '+mLabel(m)+'.</div></div>')+
+  (()=>{const n=(EXPENSES||[]).filter(e=>e.status==='void'&&String(e.date).slice(0,7)===m).length;return n?'<button class="btn sm ghost" style="margin-top:8px" onclick="expVoidList(\''+m+'\')">'+ic('close',13)+n+' voided entr'+(n>1?'ies':'y')+'</button>':'';})()+
   '<p class="tiny muted" style="margin:10px 0 0">Money paid out of the counter drawer (Day → Cash) and staff claims paid outside payroll appear here by themselves. Salaries come in from Payroll when the month is locked.</p></div>';
 }
 function finRow(e){
@@ -14625,8 +14639,10 @@ window.expForm=id=>{
   '<div id="ex-due"'+(e.status==='unpaid'?'':' style="display:none"')+'><label>Due date</label><input class="f" type="date" id="ex-dd" value="'+esc(e.dueDate||ymd(addDays(new Date(),14)))+'"></div>'+
   '<label>Receipt / invoice photo</label><input class="f" type="file" accept="image/*" capture="environment" onchange="expPhoto(this)"><div id="ex-pv">'+(EXRCPT?'<img src="'+EXRCPT+'" class="clthumb" alt="">':'')+'</div>'+
   '<div id="ex-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
-  '<button class="btn" id="ex-go" style="width:100%;justify-content:center" onclick="expSave(\''+(id||'')+'\')">'+ic('check',16)+'Save</button>'+
-  (id&&isOwnerMe()?'<button class="btn ghost sm" style="margin-top:8px;color:var(--rose)" onclick="expDelete(\''+id+'\')">'+ic('trash',13)+'Delete</button>':'')+'</div>');
+  (e.status==='void'?'<div class="cnnote tiny"><b>Voided</b> '+dshort(e.voidedAt)+' by '+esc(e.voidedByName||'')+' — '+esc(e.voidReason||'')+'</div>'
+   :id&&isLocked(e.date)?'<div class="cnnote tiny">'+esc(lockMsg(e.date))+'</div>'
+   :'<button class="btn" id="ex-go" style="width:100%;justify-content:center" onclick="expSave(\''+(id||'')+'\')">'+ic('check',16)+'Save</button>'+
+  (id&&boss()?'<button class="btn ghost sm" style="margin-top:8px;color:var(--rose)" onclick="expVoid(\''+id+'\')">'+ic('close',13)+'Void this entry</button>':''))+'</div>');
  window.EXST=e.status;window.expTip();
  EXSPLIT={on:expSplit(e),lines:expSplit(e)?e.lines.map(l=>({...l})):[]};exsPaint();
 };
@@ -14637,6 +14653,9 @@ window.expPhoto=inp=>{const f=inp.files&&inp.files[0];if(!f)return;const r=new F
  c.getContext('2d').drawImage(img,0,0,c.width,c.height);EXRCPT=c.toDataURL('image/jpeg',.62);$('#ex-pv').innerHTML='<img src="'+EXRCPT+'" class="clthumb" alt="">';};img.src=r.result;};r.readAsDataURL(f);};
 window.expSave=async id=>{
  const e=$('#ex-e'),amt=r2(+$('#ex-a').value||0);
+ {const nd=$('#ex-d').value||today(),o=id&&(EXPENSES||[]).find(x=>x.id===id);
+  if(isLocked(nd)){e.textContent=lockMsg(nd);return;}if(o&&isLocked(o.date)){e.textContent=lockMsg(o.date);return;}
+  if(o&&o.status==='void'){e.textContent='This entry is voided.';return;}}
  if(!(amt>0)){e.textContent='Enter the amount.';return;}
  const sup=$('#ex-s').value.trim(),desc=$('#ex-n').value.trim();
  if(!sup&&!desc){e.textContent='Say who it was paid to or what it was for.';return;}
@@ -14686,6 +14705,7 @@ window.billPay=id=>{
 window.billPaid=async id=>{
  const e=(EXPENSES||[]).find(x=>x.id===id);if(!e)return;
  const p={status:'paid',paidAt:$('#bp-d').value||today(),paidFrom:$('#bp-f').value,payRef:$('#bp-r').value.trim().slice(0,60),updatedAt:new Date().toISOString(),updatedBy:UID};
+ if(isLocked(p.paidAt)){toast(lockMsg(p.paidAt));return;}
  try{await updateDoc(doc(db,'expenses',id),p);Object.assign(e,p);await audit('Bill paid',(e.supplier||e.desc)+' · '+rm(e.amount));window.closeModal();render();toast('Marked paid');}
  catch(err){toast(friendly(err));}
 };
@@ -14726,7 +14746,7 @@ window.recSave=async id=>{
 async function finJournalOf(m,br){
  /* one branch's month; the branch the owner is in unless another is asked for (branch comparison) */
  const own=!br||br===ME.branchId;br=br||ME.branchId;
- const SRC=own?{exp:EXPENSES||[],tr:TRANSFERS||[]}:await cmpSrc(br);
+ const SRC=own?{exp:(EXPENSES||[]).filter(e=>e.status!=='void'),tr:TRANSFERS||[]}:await cmpSrc(br);
  const from=m+'-01',to=mEnd(m),J=[];
  const add=(date,ref,src,desc,lines)=>{lines.filter(l=>Math.abs(l[1])>0.004||Math.abs(l[2])>0.004).forEach(([ac,dr,cr])=>J.push({date,ref,src,desc,account:ac,debit:r2(dr),credit:r2(cr)}));};
  /* takings: each bill is owed by the client on its date; each payment then settles it */
@@ -14796,7 +14816,7 @@ function finJournal(){
  const tb={};J.forEach(l=>{const x=tb[l.account]=tb[l.account]||{dr:0,cr:0};x.dr+=l.debit;x.cr+=l.credit;});
  const dr=r2(J.reduce((t,l)=>t+l.debit,0)),cr=r2(J.reduce((t,l)=>t+l.credit,0));
  const ex=((FINSET||{}).exported||{})[m];
- return head+'<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Totals by account · '+mLabel(m)+'</h3>'+
+ return head+finAdjCard(m)+'<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Totals by account · '+mLabel(m)+'</h3>'+
    '<span class="pill '+(Math.abs(dr-cr)<0.01?'g':'r')+'">'+(Math.abs(dr-cr)<0.01?ic('check',11)+'balanced':'not balanced')+'</span></div>'+
   '<div class="scroll"><table><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr>'+
    Object.keys(tb).sort().map(k=>'<tr><td>'+k+' · '+esc(acName(k))+'</td><td class="num">'+(tb[k].dr?rm(tb[k].dr):'')+'</td><td class="num">'+(tb[k].cr?rm(tb[k].cr):'')+'</td></tr>').join('')+
@@ -15090,6 +15110,7 @@ window.trForm=id=>{
 window.trKind=()=>{const x=MOVES.find(y=>y[0]===$('#tr-k').value);if(x&&x[2]){$('#tr-f').value=x[2];$('#tr-t').value=x[3];}};
 window.trSave=async id=>{
  const e=$('#tr-e'),a=r2(+$('#tr-a').value||0),fee=r2(+$('#tr-fee').value||0),f=$('#tr-f').value,t=$('#tr-t').value;
+ {const nd=$('#tr-d').value||today(),o=id&&(TRANSFERS||[]).find(x=>x.id===id);if(isLocked(nd)){e.textContent=lockMsg(nd);return;}if(o&&isLocked(o.date)){e.textContent=lockMsg(o.date);return;}}
  if(!(a>0)){e.textContent='Enter the amount.';return;}
  if(f===t){e.textContent='From and To must be different.';return;}
  if(fee<0||fee>=a){e.textContent='Fees must be less than the amount.';return;}
@@ -15102,7 +15123,7 @@ window.trSave=async id=>{
  catch(err){e.textContent=friendly(err);}
 };
 window.trDelete=async id=>{
- const t=(TRANSFERS||[]).find(x=>x.id===id);if(!t||!confirm('Delete this money move?'))return;
+ const t=(TRANSFERS||[]).find(x=>x.id===id);if(!t)return;if(isLocked(t.date)){toast(lockMsg(t.date));return;}if(!confirm('Delete this money move?'))return;
  try{await deleteDoc(doc(db,'transfers',id));TRANSFERS=TRANSFERS.filter(x=>x.id!==id);finDirty();
   await audit('Money move deleted',trLabel(t)+' · '+rm(t.amount));window.closeModal();render();}catch(e){toast(friendly(e));}
 };
@@ -15383,7 +15404,7 @@ async function cmpSrc(br){
  if(!CMPALL)CMPALL=Promise.all([
   getDocs(query(collection(db,'expenses'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(()=>[]),
   getDocs(query(collection(db,'transfers'),where('date','>=',ymd(addDays(new Date(),-400))))).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(()=>[])]);
- const [e,t]=await CMPALL;return {exp:e.filter(x=>x.branchId===br),tr:t.filter(x=>x.branchId===br)};
+ const [e,t]=await CMPALL;return {exp:e.filter(x=>x.branchId===br&&x.status!=='void'),tr:t.filter(x=>x.branchId===br)};
 }
 const FINJBP={};let FINNEEDB=null;
 function finJGetB(m,br){
@@ -16046,6 +16067,7 @@ window.billDateSave=()=>{
  const d=$('#bd-d').value,r=$('#bd-r').value.trim(),e=$('#bd-e');
  if(!d){e.textContent='Pick the date.';return;}
  if(d>today()){e.textContent='A bill cannot be dated in the future.';return;}
+ if(isLocked(d)){e.textContent=lockMsg(d);return;}
  if(d===today()){window.billDateClear();return;}
  if(r.length<3){e.textContent='Say why it is keyed in late.';return;}
  cart.billDate=d;cart.billDateWhy=r.slice(0,200);window.closeModal();render();toast('This bill will be dated '+dstr(d));
@@ -16055,6 +16077,7 @@ window.billDateClear=()=>{delete cart.billDate;delete cart.billDateWhy;window.cl
 /* ---- moving a bill (and what hangs off it) to another day ---- */
 async function saleRedate(id,nd,why){
  if(!boss())throw new Error('Only the owner or a manager can change the date of a bill.');
+ if(isLocked(nd))throw new Error(lockMsg(nd));
  const ref=doc(db,'sales',id),snap=await getDoc(ref);if(!snap.exists())throw new Error('Bill not found.');
  const s=snap.data(),od=s.date;if(!nd||nd===od)return false;
  if(nd>today())throw new Error('A bill cannot be dated in the future.');
@@ -16094,6 +16117,7 @@ window.saleDateCheck=async()=>{const i=$('#sd-d'),box=$('#sd-w');if(!i||!box)ret
 window.saleDateSave=async id=>{
  const d=$('#sd-d').value,r=$('#sd-r').value.trim(),e=$('#sd-e');
  if(!d){e.textContent='Pick the date.';return;}
+ {const s0=findSale(id);if(isLocked(d)){e.textContent=lockMsg(d);return;}if(s0&&isLocked(s0.date)){e.textContent=lockMsg(s0.date);return;}}
  if(r.length<3){e.textContent='Give the reason.';return;}
  $('#sd-go').disabled=true;
  try{const ch=await saleRedate(id,d,r);if(!ch){e.textContent='That is already the date of the bill.';$('#sd-go').disabled=false;return;}
@@ -17991,7 +18015,9 @@ window.sstRun=async(from,to)=>{
  try{const L=await sstLoad(from,to);
   const tax=r2(L.reduce((t,s)=>t+saleTaxable(s),0)),sst=r2(L.reduce((t,s)=>t+(+s.sst||0),0)),
    all=r2(L.reduce((t,s)=>t+((+s.total||0)-(+s.sst||0)),0));
-  SSTCALC[k]={tax,sst,exempt:r2(all-tax),bills:L.length,withTax:L.filter(s=>+s.sst>0).length,rows:L};
+  let C=[];try{C=(await getDocs(query(collection(db,'creditNotes'),where('date','>=',from+'-01'),where('date','<=',mEnd(to))))).docs.map(d=>({id:d.id,...d.data()})).filter(x=>(x.branchId||ME.branchId)===ME.branchId);}catch(e){C=[];}
+  const cTax=r2(C.reduce((t,c)=>t+(+c.taxable||0),0)),cSst=r2(C.reduce((t,c)=>t+(+c.sst||0),0)),cAll=r2(C.reduce((t,c)=>t+(+c.amount||0)-(+c.sst||0),0));
+  SSTCALC[k]={tax:r2(tax-cTax),sst:r2(sst-cSst),exempt:r2(all-tax-(cAll-cTax)),bills:L.length,withTax:L.filter(s=>+s.sst>0).length,rows:L,cns:C,cTax,cSst};
  }catch(e){SSTCALC[k]={err:friendly(e)};}
  render();
 };
@@ -17999,6 +18025,7 @@ window.sstCSV=(from,to)=>{const R=SSTCALC[from+'_'+to];if(!R||!R.rows)return;
  csvDownload((bizC().name||'spa').replace(/\W+/g,'-')+'-SST-'+from+'-to-'+to+'.csv',[['Date','Invoice','Client','Taxable service value','SST charged','Not taxable','Bill total'],
   ...R.rows.sort((a,b)=>String(a.date).localeCompare(b.date)).map(s=>{const tx=saleTaxable(s),net=r2((+s.total||0)-(+s.sst||0));
    return [s.date,s.invoiceNo||s.id,s.customerName||'',tx.toFixed(2),(+s.sst||0).toFixed(2),r2(net-tx).toFixed(2),(+s.total||0).toFixed(2)];}),
+  ...(R.cns||[]).map(c=>[c.date,c.no+' (credit note for '+(c.invoiceNo||'')+')',c.customerName||'',(-(+c.taxable||0)).toFixed(2),(-(+c.sst||0)).toFixed(2),(-((+c.amount||0)-(+c.sst||0)-(+c.taxable||0))).toFixed(2),(-(+c.amount||0)).toFixed(2)]),
   ['','','Total',R.tax.toFixed(2),R.sst.toFixed(2),R.exempt.toFixed(2),'']]);};
 
 /* ---------- before registering: the 12-month threshold ---------- */
@@ -18100,6 +18127,7 @@ function finTax(){
        R.busy?'<div class="spin" style="margin:8px auto"></div>':R.err?'<p class="tiny" style="color:var(--rose)">'+esc(R.err)+'</p>':
        '<div class="aprsnap" style="margin-top:6px"><div><small>Taxable services</small><b>'+rm(R.tax)+'</b></div><div><small>SST charged</small><b>'+rm(R.sst)+'</b></div>'+
         '<div><small>Not taxable</small><b>'+rm(R.exempt)+'</b></div><div><small>Bills</small><b>'+R.bills+'</b></div></div>'+
+       (R.cns&&R.cns.length?'<p class="tiny muted" style="margin:6px 0 0">After '+R.cns.length+' credit note'+(R.cns.length>1?'s':'')+': taxable services −'+rm(R.cTax)+', SST −'+rm(R.cSst)+'.</p>':'')+
        (Math.abs(r2(R.tax*(+b.sstRate||8)/100)-R.sst)>1?'<p class="tiny" style="color:var(--rose);margin:6px 0 0">SST charged differs from '+(+b.sstRate||8)+'% of taxable services — some bills were made before SST was switched on or before items were coded.</p>':'')+
        '<button class="btn sm ghost" style="margin-top:6px" onclick="sstCSV(\''+p.from+'\',\''+p.to+'\')">'+ic('download',13)+'Bills in this period (CSV)</button>')+'</div>';}).join('')
     :sstWatchView())+'</div>'+
@@ -18155,5 +18183,354 @@ window.cySave=async()=>{
   window.closeModal();render();toast('Company details saved');}
  catch(err){e.textContent=friendly(err);}
 };
+
+/* ============ Finance phase E: refunds & credit notes, quotations, statements, voids, closed months, adjustments ============ */
+/* Nothing already recorded is edited or removed quietly. Money given back is a credit note
+   against the bill (which stays as it was); a wrong expense is voided with its reason and
+   stays on file; a month that has been closed cannot change, and a correction is made with
+   an adjusting journal entry in an open month — which can itself only be reversed, never
+   deleted. Quotations turn into bills at the counter. */
+
+/* ---------- closed months ---------- */
+const finLock=()=>String((FINSET&&FINSET.lockEnd!==undefined?FINSET.lockEnd:(D.meta&&D.meta.finLock))||'');
+const isLocked=d=>{const L=finLock();return !!L&&!!d&&String(d).slice(0,10)<=L;};
+const lockMsg=d=>'The books are closed up to '+dstr(finLock())+'. '+(d?dstr(d)+' is in a closed month — ':'')+'make the correction with an adjustment dated in an open month.';
+window.finLockSet=async m=>{
+ if(!isOwnerMe())return;
+ const end=m?mEnd(m):'';
+ let why='';
+ if(!m||end<finLock()){why=prompt('Reopening closed months lets past figures change. Why? (kept in the audit trail)');if(!why||!why.trim())return;}
+ else if(!confirm('Close the books up to '+dstr(end)+'?\n\nNothing dated up to then can be added, changed or voided afterwards. Corrections are made with adjustments in an open month.'))return;
+ try{await setDoc(doc(db,'finance','settings'),{lockEnd:end},{merge:true});await setDoc(doc(db,'meta','settings'),{finLock:end},{merge:true});
+  FINSET={...(FINSET||{}),lockEnd:end};D.meta.finLock=end;
+  await audit(end?'Books closed':'Books reopened',end?'up to '+end+(why?' (reopened: '+why.trim()+')':''):why.trim());render();toast(end?'Books closed up to '+dstr(end):'All months open');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- credit notes: money given back against a bill ---------- */
+let CNS={};                                    /* credit notes by bill */
+async function cnFor(saleId){
+ if(CNS[saleId])return CNS[saleId];
+ try{const s=await getDocs(query(collection(db,'creditNotes'),where('saleId','==',saleId)));CNS[saleId]=s.docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){CNS[saleId]=[];}
+ return CNS[saleId];
+}
+const saleRefunded=s=>r2(+((s&&s.refunded)||0));
+/* where a refunded line comes off: revenue (as a return) or, for package money not yet earned, the package liability */
+function cnAcct(s,i){
+ const held=pkgDefer()&&String(s.date)>=pkgFrom()&&(i.kind==='package'||(i.kind==='service'&&i.later));
+ return held?'2100':'4090';
+}
+let CNF=null;
+window.refundForm=async id=>{
+ const s=findSale(id);if(!s)return;
+ if(!boss()){toast('Only the owner or a manager can give a refund');return;}
+ if(s.voided){toast('This bill is voided');return;}
+ if(isLocked(today())){toast(lockMsg(today()));return;}
+ const prev=await cnFor(id),done=r2(prev.reduce((t,c)=>t+(+c.amount||0),0)),paid=salePaid(s),max=r2(paid-done);
+ if(max<=0.004){toast('Nothing left to refund on this bill');return;}
+ const sub=(s.items||[]).reduce((t,i)=>t+lineAmt(i),0),k=sub>0?(+s.total||0)/sub:0;
+ CNF={id,max,lines:(s.items||[]).map((i,x)=>({x,i,cap:r2(lineAmt(i)*k),on:false,amt:r2(lineAmt(i)*k),restock:i.kind==='product'||i.kind==='set',cancel:i.kind==='package'})).filter(l=>l.cap>0.004)};
+ const methods=payMethods().filter(m=>m.active!==false).map(m=>m.name);
+ modal('Refund · '+(s.invoiceNo||''),'<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 8px">The bill stays as it is; a credit note records what was given back. Paid '+rm(paid)+(done?' · already refunded '+rm(done):'')+' · up to <b>'+rm(max)+'</b> can be refunded.</p>'+
+  CNF.lines.map((l,k)=>'<div class="cnrow"><label class="row" style="gap:8px;flex:1;min-width:0"><input type="checkbox" onchange="cnSet('+k+',\'on\',this.checked)"><span><b>'+esc(l.i.name)+'</b>'+
+   '<small>'+l.i.qty+' × · '+rm(l.cap)+' incl. SST share</small></span></label>'+
+   '<input class="f" type="number" step="0.01" min="0" value="'+l.amt.toFixed(2)+'" style="width:100px;margin:0" oninput="cnSet('+k+',\'amt\',this.value)">'+
+   (l.i.kind==='product'||l.i.kind==='set'?'<label class="tiny row" style="gap:4px;flex-basis:100%;margin-left:26px"><input type="checkbox" checked onchange="cnSet('+k+',\'restock\',this.checked)"> put back in stock</label>':'')+
+   (l.i.kind==='package'?'<label class="tiny row" style="gap:4px;flex-basis:100%;margin-left:26px"><input type="checkbox" checked onchange="cnSet('+k+',\'cancel\',this.checked)"> cancel the unused sessions</label>':'')+'</div>').join('')+
+  '<div class="grid g2"><div><label>Money given back by</label><select class="f" id="cn-m">'+[...methods,'Bank transfer'].filter((v,i,a)=>a.indexOf(v)===i).map(m=>'<option>'+esc(m)+'</option>').join('')+'</select></div>'+
+   '<div><label>Reference</label><input class="f" id="cn-r" placeholder="e.g. transfer ref"></div></div>'+
+  '<label>Reason *</label><input class="f" id="cn-w" placeholder="e.g. allergic reaction, product returned unopened">'+
+  '<div class="pkdsum" id="cn-sum"></div><div id="cn-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn warn" style="width:100%;justify-content:center" id="cn-go" onclick="cnSave()">'+ic('check',16)+'Record the refund</button></div>');
+ cnSum();
+};
+window.cnSet=(k,f,v)=>{const l=CNF&&CNF.lines[k];if(!l)return;l[f]=f==='amt'?r2(+v||0):v;cnSum();};
+function cnSum(){const b=document.getElementById('cn-sum');if(!b)return;
+ const on=CNF.lines.filter(l=>l.on),t=r2(on.reduce((a,l)=>a+l.amt,0));
+ b.innerHTML=on.length?'Refund <b class="pkdprice">'+rm(t)+'</b> on '+on.length+' line'+(on.length>1?'s':'')+(t>CNF.max+0.004?' · <span class="odue">more than the '+rm(CNF.max)+' that can be refunded</span>':''):'<span class="muted">Tick what is being refunded.</span>';}
+window.cnSave=async()=>{
+ const s=findSale(CNF.id),e=document.getElementById('cn-e');if(!s)return;
+ const on=CNF.lines.filter(l=>l.on&&l.amt>0);
+ const why=(($('#cn-w')||{}).value||'').trim();
+ if(!on.length){e.textContent='Tick at least one line.';return;}
+ if(on.some(l=>l.amt>l.cap+0.004)){e.textContent='A line cannot be refunded for more than it was sold for.';return;}
+ const amount=r2(on.reduce((a,l)=>a+l.amt,0));
+ if(amount>CNF.max+0.004){e.textContent='Up to '+rm(CNF.max)+' can be refunded on this bill.';return;}
+ if(why.length<3){e.textContent='Give the reason.';return;}
+ const sstShare=(+s.total||0)>0?(+s.sst||0)/(+s.total):0;
+ const btn=$('#cn-go');btn.disabled=true;
+ /* package money still held for unused sessions: the refund comes out of it first, and what is left of it is forfeited when the sessions are cancelled */
+ let cps=[];
+ if(on.some(l=>l.i.kind==='package'&&l.cancel)){try{cps=(await getDocs(query(collection(db,'customerPackages'),where('saleId','==',s.id)))).docs;}catch(err){cps=[];}}
+ const heldOf=pid=>r2(cps.map(d=>d.data()).filter(v=>v.packageId===pid&&!v.prepaid&&cpBooked(v)).reduce((t,v)=>t+(+v.price||0)*cpLeft(v)/(cpTot(v)||1),0));
+ const lines=on.map(l=>{const sst=r2(l.amt*sstShare),q=+l.i.qty||1;
+  const restockQty=(l.restock&&(l.i.kind==='product'||l.i.kind==='set'))?q:0;
+  const cost=restockQty?r2(l.i.kind==='product'?unitCost(l.i.id)*q:(l.i.setItems||[]).reduce((t,z)=>t+unitCost(z.sku)*(+z.qty||1)*q,0)):0;
+  const net=r2(l.amt-sst),cancel=l.i.kind==='package'&&!!l.cancel,held=cancel?heldOf(l.i.id):0;
+  const acct=l.i.kind==='package'?(held>0.004?'2100':'4090'):cnAcct(s,l.i);
+  return{x:l.x,kind:l.i.kind,id:l.i.id,name:l.i.name,qty:q,amount:l.amt,sst,net,acct,tax:taxOf(l.i),restockQty,cost,cancel,held,from2100:acct==='2100'?(l.i.kind==='package'?Math.min(net,held):net):0};});
+ const sst=r2(lines.reduce((t,l)=>t+l.sst,0)),taxable=r2(lines.filter(l=>l.tax==='SV').reduce((t,l)=>t+l.net,0));
+ const now=new Date().toISOString(),no='CN-'+Date.now().toString().slice(-8);
+ const cn={no,saleId:s.id,invoiceNo:s.invoiceNo||'',customerId:s.customerId||'',customerName:s.customerName||'',branchId:s.branchId||ME.branchId,
+  date:today(),at:now,amount,sst,taxable,lines,reason:why.slice(0,200),method:$('#cn-m').value,ref:(($('#cn-r')||{}).value||'').trim().slice(0,60),
+  by:UID,byName:ME.name};
+ try{
+  const bt=writeBatch(db),ref=doc(collection(db,'creditNotes'));
+  bt.set(ref,cn);
+  bt.update(doc(db,'sales',s.id),{refunded:r2(saleRefunded(s)+amount),refundIds:[...(s.refundIds||[]),ref.id]});
+  lines.filter(l=>l.restockQty).forEach(l=>{
+   if(l.kind==='product'){const st=stockOf(l.id);if(st){bt.update(doc(db,'stock',st.id),{qty:increment(l.restockQty)});st.qty+=l.restockQty;}}
+   else (setOf(l.id).items||[]).forEach(z=>{const st=stockOf(z.sku);if(st){const n=(+z.qty||1)*l.restockQty;bt.update(doc(db,'stock',st.id),{qty:increment(n)});st.qty+=n;}});});
+  const cancelIds=lines.filter(l=>l.cancel).map(l=>l.id);
+  cps.forEach(d=>{const v=d.data();if(v.prepaid||!cancelIds.includes(v.packageId))return;bt.update(doc(db,'customerPackages',d.id),{balances:(v.balances||[]).map(b=>({...b,left:0})),cancelledBy:ref.id,cancelledAt:now});});
+  await bt.commit();
+  s.refunded=r2(saleRefunded(s)+amount);s.refundIds=[...(s.refundIds||[]),ref.id];(CNS[s.id]=CNS[s.id]||[]).push({id:ref.id,...cn});
+  if(typeof finDirty==='function')finDirty();
+  await audit('Refund / credit note',no+' · '+(s.invoiceNo||'')+' · '+rm(amount)+' · '+cn.method+' · '+why);
+  toast('Refund recorded · '+no);window.showReceipt(s.id);
+ }catch(err){e.textContent=friendly(err);btn.disabled=false;}
+};
+window.cnShow=async saleId=>{
+ const L=await cnFor(saleId);if(!L.length)return;
+ modal('Credit notes','<div class="card">'+L.map(c=>'<div class="cnbox"><div class="spread"><b>'+esc(c.no)+'</b><span class="tiny muted">'+dstr(c.date)+' · '+esc(c.byName||'')+'</span></div>'+
+  '<div class="tiny muted">Against '+esc(c.invoiceNo)+' · '+esc(c.customerName||'')+'</div>'+
+  '<table style="margin-top:6px">'+(c.lines||[]).map(l=>'<tr><td>'+esc(l.name)+(l.restockQty?' <span class="muted">· back in stock</span>':'')+(l.cancel?' <span class="muted">· sessions cancelled</span>':'')+'</td><td class="num">−'+rm(l.amount)+'</td></tr>').join('')+
+  (c.sst?'<tr><td class="muted">incl. SST</td><td class="num muted">'+rm(c.sst)+'</td></tr>':'')+
+  '<tr class="paytot"><td>Refunded by '+esc(c.method)+(c.ref?' · '+esc(c.ref):'')+'</td><td class="num">−'+rm(c.amount)+'</td></tr></table>'+
+  '<div class="tiny" style="margin-top:4px">Reason: '+esc(c.reason)+'</div></div>').join('')+
+  '<button class="btn ghost noprint" style="width:100%;justify-content:center" onclick="window.print()">'+ic('print',15)+'Print</button></div>');
+};
+function refundNote(s){
+ if(!saleRefunded(s))return '';
+ return '<div class="card noprint cnnote"><div class="spread"><span>'+ic('refresh',14)+' Refunded <b>'+rm(saleRefunded(s))+'</b> · net '+rm(r2((+s.total||0)-saleRefunded(s)))+'</span>'+
+  '<button class="btn sm ghost" onclick="cnShow(\''+s.id+'\')">Credit notes</button></div></div>';
+}
+
+/* ---------- the journal: credit notes and adjustments join the month ---------- */
+{const _fj=finJournalOf;finJournalOf=async(m,br)=>{
+ const J=await _fj(m,br),b=br||ME.branchId,from=m+'-01',to=mEnd(m);
+ const add=(date,ref,src,desc,lines)=>{lines.filter(l=>Math.abs(l[1])>0.004||Math.abs(l[2])>0.004).forEach(([ac,dr,cr])=>J.push({date,ref,src,desc,account:ac,debit:r2(dr),credit:r2(cr)}));};
+ try{const s=await getDocs(query(collection(db,'creditNotes'),where('date','>=',from),where('date','<=',to)));
+  s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.branchId===b).forEach(c=>{
+   const L=[];(c.lines||[]).forEach(l=>{const h=l.from2100!==undefined?+l.from2100:(l.acct==='2100'?+l.net:0);
+    if(h)L.push(['2100',h,0]);if(+l.net-h>0.004)L.push([l.acct==='2100'?'4090':(l.acct||'4090'),+l.net-h,0]);});
+   if(c.sst)L.push(['2500',c.sst,0]);L.push([payAcct(c.method||''),0,c.amount]);
+   add(c.date,c.no,'cn:'+c.id,'Refund '+c.no+' · '+(c.invoiceNo||'')+' · '+(c.customerName||''),L);
+   const forf=r2((c.lines||[]).filter(l=>l.cancel).reduce((t,l)=>t+Math.max(0,(+l.held||0)-(+l.from2100||0)),0));
+   if(forf>0.004)add(c.date,c.no,'cnfor:'+c.id,'Sessions cancelled on refund · '+c.no+' · '+(c.customerName||''),[['2100',forf,0],['4040',0,forf]]);
+   const cost=r2((c.lines||[]).reduce((t,l)=>t+(+l.cost||0),0));
+   if(cost>0&&cogsAuto())add(c.date,c.no,'cnstock:'+c.id,'Returned to stock · '+c.no,[['1200',cost,0],['5000',0,cost]]);});}
+ catch(e){console.warn('credit notes',e);}
+ try{const s=await getDocs(query(collection(db,'journals'),where('date','>=',from),where('date','<=',to)));
+  s.docs.map(d=>({id:d.id,...d.data()})).filter(j=>(j.branchId||ME.branchId)===b).forEach(j=>
+   add(j.date,j.no||j.id,'mj:'+j.id,'Adjustment · '+(j.desc||''),(j.lines||[]).map(l=>[l.account,+l.debit||0,+l.credit||0])));}
+ catch(e){console.warn('adjustments',e);}
+ return J;};}
+
+/* ---------- adjusting journal entries ---------- */
+let MJ={},MJF=null;
+async function mjLoad(m){try{const s=await getDocs(query(collection(db,'journals'),where('date','>=',m+'-01'),where('date','<=',mEnd(m))));
+ MJ[m]=s.docs.map(d=>({id:d.id,...d.data()})).filter(j=>(j.branchId||ME.branchId)===ME.branchId).sort((a,b)=>String(a.date).localeCompare(b.date));}catch(e){MJ[m]=[];}}
+function finAdjCard(m){
+ if(MJ[m]===undefined){MJ[m]=null;mjLoad(m).then(()=>{if(TAB==='fin'&&FINV==='jnl')render();});}
+ const L=MJ[m]||[],L2=finLock();
+ const nextOpen=L2?mShift(L2.slice(0,7),1):'';
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('edit',15)+' Adjustments · '+mLabel(m)+'</h3>'+
+   (boss()?'<button class="btn sm" onclick="mjForm()">'+ic('plus',14)+'New adjustment</button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">A correction to the books — for example a wrong category, stock written off, or depreciation — as balanced debit and credit lines. Adjustments cannot be deleted; a wrong one is reversed.</p>'+
+  (MJ[m]===null?'<div class="spin"></div>':L.length?L.map(j=>{const t=r2((j.lines||[]).reduce((a,l)=>a+(+l.debit||0),0));
+   return '<div class="mjrow"><div class="spread"><b>'+esc(j.no||'')+' · '+esc(j.desc||'')+'</b><b>'+rm(t)+'</b></div>'+
+    '<div class="tiny muted">'+dstr(j.date)+' · '+esc(j.byName||'')+(j.reverses?' · reverses '+esc(j.reversesNo||''):'')+(j.reversedBy?' · <b>reversed</b>':'')+'</div>'+
+    '<table class="mjt">'+(j.lines||[]).map(l=>'<tr><td>'+esc(l.account)+' · '+esc(acName(l.account))+'</td><td class="num">'+(+l.debit?rm(l.debit):'')+'</td><td class="num">'+(+l.credit?rm(l.credit):'')+'</td></tr>').join('')+'</table>'+
+    (boss()&&!j.reversedBy&&!j.reverses?'<button class="btn sm ghost" onclick="mjReverse(\''+j.id+'\',\''+m+'\')">'+ic('refresh',13)+'Reverse</button>':'')+'</div>';}).join('')
+   :'<div class="tiny muted">None this month.</div>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('shield',15)+' Close the books</h3><span class="pill '+(L2?'g':'')+'">'+(L2?'closed to '+dshort(L2):'all open')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">When a month is final (checked and sent to the accountant), close it: nothing dated in it can then be added, edited, voided or re-dated. '+
+   (L2?'Open from '+mLabel(nextOpen)+'.':'')+'</p>'+
+  (isOwnerMe()?'<div class="row wrap2">'+(m<today().slice(0,7)&&(!L2||mEnd(m)>L2)?'<button class="btn sm" onclick="finLockSet(\''+m+'\')">'+ic('check',13)+'Close up to '+mLabel(m)+'</button>':'')+
+   (L2?'<button class="btn sm ghost" onclick="finLockSet(\''+mShift(L2.slice(0,7),-1)+'\')">Reopen '+mLabel(L2.slice(0,7))+'</button>':'')+'</div>':'<p class="tiny muted">Only the owner can close or reopen months.</p>')+'</div>';
+}
+window.mjForm=()=>{
+ MJF={date:isLocked(today())?today():(FINM<today().slice(0,7)?mEnd(FINM):today()),desc:'',lines:[{account:'',debit:'',credit:''},{account:'',debit:'',credit:''}]};
+ if(isLocked(MJF.date))MJF.date=today();
+ mjPaint();
+};
+function mjPaint(){
+ const opts=v=>'<option value="">— account —</option>'+coa().map(a=>'<option value="'+a[0]+'"'+(v===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('');
+ modal('New adjustment','<div class="card">'+
+  '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="mj-d" value="'+MJF.date+'" onchange="mjSet(-1,\'date\',this.value)"></div>'+
+   '<div><label>Why *</label><input class="f" id="mj-w" value="'+esc(MJF.desc)+'" oninput="mjSet(-1,\'desc\',this.value)" placeholder="e.g. stock count difference"></div></div>'+
+  '<div class="mjhead"><span>Account</span><span>Debit</span><span>Credit</span><span></span></div>'+
+  MJF.lines.map((l,k)=>'<div class="mjline"><select class="f" onchange="mjSet('+k+',\'account\',this.value)">'+opts(l.account)+'</select>'+
+   '<input class="f" type="number" step="0.01" min="0" value="'+l.debit+'" oninput="mjSet('+k+',\'debit\',this.value,1)">'+
+   '<input class="f" type="number" step="0.01" min="0" value="'+l.credit+'" oninput="mjSet('+k+',\'credit\',this.value,1)">'+
+   '<button type="button" class="iconbtn" onclick="mjDrop('+k+')">'+ic('close',13)+'</button></div>').join('')+
+  '<button type="button" class="btn ghost sm" onclick="mjAdd()">'+ic('plus',13)+'Add line</button>'+
+  '<div class="pkdsum" id="mj-sum" style="margin-top:8px"></div><div id="mj-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="mjSave()">'+ic('check',16)+'Post the adjustment</button></div>');
+ mjSum();
+}
+window.mjSet=(k,f,v,quiet)=>{if(k<0){MJF[f]=v;return;}const l=MJF.lines[k];if(!l)return;l[f]=v;if(quiet)mjSum();};
+window.mjAdd=()=>{MJF.lines.push({account:'',debit:'',credit:''});mjPaint();};
+window.mjDrop=k=>{MJF.lines.splice(k,1);mjPaint();};
+function mjSum(){const b=document.getElementById('mj-sum');if(!b)return;
+ const dr=r2(MJF.lines.reduce((t,l)=>t+(+l.debit||0),0)),cr=r2(MJF.lines.reduce((t,l)=>t+(+l.credit||0),0));
+ b.innerHTML='Debit '+rm(dr)+' · Credit '+rm(cr)+(Math.abs(dr-cr)<0.005&&dr>0?' · <b style="color:var(--jade)">balanced</b>':' · <span class="odue">must balance</span>');}
+window.mjSave=async()=>{
+ const e=document.getElementById('mj-e');
+ const L=MJF.lines.map(l=>({account:l.account,debit:r2(+l.debit||0),credit:r2(+l.credit||0)})).filter(l=>l.account&&(l.debit||l.credit));
+ const dr=r2(L.reduce((t,l)=>t+l.debit,0)),cr=r2(L.reduce((t,l)=>t+l.credit,0));
+ if(String(MJF.desc||'').trim().length<3){e.textContent='Say why.';return;}
+ if(L.length<2){e.textContent='At least two lines with an account and an amount.';return;}
+ if(L.some(l=>l.debit&&l.credit)){e.textContent='A line is either a debit or a credit.';return;}
+ if(Math.abs(dr-cr)>=0.005||!(dr>0)){e.textContent='Debits and credits must be equal.';return;}
+ if(!MJF.date||MJF.date>today()){e.textContent='Pick a date, not in the future.';return;}
+ if(isLocked(MJF.date)){e.textContent=lockMsg(MJF.date);return;}
+ await mjPost({date:MJF.date,desc:String(MJF.desc).trim().slice(0,160),lines:L});
+ window.closeModal();
+};
+async function mjPost(j){
+ const m=j.date.slice(0,7),no='ADJ-'+Date.now().toString().slice(-8);
+ const d={...j,no,branchId:ME.branchId,by:UID,byName:ME.name,at:new Date().toISOString()};
+ try{const r=await addDoc(collection(db,'journals'),d);
+  if(MJ[m])MJ[m].push({id:r.id,...d});if(typeof finDirty==='function')finDirty();
+  await audit('Adjustment posted',no+' · '+d.desc+' · '+rm(d.lines.reduce((t,l)=>t+l.debit,0)));render();toast('Adjustment '+no+' posted');return{id:r.id,...d};}
+ catch(err){toast(friendly(err));return null;}
+}
+window.mjReverse=async(id,m)=>{
+ const j=(MJ[m]||[]).find(x=>x.id===id);if(!j)return;
+ const date=isLocked(j.date)?today():j.date;
+ if(!confirm('Post a reversing entry dated '+dstr(date)+'?'))return;
+ const r=await mjPost({date,desc:'Reversal of '+(j.no||'')+' · '+(j.desc||''),lines:(j.lines||[]).map(l=>({account:l.account,debit:+l.credit||0,credit:+l.debit||0})),reverses:j.id,reversesNo:j.no||''});
+ if(r){try{await updateDoc(doc(db,'journals',id),{reversedBy:r.id,reversedNo:r.no});j.reversedBy=r.id;render();}catch(e){}}
+};
+
+/* ---------- expenses are voided, not deleted ---------- */
+window.expVoid=async id=>{
+ const x=(EXPENSES||[]).find(e=>e.id===id);if(!x||!boss())return;
+ if(isLocked(x.date)){toast(lockMsg(x.date));return;}
+ const why=prompt('Why void this entry? It stays on file, marked void, with your reason.');if(!why||!why.trim())return;
+ const p={status:'void',voidReason:why.trim().slice(0,200),voidedBy:UID,voidedByName:ME.name,voidedAt:new Date().toISOString(),statusBefore:x.status};
+ try{await updateDoc(doc(db,'expenses',id),p);Object.assign(x,p);if(typeof finDirty==='function')finDirty();
+  await audit('Expense voided',(x.supplier||x.desc)+' · '+rm(x.amount)+' · '+x.date+' · '+why.trim());window.closeModal();render();toast('Voided — kept on file');}
+ catch(e){toast(friendly(e));}
+};
+window.expVoidList=m=>{
+ const L=(EXPENSES||[]).filter(e=>e.status==='void'&&String(e.date).slice(0,7)===m);
+ modal('Voided entries · '+mLabel(m),'<div class="card">'+(L.length?L.map(e=>'<div class="hrrow"><div style="flex:1;min-width:0"><b style="text-decoration:line-through">'+esc(e.supplier||e.desc||'')+'</b><small>'+dshort(e.date)+' · '+esc(expAcLabel(e))+
+  ' · voided '+dshort(e.voidedAt)+' by '+esc(e.voidedByName||'')+' — '+esc(e.voidReason||'')+'</small></div><b class="finamt" style="text-decoration:line-through">'+rm(e.amount)+'</b></div>').join(''):'<div class="empty">None.</div>')+'</div>');
+};
+
+/* ---------- quotations ---------- */
+let QUOTES=null;
+async function quotesLoad(){try{const s=await getDocs(query(collection(db,'quotes'),where('branchId','==',ME.branchId)));
+ QUOTES=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));}catch(e){QUOTES=[];}}
+const qOpen=q=>q.status==='open'&&String(q.validUntil||'')>=today();
+const qState=q=>q.status==='converted'?['g','Became a bill']:q.status==='declined'?['','Declined']:String(q.validUntil||'')<today()?['r','Expired']:['a','Open'];
+function quoteBar(){
+ const n=(QUOTES||[]).filter(qOpen).length;
+ if(QUOTES===null){QUOTES=[];quotesLoad().then(()=>{if(TAB==='pos')render();});}
+ return '<div class="row wrap2 qtrow">'+(cart.items.length&&!cart.quoteId?'<button class="btn sm ghost" onclick="quoteSaveForm()">'+ic('note',13)+'Save as quotation</button>':'')+
+  (cart.quoteId?'<span class="pill b">'+ic('note',11)+' From quotation '+esc(((QUOTES||[]).find(q=>q.id===cart.quoteId)||{}).no||'')+'</span>':'')+
+  '<button class="btn sm ghost" onclick="quoteList()">'+ic('list',13)+'Quotations'+(n?' ('+n+')':'')+'</button></div>';
+}
+window.quoteSaveForm=()=>{
+ if(!cart.items.length){toast('Add items first');return;}
+ const c=cust(cart.customerId);
+ modal('Save as quotation','<div class="card">'+
+  (c?'<p class="tiny muted" style="margin:0 0 8px">For <b>'+esc(c.name)+'</b></p>':'<label>Client name *</label><input class="f" id="qt-n" placeholder="Who is it for"><label>Phone</label><input class="f" id="qt-p" type="tel">')+
+  '<label>Valid until</label><input class="f" type="date" id="qt-v" value="'+ymd(addDays(new Date(),30))+'">'+
+  '<label>Note on the quotation <span class="muted">— optional</span></label><textarea class="f" id="qt-x" rows="2" placeholder="e.g. Programme for acne scars, 6 sessions over 3 months"></textarea>'+
+  '<div id="qt-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="quoteSave()">'+ic('check',16)+'Save quotation</button></div>');
+};
+const QKEEP=['kind','id','name','price','qty','priceEdited','listPrice','dType','dVal','discCode','discNote','lineNote','later','laterDays','pkgCustom','pkgItems','pkgDays','pkgPriceMode','staffId'];
+window.quoteSave=async()=>{
+ const e=document.getElementById('qt-e'),c=cust(cart.customerId),t=cartTotals();
+ const name=c?c.name:String(($('#qt-n')||{}).value||'').trim(),phone=c?(c.phone||''):String(($('#qt-p')||{}).value||'').trim();
+ if(name.length<2){e.textContent='Who is it for?';return;}
+ const items=cart.items.filter(i=>i.kind!=='redeem').map(i=>{const o={};QKEEP.forEach(k=>{if(i[k]!==undefined&&i[k]!==null)o[k]=i[k];});return o;});
+ const q={no:'QT-'+Date.now().toString().slice(-8),customerId:c?c.id:'',customerName:name.slice(0,80),phone:phone.slice(0,20),items,
+  sub:r2(t.sub),discount:r2(+cart.discount||0),sst:r2(t.sst),total:r2(t.total),validUntil:($('#qt-v')||{}).value||ymd(addDays(new Date(),30)),
+  note:String(($('#qt-x')||{}).value||'').trim().slice(0,400),status:'open',branchId:ME.branchId,date:today(),createdAt:new Date().toISOString(),createdBy:UID,createdByName:actorName()};
+ try{const r=await addDoc(collection(db,'quotes'),q);(QUOTES=QUOTES||[]).unshift({id:r.id,...q});
+  await audit('Quotation saved',q.no+' · '+name+' · '+rm(q.total));window.quoteShow(r.id);toast('Quotation '+q.no+' saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+function quoteText(q){const b=bizC();
+ return 'Sebut harga '+q.no+' — '+(b.name||'')+'\nUntuk: '+q.customerName+'\n\n'+q.items.map(i=>i.qty+' × '+i.name+'  '+rm(r2(lineAmt(i)))).join('\n')+
+  (q.discount?'\nDiskaun  −'+rm(q.discount):'')+(q.sst?'\nSST  '+rm(q.sst):'')+'\nJumlah: '+rm(q.total)+'\nSah sehingga '+dstr(q.validUntil)+(q.note?'\n\n'+q.note:'');}
+window.quoteShow=id=>{
+ const q=(QUOTES||[]).find(x=>x.id===id);if(!q)return;const st=qState(q),b=bizC(),ph=waNum(q.phone);
+ modal('Quotation '+q.no,'<div class="card rcpt"><div class="spread"><b>'+esc(b.legalName||b.name||'')+'</b><span class="pill '+st[0]+'">'+st[1]+'</span></div>'+
+  '<div class="tiny muted">'+esc(b.address||'')+(b.ssm?' · SSM '+esc(b.ssm):'')+'</div>'+
+  '<h3 style="margin:10px 0 4px">Quotation '+esc(q.no)+'</h3><div class="tiny">For <b>'+esc(q.customerName)+'</b>'+(q.phone?' · '+esc(q.phone):'')+' · '+dstr(q.date)+' · valid until '+dstr(q.validUntil)+'</div>'+
+  '<table style="margin-top:8px">'+q.items.map(i=>'<tr><td>'+i.qty+' × '+esc(i.name)+(i.pkgCustom?'<div class="tiny muted">'+esc(pkgItemsOf(i).map(z=>z.n+'× '+(svc(z.serviceId).name||'')).join(' + '))+'</div>':'')+'</td><td class="num">'+rm(r2(lineAmt(i)))+'</td></tr>').join('')+
+   (q.discount?'<tr><td>Discount</td><td class="num">−'+rm(q.discount)+'</td></tr>':'')+(q.sst?'<tr><td>SST</td><td class="num">'+rm(q.sst)+'</td></tr>':'')+
+   '<tr class="paytot"><td>Total</td><td class="num">'+rm(q.total)+'</td></tr></table>'+(q.note?'<p class="tiny" style="margin-top:8px">'+esc(q.note)+'</p>':'')+
+  '<p class="tiny muted">Prices are held until the date above. This is not a bill.</p></div>'+
+  '<div class="fabrow noprint">'+(q.status==='open'?'<button class="btn sm" onclick="quoteLoad(\''+q.id+'\')">'+ic('check',14)+'Load into checkout</button>':'')+
+   (ph?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/'+ph+'?text='+encodeURIComponent(quoteText(q))+'">'+ic('msg',14)+'WhatsApp</a>':'')+
+   '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button>'+
+   (q.status==='open'?'<button class="btn sm ghost" onclick="quoteDecline(\''+q.id+'\')">Declined</button>':'')+'</div>');
+};
+window.quoteList=async()=>{
+ if(QUOTES===null)await quotesLoad();
+ const L=(QUOTES||[]).filter(q=>!cart.customerId||q.customerId===cart.customerId||q.status==='open').slice(0,40);
+ modal('Quotations','<div class="card">'+(L.length?L.map(q=>{const st=qState(q);return '<button class="pkrow" onclick="quoteShow(\''+q.id+'\')"><span class="cpmeta"><b>'+esc(q.no)+' · '+esc(q.customerName)+'</b>'+
+  '<span>'+dshort(q.date)+' · '+q.items.length+' item'+(q.items.length>1?'s':'')+' · valid to '+dshort(q.validUntil)+'</span></span><span class="pkprice">'+rm(q.total)+'</span><span class="pill '+st[0]+'">'+st[1]+'</span></button>';}).join('')
+  :'<div class="empty">No quotations yet. Add items to a bill and tap "Save as quotation".</div>')+'</div>');
+};
+window.quoteLoad=async id=>{
+ const q=(QUOTES||[]).find(x=>x.id===id);if(!q)return;
+ if(q.validUntil<today()&&!confirm('This quotation expired on '+dstr(q.validUntil)+'. Use it anyway?'))return;
+ if(cart.items.length&&!confirm('Replace what is on the bill now?'))return;
+ if(q.customerId&&!cust(q.customerId))await custGet(q.customerId);
+ let reset=0;
+ const items=q.items.map(x=>{const i={...x,staffId:x.staffId||actorId()||UID};const src=itemSrc(i.kind,i.id);
+  if(!src||!src.name)return null;
+  if(i.priceEdited&&!canPrice()){i.price=+src.price||0;delete i.priceEdited;delete i.listPrice;reset++;}
+  if(!i.priceEdited)i.price=+src.price||0;
+  uidOf(i);recalcLine(i);applyHandsOn(i);return i;}).filter(Boolean);
+ cart={customerId:q.customerId||'',items,discount:+q.discount||0,voucher:null,payments:[],points:0,walkin:!q.customerId,instal:false,dueDate:'',quoteId:q.id};
+ window.closeModal();window.go('pos');
+ toast('Quotation '+q.no+' loaded'+(reset?' · '+reset+' price(s) back to the catalogue':'')+(items.length<q.items.length?' · '+(q.items.length-items.length)+' item(s) no longer sold':''));
+};
+window.quoteDecline=async id=>{const q=(QUOTES||[]).find(x=>x.id===id);if(!q)return;
+ try{await updateDoc(doc(db,'quotes',id),{status:'declined',closedAt:new Date().toISOString(),closedBy:UID});q.status='declined';window.closeModal();render();}catch(e){toast(friendly(e));}};
+{const _co=window.checkout;window.checkout=async()=>{
+ const qid=cart.quoteId,before=cart.items.length;
+ await _co();
+ if(qid&&!cart.items.length&&before){const q=(QUOTES||[]).find(x=>x.id===qid);
+  const s=[...SALES].sort((a,b)=>String(b.at).localeCompare(String(a.at)))[0];
+  try{await updateDoc(doc(db,'quotes',qid),{status:'converted',saleId:s?s.id:'',invoiceNo:s?s.invoiceNo||'':'',closedAt:new Date().toISOString(),closedBy:UID});
+   if(q){q.status='converted';q.saleId=s&&s.id;}}catch(e){}}
+};}
+
+/* ---------- a client's statement of account ---------- */
+window.stmtOpen=async cid=>{
+ const c=cust(cid)||await custGet(cid);if(!c)return;
+ modal('Statement · '+c.name,'<div class="card" id="stmt"><div class="spin"></div></div>');
+ let S=[],C=[];
+ try{const [a,b]=await Promise.all([getDocs(query(collection(db,'sales'),where('customerId','==',cid),limit(400))),
+  getDocs(query(collection(db,'creditNotes'),where('customerId','==',cid),limit(200))).catch(()=>({docs:[]}))]);
+  S=a.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided);C=b.docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){const b=document.getElementById('stmt');if(b)b.innerHTML='<p class="tiny" style="color:var(--rose)">'+esc(friendly(e))+'</p>';return;}
+ const rows=[...S.map(s=>({date:s.date,ref:s.invoiceNo||'',what:(s.items||[]).map(i=>i.name).join(', ').slice(0,60),bill:+s.total||0,paid:salePaid(s),refund:0})),
+  ...C.map(x=>({date:x.date,ref:x.no,what:'Refund · '+(x.invoiceNo||''),bill:0,paid:0,refund:+x.amount||0}))].sort((a,b)=>String(a.date).localeCompare(b.date));
+ const tb=r2(rows.reduce((t,r)=>t+r.bill,0)),tp=r2(rows.reduce((t,r)=>t+r.paid,0)),tr=r2(rows.reduce((t,r)=>t+r.refund,0)),owed=r2(S.reduce((t,s)=>t+saleBalance(s),0));
+ const b=document.getElementById('stmt');if(!b)return;const biz=bizC();
+ b.innerHTML='<div class="rcpt"><b>'+esc(biz.legalName||biz.name||'')+'</b><div class="tiny muted">Statement of account · '+esc(c.name)+(idOf(c)?' ('+esc(idOf(c))+')':'')+' · '+dstr(today())+'</div>'+
+  '<div class="aprsnap" style="margin:10px 0"><div><small>Billed</small><b>'+rm(tb)+'</b></div><div><small>Paid</small><b>'+rm(tp)+'</b></div><div><small>Refunded</small><b>'+rm(tr)+'</b></div><div><small>Still owed</small><b>'+rm(owed)+'</b></div></div>'+
+  '<div class="scroll"><table><tr><th>Date</th><th>Ref</th><th class="num">Billed</th><th class="num">Paid</th><th class="num">Refund</th></tr>'+
+  rows.map(r=>'<tr><td>'+dshort(r.date)+'</td><td>'+esc(r.ref)+'<div class="tiny muted">'+esc(r.what)+'</div></td><td class="num">'+(r.bill?rm(r.bill):'')+'</td><td class="num">'+(r.paid?rm(r.paid):'')+'</td><td class="num">'+(r.refund?'−'+rm(r.refund):'')+'</td></tr>').join('')+
+  '</table></div></div>'+
+  '<div class="fabrow noprint">'+(waNum(c.phone)?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/'+waNum(c.phone)+'?text='+encodeURIComponent('Hi '+refFirst(c.name)+', penyata akaun anda di '+(biz.name||'kami')+': jumlah bil '+rm(tb)+', dibayar '+rm(tp)+(tr?', dipulangkan '+rm(tr):'')+(owed?'. Baki tertunggak '+rm(owed)+'.':'. Tiada baki tertunggak. Terima kasih!'))+'">'+ic('msg',14)+'WhatsApp summary</a>':'')+
+  '<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button></div>';
+};
+function stmtCard(c){return '<div class="card"><div class="spread"><h3 style="margin:0">'+ic('receipt',15)+' Statement of account</h3><button class="btn sm ghost" onclick="stmtOpen(\''+c.id+'\')">Open</button></div>'+
+ '<p class="tiny muted" style="margin:6px 0 0">Every bill, payment and refund for this client, with what is still owed.</p></div>';}
 
 </script>
