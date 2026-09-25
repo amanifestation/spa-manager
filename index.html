@@ -808,6 +808,9 @@ tr.fbmine td{background:var(--brass-soft)}
 .swsmall{font-size:12.5px;color:var(--ink-3)}
 .swlose{font-size:34px}.swlose div{font-size:14px;color:var(--ink-2);margin-top:6px;line-height:1.5}
 .swreveal{background:none;border:0;color:var(--ink-3);text-decoration:underline;font-size:13px;cursor:pointer;margin-bottom:6px}
+.swinv{margin-top:18px;text-align:left;border:1.5px solid var(--brass);border-radius:16px;padding:15px;background:var(--surface)}
+.swinvh{font-weight:800;font-size:18px;margin-bottom:4px}.swinv p{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
+.swinv .f{width:100%;margin:6px 0}.swinvok{display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:6px 0 4px}
 .swticket{margin-top:10px;border:1.5px dashed var(--brass);border-radius:14px;padding:13px;background:var(--brass-soft)}
 .swcode{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:800;letter-spacing:.12em;color:var(--brass);margin:3px 0;user-select:all}
 .swconf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99}
@@ -1626,6 +1629,15 @@ body.demo .syncbar{top:106px}
 .budbar{position:relative;overflow:visible;height:8px}.budbar>i{background:var(--brass)}.budbar>i.over{background:var(--rose)}
 .brcrow{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}.brcrow>b{min-width:110px}.brcbars{flex:1;min-width:0}
 .brcbars small{display:block;font-size:11.5px;color:var(--ink-3);margin:2px 0 6px}.bar>i.neg{background:var(--rose)}
+/* catalogue categories */
+.catsec{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--ink-3);margin:16px 2px 6px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.catsec:first-of-type{margin-top:4px}
+.catsec i{font-style:normal;color:var(--brass);font-weight:650}
+.catrow{gap:6px;margin-bottom:6px;align-items:center}.catrow .catn{min-width:22px;text-align:right}
+.catrow .iconbtn[disabled]{opacity:.3}
+.pk2cats{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;margin:0 0 4px;scrollbar-width:none}
+.pk2cats::-webkit-scrollbar{display:none}
+.pk2cats .chip{white-space:nowrap;flex:0 0 auto}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1883,7 +1895,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25h';
+const BUILD='2026-09-25i';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3048,7 +3060,9 @@ async function saveCustForm(id,thenBook){
    await audit('Client details updated',name);
   }else{
    data.createdAt=new Date().toISOString();data.createdBy=UID;data.active=true;data.wantNo=true;
+   const inv=await refAttach(data);
    const r=await addDoc(collection(db,'customers'),data);
+   await refAttached(inv,r.id);
    CUSTS.unshift({id:r.id,...data});
    const no=await newClientNo(r.id);
    await audit('Client registered',name+(no?' · '+no:''));
@@ -3445,7 +3459,9 @@ window.cpNewSave=async(pid,force)=>{
   pdpa:!!g('nd').checked,marketing:true,tags:[],notes:'',active:true,wantNo:true,
   createdAt:new Date().toISOString(),createdBy:UID};
  try{
+  const inv=await refAttach(data);
   const r=await addDoc(collection(db,'customers'),data);
+  await refAttached(inv,r.id);
   CUSTS.unshift({id:r.id,...data});
   await audit('Client registered',name+' (quick add)');
   toast(name+' added');
@@ -5095,7 +5111,7 @@ function buildPriceListPDF(o,jsPDF){
  if(o.secs.includes('svc')){
   const list=D.services.filter(s=>s.active!==false);
   if(list.length){head('Treatments',list.length+' treatments');
-   const cats=[...new Set(list.map(s=>s.cat||'Other'))];
+   const cats=[...new Set(list.map(s=>s.cat||'Other'))].sort((x,y)=>{const L=catList('service'),i=c=>{const k=L.indexOf(c);return k<0?9999:k;};return i(x)-i(y);});
    cats.forEach(c=>{if(cats.length>1)group(c);
     list.filter(s=>(s.cat||'Other')===c).forEach(s=>row(s.name,[o.dur&&s.dur?s.dur+' min':'',s.desc||''].filter(Boolean).join(' · '),pdfRM(s.price)));
     y+=2;});y+=4;}}
@@ -5334,6 +5350,7 @@ async function fbCreate(base){
   invoiceNo:base.invoiceNo||'',lang:R.lang||'ms',google:R.google||'',nps:R.nps!==false,
   goodTags:fbTags(R.goodTags),badTags:fbTags(R.badTags),
   ...(base.customerId&&swSet().on?{prize:swDraw(c.name||base.customerName)}:{}),
+  ...(base.customerId&&swSet().on&&refSet().on&&refSet().invite?{prize2:swDraw(c.name||base.customerName)}:{}),
   createdAt:new Date().toISOString(),createdBy:UID,createdByName:ME.name,
   expiresMs:Date.now()+Math.max(1,+R.validDays||7)*864e5};
  await setDoc(doc(db,'fbRequests',token),data);
@@ -5857,17 +5874,17 @@ const SWT={
   shot:'Tip: take a screenshot of this screen.'}};
 const swDate=d=>{try{return new Date(d).toLocaleDateString(FBPUB.lang==='en'?'en-MY':'ms-MY',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d;}};
 function swCard(){
- const p=FBPUB.r.prize,L=SWT[FBPUB.lang];
+ const p=swP(),L=SWT[FBPUB.lang];
  const inner=p.lose?'<div class="swlose">🌸<div>'+esc(L.lose)+'</div></div>':
   '<div class="swwin"><div class="swsmall">'+esc(L.win)+'</div><div class="swprize">'+esc(p.label)+'</div>'+
   (p.serviceName&&!/free|percuma/i.test(p.label)?'<div class="swsmall">'+esc(p.serviceName)+'</div>':'')+'</div>';
- return '<div class="swwrap"><h1 style="text-align:center">'+esc(L.title)+'</h1><p class="fbsub">'+esc(L.sub)+'</p>'+
+ return '<div class="swwrap"><h1 style="text-align:center">'+esc(FBPUB.cur==='prize2'?L.title2:L.title)+'</h1><p class="fbsub">'+esc(L.sub)+'</p>'+
   '<div class="swcard" id="swcard"><div class="swunder">'+inner+'</div><canvas id="swcv"></canvas></div>'+
   '<button type="button" class="swreveal" id="swrv" onclick="swReveal()">'+esc(L.reveal)+'</button>'+
   '<div id="swafter"></div></div>';
 }
 function swAfter(){
- const p=FBPUB.r.prize,L=SWT[FBPUB.lang],r=FBPUB.r;
+ const p=swP(),L=SWT[FBPUB.lang],r=FBPUB.r;
  const box=document.getElementById('swafter');if(!box)return;
  const rb=document.getElementById('swrv');if(rb)rb.style.display='none';
  box.innerHTML=(p.lose?'':'<div class="swticket"><div class="swsmall">'+esc(L.code)+'</div><div class="swcode">'+esc(p.code)+'</div>'+
@@ -5875,15 +5892,15 @@ function swAfter(){
    (p.min?' · '+esc(L.min)+' RM'+(+p.min).toFixed(2):'')+(p.customerName?' · '+esc(L.only)+' '+esc(p.customerName):'')+'</div>'+
    '<p style="margin:10px 0 4px">'+esc(L.how)+'</p><button type="button" class="fbsend" style="margin-top:8px" onclick="swCopy()">'+
    esc(L.copy)+'</button><div class="swsmall" id="swcp" style="margin-top:6px">'+esc(L.shot)+'</div></div>')+
-  fbThanksExtra();
+  (FBPUB.cur==='prize2'?'<p class="fbsub" style="margin-top:14px">'+esc(L.thanks2)+'</p>':swInviteBox()+fbThanksExtra());
 }
-window.swCopy=()=>{try{navigator.clipboard.writeText(FBPUB.r.prize.code).then(()=>{const e=document.getElementById('swcp');
+window.swCopy=()=>{try{navigator.clipboard.writeText(swP().code).then(()=>{const e=document.getElementById('swcp');
  if(e)e.textContent=SWT[FBPUB.lang].copied;});}catch(e){}};
 let SWDONE=false;
 window.swReveal=()=>{
  if(SWDONE)return;SWDONE=true;
  const cv=document.getElementById('swcv');if(cv){cv.style.transition='opacity .5s';cv.style.opacity='0';setTimeout(()=>{cv.style.display='none';},520);}
- if(FBPUB.r.prize&&!FBPUB.r.prize.lose)swConfetti();
+ if(swP()&&!swP().lose)swConfetti();
  swAfter();
 };
 function swInit(){
@@ -9379,8 +9396,7 @@ window.editService=id=>{
  const rt=ROOMTYPES();
  modal(id?'Edit treatment':'New treatment','<div class="card">'+
   '<label>Name</label><input class="f" id="sv-n" value="'+esc(s.name)+'">'+
-  '<div class="grid g2"><div><label>Category</label><input class="f" id="sv-cat" value="'+esc(s.cat||'')+
-   '" placeholder="Facial, Body, Aesthetic"></div>'+
+  '<div class="grid g2"><div><label>Category</label>'+catSelect('service','sv-cat',s.cat||'')+'</div>'+
   '<div><label>Price (RM)</label><input class="f" type="number" step="0.01" id="sv-p" value="'+(s.price||0)+'"></div></div>'+
   '<div class="grid g3"><div><label>Duration (min)</label><input class="f" type="number" id="sv-d" value="'+(s.dur||60)+'"></div>'+
   '<div><label>Buffer (min)</label><input class="f" type="number" id="sv-b" value="'+(s.buffer||0)+'"></div>'+
@@ -9440,7 +9456,8 @@ window.editService=id=>{
     const use=[...box.querySelectorAll('[data-use]')].map(r=>({
       sku:r.querySelector('[data-sku]').value,qty:+r.querySelector('[data-qty]').value||0}))
       .filter(u=>u.sku&&u.qty>0);
-    catSave('services',id,{name,cat:$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
+    catRemember('service',$('#sv-cat').value);
+    catSave('services',id,{name,cat:$('#sv-cat').value==='__new'?'':$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
      dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
      room:$('#sv-r').value,use,active:$('#sv-a').checked,
      concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
@@ -9459,7 +9476,7 @@ function prodRows(){
  const list=D.products.filter(p=>(PRODTYPE==='all'||(PRODTYPE==='hidden'?p.active===false:p.type===PRODTYPE))&&
   (!t||String(p.name||'').toLowerCase().includes(t)||String(p.id).toLowerCase().includes(t)));
  if(!list.length)return '<div class="empty">'+(D.products.length?'No product matches.':'No products yet.')+'</div>';
- return list.map(p=>{const st=stockOf(p.id);
+ const row=p=>{const st=stockOf(p.id);
   return '<div class="item" data-id="'+esc(p.id)+'" onclick="editProduct(this.dataset.id)">'+
    '<div class="row">'+(p.image?'<img class="pthumb" src="'+p.image+'" alt="">'
     :'<div class="pthumb ph">'+ic('image',18)+'</div>')+
@@ -9470,12 +9487,13 @@ function prodRows(){
    (p.cost?' · cost '+rm(p.cost):'')+' · '+(st?st.qty+' in stock':'<span class="odue">no stock record here</span>')+'</div>'+
    ((p.concerns||[]).length?'<div class="tiny" style="color:var(--brass);margin-top:2px">'+
     ic('spark',10)+' '+p.concerns.map(concernLabel).join(', ')+'</div>':'')+
-   '</div>'+ic('right',16)+'</div></div>';}).join('');
+   '</div>'+ic('right',16)+'</div></div>';};
+ return catGroup('product',list,'No category').map(([g,xs])=>catHead(g,xs.length)+xs.map(row).join('')).join('');
 }
 function catProducts(){
  const n=k=>D.products.filter(p=>k==='all'||(k==='hidden'?p.active===false:p.type===k)).length;
- return '<div class="sec-h"><h2>Products</h2><button class="btn sm" onclick="editProduct()">'+
-  ic('plus',15)+'New</button></div>'+
+ return '<div class="sec-h"><h2>Products</h2><div class="row" style="gap:6px">'+catBtn('product')+'<button class="btn sm" onclick="editProduct()">'+
+  ic('plus',15)+'New</button></div></div>'+
   '<div class="cpsearch"><span class="cpico">'+ic('search',16)+'</span><input class="f" id="prs-q" '+
    'placeholder="Search by name or code" autocomplete="off" oninput="prodFilter()" value="'+esc(PRODQ)+'"></div>'+
   '<div class="chips">'+[['all','All'],['retail','Retail'],['backbar','Backbar'],['hidden','Hidden']]
@@ -9499,6 +9517,7 @@ window.editProduct=id=>{
   '<label>Type</label><select class="f" id="pr-t"><option value="retail"'+(p.type!=='backbar'?' selected':'')+
    '>Retail — sold to clients</option><option value="backbar"'+(p.type==='backbar'?' selected':'')+
    '>Backbar — used during treatments</option></select>'+
+  '<label>Category</label>'+catSelect('product','pr-cat',p.cat||'')+
   '<div class="grid g2"><div><label>Selling price (RM)</label><input class="f" type="number" step="0.01" id="pr-p" value="'+
    (+p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
    (+p.cost||0)+'"></div></div>'+
@@ -9533,8 +9552,9 @@ window.editProduct=id=>{
     const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
      unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked,
      image:imgValue('pr-img',p.image||''),concerns:chipVals('pr-con'),
-     step:$('#pr-step').value};
+     step:$('#pr-step').value,cat:(()=>{const v=($('#pr-cat')||{}).value||'';return v==='__new'?'':v.trim();})()};
     const btn=$('#pr-go');btn.disabled=true;
+    await catRemember('product',data.cat);
     try{
      if(id&&sku!==id)await renameProduct(id,sku,data);
      else await setDoc(doc(db,'products',sku),data,{merge:true});
@@ -11832,8 +11852,11 @@ function pickGroups(kind,t){
  if(kind==='redeem'){redeemLines(cart.customerId).filter(x=>!t||x.name.toLowerCase().includes(t)||x.pkgName.toLowerCase().includes(t))
   .forEach(x=>add(x.pkgName,x));return G;}
  pickList(kind).filter(x=>!t||String(x.name||'').toLowerCase().includes(t)||String(x.cat||'').toLowerCase().includes(t))
-  .forEach(x=>add(kind==='service'?(x.cat||'Other treatments'):kind==='product'?(x.brand||x.cat||'Retail'):
-   kind==='package'?'Packages':'Product sets',x));
+  .forEach(x=>add(kind==='service'?(catOf(x)||'Other treatments'):kind==='product'?(catOf(x)||x.brand||'Retail'):
+   kind==='package'?(catOf(x)||'Packages'):'Product sets',x));
+ /* the owner's category order; anything without a category keeps to the end */
+ if(['service','product','package'].includes(kind)){const L=catList(kind);const at=g=>{const i=L.indexOf(g);return i<0?9999:i;};
+  G.sort((a,b)=>at(a[0])-at(b[0]));}
  return G;
 }
 function pk2Card(kind,x){
@@ -11855,8 +11878,12 @@ function pk2Card(kind,x){
 }
 function pk2Grid(q){
  const t=String(q||'').trim().toLowerCase();
- const G=pickGroups(PICKTAB,t);
- let h='';
+ const all=pickGroups(PICKTAB,t);
+ if(PICKCAT&&!all.some(g=>g[0]===PICKCAT))PICKCAT='';
+ const G=PICKCAT?all.filter(g=>g[0]===PICKCAT):all;
+ let h=all.length>1?'<div class="pk2cats"><button type="button" class="chip'+(PICKCAT?'':' on')+'" onclick="pickCat(\'\')">All</button>'+
+  all.map(g=>'<button type="button" class="chip'+(PICKCAT===g[0]?' on':'')+'" data-c="'+esc(g[0])+'" onclick="pickCat(this.dataset.c)">'+esc(g[0])+
+   ' <span class="muted">'+g[1].length+'</span></button>').join('')+'</div>':'';
  if(PICKTAB==='package'&&!cart.customerId)h+='<div class="warnbox">'+ic('alert',13)+' Choose the client first — a package goes onto their account.</div>';
  if(!G.length)return h+'<div class="empty">'+ic('search',22)+'<div>'+(t?'Nothing matches “'+esc(q)+'”.':'Nothing here yet.')+'</div></div>';
  return h+G.map(([g,xs])=>'<div class="pk2sec">'+esc(g)+' <span>'+xs.length+'</span></div><div class="adgrid">'+
@@ -11885,9 +11912,11 @@ function paintPicker2(){
  const sh=document.querySelector('#modal .sheet');if(sh)sh.classList.add('pk2sheet');
  const qi=document.getElementById('pk-q');if(qi&&window.matchMedia&&window.matchMedia('(min-width:900px)').matches)setTimeout(()=>qi.focus(),80);
 }
-window.pickItem=kind=>{PICKTAB=kind||PICKTAB;
+let PICKCAT='';
+window.pickCat=c=>{PICKCAT=c||'';const g=document.getElementById('pk-grid');if(g){g.innerHTML=pk2Grid((document.getElementById('pk-q')||{}).value||'');g.scrollTop=0;}};
+window.pickItem=kind=>{if(kind&&kind!==PICKTAB)PICKCAT='';PICKTAB=kind||PICKTAB;
  if(!PICKSTAFF||(isBranch()&&PICKSTAFF===UID))PICKSTAFF=actorId()||((people()[0]||{}).id)||UID;paintPicker2();};
-window.setPickTab=k=>{PICKTAB=k;const q=document.getElementById('pk-q');paintPicker2();
+window.setPickTab=k=>{if(k!==PICKTAB)PICKCAT='';PICKTAB=k;const q=document.getElementById('pk-q');paintPicker2();
  const q2=document.getElementById('pk-q');if(q&&q2&&q.value){q2.value=q.value;window.pickFilter();}};
 window.pickFilter=()=>{const g=document.getElementById('pk-grid');if(g)g.innerHTML=pk2Grid((document.getElementById('pk-q')||{}).value||'');};
 const pickAddOrig=window.pickAdd;
@@ -12120,7 +12149,7 @@ window.editPackage=id=>{
  PKD={id:id||'',type:pkgType(p),name:p.name||'',days:p.days||365,active:p.active!==false,
   items:(p.items||[]).map(i=>({...i})),price:+p.price||0,
   serviceId:p.serviceId||((p.items||[])[0]||{}).serviceId||((D.services[0]||{}).id)||'',
-  buy:+p.buy||5,free:+p.free||1,pct:+p.pct||10,round:p.round!==false};
+  buy:+p.buy||5,free:+p.free||1,pct:+p.pct||10,round:p.round!==false,cat:p.cat||''};
  if(!PKD.items.length&&PKD.type!=='bxgy'&&D.services[0])PKD.items=[{serviceId:D.services[0].id,n:1}];
  paintPkgEd();
 };
@@ -12158,6 +12187,7 @@ function paintPkgEd(){
    ({custom:'Sessions at a price you set',bxgy:'Pay for X, get Y more free',disc:'Sessions at % off the normal price'}[t[0]])+'</small></button>').join('')+'</div>'+
   '<label>Package name</label><input class="f" id="pk-n" value="'+esc(P.name)+'" oninput="pkdSet(\'name\',this.value,1)" placeholder="'+
    (P.type==='bxgy'?'Hydra Facial Buy 5 Free 1':P.type==='disc'?'Glow Programme 20% off':'Glow Hydra 6x')+'">'+
+  '<label>Category</label>'+catSelect('package','pk-cat',P.cat||'',"if(this.value!=='__new')pkdSet('cat',this.value,1)")+
   (P.type==='bxgy'?
    '<label>Treatment</label><select class="f" id="pk-s" onchange="pkdSet(\'serviceId\',this.value)">'+svcOpts(P.serviceId)+'</select>'+
    '<div class="grid g2"><div><label>Buy (paid sessions)</label><input class="f" id="pk-b" type="number" min="1" value="'+P.buy+'" oninput="pkdSet(\'buy\',this.value,1)"></div>'+
@@ -12198,7 +12228,8 @@ window.pkdSave=()=>{
  if(!c.items.length){toast(P.type==='bxgy'?'Choose the treatment':'Add at least one treatment');return;}
  if(P.type==='disc'&&!(P.pct>0&&P.pct<100)){toast('Discount must be between 1% and 99%');return;}
  if(!(c.price>0)){toast('The package needs a price');return;}
- const data={name,type:P.type,price:c.price,days:+P.days||365,items:c.items,active:!!P.active};
+ const pc=String(P.cat||'').trim();catRemember('package',pc);
+ const data={name,type:P.type,price:c.price,days:+P.days||365,items:c.items,active:!!P.active,cat:pc};
  if(P.type==='bxgy')Object.assign(data,{serviceId:P.serviceId,buy:P.buy,free:P.free});
  if(P.type==='disc')Object.assign(data,{pct:P.pct,round:!!P.round});
  const deal=pkgDeal(data);
@@ -12655,7 +12686,11 @@ window.leadConvert=async(id,book)=>{
    const data={name:l.name,nameLower:l.name.toLowerCase(),phone:l.phone,phoneDigits:digits(l.phone),keywords:kwFor(l.name,l.phone),
     email:l.email||'',source:srcToClient(l.source),branchId:ME.branchId,pdpa:true,marketing:true,tags:[],notes:'',
     note:l.interest?'Interested in '+l.interest:'',active:true,wantNo:true,leadId:id,createdAt:new Date().toISOString(),createdBy:UID};
+   if(l.referrerId&&!data.referrerId){const rr=await custGet(l.referrerId);if(rr)Object.assign(data,{referrerId:rr.id,referrerName:rr.name||'',source:'Friend referral'});}
+   const inv=await refAttach(data);
    const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});cid=r.id;
+   await refAttached(inv,cid);
+   {const li=(typeof REFINV!=='undefined'?REFINV:[]).find(x=>x.leadId===id&&!x.clientId);if(li&&li!==inv)await refAttached(li,cid);}
    await newClientNo(cid);
    await audit('Client registered',l.name+' (from lead)');
   }
@@ -16520,7 +16555,8 @@ window.wbNewClient=async id=>{const a=wbFind(id);if(!a)return;
   source:'Other',branchId:a.branchId||ME.branchId,pdpa:true,marketing:false,tags:['Online booking'],notes:'',note:a.notes||'',active:true,wantNo:true,createdAt:new Date().toISOString(),createdBy:UID};
  const rf=a.refCode?await custByRef(a.refCode):null;
  if(rf&&digits(rf.phone)!==digits(a.phone))Object.assign(data,{referrerId:rf.id,referrerName:rf.name||'',source:'Friend referral'});
- try{const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});await newClientNo(r.id);
+ const inv=await refAttach(data);
+ try{const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});await refAttached(inv,r.id);await newClientNo(r.id);
   await updateDoc(doc(db,'appointments',id),{customerId:r.id,visitType:'new',updatedBy:UID,updatedAt:new Date().toISOString()});
   a.customerId=r.id;const x=APPTS.find(y=>y.id===id);if(x){x.customerId=r.id;x.visitType='new';}
   await audit('Client registered',a.customerName+' (online booking)');window.closeModal();render();toast(a.customerName+' added as a client');}catch(e){toast(friendly(e));}};
@@ -16604,7 +16640,8 @@ const REF_DEF={on:false,minBill:100,which:'any',windowDays:90,mustVisit:true,max
  refR:{type:'rm',value:30,min:0,serviceId:'',startDays:0,validDays:90},
  msgNew:'Hi {name}, terima kasih datang ke {biz} atas cadangan {other}! 🎁 Hadiah untuk anda: {worth}. Kod: {code}. Boleh guna dari {from} hingga {expiry}{min}. Jumpa lagi!',
  msgRef:'Hi {name}, terima kasih kerana memperkenalkan {other} kepada {biz}! 🎁 Hadiah untuk anda: {worth}. Kod: {code}. Boleh guna dari {from} hingga {expiry}{min}.',
- msgShare:'Hi {name}! Ajak kawan atau keluarga ke {biz} 💆‍♀️ Bila mereka daftar dengan kod rujukan {refcode} dan selesai rawatan pertama, mereka dapat {newworth} dan anda pula dapat {refworth}.{link}'};
+ msgShare:'Hi {name}! Ajak kawan atau keluarga ke {biz} 💆‍♀️ Bila mereka daftar dengan kod rujukan {refcode} dan selesai rawatan pertama, mereka dapat {newworth} dan anda pula dapat {refworth}.{link}',
+ invite:false,msgInvite:'Hi {friend}! Saya dari {biz} 😊 {name} cadangkan kami kepada anda. Sebagai rakan {name}, anda dapat {newworth} selepas rawatan pertama — sebut kod {refcode} masa tempah.{link}'};
 function refSet(){const m=(D.meta&&D.meta.referral)||{};
  return{...REF_DEF,...m,newR:{...REF_DEF.newR,...(m.newR||{})},refR:{...REF_DEF.refR,...(m.refR||{})}};}
 const refWorth=r=>!r||r.type==='none'?'nothing':r.type==='free'?'Free '+(svc(r.serviceId).name||'treatment'):rvWorth(r);
@@ -16831,6 +16868,10 @@ async function refFill(cid){
    '<br><small class="muted">'+(x.createdAt?'Registered '+dshort(x.createdAt):'')+'</small></span>'+
    (r?'<span class="pill g">'+(r.refCode?'Rewarded':'Not rewarded')+'</span>':'<span class="pill">Waiting</span>')+'</div>';}).join('')
   :'<div class="tiny muted">Nobody referred yet.</div>';
+ const inv=(typeof REFINV!=='undefined'?REFINV:[]).filter(x=>x.customerId===cid&&!x.clientId);
+ if(inv.length)b.innerHTML+='<div class="tiny muted" style="margin:8px 0 4px">Friends they gave on the review page</div>'+inv.map(x=>
+  '<div class="spread item" style="cursor:pointer" onclick="refInvList()"><span>'+esc(x.friendName)+'<br><small class="muted">'+esc(x.friendPhone)+' · '+dshort(x.at)+'</small></span><span class="pill">'+
+  (x.leadId?'In CRM':x.contactedAt?'Contacted':'Invited')+'</span></div>').join('');
 }
 window.refShare=cid=>{
  const c=cust(cid);if(!c)return;refEnsureCode(c);
@@ -16897,7 +16938,8 @@ function refSection(){
    '</b> <span class="muted">← '+esc(r.referrerName)+'</span></span><span class="tiny muted">'+dshort(r.at)+'</span></div>'+
    '<div class="tiny muted">'+esc(r.invoiceNo||'')+' · '+rm(r.total||0)+(r.newCode?' · '+esc(r.newCode):'')+(r.refCode?' · '+esc(r.refCode):' · referrer not rewarded')+'</div></div>').join('')
    :'<div class="empty">No referral rewards yet. '+(R.on?'They appear here when a referred client pays.':'Switch the programme on in Settings → Referral programme.')+'</div>')+
-  (R.on?'<button class="btn sm ghost" style="margin-top:8px" onclick="refPending()">'+ic('clock',14)+'Referred clients still waiting</button>':'');
+  (R.on?'<div class="row wrap2" style="margin-top:8px"><button class="btn sm ghost" onclick="refPending()">'+ic('clock',14)+'Referred clients still waiting</button>'+
+   ((typeof REFINV!=='undefined'&&REFINV.length)||R.invite?'<button class="btn sm ghost" onclick="refInvList()">'+ic('users',14)+'Friends from the review page ('+(typeof REFINV!=='undefined'?REFINV.length:0)+')</button>':'')+'</div>':'');
 }
 window.refPending=async()=>{
  modal('Waiting for a first paid bill','<div class="card" id="refpend"><div class="skel"></div></div>');
@@ -16958,6 +17000,11 @@ function refPanel(){
   '<textarea class="f" id="rf-mn" rows="3">'+esc(R.msgNew)+'</textarea>'+
   '<label>Message to the referrer</label><textarea class="f" id="rf-mr" rows="3">'+esc(R.msgRef)+'</textarea>'+
   '<label>Share message <span class="muted">— {name} {biz} {refcode} {newworth} {refworth} {link}</span></label><textarea class="f" id="rf-ms" rows="3">'+esc(R.msgShare)+'</textarea>'+
+  '<div class="fieldset"><h3>'+ic('gift',13)+'Extra scratch card on the review page</h3>'+
+   '<label class="row" style="gap:9px;margin-bottom:6px"><input type="checkbox" id="rf-inv"'+(R.invite?' checked':'')+'> <b>After the scratch card, invite the client to give a friend\'s number for a second card</b></label>'+
+   '<p class="tiny muted" style="margin:0 0 8px">Needs Scratch &amp; win switched on. The second card uses the same prizes and odds, drawn when the review link is made. '+
+   'Only shown to clients who rated 4 or 5 stars.'+(typeof swSet==='function'&&!swSet().on?' <b style="color:var(--rose)">Scratch &amp; win is off.</b>':'')+'</p>'+
+   '<label>WhatsApp to the friend <span class="muted">— {friend} {name} {biz} {newworth} {refcode} {link}</span></label><textarea class="f" id="rf-mi" rows="3">'+esc(R.msgInvite)+'</textarea></div>'+
   '<div id="rf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" onclick="refSave()">'+ic('check',16)+'Save referral settings</button></div>';
 }
@@ -16973,7 +17020,7 @@ window.refSave=async()=>{
   windowDays:Math.max(0,Math.round(+g('rf-wd').value||0)),maxPer:Math.max(0,Math.round(+g('rf-mx').value||0)),
   mustVisit:!!g('rf-mv').checked,prefix:rvPrefix(g('rf-px').value||'REF'),
   msgNew:String(g('rf-mn').value||'').trim()||REF_DEF.msgNew,msgRef:String(g('rf-mr').value||'').trim()||REF_DEF.msgRef,
-  msgShare:String(g('rf-ms').value||'').trim()||REF_DEF.msgShare};
+  msgShare:String(g('rf-ms').value||'').trim()||REF_DEF.msgShare,invite:!!g('rf-inv').checked,msgInvite:String(g('rf-mi').value||'').trim()||REF_DEF.msgInvite};
  for(const [k,s,n] of [['n',R.newR,'new client'],['r',R.refR,'referrer']]){
   if(s.type==='free'&&!s.serviceId){e.textContent='Choose the free treatment for the '+n+'.';return;}
   if((s.type==='rm'||s.type==='pct')&&!(s.value>0)){e.textContent='Give the '+n+'\'s reward a value.';return;}
@@ -16986,5 +17033,293 @@ window.refSave=async()=>{
   render();toast('Referral settings saved');}
  catch(err){e.textContent=friendly(err);}
 };
+
+
+/* ============ catalogue categories ============ */
+/* The owner keeps one ordered list of categories for treatments, one for products and one
+   for packages. Each item carries its category name; the catalogue and the checkout menu
+   show items under those headings, in the owner's order. Renaming a category renames it
+   on every item; removing one leaves its items without a category. */
+const CATK={service:['Treatments','treatment'],product:['Products','product'],package:['Packages','package']};
+const CATCOL={service:'services',product:'products',package:'packages'};
+const catItems=k=>k==='service'?D.services:k==='product'?D.products:D.packages;
+const catOf=x=>String((x&&x.cat)||'').trim();
+function catList(k){
+ const m=((D.meta||{}).cats||{})[k],own=Array.isArray(m)?m.filter(Boolean):[];
+ const extra=[...new Set(catItems(k).map(catOf).filter(Boolean))].filter(c=>!own.includes(c)).sort(natCmp);
+ return own.concat(extra);
+}
+/* [[heading, items]] in the owner's order; items with no category go last under `rest`
+   (a string, or a function giving a heading per item) */
+function catGroup(k,list,rest){
+ const G=new Map();catList(k).forEach(c=>G.set(c,[]));const tail=new Map();
+ list.forEach(x=>{const c=catOf(x);
+  if(c){if(!G.has(c))G.set(c,[]);G.get(c).push(x);return;}
+  const r=typeof rest==='function'?rest(x):rest;if(!tail.has(r))tail.set(r,[]);tail.get(r).push(x);});
+ return [...G.entries()].filter(e=>e[1].length).concat([...tail.entries()]);
+}
+function catSelect(k,id,val,extra){
+ const L=catList(k);
+ return '<select class="f" id="'+id+'" onchange="catNewOpt(this,\''+k+'\')'+(extra?';'+extra:'')+'">'+
+  '<option value="">— no category —</option>'+L.map(c=>'<option'+(c===val?' selected':'')+'>'+esc(c)+'</option>').join('')+
+  (val&&!L.includes(val)?'<option selected>'+esc(val)+'</option>':'')+
+  (boss()?'<option value="__new">＋ New category…</option>':'')+'</select>';
+}
+window.catNewOpt=(sel,k)=>{
+ if(sel.value!=='__new')return;
+ const n=String(prompt('Name of the new '+CATK[k][1]+' category','')||'').trim().replace(/\s+/g,' ').slice(0,40);
+ if(!n){sel.value='';return;}
+ if(![...sel.options].some(o=>o.value===n)){const o=document.createElement('option');o.textContent=n;o.value=n;
+  sel.insertBefore(o,sel.options[sel.options.length-1]);}
+ sel.value=n;
+};
+/* a category typed in an item form joins the owner's list */
+async function catRemember(k,c){
+ c=String(c||'').trim();if(!c||c==='__new')return;
+ const m={...(((D.meta||{}).cats)||{})};const had=Array.isArray(m[k]);
+ const L=had?[...m[k]]:catList(k);
+ if(had&&L.includes(c))return;
+ if(!L.includes(c))L.push(c);m[k]=L;
+ try{await setDoc(doc(db,'meta','settings'),{cats:m},{merge:true});D.meta.cats=m;}catch(e){console.warn('categories',e);}
+}
+const catHead=(name,n)=>'<div class="catsec"><span>'+esc(name)+'</span><i>'+n+'</i></div>';
+const catBtn=k=>boss()?'<button class="btn sm ghost" onclick="catManage(\''+k+'\')">'+ic('list',14)+'Categories</button>':'';
+
+/* ---------- the owner's category list ---------- */
+let CATED=null;
+window.catManage=k=>{CATED={k,rows:catList(k).map(c=>({name:c,orig:c}))};if(!CATED.rows.length)CATED.rows.push({name:'',orig:''});catPaint();};
+function catPaint(){
+ const k=CATED.k,count=c=>catItems(k).filter(x=>catOf(x)===c).length;
+ modal(CATK[k][0]+' categories','<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 10px">The order here is the order in the catalogue and at checkout. '+
+  'Renaming a category renames it on every '+CATK[k][1]+' in it. Removing one leaves its '+CATK[k][0].toLowerCase()+' without a category.</p>'+
+  '<div id="cated">'+CATED.rows.map((r,i)=>'<div class="row catrow">'+
+   '<input class="f" style="margin:0;flex:1" maxlength="40" value="'+esc(r.name)+'" placeholder="e.g. Facial" oninput="catEd('+i+',this.value)">'+
+   '<span class="tiny muted catn">'+(r.orig?count(r.orig):0)+'</span>'+
+   '<button type="button" class="iconbtn" onclick="catMove('+i+',-1)"'+(i?'':' disabled')+' aria-label="Up">▲</button>'+
+   '<button type="button" class="iconbtn" onclick="catMove('+i+',1)"'+(i<CATED.rows.length-1?'':' disabled')+' aria-label="Down">▼</button>'+
+   '<button type="button" class="iconbtn" onclick="catDrop('+i+')" aria-label="Remove">'+ic('close',14)+'</button></div>').join('')+'</div>'+
+  '<button type="button" class="btn ghost sm" style="margin:6px 0 10px" onclick="catAddRow()">'+ic('plus',14)+'Add category</button>'+
+  '<div id="cat-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="cat-go" onclick="catSaveList()">'+ic('check',16)+'Save categories</button></div>');
+}
+window.catEd=(i,v)=>{if(CATED.rows[i])CATED.rows[i].name=v;};
+window.catMove=(i,d)=>{const R=CATED.rows,j=i+d;if(j<0||j>=R.length)return;[R[i],R[j]]=[R[j],R[i]];catPaint();};
+window.catDrop=i=>{CATED.rows.splice(i,1);catPaint();};
+window.catAddRow=()=>{CATED.rows.push({name:'',orig:''});catPaint();
+ const ins=document.querySelectorAll('#cated input');const l=ins[ins.length-1];if(l&&l.focus)l.focus();};
+window.catSaveList=async()=>{
+ const k=CATED.k,e=$('#cat-e');
+ const rows=CATED.rows.map(r=>({name:String(r.name||'').trim().replace(/\s+/g,' ').slice(0,40),orig:r.orig})).filter(r=>r.name||r.orig);
+ const blank=rows.find(r=>!r.name);if(blank){e.textContent='Give "'+blank.orig+'" a name, or remove it with ✕.';return;}
+ const names=rows.map(r=>r.name.toLowerCase());
+ const dup=names.find((n,i)=>names.indexOf(n)!==i);if(dup){e.textContent='"'+dup+'" is listed twice.';return;}
+ const ren=rows.filter(r=>r.orig&&r.orig!==r.name);
+ const kept=new Set(rows.map(r=>r.orig).filter(Boolean));
+ const gone=catList(k).filter(c=>!kept.has(c));
+ const touch=catItems(k).filter(x=>{const c=catOf(x);return c&&(ren.some(r=>r.orig===c)||gone.includes(c));});
+ const btn=$('#cat-go');btn.disabled=true;
+ try{
+  const m={...(((D.meta||{}).cats)||{}),[k]:rows.map(r=>r.name)};
+  const bt=writeBatch(db);let n=0;
+  bt.set(doc(db,'meta','settings'),{cats:m},{merge:true});
+  touch.forEach(x=>{const c=catOf(x),r=ren.find(y=>y.orig===c);bt.set(doc(db,CATCOL[k],x.id),{cat:r?r.name:''},{merge:true});n++;});
+  await bt.commit();
+  D.meta.cats=m;
+  touch.forEach(x=>{const c=catOf(x),r=ren.find(y=>y.orig===c);x.cat=r?r.name:'';});
+  await audit(CATK[k][0]+' categories',rows.map(r=>r.name).join(', ')+(ren.length?' · renamed '+ren.map(r=>r.orig+'→'+r.name).join(', '):'')+
+   (gone.length?' · removed '+gone.join(', '):'')+(n?' · '+n+' item'+(n>1?'s':'')+' updated':''));
+  window.closeModal();render();toast('Categories saved'+(n?' · '+n+' '+(n>1?CATK[k][0].toLowerCase():CATK[k][1])+' updated':''));
+ }catch(err){e.textContent=friendly(err);btn.disabled=false;}
+};
+
+/* ---------- catalogue lists, grouped ---------- */
+function svcRow(s){
+ return '<div class="item" data-id="'+esc(s.id)+'" onclick="editService(this.dataset.id)">'+
+   '<div class="spread"><b>'+esc(s.name)+offTag(s)+'</b><span>'+rm(s.price)+'</span></div>'+
+   '<div class="tiny muted">'+s.dur+' min +'+(s.buffer||0)+
+   ' buffer · '+esc(s.room||'any')+' room · commission '+(s.comm||0)+'%'+
+   ((s.use||[]).length?' · uses '+s.use.map(u=>u.qty+' '+(prod(u.sku).unit||'')+' '+
+    (prod(u.sku).name||u.sku)).join(', '):'')+'</div>'+
+   ((s.concerns||[]).length?'<div class="tagrow">'+s.concerns.slice(0,4).map(c=>
+     '<span class="pill b">'+esc(concernLabel(c))+'</span>').join('')+
+     (s.concerns.length>4?'<span class="pill">+'+(s.concerns.length-4)+'</span>':'')+'</div>'
+    :'<div class="tiny" style="color:var(--amber);margin-top:5px">'+ic('alert',11)+
+     ' not tagged — will not appear in programmes</div>')+'</div>';
+}
+catServices=function(){
+ return '<div class="sec-h"><h2>Treatments</h2><div class="row" style="gap:6px">'+catBtn('service')+
+  '<button class="btn sm" onclick="editService()">'+ic('plus',15)+'New</button></div></div>'+
+  (D.services.length?catGroup('service',D.services,'No category').map(([g,xs])=>catHead(g,xs.length)+xs.map(svcRow).join('')).join('')
+  :'<div class="empty">No treatments yet. Add your first one.</div>');
+};
+catPackages=function(){
+ return '<div class="sec-h"><h2>Packages</h2><div class="row" style="gap:6px">'+catBtn('package')+
+  '<button class="btn sm" onclick="editPackage()">'+ic('plus',15)+'New</button></div></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Three kinds: a custom price, <b>buy X free Y</b> on one treatment, or a '+
+  '<b>percentage off</b> the normal price of the sessions.</p>'+
+  (D.packages.length?catGroup('package',D.packages,'No category').map(([g,xs])=>catHead(g,xs.length)+xs.map(p=>{
+   const val=pkgWorth(p),deal=pkgDeal(p);
+   return '<div class="item" data-id="'+esc(p.id)+'" onclick="editPackage(this.dataset.id)"><div class="spread"><b>'+esc(p.name)+offTag(p)+
+    (deal?' <span class="pill '+(pkgType(p)==='bxgy'?'g':'b')+'">'+esc(deal)+'</span>':'')+
+    '</b><span>'+rm(p.price)+'</span></div><div class="tiny muted">'+
+    ((p.items||[]).map(i=>i.n+'× '+(svc(i.serviceId).name||'?')).join(' + ')||'no sessions set')+
+    ' · worth '+rm(val)+(val&&val>p.price?' (saves '+Math.round((1-p.price/val)*100)+'%)':'')+
+    ' · valid '+(p.days||0)+' days</div></div>';}).join('')).join('')
+  :'<div class="empty">No packages yet.</div>');
+};
+
+
+/* ============ referral: an extra scratch card for a friend's number ============ */
+/* After the client scratches the card on the review page, they are invited to give the
+   phone number of a friend or family member who might like the spa. Doing so opens a second
+   scratch card. Its prize is drawn by the spa's app when the review link is made, the same
+   way as the first, so the phone cannot choose it; the security rules accept that voucher
+   only together with the friend's details. The friend's number then waits in the app for the
+   team to WhatsApp them or add them to the CRM, and when the friend registers as a client,
+   the one who invited them is recorded as the referrer automatically. */
+const refDg=x=>{let d=digits(x);if(d.startsWith('60'))d='0'+d.slice(2);else if(d.length>=9&&!d.startsWith('0'))d='0'+d;return d;};
+let REFINV=[];
+async function refInvLoad(){
+ try{const s=await getDocs(query(collection(db,'refInvites'),where('branchId','==',ME.branchId)));
+  REFINV=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}
+ catch(e){console.warn('refInvites',e);}
+}
+{const _rs=window.refStart;window.refStart=async()=>{await refInvLoad();return _rs();};}
+const refInvOpen=x=>!x.clientId&&!x.leadId&&x.status!=='closed'&&!x.contactedAt;
+
+/* ---------- the client's page ---------- */
+Object.assign(SWT.ms,{title2:'Kad gores kedua anda 🎁',invT:'Nak satu lagi kad gores? 🎁',
+ invS:b=>'Kongsi nombor rakan atau keluarga yang mungkin suka '+b+'. Mereka dapat hadiah pelawaan dari anda, dan anda terus dapat satu lagi kad gores!',
+ invN:'Nama rakan',invP:'No. telefon rakan (WhatsApp)',invOk:b=>'Rakan saya setuju dihubungi oleh '+b+'.',invGo:'Dapatkan kad gores kedua',
+ errN:'Sila isi nama rakan.',errP:'Sila isi nombor telefon yang betul.',errOk:'Sila tandakan persetujuan rakan anda.',
+ errSelf:'Nombor ini sudah diberi.',second:'Kad kedua anda',thanks2:'Terima kasih kerana mencadangkan kami! 💛'});
+Object.assign(SWT.en,{title2:'Your second scratch card 🎁',invT:'Want another scratch card? 🎁',
+ invS:b=>'Share the number of a friend or family member who might like '+b+'. They get a welcome gift from you, and you get another scratch card right away!',
+ invN:'Friend\'s name',invP:'Friend\'s phone (WhatsApp)',invOk:b=>'My friend is happy to be contacted by '+b+'.',invGo:'Get my second card',
+ errN:'Please enter your friend\'s name.',errP:'Please enter a valid phone number.',errOk:'Please confirm your friend agrees.',
+ errSelf:'This number was already given.',second:'Your second card',thanks2:'Thank you for recommending us! 💛'});
+const swP=()=>FBPUB.r[FBPUB.cur||'prize'];
+const swInvited=()=>{try{return !!localStorage.getItem('fbinv_'+FBPUB.r.id);}catch(e){return false;}};
+function swTicket(p){
+ const L=SWT[FBPUB.lang];
+ if(!p)return '';
+ if(p.lose)return '<div class="swticket"><div class="swsmall">'+esc(L.second)+'</div><p style="margin:6px 0 0">'+esc(L.lose)+'</p></div>';
+ return '<div class="swticket"><div class="swsmall">'+esc(L.second)+' · '+esc(p.label)+'</div><div class="swcode">'+esc(p.code)+'</div>'+
+  '<div class="swsmall">'+esc(L.valid)+' '+swDate(p.validFrom)+' '+esc(L.until)+' '+swDate(p.expiry)+(p.min?' · '+esc(L.min)+' RM'+(+p.min).toFixed(2):'')+'</div></div>';
+}
+function swInviteBox(){
+ const r=FBPUB.r,L=SWT[FBPUB.lang];
+ if(!r.prize2)return '';
+ if(swInvited())return swTicket(r.prize2);
+ if(FBPUB.overall&&FBPUB.overall<4)return '';
+ const b=r.bizName||'kami';
+ return '<div class="swinv" id="swinv"><div class="swinvh">'+esc(L.invT)+'</div><p>'+esc(L.invS(b))+'</p>'+
+  '<input class="f" id="inv-n" maxlength="60" autocomplete="off" placeholder="'+esc(L.invN)+'">'+
+  '<input class="f" id="inv-p" type="tel" maxlength="20" autocomplete="off" placeholder="'+esc(L.invP)+'">'+
+  '<label class="swinvok"><input type="checkbox" id="inv-ok"> <span>'+esc(L.invOk(b))+'</span></label>'+
+  '<div id="inv-e" class="fberr"></div>'+
+  '<button type="button" class="fbsend" id="inv-go" onclick="swInvite()">'+esc(L.invGo)+'</button></div>';
+}
+window.swInvite=async()=>{
+ const r=FBPUB.r,L=SWT[FBPUB.lang],e=document.getElementById('inv-e');
+ const n=String((document.getElementById('inv-n')||{}).value||'').trim().replace(/\s+/g,' ');
+ const p=String((document.getElementById('inv-p')||{}).value||'').trim();
+ const d=refDg(p);
+ if(n.length<2){e.textContent=L.errN;return;}
+ if(d.length<9||d.length>15){e.textContent=L.errP;return;}
+ if(!(document.getElementById('inv-ok')||{}).checked){e.textContent=L.errOk;return;}
+ const btn=document.getElementById('inv-go');if(btn)btn.disabled=true;
+ const pz=r.prize2;
+ try{
+  const bt=writeBatch(db);
+  bt.set(doc(db,'refInvites',r.id),{fbToken:r.id,branchId:r.branchId,customerId:r.customerId,inviterName:r.firstName||'',
+   friendName:n.slice(0,60),friendPhone:p.slice(0,20),friendDigits:d,consent:true,lang:FBPUB.lang,at:new Date().toISOString()});
+  if(pz&&!pz.lose&&pz.code)bt.set(doc(db,'vouchers',pz.code),{kind:'prize',type:pz.type,value:pz.value,min:pz.min,cap:1,used:0,
+   firstOnly:false,ownerOnly:true,validFrom:pz.validFrom,expiry:pz.expiry,customerId:r.customerId,customerName:pz.customerName||'',
+   label:pz.label,serviceId:pz.serviceId||'',serviceName:pz.serviceName||'',fbToken:r.id,branchId:r.branchId,
+   issuedAt:new Date().toISOString(),issuedBy:'client'});
+  await bt.commit();
+  try{localStorage.setItem('fbinv_'+r.id,'1');}catch(x){}
+  FBPUB.cur='prize2';
+  document.getElementById('root').innerHTML='<div class="fbpage">'+fbPubHead()+'<div class="fbbox" style="text-align:center">'+swCard()+'</div></div>';
+  setTimeout(swInit,30);
+ }catch(x){console.error(x);if(btn)btn.disabled=false;
+  e.textContent=/permission/i.test(String(x&&(x.code||x.message)))?L.errSelf:FBT[FBPUB.lang].err;}
+};
+
+/* ---------- the spa's app: friends waiting to be contacted ---------- */
+function refInvMsg(x){
+ const R=refSet(),b=D.meta.biz||{},c=cust(x.customerId)||{id:x.customerId,name:x.inviterName};
+ let link='';try{if(typeof wbSet==='function'&&wbSet().on)link=' '+wbBookLink()+'&ref='+encodeURIComponent(refCodeOf(c));}catch(e){}
+ return String(R.msgInvite||REF_DEF.msgInvite).replace(/\{friend\}/g,refFirst(x.friendName)).replace(/\{name\}/g,refFirst(x.inviterName||c.name))
+  .replace(/\{biz\}/g,b.name||'kami').replace(/\{newworth\}/g,refWorth(R.newR)).replace(/\{refcode\}/g,refCodeOf(c)).replace(/\{link\}/g,link);
+}
+async function refInvPatch(x,patch,what){
+ try{await updateDoc(doc(db,'refInvites',x.id),patch);Object.assign(x,patch);if(what)await audit('Referred friend',x.friendName+' ('+x.friendPhone+') · '+what);}
+ catch(e){toast(friendly(e));}
+}
+function refInvRow(x){
+ const st=x.clientId?['g','Client'+(cust(x.clientId)?' · '+cust(x.clientId).name:'')]:x.leadId?['b','In CRM']:x.status==='closed'?['','Closed']:x.contactedAt?['a','Contacted '+dshort(x.contactedAt)]:['a','New'];
+ const fr=(FBREQ||[]).find(r=>r.id===x.fbToken),pz=fr&&fr.prize2;
+ const ph=waNum(x.friendPhone),msg=refInvMsg(x);
+ return '<div class="item"><div class="spread"><span><b>'+esc(x.friendName)+'</b> · '+esc(x.friendPhone)+'<br><small class="muted">from '+esc(x.inviterName||'')+
+   ((cust(x.customerId)||{}).name?' ('+esc(cust(x.customerId).name)+')':'')+' · '+dshort(x.at)+(pz?' · bonus card: '+esc(swPrizeText(pz)):'')+'</small></span>'+
+  '<span class="pill '+st[0]+'">'+esc(st[1])+'</span></div>'+
+  (x.clientId?'':'<div class="row wrap2" style="margin-top:6px">'+
+   (ph?'<a class="btn sm" style="text-decoration:none" target="_blank" onclick="refInvWa(\''+x.id+'\')" href="https://wa.me/'+ph+'?text='+encodeURIComponent(msg)+'">'+ic('msg',14)+'WhatsApp</a>':'')+
+   (!x.leadId?'<button class="btn sm ghost" onclick="refInvLead(\''+x.id+'\')">'+ic('user',14)+'Add to CRM</button>':'')+
+   (x.status!=='closed'?'<button class="btn sm ghost" onclick="refInvClose(\''+x.id+'\')">Not interested</button>':'')+'</div>')+'</div>';
+}
+window.refInvList=()=>{
+ const L=REFINV.slice(0,60);
+ modal('Friends referred after a review','<div class="card"><p class="tiny muted" style="margin:0 0 8px">Numbers clients gave on the review page for an extra scratch card. '+
+  'When the friend becomes a client, the one who gave the number is recorded as their referrer automatically.</p>'+
+  (L.length?L.map(refInvRow).join(''):'<div class="empty">None yet.</div>')+'</div>');
+};
+window.refInvWa=id=>{const x=REFINV.find(y=>y.id===id);if(!x||x.contactedAt)return;
+ refInvPatch(x,{contactedAt:new Date().toISOString(),contactedBy:UID},'WhatsApp sent');};
+window.refInvClose=async id=>{const x=REFINV.find(y=>y.id===id);if(!x)return;
+ await refInvPatch(x,{status:'closed',closedBy:UID,closedAt:new Date().toISOString()},'closed');window.refInvList();render();};
+window.refInvLead=async id=>{
+ const x=REFINV.find(y=>y.id===id);if(!x)return;
+ const d=refDg(x.friendPhone);
+ const ex=(typeof LEADS!=='undefined'?LEADS:[]).find(l=>refDg(l.phone)===d);
+ if(ex){await refInvPatch(x,{leadId:ex.id},'already a lead');toast(x.friendName+' is already a lead');window.refInvList();return;}
+ const now=new Date().toISOString();
+ const data={name:x.friendName,phone:x.friendPhone,phoneDigits:digits(x.friendPhone),source:'Referral',campaign:'',interest:'',email:'',
+  note:'Referred by '+(x.inviterName||'')+((cust(x.customerId)||{}).name?' ('+cust(x.customerId).name+')':'')+' on the review page',
+  assignedTo:UID,nextAt:today(),branchId:ME.branchId,updatedAt:now,referrerId:x.customerId||'',stage:'new',createdAt:now,createdBy:UID,createdByName:ME.name,
+  acts:[{at:now,by:UID,byName:ME.name,type:'stage',text:'Lead added from a review referral'}]};
+ try{const r=await addDoc(collection(db,'leads'),data);if(typeof LEADS!=='undefined')LEADS.unshift({id:r.id,...data});
+  await refInvPatch(x,{leadId:r.id},'added to CRM');toast(x.friendName+' added to CRM');window.refInvList();render();}
+ catch(e){toast(friendly(e));}
+};
+function refInvAlerts(al){
+ const n=REFINV.filter(refInvOpen);
+ if(n.length)al.push({i:'users',t:n.length+' referred friend'+(n.length>1?'s':'')+' to contact',
+  d:n.slice(0,3).map(x=>refFirst(x.friendName)+' (from '+refFirst(x.inviterName)+')').join(', '),go:'refInvList()'});
+}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);refInvAlerts(al);};}
+
+/* ---------- the friend becomes a client: link them to whoever gave their number ---------- */
+async function refAttach(data){
+ if(!data||data.referrerId)return null;
+ const d=refDg(data.phoneDigits||data.phone);if(d.length<9)return null;
+ let inv=REFINV.find(x=>x.friendDigits===d&&!x.clientId);
+ if(!inv){try{const s=await getDocs(query(collection(db,'refInvites'),where('friendDigits','==',d),limit(3)));
+  inv=s.docs.map(x=>({id:x.id,...x.data()})).find(x=>!x.clientId)||null;}catch(e){}}
+ if(!inv||!inv.customerId)return null;
+ const r=await custGet(inv.customerId);
+ Object.assign(data,{referrerId:inv.customerId,referrerName:(r&&r.name)||inv.inviterName||'',source:'Friend referral'});
+ return inv;
+}
+async function refAttached(inv,cid){
+ if(!inv||!cid)return;
+ const at=new Date().toISOString();
+ try{await updateDoc(doc(db,'refInvites',inv.id),{clientId:cid,convertedAt:at,status:'client'});Object.assign(inv,{clientId:cid,convertedAt:at,status:'client'});
+  if(!REFINV.includes(inv)&&inv.branchId===ME.branchId)REFINV.push(inv);
+  toast('Referred by '+(inv.inviterName||'a client')+' — linked automatically');}catch(e){}
+}
 
 </script>
