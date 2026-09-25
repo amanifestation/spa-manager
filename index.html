@@ -1638,6 +1638,14 @@ body.demo .syncbar{top:106px}
 .pk2cats{display:flex;gap:6px;overflow-x:auto;padding:0 0 10px;margin:0 0 4px;scrollbar-width:none}
 .pk2cats::-webkit-scrollbar{display:none}
 .pk2cats .chip{white-space:nowrap;flex:0 0 auto}
+.extip{font-size:12px;color:var(--ink-2);background:var(--brass-soft);border-radius:10px;padding:8px 10px;margin:-4px 0 10px;line-height:1.45}
+.extip:empty{display:none}
+.exsug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 8px}.exsug:empty{display:none}
+.exhelp{margin:0 0 10px}.exhelp summary{cursor:pointer;font-size:13px;color:var(--brass);font-weight:600;padding:2px 0 8px}
+.ftrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.ftrow:last-child{border-bottom:0}
+.ftrow small{display:block;color:var(--ink-3);font-size:12px;line-height:1.4;margin-top:2px}.ftrow small.fthit{color:var(--brass);font-weight:600}
+.ftcat{border-bottom:1px solid var(--line);padding:7px 0}.ftcat:last-child{border-bottom:0}.ftcat summary{cursor:pointer;font-size:13.5px}
+.ftcat ul{margin:6px 0 4px 18px;padding:0;font-size:13px;line-height:1.55}.ftcat small{display:block;font-size:12px;margin:2px 0 2px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1895,7 +1903,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25j';
+const BUILD='2026-09-25k';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14534,7 +14542,7 @@ function finExpenses(){
  const tot=E.reduce((t,e)=>t+(+e.amount||0),0)+A.reduce((t,e)=>t+e.amount,0);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid'),due7=unpaid.filter(e=>daysBetween(today(),e.dueDate||e.date)<=7);
  const byAc={};[...E,...A].forEach(e=>{byAc[e.account]=(byAc[e.account]||0)+(+e.amount||0);});
- return '<div class="card"><div class="spread">'+finNav()+'<button class="btn sm" onclick="expForm()">'+ic('plus',14)+'Add expense or bill</button></div></div>'+
+ return '<div class="card"><div class="spread">'+finNav()+'<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="finGuide()">'+ic('note',14)+'Guide</button><button class="btn sm" onclick="expForm()">'+ic('plus',14)+'Add expense or bill</button></div></div></div>'+
   '<div class="crmkpis">'+kpi('Spent in '+mLabel(m),rm(tot),(E.length+A.length)+' entries','receipt')+
    kpi('Bills to pay',rm(unpaid.reduce((t,e)=>t+(+e.amount||0),0)),unpaid.length+' bill'+(unpaid.length!==1?'s':''),'clock')+
    kpi('Due in 7 days',rm(due7.reduce((t,e)=>t+(+e.amount||0),0)),due7.length?due7.length+' bill(s)':'nothing due','alert')+'</div>'+
@@ -14561,11 +14569,15 @@ window.expForm=id=>{
   '<div class="seg" id="ex-st">'+[['paid','Paid already'],['unpaid','Bill to pay later']].map(o=>'<button type="button" data-v="'+o[0]+'" class="'+(e.status===o[0]?'on':'')+'" onclick="expSt(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
   '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="ex-d" value="'+esc(e.date||today())+'"></div>'+
   '<div><label>Amount (RM)</label><input class="f" type="number" step="0.01" min="0" id="ex-a" value="'+(e.amount||'')+'"></div></div>'+
-  '<label>Supplier / paid to</label><input class="f" id="ex-s" list="ex-sl" value="'+esc(e.supplier||'')+'" placeholder="e.g. TNB, landlord, product supplier">'+
+  '<label>Supplier / paid to <span class="muted">— name on the receipt</span></label><input class="f" id="ex-s" list="ex-sl" value="'+esc(e.supplier||'')+'" placeholder="e.g. TNB, 7-Eleven Kulai, product supplier" oninput="expSuggest()">'+
   '<datalist id="ex-sl">'+sup.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist>'+
-  '<label>Category</label><select class="f" id="ex-c">'+EXP_ACCTS().map(a=>'<option value="'+a[0]+'"'+(e.account===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
-  '<div class="grid g2"><div><label>What for</label><input class="f" id="ex-n" value="'+esc(e.desc||'')+'" placeholder="e.g. September electricity"></div>'+
+  '<div class="grid g2"><div><label>What for</label><input class="f" id="ex-n" value="'+esc(e.desc||'')+'" placeholder="e.g. SimPack for the spa WhatsApp" oninput="expSuggest()"></div>'+
   '<div><label>Invoice / receipt no.</label><input class="f" id="ex-r" value="'+esc(e.ref||'')+'"></div></div>'+
+  '<div id="ex-sug" class="exsug"></div>'+
+  '<label>Category</label><select class="f" id="ex-c" onchange="expTip();expSuggest()">'+EXP_ACCTS().map(a=>'<option value="'+a[0]+'"'+(e.account===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
+  '<div id="ex-tip" class="extip"></div>'+
+  '<details class="exhelp"><summary>'+ic('search',13)+' Tak pasti kategori? Cari di sini</summary>'+
+   '<input class="f" id="ex-q" placeholder="cth: simpack, TNB, kapas, iklan FB, mesin" oninput="expFind(this.value)" autocomplete="off"><div id="ex-fr"></div></details>'+
   '<div id="ex-paid"'+(e.status==='paid'?'':' style="display:none"')+'><label>Paid from</label><select class="f" id="ex-pf">'+PAYSRC.map(p=>'<option value="'+p[0]+'"'+((e.paidFrom||'1010')===p[0]?' selected':'')+'>'+p[1]+'</option>').join('')+'</select>'+
    '<div class="tiny muted" style="margin:-4px 0 10px">Cash taken from the counter drawer goes in Day → Cash → Money paid out, so the drawer balances; it shows here by itself.</div></div>'+
   '<div id="ex-due"'+(e.status==='unpaid'?'':' style="display:none"')+'><label>Due date</label><input class="f" type="date" id="ex-dd" value="'+esc(e.dueDate||ymd(addDays(new Date(),14)))+'"></div>'+
@@ -14573,7 +14585,7 @@ window.expForm=id=>{
   '<div id="ex-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" id="ex-go" style="width:100%;justify-content:center" onclick="expSave(\''+(id||'')+'\')">'+ic('check',16)+'Save</button>'+
   (id&&isOwnerMe()?'<button class="btn ghost sm" style="margin-top:8px;color:var(--rose)" onclick="expDelete(\''+id+'\')">'+ic('trash',13)+'Delete</button>':'')+'</div>');
- window.EXST=e.status;
+ window.EXST=e.status;window.expTip();
 };
 window.expSt=v=>{window.EXST=v;[...document.querySelectorAll('#ex-st button')].forEach(b=>b.className=b.dataset.v===v?'on':'');
  $('#ex-paid').style.display=v==='paid'?'':'none';$('#ex-due').style.display=v==='unpaid'?'':'none';};
@@ -17419,5 +17431,132 @@ function pkgBitsForSale(i){
  if(!items.length)throw new Error(i.name+' has no sessions. Change it again or remove it.');
  return{pkgCustom:true,pkgItems:items,pkgDays:Math.max(1,Math.round(+i.pkgDays||+pkgOf(i.id).days||365))};
 }
+
+
+/* ============ finance: help choosing the right category ============ */
+/* A short note under the category says what belongs there; typing what was bought or
+   who was paid suggests a category; and a guide lists the rules for keying in a receipt.
+   All of it is advice on screen only — nothing here changes how entries are saved. */
+const FTIP={
+ '6000':['Sewa premis spa.','Sewa kedai bulanan, sewa stor atau petak parking bulanan.'],
+ '6010':['Bil utiliti premis.','Bil TNB, bil air (Ranhill SAJ), bil pembetungan IWK.'],
+ '6020':['Telefon dan internet untuk spa.','Bil Unifi/TIME, bil telefon, SimPack baru, topup prepaid nombor spa.'],
+ '6030':['Kos untuk dapatkan klien.','Iklan FB/IG/TikTok, boost post, influencer, cetak flyer, banner, kad nama.'],
+ '6040':['Barang pakai habis yang tak direkod dalam Inventory.','Kapas, tisu, sarung tangan, tuala pakai buang, alat tulis, air mineral untuk klien.'],
+ '6050':['Baiki dan servis.','Servis aircond, baiki mesin, paip, lampu, kerja cat kecil.'],
+ '6060':['Kebersihan premis dan dobi.','Dobi tuala, cleaner, bahan pencuci lantai.'],
+ '6070':['Lesen dan fi kerajaan.','Lesen majlis perbandaran, pembaharuan SSM, permit iklan.'],
+ '6080':['Caj bank dan bayaran kad.','Caj bank bulanan, caj terminal kad (MDR), caj transfer, caj payment gateway.'],
+ '6090':['Langganan perisian.','Canva, Google Workspace, domain dan hosting web, aplikasi berbayar.'],
+ '6100':['Perjalanan untuk urusan spa.','Minyak, tol, parking, Grab, kurier dan pos.'],
+ '6110':['Perlindungan premis dan perniagaan.','Insurans kebakaran, public liability, takaful perniagaan.'],
+ '6120':['Khidmat profesional.','Akauntan, audit, setiausaha syarikat, peguam, ejen cukai.'],
+ '6130':['Kursus dan latihan staf.','Kursus rawatan, sijil, seminar, kelas.'],
+ '6190':['Lain-lain yang kecil dan jarang.','Guna bila benar-benar tiada kategori lain yang sesuai. Kalau selalu guna, minta akauntan tambah kategori baru.'],
+ '5140':['Kebajikan staf.','Makan staf, jamuan, hadiah hari jadi staf, rawatan klinik staf.'],
+ '1200':['Produk untuk dijual atau backbar yang ada rekod stok.','Beli produk retail dan backbar dari supplier. Rekod juga di Inventory → Receive stock supaya kuantiti stok betul.'],
+ '1500':['Aset tahan lama dan bernilai.','Mesin facial, katil rawatan, perabot, aircond baru, tablet atau telefon kedai, renovasi, signboard. Barang murah (contoh bawah RM1,000) boleh masuk kos biasa — ikut nasihat akauntan.'],
+ '2300':['Bayar caruman KWSP bulanan.','Bukan gaji — gaji direkod dari Payroll.'],
+ '2310':['Bayar caruman PERKESO bulanan.',''],
+ '2320':['Bayar caruman SIP bulanan.',''],
+ '2330':['Bayar PCB ke LHDN.',''],
+ '2500':['Bayar SST ke Kastam.',''],
+ '3100':['Duit syarikat yang owner guna untuk hal peribadi.','Bukan kos spa — tidak mengurangkan untung.']};
+const FKEYS=[
+ [/sim ?pack|top ?up|reload|prepaid|postpaid|bil telefon|phone bill|unifi|time fibre|internet|wifi|maxis|celcom|digi|u ?mobile|hotlink|tonewow|\byes\b/,'6020'],
+ [/tnb|elektrik|electric|bil air|\bsaj\b|ranhill|air selangor|syabas|iwk|indah water|pembetungan|utiliti|utility/,'6010'],
+ [/sewa|rent\b|rental/,'6000'],
+ [/iklan|\bads?\b|facebook|\bmeta\b|instagram|tiktok|boost|influencer|flyer|banner|bunting|poster|cetak|printing|kad nama|google ads|promosi|promotion/,'6030'],
+ [/kapas|cotton|tisu|tissue|glove|sarung tangan|pakai buang|disposable|face ?mask|alat tulis|stationery|kertas|\bpen\b|air mineral|plastik|beg kertas/,'6040'],
+ [/baiki|repair|servis|service aircond|tukang|paip|plumber|maintenance|lampu rosak/,'6050'],
+ [/dobi|laundry|cleaner|pencuci|clorox|sabun lantai|mop|kebersihan/,'6060'],
+ [/lesen|licen[cs]e|permit|majlis|\bpbt\b|mbjb|mpk|ssm|kkm/,'6070'],
+ [/caj bank|bank charge|\bmdr\b|terminal|merchant|transaction fee|gateway|billplz|toyyibpay|ipay88|stripe/,'6080'],
+ [/canva|google workspace|domain|hosting|firebase|langganan|subscription|software|capcut|chatgpt|claude|zoom|apps? berbayar/,'6090'],
+ [/minyak|petrol|\btol\b|toll|parking|parkir|grab|teksi|kurier|courier|pos ?laju|j&t|ninja van|lalamove/,'6100'],
+ [/insurans|insurance|takaful/,'6110'],
+ [/akauntan|accountant|audit|peguam|lawyer|legal|setiausaha|secretary|ejen cukai|tax agent/,'6120'],
+ [/kursus|course|training|latihan|seminar|kelas|sijil/,'6130'],
+ [/makan staf|staff meal|jamuan|hadiah staf|klinik|medical|kebajikan|welfare/,'5140'],
+ [/produk|product|serum|toner|cleanser|mask sheet|backbar|borong|stok|stock/,'1200'],
+ [/mesin|machine|katil|\bbed\b|perabot|furniture|renovasi|renovation|aircond baru|tablet|laptop|komputer|telefon baru|kerusi|almari|signboard|papan tanda/,'1500'],
+ [/kwsp|\bepf\b/,'2300'],[/perkeso|socso/,'2310'],[/\beis\b|\bsip\b/,'2320'],[/\bpcb\b|\bmtd\b|lhdn/,'2330'],[/\bsst\b|kastam|customs/,'2500'],
+ [/peribadi|personal|drawing/,'3100']];
+/* things a spa commonly pays for, by category — shown in the guide and searched by name */
+const FCOMMON=[
+ ['6000',['Sewa kedai bulanan','Sewa stor','Sewa petak parking bulanan']],
+ ['6010',['Bil elektrik TNB','Bil air (Ranhill SAJ)','Bil pembetungan IWK']],
+ ['6020',['Bil internet (Unifi / TIME)','Bil telefon bulanan','SimPack baru','Topup prepaid nombor spa']],
+ ['6030',['Iklan Facebook / Instagram','Iklan TikTok','Google Ads','Boost post','Influencer / KOL','Jurugambar & video','Flyer, banner, bunting','Kad nama & voucher bercetak','Hadiah giveaway']],
+ ['6040',['Kapas & cotton pad','Tisu','Sarung tangan nitril','Headband / penutup kepala pakai buang','Cadar katil pakai buang','Tuala pakai buang','Spatula & mangkuk mask','Kasa (gauze)','Lancet / jarum ekstraksi','Alkohol & sanitizer','Plastik wrap','Kertas resit printer','Beg kertas untuk produk','Air mineral, teh & kopi untuk klien','Alat tulis','Lilin & minyak aroma bilik','Tuala muka & badan (beli baru)','Produk backbar yang tiada rekod stok']],
+ ['6050',['Servis aircond','Baiki mesin facial','Tukar lampu & baiki elektrik','Baiki paip & sinki','Servis water heater']],
+ ['6060',['Dobi tuala & cadar','Sabun & pencuci lantai','Clorox / peluntur','Penyapu, mop & tong sampah','Khidmat cleaner']],
+ ['6070',['Lesen perniagaan majlis perbandaran','Lesen papan iklan','Pembaharuan SSM','Cukai taksiran / cukai pintu','Sijil / permit bomba']],
+ ['6080',['Caj terminal kad (MDR)','Caj bank bulanan','Caj DuitNow QR','Caj payment gateway','Caj transfer']],
+ ['6090',['Canva Pro','Google Workspace','Domain & hosting web','CapCut Pro','Firebase / Spatify','WhatsApp Business API','Aplikasi berbayar lain']],
+ ['6100',['Minyak & tol ambil stok','Parking urusan spa','Grab / teksi','Kurier & pos hantar produk','Lalamove']],
+ ['6110',['Insurans kebakaran premis','Public liability','Insurans mesin']],
+ ['6120',['Yuran akauntan','Audit','Setiausaha syarikat','Peguam (perjanjian sewa, dll.)','Ejen cukai']],
+ ['6130',['Kursus rawatan baru','Sijil kemahiran staf','Seminar & bengkel']],
+ ['5140',['Makan staf','Jamuan & majlis staf','Uniform staf','Hadiah hari jadi staf','Rawatan klinik staf','Snek & air pantri staf']],
+ ['1200',['Produk retail untuk dijual (serum, sunblock, dll.)','Produk backbar yang direkod di Inventory (cleanser, toner, mask, ampoule)']],
+ ['1500',['Mesin facial (HydraFacial, HIFU, dll.)','Katil rawatan','Steamer wajah','Lampu pembesar (magnifying lamp)','Sterilizer UV','Troli rawatan','Sofa & perabot ruang menunggu','Aircond baru','Tablet, printer resit & peralatan POS','CCTV','Signboard','Kerja renovasi']],
+ ['2300',['Caruman KWSP bulanan']],['2310',['Caruman PERKESO bulanan']],['2320',['Caruman SIP bulanan']],['2330',['PCB bulanan ke LHDN']],['2500',['SST ke Kastam']],
+ ['3100',['Belanja peribadi owner guna duit syarikat']],
+ ['6190',['Sumbangan / derma kecil','Perkara kecil yang jarang dan tiada kategori lain']]];
+const ftWords=t=>t.split(/[^a-z0-9&]+/).filter(w=>w.length>=3);
+/* [{c, items}] — categories that match the words, with the common items that matched */
+function ftFind(q){
+ const t=String(q||'').toLowerCase().trim();if(t.length<2)return [];
+ const ok=new Set(EXP_ACCTS().map(a=>a[0])),out=new Map();
+ const add=(c,it)=>{if(!ok.has(c))return;if(!out.has(c))out.set(c,[]);if(it&&!out.get(c).includes(it))out.get(c).push(it);};
+ FKEYS.forEach(k=>{if(k[0].test(t))add(k[1]);});
+ const W=ftWords(t);
+ FCOMMON.forEach(([c,L])=>L.forEach(it=>{const x=it.toLowerCase();if(x.includes(t)||(W.length&&W.every(w=>x.includes(w))))add(c,it);}));
+ return [...out.entries()].map(([c,items])=>({c,items})).slice(0,4);
+}
+const ftRow=(c,pick,hits)=>'<div class="ftrow"><div style="flex:1;min-width:0"><b>'+esc(c)+' · '+esc(acName(c))+'</b>'+
+ (hits&&hits.length?'<small class="fthit">'+hits.slice(0,3).map(esc).join(' · ')+'</small>':'')+
+ (FTIP[c]?'<small>'+esc(FTIP[c][0])+(FTIP[c][1]?' '+esc(FTIP[c][1]):'')+'</small>':'')+'</div>'+
+ (pick?'<button type="button" class="btn sm" onclick="expPick(\''+c+'\')">Use</button>':'')+'</div>';
+/* the note under the category */
+window.expTip=()=>{const c=($('#ex-c')||{}).value,b=document.getElementById('ex-tip');if(!b)return;
+ const t=FTIP[c];b.innerHTML=t?ic('note',12)+' <b>'+esc(t[0])+'</b>'+(t[1]?' '+esc(t[1]):''):'';};
+window.expPick=c=>{const s=$('#ex-c');if(!s)return;s.value=c;window.expTip();
+ const q=document.getElementById('ex-fr');if(q)q.innerHTML='';const g=document.getElementById('ex-sug');if(g)g.innerHTML='';
+ toast('Category: '+acName(c));};
+window.expFind=q=>{const b=document.getElementById('ex-fr');if(!b)return;
+ const L=ftFind(q);
+ b.innerHTML=String(q||'').trim().length<2?'':L.length?L.map(r=>ftRow(r.c,true,r.items)).join(''):
+  '<div class="tiny muted" style="padding:6px 2px">Tiada padanan. Cuba perkataan lain, atau buka panduan penuh di Finance → Expenses → Guide.</div>';};
+/* what was typed in "supplier" and "what for" suggests a category, unless it is already chosen */
+window.expSuggest=()=>{const b=document.getElementById('ex-sug');if(!b)return;
+ const L=ftFind((($('#ex-n')||{}).value||'').trim()||(($('#ex-s')||{}).value||'')).map(r=>r.c),cur=($('#ex-c')||{}).value;
+ b.innerHTML=L.length&&!L.includes(cur)?'<span class="tiny muted">Cadangan kategori:</span> '+L.slice(0,2).map(c=>
+  '<button type="button" class="chip" onclick="expPick(\''+c+'\')">'+esc(c)+' · '+esc(acName(c))+'</button>').join(' '):'';};
+const FRULES=[
+ ['Supplier','Nama pada resit — kedai atau syarikat yang terima duit (contoh 7-Eleven Kulai), bukan jenama barang.'],
+ ['What for','Barang dan tujuannya. Contoh: "SimPack Hotlink – nombor WhatsApp Luuna".'],
+ ['Date','Tarikh pada resit, bukan tarikh key-in.'],
+ ['Amount','Jumlah akhir yang dibayar, termasuk SST atau caj lain.'],
+ ['Receipt','Isi nombor resit/invois dan ambil gambar resit. Simpan resit asal.'],
+ ['Paid from','Duit laci kaunter → rekod di Day → Cash → Money paid out, bukan di sini. Owner bayar guna duit sendiri → pilih "Owner paid personally".'],
+ ['Satu resit, banyak jenis','Pecahkan ikut kategori (contoh kapas → Supplies, produk jualan → Stock purchase). Kalau bahagian kecil sangat, masuk ikut kategori yang paling besar.'],
+ ['Bil belum bayar','Pilih "Bill to pay later" dan isi tarikh akhir. Tekan Pay bila dah dibayar.'],
+ ['Barang mahal & tahan lama','Mesin, perabot, renovasi → Equipment & renovation, bukan kos bulanan.'],
+ ['Hal peribadi owner','Guna Owner drawings. Jangan masuk sebagai kos spa.']];
+window.finGuide=()=>{
+ modal('Panduan key-in expenses','<div class="card">'+
+  '<label>Cari kategori</label><input class="f" id="ex-q" placeholder="cth: simpack, TNB, iklan FB, kapas, mesin" oninput="finGuideFind(this.value)" autocomplete="off">'+
+  '<div id="fg-r"></div>'+
+  '<div class="fieldset"><h3>'+ic('check',13)+'Peraturan ringkas</h3>'+FRULES.map(r=>'<div class="ftrow"><div><b>'+esc(r[0])+'</b><small>'+esc(r[1])+'</small></div></div>').join('')+'</div>'+
+  '<div class="fieldset"><h3>'+ic('receipt',13)+'Barang & bil lazim di spa</h3>'+FCOMMON.filter(([c])=>EXP_ACCTS().some(a=>a[0]===c)).map(([c,L])=>
+   '<details class="ftcat"><summary><b>'+esc(c)+' · '+esc(acName(c))+'</b><span class="muted"> '+L.length+'</span></summary><ul>'+L.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
+   (FTIP[c]&&FTIP[c][1]?'<small class="muted">'+esc(FTIP[c][0])+' '+esc(FTIP[c][1])+'</small>':'')+'</details>').join('')+'</div>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Ini panduan umum. Untuk perkara cukai atau aset, ikut nasihat akauntan anda.</p></div>');
+};
+window.finGuideFind=q=>{const b=document.getElementById('fg-r');if(!b)return;const L=ftFind(q);
+ b.innerHTML=String(q||'').trim().length<2?'':L.length?'<div class="fieldset" style="margin-top:0">'+L.map(r=>ftRow(r.c,false,r.items)).join('')+'</div>':
+  '<div class="tiny muted" style="padding:6px 2px 10px">Tiada padanan — lihat senarai semua kategori di bawah.</div>';};
 
 </script>
