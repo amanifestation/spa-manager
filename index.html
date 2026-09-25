@@ -1646,6 +1646,10 @@ body.demo .syncbar{top:106px}
 .ftrow small{display:block;color:var(--ink-3);font-size:12px;line-height:1.4;margin-top:2px}.ftrow small.fthit{color:var(--brass);font-weight:600}
 .ftcat{border-bottom:1px solid var(--line);padding:7px 0}.ftcat:last-child{border-bottom:0}.ftcat summary{cursor:pointer;font-size:13.5px}
 .ftcat ul{margin:6px 0 4px 18px;padding:0;font-size:13px;line-height:1.55}.ftcat small{display:block;font-size:12px;margin:2px 0 2px}
+.exshead{align-items:flex-end;margin-top:2px}.exshead label{margin-bottom:6px}
+.exsrow{display:grid;grid-template-columns:minmax(0,1.6fr) 96px minmax(0,1.2fr) auto;gap:6px;align-items:center;margin-bottom:6px}.exsrow .f{margin:0}
+@media (max-width:560px){.exsrow{grid-template-columns:minmax(0,1fr) 88px auto}.exsrow .exsdesc{grid-column:1/3;grid-row:2}}
+.exsleft{margin:0 0 8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1903,7 +1907,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25k';
+const BUILD='2026-09-25l';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14541,7 +14545,7 @@ function finExpenses(){
  const m=FINM,E=finMonthExp(m),A=finAuto(m);
  const tot=E.reduce((t,e)=>t+(+e.amount||0),0)+A.reduce((t,e)=>t+e.amount,0);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid'),due7=unpaid.filter(e=>daysBetween(today(),e.dueDate||e.date)<=7);
- const byAc={};[...E,...A].forEach(e=>{byAc[e.account]=(byAc[e.account]||0)+(+e.amount||0);});
+ const byAc={};[...E,...A].forEach(e=>expLines(e).forEach(l=>{byAc[l.account]=(byAc[l.account]||0)+(+l.amount||0);}));
  return '<div class="card"><div class="spread">'+finNav()+'<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="finGuide()">'+ic('note',14)+'Guide</button><button class="btn sm" onclick="expForm()">'+ic('plus',14)+'Add expense or bill</button></div></div></div>'+
   '<div class="crmkpis">'+kpi('Spent in '+mLabel(m),rm(tot),(E.length+A.length)+' entries','receipt')+
    kpi('Bills to pay',rm(unpaid.reduce((t,e)=>t+(+e.amount||0),0)),unpaid.length+' bill'+(unpaid.length!==1?'s':''),'clock')+
@@ -14555,7 +14559,7 @@ function finExpenses(){
 function finRow(e){
  const auto=['Drawer','Claim'].includes(e.src);
  const st=e.status==='unpaid'?'<span class="pill '+(daysBetween(today(),e.dueDate||e.date)<0?'r':'a')+'">'+(daysBetween(today(),e.dueDate||e.date)<0?'overdue':'due '+dshort(e.dueDate||e.date))+'</span>':'';
- return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(e.supplier||e.desc||'')+'</b><small>'+dshort(e.date)+' · '+esc(acName(e.account))+
+ return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(e.supplier||e.desc||'')+'</b><small>'+dshort(e.date)+' · '+esc(expAcLabel(e))+
   (e.supplier&&e.desc?' · '+esc(e.desc):'')+(e.ref?' · '+esc(e.ref):'')+(e.src?' · <span class="fintag">'+e.src+'</span>':'')+'</small></div>'+
   (e.receipt?'<button class="iconbtn" style="padding:4px" onclick="expReceipt(\''+e.id+'\')">'+ic('receipt',14)+'</button>':'')+st+
   '<b class="finamt">'+rm(e.amount)+'</b>'+(auto?'':'<button class="iconbtn" style="padding:4px" onclick="expForm(\''+e.id+'\')">'+ic('edit',14)+'</button>')+'</div>';
@@ -14568,16 +14572,21 @@ window.expForm=id=>{
  modal(id?'Edit expense':'Add expense or bill','<div class="card">'+
   '<div class="seg" id="ex-st">'+[['paid','Paid already'],['unpaid','Bill to pay later']].map(o=>'<button type="button" data-v="'+o[0]+'" class="'+(e.status===o[0]?'on':'')+'" onclick="expSt(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
   '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="ex-d" value="'+esc(e.date||today())+'"></div>'+
-  '<div><label>Amount (RM)</label><input class="f" type="number" step="0.01" min="0" id="ex-a" value="'+(e.amount||'')+'"></div></div>'+
+  '<div><label>Amount (RM)</label><input class="f" type="number" step="0.01" min="0" id="ex-a" value="'+(e.amount||'')+'" oninput="exsLeft()"></div></div>'+
   '<label>Supplier / paid to <span class="muted">— name on the receipt</span></label><input class="f" id="ex-s" list="ex-sl" value="'+esc(e.supplier||'')+'" placeholder="e.g. TNB, 7-Eleven Kulai, product supplier" oninput="expSuggest()">'+
   '<datalist id="ex-sl">'+sup.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist>'+
   '<div class="grid g2"><div><label>What for</label><input class="f" id="ex-n" value="'+esc(e.desc||'')+'" placeholder="e.g. SimPack for the spa WhatsApp" oninput="expSuggest()"></div>'+
   '<div><label>Invoice / receipt no.</label><input class="f" id="ex-r" value="'+esc(e.ref||'')+'"></div></div>'+
-  '<div id="ex-sug" class="exsug"></div>'+
-  '<label>Category</label><select class="f" id="ex-c" onchange="expTip();expSuggest()">'+EXP_ACCTS().map(a=>'<option value="'+a[0]+'"'+(e.account===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
+  '<div class="spread exshead"><label>Category</label><button type="button" class="btn sm ghost" id="exs-tog" onclick="exsToggle()"></button></div>'+
+  '<div id="ex-one"><div id="ex-sug" class="exsug"></div>'+
+  '<select class="f" id="ex-c" onchange="expTip();expSuggest()">'+EXP_ACCTS().map(a=>'<option value="'+a[0]+'"'+(e.account===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
   '<div id="ex-tip" class="extip"></div>'+
   '<details class="exhelp"><summary>'+ic('search',13)+' Tak pasti kategori? Cari di sini</summary>'+
-   '<input class="f" id="ex-q" placeholder="cth: simpack, TNB, kapas, iklan FB, mesin" oninput="expFind(this.value)" autocomplete="off"><div id="ex-fr"></div></details>'+
+   '<input class="f" id="ex-q" placeholder="cth: simpack, TNB, kapas, iklan FB, mesin" oninput="expFind(this.value)" autocomplete="off"><div id="ex-fr"></div></details></div>'+
+  '<div id="ex-split" style="display:none"><div id="exs-rows"></div>'+
+   '<button type="button" class="btn ghost sm" style="margin:0 0 6px" onclick="exsAdd()">'+ic('plus',14)+'Add line</button>'+
+   '<div id="exs-left" class="tiny exsleft"></div>'+
+   '<div class="tiny muted" style="margin:0 0 10px">One entry and one invoice photo; the total is shared across the categories in the reports.</div></div>'+
   '<div id="ex-paid"'+(e.status==='paid'?'':' style="display:none"')+'><label>Paid from</label><select class="f" id="ex-pf">'+PAYSRC.map(p=>'<option value="'+p[0]+'"'+((e.paidFrom||'1010')===p[0]?' selected':'')+'>'+p[1]+'</option>').join('')+'</select>'+
    '<div class="tiny muted" style="margin:-4px 0 10px">Cash taken from the counter drawer goes in Day → Cash → Money paid out, so the drawer balances; it shows here by itself.</div></div>'+
   '<div id="ex-due"'+(e.status==='unpaid'?'':' style="display:none"')+'><label>Due date</label><input class="f" type="date" id="ex-dd" value="'+esc(e.dueDate||ymd(addDays(new Date(),14)))+'"></div>'+
@@ -14586,6 +14595,7 @@ window.expForm=id=>{
   '<button class="btn" id="ex-go" style="width:100%;justify-content:center" onclick="expSave(\''+(id||'')+'\')">'+ic('check',16)+'Save</button>'+
   (id&&isOwnerMe()?'<button class="btn ghost sm" style="margin-top:8px;color:var(--rose)" onclick="expDelete(\''+id+'\')">'+ic('trash',13)+'Delete</button>':'')+'</div>');
  window.EXST=e.status;window.expTip();
+ EXSPLIT={on:expSplit(e),lines:expSplit(e)?e.lines.map(l=>({...l})):[]};exsPaint();
 };
 window.expSt=v=>{window.EXST=v;[...document.querySelectorAll('#ex-st button')].forEach(b=>b.className=b.dataset.v===v?'on':'');
  $('#ex-paid').style.display=v==='paid'?'':'none';$('#ex-due').style.display=v==='unpaid'?'':'none';};
@@ -14599,14 +14609,16 @@ window.expSave=async id=>{
  if(!sup&&!desc){e.textContent='Say who it was paid to or what it was for.';return;}
  if(EXRCPT.length>900000){e.textContent='The photo is too large.';return;}
  const st=window.EXST||'paid';
- const d={date:$('#ex-d').value||today(),amount:amt,supplier:sup.slice(0,80),desc:desc.slice(0,160),account:$('#ex-c').value,ref:$('#ex-r').value.trim().slice(0,40),status:st,
+ let acct=$('#ex-c').value,lines=[];
+ if(EXSPLIT.on){const f=exsFinal(amt);if(f.err){e.textContent=f.err;return;}if(f.one)acct=f.one;else{acct=f.main;lines=f.lines;}}
+ const d={date:$('#ex-d').value||today(),amount:amt,supplier:sup.slice(0,80),desc:desc.slice(0,160),account:acct,lines,ref:$('#ex-r').value.trim().slice(0,40),status:st,
   ...(st==='paid'?{paidFrom:$('#ex-pf').value,paidAt:(id&&((EXPENSES.find(x=>x.id===id)||{}).paidAt))||$('#ex-d').value||today(),dueDate:''}:{dueDate:$('#ex-dd').value||$('#ex-d').value,paidFrom:'',paidAt:''}),
   ...(EXRCPT?{receipt:EXRCPT}:{}),branchId:ME.branchId,updatedAt:new Date().toISOString(),updatedBy:UID};
  $('#ex-go').disabled=true;
  try{
   if(id){await updateDoc(doc(db,'expenses',id),d);Object.assign(EXPENSES.find(x=>x.id===id),d);}
   else{d.createdAt=new Date().toISOString();d.createdBy=UID;d.source='manual';const r=await addDoc(collection(db,'expenses'),d);EXPENSES.unshift({id:r.id,...d});}
-  await audit(id?'Expense edited':'Expense added',(sup||desc)+' · '+acName(d.account)+' · '+rm(amt)+(st==='unpaid'?' · due '+d.dueDate:''));
+  await audit(id?'Expense edited':'Expense added',(sup||desc)+' · '+expAcLabel(d)+' · '+rm(amt)+(st==='unpaid'?' · due '+d.dueDate:''));
   FINM=d.date.slice(0,7);window.closeModal();render();toast(st==='unpaid'?'Bill added':'Expense saved');}
  catch(err){e.textContent=friendly(err);$('#ex-go').disabled=false;}
 };
@@ -14626,14 +14638,14 @@ function finBills(){
  const over=U.filter(e=>daysBetween(today(),e.dueDate||e.date)<0);
  return '<div class="crmkpis">'+kpi('To pay',rm(U.reduce((t,e)=>t+e.amount,0)),U.length+' bill(s)','clock')+kpi('Overdue',rm(over.reduce((t,e)=>t+e.amount,0)),over.length+' bill(s)','alert')+'</div>'+
   '<div class="card"><div class="sec-h"><h3 style="margin:0">Unpaid bills</h3><button class="btn sm" onclick="expForm();setTimeout(()=>expSt(\'unpaid\'),50)">'+ic('plus',14)+'Add a bill</button></div>'+
-  (U.length?U.map(e=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(e.supplier||e.desc)+'</b><small>'+esc(acName(e.account))+(e.desc&&e.supplier?' · '+esc(e.desc):'')+(e.ref?' · '+esc(e.ref):'')+
+  (U.length?U.map(e=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(e.supplier||e.desc)+'</b><small>'+esc(expAcLabel(e))+(e.desc&&e.supplier?' · '+esc(e.desc):'')+(e.ref?' · '+esc(e.ref):'')+
    (e.source==='recurring'?' · <span class="fintag">Recurring</span>':'')+'</small></div><span class="pill '+(daysBetween(today(),e.dueDate||e.date)<0?'r':'a')+'">'+(daysBetween(today(),e.dueDate||e.date)<0?'overdue '+dshort(e.dueDate||e.date):'due '+dshort(e.dueDate||e.date))+'</span>'+
    '<b class="finamt">'+rm(e.amount)+'</b><button class="btn sm" onclick="billPay(\''+e.id+'\')">Pay</button><button class="iconbtn" style="padding:4px" onclick="expForm(\''+e.id+'\')">'+ic('edit',14)+'</button></div>').join('')
    :'<div class="empty">'+ic('check',24)+'<div>No bills waiting.</div></div>')+'</div>';
 }
 window.billPay=id=>{
  const e=(EXPENSES||[]).find(x=>x.id===id);if(!e)return;
- modal('Pay · '+(e.supplier||e.desc),'<div class="card"><table><tr><td>Amount</td><td class="num"><b>'+rm(e.amount)+'</b></td></tr><tr><td>For</td><td class="num">'+esc(acName(e.account))+(e.desc?' · '+esc(e.desc):'')+'</td></tr></table>'+
+ modal('Pay · '+(e.supplier||e.desc),'<div class="card"><table><tr><td>Amount</td><td class="num"><b>'+rm(e.amount)+'</b></td></tr><tr><td>For</td><td class="num">'+esc(expAcLabel(e))+(e.desc?' · '+esc(e.desc):'')+'</td></tr></table>'+
   '<div class="grid g2"><div><label>Paid on</label><input class="f" type="date" id="bp-d" value="'+today()+'"></div><div><label>Paid from</label><select class="f" id="bp-f">'+PAYSRC.map(p=>'<option value="'+p[0]+'">'+p[1]+'</option>').join('')+'</select></div></div>'+
   '<label>Payment reference</label><input class="f" id="bp-r" placeholder="e.g. bank transfer ref">'+
   '<button class="btn" style="width:100%;justify-content:center" onclick="billPaid(\''+id+'\')">'+ic('check',16)+'Mark paid</button></div>');
@@ -14718,9 +14730,9 @@ async function finJournalOf(m,br){
   const bd=e.date,pd=e.paidAt||e.date;
   const onBill=bd>=from&&bd<=to,onPay=e.status==='paid'&&pd>=from&&pd<=to;
   const label=(e.supplier||'')+(e.desc?' · '+e.desc:'');
-  const ac=(!cogsAuto()&&e.account==='1200')?'5000':e.account;
-  if(e.status==='paid'&&(!e.dueDate||pd===bd)){if(onPay)add(pd,e.ref||e.id,'exp:'+e.id,label,[[ac,e.amount,0],[e.paidFrom||'1010',0,e.amount]]);return;}
-  if(onBill)add(bd,e.ref||e.id,'bill:'+e.id,label,[[ac,e.amount,0],['2000',0,e.amount]]);
+  const dr=expLines(e).map(l=>[(!cogsAuto()&&l.account==='1200')?'5000':l.account,+l.amount||0,0]);
+  if(e.status==='paid'&&(!e.dueDate||pd===bd)){if(onPay)add(pd,e.ref||e.id,'exp:'+e.id,label,[...dr,[e.paidFrom||'1010',0,e.amount]]);return;}
+  if(onBill)add(bd,e.ref||e.id,'bill:'+e.id,label,[...dr,['2000',0,e.amount]]);
   if(onPay)add(pd,e.payRef||e.ref||e.id,'billpay:'+e.id,'Paid · '+label,[['2000',e.amount,0],[e.paidFrom||'1010',0,e.amount]]);
  });
  /* drawer paid-outs and claims */
@@ -14783,7 +14795,8 @@ window.finCSV=async kind=>{
    csvDownload(biz+'-daily-takings-'+m+'.csv',[['Date','Treatments','Retail','Packages','Add-ons','SST','Cash','Bank / transfer','Card & e-wallet','Deposits used'],
     ...Object.keys(days).sort().map(d=>{const x=days[d];return [d,...['4000','4010','4020','4030','2500'].map(k=>r2(x[k]||0)),...['p1000','p1010','p1020','p2200'].map(k=>r2(x[k]||0))];}).filter(r=>r.slice(1).some(v=>v))]);}
   if(kind==='exp'){csvDownload(biz+'-expenses-'+m+'.csv',[['Date','Supplier','Description','Account code','Account name','Amount','Status','Due date','Paid on','Paid from','Invoice no','Id'],
-   ...[...finMonthExp(m),...finAuto(m).map(a=>({...a,status:'paid',paidAt:a.date,supplier:a.src}))].map(e=>[e.date,e.supplier||'',e.desc||'',e.account,acName(e.account),e.amount,e.status,e.dueDate||'',e.paidAt||'',e.paidFrom?acName(e.paidFrom):'',e.ref||'',e.id])]);}
+   ...[...finMonthExp(m),...finAuto(m).map(a=>({...a,status:'paid',paidAt:a.date,supplier:a.src}))].flatMap(e=>{const L=expLines(e);return L.map((l,k)=>[e.date,e.supplier||'',
+     (e.desc||'')+(L.length>1?(l.desc?' · '+l.desc:'')+' (split '+(k+1)+'/'+L.length+' of '+r2(e.amount).toFixed(2)+')':''),l.account,acName(l.account),l.amount,e.status,e.dueDate||'',e.paidAt||'',e.paidFrom?acName(e.paidFrom):'',e.ref||'',e.id]);})]);}
   if(kind==='pl'){const P=await plData(m);
    csvDownload(biz+'-profit-and-loss-'+m+'.csv',[['Section','Account code','Account name',mLabel(m),mLabel(mShift(m,-1)),'Year to date'],
     ...P.rows.map(r=>[r.sec,r.code||'',r.name,r2(r.a),r2(r.b),r2(r.y)])]);}
@@ -17541,7 +17554,7 @@ const FRULES=[
  ['Amount','Jumlah akhir yang dibayar, termasuk SST atau caj lain.'],
  ['Receipt','Isi nombor resit/invois dan ambil gambar resit. Simpan resit asal.'],
  ['Paid from','Duit laci kaunter → rekod di Day → Cash → Money paid out, bukan di sini. Owner bayar guna duit sendiri → pilih "Owner paid personally".'],
- ['Satu resit, banyak jenis','Pecahkan ikut kategori (contoh kapas → Supplies, produk jualan → Stock purchase). Kalau bahagian kecil sangat, masuk ikut kategori yang paling besar.'],
+ ['Satu resit, banyak jenis','Tekan "Split across categories" dalam borang — satu entri, satu gambar invoice, jumlahnya dibahagi ikut kategori (contoh kapas → Supplies, produk jualan → Stock purchase). Caj penghantaran masuk kategori paling besar; diskaun/voucher ditolak dari kategori paling besar. Barang kecil sangat boleh ikut kategori paling besar.'],
  ['Bil belum bayar','Pilih "Bill to pay later" dan isi tarikh akhir. Tekan Pay bila dah dibayar.'],
  ['Barang mahal & tahan lama','Mesin, perabot, renovasi → Equipment & renovation, bukan kos bulanan.'],
  ['Hal peribadi owner','Guna Owner drawings. Jangan masuk sebagai kos spa.']];
@@ -17558,5 +17571,65 @@ window.finGuide=()=>{
 window.finGuideFind=q=>{const b=document.getElementById('fg-r');if(!b)return;const L=ftFind(q);
  b.innerHTML=String(q||'').trim().length<2?'':L.length?'<div class="fieldset" style="margin-top:0">'+L.map(r=>ftRow(r.c,false,r.items)).join('')+'</div>':
   '<div class="tiny muted" style="padding:6px 2px 10px">Tiada padanan — lihat senarai semua kategori di bawah.</div>';};
+
+
+/* ============ one receipt, several categories ============ */
+/* An expense can be split across categories — one entry, one invoice photo, with the total
+   shared out (e.g. a Shopee order of supplies, stock for sale and a ring light). The entry
+   keeps its total and its largest category as before; `lines` holds the split, and the
+   journal, reports, export and budgets use the lines. */
+const expLines=e=>(e&&Array.isArray(e.lines)&&e.lines.length>1)?e.lines:[{account:e.account,amount:+e.amount||0,desc:''}];
+const expSplit=e=>!!(e&&Array.isArray(e.lines)&&e.lines.length>1);
+const expAcLabel=e=>expSplit(e)?'Split: '+e.lines.map(l=>acName(l.account)+' '+rm(l.amount)).join(', '):acName(e.account);
+let EXSPLIT={on:false,lines:[]};
+function exsRows(){
+ return EXSPLIT.lines.map((l,k)=>'<div class="exsrow">'+
+  '<select class="f" onchange="exsSet('+k+',\'account\',this.value)">'+EXP_ACCTS().map(a=>'<option value="'+a[0]+'"'+(l.account===a[0]?' selected':'')+'>'+a[0]+' · '+esc(a[1])+'</option>').join('')+'</select>'+
+  '<input class="f exsamt" type="number" step="0.01" min="0" placeholder="RM" value="'+(l.amount||'')+'" oninput="exsSet('+k+',\'amount\',this.value,1)">'+
+  '<input class="f exsdesc" maxlength="80" placeholder="Items (optional)" value="'+esc(l.desc||'')+'" oninput="exsSet('+k+',\'desc\',this.value,1)">'+
+  '<button type="button" class="iconbtn" onclick="exsDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>').join('');
+}
+function exsLeft(){
+ const tot=r2(+(($('#ex-a')||{}).value)||0),sum=r2(EXSPLIT.lines.reduce((t,l)=>t+(+l.amount||0),0)),left=r2(tot-sum);
+ const b=document.getElementById('exs-left');if(!b)return left;
+ if(Math.abs(left)<0.005){const er=document.getElementById('ex-e');if(er)er.textContent='';}
+ b.innerHTML=!tot?'Enter the total amount above first.':Math.abs(left)<0.005?ic('check',12)+' Lines add up to '+rm(tot)+'.':
+  left>0?rm(left)+' of '+rm(tot)+' not shared out yet <button type="button" class="btn sm ghost" onclick="exsFill()">Put it on the last line</button>':
+  '<span style="color:var(--rose)">Lines are '+rm(-left)+' more than the total '+rm(tot)+'.</span>';
+ return left;
+}
+function exsPaint(){
+ const one=document.getElementById('ex-one'),sp=document.getElementById('ex-split'),t=document.getElementById('exs-tog');
+ if(one)one.style.display=EXSPLIT.on?'none':'';if(sp)sp.style.display=EXSPLIT.on?'':'none';
+ if(t)t.innerHTML=EXSPLIT.on?ic('close',13)+' One category only':ic('list',13)+' Split across categories';
+ const r=document.getElementById('exs-rows');if(r)r.innerHTML=exsRows();
+ exsLeft();
+}
+window.exsToggle=()=>{
+ EXSPLIT.on=!EXSPLIT.on;
+ if(EXSPLIT.on&&EXSPLIT.lines.length<2){const c=($('#ex-c')||{}).value||'6040',tot=r2(+(($('#ex-a')||{}).value)||0);
+  EXSPLIT.lines=[{account:c,amount:tot||'',desc:''},{account:c==='1200'?'6040':'1200',amount:'',desc:''}];}
+ exsPaint();
+};
+window.exsSet=(k,f,v,quiet)=>{const l=EXSPLIT.lines[k];if(!l)return;l[f]=f==='amount'?v:String(v);if(quiet)exsLeft();else exsPaint();};
+window.exsAdd=()=>{EXSPLIT.lines.push({account:'6190',amount:'',desc:''});exsPaint();};
+window.exsDrop=k=>{EXSPLIT.lines.splice(k,1);if(EXSPLIT.lines.length<2)EXSPLIT.on=false;exsPaint();
+ if(!EXSPLIT.on&&EXSPLIT.lines[0]){const s=$('#ex-c');if(s)s.value=EXSPLIT.lines[0].account;window.expTip&&window.expTip();}};
+window.exsFill=()=>{const left=exsLeft();const l=EXSPLIT.lines[EXSPLIT.lines.length-1];if(!l||!(left>0))return;l.amount=r2((+l.amount||0)+left);exsPaint();};
+/* the split, checked, as it will be saved — or a reason it cannot be */
+function exsFinal(total){
+ const L=EXSPLIT.lines.map(l=>({account:l.account,amount:r2(+l.amount||0),desc:String(l.desc||'').trim().slice(0,80)}));
+ if(L.length<2)return{err:'A split needs at least two lines.'};
+ if(L.some(l=>!(l.amount>0)))return{err:'Give every line an amount, or remove it.'};
+ const sum=r2(L.reduce((t,l)=>t+l.amount,0));
+ if(Math.abs(sum-total)>=0.005)return{err:'The lines add up to '+rm(sum)+' but the total is '+rm(total)+'.'};
+ /* the same category twice becomes one line */
+ const M=[];L.forEach(l=>{const x=M.find(y=>y.account===l.account);if(x){x.amount=r2(x.amount+l.amount);x.desc=[x.desc,l.desc].filter(Boolean).join(', ').slice(0,80);}else M.push({...l});});
+ if(M.length<2)return{one:M[0].account};
+ const main=[...M].sort((a,b)=>b.amount-a.amount)[0].account;
+ return{lines:M,main};
+}
+
+window.exsLeft=exsLeft;
 
 </script>
