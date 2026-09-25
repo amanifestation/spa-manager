@@ -1883,7 +1883,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25g';
+const BUILD='2026-09-25h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2991,9 +2991,12 @@ function custForm(id,opts){
    opt(SOURCES,c.source)+'</select></div>'+
   '<div><label>Home branch</label><select class="f" id="c-br">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (c.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
-  '<label>Referred by</label><select class="f" id="c-ref"><option value="">— nobody —</option>'+
+  '<label>Referred by</label><div class="grid g2"><select class="f" id="c-ref" data-self="'+(id||'')+'"><option value="">— nobody —</option>'+
+   (c.referrerId&&!cust(c.referrerId)?'<option value="'+esc(c.referrerId)+'" selected>'+esc(c.referrerName||'(current referrer)')+'</option>':'')+
    CUSTS.filter(x=>x.id!==id).map(x=>'<option value="'+x.id+'"'+(c.referrerId===x.id?' selected':'')+'>'+
     esc(x.name)+'</option>').join('')+'</select>'+
+   '<input class="f" id="c-refq" autocomplete="off" placeholder="or type code / phone" onchange="refFind(this.value)"></div>'+
+   '<div id="c-refh" class="tiny muted" style="margin:-4px 0 8px"></div>'+
   '<label>Preferred therapist</label><select class="f" id="c-pref"><option value="">— no preference —</option>'+
    D.staff.filter(s=>s.takes).map(s=>'<option value="'+s.id+'"'+(c.preferredStaff===s.id?' selected':'')+'>'+
     esc(s.name)+'</option>').join('')+'</select>'+
@@ -3034,7 +3037,7 @@ async function saveCustForm(id,thenBook){
   address:$('#c-a1').value.trim(),postcode:$('#c-pc').value.trim(),city:$('#c-city').value.trim(),
   state:$('#c-st').value.trim(),skin:$('#c-skin').value,allergy:$('#c-al').value.trim(),
   medical:$('#c-med').value.trim(),emergency:$('#c-em').value.trim(),source:$('#c-src').value,
-  branchId:$('#c-br').value,referrerId:$('#c-ref').value,preferredStaff:$('#c-pref').value,
+  branchId:$('#c-br').value,referrerId:$('#c-ref').value,referrerName:(()=>{const e=$('#c-ref'),o=e&&e.options&&e.options[e.selectedIndex];return e&&e.value&&o?String(o.textContent||''):'';})(),preferredStaff:$('#c-pref').value,
   tags:$('#c-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
   note:$('#c-note').value.trim(),pdpa:$('#c-pdpa').checked,marketing:$('#c-mkt').checked,
   updatedAt:new Date().toISOString(),updatedBy:UID};
@@ -3089,7 +3092,7 @@ window.openCust=async(id,keep)=>{
  modal(c.name,head+custHistory(c));
 };
 function custProfile(c){
- const money=memberOweCard(c.id)+memberPkgCard(c.id)+memberVoucherCard(c.id);
+ const money=memberOweCard(c.id)+memberPkgCard(c.id)+memberVoucherCard(c.id)+refCard(c);
  const row=(k,v,icon)=>v?'<div class="k">'+(icon?ic(icon,12)+' ':'')+k+'</div><div class="v">'+v+'</div>':'';
  const age=c.dob?Math.floor(daysBetween(c.dob,new Date())/365.25):null;
  const ref=c.referrerId&&cust(c.referrerId)?cust(c.referrerId).name:'';
@@ -3940,8 +3943,9 @@ window.saveCollect=async()=>{
    ' · '+(out.balance>0?rm(out.balance)+' still owing':'settled'),{refType:'sale',refId:id,amount:r2(amt)});
   await audit('Instalment collected',(out.cur.invoiceNo||'')+' · '+(out.cur.customerName||'')+' · '+
    method+' '+rm(amt)+' · '+(out.balance>0?rm(out.balance)+' still owed':'settled'));
+  const refOut=out.balance>0?null:await window.refAfterPay(id);
   window.closeModal();render();
-  toast(out.balance>0?rm(amt)+' received · '+rm(out.balance)+' still owed':'Bill fully settled');
+  toast(out.balance>0?rm(amt)+' received · '+rm(out.balance)+' still owed':'Bill fully settled'+(refOut?' · referral rewards recorded':''));
   window.showReceipt(id);
  }catch(e){err.textContent=friendly(e);btn.disabled=false;}
 };
@@ -4047,7 +4051,7 @@ function rvCodeFor(saleId,salt){
 }
 const rvPrefix=p=>String(p||'BACK').toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8)||'BACK';
 const rvForSale=id=>D.vouchers.find(v=>isReturnV(v)&&v.saleId===id);
-const rvOf=cid=>D.vouchers.filter(v=>(v.kind==='return'||v.kind==='prize')&&v.customerId===cid);
+const rvOf=cid=>D.vouchers.filter(v=>(v.kind==='return'||v.kind==='prize'||v.kind==='referral')&&v.customerId===cid);
 const rvUsed=v=>(v.used||0)>=(v.cap||1);
 const rvState=v=>rvUsed(v)?'used':v.expiry<today()?'expired':(v.validFrom&&v.validFrom>today())?'waiting':'ready';
 /* why a bill cannot earn a voucher, or '' when it can */
@@ -4102,10 +4106,10 @@ function rvMessage(v){
 function rvTicket(v){
  const st=rvState(v);
  return '<div class="rvtix'+(st==='used'||st==='expired'?' dim':'')+'">'+
-  '<div class="rvtop"><span>'+ic(v.kind==='prize'?'gift':'tag',13)+(v.kind==='prize'?' Scratch &amp; win prize':' Next-visit voucher')+'</span>'+
+  '<div class="rvtop"><span>'+ic(v.kind==='prize'?'gift':v.kind==='referral'?'users':'tag',13)+(v.kind==='prize'?' Scratch &amp; win prize':v.kind==='referral'?(v.role==='referrer'?' Referral thank-you':' Referral welcome gift'):' Next-visit voucher')+'</span>'+
    '<span class="pill '+({ready:'g',waiting:'b',used:'',expired:'r'}[st])+'">'+
    ({ready:'Ready to use',waiting:'From '+dshort(v.validFrom),used:'Used',expired:'Expired'}[st])+'</span></div>'+
-  '<div class="rvworth">'+(v.kind==='prize'&&v.label?esc(v.label):rvWorth(v))+'</div>'+
+  '<div class="rvworth">'+((v.kind==='prize'||v.kind==='referral')&&v.label?esc(v.label):rvWorth(v))+'</div>'+
   '<div class="rvcode">'+esc(v.id)+'</div>'+
   '<div class="tiny muted">'+esc(v.customerName||'')+(v.ownerOnly!==false?' only':'')+
    (v.min?' · min spend '+rm(v.min):'')+' · '+dshort(v.validFrom||v.issuedAt)+' – '+dshort(v.expiry)+
@@ -4160,7 +4164,7 @@ window.applyVoucher=()=>{
   (mine.length?'<h3 style="margin:0 0 8px">'+esc((cust(cart.customerId)||{}).name||'')+'\'s vouchers</h3>'+
    mine.map(v=>{const p=voucherProblem(v,sub,cart.customerId);
     return '<button type="button" class="pkrow"'+(p?' disabled':'')+' onclick="applyVoucherCode(\''+
-     esc(v.id)+'\')"><span class="pkico">'+ic(v.kind==='prize'?'gift':'tag',18)+'</span><span class="cpmeta"><b>'+(v.kind==='prize'&&v.label?esc(v.label):rvWorth(v))+
+     esc(v.id)+'\')"><span class="pkico">'+ic(v.kind==='prize'?'gift':v.kind==='referral'?'users':'tag',18)+'</span><span class="cpmeta"><b>'+((v.kind==='prize'||v.kind==='referral')&&v.label?esc(v.label):rvWorth(v))+
      ' · '+esc(v.id)+'</b><span>'+(p?esc(p):'Until '+dshort(v.expiry)+(v.min?' · min '+rm(v.min):''))+
      '</span></span><span class="pkprice">'+(p?'':'Use')+'</span></button>';}).join('')+
    '<div class="tiny muted" style="margin:10px 0 4px">Or type a code</div>':'')+
@@ -5733,7 +5737,7 @@ const SW_DEFAULT={on:false,validDays:60,startDays:0,lose:25,
  prizes:[{label:'RM10 off',type:'rm',value:10,min:50,weight:40},{label:'RM20 off',type:'rm',value:20,min:100,weight:20},
   {label:'10% off',type:'pct',value:10,min:0,weight:15},{label:'Free treatment',type:'free',value:100,serviceId:'',min:0,weight:0}]};
 const swSet=()=>{const m=((D.meta||{}).scratch)||{};return{...SW_DEFAULT,...m,prizes:Array.isArray(m.prizes)?m.prizes:SW_DEFAULT.prizes};};
-const isClientV=v=>!!v&&(v.kind==='return'||v.kind==='prize');
+const isClientV=v=>!!v&&(v.kind==='return'||v.kind==='prize'||v.kind==='referral');
 const swPrizeOk=p=>p&&+p.weight>0&&(p.type==='free'?!!svc(p.serviceId).id:+p.value>0);
 function swOdds(){
  const S=swSet(),list=S.prizes.filter(swPrizeOk),tot=list.reduce((a,p)=>a+(+p.weight||0),0)+Math.max(0,+S.lose||0);
@@ -8880,6 +8884,8 @@ window.checkout=async()=>{
     branchId:ME.branchId,voided:false};
    if(!rvWhyNot(saved)){try{autoRV=await issueRV(saved);}catch(e){}}
   }
+  /* referral rewards: recorded the moment a referred client's qualifying bill is fully paid */
+  const refOut=balance>0?null:await window.refAfterPay(ref.id);
   if(newPkgs.length)await loadHeld();
   render();
   if(balance>0)toast('Saved · '+rm(balance)+' outstanding for '+(c?c.name:'the client'));
@@ -8892,6 +8898,7 @@ window.checkout=async()=>{
   if(billDate){try{await saleRedate(ref.id,billDate,billWhy);await loadRecentSales();render();toast('Bill saved and dated '+dstr(billDate));}
    catch(e){toast('Bill saved today — could not date it '+dstr(billDate)+': '+friendly(e));}}
   window.openSale(ref.id);
+  if(refOut)toast('Referral rewards recorded for '+refOut.rec.referredName+(refOut.vr?' and '+refOut.rec.referrerName:'')+' — send them from the receipt');
   if(memb&&memb.fresh)toast((c?c.name:'Client')+' is now a member · '+memb.no);
  }catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
 /* ---- deleting a client, with a mandatory reason ---- */
@@ -9112,6 +9119,7 @@ window.showReceipt=id=>{
   (rvForSale(id)?'<button class="btn sm ghost" onclick="showRV(\''+esc(rvForSale(id).id)+'\')">'+ic('gift',14)+
    'Voucher '+esc(rvForSale(id).id)+'</button>':(rvSet().on&&!rvWhyNot(s)?'<button class="btn sm" '+
    'onclick="issueReturnVoucher(\''+id+'\')">'+ic('gift',14)+'Generate come-back voucher</button>':''))+
+  refBtn(s)+
   (!s.voided&&saleBalance(s)>0?'<button class="btn sm ghost" onclick="collectPayment(\''+id+'\')">'+
    ic('wallet',14)+'Collect '+rm(saleBalance(s))+'</button>':'')+
   (!s.voided&&boss()?'<button class="btn sm ghost" onclick="saleDateForm(\''+id+'\')">'+ic('calendar',14)+'Change date</button>':'')+
@@ -9689,7 +9697,7 @@ function catVouchers(){
     '<div class="tiny muted">'+(v.type==='pct'?v.value+'% off':rm(v.value)+' off')+
     (v.min?' · min spend '+rm(v.min):'')+(v.firstOnly?' · first-timers only':'')+
     ' · ends '+dstr(v.expiry)+' · used '+(v.used||0)+(v.cap?' of '+v.cap:'')+'</div></div>';}).join('')
-  :'<div class="empty">No campaign vouchers yet.</div>')+rvSection()+swSection();}
+  :'<div class="empty">No campaign vouchers yet.</div>')+rvSection()+refSection()+swSection();}
 window.editVoucher=id=>{
  const v=id?(D.vouchers.find(x=>x.id===id)||{}):{type:'pct',value:10,min:0,firstOnly:false,
   expiry:ymd(addDays(new Date(),30)),used:0,cap:0};
@@ -11325,7 +11333,7 @@ function vSet(){
   h+=coPanel();
   h+=fbPanel();
   h+=swPanel();
-  h+=rvPanel();
+  h+=rvPanel()+refPanel();
   h+=paperPanel();setTimeout(paintNextNo,0);
   h+=attQrSetPanel();
   h+=wbSetPanel();setTimeout(paintQRs,0);
@@ -11451,6 +11459,7 @@ window.render=render;
    render();
    if(typeof window.attCheckHash==='function')window.attCheckHash();
    if(typeof window.wbStart==='function')window.wbStart();
+   if(typeof window.refStart==='function')window.refStart();
    if(TAB==='rep')buildReport();
   }catch(e){
    console.error(e);
@@ -16242,7 +16251,7 @@ function wbConfig(){
   branches:D.branches.map(br=>({id:br.id,name:br.name||'',rooms:D.rooms.filter(r=>r.branchId===br.id).map(r=>({id:r.id,t:r.type||''})),
    staff:D.staff.filter(s=>s.branchId===br.id&&s.active!==false&&s.takes&&s.role!=='branch').map(s=>({id:s.id,n:W.chooseStaff?String(s.name||'').split(' ')[0]:''}))})),
   services:svs.map(s=>({id:s.id,n:s.name,c:s.cat||'',p:+s.price||0,d:+s.dur||60,b:+s.buffer||0,r:s.room||'',a:(W.approval||[]).includes(s.id),x:String(s.desc||'').slice(0,240)})),
-  svcIds:svs.map(s=>s.id)};
+  svcIds:svs.map(s=>s.id),ref:!!(D.meta.referral&&D.meta.referral.on)};
 }
 let WBPUB=null;
 const wbHash=s=>{let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return s.length+':'+(h>>>0).toString(36);};
@@ -16292,6 +16301,7 @@ async function bookingPage(branchId,manageId){
  let c=null;try{const s=await getDoc(doc(db,'public','booking'));if(s.exists())c=s.data();}catch(e){}
  if(!c||!c.on){root.innerHTML='<div class="fbpage"><div class="fbbox" style="text-align:center"><p>Tempahan dalam talian belum dibuka. Sila hubungi kami melalui WhatsApp.</p></div></div>';return;}
  WB={cfg:c,br:(c.branches||[]).find(b=>b.id===branchId)||(c.branches||[])[0],svc:null,staff:'',day:'',slot:null,busy:{},cat:''};
+ try{WB.r=String(new URLSearchParams(location.search).get('ref')||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);}catch(e){}
  if(manageId)return wbManage(manageId);
  wbPaint();
 }
@@ -16360,6 +16370,7 @@ function wbPaint(){
    '<label>No. telefon (WhatsApp) *</label><input class="f" id="wb-p" type="tel" autocomplete="tel" placeholder="012-3456789" value="'+esc(WB.p||'')+'">'+
    '<label>E-mel <span class="muted">(pilihan)</span></label><input class="f" id="wb-e" type="email" autocomplete="email" value="'+esc(WB.e||'')+'">'+
    '<label>Nota untuk kami <span class="muted">(pilihan)</span></label><textarea class="f" id="wb-x" rows="2" placeholder="Contoh: kulit sensitif, kali pertama">'+esc(WB.x||'')+'</textarea>'+
+   (c.ref||WB.r?'<label>Kod rujukan rakan <span class="muted">(jika ada)</span></label><input class="f" id="wb-r" autocomplete="off" autocapitalize="characters" maxlength="16" placeholder="Contoh: SITI-7KQ2" value="'+esc(WB.r||'')+'">':'')+
    (c.policy?'<details class="wbpol"><summary>Terma & polisi pembatalan</summary><p>'+esc(c.policy).replace(/\n/g,'<br>')+'</p></details>':'')+
    '<label class="row" style="gap:9px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="wb-ok"> <span class="tiny">Saya bersetuju dengan terma tempahan dan '+esc(c.biz.name||'spa')+
     ' menyimpan maklumat ini untuk urusan tempahan (Akta Perlindungan Data Peribadi 2010).</span></label>'+
@@ -16375,7 +16386,7 @@ function wbPaint(){
 }
 /* repaint without losing what the client typed */
 function wbPaintKeep(){const g=id=>{const e=document.getElementById(id);return e?e.value:undefined;};
- ['n','p','e','x'].forEach(k=>{const v=g('wb-'+k);if(v!==undefined)WB[k]=v;});wbPaint();}
+ ['n','p','e','x','r'].forEach(k=>{const v=g('wb-'+k);if(v!==undefined)WB[k]=v;});wbPaint();}
 function wbFoot(){const b=WB.cfg.biz||{};
  return '<div class="wbfoot">'+(b.address?'<div>'+ic('pin',12)+' '+esc(b.address)+'</div>':'')+
   (b.whatsapp?'<a href="https://wa.me/'+String(b.whatsapp).replace(/\D/g,'').replace(/^0/,'60')+'" target="_blank" rel="noopener">'+ic('msg',12)+' WhatsApp '+esc(b.whatsapp)+'</a>':'')+'</div>';}
@@ -16388,6 +16399,7 @@ window.wbTime=st=>{const x=(wbSlots(WB.day)||[]).find(z=>z.st===st);WB.slot=x||n
 window.wbBook=async()=>{
  const c=WB.cfg,s=WB.svc,x=WB.slot,e=$('#wb-err'),br=WB.br;
  const n=$('#wb-n').value.trim(),p=$('#wb-p').value.trim(),em=$('#wb-e').value.trim(),nt=$('#wb-x').value.trim();
+ const rc=String((document.getElementById('wb-r')||{}).value||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);
  if(n.length<2){e.textContent='Sila isi nama penuh.';return;}
  if(digits(p).length<9||digits(p).length>15){e.textContent='Sila isi nombor telefon yang betul.';return;}
  if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){e.textContent='Semak alamat e-mel.';return;}
@@ -16398,7 +16410,7 @@ window.wbBook=async()=>{
  const appt={branchId:br.id,customerId:'',customerName:n.slice(0,80),phone:p.slice(0,20),email:em.slice(0,100),
   staffId:x.staff,staffName:stn,serviceId:s.id,serviceName:s.n,roomId:x.room,date:d,
   start:new Date(x.st).toISOString(),finish:new Date(x.en).toISOString(),duration:s.d,buffer:s.b,status:'booked',deposit:0,
-  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff};
+  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff,...(rc?{refCode:rc}:{})};
  const b=writeBatch(db);b.set(doc(db,'appointments',id),appt);
  /* lock every 15 minutes the room and the therapist are held, so nobody else can take them at the same moment */
  const cells=[];for(let t=Math.floor(x.st/9e5)*9e5;t<x.eb;t+=9e5)cells.push(t);
@@ -16406,7 +16418,7 @@ window.wbBook=async()=>{
   [['r',x.room],['s',x.staff]].forEach(([k,v])=>b.set(doc(db,'slotLocks',br.id+'_'+d+'_'+k+'_'+v+'_'+hm),{appt:id,t:new Date(t).toISOString(),k,x:v,b:br.id,d,at:now}));});
  try{await b.commit();}
  catch(err){console.warn(err);WB.busy[WB.day]=undefined;WB.slot=null;
-  ['n','p','e','x'].forEach(k=>{WB[k]=({n,p,e:em,x:nt})[k];});
+  ['n','p','e','x'].forEach(k=>{WB[k]=({n,p,e:em,x:nt})[k];});WB.r=rc;
   await wbLoadBusy([WB.day]);wbPaint();const ee=$('#wb-err')||document.querySelector('.wbstep:last-child');
   toast('Maaf, slot itu baru sahaja diambil. Sila pilih masa lain.');return;}
  wbDone({id,...appt});
@@ -16471,7 +16483,7 @@ function wbApptBox(a){
  const c=a.customerId?cust(a.customerId):null;
  return '<div class="wbappt"><div class="spread"><b>'+ic('calendar',14)+' '+(a.webPending?'Online request — needs approval':'Booked online')+'</b><span class="pill">'+esc(a.webRef||'')+'</span></div>'+
   '<div class="tiny" style="margin:6px 0">'+ic('phone',12)+' '+esc(a.phone||'')+(a.email?' · '+esc(a.email):'')+' · '+dstr(a.createdAt)+' '+tstr(a.createdAt)+
-   (a.anyStaff?' · any therapist':'')+(a.status==='cancel'&&a.cancelledBy==='client'?'<br><b style="color:var(--rose)">Cancelled by the client'+(a.cancelReason?': '+esc(a.cancelReason):'')+'</b>':'')+'</div>'+
+   (a.anyStaff?' · any therapist':'')+(a.refCode?'<br>'+ic('users',12)+' Referral code <b>'+esc(a.refCode)+'</b>'+(c&&c.referrerId?' · referred by '+esc((cust(c.referrerId)||{}).name||c.referrerName||''):''):'')+(a.status==='cancel'&&a.cancelledBy==='client'?'<br><b style="color:var(--rose)">Cancelled by the client'+(a.cancelReason?': '+esc(a.cancelReason):'')+'</b>':'')+'</div>'+
   '<div class="row wrap2">'+
    (a.webPending&&a.status!=='cancel'?'<button class="btn sm" onclick="wbApprove(\''+a.id+'\')">'+ic('check',14)+'Approve</button><button class="btn sm ghost" onclick="wbDecline(\''+a.id+'\')">Decline</button>':'')+
    (!a.customerId?'<button class="btn sm'+(a.webPending?' ghost':'')+'" onclick="wbMatch(\''+a.id+'\')">'+ic('user',14)+'Match or add client</button>':'<span class="tiny muted">'+ic('check',12)+' Client: '+esc((c||{}).name||a.customerName)+'</span>')+
@@ -16506,6 +16518,8 @@ window.wbLink2=async(id,cid)=>{const a=wbFind(id),c=cust(cid)||CUSTS.find(x=>x.i
 window.wbNewClient=async id=>{const a=wbFind(id);if(!a)return;
  const data={name:a.customerName,nameLower:String(a.customerName).toLowerCase(),phone:a.phone,phoneDigits:digits(a.phone),keywords:kwFor(a.customerName,a.phone),email:a.email||'',
   source:'Other',branchId:a.branchId||ME.branchId,pdpa:true,marketing:false,tags:['Online booking'],notes:'',note:a.notes||'',active:true,wantNo:true,createdAt:new Date().toISOString(),createdBy:UID};
+ const rf=a.refCode?await custByRef(a.refCode):null;
+ if(rf&&digits(rf.phone)!==digits(a.phone))Object.assign(data,{referrerId:rf.id,referrerName:rf.name||'',source:'Friend referral'});
  try{const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});await newClientNo(r.id);
   await updateDoc(doc(db,'appointments',id),{customerId:r.id,visitType:'new',updatedBy:UID,updatedAt:new Date().toISOString()});
   a.customerId=r.id;const x=APPTS.find(y=>y.id===id);if(x){x.customerId=r.id;x.visitType='new';}
@@ -16578,4 +16592,399 @@ window.wbSave=async()=>{
 /* start the feed once the app has loaded, and keep the page in step with the catalogue */
 function wbStart(){if(!ME||!wbSet().on)return;wbWatch();if(boss())setTimeout(()=>wbPublish(false),2500);}
 window.wbStart=wbStart;
+
+/* ============ referral programme ============ */
+/* A client who comes on a friend's or family member's word gets a reward, and so does the
+   person who sent them. The owner sets both rewards and the conditions once in Settings.
+   When the new client's qualifying bill is fully paid, both vouchers are recorded on the
+   spot — once per new client, never twice (the referral record is written in the same
+   transaction as the vouchers, and its id is the new client's id). */
+const REF_DEF={on:false,minBill:100,which:'any',windowDays:90,mustVisit:true,maxPer:0,prefix:'REF',
+ newR:{type:'rm',value:20,min:0,serviceId:'',startDays:1,validDays:60},
+ refR:{type:'rm',value:30,min:0,serviceId:'',startDays:0,validDays:90},
+ msgNew:'Hi {name}, terima kasih datang ke {biz} atas cadangan {other}! 🎁 Hadiah untuk anda: {worth}. Kod: {code}. Boleh guna dari {from} hingga {expiry}{min}. Jumpa lagi!',
+ msgRef:'Hi {name}, terima kasih kerana memperkenalkan {other} kepada {biz}! 🎁 Hadiah untuk anda: {worth}. Kod: {code}. Boleh guna dari {from} hingga {expiry}{min}.',
+ msgShare:'Hi {name}! Ajak kawan atau keluarga ke {biz} 💆‍♀️ Bila mereka daftar dengan kod rujukan {refcode} dan selesai rawatan pertama, mereka dapat {newworth} dan anda pula dapat {refworth}.{link}'};
+function refSet(){const m=(D.meta&&D.meta.referral)||{};
+ return{...REF_DEF,...m,newR:{...REF_DEF.newR,...(m.newR||{})},refR:{...REF_DEF.refR,...(m.refR||{})}};}
+const refWorth=r=>!r||r.type==='none'?'nothing':r.type==='free'?'Free '+(svc(r.serviceId).name||'treatment'):rvWorth(r);
+const isRefV=v=>!!v&&v.kind==='referral';
+let REFS=[],REFKIDS={},REFPEND=null;
+const refFor=cid=>REFS.find(r=>r.referredId===cid);
+const refBySale=id=>REFS.find(r=>r.saleId===id);
+const refV=code=>code?D.vouchers.find(v=>v.id===code):null;
+const refFirst=n=>String(n||'').trim().split(' ')[0];
+async function refLoad(){
+ try{const s=await getDocs(collection(db,'referrals'));REFS=s.docs.map(d=>({id:d.id,...d.data()}));}
+ catch(e){console.warn('referrals',e);}
+}
+window.refStart=async()=>{await refLoad();if(TAB==='home'||TAB==='set')render();};
+
+/* ---------- each client's own referral code ---------- */
+function refCodeOf(c){
+ if(!c||!c.id)return '';if(c.refCode)return c.refCode;
+ const nm=String(c.name||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,5)||'KAWAN';
+ return nm+'-'+rvCodeFor(c.id,'ref').slice(0,4);
+}
+/* the code is stored on the client the first time it is shown, so it can be looked up later */
+async function refEnsureCode(c){
+ if(!c||!c.id||c.refCode)return;const code=refCodeOf(c);
+ try{await updateDoc(doc(db,'customers',c.id),{refCode:code});c.refCode=code;}catch(e){}
+}
+async function custGet(id){
+ if(!id)return null;const c=cust(id);if(c)return c;
+ try{const s=await getDoc(doc(db,'customers',id));if(s.exists()){const x={id,...s.data()};CUSTS.push(x);return x;}}catch(e){}
+ return null;
+}
+/* a referral code, a client number or a phone number → the client */
+async function custByRef(q){
+ const raw=String(q||'').trim();if(raw.length<3)return null;
+ const k=raw.toUpperCase().replace(/\s/g,''),dg=digits(raw);
+ const keep=x=>{if(x&&!cust(x.id))CUSTS.push(x);return x||null;};
+ const ask=async(f,v)=>{try{const s=await getDocs(query(collection(db,'customers'),where(f,'==',v),limit(3)));
+  return s.docs.map(d=>({id:d.id,...d.data()})).find(c=>c.active!==false)||null;}catch(e){return null;}};
+ if(/^[0-9+\-\s()]+$/.test(raw)&&dg.length>=9)
+  return CUSTS.find(c=>c.active!==false&&digits(c.phone)===dg)||keep(await ask('phoneDigits',dg));
+ const m=CUSTS.find(c=>c.active!==false&&(refCodeOf(c)===k||String(c.clientNo||'').toUpperCase()===k||String(c.memberNo||'').toUpperCase()===k));
+ if(m)return m;
+ return keep(await ask('refCode',k))||keep(await ask('clientNo',k))||keep(await ask('memberNo',k));
+}
+
+/* ---------- does this bill earn the referral rewards? ---------- */
+async function salesOfCust(cid){
+ try{const s=await getDocs(query(collection(db,'sales'),where('customerId','==',cid),limit(200)));
+  return s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){return [];}
+}
+const refDeadline=c=>{const R=refSet(),reg=String((c&&c.createdAt)||'').slice(0,10);
+ return !reg||!(+R.windowDays>0)?'':ymd(addDays(new Date(reg+'T12:00:00'),+R.windowDays));};
+async function refCheck(s){
+ const R=refSet();
+ if(!R.on)return{why:'The referral programme is switched off in Settings.'};
+ if(!s)return{why:'Bill not found.'};
+ if(s.voided)return{why:'This bill has been voided.'};
+ if(!s.customerId)return{why:'Walk-in bill.'};
+ if(saleBalance(s)>0.009)return{why:'The bill is not fully paid yet — the rewards are recorded when it is.'};
+ const c=await custGet(s.customerId);
+ if(!c||!c.referrerId)return{why:'Nobody is recorded as having referred this client.'};
+ if(refFor(c.id))return{why:'The referral rewards for '+c.name+' were already given.',done:true};
+ if(c.referrerId===c.id)return{why:'A client cannot refer themselves.'};
+ if(R.newR.type==='none'&&R.refR.type==='none')return{why:'No reward is set.'};
+ if((+s.total||0)<(+R.minBill||0))return{why:'The bill must be at least '+rm(R.minBill)+' to earn the referral rewards. This one is '+rm(s.total||0)+'.'};
+ if(+R.windowDays>0){
+  const dl=refDeadline(c);
+  if(!dl)return{why:c.name+' has no registration date, so the '+R.windowDays+'-day window cannot be checked.'};
+  if(String(s.date||today())>dl)return{why:'The qualifying bill had to be within '+R.windowDays+' days of registering (by '+dstr(dl)+').'};
+ }
+ const r=await custGet(c.referrerId);
+ if(!r||r.active===false)return{why:'The client who referred them is not on file.'};
+ const pd=digits(c.phone),rd=digits(r.phone);
+ if(pd&&pd===rd)return{why:c.name+' has the same phone number as '+r.name+'.'};
+ const mine=R.which==='first'?await salesOfCust(c.id):[];
+ if(R.which==='first'&&mine.some(x=>!x.voided&&x.id!==s.id&&String(x.at)<String(s.at)))
+  return{why:'Only the first bill counts, and '+c.name+' had an earlier bill.'};
+ let refWhy='';
+ if(R.refR.type==='none')refWhy='No reward is set for the referrer.';
+ else{
+  if(R.mustVisit){const hs=await salesOfCust(r.id);
+   if(!hs.some(x=>!x.voided&&String(x.at)<String(s.at)))refWhy=r.name+' has not had a paid visit yet, so only the new client is rewarded.';}
+  if(!refWhy&&+R.maxPer>0){const n=REFS.filter(x=>x.referrerId===r.id&&x.refCode).length;
+   if(n>=+R.maxPer)refWhy=r.name+' has already had '+n+' referral reward'+(n>1?'s':'')+' (the limit is '+R.maxPer+').';}
+ }
+ return{ok:true,c,r,refWhy};
+}
+function refVoucher(side,owner,role,k,s,now){
+ if(!side||side.type==='none')return null;
+ const free=side.type==='free';
+ return{kind:'referral',role,type:free||side.type==='pct'?'pct':'rm',value:free?100:(+side.value||0),min:+side.min||0,cap:1,used:0,
+  firstOnly:false,ownerOnly:true,validFrom:ymd(addDays(now,+side.startDays||0)),expiry:ymd(addDays(now,Math.max(1,+side.validDays||60))),
+  customerId:owner.id,customerName:owner.name||'',serviceId:free?side.serviceId:'',serviceName:free?(svc(side.serviceId).name||''):'',
+  label:refWorth(side),referredId:k.c.id,referredName:k.c.name||'',referrerId:k.r.id,referrerName:k.r.name||'',
+  saleId:s.id,invoiceNo:s.invoiceNo||'',branchId:s.branchId||ME.branchId,issuedBy:UID,issuedByName:ME.name,issuedAt:now.toISOString()};
+}
+async function refIssue(s,k){
+ const R=refSet(),now=new Date(),c=k.c,r=k.r;
+ const vn=refVoucher(R.newR,c,'new',k,s,now),vr=k.refWhy?null:refVoucher(R.refR,r,'referrer',k,s,now);
+ let out=null;
+ await runTransaction(db,async tx=>{
+  const rref=doc(db,'referrals',c.id);
+  const ex=await tx.get(rref);
+  if(ex.exists()){out={dup:true,rec:{id:c.id,...ex.data()}};return;}
+  const pick=async tag=>{for(let salt=0;salt<6;salt++){const code=rvPrefix(R.prefix)+'-'+rvCodeFor(c.id+'|'+tag,salt);
+   const sn=await tx.get(doc(db,'vouchers',code));if(!sn.exists())return code;}
+   throw new Error('Could not make a unique voucher code. Try again.');};
+  const nc=vn?await pick('new'):'',rc=vr?await pick('ref'):'';
+  const rec={referredId:c.id,referredName:c.name||'',referrerId:r.id,referrerName:r.name||'',saleId:s.id,invoiceNo:s.invoiceNo||'',
+   total:r2(+s.total||0),branchId:s.branchId||ME.branchId,date:today(),at:now.toISOString(),newCode:nc,refCode:rc,
+   refSkip:k.refWhy||'',issuedBy:UID,issuedByName:ME.name};
+  tx.set(rref,rec);
+  if(vn)tx.set(doc(db,'vouchers',nc),vn);
+  if(vr)tx.set(doc(db,'vouchers',rc),vr);
+  out={rec:{id:c.id,...rec},vn:vn&&{id:nc,...vn},vr:vr&&{id:rc,...vr}};
+ });
+ if(out.dup){if(!refFor(c.id))REFS.push(out.rec);return out;}
+ REFS.push(out.rec);
+ [out.vn,out.vr].filter(Boolean).forEach(v=>{if(!D.vouchers.some(x=>x.id===v.id))D.vouchers.push(v);});
+ await audit('Referral rewards issued',c.name+' (referred by '+r.name+') · '+(s.invoiceNo||'')+
+  (out.vn?' · new client '+out.vn.id+' '+out.vn.label:'')+(out.vr?' · referrer '+out.vr.id+' '+out.vr.label:'')+(k.refWhy?' · referrer not rewarded: '+k.refWhy:''));
+ logEvent('sale','Referral rewards · '+c.name,'Referred by '+r.name+(out.vr?'':' — referrer not rewarded'),{refType:'sale',refId:s.id});
+ return out;
+}
+/* called when a bill is saved and when an instalment settles one */
+window.refAfterPay=async id=>{
+ try{
+  if(!refSet().on)return null;
+  const s=findSale(id);if(!s||!s.customerId)return null;
+  const c=cust(s.customerId);if(c&&!c.referrerId)return null;
+  const k=await refCheck(s);if(!k.ok)return null;
+  const o=await refIssue(s,k);
+  return o&&!o.dup?o:null;
+ }catch(e){console.warn('referral',e);return null;}
+};
+/* the counter can also issue them by hand from the receipt, with the reason if they cannot */
+window.refIssueSale=async id=>{
+ const s=findSale(id);
+ try{const k=await refCheck(s);if(!k.ok){if(k.done&&s)window.refShow(s.customerId);else toast(k.why);return;}
+  const o=await refIssue(s,k);window.refShow(o.rec.referredId);}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- the rewards, and sending them ---------- */
+function refMsg(v){
+ const R=refSet(),b=D.meta.biz||{};
+ const tpl=v.role==='referrer'?R.msgRef:R.msgNew;
+ return String(tpl||'').replace(/\{name\}/g,refFirst(v.customerName))
+  .replace(/\{other\}/g,refFirst(v.role==='referrer'?v.referredName:v.referrerName))
+  .replace(/\{biz\}/g,b.name||'kami').replace(/\{code\}/g,v.id).replace(/\{worth\}/g,v.label||rvWorth(v))
+  .replace(/\{from\}/g,dstr(v.validFrom||today())).replace(/\{expiry\}/g,dstr(v.expiry))
+  .replace(/\{min\}/g,v.min?' (belanja minimum '+rm(v.min)+')':'');
+}
+window.refShow=(cid,focus)=>{
+ const rec=refFor(cid);if(!rec){toast('No referral rewards for this client yet');return;}
+ const part=(code,who,phoneOf)=>{
+  const v=refV(code);if(!v)return '';
+  const ph=waNum((cust(v.customerId)||{}).phone);const msg=refMsg(v);
+  return '<div class="fieldset"><h3>'+ic(who==='new'?'gift':'award',13)+(who==='new'?'New client · ':'Referrer · ')+esc(v.customerName||'')+'</h3>'+
+   rvTicket(v)+'<textarea class="f" id="refm-'+esc(v.id)+'" rows="4" style="margin-top:8px">'+esc(msg)+'</textarea>'+
+   '<div class="fabrow" style="margin:0">'+(ph?'<a class="btn sm" style="text-decoration:none" target="_blank" onclick="refSent(\''+esc(v.id)+'\')" href="https://wa.me/'+ph+'?text='+encodeURIComponent(msg)+'">'+ic('msg',14)+'WhatsApp '+esc(refFirst(v.customerName))+'</a>'
+    :'<span class="tiny muted">No phone number on file.</span>')+
+   '<button class="btn sm ghost" onclick="refCopy(\''+esc(v.id)+'\')">'+ic('note',14)+'Copy</button>'+
+   (v.sentAt?'<span class="pill g">Sent '+dshort(v.sentAt)+'</span>':'')+'</div></div>';};
+ modal('Referral rewards','<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 8px">'+esc(rec.referredName)+' was referred by '+esc(rec.referrerName)+'. Rewards recorded '+
+   dstr(rec.at)+' '+tstr(rec.at)+' after bill '+esc(rec.invoiceNo||'')+' ('+rm(rec.total||0)+') was paid.</p>'+
+  part(rec.newCode,'new')+part(rec.refCode,'ref')+
+  (rec.refSkip?'<div class="warnbox">'+ic('alert',14)+' '+esc(rec.refSkip)+'</div>':'')+'</div>');
+};
+window.refSent=async code=>{
+ const v=refV(code);if(!v||v.sentAt)return;const at=new Date().toISOString();
+ try{await updateDoc(doc(db,'vouchers',code),{sentAt:at,sentBy:UID});v.sentAt=at;v.sentBy=UID;}catch(e){}
+};
+window.refCopy=code=>{const t=(document.getElementById('refm-'+code)||{}).value||'';
+ try{navigator.clipboard.writeText(t).then(()=>toast('Copied'),()=>toast('Could not copy'));}catch(e){toast('Could not copy');}
+ window.refSent(code);};
+{const _sr=window.showRV;window.showRV=code=>{const v=D.vouchers.find(x=>x.id===code);
+ if(isRefV(v)&&refFor(v.referredId))return window.refShow(v.referredId,code);return _sr(code);};}
+
+/* ---------- on the receipt ---------- */
+function refBtn(s){
+ if(!s||s.voided||!s.customerId)return '';
+ const rec=refBySale(s.id)||(refFor(s.customerId)&&refFor(s.customerId).saleId===s.id?refFor(s.customerId):null);
+ if(rec)return '<button class="btn sm ghost" onclick="refShow(\''+rec.referredId+'\')">'+ic('users',14)+'Referral rewards</button>';
+ const c=cust(s.customerId);
+ if(refSet().on&&c&&c.referrerId&&!refFor(c.id)&&saleBalance(s)<=0.009)
+  return '<button class="btn sm ghost" onclick="refIssueSale(\''+s.id+'\')">'+ic('users',14)+'Referral rewards</button>';
+ return '';
+}
+
+/* ---------- on the client's record ---------- */
+function refWait(c){
+ const R=refSet(),dl=refDeadline(c);
+ if(!R.on)return 'Referral programme is off.';
+ if(+R.windowDays>0&&(!dl||dl<today()))return 'Not eligible — the '+R.windowDays+' days to a qualifying bill have passed.';
+ return 'Rewards are recorded when a bill of '+rm(R.minBill)+' or more is fully paid'+(dl?' (by '+dshort(dl)+')':'')+'.';
+}
+function refCard(c){
+ const R=refSet(),rec=refFor(c.id),kids=REFKIDS[c.id];
+ if(!R.on&&!rec&&!c.referrerId&&!(kids&&kids.length))return '';
+ setTimeout(()=>refFill(c.id),0);
+ const by=c.referrerId?(cust(c.referrerId)||{id:c.referrerId,name:c.referrerName||'another client'}):null;
+ return '<div class="card" id="refcard"><div class="sec-h"><h3>'+ic('users',15)+' Referral</h3>'+
+  (R.on?'<button class="btn sm ghost" onclick="refShare(\''+c.id+'\')">'+ic('msg',14)+'Share code</button>':'')+'</div>'+
+  '<div class="kv"><div class="k">'+ic('tag',12)+' Their code</div><div class="v"><b class="refcode">'+esc(refCodeOf(c))+'</b></div>'+
+  (by?'<div class="k">'+ic('user',12)+' Referred by</div><div class="v"><a onclick="openCust(\''+by.id+'\')" style="cursor:pointer">'+esc(by.name)+'</a><br><span class="tiny muted">'+
+   (rec?'Rewards given '+dshort(rec.at)+' · <a style="cursor:pointer;text-decoration:underline" onclick="refShow(\''+c.id+'\')">view</a>':esc(refWait(c)))+'</span></div>':'')+
+  '</div><div id="refkids" style="margin-top:8px"><div class="tiny muted">Checking who they have referred…</div></div></div>';
+}
+async function refFill(cid){
+ const box=()=>document.getElementById('refkids');if(!box())return;
+ const c=cust(cid);if(c)refEnsureCode(c);
+ if(REFKIDS[cid]===undefined){
+  try{const s=await getDocs(query(collection(db,'customers'),where('referrerId','==',cid),limit(100)));
+   REFKIDS[cid]=s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>x.active!==false);
+   REFKIDS[cid].forEach(x=>{if(!cust(x.id))CUSTS.push(x);});}
+  catch(e){REFKIDS[cid]=[];}
+ }
+ const b=box();if(!b)return;const L=REFKIDS[cid]||[];
+ const earned=REFS.filter(r=>r.referrerId===cid&&r.refCode).length;
+ b.innerHTML=L.length?'<div class="tiny" style="margin-bottom:6px"><b>'+L.length+'</b> client'+(L.length>1?'s':'')+' referred · <b>'+earned+'</b> reward'+(earned===1?'':'s')+' earned</div>'+
+  L.map(x=>{const r=refFor(x.id);return '<div class="spread item" style="cursor:pointer" onclick="'+(r?'refShow(\''+x.id+'\')':'openCust(\''+x.id+'\')')+'"><span>'+esc(x.name)+
+   '<br><small class="muted">'+(x.createdAt?'Registered '+dshort(x.createdAt):'')+'</small></span>'+
+   (r?'<span class="pill g">'+(r.refCode?'Rewarded':'Not rewarded')+'</span>':'<span class="pill">Waiting</span>')+'</div>';}).join('')
+  :'<div class="tiny muted">Nobody referred yet.</div>';
+}
+window.refShare=cid=>{
+ const c=cust(cid);if(!c)return;refEnsureCode(c);
+ const R=refSet(),code=refCodeOf(c),b=D.meta.biz||{};
+ let link='';try{if(typeof wbSet==='function'&&wbSet().on)link=' Tempah di sini: '+wbBookLink().replace(/book=[^&]*/,'book='+encodeURIComponent(c.branchId||ME.branchId))+'&ref='+encodeURIComponent(code);}catch(e){}
+ const msg=String(R.msgShare||'').replace(/\{name\}/g,refFirst(c.name)).replace(/\{biz\}/g,b.name||'kami').replace(/\{refcode\}/g,code)
+  .replace(/\{newworth\}/g,refWorth(R.newR)).replace(/\{refworth\}/g,refWorth(R.refR)).replace(/\{link\}/g,link);
+ const ph=waNum(c.phone);
+ modal('Share referral code','<div class="card"><div class="rvtix"><div class="rvtop"><span>'+ic('users',13)+' Referral code</span></div>'+
+  '<div class="rvcode">'+esc(code)+'</div><div class="tiny muted">'+esc(c.name)+' · friends get '+esc(refWorth(R.newR))+', '+esc(refFirst(c.name))+' gets '+esc(refWorth(R.refR))+'</div></div>'+
+  '<label style="margin-top:12px">Message to '+esc(refFirst(c.name))+' — they forward it to friends</label><textarea class="f" id="refm-share" rows="5">'+esc(msg)+'</textarea>'+
+  '<div class="fabrow" style="margin:0">'+(ph?'<a class="btn" style="text-decoration:none" target="_blank" href="https://wa.me/'+ph+'?text='+encodeURIComponent(msg)+'">'+ic('msg',15)+'Send by WhatsApp</a>':'')+
+  '<button class="btn ghost" onclick="refCopy(\'share\')">'+ic('note',15)+'Copy</button></div>'+
+  '<p class="tiny muted" style="margin-top:10px">At the counter, type this code (or '+esc(refFirst(c.name))+'\'s phone number) under "Referred by" when registering the friend.</p></div>');
+};
+/* the client form: find the referrer by code, client number or phone */
+window.refFind=async q=>{
+ const hint=document.getElementById('c-refh'),sel=document.getElementById('c-ref');if(!sel)return;
+ if(String(q||'').trim().length<3){if(hint)hint.textContent='';return;}
+ if(hint)hint.textContent='Looking…';
+ const x=await custByRef(q);
+ if(!x){if(hint)hint.textContent='No client with that code or number.';return;}
+ if(x.id===sel.dataset.self){if(hint)hint.textContent='That is this client.';return;}
+ if(![...sel.options].some(o=>o.value===x.id))sel.insertAdjacentHTML('beforeend','<option value="'+x.id+'">'+esc(x.name)+'</option>');
+ sel.value=x.id;
+ const src=document.getElementById('c-src');if(src)src.value='Friend referral';
+ if(hint)hint.innerHTML=ic('check',12)+' Referred by <b>'+esc(x.name)+'</b>'+(x.phone?' · '+esc(x.phone):'');
+};
+
+/* ---------- home: rewards waiting to be sent ---------- */
+function refAlerts(al){
+ if(!refSet().on&&!REFS.length)return;
+ const since=Date.now()-14*864e5;
+ const L=REFS.filter(r=>r.branchId===ME.branchId&&Date.parse(r.at||0)>since&&[r.newCode,r.refCode].some(k=>{const v=refV(k);return v&&!v.sentAt;}));
+ if(L.length)al.push({i:'gift',t:L.length+' referral reward'+(L.length>1?'s':'')+' to send',
+  d:L.slice(0,3).map(r=>refFirst(r.referredName)+' & '+refFirst(r.referrerName)).join(', '),go:'refInbox()'});
+}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);refAlerts(al);};}
+window.refInbox=()=>{
+ const L=REFS.filter(r=>r.branchId===ME.branchId).sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,30);
+ modal('Referral rewards','<div class="card">'+(L.length?L.map(r=>{
+  const un=[r.newCode,r.refCode].filter(k=>{const v=refV(k);return v&&!v.sentAt;}).length;
+  return '<button class="pkrow" onclick="refShow(\''+r.referredId+'\')"><span class="pkico">'+ic('users',18)+'</span><span class="cpmeta"><b>'+esc(r.referredName)+
+   '</b><span>referred by '+esc(r.referrerName)+' · '+dshort(r.at)+'</span></span>'+(un?'<span class="pill a">'+un+' to send</span>':'<span class="pill g">sent</span>')+'</button>';}).join('')
+  :'<div class="empty">No referral rewards yet.</div>')+'</div>');
+};
+
+/* ---------- vouchers tab: how the programme is doing ---------- */
+function refSection(){
+ const R=refSet();
+ const from=ymd(addDays(new Date(),-90)),L=REFS.filter(r=>String(r.date||r.at||'').slice(0,10)>=from);
+ const vs=L.flatMap(r=>[r.newCode,r.refCode]).map(refV).filter(Boolean),used=vs.filter(rvUsed).length;
+ const top={};REFS.forEach(r=>{const t=top[r.referrerId]||(top[r.referrerId]={n:0,name:r.referrerName});t.n++;});
+ const tops=Object.entries(top).sort((a,b)=>b[1].n-a[1].n).slice(0,5);
+ const recent=[...REFS].sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,15);
+ return '<div class="sec-h" style="margin-top:18px"><h2>Referrals</h2><span class="pill '+(R.on?'g':'')+'">'+(R.on?'On':'Off')+'</span></div>'+
+  (R.on?'<p class="tiny muted" style="margin:0 0 10px">New client gets '+esc(refWorth(R.newR))+' · the friend who referred gets '+esc(refWorth(R.refR))+
+   ' · on a paid bill from '+rm(R.minBill)+'</p>':'')+
+  '<div class="grid g2" style="margin-bottom:10px">'+kpi('Referrals · 90 days',L.length,rm(L.reduce((a,r)=>a+(+r.total||0),0))+' in qualifying bills','users')+
+  kpi('Rewards used',vs.length?Math.round(used/vs.length*100)+'%':'—',used+' of '+vs.length+' vouchers','gift')+'</div>'+
+  (tops.length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('award',14)+' Top referrers</h3>'+tops.map(([id,x],i)=>
+   '<div class="spread item" style="cursor:pointer" onclick="openCust(\''+id+'\')"><span>'+(i+1)+'. '+esc(x.name||'')+'</span><b>'+x.n+'</b></div>').join('')+'</div>':'')+
+  (recent.length?recent.map(r=>'<div class="item" style="cursor:pointer" onclick="refShow(\''+r.referredId+'\')"><div class="spread"><span><b>'+esc(r.referredName)+
+   '</b> <span class="muted">← '+esc(r.referrerName)+'</span></span><span class="tiny muted">'+dshort(r.at)+'</span></div>'+
+   '<div class="tiny muted">'+esc(r.invoiceNo||'')+' · '+rm(r.total||0)+(r.newCode?' · '+esc(r.newCode):'')+(r.refCode?' · '+esc(r.refCode):' · referrer not rewarded')+'</div></div>').join('')
+   :'<div class="empty">No referral rewards yet. '+(R.on?'They appear here when a referred client pays.':'Switch the programme on in Settings → Referral programme.')+'</div>')+
+  (R.on?'<button class="btn sm ghost" style="margin-top:8px" onclick="refPending()">'+ic('clock',14)+'Referred clients still waiting</button>':'');
+}
+window.refPending=async()=>{
+ modal('Waiting for a first paid bill','<div class="card" id="refpend"><div class="skel"></div></div>');
+ try{const s=await getDocs(query(collection(db,'customers'),where('referrerId','>',''),limit(300)));
+  REFPEND=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.active!==false&&!refFor(c.id));
+  REFPEND.forEach(x=>{if(!cust(x.id))CUSTS.push(x);});}
+ catch(e){REFPEND=[];}
+ const box=document.getElementById('refpend');if(!box)return;
+ const L=REFPEND.map(c=>({c,dl:refDeadline(c)})).sort((a,b)=>String(a.dl||'9').localeCompare(String(b.dl||'9')));
+ box.innerHTML=L.length?'<p class="tiny muted" style="margin:0 0 8px">Referred clients whose rewards are not recorded yet. Tap Check to look at their bills now.</p>'+
+  L.map(({c,dl})=>'<div class="spread item"><span><b>'+esc(c.name)+'</b><br><small class="muted">referred by '+esc((cust(c.referrerId)||{}).name||c.referrerName||'—')+
+   (dl?' · '+(dl<today()?'window closed '+dshort(dl):'until '+dshort(dl)):'')+'</small></span>'+
+   '<button class="btn sm ghost" onclick="refCheckCust(\''+c.id+'\')">Check</button></div>').join('')
+  :'<div class="empty">Nobody waiting.</div>';
+};
+/* look through a referred client's bills and issue the rewards if one qualifies */
+window.refCheckCust=async cid=>{
+ const L=(await salesOfCust(cid)).filter(s=>!s.voided).sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+ if(!L.length){toast('No bills yet for this client');return;}
+ let why='';
+ for(const s of L){if(!findSale(s.id))SALES.push(s);
+  const k=await refCheck(s);
+  if(k.ok){try{const o=await refIssue(s,k);window.refShow(o.rec.referredId);}catch(e){toast(friendly(e));}return;}
+  why=k.why;if(k.done){window.refShow(cid);return;}
+  if(refSet().which==='first')break;}
+ toast(why||'No bill qualifies yet');
+};
+
+/* ---------- settings ---------- */
+function refPanel(){
+ if(!boss())return '';
+ const R=refSet();
+ const num=(id,label,val,step)=>'<div><label>'+label+'</label><input class="f" type="number" min="0" step="'+(step||1)+'" id="'+id+'" value="'+val+'"></div>';
+ const side=(k,r,title,icon)=>'<div class="fieldset"><h3>'+ic(icon,13)+title+'</h3><div class="grid g2">'+
+  '<div><label>Reward</label><select class="f" id="rf-'+k+'t" onchange="refKind(\''+k+'\')">'+
+   [['rm','RM off'],['pct','% off'],['free','Free treatment'],['none','No reward']].map(([v,l])=>'<option value="'+v+'"'+(r.type===v?' selected':'')+'>'+l+'</option>').join('')+'</select></div>'+
+  '<div id="rf-'+k+'vw"'+(r.type==='free'||r.type==='none'?' style="display:none"':'')+'><label>Value</label><input class="f" type="number" min="0" step="0.01" id="rf-'+k+'v" value="'+r.value+'"></div>'+
+  '<div id="rf-'+k+'sw"'+(r.type!=='free'?' style="display:none"':'')+'><label>Treatment</label><select class="f" id="rf-'+k+'s"><option value="">— choose —</option>'+
+   D.services.filter(s=>s.active!==false).map(s=>'<option value="'+s.id+'"'+(r.serviceId===s.id?' selected':'')+'>'+esc(s.name)+' · '+rm(s.price)+'</option>').join('')+'</select></div>'+
+  num('rf-'+k+'m','Minimum spend to use it (RM)',r.min)+num('rf-'+k+'sd','Usable from (days after)',r.startDays)+num('rf-'+k+'vd','Valid for (days)',r.validDays)+
+  '</div></div>';
+ return '<div class="card"><div class="sec-h"><h2>'+ic('users',16)+' Referral programme</h2>'+
+  '<span class="pill '+(R.on?'g':'')+'">'+(R.on?'On':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">A new client referred by an existing client gets a reward, and so does the client who referred them. '+
+  'Both vouchers are recorded automatically once the new client\'s qualifying bill is fully paid — once per new client.</p>'+
+  '<label class="row" style="gap:9px;margin-bottom:8px"><input type="checkbox" id="rf-on"'+(R.on?' checked':'')+'> <b>Run the referral programme</b></label>'+
+  side('n',R.newR,'The new client gets','gift')+side('r',R.refR,'The client who referred them gets','award')+
+  '<div class="fieldset"><h3>'+ic('shield',13)+'When it counts</h3><div class="grid g2">'+
+   num('rf-mb','The bill must be at least (RM)',R.minBill)+
+   '<div><label>Which bill</label><select class="f" id="rf-wh"><option value="any"'+(R.which!=='first'?' selected':'')+'>First bill that reaches the minimum</option>'+
+    '<option value="first"'+(R.which==='first'?' selected':'')+'>Only their very first bill</option></select></div>'+
+   num('rf-wd','Within (days of registering, 0 = no limit)',R.windowDays)+
+   num('rf-mx','Rewards per referrer (0 = no limit)',R.maxPer)+
+   '<div><label>Voucher codes start with</label><input class="f" id="rf-px" maxlength="8" value="'+esc(R.prefix)+'"></div>'+
+   '<div><label>&nbsp;</label><label class="row" style="gap:9px;margin-top:9px"><input type="checkbox" id="rf-mv"'+(R.mustVisit?' checked':'')+'> Referrer must have visited before</label></div>'+
+  '</div><p class="tiny muted" style="margin:0">The same phone number cannot refer itself. Each client\'s referral code is on their record — "Share code" sends it to them.</p></div>'+
+  '<label>Message to the new client <span class="muted">— {name} {other} {biz} {worth} {code} {from} {expiry} {min}</span></label>'+
+  '<textarea class="f" id="rf-mn" rows="3">'+esc(R.msgNew)+'</textarea>'+
+  '<label>Message to the referrer</label><textarea class="f" id="rf-mr" rows="3">'+esc(R.msgRef)+'</textarea>'+
+  '<label>Share message <span class="muted">— {name} {biz} {refcode} {newworth} {refworth} {link}</span></label><textarea class="f" id="rf-ms" rows="3">'+esc(R.msgShare)+'</textarea>'+
+  '<div id="rf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="refSave()">'+ic('check',16)+'Save referral settings</button></div>';
+}
+window.refKind=k=>{const t=($('#rf-'+k+'t')||{}).value;
+ const vw=document.getElementById('rf-'+k+'vw'),sw=document.getElementById('rf-'+k+'sw');
+ if(vw)vw.style.display=t==='free'||t==='none'?'none':'';if(sw)sw.style.display=t==='free'?'':'none';};
+window.refSave=async()=>{
+ const g=id=>(document.getElementById(id)||{}),e=$('#rf-e');
+ const side=k=>{const t=['rm','pct','free','none'].includes(g('rf-'+k+'t').value)?g('rf-'+k+'t').value:'rm';
+  return{type:t,value:t==='free'||t==='none'?0:r2(g('rf-'+k+'v').value),min:r2(g('rf-'+k+'m').value),serviceId:t==='free'?(g('rf-'+k+'s').value||''):'',
+   startDays:Math.max(0,Math.round(+g('rf-'+k+'sd').value||0)),validDays:Math.max(1,Math.round(+g('rf-'+k+'vd').value||0))};};
+ const R={on:!!g('rf-on').checked,newR:side('n'),refR:side('r'),minBill:r2(g('rf-mb').value),which:g('rf-wh').value==='first'?'first':'any',
+  windowDays:Math.max(0,Math.round(+g('rf-wd').value||0)),maxPer:Math.max(0,Math.round(+g('rf-mx').value||0)),
+  mustVisit:!!g('rf-mv').checked,prefix:rvPrefix(g('rf-px').value||'REF'),
+  msgNew:String(g('rf-mn').value||'').trim()||REF_DEF.msgNew,msgRef:String(g('rf-mr').value||'').trim()||REF_DEF.msgRef,
+  msgShare:String(g('rf-ms').value||'').trim()||REF_DEF.msgShare};
+ for(const [k,s,n] of [['n',R.newR,'new client'],['r',R.refR,'referrer']]){
+  if(s.type==='free'&&!s.serviceId){e.textContent='Choose the free treatment for the '+n+'.';return;}
+  if((s.type==='rm'||s.type==='pct')&&!(s.value>0)){e.textContent='Give the '+n+'\'s reward a value.';return;}
+  if(s.type==='pct'&&s.value>100){e.textContent='A percentage cannot be more than 100.';return;}
+  if(s.type!=='none'&&s.validDays<=s.startDays){e.textContent='The '+n+'\'s voucher must stay valid for longer than the wait before it can be used.';return;}}
+ if(R.on&&R.newR.type==='none'&&R.refR.type==='none'){e.textContent='Set a reward for at least one side.';return;}
+ if(R.prefix===rvPrefix(rvSet().prefix)){e.textContent='Use a different code prefix from the come-back vouchers ('+R.prefix+').';return;}
+ try{await setDoc(doc(db,'meta','settings'),{referral:R},{merge:true});D.meta.referral=R;
+  await audit('Referral programme settings',(R.on?'On':'Off')+' · new client '+refWorth(R.newR)+' · referrer '+refWorth(R.refR)+' · bill from '+rm(R.minBill));
+  render();toast('Referral settings saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+
 </script>
