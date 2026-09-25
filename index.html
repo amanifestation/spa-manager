@@ -1895,7 +1895,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25i';
+const BUILD='2026-09-25j';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3630,7 +3630,7 @@ function vPosOld(){
   '<tr><td><div class="cartkind">'+({service:'Treatment',product:'Product',package:'Package',
    redeem:'Package session',set:'Product set'}[i.kind]||i.kind)+(i.apptId?' · from booking':'')+
   '</div>'+esc(i.name)+'<div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
-  (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
+  (i.kind==='package'?' · '+pkgItemsOf(i).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + ')+(i.pkgCustom?' <span class="pill b">changed · '+(+i.pkgDays||pkgOf(i.id).days||365)+' days</span>':''):'')+
   (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
   (i.kind==='set'?' · '+esc(setLabel(setOf(i.id))):'')+
   '</div>'+lineInfo(i)+laterToggle(i,x)+handsOnLine(i,x)+'<div>'+
@@ -4745,7 +4745,7 @@ function recalcLine(i){
  i.lineDisc=r2(Math.min(g,Math.max(0,d)));
  return i;
 }
-const lineEdited=i=>!!(i.priceEdited||i.dType||i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''||i.lineNote);
+const lineEdited=i=>!!(i.pkgCustom||i.priceEdited||i.dType||i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''||i.lineNote);
 function lineInfo(i){
  const bits=[];
  const list=+((itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{}).price||0);
@@ -4883,7 +4883,7 @@ window.resetLine=x=>{
  const i=cart.items[x];if(!i)return;
  const src=itemSrc(i.kind==='redeem'?'service':i.kind,i.id)||{};
  if(i.kind!=='redeem')i.price=+src.price||0;
- ['priceEdited','dType','dVal','discCode','discNote','commAmt','lineNote'].forEach(k=>delete i[k]);
+ ['priceEdited','dType','dVal','discCode','discNote','commAmt','lineNote','pkgCustom','pkgItems','pkgDays','pkgPriceMode'].forEach(k=>delete i[k]);
  recalcLine(i);applyHandsOn(i);window.closeModal();render();toast('Line reset');
 };
 /* the saved form of one line: re-priced from the catalogue unless a permitted override
@@ -7858,8 +7858,8 @@ async function salePkgs(s){
  }
  if(!cps.length)cps=(s.items||[]).filter(i=>i.kind==='package').flatMap(i=>{const pk=pkgOf(i.id);
   return [...Array(i.qty||1)].map(()=>({packageId:i.id,price:i.price,soldAt:s.at,
-   expiry:ymd(addDays(new Date(s.at||Date.now()),pk.days||365)),
-   balances:(pk.items||[]).map(z=>({serviceId:z.serviceId,left:z.n,total:z.n}))}));});
+   expiry:ymd(addDays(new Date(s.at||Date.now()),i.pkgDays||pk.days||365)),
+   balances:pkgItemsOf(i).map(z=>({serviceId:z.serviceId,left:z.n,total:z.n}))}));});
  return cps;
 }
 const saleHasPkg=s=>!!s&&(s.items||[]).some(i=>i.kind==='package');
@@ -8383,8 +8383,8 @@ function buildReceiptPDF(s,jsPDF){
  head();
  (s.items||[]).forEach((it,n)=>{
   const notes=[];
-  if(it.kind==='package'){const pk=pkgOf(it.id);
-   notes.push('Prepaid package'+((pk.items||[]).length?': '+(pk.items||[]).map(z=>z.n+'x '+(svc(z.serviceId).name||'')).join(', '):''));}
+  if(it.kind==='package'){const pi=pkgItemsOf(it);
+   notes.push('Prepaid package'+(pi.length?': '+pi.map(z=>z.n+'x '+(svc(z.serviceId).name||'')).join(', '):''));}
   if(it.kind==='redeem')notes.push('Package session'+(it.pkgName?' from '+it.pkgName:'')+
    (it.remaining!==undefined?' - '+it.remaining+' left after this':'')+' - no charge');
   if(it.handsOnName)notes.push('Performed by '+it.handsOnName);
@@ -8749,7 +8749,7 @@ window.checkout=async()=>{
    const src=itemSrc(i.kind,i.id);
    if(!src||!src.name)throw new Error(i.name+' is no longer in the catalogue. Remove it and add it again.');
    const setBits=i.kind==='set'?{setItems:(src.items||[]).map(z=>({sku:z.sku,qty:+z.qty||1,name:prod(z.sku).name||z.sku}))}:{};
-   return lineForSale(i,{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho,...ap,...setBits});});
+   return lineForSale(i,{kind:i.kind,id:i.id,name:src.name,price:src.price,qty:i.qty,staffId:i.staffId,...ho,...ap,...setBits,...pkgBitsForSale(i)});});
   items.forEach((it,k)=>{const src=cart.items[k];if(src&&src.tip)it.tip=src.tip;});
   if(items.some(i=>i.kind==='package'||i.kind==='redeem')&&!cart.customerId)
    throw new Error('A package needs a client. Choose the client before taking payment.');
@@ -8844,10 +8844,10 @@ window.checkout=async()=>{
     const paid=Math.round(lineAmt(i)/(i.qty||1)*share*100)/100;
     const r=await addDoc(collection(db,'customerPackages'),{customerId:cart.customerId,
      customerName:c?c.name:'',packageId:pk.id,price:paid,listPrice:pk.price,branchId:ME.branchId,
-     soldAt:new Date().toISOString(),expiry:ymd(addDays(new Date(),pk.days||365)),soldBy:i.staffId||UID,
-     saleId:ref.id,invoiceNo,
-     balances:(pk.items||[]).map(z=>({serviceId:z.serviceId,left:z.n,total:z.n}))});
-    newPkgs.push(pk.name);
+     soldAt:new Date().toISOString(),expiry:ymd(addDays(new Date(),i.pkgDays||pk.days||365)),soldBy:i.staffId||UID,
+     saleId:ref.id,invoiceNo,...(i.pkgCustom?{custom:true}:{}),
+     balances:pkgItemsOf(i).map(z=>({serviceId:z.serviceId,left:z.n,total:z.n}))});
+    newPkgs.push(pk.name+(i.pkgCustom?' (changed: '+pkgItemsOf(i).map(z=>z.n+'× '+(svc(z.serviceId).name||'')).join(' + ')+', '+(i.pkgDays||pk.days||365)+' days)':''));
    }
   }
   /* the first real package makes the client a member, with a member number of their own */
@@ -9049,7 +9049,7 @@ function receiptHTML(s){
  const rows=(s.items||[]).map(i=>'<tr><td>'+esc(i.name)+
   (i.kind==='addon'?'<div class="tiny muted">Add-on'+(i.parentName?' · '+esc(i.parentName):'')+'</div>':'')+
   lineNotes(i).map(t=>'<div class="tiny muted">'+esc(t)+'</div>').join('')+
-  (i.kind==='package'?'<div class="tiny muted">Prepaid package</div>':'')+
+  (i.kind==='package'?'<div class="tiny muted">Prepaid package'+(i.pkgCustom?' · '+esc(pkgItemsOf(i).map(z=>z.n+'× '+(svc(z.serviceId).name||'')).join(' + '))+' · valid '+(i.pkgDays||365)+' days':'')+'</div>':'')+
   (i.handsOnName?'<div class="tiny muted">Performed by '+esc(i.handsOnName)+'</div>':'')+
   (i.later?'<div class="tiny muted">Prepaid — to be done on a later visit · valid '+(i.laterDays||90)+' days</div>':'')+
   (i.kind==='redeem'?'<div class="tiny muted">Package session'+(i.pkgName?' · '+esc(i.pkgName):'')+
@@ -11629,7 +11629,7 @@ function lineHTML(i,x){
   '<span class="lnico k-'+esc(i.kind)+'">'+ic(k[1],16)+'</span>'+
   '<div class="lnbody"><div class="cartkind">'+k[0]+(i.apptId?' · from booking':'')+'</div>'+
    '<b>'+esc(i.name)+'</b><div class="tiny muted">'+esc(stf(i.staffId).name||ME.name)+
-   (i.kind==='package'?' · '+(pkgOf(i.id).items||[]).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + '):'')+
+   (i.kind==='package'?' · '+pkgItemsOf(i).map(z=>z.n+'× '+esc(svc(z.serviceId).name||'')).join(' + ')+(i.pkgCustom?' <span class="pill b">changed · '+(+i.pkgDays||pkgOf(i.id).days||365)+' days</span>':''):'')+
    (i.kind==='redeem'?' · from '+esc(i.pkgName||'package')+' · no charge':'')+
    (i.kind==='set'?' · '+esc(setLabel(setOf(i.id))):'')+'</div>'+
    lineInfo(i)+laterToggle(i,x)+handsOnLine(i,x)+'</div>'+
@@ -11639,6 +11639,7 @@ function lineHTML(i,x){
   kids.map(([z,j])=>addonLine(z,j)).join('')+
   '<div class="lnacts">'+
    (canAdd?'<button onclick="addonPick('+x+')">'+ic('plus',13)+'Add-on</button>':'')+
+   (i.kind==='package'?'<button onclick="pkgLineEdit('+x+')">'+ic('package',13)+'Change sessions</button>':'')+
    '<button onclick="editLine('+x+')">'+ic('edit',13)+'Price &amp; discount</button>'+
    (['service','product','redeem'].includes(i.kind)?'<button onclick="openLib(\''+(i.kind==='product'?'prd_':'svc_')+esc(i.id)+
     '\',{customerId:cart.customerId})">'+ic('note',13)+'Guide</button>':'')+
@@ -17320,6 +17321,103 @@ async function refAttached(inv,cid){
  try{await updateDoc(doc(db,'refInvites',inv.id),{clientId:cid,convertedAt:at,status:'client'});Object.assign(inv,{clientId:cid,convertedAt:at,status:'client'});
   if(!REFINV.includes(inv)&&inv.branchId===ME.branchId)REFINV.push(inv);
   toast('Referred by '+(inv.inviterName||'a client')+' — linked automatically');}catch(e){}
+}
+
+
+const pkgItemsOf=i=>(i&&i.pkgCustom&&Array.isArray(i.pkgItems)&&i.pkgItems.length?i.pkgItems:(pkgOf(i&&i.id).items||[]));
+/* ============ a package changed for one client, at checkout ============ */
+/* The counter can change what is inside a package for this sale only — swap a treatment,
+   add or remove sessions, change how long it is valid — without making a new package in
+   the catalogue. The price can stay, follow the package's usual discount, or be set by
+   hand. The client's balance is created from the changed sessions; the catalogue package
+   is left as it is. Changing a package needs the same permission as changing a price. */
+let PLE=null;
+const pleSame=(a,b)=>JSON.stringify((a||[]).map(z=>[z.serviceId,+z.n]))===JSON.stringify((b||[]).map(z=>[z.serviceId,+z.n]));
+window.pkgLineEdit=x=>{
+ const i=cart.items[x];if(!i||i.kind!=='package')return;
+ const pk=pkgOf(i.id);if(!pk||!pk.id){toast('This package is no longer in the catalogue');return;}
+ if(!canPrice()){toast('Only a manager can change what is in a package');return;}
+ const worth=pkgWorth(pk);
+ PLE={x,items:pkgItemsOf(i).map(z=>({serviceId:z.serviceId,n:Math.max(1,+z.n||1)})),days:+i.pkgDays||+pk.days||365,
+  mode:i.pkgPriceMode||'keep',price:r2(+i.price||+pk.price||0),note:i.discNote||'',
+  ratio:worth>0?(+pk.price||0)/worth:1,pkPrice:+pk.price||0,pkDays:+pk.days||365,pkItems:(pk.items||[]).map(z=>({...z}))};
+ plePaint();
+};
+function pleCalc(){
+ const P=PLE,items=P.items.filter(z=>z.serviceId&&svc(z.serviceId).id&&z.n>0);
+ const worth=r2(items.reduce((a,z)=>a+(+svc(z.serviceId).price||0)*z.n,0));
+ const price=P.mode==='keep'?P.pkPrice:P.mode==='ratio'?Math.round(worth*P.ratio):r2(+P.price||0);
+ return{items,worth,price,sessions:items.reduce((a,z)=>a+z.n,0)};
+}
+function pleSummary(){
+ const c=pleCalc(),P=PLE,save=c.worth-c.price;
+ if(!c.items.length)return '<span class="muted">Add at least one treatment.</span>';
+ return c.sessions+' sessions worth '+rm(c.worth)+' at normal prices · package price <b class="pkdprice">'+rm(c.price)+'</b>'+
+  (save>0.004?' · client saves <b>'+rm(save)+'</b> ('+Math.round(save/c.worth*100)+'%)':save<-0.004?' · <span class="odue">more than paying per session</span>':'')+
+  (Math.abs(c.price-P.pkPrice)>0.004?'<br><span class="tiny">Usual package price '+rm(P.pkPrice)+'</span>':'');
+}
+function plePaint(){
+ const P=PLE,i=cart.items[P.x];
+ modal('Change package · '+i.name,'<div class="card">'+
+  '<p class="tiny muted" style="margin:0 0 10px">For this client and this bill only. The package in the catalogue stays as it is.</p>'+
+  '<label>Sessions in the package</label><div id="ple-items">'+P.items.map((z,k)=>'<div class="row" style="margin-bottom:6px">'+
+   '<select class="f" style="margin:0;flex:1" onchange="pleItem('+k+',\'serviceId\',this.value)">'+svcOpts(z.serviceId)+'</select>'+
+   '<input class="f" style="margin:0;width:74px" type="number" min="1" max="99" value="'+z.n+'" oninput="pleItem('+k+',\'n\',this.value,1)">'+
+   '<button type="button" class="iconbtn" onclick="pleDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>').join('')+'</div>'+
+  '<button type="button" class="btn ghost sm" style="margin-bottom:10px" onclick="pleAdd()">'+ic('plus',14)+'Add treatment</button>'+
+  '<label>Valid for (days)</label><input class="f" type="number" min="1" id="ple-d" value="'+P.days+'" oninput="pleSet(\'days\',this.value,1)">'+
+  '<label>Price</label><div class="seg" id="ple-m">'+[['keep','Keep '+rm(P.pkPrice)],['ratio','Same discount'],['set','Set price']].map(o=>
+   '<button type="button" class="'+(P.mode===o[0]?'on':'')+'" onclick="pleSet(\'mode\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  (P.mode==='set'?'<input class="f" type="number" step="0.01" min="0" id="ple-p" value="'+r2(P.price).toFixed(2)+'" oninput="pleSet(\'price\',this.value,1)">':
+   P.mode==='ratio'?'<div class="tiny muted" style="margin:-4px 0 10px">The package normally sells at '+Math.round(P.ratio*100)+'% of its sessions\' value; the new sessions are priced the same way, to the ringgit.</div>':'')+
+  '<div class="pkdsum" id="ple-sum">'+pleSummary()+'</div>'+
+  '<label>Reason'+(coRules().needNote?' <span class="muted">— needed when the price changes</span>':' <span class="muted">— optional</span>')+'</label>'+
+  '<input class="f" id="ple-n" value="'+esc(P.note)+'" placeholder="e.g. Client prefers Acne Clear instead of Hydra" oninput="pleSet(\'note\',this.value,1)">'+
+  '<div id="ple-e" class="tiny" style="color:var(--rose);margin:4px 0 8px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="pleSave()">'+ic('check',16)+'Use these sessions</button>'+
+  (cart.items[P.x].pkgCustom?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="pleReset()">'+ic('refresh',14)+'Back to the catalogue package</button>':'')+
+  '</div>');
+}
+window.pleSet=(k,v,quiet)=>{
+ if(k==='days')v=Math.max(1,Math.round(+v||0));
+ if(k==='price')v=+v||0;
+ if(k==='mode'&&v==='set'&&PLE.mode!=='set')PLE.price=pleCalc().price;
+ PLE[k]=v;
+ if(quiet){const s=document.getElementById('ple-sum');if(s)s.innerHTML=pleSummary();return;}
+ plePaint();
+};
+window.pleItem=(k,f,v,quiet)=>{const z=PLE.items[k];if(!z)return;z[f]=f==='n'?Math.min(99,Math.max(1,Math.round(+v||0))):v;
+ if(quiet){const s=document.getElementById('ple-sum');if(s)s.innerHTML=pleSummary();}else plePaint();};
+window.pleAdd=()=>{PLE.items.push({serviceId:((D.services.find(s=>s.active!==false))||{}).id||'',n:1});plePaint();};
+window.pleDrop=k=>{PLE.items.splice(k,1);plePaint();};
+window.pleSave=()=>{
+ const P=PLE,i=cart.items[P.x],e=document.getElementById('ple-e');if(!i)return;
+ const c=pleCalc();
+ if(!c.items.length){e.textContent='Add at least one treatment.';return;}
+ if(!(c.price>0)){e.textContent='The package needs a price.';return;}
+ const priceChanged=Math.abs(c.price-P.pkPrice)>0.004;
+ if(priceChanged&&coRules().needNote&&!String(P.note||'').trim()){e.textContent='Add a short reason for the price change.';return;}
+ const items=c.items.map(z=>({serviceId:z.serviceId,n:z.n}));
+ const custom=!pleSame(items,P.pkItems)||P.days!==P.pkDays||priceChanged;
+ if(!custom){window.pleReset();return;}
+ Object.assign(i,{pkgCustom:true,pkgItems:items,pkgDays:P.days,pkgPriceMode:P.mode,price:c.price,priceEdited:priceChanged});
+ if(String(P.note||'').trim())i.discNote=String(P.note).trim();
+ recalcLine(i);applyHandsOn(i);
+ window.closeModal();render();toast(i.name+' changed for this client');
+};
+window.pleReset=()=>{
+ const i=cart.items[PLE.x];if(!i)return;
+ ['pkgCustom','pkgItems','pkgDays','pkgPriceMode','priceEdited'].forEach(k=>delete i[k]);
+ i.price=PLE.pkPrice;recalcLine(i);applyHandsOn(i);
+ window.closeModal();render();toast(i.name+' back to the catalogue package');
+};
+/* the saved form of a changed package on the bill */
+function pkgBitsForSale(i){
+ if(i.kind!=='package'||!i.pkgCustom)return {};
+ if(!canPrice())throw new Error('Only a manager can change what is in '+i.name+'.');
+ const items=(i.pkgItems||[]).filter(z=>svc(z.serviceId).id&&+z.n>0).map(z=>({serviceId:z.serviceId,n:Math.min(99,Math.round(+z.n))}));
+ if(!items.length)throw new Error(i.name+' has no sessions. Change it again or remove it.');
+ return{pkgCustom:true,pkgItems:items,pkgDays:Math.max(1,Math.round(+i.pkgDays||+pkgOf(i.id).days||365))};
 }
 
 </script>
