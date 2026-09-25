@@ -1696,6 +1696,45 @@ body.demo .syncbar{top:106px}
 .bksug{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--brass-soft);border-radius:12px;padding:9px 12px;font-size:13px}
 .bkmap label{font-size:12px}.bklink{color:var(--brass);font-weight:600}.bkpv{font-size:12px;width:100%}.bkpv td{padding:4px 6px;vertical-align:top}
 @media (max-width:520px){.bkrow .bkd{flex-basis:44px}}
+body.ro [onclick^="expForm("],
+body.ro [onclick^="trForm("],
+body.ro [onclick^="recForm("],
+body.ro [onclick^="openBalForm("],
+body.ro [onclick^="finLockSet("],
+body.ro [onclick^="bkUnmatch("],
+body.ro [onclick^="bkStmtSet("],
+body.ro [onclick^="bkImport("],
+body.ro [onclick^="mjForm("],
+body.ro [onclick^="mjReverse("],
+body.ro [onclick^="finSetSave("],
+body.ro [onclick^="finMarkSent("],
+body.ro [onclick^="expVoid("],
+body.ro [onclick^="cyForm("],
+body.ro [onclick^="cashCount("],
+body.ro [onclick^="budForm("],
+body.ro [onclick^="bkUndo("],
+body.ro [onclick^="bkRuleDrop("],
+body.ro [onclick^="bkRematch("],
+body.ro [onclick^="bkReconcile("],
+body.ro [onclick^="bkQuick("],
+body.ro [onclick^="bkPick("],
+body.ro [onclick^="bkOther("],
+body.ro [onclick^="bkMove("],
+body.ro [onclick^="bkMatch("],
+body.ro [onclick^="bkExp("],
+body.ro [onclick^="bkIgnore("],
+body.ro [onclick^="bkBulk("],
+body.ro [onclick^="billPay("],
+body.ro [onclick^="acAdd("],
+body.ro [onclick^="sstWatchRun("],
+body.ro [onclick^="refundForm("],
+body.ro [onclick^="quoteSaveForm("],
+body.ro [onclick^="catManage("],
+body.ro [onclick^="syncSheet("],
+body.ro [onclick^="astForm("],body.ro [onclick^="astDispose("],body.ro [onclick^="voidSale("],body.ro [onclick^="saleDateForm("],body.ro [onclick^="collectPayment("],body.ro [onclick^="askFeedbackSale("],body.ro [onclick^="issueReturnVoucher("],body.ro [onclick^="refIssueSale("],
+body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{display:none!important}
+.robar{background:var(--brass-soft);border-color:transparent}.robar small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.asttbl{width:100%;font-size:13px}.asttbl td small{display:block;font-size:11.5px;color:var(--ink-3)}.asttbl tr{cursor:pointer}.asttbl tr.astgone td{color:var(--ink-3)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1779,15 +1818,16 @@ function increment(n){return DEMO?{__dinc:n}:fsIncrement(n);}
 function serverTimestamp(){return DEMO?{__dts:1}:fsServerTimestamp();}
 async function getDoc(r){return DEMO?dSnapDoc(r,dClone(dCol(r.col)[r.id])):fsGetDoc(r);}
 async function getDocs(q){return DEMO?dRun(q):fsGetDocs(q);}
-async function setDoc(r,d,o){if(!DEMO)return fsSetDoc(r,d,o);dSet(r,d,o);dFire();}
-async function addDoc(c,d){if(!DEMO)return fsAddDoc(c,d);const r={__d:1,col:c.col,id:dNewId()};dSet(r,d);dFire();return r;}
-async function updateDoc(r,d){if(!DEMO)return fsUpdateDoc(r,d);dUpd(r,d);dFire();}
-async function deleteDoc(r){if(!DEMO)return fsDeleteDoc(r);delete dCol(r.col)[r.id];dFire();}
+async function setDoc(r,d,o){roGuard();if(!DEMO)return fsSetDoc(r,d,o);dSet(r,d,o);dFire();}
+async function addDoc(c,d){roGuard();if(!DEMO)return fsAddDoc(c,d);const r={__d:1,col:c.col,id:dNewId()};dSet(r,d);dFire();return r;}
+async function updateDoc(r,d){roGuard();if(!DEMO)return fsUpdateDoc(r,d);dUpd(r,d);dFire();}
+async function deleteDoc(r){roGuard();if(!DEMO)return fsDeleteDoc(r);delete dCol(r.col)[r.id];dFire();}
 function onSnapshot(ref,cb,err){
  if(!DEMO)return fsOnSnapshot(ref,cb,err);
  const l={ref,cb};DLIS.add(l);setTimeout(()=>{try{dEmit(l);}catch(e){err&&err(e);}},0);return ()=>DLIS.delete(l);
 }
 function writeBatch(db){
+ roGuard();
  if(!DEMO)return fsWriteBatch(db);
  const ops=[];
  return {set:(r,d,o)=>{ops.push(()=>dSet(r,d,o));},update:(r,d)=>{ops.push(()=>dUpd(r,d));},
@@ -1795,6 +1835,7 @@ function writeBatch(db){
   commit:async()=>{ops.forEach(f=>f());dFire();}};
 }
 async function runTransaction(db,fn){
+ roGuard();
  if(!DEMO)return fsRunTransaction(db,fn);
  const ops=[];
  const tx={get:async r=>dSnapDoc(r,dClone(dCol(r.col)[r.id])),
@@ -1834,7 +1875,7 @@ async function demoSeed(){
   createdAt:new Date(+now-(40-k*4)*864e5).toISOString(),createdBy:UID,demo:true};});
  /* a few bookings today with real treatments, therapists and rooms */
  const svcs=Object.entries(dCol('services')).filter(([,s])=>s.active!==false).slice(0,4);
- const thera=Object.entries(dCol('users')).filter(([,u])=>u.active!==false&&u.branchId===br&&u.takes!==false&&u.role!=='branch');
+ const thera=Object.entries(dCol('users')).filter(([,u])=>u.active!==false&&u.branchId===br&&u.takes!==false&&!['branch','accountant'].includes(u.role));
  const rooms=Object.entries(dCol('rooms')).filter(([,r])=>!r.branchId||r.branchId===br);
  const A=dCol('appointments');
  [[11,'dc1'],[14,'dc2'],[16,'dc3']].forEach(([h,cid],k)=>{
@@ -1953,7 +1994,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26c';
+const BUILD='2026-09-26d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -1970,7 +2011,7 @@ const D={branches:[],rooms:[],staff:[],services:[],products:[],packages:[],stock
 let APPTS=[],CUSTS=[],SALES=[],unsub=[];
 let OFFLINE_DB=false;
 let TAB='home',calMode='day',calDate=today(),calBy='staff',calWin={from:'',to:''};
-const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor',branch:'Branch tablet'};
+const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor',branch:'Branch tablet',accountant:'Accountant (read-only)'};
 const svc=id=>D.services.find(s=>s.id===id)||{};
 const prod=sku=>D.products.find(p=>p.id===sku)||{};
 const stf=id=>D.staff.find(s=>s.id===id)||{};
@@ -1979,6 +2020,10 @@ const cust=id=>CUSTS.find(c=>c.id===id)||null;
 const branch=()=>D.branches.find(b=>b.id===(ME&&ME.branchId))||D.branches[0]||{name:'—',code:''};
 const stockOf=(sku,b)=>D.stock.find(s=>s.sku===sku&&s.branchId===(b||ME.branchId));
 const boss=()=>ME&&['owner','manager'].includes(ME.role);
+/* the accountant: signs in to Finance only, and can look and download but never change anything */
+const isAcct=()=>!!ME&&ME.role==='accountant'&&ME.active!==false;
+const payOK=()=>isOwnerMe()||isAcct();
+const roGuard=()=>{if(isAcct())throw Object.assign(new Error('This is a read-only account — it can view and download, but not change anything.'),{code:'read-only'});};
 const can=k=>{if(!ME)return false;if(['owner','manager'].includes(ME.role))return true;
  if(ME.role==='branch')return ['booking','pos','customer'].includes(k);
  return (ME.perms||[]).includes(k);};
@@ -2244,7 +2289,7 @@ const TABS=[
  {id:'set', ic:'gear',   label:'Settings', perm:null,      group:'Manage', desc:'Business details and data'}];
 const GROUPS=['Today','Clients','Money','Manage'];
 /* what this sign-in may open; the counter tablet leaves the back office to its owner */
-const tabOk=t=>(!t.perm||can(t.perm))&&!(ME&&ME.role==='branch'&&t.id==='set');
+const tabOk=t=>isAcct()?t.id==='fin':(!t.perm||can(t.perm))&&!(ME&&ME.role==='branch'&&t.id==='set');
 /* the order the bottom bar prefers — first four the person is allowed to see win a slot */
 const BNAV=['home','book','pos','cust','merit','lib','shift','board'];
 let navOpen=false;
@@ -7066,7 +7111,7 @@ const BRANCH_PERMS=['booking','pos','customer'];
 const BRKEY='luuna:branchEmail',CSKEY='luuna:cashier';
 const CASHIER_IDLE=20*60e3;                     /* a cashier lapses after 20 quiet minutes */
 /* the people of this branch — never the tablet itself */
-const people=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.role!=='branch');
+const people=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&!['branch','accountant'].includes(s.role));
 const canTill=s=>['owner','manager'].includes(s.role)||(s.perms||[]).includes('pos');
 const onShiftNow=sid=>{const a=attToday(sid);return !!(a&&a.clockIn&&!a.clockOut);};
 
@@ -8224,7 +8269,7 @@ function handsOnFor(serviceId,qty){
  if(s.handsOnType==='pct')return r2((+s.price||0)*(+s.handsOnValue||0)/100*q);
  return 0;
 }
-const handsOnStaff=()=>D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&x.role!=='branch')
+const handsOnStaff=()=>D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&!['branch','accountant'].includes(x.role))
  .sort((a,b)=>(b.takes?1:0)-(a.takes?1:0)||String(a.name).localeCompare(String(b.name)));
 /* best guess at who did it: today's appointment for this client and treatment */
 function guessHandsOn(serviceId,creditedId){
@@ -10069,7 +10114,7 @@ window.editStaff=id=>{
   '<label>Notes</label><textarea class="f" id="ts-note" rows="2">'+esc(s.note||'')+'</textarea></div>'+
   '<div class="fieldset"><h3>'+ic('work',13)+'Role and pay</h3>'+
   '<div class="grid g2"><div><label>Role</label><select class="f" id="ts-r">'+
-   ['therapist','frontdesk','manager','doctor','owner','branch'].map(r=>'<option value="'+r+'"'+
+   ['therapist','frontdesk','manager','doctor','owner','branch','accountant'].map(r=>'<option value="'+r+'"'+
     (s.role===r?' selected':'')+'>'+ROLE[r]+'</option>').join('')+'</select></div>'+
   '<div><label>Branch</label><select class="f" id="ts-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
@@ -10101,7 +10146,7 @@ async function saveStaffForm(id){
   idNo:$('#ts-ic').value.trim(),joined:$('#ts-jd').value,emergency:$('#ts-emg').value.trim(),
   note:$('#ts-note').value.trim(),role,branchId:$('#ts-b').value,
   commSvc:+$('#ts-cs').value||0,commProd:+$('#ts-cp').value||0,
-  takes:role==='branch'?false:$('#ts-t').checked,active:$('#ts-a').checked,
+  takes:['branch','accountant'].includes(role)?false:$('#ts-t').checked,active:$('#ts-a').checked,
   perms:['therapist','frontdesk'].includes(role)?['booking','pos','customer']:[]};
  const pin=($('#ts-pin').value||'').trim();
  if(pin){
@@ -11463,7 +11508,7 @@ window.openStaff=id=>{
  modal(s.name,'<div class="card"><label>Service commission (%)</label>'+
   '<input class="f" type="number" id="st-cs" value="'+(s.commSvc||0)+'">'+
   '<label>Retail commission (%)</label><input class="f" type="number" id="st-cp" value="'+(s.commProd||0)+'">'+
-  '<label>Role</label><select class="f" id="st-r">'+['therapist','frontdesk','manager','doctor','owner','branch'].map(r=>
+  '<label>Role</label><select class="f" id="st-r">'+['therapist','frontdesk','manager','doctor','owner','branch','accountant'].map(r=>
    '<option value="'+r+'"'+(s.role===r?' selected':'')+'>'+ROLE[r]+'</option>').join('')+'</select>'+
   '<label>Branch</label><select class="f" id="st-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>'+
@@ -11472,7 +11517,7 @@ window.openStaff=id=>{
   '<button class="btn" style="width:100%;justify-content:center" id="st-go">Save</button></div>',
  ()=>{$('#st-go').onclick=async()=>{
   const patch={commSvc:+$('#st-cs').value,commProd:+$('#st-cp').value,role:$('#st-r').value,
-   branchId:$('#st-b').value,takes:$('#st-r').value==='branch'?false:$('#st-t').checked,
+   branchId:$('#st-b').value,takes:['branch','accountant'].includes($('#st-r').value)?false:$('#st-t').checked,
    perms:['therapist','frontdesk'].includes($('#st-r').value)?['booking','pos','customer']:[]};
   try{await updateDoc(doc(db,'users',id),patch);Object.assign(s,patch);
    await audit('Team settings updated',s.name);window.closeModal();render();bindSettings();toast('Saved');}
@@ -11526,6 +11571,7 @@ window.render=render;
    pwaShortcut();
    if(ME.active===false){await signOut(auth);loginScreen('This account has been deactivated.');return;}
    if(demoWanted())await demoSeed();
+   if(ME.role==='accountant'){await acctBoot();return;}
    await loadStatic();
    try{document.title=((D.meta.biz||{}).name||'Spatify')+' · Spatify';}catch(e){}
    demoBanner();
@@ -12655,7 +12701,7 @@ window.leadQ=v=>{LEADF.q=v;render();};
 /* ---- a new lead, or editing one ---- */
 window.leadForm=id=>{
  const l=id?LEADS.find(x=>x.id===id):{source:'Instagram',assignedTo:boss()?'':UID,nextAt:today()};
- const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ const staff=D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role)&&(!s.branchId||s.branchId===ME.branchId));
  modal(id?'Edit lead':'New lead','<div class="card">'+
   '<div class="grid g2"><div><label>Name *</label><input class="f" id="lf-n" value="'+esc(l.name||'')+'"></div>'+
   '<div><label>Phone *</label><input class="f" id="lf-p" type="tel" value="'+esc(l.phone||'')+'" placeholder="012-3456789" oninput="leadDup()"></div></div>'+
@@ -12702,7 +12748,7 @@ window.leadSave=async id=>{
 window.leadOpen=id=>{
  const l=LEADS.find(x=>x.id===id);if(!l)return;
  const s=stageOf(l.stage),c=l.customerId?cust(l.customerId):null;
- const staff=D.staff.filter(x=>x.active!==false&&x.role!=='branch'&&(!x.branchId||x.branchId===ME.branchId));
+ const staff=D.staff.filter(x=>x.active!==false&&!['branch','accountant'].includes(x.role)&&(!x.branchId||x.branchId===ME.branchId));
  const acts=(l.acts||[]).slice().reverse();
  modal(l.name,'<div id="ld-box"><div class="card">'+
   '<div class="ldhead"><span class="avatar">'+esc(initials(l.name))+'</span><div style="flex:1;min-width:0">'+
@@ -12909,7 +12955,7 @@ function crmService(){
 window.tkFilter=v=>{TKF=v;render();};
 window.ticketForm=cid=>{
  CP['tk-c']={value:cid||''};
- const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ const staff=D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role)&&(!s.branchId||s.branchId===ME.branchId));
  modal('New service case','<div class="card"><label>Client</label>'+clientPicker('tk-c',cid||'',{})+
   '<div class="grid g2"><div><label>Type</label><select class="f" id="tk-cat">'+TKT_CATS.map(c=>'<option>'+c+'</option>').join('')+'</select></div>'+
   '<div><label>Priority</label><select class="f" id="tk-pr">'+Object.entries(TKPRIO).map(([k,v])=>'<option value="'+k+'"'+(k==='normal'?' selected':'')+'>'+v[0]+' — reply within '+(v[1]<24?v[1]+' h':v[1]/24+' days')+'</option>').join('')+'</select></div></div>'+
@@ -12942,7 +12988,7 @@ async function ticketLog(id,text,patch){
 }
 window.ticketOpen=id=>{
  const t=TICKETS.find(x=>x.id===id);if(!t)return;
- const staff=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&(!s.branchId||s.branchId===ME.branchId));
+ const staff=D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role)&&(!s.branchId||s.branchId===ME.branchId));
  modal(t.subject,'<div id="tk-box"><div class="card">'+
   '<div class="spread"><div><b>'+esc(t.customerName||'')+'</b>'+(t.customerNo?' <span class="cno'+(isMem(t.customerNo)?' mem':'')+'">'+esc(t.customerNo)+'</span>':'')+
    '<div class="tiny muted">'+esc(t.category)+' · '+esc((TKPRIO[t.priority]||TKPRIO.normal)[0])+' priority · opened '+dshort(t.createdAt)+' '+tstr(t.createdAt)+'</div></div>'+tkSla(t)+'</div>'+
@@ -13500,7 +13546,7 @@ function watchLeaves(){
 async function loadClaims(force){
  if(CLAIMS&&!force)return;
  try{
-  const q=boss()||isBranch()?query(collection(db,'claims'),where('date','>=',ymd(addDays(new Date(),-400))))
+  const q=boss()||isBranch()||isAcct()?query(collection(db,'claims'),where('date','>=',ymd(addDays(new Date(),-400))))
    :query(collection(db,'claims'),where('staffId','==',UID));
   CLAIMS=(await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
  }catch(e){CLAIMS=[];console.warn('claims',e);}
@@ -13512,7 +13558,7 @@ async function loadHrStaff(force){
  catch(e){HRSTAFF={};console.warn('hr staff',e);}
  if(TAB==='hr')render();
 }
-const hrPeople=()=>people().filter(s=>s.role!=='branch');
+const hrPeople=()=>people().filter(s=>!['branch','accountant'].includes(s.role));
 
 /* ---------------- the HR screen ---------------- */
 function vHR(){
@@ -14489,17 +14535,17 @@ function myApprCard(sid){
 ICONS.finance='M4 19.5h16M6 16.5V11M10 16.5V8M14 16.5v-6.5M18 16.5V5.5';
 const COA=[
  ['1000','Cash in drawer','asset'],['1010','Bank','asset'],['1020','Card & e-wallet settlement','asset'],['1030','Petty cash','asset'],
- ['1100','Owed by clients (instalments)','asset'],['1200','Stock / inventory','asset'],['1300','Staff advances','asset'],['1500','Equipment & renovation','asset'],
+ ['1100','Owed by clients (instalments)','asset'],['1200','Stock / inventory','asset'],['1300','Staff advances','asset'],['1500','Equipment & renovation','asset'],['1510','Accumulated depreciation','asset'],
  ['2000','Supplier bills to pay','liability'],['2100','Unredeemed packages','liability'],['2200','Client deposits','liability'],
  ['2300','KWSP payable','liability'],['2310','PERKESO payable','liability'],['2320','SIP payable','liability'],['2330','PCB payable','liability'],
- ['2500','SST payable','liability'],['3000','Owner capital','equity'],['3100','Owner drawings','equity'],
+ ['2500','SST payable','liability'],['2600','Amount owed to director','liability'],['3000','Owner capital','equity'],['3100','Owner drawings','equity'],
  ['4000','Treatment revenue','revenue'],['4010','Retail sales','revenue'],['4020','Package revenue','revenue'],['4030','Add-on revenue','revenue'],['4040','Expired & cancelled package sessions','revenue'],['4090','Refunds & returns','revenue'],['4900','Other income (bank profit, rebates)','revenue'],
  ['5000','Cost of products used / sold','expense'],['5100','Salaries & wages','expense'],['5110','Commission','expense'],['5120','KWSP — employer','expense'],
  ['5130','PERKESO & SIP — employer','expense'],['5140','Staff welfare & claims','expense'],
  ['6000','Rent','expense'],['6010','Electricity & water','expense'],['6020','Internet & phone','expense'],['6030','Marketing & advertising','expense'],
  ['6040','Supplies & consumables','expense'],['6050','Repairs & maintenance','expense'],['6060','Cleaning & laundry','expense'],['6070','Licences, permits & fees','expense'],
  ['6080','Bank & payment fees','expense'],['6090','Software & subscriptions','expense'],['6100','Transport & parking','expense'],['6110','Insurance','expense'],
- ['6120','Accounting & legal','expense'],['6130','Training','expense'],['6190','Miscellaneous','expense']];
+ ['6120','Accounting & legal','expense'],['6130','Training','expense'],['6190','Miscellaneous','expense'],['6200','Depreciation','expense'],['6210','Loss on disposal of assets','expense']];
 let FINSET=null,EXPENSES=null,RECUR=null,TRANSFERS=null,FINV='',FINM='',FINSHIFTS={},FINBR='',FINBUD=null,FINBUDM={};
 const coa=()=>[...COA,...(((FINSET||{}).accounts)||[]).map(a=>[a.code,a.name,a.type||'expense'])];
 const acName=c=>(coa().find(a=>a[0]===c)||[c,c])[1];
@@ -14516,7 +14562,7 @@ const cpLeft=cp=>(cp.balances||[]).reduce((t,b)=>t+(+b.left||0),0);
 const cpSold=cp=>String(cp.soldAt||'').slice(0,10);
 const cpBooked=cp=>pkgDefer()&&cpSold(cp)>=pkgFrom();
 /* what an expense can be booked to: the costs, stock and equipment bought, and paying what is owed */
-const EXP_ACCTS=()=>[...coa().filter(a=>a[2]==='expense'&&!['5000','5100','5110','5120','5130'].includes(a[0])),
+const EXP_ACCTS=()=>[...coa().filter(a=>a[2]==='expense'&&!['5000','5100','5110','5120','5130','6200','6210'].includes(a[0])),
  ['1200','Stock purchase (products)','asset'],['1500','Equipment & renovation','asset'],['2300','Pay KWSP','liability'],['2310','Pay PERKESO','liability'],
  ['2320','Pay SIP','liability'],['2330','Pay PCB to LHDN','liability'],['2500','Pay SST to Customs','liability'],['3100','Owner drawings','equity']];
 const PAYSRC=[['1010','Bank transfer / company card'],['1030','Petty cash (outside the drawer)'],['3000','Owner paid personally']];
@@ -14525,7 +14571,7 @@ const CLAIM_MAP={'Transport / parking':'6100','Supplies':'6040','Staff meal':'51
 const payAcct=m=>/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfer|bank|fpx|duitnow|cheque/i.test(m)?'1010':'1020';
 
 async function finLoad(force){
- if(!boss())return;
+ if(!boss()&&!isAcct())return;
  FINBR=ME.branchId;
  if(FINBUD===null||force)getDoc(doc(db,'finance','budget')).then(s=>{FINBUD=s.exists()?s.data():{};FINBUDM={};if(TAB==='fin')render();}).catch(()=>{FINBUD={};});
  const jobs=[];
@@ -14544,7 +14590,7 @@ async function finLoad(force){
 }
 /* recurring bills: each month's bill is made a week before it is due, once */
 async function recurRun(){
- if(!RECUR||!EXPENSES)return;
+ if(!RECUR||!EXPENSES||isAcct())return;
  const td=today(),m=td.slice(0,7),made=[];
  for(const r of RECUR.filter(x=>x.active!==false)){
   const day=Math.min(28,Math.max(1,+r.day||1)),due=m+'-'+String(day).padStart(2,'0');
@@ -14561,17 +14607,17 @@ async function recurRun(){
 }
 const finMonthExp=m=>(EXPENSES||[]).filter(e=>e.status!=='void'&&String(e.date).slice(0,7)===m);
 function vFin(){
- if(!boss())return '<div class="card"><div class="empty">Finance is for the owner and managers.</div></div>';
+ if(!boss()&&!isAcct())return '<div class="card"><div class="empty">Finance is for the owner and managers.</div></div>';
  /* the owner switched branch: everything is worked out again for the new one */
  if(FINBR&&FINBR!==ME.branchId){FINBR=ME.branchId;EXPENSES=null;RECUR=null;TRANSFERS=null;FINBUD=null;FINSHIFTS={};finDirty();}
  if(EXPENSES===null)setTimeout(()=>finLoad(),0);
  if(!FINM)FINM=today().slice(0,7);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
- const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['bank','Bank','bank',(()=>{try{return bkOpenCount()||'';}catch(e){return '';}})()],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
-  ...(isOwnerMe()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
-  ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['tax','Tax & compliance','flag',(()=>{try{return compItems().filter(x=>x.late||x.soon).length||'';}catch(e){return '';}})()],['coa','Accounts & settings','list','']];
- if(!tabs.some(t=>t[0]===FINV))FINV='pl';
- const V={pl:finPL,bal:finBal,cf:finCash,bank:finBank,tax:finTax,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const tabs=[['dash','Overview','grid',''],['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['bank','Bank','bank',(()=>{try{return bkOpenCount()||'';}catch(e){return '';}})()],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
+  ...(payOK()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
+  ['rec','Recurring','refresh',''],['ast','Assets','tool',''],['dir',isCo()?'Director':'Owner','user',''],['find','Search','search',''],['jnl','Journal & export','download',''],['tax','Tax & compliance','flag',(()=>{try{return compItems().filter(x=>x.late||x.soon).length||'';}catch(e){return '';}})()],['coa','Accounts & settings','list','']];
+ if(!tabs.some(t=>t[0]===FINV))FINV='dash';
+ const V={dash:finDash,ast:finAssets,dir:finDir,find:finFind,pl:finPL,bal:finBal,cf:finCash,bank:finBank,tax:finTax,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -14806,7 +14852,7 @@ async function finJournalOf(m,br){
   else add(a.date,a.id,a.id,a.src+' · '+a.desc,[[a.account,a.amount,0],[a.paidFrom,0,a.amount]]);});
  await finJournalB(m,add,br,SRC.tr);
  /* payroll, once locked (owner only) */
- if(isOwnerMe()){try{const s=await getDoc(doc(db,'payrolls',m+'_'+br));const P=s.exists()?s.data():null;
+ if(payOK()){try{const s=await getDoc(doc(db,'payrolls',m+'_'+br));const P=s.exists()?s.data():null;
   if(P&&P.status==='final'){const t={sal:0,com:0,erE:0,erS:0,cl:0,net:0,epf:0,socso:0,eis:0,pcb:0,adv:0,oth:0};
    Object.values(P.lines||{}).forEach(L=>{const c=payCalc(L,m);if(!(c.gross>0))return;
     t.com+=c.comm;t.sal+=c.gross-c.comm;t.erE+=c.epfER;t.erS+=c.socsoER+c.eisER;t.cl+=+L.claims||0;t.net+=c.net;
@@ -14830,10 +14876,11 @@ function finJournal(){
   '<div class="scroll"><table><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr>'+
    Object.keys(tb).sort().map(k=>'<tr><td>'+k+' · '+esc(acName(k))+'</td><td class="num">'+(tb[k].dr?rm(tb[k].dr):'')+'</td><td class="num">'+(tb[k].cr?rm(tb[k].cr):'')+'</td></tr>').join('')+
    '<tr class="paytot"><td>Total · '+J.length+' lines</td><td class="num">'+rm(dr)+'</td><td class="num">'+rm(cr)+'</td></tr></table></div>'+
-  (isOwnerMe()?'':'<p class="tiny muted" style="margin:8px 0 0">Payroll lines are added only when the owner opens this.</p>')+'</div>'+
+  (payOK()?'':'<p class="tiny muted" style="margin:8px 0 0">Payroll lines are added only when the owner opens this.</p>')+'</div>'+
   '<div class="card"><h3 style="margin:0 0 6px">'+ic('download',15)+' Export for your accountant or accounting software</h3>'+
   '<p class="tiny muted" style="margin:0 0 10px">Plain CSV files that Bukku, SQL Account, AutoCount, Financio, Xero or QuickBooks can import, or your accountant can key in. Each line keeps the app\'s own id.</p>'+
-  '<button class="btn" style="width:100%;justify-content:center;margin-bottom:10px" onclick="finPack()">'+ic('download',16)+'Month-end pack for '+mLabel(m)+' (PDF)</button>'+
+  '<div class="grid g2" style="margin-bottom:10px"><button class="btn" style="justify-content:center" onclick="finPack()">'+ic('download',16)+'Month-end pack for '+mLabel(m)+' (PDF)</button>'+
+  '<button class="btn ghost" style="justify-content:center" onclick="finXLSX()">'+ic('download',16)+'All reports in one Excel workbook</button></div>'+
   '<div class="finexp">'+[['jnl','Journal (double-entry)','Every movement: date, account, debit, credit'],['pl','Profit & loss','This month, last month and year to date'],
    ['tb','Trial balance','Balance of every account at the end of the month'],['sales','Daily takings','Per day: revenue by type and money by payment method'],
    ['exp','Expenses & bills','Supplier, category, amount, paid or owing'],['coa','Chart of accounts','Account codes to match in your software'],['contacts','Suppliers & clients','Names and phone numbers']]
@@ -15001,7 +15048,7 @@ function finNotes(m){
  const n=[];
  n.push(pkgDefer()?'Packages count as revenue as sessions are used (since '+mLabel(pkgFrom().slice(0,7))+'). Sessions left unused count when a package expires or is deleted.'
   :'Packages count as revenue on the day they are sold.');
- if(!isOwnerMe())n.push('Salaries and contributions are added only when the owner opens this.');
+ if(!payOK())n.push('Salaries and contributions are added only when the owner opens this.');
  else if(m<=today().slice(0,7)&&!(FINJ[m]||[]).some(l=>String(l.src).startsWith('payroll:')))n.push('Payroll for '+mLabel(m)+' is not locked yet, so salaries are not in this month.');
  const noCost=(D.products||[]).filter(p=>p.active!==false&&!(+p.cost>0)).length;
  if(cogsAuto()&&noCost)n.push(noCost+' product'+(noCost>1?'s have':' has')+' no cost price, so '+(noCost>1?'their':'its')+' cost counts as zero. Add cost prices in the product list.');
@@ -15137,7 +15184,7 @@ window.trDelete=async id=>{
   await audit('Money move deleted',trLabel(t)+' · '+rm(t.amount));window.closeModal();render();}catch(e){toast(friendly(e));}
 };
 /* starting balances: what the business had and owed at the start of a month, entered once */
-const OPEN_AC=['1000','1010','1020','1030','1100','1200','1300','1500','2000','2100','2200','2300','2310','2320','2330','2500'];
+const OPEN_AC=['1000','1010','1020','1030','1100','1200','1300','1500','1510','2000','2100','2200','2300','2310','2320','2330','2500','2600'];
 window.openBalForm=()=>{
  const O=(FINSET||{}).opening||{month:today().slice(0,7),bal:{}},C=liveChecks();
  const sug={'1100':C.owed,'2000':C.bills,'2100':C.pk.books,'1200':C.stock};
@@ -15425,7 +15472,7 @@ const jOf=(m,br)=>br===ME.branchId?FINJ[m]:FINJB[br+'|'+m];
 function finBrc(){
  const m=FINM,Y=plMonths(m).ytd,BR=D.branches||[];
  const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
- if(!isOwnerMe()||BR.length<2)return head+'<div class="card"><div class="empty">Branch comparison is for the owner, once there is more than one branch.</div></div>';
+ if(!payOK()||BR.length<2)return head+'<div class="card"><div class="empty">Branch comparison is for the owner, once there is more than one branch.</div></div>';
  const pairs=BR.flatMap(b=>Y.map(k=>[k,b.id]));
  if(pairs.some(([k,b])=>!jOf(k,b))){if(!FINNEEDB)FINNEEDB=Promise.all(pairs.map(([k,b])=>finJGetB(k,b))).then(()=>{FINNEEDB=null;if(TAB==='fin'&&FINV==='brc')render();});
   return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Working out '+BR.length+' branches…</p></div></div>';}
@@ -16376,7 +16423,7 @@ function wbConfig(){
   open:+D.meta.open||9,close:+D.meta.close||20,days:W.days,step:+W.step||30,lead:+W.lead||0,horizon:+W.horizon||30,cutoff:+W.cutoff||24,
   chooseStaff:!!W.chooseStaff,intro:String(W.intro||'').slice(0,400),policy:String(W.policy||'').slice(0,1200),closed:[...new Set(closed)].filter(d=>d>=td).sort(),
   branches:D.branches.map(br=>({id:br.id,name:br.name||'',rooms:D.rooms.filter(r=>r.branchId===br.id).map(r=>({id:r.id,t:r.type||''})),
-   staff:D.staff.filter(s=>s.branchId===br.id&&s.active!==false&&s.takes&&s.role!=='branch').map(s=>({id:s.id,n:W.chooseStaff?String(s.name||'').split(' ')[0]:''}))})),
+   staff:D.staff.filter(s=>s.branchId===br.id&&s.active!==false&&s.takes&&!['branch','accountant'].includes(s.role)).map(s=>({id:s.id,n:W.chooseStaff?String(s.name||'').split(' ')[0]:''}))})),
   services:svs.map(s=>({id:s.id,n:s.name,c:s.cat||'',p:+s.price||0,d:+s.dur||60,b:+s.buffer||0,r:s.room||'',a:(W.approval||[]).includes(s.id),x:String(s.desc||'').slice(0,240)})),
   svcIds:svs.map(s=>s.id),ref:!!(D.meta.referral&&D.meta.referral.on)};
 }
@@ -17836,7 +17883,7 @@ function cfCat(a){
  if(a==='2500')return 'tax';
  if(a==='2000')return 'bills';
  if(a==='1500')return 'equip';
- if(a==='3000'||a==='3100')return 'owner';
+ if(a==='3000'||a==='3100'||a==='2600')return 'owner';
  if(t==='expense')return 'opex';
  return 'other';
 }
@@ -17877,8 +17924,9 @@ function cfBridge(m){
   g(['2300','2310','2320','2330','2500'],'KWSP, PERKESO, SIP, PCB & SST','counted, not paid over yet (+), or paid over (−)'),
   g(['1300'],'Staff advances',''),
   g(['1500'],'Equipment & renovation','paid for now, not a monthly cost'),
-  g(['3000','3100'],'Owner','money put in (+) or taken out (−) — not part of profit')];
- const known=new Set(['1200','1100','2100','2200','2000','2300','2310','2320','2330','2500','1300','1500','3000','3100',...CF_CASH]);
+  g(['1510'],'Depreciation','counted as a cost; no money moved'),
+  g(['3000','3100','2600'],'Owner / director','money put in (+) or taken out (−) — not part of profit')];
+ const known=new Set(['1200','1100','2100','2200','2000','2300','2310','2320','2330','2500','1300','1500','1510','2600','3000','3100',...CF_CASH]);
  const rest=r2(-Object.keys(mv).filter(a=>!known.has(a)&&!plSec(a)).reduce((t,a)=>t+mv[a],0));
  if(Math.abs(rest)>0.004)rows.push({label:'Other balances',why:'',v:rest});
  return{profit,rows:rows.filter(r=>Math.abs(r.v)>0.004)};
@@ -17921,7 +17969,7 @@ function finCash(){
    ['Money means the counter drawer, the bank, card and e-wallet payouts on the way, and petty cash.',
     'Package money counts here the day the client pays, even though it becomes revenue only as sessions are used — it is money you still owe in treatments.',
     'Card and e-wallet takings count as money in when paid; use Move money when the payout reaches the bank so the bank balance is right.',
-    ...(isOwnerMe()?[]:['Salaries are only included when the owner opens Finance.'])].map(x=>'<p class="tiny muted" style="margin:4px 0">• '+esc(x)+'</p>').join('')+'</div>';
+    ...(payOK()?[]:['Salaries are only included when the owner opens Finance.'])].map(x=>'<p class="tiny muted" style="margin:4px 0">• '+esc(x)+'</p>').join('')+'</div>';
 }
 
 
@@ -18072,7 +18120,7 @@ function sstWatchView(){
 /* ---------- compliance calendar ---------- */
 function compItems(){
  const b=bizC(),t=b.entityType||'sole',out=[],td=today(),end=ymd(addDays(new Date(),183)),start=ymd(addDays(new Date(),-20));
- const staff=(D.staff||[]).some(s=>s.active!==false&&s.role!=='owner'&&s.role!=='branch');
+ const staff=(D.staff||[]).some(s=>s.active!==false&&s.role!=='owner'&&!['branch','accountant'].includes(s.role));
  const push=(key,date,title,note,who)=>{if(date>=start&&date<=end)out.push({key,date,title,note,who});};
  const mm=[];for(let i=-2;i<=4;i++)mm.push(mShift(td.slice(0,7),i));
  mm.forEach(m=>{const prev=mShift(m,-1),d15=m+'-15';
@@ -18510,10 +18558,10 @@ window.quoteLoad=async id=>{
 window.quoteDecline=async id=>{const q=(QUOTES||[]).find(x=>x.id===id);if(!q)return;
  try{await updateDoc(doc(db,'quotes',id),{status:'declined',closedAt:new Date().toISOString(),closedBy:UID});q.status='declined';window.closeModal();render();}catch(e){toast(friendly(e));}};
 {const _co=window.checkout;window.checkout=async()=>{
- const qid=cart.quoteId,before=cart.items.length;
+ const qid=cart.quoteId,before=cart.items.length,had=new Set((SALES||[]).map(x=>x.id));
  await _co();
  if(qid&&!cart.items.length&&before){const q=(QUOTES||[]).find(x=>x.id===qid);
-  const s=[...SALES].sort((a,b)=>String(b.at).localeCompare(String(a.at)))[0];
+  const s=(SALES||[]).find(x=>!had.has(x.id))||[...SALES].sort((a,b)=>String(b.at).localeCompare(String(a.at)))[0];
   try{await updateDoc(doc(db,'quotes',qid),{status:'converted',saleId:s?s.id:'',invoiceNo:s?s.invoiceNo||'':'',closedAt:new Date().toISOString(),closedBy:UID});
    if(q){q.status='converted';q.saleId=s&&s.id;}}catch(e){}}
 };}
@@ -18565,7 +18613,7 @@ async function bkLoad(){
   BKR={};c.docs.forEach(d=>{const v=d.data();if(mine(v))BKR[d.id]=v;});}
  catch(e){console.warn('bank',e);BKL=BKL||[];BKI=BKI||[];BKR=BKR||{};}
 }
-{const _fl=finLoad;finLoad=async f=>{await _fl(f);if(boss()&&(BKL===null||f)){await bkLoad();if(TAB==='fin'||TAB==='home')render();}};}
+{const _fl=finLoad;finLoad=async f=>{await _fl(f);if((boss()||isAcct())&&(BKL===null||f)){await bkLoad();if(TAB==='fin'||TAB==='home')render();}};}
 const bkLines=()=>(BKL||[]).filter(l=>(l.acct||'1010')===BKA);
 const bkStart=()=>{const L=bkLines();return L.length?L.reduce((a,l)=>l.date<a?l.date:a,L[0].date):'';};
 function bkMonthsList(){
@@ -19073,7 +19121,7 @@ function finBank(){
   '</div>'+bkCashCard()+
   ((((FINSET||{}).bankRules)||[]).length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('flag',15)+' Your rules</h3>'+((FINSET||{}).bankRules).map((r,k)=>'<div class="spread tiny" style="padding:4px 0;border-bottom:1px solid var(--line)"><span>“'+esc(r.kw)+'” · '+(r.dir==='in'?'money in':'money out')+' → '+esc(bkSugLabel(r))+'</span>'+
    '<button class="iconbtn" onclick="bkRuleDrop('+k+')">'+ic('close',12)+'</button></div>').join('')+'</div>':'')+
-  (!isOwnerMe()?'<p class="tiny muted" style="margin:0 12px 12px">Salaries are only in the books when the owner opens Finance, so salary payments show as lines to check for managers.</p>':'');
+  (!payOK()?'<p class="tiny muted" style="margin:0 12px 12px">Salaries are only in the books when the owner opens Finance, so salary payments show as lines to check for managers.</p>':'');
 }
 const addDaysStr=(d,n)=>d?ymd(addDays(new Date(d+'T00:00:00'),n)):'';
 window.bkRuleDrop=async k=>{const R=[...(((FINSET||{}).bankRules)||[])];R.splice(k,1);
@@ -19123,5 +19171,374 @@ function bkAlerts(al){
  if(+td.slice(8,10)>10&&BKL.some(l=>l.date<=mEnd(pm))&&!Object.values(BKR||{}).some(r=>r.m===pm&&r.done))
   al.push({i:'bank',t:'Bank for '+mLabel(pm)+' not reconciled',d:'Match the lines and mark the month reconciled',go:"finGo('bank')"});
 }
+
+/* ============ the accountant's sign-in: Finance only, read-only ============ */
+/* An accountant or bookkeeper gets their own login (Team → add, role "Accountant"). They see
+   every Finance screen — profit & loss, balances, cash flow, bank, journal, tax — and can
+   download every export and PDF, but nothing can be added, edited or deleted: the buttons
+   are hidden, the app refuses any change from this account, and the database rules refuse
+   it too. They do not see clients, bookings or staff records. */
+async function acctBoot(){
+ try{document.body.classList.add('ro');}catch(e){}
+ const names=['branches','users','services','products','packages','stock','bundles'];
+ const snaps=await Promise.all(names.map(n=>getDocs(collection(db,n)).catch(e=>{console.warn('accountant',n,e);return {docs:[]};})));
+ const g=i=>snaps[i].docs.map(d=>({id:d.id,...d.data()}));
+ D.branches=g(0);D.staff=g(1);D.services=g(2);D.products=g(3);D.packages=g(4);D.stock=g(5);D.bundles=g(6);D.rooms=[];D.vouchers=[];
+ sortCatalogue();
+ try{const m=await getDoc(doc(db,'meta','settings'));D.meta=m.exists()?m.data():{};}catch(e){D.meta={};}
+ if(!D.meta.open)D.meta={open:9,close:20,biz:{name:'My Spa',ssm:'',tin:'',sst:0,sstRate:8,phone:''},...D.meta};
+ try{document.title=((D.meta.biz||{}).name||'Spatify')+' · Finance';}catch(e){}
+ if(!D.branches.length)D.branches=[{id:ME.branchId||'b1',name:'Main branch',code:'MAIN'}];
+ if(!D.staff.find(s=>s.id===UID))D.staff.push({...ME});
+ TAB='fin';render();
+ try{bindNavAutoHide();}catch(e){}
+ await Promise.all([loadRecentSales().catch(()=>{}),loadOutstanding().catch(()=>{}),loadHeld().catch(()=>{}),loadClaims().catch(()=>{}),finLoad()]);
+ render();
+}
+{const _g=window.go;window.go=(t,...a)=>_g(isAcct()&&t!=='fin'?'fin':t,...a);}
+{const _v=vFin;vFin=()=>(isAcct()?'<div class="card robar"><div class="spread" style="gap:8px;flex-wrap:wrap"><span>'+ic('shield',15)+
+ ' <b>Read-only access</b> · '+esc(ME.name)+' · '+esc((bizC().legalName||bizC().name||''))+'<small>View every report and download the exports. Nothing here can be changed from this account.</small></span>'+
+ '<button class="btn sm ghost" onclick="firebaseSignOut()">'+ic('out',13)+'Sign out</button></div></div>':'')+_v();}
+
+/* ============ Finance phase H: overview, fixed assets, director's account, search, Excel ============ */
+/* Overview: the month at a glance and what still needs doing. Fixed assets: equipment and
+   renovation are kept in a register and written off over their useful life (straight line),
+   month by month, into the journal; selling or scrapping one takes it out of the books. The
+   director's (or owner's) account shows every ringgit put in or taken out and what is owed
+   either way — for a Sdn Bhd that is a loan account, not capital. Search finds any record in
+   the last 12 months by name, reference or amount. Excel: every report in one workbook. */
+const isCo=()=>bizC().entityType==='sdnbhd';
+MOVES.splice(MOVES.length-1,0,['shares','Paid-up share capital put in (Sdn Bhd)','3000','1010']);
+MOVE_AC.push(['2600','Director — money lent to / taken from the company']);
+
+/* ---------- fixed assets ---------- */
+let ASSETS=null;
+const AST_CATS=[['equip','Equipment & machines',60],['reno','Renovation & fit-out',120],['furn','Furniture & fittings',120],['it','Computers, tablets & phones',36],['veh','Vehicle',60],['other','Other',60]];
+const astCat=k=>(AST_CATS.find(c=>c[0]===k)||AST_CATS[5]);
+async function astLoad(){try{const s=await getDocs(collection(db,'assets'));ASSETS=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.date).localeCompare(String(b.date)));}catch(e){ASSETS=[];}}
+const astMine=(br)=>(ASSETS||[]).filter(a=>(a.branchId||ME.branchId)===(br||ME.branchId));
+const mDiff=(a,b)=>(+b.slice(0,4)-+a.slice(0,4))*12+(+b.slice(5,7)-+a.slice(5,7));
+/* straight line from the month bought; the last month takes the rounding */
+function astDep(a,m){
+ const cost=+a.cost||0,base=r2(cost-(+a.residual||0)),life=Math.max(1,Math.round(+a.life||60)),start=String(a.date).slice(0,7);
+ const endM=a.disposed&&a.disposed.date?String(a.disposed.date).slice(0,7):null;
+ const k=mDiff(start,m)+1,stop=endM?Math.min(k,mDiff(start,endM)+1):k,n=Math.max(0,Math.min(life,stop));
+ const at=j=>r2(base*Math.max(0,Math.min(life,j))/life);
+ const cur=k>=1&&k<=life&&(!endM||m<=endM)?r2(at(k)-at(k-1)):0;
+ return {cur,acc:at(n),nbv:r2(cost-at(n)),left:Math.max(0,life-n),n,life,gone:!!endM&&endM<=m,monthly:r2(base/life)};
+}
+{const _fj=finJournalOf;finJournalOf=async(m,br)=>{
+ const J=await _fj(m,br),b=br||ME.branchId;
+ const add=(date,ref,src,desc,lines)=>{lines.filter(l=>Math.abs(l[1])>0.004||Math.abs(l[2])>0.004).forEach(([ac,dr,cr])=>J.push({date,ref,src,desc,account:ac,debit:r2(dr),credit:r2(cr)}));};
+ if(ASSETS===null)await astLoad();
+ astMine(b).forEach(a=>{
+  if(String(a.date).slice(0,7)>m)return;const D0=astDep(a,m);
+  if(D0.cur>0)add(mEnd(m),a.tag||a.id,'dep:'+a.id+':'+m,'Depreciation · '+a.name,[['6200',D0.cur,0],['1510',0,D0.cur]]);
+  const dp=a.disposed;
+  if(dp&&String(dp.date).slice(0,7)===m){const pr=r2(+dp.proceeds||0),gl=r2(pr-D0.nbv);
+   add(dp.date,a.tag||a.id,'disp:'+a.id,(pr?'Sold · ':'Written off · ')+a.name,[['1510',D0.acc,0],[dp.to||'1010',pr,0],['1500',0,+a.cost||0],gl<0?['6210',-gl,0]:['4900',0,gl]]);}
+ });
+ /* a company's director: money put in or taken out is a loan account, not capital */
+ if(isCo())J.forEach(l=>{if(l.account!=='3000'&&l.account!=='3100')return;const s=String(l.src);
+  if(/^(exp|billpay|claim_|drawer_)/.test(s)||s.startsWith('exp:')||s.startsWith('billpay:'))l.account='2600';
+  else if(s.startsWith('tr:')){const t=(TRANSFERS||[]).find(x=>'tr:'+x.id===s);if(!t||t.kind!=='shares')l.account='2600';}});
+ return J;};}
+function astBooks(m){                 /* what the books say is equipment & renovation, to check the register */
+ const B=balBuild(m);return B.O?B.bal('1500'):null;}
+function astUnlisted(){               /* equipment bought through Expenses that is not in the register yet */
+ const have=new Set((ASSETS||[]).map(a=>a.expenseId).filter(Boolean));
+ return (EXPENSES||[]).filter(e=>e.status!=='void'&&!have.has(e.id)).map(e=>({e,amt:r2(expLines(e).filter(l=>l.account==='1500').reduce((t,l)=>t+(+l.amount||0),0))})).filter(x=>x.amt>0);
+}
+function finAssets(){
+ const m=FINM,head='<div class="card"><div class="spread finhead">'+finNav()+'<div class="row" style="gap:6px">'+
+  (boss()?'<button class="btn sm" onclick="astForm()">'+ic('plus',14)+'Add asset</button>':'')+'<button class="btn sm ghost" onclick="astCSV()">'+ic('download',14)+'CSV</button></div></div></div>';
+ if(ASSETS===null){astLoad().then(()=>{if(TAB==='fin'&&FINV==='ast')render();});return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const {L}=balMonths(m);const ready=finNeed(L);
+ const rows=astMine().filter(a=>String(a.date).slice(0,7)<=m).map(a=>({a,...astDep(a,m)}));
+ const live=rows.filter(r=>!r.gone),sum=f=>r2(live.reduce((t,r)=>t+f(r),0));
+ const cost=sum(r=>+r.a.cost||0),acc=sum(r=>r.acc),nbv=sum(r=>r.nbv),cur=r2(rows.reduce((t,r)=>t+r.cur,0));
+ const bk=ready?astBooks(m):null,un=astUnlisted();
+ return head+
+  '<div class="crmkpis">'+kpi('Cost',rm(cost),live.length+' asset'+(live.length!==1?'s':'')+' in use','tool')+kpi('Written off so far',rm(acc),'accumulated depreciation','chart')+
+   kpi('Book value',rm(nbv),'at '+dshort(mEnd(m)),'wallet')+kpi('This month',rm(cur),'depreciation in '+mLabel(m).split(' ')[0],'receipt')+'</div>'+
+  (un.length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('alert',15)+' Bought, not in the register yet</h3><p class="tiny muted" style="margin:0 0 6px">Recorded under Equipment &amp; renovation in Expenses. Add each one so it is written off over its life.</p>'+
+   un.slice(0,12).map(x=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(x.e.supplier||x.e.desc||'')+'</b><small>'+dshort(x.e.date)+' · '+esc(x.e.desc||'')+'</small></div><b class="finamt">'+rm(x.amt)+'</b>'+
+    (boss()?'<button class="btn sm" onclick="astForm(\'\',\''+x.e.id+'\')">Add</button>':'')+'</div>').join('')+'</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('tool',15)+' Asset register</h3>'+
+   (rows.length?'<div class="scroll"><table class="asttbl"><tr><th>Asset</th><th>Bought</th><th class="num">Cost</th><th class="num">Per month</th><th class="num">Written off</th><th class="num">Book value</th><th class="num">Months left</th></tr>'+
+    rows.map(r=>'<tr class="'+(r.gone?'astgone':'')+'" onclick="astShow(\''+r.a.id+'\')"><td><b>'+esc(r.a.name)+'</b><small>'+esc(astCat(r.a.cat)[1])+(r.a.tag?' · '+esc(r.a.tag):'')+(r.gone?' · '+(+r.a.disposed.proceeds?'sold':'written off')+' '+dshort(r.a.disposed.date):'')+'</small></td>'+
+     '<td>'+dshort(r.a.date)+'</td><td class="num">'+rm(+r.a.cost||0)+'</td><td class="num">'+rm(r.monthly)+'</td><td class="num">'+rm(r.acc)+'</td><td class="num">'+rm(r.gone?0:r.nbv)+'</td><td class="num">'+(r.gone?'—':r.left)+'</td></tr>').join('')+'</table></div>'
+    :'<div class="empty">'+ic('tool',24)+'<div>No assets yet.</div><p class="tiny muted">Machines, renovation, furniture and computers the business will use for more than a year.</p></div>')+
+   (bk!=null&&Math.abs(bk-cost)>0.01?'<p class="tiny" style="color:var(--rose);margin:8px 0 0">The books show '+rm(bk)+' of equipment &amp; renovation; the register '+rm(cost)+'. Add what is missing, or check the starting balance.</p>':
+    bk!=null&&rows.length?'<p class="tiny muted" style="margin:8px 0 0">'+ic('check',12)+' The register matches the books ('+rm(bk)+').</p>':'')+
+   '<p class="tiny muted" style="margin:8px 0 0">Written off evenly over each asset\'s useful life, from the month it was bought, as Depreciation (6200). This is for your accounts; the capital allowances claimed for tax are worked out separately by your tax agent.</p></div>';
+}
+window.astShow=id=>{
+ const a=(ASSETS||[]).find(x=>x.id===id);if(!a)return;const r=astDep(a,FINM),c=astCat(a.cat);
+ modal(a.name,'<div class="card"><div class="kv">'+
+  [['Type',c[1]],['Bought',dstr(a.date)+(a.supplier?' · '+esc(a.supplier):'')],['Cost',rm(+a.cost||0)],['Useful life',Math.round((+a.life||60)/12*10)/10+' years ('+(+a.life||60)+' months)'],
+   ['Left at the end',rm(+a.residual||0)],['Per month',rm(r.monthly)],['Written off to '+mLabel(FINM),rm(r.acc)],['Book value',rm(r.gone?0:r.nbv)],
+   ...(a.tag?[['Tag / serial',esc(a.tag)]]:[]),...(a.where?[['Where',esc(a.where)]]:[]),
+   ...(a.disposed?[[+a.disposed.proceeds?'Sold':'Written off',dstr(a.disposed.date)+(+a.disposed.proceeds?' for '+rm(a.disposed.proceeds):'')+' · '+esc(a.disposed.reason||'')]]:[])]
+  .map(([k,v])=>'<div class="k">'+k+'</div><div class="v">'+v+'</div>').join('')+'</div>'+
+  (boss()?'<div class="row wrap2" style="gap:6px;margin-top:10px"><button class="btn sm" onclick="astForm(\''+id+'\')">'+ic('edit',13)+'Edit</button>'+
+   (!a.disposed?'<button class="btn sm ghost" onclick="astDispose(\''+id+'\')">Sold or scrapped…</button>':'')+'</div>':'')+'</div>');
+};
+const astLockedFrom=a=>a&&a.date&&isLocked(mEnd(String(a.date).slice(0,7)));
+window.astForm=(id,expId)=>{
+ const a=id?(ASSETS||[]).find(x=>x.id===id):null,e=expId?(EXPENSES||[]).find(x=>x.id===expId):null;
+ const v=a||{name:e?(e.desc||e.supplier||''):'',cat:'equip',date:e?e.date:today(),cost:e?r2(expLines(e).filter(l=>l.account==='1500').reduce((t,l)=>t+(+l.amount||0),0)):'',life:60,residual:0,supplier:e?e.supplier||'':'',expenseId:expId||''};
+ const fixed=a&&astLockedFrom(a);
+ modal(a?'Edit asset':'Add asset','<div class="card">'+
+  (fixed?'<div class="cnnote tiny">Its depreciation is already in closed months, so the cost, date and life stay as they are. The name and details can still change.</div>':'')+
+  '<label>What it is *</label><input class="f" id="as-n" value="'+esc(v.name||'')+'" placeholder="e.g. Hydrafacial machine, shop renovation">'+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="as-c" onchange="astCatPick()"'+(fixed?' disabled':'')+'>'+AST_CATS.map(c=>'<option value="'+c[0]+'"'+(v.cat===c[0]?' selected':'')+'>'+c[1]+'</option>').join('')+'</select></div>'+
+   '<div><label>Bought on</label><input class="f" type="date" id="as-d" value="'+esc(v.date||'')+'"'+(fixed?' disabled':'')+'></div></div>'+
+  '<div class="grid g2"><div><label>Cost (RM) *</label><input class="f" type="number" step="0.01" id="as-a" value="'+(v.cost||'')+'"'+(fixed?' disabled':'')+'></div>'+
+   '<div><label>Useful life (months)</label><input class="f" type="number" min="1" max="600" id="as-l" value="'+(v.life||60)+'"'+(fixed?' disabled':'')+'></div></div>'+
+  '<div class="grid g2"><div><label>Worth at the end (RM)</label><input class="f" type="number" step="0.01" min="0" id="as-r" value="'+(v.residual||0)+'"'+(fixed?' disabled':'')+'></div>'+
+   '<div><label>Supplier</label><input class="f" id="as-s" value="'+esc(v.supplier||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>Tag / serial no.</label><input class="f" id="as-t" value="'+esc(v.tag||'')+'"></div><div><label>Where it is</label><input class="f" id="as-w" value="'+esc(v.where||'')+'" placeholder="e.g. Room 2"></div></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Usual lives: machines 5 years, renovation 10, furniture 10, computers 3. Only for things over about RM1,000 used for more than a year; small items stay as expenses.</p>'+
+  '<div id="as-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="astSave(\''+(id||'')+'\',\''+(expId||v.expenseId||'')+'\')">'+ic('check',16)+'Save</button>'+
+  (a&&isOwnerMe()&&!fixed?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px;color:var(--rose)" onclick="astDel(\''+id+'\')">'+ic('trash',13)+'Remove from the register</button>':'')+'</div>');
+};
+window.astCatPick=()=>{const c=astCat($('#as-c').value);$('#as-l').value=c[2];};
+window.astSave=async(id,expId)=>{
+ const e=$('#as-e'),a=id?(ASSETS||[]).find(x=>x.id===id):null,fixed=a&&astLockedFrom(a);
+ const name=$('#as-n').value.trim(),cost=r2(+$('#as-a').value||0),life=Math.round(+$('#as-l').value||0),res=r2(+$('#as-r').value||0),date=$('#as-d').value;
+ if(name.length<2){e.textContent='Say what it is.';return;}
+ if(!fixed){if(!(cost>0)){e.textContent='Enter the cost.';return;}if(!(life>=1)){e.textContent='Enter the useful life in months.';return;}
+  if(res<0||res>=cost){e.textContent='What it is worth at the end must be less than the cost.';return;}if(!date||date>today()){e.textContent='Pick the date it was bought.';return;}
+  if(isLocked(mEnd(date.slice(0,7)))){e.textContent=lockMsg(date);return;}}
+ const d={name:name.slice(0,80),supplier:$('#as-s').value.trim().slice(0,80),tag:$('#as-t').value.trim().slice(0,40),where:$('#as-w').value.trim().slice(0,60),
+  ...(fixed?{}:{cat:$('#as-c').value,date,cost,life,residual:res}),branchId:(a&&a.branchId)||ME.branchId,expenseId:expId||'',updatedAt:new Date().toISOString(),updatedBy:UID};
+ try{if(a){await updateDoc(doc(db,'assets',id),d);Object.assign(a,d);}
+  else{d.createdAt=d.updatedAt;d.createdBy=UID;const r=await addDoc(collection(db,'assets'),d);(ASSETS=ASSETS||[]).push({id:r.id,...d});}
+  finDirty();await audit(a?'Asset edited':'Asset added',name+(fixed?'':' · '+rm(cost)+' over '+life+' months'));window.closeModal();render();toast('Saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+window.astDel=async id=>{const a=(ASSETS||[]).find(x=>x.id===id);if(!a||!isOwnerMe()||astLockedFrom(a))return;
+ if(!confirm('Remove '+a.name+' from the register? Its depreciation comes out of every month.'))return;
+ try{await deleteDoc(doc(db,'assets',id));ASSETS=ASSETS.filter(x=>x.id!==id);finDirty();await audit('Asset removed',a.name+' · '+rm(a.cost));window.closeModal();render();}catch(e){toast(friendly(e));}};
+window.astDispose=id=>{
+ const a=(ASSETS||[]).find(x=>x.id===id);if(!a)return;
+ modal('Sold or scrapped · '+a.name,'<div class="card">'+
+  '<div class="grid g2"><div><label>Date</label><input class="f" type="date" id="ad-d" value="'+today()+'"></div><div><label>Sold for (RM) — 0 if scrapped</label><input class="f" type="number" step="0.01" min="0" id="ad-p" value="0"></div></div>'+
+  '<label>Money received into</label><select class="f" id="ad-t">'+[['1010','Bank'],['1000','Cash in drawer'],['1030','Petty cash']].map(o=>'<option value="'+o[0]+'">'+o[1]+'</option>').join('')+'</select>'+
+  '<label>Reason *</label><input class="f" id="ad-r" placeholder="e.g. replaced with a new model, broken beyond repair">'+
+  '<div id="ad-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="astDisposeSave(\''+id+'\')">'+ic('check',16)+'Take it out of the books</button></div>');
+};
+window.astDisposeSave=async id=>{
+ const a=(ASSETS||[]).find(x=>x.id===id),e=$('#ad-e');if(!a)return;
+ const date=$('#ad-d').value,pr=r2(+$('#ad-p').value||0),why=$('#ad-r').value.trim();
+ if(!date||date<a.date||date>today()){e.textContent='Pick a date between when it was bought and today.';return;}
+ if(isLocked(date)){e.textContent=lockMsg(date);return;}if(why.length<3){e.textContent='Give the reason.';return;}
+ const dp={date,proceeds:pr,to:$('#ad-t').value,reason:why.slice(0,160),by:UID,byName:ME.name,at:new Date().toISOString()};
+ try{await updateDoc(doc(db,'assets',id),{disposed:dp});a.disposed=dp;finDirty();
+  const r=astDep(a,date.slice(0,7));await audit(pr?'Asset sold':'Asset written off',a.name+' · book value '+rm(r.nbv)+(pr?' · sold for '+rm(pr):''));window.closeModal();render();toast('Done');}
+ catch(err){e.textContent=friendly(err);}
+};
+function astRows(m){return [['Asset','Type','Tag / serial','Bought','Supplier','Cost','Life (months)','Worth at the end','Per month','Depreciation this month','Written off to date','Book value','Months left','Sold / scrapped','Proceeds'],
+ ...astMine().filter(a=>String(a.date).slice(0,7)<=m).map(a=>{const r=astDep(a,m);return [a.name,astCat(a.cat)[1],a.tag||'',a.date,a.supplier||'',+a.cost||0,+a.life||60,+a.residual||0,r.monthly,r.cur,r.acc,r.gone?0:r.nbv,r.gone?'':r.left,a.disposed?a.disposed.date:'',a.disposed?+a.disposed.proceeds||0:''];})];}
+window.astCSV=()=>csvDownload((bizC().name||'spa').replace(/\W+/g,'-')+'-asset-register-'+FINM+'.csv',astRows(FINM));
+
+/* ---------- the director's (or owner's) account ---------- */
+const dirAcs=()=>isCo()?['2600']:['3000','3100'];
+function dirData(m){
+ const {L}=balMonths(m),B=balBuild(m),acs=dirAcs(),shown=L.slice(-12),rows=[];
+ shown.forEach(k=>{const by={};(FINJ[k]||[]).forEach(l=>{if(!acs.includes(l.account))return;const x=by[l.src]=by[l.src]||{date:l.date,desc:l.desc,ref:l.ref,src:l.src,v:0};x.v+=l.credit-l.debit;});
+  Object.values(by).forEach(x=>{x.v=r2(x.v);if(Math.abs(x.v)>0.004)rows.push(x);});});
+ rows.sort((a,b)=>String(a.date).localeCompare(b.date));
+ const close=B.O?r2(acs.reduce((t,a)=>t+B.bal(a),0)):null;          /* + = the business owes them / their money in the business */
+ const open=close!=null?r2(close-rows.reduce((t,r)=>t+r.v,0)):null;
+ let run=open;rows.forEach(r=>{if(run!=null){run=r2(run+r.v);r.bal=run;}});
+ return {rows,open,close,from:shown[0],hasO:!!B.O};
+}
+function finDir(){
+ const m=FINM,{L}=balMonths(m),co=isCo(),who=co?'Director':'Owner';
+ const head='<div class="card"><div class="spread finhead">'+finNav()+(boss()?'<button class="btn sm" onclick="trForm()">'+ic('transfer',14)+'Money in or out</button>':'')+'</div></div>';
+ if(!finNeed(L))return head+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const X=dirData(m),inn=r2(X.rows.filter(r=>r.v>0).reduce((t,r)=>t+r.v,0)),out=r2(-X.rows.filter(r=>r.v<0).reduce((t,r)=>t+r.v,0));
+ return head+
+  '<div class="crmkpis">'+kpi(co?'Put in / paid for the company':'Put in / paid for the business',rm(inn),'since '+mLabel(X.from),'download')+kpi('Taken out',rm(out),'since '+mLabel(X.from),'upload')+
+   kpi(co?(X.close!=null&&X.close<0?'Director owes the company':'Company owes the director'):'Owner\'s money in the business',X.close==null?'—':'<span class="'+(X.close<0?'neg':'')+'">'+rm(Math.abs(X.close))+'</span>','at '+dshort(mEnd(m)),'user')+'</div>'+
+  (co&&X.close!=null&&X.close<-0.004?'<div class="card cnnote"><b>'+ic('alert',14)+' The director owes the company '+rm(-X.close)+'.</b> A company generally may not lend to its directors (Companies Act 2016, s.224). Money a director takes out should go through payroll (salary or director\'s fee), a declared dividend, or repay what the company owes them. Talk to your accountant about clearing this.</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('user',15)+' '+who+'\'s account</h3>'+
+   '<p class="tiny muted" style="margin:0 0 8px">'+(co?'For a Sdn Bhd, money the director puts in or pays for the company personally is a loan to the company (2600), not capital — the company can repay it any time. Paid-up share capital is recorded separately (Move money → Paid-up share capital).'
+    :'Money the owner puts into the business (capital, 3000) or pays for it personally, and money taken out for personal use (drawings, 3100). Drawings are not an expense and do not reduce profit.')+'</p>'+
+   '<div class="scroll"><table class="pltbl"><tr><th>Date</th><th>What</th><th class="num">In</th><th class="num">Out</th><th class="num">Balance</th></tr>'+
+    (X.open!=null?'<tr class="pltot"><td colspan="4">Balance at the start of '+mLabel(X.from)+'</td><td class="num">'+fmtS(X.open)+'</td></tr>':'')+
+    (X.rows.length?X.rows.map(r=>'<tr><td>'+dshort(r.date)+'</td><td>'+esc(r.desc||'')+'</td><td class="num">'+(r.v>0?rm(r.v):'')+'</td><td class="num">'+(r.v<0?rm(-r.v):'')+'</td><td class="num">'+(r.bal!=null?fmtS(r.bal):'')+'</td></tr>').join('')
+     :'<tr><td colspan="5" class="muted">Nothing in or out since '+mLabel(X.from)+'.</td></tr>')+
+    (X.close!=null?'<tr class="plbig"><td colspan="4">Balance at '+dshort(mEnd(m))+'</td><td class="num">'+fmtS(X.close)+'</td></tr>':'')+'</table></div>'+
+   (!X.hasO?'<p class="tiny muted" style="margin:6px 0 0">Enter starting balances (Money &amp; balances) to see the running balance.</p>':'')+
+   '<p class="tiny muted" style="margin:6px 0 0">Expenses marked "Owner paid personally" land here automatically.</p></div>';
+}
+function dirRows(m){const X=dirData(m);return [['Date','What','Reference','In','Out','Balance'],...(X.open!=null?[['','Balance at the start of '+mLabel(X.from),'','','',X.open]]:[]),
+ ...X.rows.map(r=>[r.date,r.desc||'',r.ref||'',r.v>0?r.v:'',r.v<0?-r.v:'',r.bal!=null?r.bal:'']),...(X.close!=null?[['','Balance at '+mEnd(m),'','','',X.close]]:[])];}
+
+/* ---------- search ---------- */
+let FQ={q:'',amt:'',from:'',to:''};
+const ffMonths=()=>{const L=[],e=today().slice(0,7);for(let i=11;i>=0;i--)L.push(mShift(e,-i));return L;};
+function ffItems(){
+ const out=[];ffMonths().forEach(m=>{const by={};(FINJ[m]||[]).forEach(l=>{const x=by[l.src]=by[l.src]||{src:l.src,date:l.date,desc:l.desc,ref:l.ref,lines:[]};x.lines.push(l);});
+  Object.values(by).forEach(x=>{x.amt=r2(x.lines.reduce((t,l)=>t+l.debit,0));out.push(x);});});
+ return out;
+}
+function ffMatch(){
+ const q=String(FQ.q||'').toLowerCase().split(/\s+/).filter(Boolean),a=FQ.amt===''?null:bkNum(FQ.amt);
+ if(!q.length&&a==null&&!FQ.from&&!FQ.to)return null;
+ return ffItems().filter(x=>{
+  if(FQ.from&&x.date<FQ.from)return false;if(FQ.to&&x.date>FQ.to)return false;
+  if(a!=null&&Math.abs(x.amt-Math.abs(a))>0.005&&!x.lines.some(l=>Math.abs(l.debit-Math.abs(a))<0.005||Math.abs(l.credit-Math.abs(a))<0.005))return false;
+  if(q.length){const h=(x.desc+' '+x.ref+' '+x.src+' '+x.lines.map(l=>l.account+' '+acName(l.account)).join(' ')).toLowerCase();if(!q.every(w=>h.includes(w)))return false;}
+  return true;}).sort((p,q2)=>String(q2.date).localeCompare(p.date));
+}
+function ffResHTML(){
+ const R=ffMatch();if(R===null)return '<p class="tiny muted">Type a name, invoice or reference number, supplier or account — or an amount.</p>';
+ if(!R.length)return '<div class="empty">Nothing found in the last 12 months.</div>';
+ return '<p class="tiny muted" style="margin:0 0 6px">'+R.length+' found'+(R.length>100?' · showing the latest 100':'')+'</p>'+R.slice(0,100).map(x=>'<button class="bkrow" onclick="ffOpen(\''+esc(x.src)+'\')"><span class="bkd">'+dshort(x.date)+'</span>'+
+  '<span class="bkdesc">'+esc(x.desc||'')+'<small>'+esc(x.ref||'')+' · '+esc([...new Set(x.lines.map(l=>acName(l.account)))].slice(0,3).join(', '))+'</small></span><b class="bkamt">'+rm(x.amt)+'</b></button>').join('');
+}
+window.ffSet=(k,v)=>{FQ[k]=v;const b=document.getElementById('ff-res');if(b)b.innerHTML=ffResHTML();};
+function finFind(){
+ const L=ffMonths(),head='<div class="card"><h3 style="margin:0 0 8px">'+ic('search',15)+' Find a transaction</h3>'+
+  '<div class="grid g2"><div><label>Words</label><input class="f" id="ff-q" value="'+esc(FQ.q)+'" oninput="ffSet(\'q\',this.value)" placeholder="e.g. Siti, INV-0012, TNB, Shopee" autocomplete="off"></div>'+
+   '<div><label>Amount (RM)</label><input class="f" id="ff-a" inputmode="decimal" value="'+esc(FQ.amt)+'" oninput="ffSet(\'amt\',this.value)" placeholder="e.g. 250"></div></div>'+
+  '<div class="grid g2"><div><label>From</label><input class="f" type="date" value="'+esc(FQ.from)+'" onchange="ffSet(\'from\',this.value)"></div><div><label>To</label><input class="f" type="date" value="'+esc(FQ.to)+'" onchange="ffSet(\'to\',this.value)"></div></div>';
+ if(!finNeed(L))return head+'</div><div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Reading 12 months…</p></div></div>';
+ return head+'<div id="ff-res">'+ffResHTML()+'</div></div>';
+}
+window.ffOpen=src=>{
+ const x=ffItems().find(i=>i.src===src);if(!x)return;
+ const [k,id]=String(src).split(':');
+ const open=['sale','pay','cogs'].includes(k)?'showReceipt(\''+id+'\')':['exp','bill','billpay'].includes(k)?(boss()?'expForm(\''+id+'\')':(((EXPENSES||[]).find(e=>e.id===id)||{}).receipt?'expReceipt(\''+id+'\')':'')):
+  k==='tr'&&boss()?'trForm(\''+id+'\')':k==='mj'?'finTab(\'jnl\')':['dep','disp'].includes(k)?'astShow(\''+id+'\')':'';
+ modal('Transaction','<div class="card"><div class="spread"><b>'+dstr(x.date)+'</b><span class="tiny muted">'+esc(x.ref||'')+'</span></div><div style="margin:4px 0 8px">'+esc(x.desc||'')+'</div>'+
+  '<table class="mjt"><tr><th>Account</th><th class="num">Debit</th><th class="num">Credit</th></tr>'+x.lines.map(l=>'<tr><td>'+esc(l.account)+' · '+esc(acName(l.account))+'</td><td class="num">'+(l.debit?rm(l.debit):'')+'</td><td class="num">'+(l.credit?rm(l.credit):'')+'</td></tr>').join('')+'</table>'+
+  (open?'<button class="btn sm" style="margin-top:8px" onclick="closeModal();'+open+'">'+ic('right',13)+'Open the record</button>':'')+'</div>');
+};
+
+/* ---------- overview ---------- */
+function finDash(){
+ const m=FINM,pm=mShift(m,-1),P0=plMonths(m),{L}=balMonths(m),months=[...new Set([...P0.trend,pm,...L])];
+ const head='<div class="card"><div class="spread finhead">'+finNav()+'<button class="btn sm ghost" onclick="finXLSX()">'+ic('download',14)+'Excel workbook</button></div></div>';
+ if(!finNeed(months))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up the books…</p></div></div>';
+ const pl=k=>{const P=plOf(FINJ[k]),rev=Object.keys(P).filter(c=>plSec(c)==='rev').reduce((t,c)=>t+P[c],0),cost=Object.keys(P).filter(c=>plSec(c)&&plSec(c)!=='rev').reduce((t,c)=>t+P[c],0);return {rev:r2(rev),cost:r2(cost),profit:r2(rev-cost)};};
+ const A=pl(m),Bm=pl(pm),B=balBuild(m),C=liveChecks();
+ const pct=(a,b)=>b?Math.round((a-b)/Math.abs(b)*100):null,dp=pct(A.rev,Bm.rev);
+ const cash=B.O?r2(CF_CASH.reduce((t,a)=>t+B.bal(a),0)):null;
+ const overdue=(EXPENSES||[]).filter(e=>e.status==='unpaid'&&daysBetween(today(),e.dueDate||e.date)<0);
+ const trend=P0.trend.map(k=>({k,...pl(k)})),mx=Math.max(1,...trend.map(t=>Math.max(t.rev,t.cost)));
+ const dir=B.O?r2(dirAcs().reduce((t,a)=>t+B.bal(a),0)):null;
+ /* what still needs doing */
+ const todo=[],done=(t,go,i)=>todo.push({t,go,i});
+ try{const n=bkOpenCount();if(n)done(n+' bank line'+(n>1?'s':'')+' to check','finTab(\'bank\')','bank');}catch(e){}
+ try{if(BKL&&BKL.some(l=>l.date<=mEnd(pm))&&!Object.values(BKR||{}).some(r=>r.m===pm&&r.done))done('Reconcile the bank for '+mLabel(pm),'finTab(\'bank\')','shield');}catch(e){}
+ if(overdue.length)done(overdue.length+' bill'+(overdue.length>1?'s':'')+' overdue · '+rm(overdue.reduce((t,e)=>t+(+e.amount||0),0)),'finTab(\'bills\')','clock');
+ try{compItems().filter(x=>!x.done&&(x.late||x.soon)).slice(0,3).forEach(x=>done((x.late?'Late: ':'Due '+dshort(x.date)+': ')+x.title,'finTab(\'tax\')','flag'));}catch(e){}
+ try{const u=astUnlisted().length;if(u)done(u+' equipment purchase'+(u>1?'s':'')+' not in the asset register','finTab(\'ast\')','tool');}catch(e){}
+ if(m===today().slice(0,7)&&+today().slice(8,10)>=15){
+  if(!(finLock()>=mEnd(pm)))done('Close the books for '+mLabel(pm)+' once checked','finTab(\'jnl\')','check');
+  if(!(((FINSET||{}).exported||{})[pm]))done('Send '+mLabel(pm)+' to your accountant (Journal & export)','finTab(\'jnl\')','download');}
+ if(isCo()&&dir!=null&&dir<-0.004)done('The director owes the company '+rm(-dir),'finTab(\'dir\')','alert');
+ if(!B.O)done('Enter starting balances so money and balances add up','finTab(\'bal\')','wallet');
+ return head+
+  '<div class="crmkpis">'+kpi('Revenue',rm(A.rev),mLabel(m).split(' ')[0]+(dp!=null?' · '+(dp>=0?'+':'')+dp+'% on '+mLabel(pm).split(' ')[0]:''),'chart')+
+   kpi('Net profit','<span class="'+(A.profit<0?'neg':'')+'">'+fmtS(A.profit)+'</span>',A.rev?Math.round(A.profit/A.rev*100)+'% of revenue':'—','spark')+
+   kpi('Money',cash==null?'—':rm(cash),'drawer, bank, payouts, petty cash','wallet')+
+   kpi('Bills to pay',rm((EXPENSES||[]).filter(e=>e.status==='unpaid').reduce((t,e)=>t+(+e.amount||0),0)),overdue.length?overdue.length+' overdue':'none overdue','clock')+'</div>'+
+  '<div class="crmkpis">'+kpi('Owed by clients',rm(C.owed),'instalments','users')+kpi('Sessions still owed',rm(B.O?B.bal('2100'):C.pk.books),'unredeemed packages','package')+
+   kpi('SST to pay',B.O?rm(B.bal('2500')):'—',bizC().sst?'collected, not paid over':'not registered','shield')+
+   kpi(isCo()?'Director\'s account':'Owner\'s money in',dir==null?'—':'<span class="'+(dir<0?'neg':'')+'">'+fmtS(dir)+'</span>',isCo()?(dir!=null&&dir<0?'director owes':'company owes the director'):'capital less drawings','user')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('list',15)+' To do</h3>'+(todo.length?todo.map(x=>'<button class="bkrow" onclick="'+x.go+'"><span class="bkd">'+ic(x.i,15)+'</span><span class="bkdesc">'+esc(x.t)+'</span>'+ic('right',14)+'</button>').join('')
+   :'<div class="empty">'+ic('check',22)+'<div>All caught up.</div></div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Last 6 months</h3><div class="pltrend">'+trend.map(t=>
+   '<div class="pltm"><div class="plbars"><i class="r" style="height:'+(t.rev/mx*100)+'%"></i><i class="c" style="height:'+(t.cost/mx*100)+'%"></i></div>'+
+   '<b class="'+(t.profit<0?'neg':'')+'">'+rmk(t.profit)+'</b><small>'+mLabel(t.k).slice(0,3)+'</small></div>').join('')+'</div>'+
+   '<div class="tiny muted"><span class="lg r"></span>Revenue<span class="lg c"></span>Costs · the figure under each month is the profit</div></div>';
+}
+
+/* ---------- Excel: every report in one workbook ---------- */
+const CRC_T=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+const crc32=b=>{let c=0xFFFFFFFF;for(let i=0;i<b.length;i++)c=CRC_T[(c^b[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;};
+function zipStore(files){
+ const enc=new TextEncoder(),parts=[],cd=[];let off=0;
+ files.forEach(f=>{const nm=enc.encode(f.name),d=typeof f.data==='string'?enc.encode(f.data):f.data,crc=crc32(d);
+  const h=new Uint8Array(30+nm.length),v=new DataView(h.buffer);
+  v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(6,0x0800,true);v.setUint16(8,0,true);v.setUint16(10,0,true);v.setUint16(12,0x21,true);
+  v.setUint32(14,crc,true);v.setUint32(18,d.length,true);v.setUint32(22,d.length,true);v.setUint16(26,nm.length,true);v.setUint16(28,0,true);h.set(nm,30);
+  parts.push(h,d);
+  const c=new Uint8Array(46+nm.length),w=new DataView(c.buffer);
+  w.setUint32(0,0x02014b50,true);w.setUint16(4,20,true);w.setUint16(6,20,true);w.setUint16(8,0x0800,true);w.setUint16(10,0,true);w.setUint16(12,0,true);w.setUint16(14,0x21,true);
+  w.setUint32(16,crc,true);w.setUint32(20,d.length,true);w.setUint32(24,d.length,true);w.setUint16(28,nm.length,true);w.setUint32(42,off,true);c.set(nm,46);
+  cd.push(c);off+=h.length+d.length;});
+ const cdLen=cd.reduce((t,c)=>t+c.length,0),e=new Uint8Array(22),x=new DataView(e.buffer);
+ x.setUint32(0,0x06054b50,true);x.setUint16(8,files.length,true);x.setUint16(10,files.length,true);x.setUint32(12,cdLen,true);x.setUint32(16,off,true);
+ return {parts:[...parts,...cd,e],size:off+cdLen+22};
+}
+const xEsc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+const xCol=i=>{let s='';i++;while(i>0){const r=(i-1)%26;s=String.fromCharCode(65+r)+s;i=Math.floor((i-1)/26);}return s;};
+function xSheet(rows){
+ const W=[];rows.forEach(r=>r.forEach((v,i)=>{const l=Math.min(60,String(v==null?'':typeof v==='number'?v.toFixed(2):v).length+2);W[i]=Math.max(W[i]||8,l);}));
+ const body=rows.map((r,ri)=>'<row r="'+(ri+1)+'">'+r.map((v,ci)=>{const ref=xCol(ci)+(ri+1);
+  if(v===''||v==null)return '';
+  if(typeof v==='number'&&isFinite(v))return '<c r="'+ref+'" s="'+(ri===0?1:2)+'"><v>'+v+'</v></c>';
+  return '<c r="'+ref+'" t="inlineStr" s="'+(ri===0?1:0)+'"><is><t xml:space="preserve">'+xEsc(v)+'</t></is></c>';}).join('')+'</row>').join('');
+ return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+  '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'+
+  (W.length?'<cols>'+W.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join('')+'</cols>':'')+
+  '<sheetData>'+body+'</sheetData></worksheet>';
+}
+function xlsxBuild(sheets){
+ const S=sheets.map((s,i)=>({...s,name:(String(s.name).replace(/[\[\]:*?\/\\]/g,' ').slice(0,31)||'Sheet'+(i+1))}));
+ const files=[
+  {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'+
+   '<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+
+   S.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'</Types>'},
+  {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+  {name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>'+
+   S.map((s,i)=>'<sheet name="'+xEsc(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>'},
+  {name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+
+   S.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+
+   '<Relationship Id="rId'+(S.length+1)+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>'},
+  {name:'xl/styles.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'+
+   '<fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts>'+
+   '<fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFF3EAD9"/><bgColor indexed="64"/></patternFill></fill></fills>'+
+   '<borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'+
+   '<cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="4" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs>'+
+   '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'},
+  ...S.map((s,i)=>({name:'xl/worksheets/sheet'+(i+1)+'.xml',data:xSheet(s.rows)}))];
+ return zipStore(files);
+}
+let XCAP=null;
+{const _cd=csvDownload;csvDownload=(name,rows)=>{if(XCAP){XCAP.push({name,rows});return;}return _cd(name,rows);};}
+window.finXLSX=async()=>{
+ const m=FINM,biz=bizC(),nm=String(biz.name||'spa').replace(/[^A-Za-z0-9]+/g,'-');
+ toast('Building the workbook…');
+ const cap=[];
+ try{
+  await Promise.all([...new Set([...plMonths(m).all,...balMonths(m).L])].map(finJGet));
+  XCAP=cap;for(const k of ['pl','tb','jnl','sales','exp'])await window.finCSV(k);
+ }catch(e){XCAP=null;toast(friendly(e));return;}
+ XCAP=null;
+ const byKind={pl:'Profit & loss',tb:'Trial balance',jnl:'Journal',sales:'Daily takings',exp:'Expenses'};
+ const sheets=[{name:'Cover',rows:[['Finance workbook',''],['Business',biz.legalName||biz.name||''],['Registration',biz.ssm||''],['Month',mLabel(m)],['Prepared',new Date().toLocaleString('en-MY')],['By',ME.name||''],
+   ['Books closed up to',finLock()||'—'],['',''],['Sheets','Profit & loss, Trial balance, Journal, Daily takings, Expenses, Asset register, '+(isCo()?'Director':'Owner')+'\'s account'+(bkLines&&(BKL||[]).length?', Bank lines':'')]]}];
+ cap.forEach((c,i)=>{const k=['pl','tb','jnl','sales','exp'][i];sheets.push({name:byKind[k]||c.name,rows:c.rows});});
+ if(ASSETS===null)await astLoad();
+ sheets.push({name:'Asset register',rows:astRows(m)});
+ sheets.push({name:(isCo()?'Director':'Owner')+' account',rows:dirRows(m)});
+ if((BKL||[]).length){const C=bkCtx();sheets.push({name:'Bank lines',rows:[['Date','Description','Reference','Amount','Balance','Status','Matched to'],
+  ...C.L.filter(l=>l.date.slice(0,7)===m).sort((a,b)=>a.date.localeCompare(b.date)||a.seq-b.seq).map(l=>[l.date,l.desc,l.ref||'',l.amount,l.bal!=null?+l.bal:'',{open:'To check',lost:'To check',matched:'Matched',ignored:'Left out'}[l.st],(l.srcs||[]).map(s=>(C.idx[s]||{}).desc||s).join(' + ')])]});}
+ const Z=xlsxBuild(sheets),name=nm+'-finance-'+m+'.xlsx';
+ window.__lastXLSX={name,size:Z.size,sheets:sheets.map(s=>({name:s.name,rows:s.rows.length,head:s.rows[0]}))};
+ try{const url=URL.createObjectURL(new Blob(Z.parts,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}catch(e){console.warn(e);}
+ audit('Finance export','Excel workbook · '+mLabel(m));toast('Workbook ready · '+sheets.length+' sheets');
+};
 
 </script>
