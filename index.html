@@ -1657,6 +1657,7 @@ body.demo .syncbar{top:106px}
 .ccout{font-size:12px;color:var(--ink-2);padding:2px 2px 0}.ccout b{color:var(--ink)}
 .ccsum{background:var(--brass-soft);border-radius:12px;padding:10px 12px;margin-bottom:6px}.ccsum table{width:100%}.ccsum td{padding:3px 0;font-size:13px}
 .ccsum tr.cctot td{border-top:1px solid var(--line);padding-top:6px;font-size:14.5px}
+.cftbl td small{display:block;font-size:11.5px;color:var(--ink-3);font-weight:400;margin-top:2px;line-height:1.35}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1914,7 +1915,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25m';
+const BUILD='2026-09-25n';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14521,11 +14522,11 @@ function vFin(){
  if(EXPENSES===null)setTimeout(()=>finLoad(),0);
  if(!FINM)FINM=today().slice(0,7);
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
- const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
+ const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
   ...(isOwnerMe()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
   ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['coa','Accounts & settings','list','']];
  if(!tabs.some(t=>t[0]===FINV))FINV='pl';
- const V={pl:finPL,bal:finBal,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const V={pl:finPL,bal:finBal,cf:finCash,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -17751,5 +17752,120 @@ window.ccSave=async()=>{
   toast('Cost price set to '+rm(R.total));window.editProduct(CC.id);}
  catch(err){e.textContent=friendly(err);btn.disabled=false;}
 };
+
+
+/* ============ cash flow: where the money actually came from and went ============ */
+/* Built from the same journal as the profit & loss. Every entry that touches money — the
+   drawer, the bank, card and e-wallet payouts, petty cash — is traced to what was on the
+   other side of it (a client paying, stock bought, salaries, rent, equipment, the owner…),
+   so the month's money in and money out add up exactly to the change in money held. A
+   bridge then walks from the month's profit to that change, line by line, to show why the
+   two are not the same. */
+const CF_CASH=['1000','1010','1020','1030'];
+const CF_CATS=[
+ ['op','clients','Received from clients','users'],
+ ['op','stock','Stock & product supplies','package'],
+ ['op','staff','Staff — salaries, contributions & claims','idcard'],
+ ['op','opex','Running costs','receipt'],
+ ['op','tax','SST paid to Customs','shield'],
+ ['op','bills','Supplier bills paid','clock'],
+ ['inv','equip','Equipment & renovation','tool'],
+ ['fin','owner','Owner — money put in / taken out','user'],
+ ['op','other','Other','note']];
+function cfCat(a){
+ const t=acType(a);
+ if(t==='revenue'||['1100','2100','2200'].includes(a))return 'clients';
+ if(a==='1200'||a==='5000')return 'stock';
+ if(/^51/.test(a)||/^23/.test(a)||a==='1300')return 'staff';
+ if(a==='2500')return 'tax';
+ if(a==='2000')return 'bills';
+ if(a==='1500')return 'equip';
+ if(a==='3000'||a==='3100')return 'owner';
+ if(t==='expense')return 'opex';
+ return 'other';
+}
+/* money in and out of month m, by category and by account */
+function cfBuild(m){
+ const J=FINJ[m]||[],bySrc={};
+ J.forEach(l=>{(bySrc[l.src]=bySrc[l.src]||[]).push(l);});
+ const cat={},acc={},inTot={v:0},outTot={v:0};let moved=0;
+ const put=(a,v,src)=>{if(Math.abs(v)<0.0005)return;
+  /* a supplier bill paid later is traced back to what the bill was for */
+  if(a==='2000'&&String(src).startsWith('billpay:')){const e=(EXPENSES||[]).find(x=>x.id===String(src).slice(8));
+   if(e){const L=expLines(e),T=L.reduce((t,x)=>t+(+x.amount||0),0)||1;L.forEach(x=>{const ac=(!cogsAuto()&&x.account==='1200')?'5000':x.account;put(ac,v*(+x.amount||0)/T,'');});return;}}
+  const c=cfCat(a);cat[c]=(cat[c]||0)+v;acc[a]=(acc[a]||0)+v;if(v>0)inTot.v+=v;else outTot.v+=v;};
+ Object.entries(bySrc).forEach(([src,L])=>{
+  const cash=L.filter(l=>CF_CASH.includes(l.account)).reduce((t,l)=>t+l.debit-l.credit,0);
+  if(!L.some(l=>CF_CASH.includes(l.account)))return;
+  const other=L.filter(l=>!CF_CASH.includes(l.account));
+  if(!other.length){moved+=L.filter(l=>l.debit>0).reduce((t,l)=>t+l.debit,0);return;}   /* drawer → bank and the like */
+  other.forEach(l=>put(l.account,-(l.debit-l.credit),src));
+ });
+ const net=r2(Object.values(cat).reduce((t,v)=>t+v,0));
+ const change=r2(J.filter(l=>CF_CASH.includes(l.account)).reduce((t,l)=>t+l.debit-l.credit,0));
+ return{cat,acc,net,change,moneyIn:r2(inTot.v),moneyOut:r2(-outTot.v),moved:r2(moved)};
+}
+/* from profit to the change in money: every balance that moved without money moving */
+function cfBridge(m){
+ const J=FINJ[m]||[],mv={};
+ J.forEach(l=>{mv[l.account]=(mv[l.account]||0)+l.debit-l.credit;});
+ const P=plOf(J),rev=Object.keys(P).filter(c=>plSec(c)==='rev').reduce((t,c)=>t+P[c],0),
+  cost=Object.keys(P).filter(c=>plSec(c)&&plSec(c)!=='rev').reduce((t,c)=>t+P[c],0),profit=r2(rev-cost);
+ const g=(codes,label,why)=>{const v=r2(-codes.reduce((t,a)=>t+(mv[a]||0),0));return{label,why,v};};
+ const rows=[
+  g(['1200'],'Stock','bought but not sold yet (−), or sold from stock bought before (+)'),
+  g(['1100'],'Clients paying by instalment','billed but not paid yet (−), or older balances collected (+)'),
+  g(['2100'],'Packages paid, sessions not used','money in now, revenue later as sessions are used'),
+  g(['2200'],'Booking deposits','money in before the treatment'),
+  g(['2000'],'Supplier bills','cost counted, not paid yet (+), or older bills paid (−)'),
+  g(['2300','2310','2320','2330','2500'],'KWSP, PERKESO, SIP, PCB & SST','counted, not paid over yet (+), or paid over (−)'),
+  g(['1300'],'Staff advances',''),
+  g(['1500'],'Equipment & renovation','paid for now, not a monthly cost'),
+  g(['3000','3100'],'Owner','money put in (+) or taken out (−) — not part of profit')];
+ const known=new Set(['1200','1100','2100','2200','2000','2300','2310','2320','2330','2500','1300','1500','3000','3100',...CF_CASH]);
+ const rest=r2(-Object.keys(mv).filter(a=>!known.has(a)&&!plSec(a)).reduce((t,a)=>t+mv[a],0));
+ if(Math.abs(rest)>0.004)rows.push({label:'Other balances',why:'',v:rest});
+ return{profit,rows:rows.filter(r=>Math.abs(r.v)>0.004)};
+}
+function finCash(){
+ const m=FINM,trend=[];for(let i=5;i>=0;i--)trend.push(mShift(m,-i));
+ const {L}=balMonths(m);
+ const head='<div class="card"><div class="spread">'+finNav()+'<button class="btn sm ghost" onclick="FINJ_RESET()">'+ic('refresh',14)+'Rebuild</button></div></div>';
+ if(!finNeed([...new Set([...trend,...L])]))return head+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up the money in and out…</p></div></div>';
+ const C=cfBuild(m),Bg=cfBridge(m),B=balBuild(m);
+ const hasOpen=!!B.O,close=r2(CF_CASH.reduce((t,a)=>t+B.bal(a),0)),open=r2(close-C.change);
+ const line=(label,v,cls,sub)=>'<tr class="'+(cls||'')+'"><td>'+label+(sub?'<small>'+sub+'</small>':'')+'</td><td class="num'+(v<-0.004?' neg':'')+'">'+fmtS(v)+'</td></tr>';
+ const sec=(k,title)=>{const cs=CF_CATS.filter(c=>c[0]===k&&Math.abs(C.cat[c[1]]||0)>0.004);if(!cs.length)return '';
+  const tot=cs.reduce((t,c)=>t+(C.cat[c[1]]||0),0);
+  return '<tr class="plsec"><td colspan="2">'+title+'</td></tr>'+cs.map(c=>{
+   let sub='';if(c[1]==='opex'){const A=Object.entries(C.acc).filter(([a])=>cfCat(a)==='opex'&&Math.abs(C.acc[a])>0.004).sort((x,y)=>x[1]-y[1]);
+    sub=A.slice(0,6).map(([a,v])=>esc(acName(a))+' '+fmtS(v)).join(' · ')+(A.length>6?' · …':'');}
+   return line(ic(c[3],12)+' '+c[2],C.cat[c[1]],'',sub);}).join('')+line('Total',tot,'pltot');};
+ const mx=Math.max(1,...trend.map(k=>{const x=cfBuild(k);return Math.max(x.moneyIn,x.moneyOut);}));
+ return head+
+  '<div class="crmkpis">'+kpi('Money in',rm(C.moneyIn),'received in '+mLabel(m),'download')+kpi('Money out',rm(C.moneyOut),'paid out','upload')+
+   kpi('Net change','<span class="'+(C.change<0?'neg':'')+'">'+fmtS(C.change)+'</span>','in drawer, bank, payouts & petty cash','wallet')+
+   kpi('Profit this month','<span class="'+(Bg.profit<0?'neg':'')+'">'+fmtS(Bg.profit)+'</span>','from Profit & loss','chart')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('wallet',15)+' Where the money came from and went</h3><div class="scroll"><table class="pltbl cftbl">'+
+   (hasOpen?line('Money at the start of '+mLabel(m).split(' ')[0],open,'pltot'):'')+
+   sec('op','Running the spa')+sec('inv','Equipment & renovation')+sec('fin','Owner')+
+   line('Change in money',C.change,'plbig')+(hasOpen?line('Money at the end of '+mLabel(m).split(' ')[0],close,'plbig'):'')+'</table></div>'+
+   (C.moved>0.004?'<p class="tiny muted" style="margin:8px 0 0">'+ic('transfer',12)+' '+rm(C.moved)+' was moved between the drawer, bank, payouts and petty cash — that is not money in or out, so it is left out above.</p>':'')+
+   (!hasOpen?'<p class="tiny muted" style="margin:6px 0 0">Enter your starting balances (Money &amp; balances) to see the money at the start and end of each month.</p>':'')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('chart',15)+' Why profit and money are different</h3>'+
+   '<p class="tiny muted" style="margin:0 0 8px">From the month\'s profit to the change in money. Each line is something counted in profit without money moving, or money moving without it being profit.</p>'+
+   '<div class="scroll"><table class="pltbl cftbl">'+line('Profit for '+mLabel(m),Bg.profit,'plbig')+
+   Bg.rows.map(r=>line(esc(r.label),r.v,'',esc(r.why))).join('')+line('Change in money',C.change,'plbig')+'</table></div>'+
+   (Math.abs(r2(Bg.profit+Bg.rows.reduce((t,r)=>t+r.v,0))-C.change)>0.02?'<p class="tiny" style="color:var(--rose)">The bridge does not add up — tap Rebuild.</p>':'')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Last 6 months</h3><div class="pltrend">'+trend.map(k=>{const x=cfBuild(k);
+   return '<div class="pltm"><div class="plbars"><i class="r" style="height:'+(x.moneyIn/mx*100)+'%"></i><i class="c" style="height:'+(x.moneyOut/mx*100)+'%"></i></div>'+
+   '<b class="'+(x.change<0?'neg':'')+'">'+rmk(x.change)+'</b><small>'+mLabel(k).slice(0,3)+'</small></div>';}).join('')+'</div>'+
+   '<div class="tiny muted"><span class="lg r"></span>Money in<span class="lg c"></span>Money out · the figure under each month is the change in money</div></div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('note',15)+' Reading this</h3>'+
+   ['Money means the counter drawer, the bank, card and e-wallet payouts on the way, and petty cash.',
+    'Package money counts here the day the client pays, even though it becomes revenue only as sessions are used — it is money you still owe in treatments.',
+    'Card and e-wallet takings count as money in when paid; use Move money when the payout reaches the bank so the bank balance is right.',
+    ...(isOwnerMe()?[]:['Salaries are only included when the owner opens Finance.'])].map(x=>'<p class="tiny muted" style="margin:4px 0">• '+esc(x)+'</p>').join('')+'</div>';
+}
 
 </script>
