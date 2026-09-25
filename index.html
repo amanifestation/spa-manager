@@ -1749,6 +1749,19 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .pritems{max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:4px;margin:0 0 10px}
 .pritem{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:9px;font-size:13px;cursor:pointer}.pritem.on{background:var(--brass-soft)}
 .pritem small{display:block;font-size:11px;color:var(--ink-3)}
+.suprow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:9px 2px;font:inherit;color:inherit;cursor:pointer}
+.suprow .supn{flex:1;min-width:0}.suprow small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.supq{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}.supq.low{color:var(--rose);font-weight:600}
+.sulist{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:2px 6px;margin:0 0 10px}
+.surow,.cntrow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line)}.surow:last-child{border-bottom:0}
+.surow>span:first-child,.cntrow>span:first-child{flex:1;min-width:0;font-size:13px}.surow small,.cntrow small{display:block;font-size:11.5px;color:var(--ink-3)}
+.surow.on{background:var(--brass-soft);border-radius:10px}
+.step{display:inline-flex;align-items:center;gap:4px}.step button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font:inherit;font-size:16px;cursor:pointer}
+.step input{width:62px;margin:0;text-align:center;padding:6px}
+.cntrow .f{width:84px;margin:0;text-align:center}
+.rsline{border:1px solid var(--line);border-radius:12px;padding:8px;margin:0 0 8px}.rsline>.f{margin:0 0 6px}
+.rsq{display:grid;grid-template-columns:80px minmax(0,1fr) minmax(0,1fr) auto;gap:6px;align-items:center}.rsq .f{margin:0;min-width:0}
+.lntbl{width:100%;font-size:13px}.lntbl tr{cursor:pointer}.lntbl td small{display:block;font-size:11px;color:var(--ink-3)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2008,7 +2021,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26e';
+const BUILD='2026-09-26f';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2303,7 +2316,7 @@ const TABS=[
  {id:'set', ic:'gear',   label:'Settings', perm:null,      group:'Manage', desc:'Business details and data'}];
 const GROUPS=['Today','Clients','Money','Manage'];
 /* what this sign-in may open; the counter tablet leaves the back office to its owner */
-const tabOk=t=>isAcct()?t.id==='fin':(!t.perm||can(t.perm))&&!(ME&&ME.role==='branch'&&t.id==='set');
+const tabOk=t=>isAcct()?t.id==='fin':(!t.perm||can(t.perm))&&!(ME&&ME.role==='branch'&&(t.id==='set'||t.id==='inv'));
 /* the order the bottom bar prefers — first four the person is allowed to see win a slot */
 const BNAV=['home','book','pos','cust','merit','lib','shift','board'];
 let navOpen=false;
@@ -9312,7 +9325,7 @@ window.cashUp=()=>{
 let invTab='all';
 window.setInvTab=t=>{invTab=t;render();};
 function vInv(){
- const st=D.stock.filter(s=>s.branchId===ME.branchId).filter(s=>invTab==='all'||prod(s.sku).type===invTab);
+ const st=D.stock.filter(s=>s.branchId===ME.branchId).filter(s=>prod(s.sku).type!=='supply'&&(invTab==='all'||prod(s.sku).type===invTab));
  const low=D.stock.filter(s=>s.branchId===ME.branchId&&s.qty<=s.reorder);
  let h='<div class="grid g2" style="margin-bottom:12px">'+kpi('Below reorder',low.length,'needs ordering','alert')+
   kpi('Items tracked',st.length,'this branch','stock')+'</div>';
@@ -9326,7 +9339,7 @@ function vInv(){
    '<td class="num"'+(s.qty<=s.reorder?' style="color:var(--rose);font-weight:600"':'')+'>'+s.qty+' '+esc(p.unit||'')+'</td>'+
    '<td class="num">'+(boss()?'<button class="iconbtn" style="padding:5px" data-id="'+esc(s.id)+'" onclick="adjStock(this.dataset.id)">'+
     ic('edit',14)+'</button>':'')+'</td></tr>';}).join('')+'</table></div>'+
-  (()=>{const un=D.products.filter(p=>p.active!==false&&!stockOf(p.id)&&(invTab==='all'||p.type===invTab));
+  (()=>{const un=D.products.filter(p=>p.active!==false&&p.type!=='supply'&&!stockOf(p.id)&&(invTab==='all'||p.type===invTab));
    return un.length?'<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' Not tracked at this branch: '+
     un.map(p=>esc(p.name||p.id)+(boss()?' <button class="btn sm ghost" style="padding:3px 9px" data-id="'+esc(p.id)+
      '" onclick="trackStock(this.dataset.id)">'+ic('plus',12)+'Track</button>':'')).join(' · ')+'</div>':'';})()+
@@ -9560,10 +9573,10 @@ window.editService=id=>{
    'data-id="'+esc(id)+'" data-name="'+esc(s.name||'')+'" onclick="catDelete(\'services\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
   '</div>',()=>{
    const box=$('#sv-use');
-   const backbar=D.products.filter(p=>p.type==='backbar');
+   const backbar=D.products.filter(p=>['backbar','supply'].includes(p.type)&&p.active!==false).sort((a,b)=>natCmp(a.type,b.type)||natCmp(a.name,b.name));
    const rowHtml=(sku,qty)=>'<div class="row" style="margin-bottom:6px" data-use>'+
     '<select class="f" style="margin:0;flex:1" data-sku>'+(backbar.length?backbar.map(p=>'<option value="'+
-     esc(p.id)+'"'+(sku===p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')
+     esc(p.id)+'"'+(sku===p.id?' selected':'')+'>'+esc(p.name)+(p.type==='supply'?' · '+esc(p.cat||'supply'):'')+' ('+esc(p.unit||'')+')</option>').join('')
      :'<option value="">No backbar products yet</option>')+'</select>'+
     '<input class="f" style="margin:0;width:78px" type="number" step="0.1" data-qty value="'+(qty||1)+'">'+
     '<button class="iconbtn" data-del>'+ic('close',14)+'</button></div>';
@@ -9598,7 +9611,7 @@ window.prodFilter=()=>{PRODQ=((document.getElementById('prs-q')||{}).value||'');
  const b=document.getElementById('pr-list');if(b)b.innerHTML=prodRows();};
 function prodRows(){
  const t=PRODQ.trim().toLowerCase();
- const list=D.products.filter(p=>(PRODTYPE==='all'||(PRODTYPE==='hidden'?p.active===false:p.type===PRODTYPE))&&
+ const list=D.products.filter(p=>p.type!=='supply'&&(PRODTYPE==='all'||(PRODTYPE==='hidden'?p.active===false:p.type===PRODTYPE))&&
   (!t||String(p.name||'').toLowerCase().includes(t)||String(p.id).toLowerCase().includes(t)));
  if(!list.length)return '<div class="empty">'+(D.products.length?'No product matches.':'No products yet.')+'</div>';
  const row=p=>{const st=stockOf(p.id);
@@ -14988,7 +15001,7 @@ function saleCost(s){
  (s.items||[]).forEach(i=>{const q=+i.qty||1;
   if(i.kind==='product')c+=unitCost(i.id)*q;
   else if(i.kind==='set')(i.setItems||[]).forEach(z=>{c+=unitCost(z.sku)*(+z.qty||1)*q;});
-  else if((i.kind==='service'&&!i.later)||i.kind==='redeem')(svc(i.id).use||[]).forEach(u=>{c+=unitCost(u.sku)*(+u.qty||0)*q;});});
+  else if((i.kind==='service'&&!i.later)||i.kind==='redeem')(svc(i.id).use||[]).forEach(u=>{if(prod(u.sku).type==='supply')return;c+=unitCost(u.sku)*(+u.qty||0)*q;});});
  return c;
 }
 /* a client package by id: from memory, the database, or the copy kept when it was deleted */
@@ -15020,7 +15033,7 @@ async function finJournalB(m,add,br,tr){
   const cp=await cpGet(r.customerPackageId);
   if(cp&&cpBooked(cp)){const v=(+cp.price||0)/(cpTot(cp)||1);
    if(v>0)add(r.date,r.invoiceNo||cp.invoiceNo||r.id,'redeem:'+r.id,'Session used · '+(r.serviceName||'')+' · '+(r.customerName||''),[['2100',v,0],[cp.prepaid?'4000':'4020',0,v]]);}
-  if(cogsAuto()&&!r.saleId){const c=(svc(r.serviceId).use||[]).reduce((t,u)=>t+unitCost(u.sku)*(+u.qty||0),0);
+  if(cogsAuto()&&!r.saleId){const c=(svc(r.serviceId).use||[]).filter(u=>prod(u.sku).type!=='supply').reduce((t,u)=>t+unitCost(u.sku)*(+u.qty||0),0);
    if(c>0)add(r.date,r.id,'rcogs:'+r.id,'Cost of products · session '+(r.serviceName||''),[['5000',c,0],['1200',0,c]]);}
  }
  const td=today();
@@ -15120,7 +15133,7 @@ function liveChecks(){
  const soon=act.filter(p=>daysBetween(td,p.expiry)<=30);
  const pk={n:act.length,sessions:act.reduce((t,p)=>t+cpLeft(p),0),all:r2(act.reduce((t,p)=>t+val(p),0)),
   books:r2(act.filter(cpBooked).reduce((t,p)=>t+val(p),0)),soon:soon.length,soonV:r2(soon.reduce((t,p)=>t+val(p),0))};
- const stock=r2((D.stock||[]).filter(s=>s.branchId===ME.branchId).reduce((t,s)=>t+Math.max(0,+s.qty||0)*unitCost(s.sku),0));
+ const stock=r2((D.stock||[]).filter(s=>s.branchId===ME.branchId&&prod(s.sku).type!=='supply').reduce((t,s)=>t+Math.max(0,+s.qty||0)*unitCost(s.sku),0));
  const bills=r2((EXPENSES||[]).filter(e=>e.status==='unpaid').reduce((t,e)=>t+(+e.amount||0),0));
  return {owed,pk,stock,bills};
 }
@@ -19783,7 +19796,7 @@ window.promoForm=id=>{
  PF.target=PF.target||{scope:'all'};PF.target.items=PF.target.items||[];PF.target.kinds=PF.target.kinds||['service'];PF._id=id||'';PF._q='';
  promoPaint();
 };
-function prAllItems(){return [...D.services.filter(s=>s.active!==false).map(x=>({kind:'service',x})),...D.products.filter(x=>x.type!=='backbar'&&x.active!==false).map(x=>({kind:'product',x})),
+function prAllItems(){return [...D.services.filter(s=>s.active!==false).map(x=>({kind:'service',x})),...D.products.filter(x=>x.type==='retail'&&x.active!==false).map(x=>({kind:'product',x})),
  ...D.packages.filter(x=>x.active!==false).map(x=>({kind:'package',x})),...(D.bundles||[]).filter(x=>x.active!==false).map(x=>({kind:'set',x}))];}
 function promoPaint(){
  const f=PF,T=f.target,seg=(k,opts,v)=>'<div class="seg">'+opts.map(o=>'<button type="button" class="'+(v===o[0]?'on':'')+'" onclick="pfSet(\''+k+'\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>';
@@ -19864,5 +19877,406 @@ window.promoDel=async id=>{const p=(PROMOS||[]).find(x=>x.id===id);if(!p||!isOwn
  if(+p.used>0&&!confirm(p.name+' has been used on '+p.used+' bill(s). Those bills keep their discount. Delete the promotion?'))return;
  else if(!(+p.used>0)&&!confirm('Delete '+p.name+'?'))return;
  try{await deleteDoc(doc(db,'promos',id));PROMOS=PROMOS.filter(x=>x.id!==id);await audit('Promotion deleted',p.name);window.closeModal();render();}catch(e){toast(friendly(e));}};
+
+/* ============ Stock phase 1: supplies & consumables, linen, counts, usage ============ */
+/* Beside retail and backbar, the spa runs on things it never sells: gloves, cotton, spatulas,
+   solutions, towels and gowns, drinks for clients, cleaning things. Each is a "supply" with a
+   category, bought in packs (a box of 100) and used in pieces. Staff record what they take in
+   a few taps, and treatments take their own share automatically (add a supply to the
+   treatment's list, like backbar). Linen goes round: clean → used → at the laundry → clean,
+   and what goes missing is counted. Everything is counted every so often; the difference is
+   approved by a manager, and for products held as stock the value is posted to the books.
+   Supplies are costs when bought (Expenses), so their usage report is for control: what was
+   used, by category, month by month. Every movement is kept and cannot be deleted. */
+const SUP_CATS0=[['Disposables','6040'],['Solutions & chemicals','6040'],['Linen','6040'],['Refreshments','6190'],['Housekeeping','6060'],['Office & stationery','6190'],['Samples & testers','6030']];
+const supCats=()=>{const x=((D.meta||{}).supCats)||[];return [...SUP_CATS0.map(c=>c[0]),...x.filter(c=>!SUP_CATS0.some(z=>z[0]===c))];};
+const supAcct=c=>(SUP_CATS0.find(z=>z[0]===c)||[0,'6040'])[1];
+const isSup=p=>p&&p.type==='supply';
+const isLinen=p=>isSup(p)&&(p.linen||p.cat==='Linen');
+const packOf=p=>Math.max(1,+(p&&p.size)||1);
+const qtyTxt=(p,q)=>{q=r2(+q||0);const u=(p&&p.unit)||'pcs',n=packOf(p);return q+' '+u+(isSup(p)&&n>1&&p.packUnit&&Math.abs(q)>=n?' <span class="muted">≈ '+(Math.round(q/n*10)/10)+' '+esc(p.packUnit)+'</span>':'');};
+let INVV='sup',SUPQ='';
+window.invView=v=>{INVV=v;render();};
+
+/* ---------- the Stock screen gets tabs ---------- */
+{const tb=TABS.find(t=>t.id==='inv');if(tb){tb.perm=null;tb.desc='Retail, backbar, supplies and linen';}}
+{const _vi=vInv;vInv=(...a)=>{
+ const tabs=[['sup','Supplies'],['linen','Linen'],['items','Retail & backbar'],['count','Counts'+(boss()&&cntPending().length?' ('+cntPending().length+')':'')],...(boss()?[['use','Usage']]:[])];
+ if(!tabs.some(t=>t[0]===INVV))INVV='sup';
+ const head='<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(INVV===t[0]?'on':'')+'" onclick="invView(\''+t[0]+'\')">'+t[1]+'</button>').join('')+'</div></div>'+
+  '<div class="row wrap2" style="gap:6px;margin:0 0 10px"><button class="btn sm" onclick="supUse()">'+ic('minus',14)+'Record use</button>'+
+  (boss()?'<button class="btn sm ghost" onclick="receiveStock()">'+ic('download',14)+'Receive stock</button>':'')+
+  '<button class="btn sm ghost" onclick="cntStart()">'+ic('list',14)+'Stock count</button></div>';
+ if(INVV==='items')return head+_vi(...a);
+ if(INVV==='linen')return head+invLinen();
+ if(INVV==='count')return head+invCounts();
+ if(INVV==='use')return head+invUsage();
+ return head+invSupplies();};}
+
+/* ---------- supplies ---------- */
+function supStock(){return D.products.filter(p=>isSup(p)&&p.active!==false).map(p=>({p,s:stockOf(p.id)}));}
+function invSupplies(){
+ const q=SUPQ.toLowerCase(),L=supStock().filter(x=>!isLinen(x.p)&&(!q||String(x.p.name).toLowerCase().includes(q)||String(x.p.cat||'').toLowerCase().includes(q)));
+ const low=L.filter(x=>x.s&&x.s.qty<=(+x.s.reorder||0));
+ const by=new Map();supCats().forEach(c=>by.set(c,[]));L.forEach(x=>{const c=x.p.cat||'Other';if(!by.has(c))by.set(c,[]);by.get(c).push(x);});
+ return '<div class="crmkpis">'+kpi('Supplies',String(L.length),'items tracked','stock')+kpi('Below par',String(low.length),low.length?low.slice(0,2).map(x=>x.p.name).join(', '):'all good','alert')+
+   (boss()?kpi('Worth on the shelf',rm(r2(L.reduce((t,x)=>t+Math.max(0,x.s?+x.s.qty:0)*unitCost(x.p.id),0))),'at cost','wallet'):'')+'</div>'+
+  '<div class="card"><div class="sec-h"><input class="f" style="margin:0;max-width:280px" placeholder="Search supplies" value="'+esc(SUPQ)+'" oninput="SUPQset(this.value)">'+
+   (boss()?'<button class="btn sm" onclick="supForm()">'+ic('plus',14)+'New supply</button>':'')+'</div>'+
+  ([...by.entries()].filter(e=>e[1].length).map(([c,xs])=>'<div class="pk2sec">'+esc(c)+' <span>'+xs.length+'</span></div>'+
+   xs.map(({p,s})=>'<button class="suprow" onclick="supShow(\''+esc(p.id)+'\')"><span class="supn"><b>'+esc(p.name)+'</b><small>'+
+    (p.packUnit&&packOf(p)>1?'1 '+esc(p.packUnit)+' = '+packOf(p)+' '+esc(p.unit||'pcs'):esc(p.unit||'pcs'))+(p.where?' · '+esc(p.where):'')+(boss()&&+p.cost?' · '+rm(p.cost)+(p.packUnit?' / '+esc(p.packUnit):''):'')+'</small></span>'+
+    '<span class="supq'+(s&&s.qty<=(+s.reorder||0)?' low':'')+'">'+(s?qtyTxt(p,s.qty):'<span class="pill">not tracked here</span>')+(s&&+s.reorder?'<small>par '+s.reorder+'</small>':'')+'</span></button>').join('')).join('')
+   ||'<div class="empty">'+ic('stock',24)+'<div>No supplies yet.</div>'+(boss()?'<p class="tiny muted">Gloves, cotton, solutions, drinks for clients, cleaning things — add what you want to keep track of.</p><button class="btn" onclick="supForm()">'+ic('plus',14)+'New supply</button>':'')+'</div>')+'</div>';
+}
+window.SUPQset=v=>{SUPQ=v;const y=window.scrollY;render();window.scrollTo(0,y);const i=document.querySelector('input[oninput^="SUPQset"]');if(i){i.focus();i.setSelectionRange(v.length,v.length);}};
+window.supShow=async sku=>{
+ const p=prod(sku),s=stockOf(sku);if(!p.id)return;
+ modal(p.name,'<div class="card"><div class="kv">'+[['Category',esc(p.cat||'—')],['On hand',s?qtyTxt(p,s.qty):'not tracked here'],['Par (reorder at)',s?(+s.reorder||0)+' '+esc(p.unit||''):'—'],
+   ['Bought as',p.packUnit?'1 '+esc(p.packUnit)+' = '+packOf(p)+' '+esc(p.unit||'pcs'):esc(p.unit||'pcs')],...(boss()?[['Cost',rm(+p.cost||0)+(p.packUnit?' per '+esc(p.packUnit):'')+' · '+rm(unitCost(sku))+' per '+esc(p.unit||'pcs')]]:[]),
+   ['Supplier',esc(p.supplier||'—')],['Kept at',esc(p.where||'—')],...(isLinen(p)&&s?[['Linen',linenTxt(p,s)]]:[])].map(([k,v])=>'<div class="k">'+k+'</div><div class="v">'+v+'</div>').join('')+'</div>'+
+  '<h3 style="margin:12px 0 4px">'+ic('history',14)+' Recent movements</h3><div id="sup-mv" class="tiny muted">Loading…</div>'+
+  '<div class="row wrap2" style="gap:6px;margin-top:10px"><button class="btn sm" onclick="supUse(\''+esc(sku)+'\')">'+ic('minus',13)+'Record use</button>'+
+   (boss()?'<button class="btn sm ghost" onclick="supForm(\''+esc(sku)+'\')">'+ic('edit',13)+'Edit</button>'+(!s?'<button class="btn sm ghost" onclick="trackStock(\''+esc(sku)+'\').then(()=>supShow(\''+esc(sku)+'\'))">Track here</button>':''):'')+'</div></div>');
+ try{const q=await getDocs(query(collection(db,'stockMoves'),where('sku','==',sku),limit(200)));
+  const M=q.docs.map(d=>d.data()).filter(m=>m.branchId===ME.branchId).sort((a,b)=>String(b.at).localeCompare(String(a.at))).slice(0,15);
+  const b=document.getElementById('sup-mv');if(b)b.innerHTML=M.length?'<table class="mjt">'+M.map(m=>'<tr><td>'+dshort(m.at)+'</td><td>'+esc(SM_LAB[m.type]||m.type)+(m.reason?' · '+esc(m.reason):'')+'<br><span class="muted">'+esc(m.byName||'')+'</span></td><td class="num">'+(m.qty>0?'+':'')+r2(m.qty)+'</td></tr>').join('')+'</table>':'Nothing recorded yet.';}
+ catch(e){const b=document.getElementById('sup-mv');if(b)b.textContent='—';}
+};
+const SM_LAB={use:'Used',waste:'Written off',receive:'Received',count:'Count difference',laundry_out:'Sent to laundry',laundry_in:'Back from laundry',linen_lost:'Linen lost / damaged',linen_used:'Put into use'};
+window.supForm=sku=>{
+ if(!boss())return;const p=sku?prod(sku):{name:'',cat:'Disposables',unit:'pcs',packUnit:'box',size:100,cost:'',supplier:'',where:'',linen:false};const s=sku?stockOf(sku):null;
+ modal(sku?'Edit supply':'New supply','<div class="card">'+
+  '<label>Name *</label><input class="f" id="sf-n" value="'+esc(p.name||'')+'" placeholder="e.g. Nitrile gloves (M), Face towel, Mineral water 500ml">'+
+  '<div class="grid g2"><div><label>Category</label><select class="f" id="sf-c" onchange="sfCat(this.value)">'+supCats().map(c=>'<option'+(p.cat===c?' selected':'')+'>'+esc(c)+'</option>').join('')+'<option value="__new">＋ New category…</option></select></div>'+
+   '<div><label>Kept at</label><input class="f" id="sf-w" value="'+esc(p.where||'')+'" placeholder="e.g. Store room, Room 1, Pantry"></div></div>'+
+  '<div class="grid g3"><div><label>Used in</label><input class="f" id="sf-u" value="'+esc(p.unit||'pcs')+'" placeholder="pcs, ml, pair"></div>'+
+   '<div><label>Bought as</label><input class="f" id="sf-pu" value="'+esc(p.packUnit||'')+'" placeholder="box, bottle, pack"></div>'+
+   '<div><label>How many in one</label><input class="f" type="number" min="1" id="sf-s" value="'+packOf(p)+'"></div></div>'+
+  '<div class="grid g2"><div><label>Cost of one pack (RM)</label><input class="f" type="number" step="0.01" min="0" id="sf-k" value="'+(p.cost===''?'':+p.cost||0)+'"></div>'+
+   '<div><label>Supplier</label><input class="f" id="sf-sp" value="'+esc(p.supplier||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>Par — reorder when down to (in '+esc(p.unit||'pcs')+')</label><input class="f" type="number" min="0" id="sf-r" value="'+(s?+s.reorder||0:'')+'"></div>'+
+   (!sku||!s?'<div><label>On hand now (in '+esc(p.unit||'pcs')+')</label><input class="f" type="number" min="0" id="sf-q" value="0"></div>':'<div></div>')+'</div>'+
+  '<label class="tiny row" style="gap:6px;margin:0 0 10px"><input type="checkbox" id="sf-l"'+(isLinen({...p,type:'supply'})?' checked':'')+'> Linen that goes to the laundry and comes back (towels, gowns, sheets)</label>'+
+  '<div id="sf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="supSave(\''+esc(sku||'')+'\')">'+ic('check',16)+'Save</button>'+
+  (sku?'<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="supHide(\''+esc(sku)+'\')">Stop tracking this supply</button>':'')+'</div>');
+};
+window.sfCat=v=>{if(v!=='__new'){const l=document.getElementById('sf-l');if(l&&v==='Linen')l.checked=true;return;}
+ const n=(prompt('New category name')||'').trim();const sel=$('#sf-c');if(!n){sel.value=supCats()[0];return;}
+ if(!supCats().includes(n)){const x=[...(((D.meta||{}).supCats)||[]),n];setDoc(doc(db,'meta','settings'),{supCats:x},{merge:true}).then(()=>{D.meta.supCats=x;}).catch(e=>toast(friendly(e)));
+  sel.insertAdjacentHTML('afterbegin','<option>'+esc(n)+'</option>');}sel.value=n;};
+window.supSave=async sku=>{
+ const e=$('#sf-e'),name=$('#sf-n').value.trim(),size=Math.max(1,Math.round(+$('#sf-s').value||1)),cost=r2(+$('#sf-k').value||0);
+ if(name.length<2){e.textContent='Give it a name.';return;}
+ const cat=$('#sf-c').value==='__new'?supCats()[0]:$('#sf-c').value;
+ const d={name:name.slice(0,80),type:'supply',cat,unit:($('#sf-u').value.trim()||'pcs').slice(0,12),packUnit:$('#sf-pu').value.trim().slice(0,16),size,cost,
+  supplier:$('#sf-sp').value.trim().slice(0,80),where:$('#sf-w').value.trim().slice(0,60),linen:$('#sf-l').checked,active:true,price:0};
+ const id=sku||('SUP-'+Date.now().toString(36).toUpperCase().slice(-6));
+ try{await setDoc(doc(db,'products',id),d,{merge:true});
+  const ex=D.products.find(x=>x.id===id);if(ex)Object.assign(ex,d);else D.products.push({id,...d});
+  let s=stockOf(id);const par=$('#sf-r').value===''?null:Math.max(0,+$('#sf-r').value||0);
+  if(!s){const q=Math.max(0,+(($('#sf-q')||{}).value)||0);const rec={branchId:ME.branchId,sku:id,qty:q,reorder:par==null?0:par,expiry:'',...(d.linen?{own:q,laundry:0}:{})};
+   await setDoc(doc(db,'stock',ME.branchId+'_'+id),rec,{merge:true});D.stock.push({id:ME.branchId+'_'+id,...rec});}
+  else if(par!=null&&par!==+s.reorder){await updateDoc(doc(db,'stock',s.id),{reorder:par,...(d.linen&&s.own==null?{own:+s.qty||0,laundry:0}:{})});s.reorder=par;if(d.linen&&s.own==null){s.own=+s.qty||0;s.laundry=0;}}
+  sortCatalogue();await audit(sku?'Supply edited':'Supply added',name+' · '+cat);window.closeModal();render();toast('Saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+window.supHide=async sku=>{if(!confirm('Stop tracking '+prod(sku).name+'? Its history is kept.'))return;
+ try{await updateDoc(doc(db,'products',sku),{active:false});prod(sku).active=false;await audit('Supply hidden',prod(sku).name);window.closeModal();render();}catch(e){toast(friendly(e));}};
+
+/* ---------- recording use (and write-offs) ---------- */
+let SU=null;
+const SU_WHY=[['use','Used for work'],['client','Given to clients'],['damaged','Damaged'],['expired','Expired'],['lost','Lost / missing']];
+window.supUse=sku=>{
+ SU={q:'',n:{},why:'use',note:''};if(sku)SU.n[sku]=1;
+ supUsePaint();
+};
+function suItems(){const q=SU.q.toLowerCase();return D.products.filter(p=>p.active!==false&&(isSup(p)||p.type==='backbar')&&stockOf(p.id)&&(!q||String(p.name).toLowerCase().includes(q)))
+ .sort((a,b)=>(SU.n[b.id]?1:0)-(SU.n[a.id]?1:0)||natCmp(a.cat||'',b.cat||'')||natCmp(a.name,b.name));}
+function suList(){return suItems().slice(0,80).map(p=>{const n=SU.n[p.id]||0,s=stockOf(p.id);
+ return '<div class="surow'+(n?' on':'')+'"><span><b>'+esc(p.name)+'</b><small>'+esc(isSup(p)?p.cat||'':'Backbar')+' · '+(s?r2(s.qty):0)+' '+esc(p.unit||'')+' left'+(isLinen(p)?' clean':'')+'</small></span>'+
+  '<span class="step"><button type="button" onclick="suAdd(\''+esc(p.id)+'\',-1)">−</button><input type="number" min="0" value="'+n+'" onchange="suSet(\''+esc(p.id)+'\',this.value)"><button type="button" onclick="suAdd(\''+esc(p.id)+'\',1)">+</button></span></div>';}).join('')||'<div class="empty">Nothing matches.</div>';}
+function supUsePaint(){
+ modal('Record use','<div class="card"><input class="f" placeholder="Search — gloves, cotton, towel…" value="'+esc(SU.q)+'" oninput="suQ(this.value)" autocomplete="off">'+
+  '<div class="sulist" id="su-l">'+suList()+'</div>'+
+  '<label>What happened</label><div class="row wrap2" style="gap:6px;margin:0 0 10px">'+SU_WHY.map(w=>'<button type="button" class="chip'+(SU.why===w[0]?' on':'')+'" onclick="suWhy(\''+w[0]+'\')">'+w[1]+'</button>').join('')+'</div>'+
+  '<input class="f" placeholder="Note (optional)" value="'+esc(SU.note)+'" oninput="suNote(this.value)" id="su-note">'+
+  '<div id="su-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="su-go" onclick="suSave()">'+ic('check',16)+'Save</button></div>');
+}
+window.suQ=v=>{SU.q=v;const b=document.getElementById('su-l');if(b)b.innerHTML=suList();};
+window.suWhy=w=>{SU.why=w;const n=(document.getElementById('su-note')||{}).value;if(n!==undefined)SU.note=n;supUsePaint();};
+window.suAdd=(sku,d)=>{SU.n[sku]=Math.max(0,(SU.n[sku]||0)+d);const b=document.getElementById('su-l');if(b)b.innerHTML=suList();};
+window.suSet=(sku,v)=>{SU.n[sku]=Math.max(0,+v||0);};
+window.suSave=async()=>{
+ const e=$('#su-e'),lines=Object.entries(SU.n).filter(([k,n])=>n>0);
+ if(!lines.length){e.textContent='Choose what was used and how many.';return;}
+ if(SU.why!=='use'&&SU.why!=='client'&&String(SU.note||'').trim().length<3){e.textContent='Say what happened.';return;}
+ const over=lines.find(([k,n])=>{const s=stockOf(k);return s&&n>(+s.qty||0);});
+ if(over&&!confirm(prod(over[0]).name+': only '+stockOf(over[0]).qty+' left in the system. Record it anyway? (a count will put it right)'))return;
+ const btn=$('#su-go');btn.disabled=true;
+ const type=SU.why==='use'||SU.why==='client'?'use':'waste',reason=(SU_WHY.find(w=>w[0]===SU.why)||[])[1]+(SU.note?' · '+String(SU.note).trim().slice(0,120):'');
+ try{const bt=writeBatch(db),now=new Date().toISOString();
+  lines.forEach(([k,n])=>{const s=stockOf(k),p=prod(k);bt.update(doc(db,'stock',s.id),{qty:increment(-n)});
+   bt.set(doc(collection(db,'stockMoves')),smDoc(p,type,-n,reason,now));});
+  await bt.commit();lines.forEach(([k,n])=>{stockOf(k).qty-=n;});
+  await audit(type==='use'?'Supplies used':'Supplies written off',lines.map(([k,n])=>prod(k).name+' × '+n).join(', ')+' · '+reason);
+  window.closeModal();render();toast('Recorded');}
+ catch(err){e.textContent=friendly(err);btn.disabled=false;}
+};
+function smDoc(p,type,qty,reason,at,ref){return {branchId:ME.branchId,sku:p.id,name:p.name||p.id,cat:isSup(p)?(p.cat||''):p.type||'',kind:p.type||'',type,qty:r2(qty),
+ cost:r2(Math.abs(qty)*unitCost(p.id)),reason:String(reason||'').slice(0,200),ref:ref||'',by:actorId()||UID,byName:actorName(),at,date:String(at).slice(0,10)};}
+
+/* ---------- receiving: in packs or pieces, optionally with the bill ---------- */
+let RS=null;
+window.receiveStock=expId=>{
+ if(!boss()){toast('Only the owner or a manager can receive stock');return;}
+ const ex=expId?(EXPENSES||[]).find(x=>x.id===expId):null;
+ RS={lines:[{sku:'',n:1,pack:true,cost:''}],supplier:ex?ex.supplier||'':'',ref:ex?ex.ref||'':'',date:ex?ex.date:today(),bill:!ex,paidFrom:'1010',status:'paid',expId:expId||''};
+ rsPaint();
+};
+const rsItems=()=>D.products.filter(p=>p.active!==false).sort((a,b)=>natCmp(isSup(a)?'1':'0',isSup(b)?'1':'0')||natCmp(a.name,b.name));
+function rsPaint(){
+ const opts=v=>'<option value="">— item —</option>'+rsItems().map(p=>'<option value="'+esc(p.id)+'"'+(v===p.id?' selected':'')+'>'+esc(p.name)+' ('+(isSup(p)?esc(p.cat||'supply'):p.type)+')</option>').join('');
+ const ex=RS.expId?(EXPENSES||[]).find(x=>x.id===RS.expId):null,tot=rsTotal();
+ modal('Receive stock','<div class="card">'+(ex?'<div class="cnnote tiny">For the bill '+esc(ex.supplier||'')+' · '+dshort(ex.date)+' · '+rm(ex.amount)+' — adding the items to stock only.</div>':'')+
+  RS.lines.map((l,k)=>{const p=prod(l.sku);const pu=packOf(p)>1;
+   return '<div class="rsline"><select class="f" onchange="rsSet('+k+',\'sku\',this.value)">'+opts(l.sku)+'</select>'+
+    '<div class="rsq"><input class="f" type="number" min="0" step="1" value="'+l.n+'" oninput="rsSet('+k+',\'n\',this.value,1)">'+
+    (pu?'<select class="f" onchange="rsSet('+k+',\'pack\',this.value===\'1\')"><option value="1"'+(l.pack?' selected':'')+'>'+esc(p.packUnit)+' ('+packOf(p)+')</option><option value="0"'+(!l.pack?' selected':'')+'>'+esc(p.unit||'pcs')+'</option></select>':'<span class="tiny muted">'+esc(l.sku?(isSup(p)?p.unit||'pcs':'units'):'')+'</span>')+
+    '<input class="f" type="number" step="0.01" min="0" placeholder="RM each" value="'+(l.cost===''?(l.sku?rsDefCost(l):''):l.cost)+'" oninput="rsSet('+k+',\'cost\',this.value,1)">'+
+    '<button type="button" class="iconbtn" onclick="rsDrop('+k+')">'+ic('close',13)+'</button></div></div>';}).join('')+
+  '<button type="button" class="btn ghost sm" onclick="rsAdd()">'+ic('plus',13)+'Another item</button>'+
+  '<div class="grid g3" style="margin-top:8px"><div><label>Supplier</label><input class="f" value="'+esc(RS.supplier)+'" oninput="rsMeta(\'supplier\',this.value)"></div>'+
+   '<div><label>Invoice / DO no.</label><input class="f" value="'+esc(RS.ref)+'" oninput="rsMeta(\'ref\',this.value)"></div>'+
+   '<div><label>Received on</label><input class="f" type="date" value="'+RS.date+'" onchange="rsMeta(\'date\',this.value)"></div></div>'+
+  (!ex?'<label class="tiny row" style="gap:6px;margin:6px 0"><input type="checkbox"'+(RS.bill?' checked':'')+' onchange="rsMeta(\'bill\',this.checked,1)"> Also put the bill in Expenses</label>'+
+   (RS.bill?'<div class="grid g2"><div><select class="f" onchange="rsMeta(\'status\',this.value,1)"><option value="paid"'+(RS.status==='paid'?' selected':'')+'>Paid already</option><option value="unpaid"'+(RS.status==='unpaid'?' selected':'')+'>To pay later</option></select></div>'+
+    (RS.status==='paid'?'<div><select class="f" onchange="rsMeta(\'paidFrom\',this.value)">'+PAYSRC.map(o=>'<option value="'+o[0]+'"'+(RS.paidFrom===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>':'<div></div>')+'</div>'+
+    '<p class="tiny muted" style="margin:0 0 6px">Products for sale or treatments go to Stock (1200); supplies to their category\'s cost account.</p>':''):'')+
+  '<div class="pkdsum" id="rs-sum">'+(tot?'Total '+rm(tot):'')+'</div><div id="rs-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="rs-go" onclick="rsSave()">'+ic('check',16)+'Record delivery</button></div>');
+}
+const rsDefCost=l=>{const p=prod(l.sku);const c=+p.cost||0;return c?r2(l.pack||!(packOf(p)>1)?c:c/packOf(p)):'';};
+const rsUnits=l=>{const p=prod(l.sku);return (packOf(p)>1&&l.pack)?(+l.n||0)*packOf(p):(+l.n||0);};
+const rsLineCost=l=>r2((+l.n||0)*(l.cost===''?(+rsDefCost(l)||0):(+l.cost||0)));
+const rsTotal=()=>r2(RS.lines.filter(l=>l.sku).reduce((t,l)=>t+rsLineCost(l),0));
+window.rsSet=(k,f,v,quiet)=>{const l=RS.lines[k];if(!l)return;l[f]=f==='n'?Math.max(0,+v||0):v;if(f==='sku'){l.cost='';const p=prod(v);l.pack=packOf(p)>1;}
+ if(quiet){const b=document.getElementById('rs-sum');if(b)b.textContent=rsTotal()?'Total '+rm(rsTotal()):'';return;}rsPaint();};
+window.rsMeta=(k,v,repaint)=>{if(!RS)return;RS[k]=v;if(repaint)rsPaint();};
+window.suNote=v=>{if(SU)SU.note=v;};
+window.rsAdd=()=>{RS.lines.push({sku:'',n:1,pack:true,cost:''});rsPaint();};
+window.rsDrop=k=>{RS.lines.splice(k,1);if(!RS.lines.length)RS.lines.push({sku:'',n:1,pack:true,cost:''});rsPaint();};
+window.rsSave=async()=>{
+ const e=$('#rs-e'),L=RS.lines.filter(l=>l.sku&&+l.n>0);
+ if(!L.length){e.textContent='Choose the items and how many came.';return;}
+ if(RS.bill&&!RS.expId&&isLocked(RS.date)){e.textContent=lockMsg(RS.date);return;}
+ const btn=$('#rs-go');btn.disabled=true;
+ try{
+  for(const l of L)if(!stockOf(l.sku))await window.trackStock(l.sku,true);
+  const bt=writeBatch(db),now=new Date().toISOString();let expId=RS.expId;
+  if(RS.bill&&!RS.expId){
+   const by={};L.forEach(l=>{const p=prod(l.sku),a=isSup(p)?supAcct(p.cat):'1200';by[a]=r2((by[a]||0)+rsLineCost(l));});
+   const amt=r2(Object.values(by).reduce((t,v)=>t+v,0)),acs=Object.keys(by);
+   if(amt>0){const eref=doc(collection(db,'expenses'));expId=eref.id;
+    const d={date:RS.date,amount:amt,supplier:String(RS.supplier||'').slice(0,80),desc:'Stock: '+L.map(l=>prod(l.sku).name).join(', ').slice(0,150),account:acs[0],
+     lines:acs.length>1?acs.map(a=>({account:a,amount:by[a],desc:L.filter(l=>{const p=prod(l.sku);return (isSup(p)?supAcct(p.cat):'1200')===a;}).map(l=>prod(l.sku).name).join(', ').slice(0,80)})):[],
+     ref:String(RS.ref||'').slice(0,40),status:RS.status,...(RS.status==='paid'?{paidFrom:RS.paidFrom,paidAt:RS.date,dueDate:''}:{dueDate:ymd(addDays(new Date(RS.date+'T00:00:00'),14)),paidFrom:'',paidAt:''}),
+     branchId:ME.branchId,updatedAt:now,updatedBy:UID,createdAt:now,createdBy:UID,source:'stock',stockReceived:true};
+    bt.set(eref,d);if(EXPENSES)EXPENSES.unshift({id:eref.id,...d});}}
+  else if(RS.expId)bt.update(doc(db,'expenses',RS.expId),{stockReceived:true});
+  L.forEach(l=>{const p=prod(l.sku),s=stockOf(l.sku),u=rsUnits(l);
+   bt.update(doc(db,'stock',s.id),{qty:increment(u),...(isLinen(p)?{own:increment(u)}:{})});
+   const c=l.cost===''?null:+l.cost;
+   if(c!=null&&c>0){const perPack=(packOf(p)>1&&!l.pack)?r2(c*packOf(p)):c;if(Math.abs(perPack-(+p.cost||0))>0.004)bt.update(doc(db,'products',p.id),{cost:perPack});}
+   bt.set(doc(collection(db,'stockMoves')),smDoc(p,'receive',u,[RS.supplier,RS.ref].filter(Boolean).join(' · '),now,expId||''));});
+  await bt.commit();
+  L.forEach(l=>{const p=prod(l.sku),s=stockOf(l.sku),u=rsUnits(l);s.qty+=u;if(isLinen(p))s.own=(+s.own||0)+u;
+   const c=l.cost===''?null:+l.cost;if(c!=null&&c>0)p.cost=(packOf(p)>1&&!l.pack)?r2(c*packOf(p)):c;});
+  if(typeof finDirty==='function')finDirty();
+  await audit('Stock received',L.map(l=>prod(l.sku).name+' +'+rsUnits(l)).join(', ')+(RS.supplier?' · '+RS.supplier:'')+(expId?' · with the bill':''));
+  window.closeModal();render();toast('Delivery recorded');}
+ catch(err){e.textContent=friendly(err);btn.disabled=false;}
+};
+/* from Expenses: a stock or supplies bill not put into stock yet */
+{const _fr=finRow;finRow=e=>{const h=_fr(e);
+ if(!boss()||!e.id||e.stockReceived||e.src||e.status==='void'||!expLines(e).some(l=>['1200','6040','6060'].includes(l.account)))return h;
+ const k=h.lastIndexOf('</div>');return h.slice(0,k)+'<button class="btn sm ghost" style="padding:3px 9px" title="Add what this bill bought to stock" onclick="receiveStock(\''+e.id+'\')">'+ic('stock',12)+'To stock</button>'+h.slice(k);};}
+
+/* ---------- linen ---------- */
+const linenDirty=s=>Math.max(0,(+s.own||0)-(+s.qty||0)-(+s.laundry||0));
+const linenTxt=(p,s)=>(+s.qty||0)+' clean · '+linenDirty(s)+' used · '+(+s.laundry||0)+' at the laundry · '+(+s.own||0)+' owned';
+function invLinen(){
+ const L=supStock().filter(x=>isLinen(x.p)&&x.s);
+ if(!L.length)return '<div class="card"><div class="empty">'+ic('stock',24)+'<div>No linen yet.</div><p class="tiny muted">Add towels, gowns, sheets and headbands as supplies in the Linen category.</p>'+(boss()?'<button class="btn" onclick="supForm()">'+ic('plus',14)+'New supply</button>':'')+'</div></div>';
+ L.forEach(x=>{if(x.s.own==null){x.s.own=+x.s.qty||0;x.s.laundry=0;}});
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('refresh',15)+' Linen</h3><div class="row" style="gap:6px"><button class="btn sm" onclick="lnForm(\'out\')">Send to laundry</button><button class="btn sm ghost" onclick="lnForm(\'in\')">Back from laundry</button><button class="btn sm ghost" onclick="lnForm(\'lost\')">Lost / damaged</button></div></div>'+
+  '<div class="scroll"><table class="lntbl"><tr><th>Item</th><th class="num">Clean</th><th class="num">Used</th><th class="num">At laundry</th><th class="num">Owned</th></tr>'+
+  L.map(({p,s})=>'<tr onclick="supShow(\''+esc(p.id)+'\')"><td><b>'+esc(p.name)+'</b>'+(+s.reorder?'<small>keep '+s.reorder+' clean</small>':'')+'</td><td class="num'+(s.qty<=(+s.reorder||0)?' odue':'')+'"><b>'+(+s.qty||0)+'</b></td><td class="num">'+linenDirty(s)+'</td><td class="num">'+(+s.laundry||0)+'</td><td class="num">'+(+s.own||0)+'</td></tr>').join('')+'</table></div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Clean goes down when linen is used — recorded with Record use, or by itself when a treatment lists it. Used linen goes to the laundry and comes back clean; what does not come back is counted as lost.</p></div>';
+}
+let LNF=null;
+window.lnForm=mode=>{
+ const L=supStock().filter(x=>isLinen(x.p)&&x.s);if(!L.length)return;LNF={mode,n:{},why:''};
+ const cap=s=>mode==='out'?linenDirty(s):mode==='in'?(+s.laundry||0):(+s.own||0);
+ modal({out:'Send to laundry',in:'Back from laundry',lost:'Linen lost or damaged'}[mode],'<div class="card">'+
+  (mode==='in'?'<p class="tiny muted" style="margin:0 0 8px">Count what came back clean. Anything still out stays "at the laundry" until it comes back or you mark it lost.</p>':'')+
+  L.map(({p,s})=>'<div class="surow"><span><b>'+esc(p.name)+'</b><small>'+(mode==='out'?linenDirty(s)+' used':mode==='in'?(+s.laundry||0)+' at the laundry':(+s.own||0)+' owned')+'</small></span>'+
+   '<span class="step"><input type="number" min="0" max="'+cap(s)+'" value="'+(mode==='out'?linenDirty(s):mode==='in'?(+s.laundry||0):0)+'" data-sku="'+esc(p.id)+'"></span></div>').join('')+
+  (mode==='lost'?'<input class="f" id="ln-why" placeholder="What happened (e.g. stained, torn, not returned by the laundry)">':'')+
+  '<div id="ln-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="lnSave()">'+ic('check',16)+'Save</button></div>');
+};
+window.lnSave=async()=>{
+ const mode=LNF.mode,e=$('#ln-e'),inp=[...document.querySelectorAll('#modal input[data-sku]')].map(i=>[i.dataset.sku,Math.max(0,Math.round(+i.value||0))]).filter(x=>x[1]>0);
+ if(!inp.length){e.textContent='Enter how many.';return;}
+ const why=((document.getElementById('ln-why')||{}).value||'').trim();if(mode==='lost'&&why.length<3){e.textContent='Say what happened.';return;}
+ for(const [k,n] of inp){const s=stockOf(k),cap=mode==='out'?linenDirty(s):mode==='in'?(+s.laundry||0):(+s.own||0);if(n>cap){e.textContent=prod(k).name+': only '+cap+'.';return;}}
+ try{const bt=writeBatch(db),now=new Date().toISOString();
+  inp.forEach(([k,n])=>{const s=stockOf(k),p=prod(k);
+   const up=mode==='out'?{laundry:increment(n)}:mode==='in'?{laundry:increment(-n),qty:increment(n)}:{own:increment(-n)};
+   if(mode==='lost'){const d=linenDirty(s);if(n>d){up.qty=increment(-(n-d));}}
+   bt.update(doc(db,'stock',s.id),up);
+   bt.set(doc(collection(db,'stockMoves')),smDoc(p,mode==='out'?'laundry_out':mode==='in'?'laundry_in':'linen_lost',mode==='lost'?-n:n,why,now));});
+  await bt.commit();
+  inp.forEach(([k,n])=>{const s=stockOf(k);if(mode==='out')s.laundry=(+s.laundry||0)+n;else if(mode==='in'){s.laundry-=n;s.qty+=n;}else{const d=linenDirty(s);if(n>d)s.qty-=n-d;s.own-=n;}});
+  await audit({out:'Linen sent to laundry',in:'Linen back from laundry',lost:'Linen lost / damaged'}[mode],inp.map(([k,n])=>prod(k).name+' × '+n).join(', ')+(why?' · '+why:''));
+  window.closeModal();render();toast('Saved');}
+ catch(err){e.textContent=friendly(err);}
+};
+
+/* ---------- stock counts ---------- */
+let COUNTS=null,CNT=null;
+async function cntLoad(){try{const s=await getDocs(query(collection(db,'stockCounts'),where('at','>=',ymd(addDays(new Date(),-400)))));
+ COUNTS=s.docs.map(d=>({id:d.id,...d.data()})).filter(c=>(c.branchId||ME.branchId)===ME.branchId).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}catch(e){COUNTS=[];}}
+const cntPending=()=>(COUNTS||[]).filter(c=>c.status==='submitted');
+const CNT_SCOPES=()=>[['sup','All supplies'],...supCats().map(c=>['cat:'+c,c]),['backbar','Backbar'],['retail','Retail'],['all','Everything']];
+function cntItems(sc){return D.stock.filter(s=>s.branchId===ME.branchId).map(s=>({s,p:prod(s.sku)})).filter(({p})=>p.id&&p.active!==false&&(
+ sc==='all'||(sc==='sup'&&isSup(p))||(sc==='backbar'&&p.type==='backbar')||(sc==='retail'&&p.type==='retail')||(sc.startsWith('cat:')&&isSup(p)&&p.cat===sc.slice(4))))
+ .sort((a,b)=>natCmp(a.p.cat||a.p.type,b.p.cat||b.p.type)||natCmp(a.p.name,b.p.name));}
+function invCounts(){
+ if(COUNTS===null){cntLoad().then(()=>{if(TAB==='inv')render();});return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const last=(COUNTS||[]).find(c=>c.status==='approved'),every=+((D.meta||{}).countDays)||30;
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Stock counts</h3><button class="btn sm" onclick="cntStart()">'+ic('plus',14)+'Start a count</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Count what is really on the shelf. Differences are approved by the owner or a manager before the stock changes. '+
+   (last?'Last approved count '+dshort(last.at)+'.':'No count approved yet.')+' Reminder every '+every+' days'+(isOwnerMe()?' · <a href="#" class="bklink" onclick="cntEvery();return false">change</a>':'')+'.</p>'+
+  ((COUNTS||[]).length?(COUNTS||[]).slice(0,30).map(c=>'<button class="suprow" onclick="cntShow(\''+c.id+'\')"><span class="supn"><b>'+esc(c.scopeName||'Count')+' · '+dshort(c.at)+'</b><small>'+
+   (c.lines||[]).length+' items · '+(c.lines||[]).filter(l=>Math.abs(l.diff)>0.004).length+' different · by '+esc(c.byName||'')+'</small></span>'+
+   '<span class="supq"><span class="pill '+(c.status==='approved'?'g':c.status==='rejected'?'':'a')+'">'+({submitted:'waiting approval',approved:'approved',rejected:'rejected'}[c.status]||c.status)+'</span>'+
+   (boss()&&c.value?'<small class="'+(c.value<0?'odue':'')+'">'+fmtS(c.value)+'</small>':'')+'</span></button>').join(''):'<div class="empty">No counts yet.</div>')+'</div>';
+}
+window.cntEvery=async()=>{const v=Math.round(+prompt('Remind to count every how many days?',String(+((D.meta||{}).countDays)||30))||0);if(!(v>=1))return;
+ try{await setDoc(doc(db,'meta','settings'),{countDays:v},{merge:true});D.meta.countDays=v;render();}catch(e){toast(friendly(e));}};
+window.cntStart=sc=>{
+ if(!sc){modal('Stock count','<div class="card"><p class="tiny muted" style="margin:0 0 8px">What are you counting?</p>'+CNT_SCOPES().map(([k,t])=>{const n=cntItems(k).length;
+   return n?'<button class="suprow" data-k="'+esc(k)+'" onclick="cntStart(this.dataset.k)"><span class="supn"><b>'+esc(t)+'</b></span><span class="supq">'+n+' items</span></button>':'';}).join('')+'</div>');return;}
+ const L=cntItems(sc);CNT={scope:sc,scopeName:(CNT_SCOPES().find(x=>x[0]===sc)||[0,sc])[1],lines:L.map(({s,p})=>({sku:p.id,name:p.name,unit:p.unit||'',sys:r2(+s.qty||0),counted:'',linen:isLinen(p),
+  ...(isLinen(p)?{sysUsed:linenDirty(s),usedCounted:'',laundry:+s.laundry||0,sysOwn:+s.own||0}:{})}))};
+ cntPaint();
+};
+function cntPaint(){
+ modal('Count · '+CNT.scopeName,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Type what you count. '+(boss()?'The system figure is shown so you can check big differences.':'Leave blank what you did not count.')+'</p>'+
+  CNT.lines.map((l,k)=>'<div class="cntrow"><span><b>'+esc(l.name)+'</b><small>'+esc(l.unit)+(boss()?' · system '+l.sys+(l.linen?' clean, '+l.sysUsed+' used':''):'')+'</small></span>'+
+   '<input class="f" type="number" min="0" step="any" placeholder="'+(l.linen?'clean':'count')+'" value="'+l.counted+'" oninput="cntSet('+k+',\'counted\',this.value)">'+
+   (l.linen?'<input class="f" type="number" min="0" step="1" placeholder="used" value="'+l.usedCounted+'" oninput="cntSet('+k+',\'usedCounted\',this.value)">':'')+'</div>').join('')+
+  '<input class="f" id="cnt-n" placeholder="Note (optional)"><div id="cnt-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="cntSubmit()">'+ic('check',16)+(boss()?'Save the count':'Send for approval')+'</button></div>');
+}
+window.cntSet=(k,f,v)=>{const l=CNT.lines[k];if(l)l[f]=v;};
+window.cntSubmit=async()=>{
+ const e=$('#cnt-e'),L=CNT.lines.filter(l=>l.counted!==''&&l.counted!==null);
+ if(!L.length){e.textContent='Count at least one item.';return;}
+ const lines=L.map(l=>{const c=r2(+l.counted||0),p=prod(l.sku);
+  if(l.linen){const used=l.usedCounted===''?l.sysUsed:Math.max(0,Math.round(+l.usedCounted||0)),own=c+used+(+l.laundry||0);
+   return {sku:l.sku,name:l.name,unit:l.unit,sys:l.sys,counted:c,diff:r2(c-l.sys),linen:true,sysOwn:l.sysOwn,own,ownDiff:own-l.sysOwn,unitCost:r2(unitCost(l.sku)*1e4)/1e4,value:r2((own-l.sysOwn)*unitCost(l.sku))};}
+  return {sku:l.sku,name:l.name,unit:l.unit,sys:l.sys,counted:c,diff:r2(c-l.sys),kind:p.type||'',unitCost:r2(unitCost(l.sku)*1e4)/1e4,value:r2((c-l.sys)*unitCost(l.sku))};});
+ const d={branchId:ME.branchId,scope:CNT.scope,scopeName:CNT.scopeName,lines,value:r2(lines.reduce((t,l)=>t+l.value,0)),note:String(($('#cnt-n')||{}).value||'').trim().slice(0,200),
+  status:'submitted',by:actorId()||UID,byName:actorName(),at:new Date().toISOString()};
+ try{const r=await addDoc(collection(db,'stockCounts'),d);(COUNTS=COUNTS||[]).unshift({id:r.id,...d});
+  await audit('Stock counted',CNT.scopeName+' · '+lines.length+' items · '+lines.filter(l=>Math.abs(l.diff)>0.004||(l.linen&&l.ownDiff)).length+' different');
+  INVV='count';if(boss())window.cntShow(r.id);else{window.closeModal();render();toast('Sent for approval');}}
+ catch(err){e.textContent=friendly(err);}
+};
+window.cntShow=id=>{
+ const c=(COUNTS||[]).find(x=>x.id===id);if(!c)return;const diffs=(c.lines||[]).filter(l=>Math.abs(l.diff)>0.004||(l.linen&&l.ownDiff));
+ const held=diffs.filter(l=>!l.linen&&['retail','backbar'].includes(l.kind)),hv=r2(held.reduce((t,l)=>t+l.value,0));
+ modal('Count · '+(c.scopeName||''),'<div class="card"><div class="tiny muted">'+dstr(c.at)+' · '+esc(c.byName||'')+(c.note?' · '+esc(c.note):'')+'</div>'+
+  '<div class="scroll"><table class="mjt" style="margin-top:8px"><tr><th>Item</th><th class="num">System</th><th class="num">Counted</th><th class="num">Difference</th>'+(boss()?'<th class="num">RM</th>':'')+'</tr>'+
+  (c.lines||[]).map(l=>'<tr class="'+(Math.abs(l.diff)>0.004||l.ownDiff?'':'muted')+'"><td>'+esc(l.name)+(l.linen?'<br><span class="tiny muted">owned '+l.sysOwn+' → '+l.own+'</span>':'')+'</td><td class="num">'+l.sys+'</td><td class="num">'+l.counted+'</td>'+
+   '<td class="num'+(l.diff<0?' odue':'')+'">'+(l.diff>0?'+':'')+r2(l.diff)+(l.linen&&l.ownDiff?'<br><span class="tiny">'+(l.ownDiff>0?'+':'')+l.ownDiff+' owned</span>':'')+'</td>'+(boss()?'<td class="num">'+(l.value?fmtS(l.value):'')+'</td>':'')+'</tr>').join('')+'</table></div>'+
+  (boss()?'<p class="tiny" style="margin:8px 0">'+diffs.length+' item(s) different · '+fmtS(c.value||0)+' at cost'+(held.length&&cogsAuto()?'. '+fmtS(hv)+' of it is retail/backbar held as stock — approving posts it to the books (Stock 1200 / Cost of products 5000).':'. Supplies were counted as costs when bought, so nothing is posted to the books.')+'</p>':'')+
+  (boss()&&c.status==='submitted'?'<div class="row wrap2" style="gap:6px"><button class="btn" onclick="cntApprove(\''+id+'\')">'+ic('check',15)+'Approve — set the stock to the count</button><button class="btn ghost sm" onclick="cntReject(\''+id+'\')">Reject</button></div>':
+   c.status==='approved'?'<p class="tiny muted">Approved '+dshort(c.approvedAt)+' by '+esc(c.approvedByName||'')+'.</p>':c.status==='rejected'?'<p class="tiny muted">Rejected: '+esc(c.rejectReason||'')+'</p>':'<p class="tiny muted">Waiting for the owner or a manager to approve.</p>')+'</div>');
+};
+window.cntApprove=async id=>{
+ const c=(COUNTS||[]).find(x=>x.id===id);if(!c||!boss()||c.status!=='submitted')return;
+ const date=today();if(isLocked(date)){toast(lockMsg(date));return;}
+ try{const bt=writeBatch(db),now=new Date().toISOString();
+  (c.lines||[]).forEach(l=>{const s=stockOf(l.sku),p=prod(l.sku);if(!s)return;
+   if(l.linen){const up={};if(Math.abs(l.diff)>0.004)up.qty=increment(l.diff);if(l.ownDiff)up.own=increment(l.ownDiff);if(Object.keys(up).length){bt.update(doc(db,'stock',s.id),up);
+     if(l.ownDiff)bt.set(doc(collection(db,'stockMoves')),smDoc(p,'count',l.ownDiff,'Count '+dshort(c.at)+' · owned',now,id));}return;}
+   if(Math.abs(l.diff)>0.004){bt.update(doc(db,'stock',s.id),{qty:increment(l.diff)});bt.set(doc(collection(db,'stockMoves')),smDoc(p,'count',l.diff,'Count '+dshort(c.at),now,id));}});
+  bt.update(doc(db,'stockCounts',id),{status:'approved',approvedBy:UID,approvedByName:ME.name,approvedAt:now});
+  await bt.commit();
+  (c.lines||[]).forEach(l=>{const s=stockOf(l.sku);if(!s)return;if(Math.abs(l.diff)>0.004)s.qty=r2((+s.qty||0)+l.diff);if(l.linen&&l.ownDiff)s.own=(+s.own||0)+l.ownDiff;});
+  c.status='approved';c.approvedAt=now;c.approvedByName=ME.name;
+  const held=(c.lines||[]).filter(l=>!l.linen&&['retail','backbar'].includes(l.kind)&&Math.abs(l.diff)>0.004),v=r2(held.reduce((t,l)=>t+l.value,0));
+  if(cogsAuto()&&Math.abs(v)>=0.01&&typeof mjPost==='function')
+   await mjPost({date,desc:'Stock count '+dshort(c.at)+' · '+(c.scopeName||''),lines:v<0?[{account:'5000',debit:-v,credit:0},{account:'1200',debit:0,credit:-v}]:[{account:'1200',debit:v,credit:0},{account:'5000',debit:0,credit:v}]});
+  await audit('Stock count approved',(c.scopeName||'')+' · '+fmtS(c.value||0));window.closeModal();render();toast('Stock updated');}
+ catch(err){toast(friendly(err));}
+};
+window.cntReject=async id=>{const c=(COUNTS||[]).find(x=>x.id===id);if(!c)return;const why=(prompt('Why reject this count?')||'').trim();if(!why)return;
+ try{await updateDoc(doc(db,'stockCounts',id),{status:'rejected',rejectReason:why.slice(0,160),approvedBy:UID,approvedByName:ME.name,approvedAt:new Date().toISOString()});c.status='rejected';c.rejectReason=why;
+  await audit('Stock count rejected',(c.scopeName||'')+' · '+why);window.closeModal();render();}catch(e){toast(friendly(e));}};
+
+/* ---------- usage: what was used, by category, month by month ---------- */
+let USEM='',USE={};
+window.useMonth=n=>{USEM=mShift(USEM,n);render();};
+async function useLoad(m){
+ const from=m+'-01',to=mEnd(m),mine=x=>(x.branchId||ME.branchId)===ME.branchId,by={};
+ const add=(sku,q,src)=>{if(!q)return;const x=by[sku]=by[sku]||{sku,use:0,waste:0,treat:0};x[src]+=q;};
+ const [mv,sl,rd]=await Promise.all([
+  getDocs(query(collection(db,'stockMoves'),where('date','>=',from),where('date','<=',to))).then(s=>s.docs.map(d=>d.data()).filter(mine)).catch(()=>[]),
+  getDocs(query(collection(db,'sales'),where('date','>=',from),where('date','<=',to))).then(s=>s.docs.map(d=>d.data()).filter(x=>mine(x)&&!x.voided)).catch(()=>[]),
+  getDocs(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to))).then(s=>s.docs.map(d=>d.data()).filter(x=>mine(x)&&!x.saleId)).catch(()=>[])]);
+ mv.forEach(x=>{if(x.type==='use')add(x.sku,-x.qty,'use');else if(x.type==='waste'||x.type==='linen_lost')add(x.sku,-x.qty,'waste');});
+ sl.forEach(s=>(s.items||[]).forEach(i=>{if((i.kind==='service'&&!i.later)||i.kind==='redeem')(svc(i.id).use||[]).forEach(u=>add(u.sku,(+u.qty||0)*(+i.qty||1),'treat'));}));
+ rd.forEach(r=>(svc(r.serviceId).use||[]).forEach(u=>add(u.sku,+u.qty||0,'treat')));
+ const rows=Object.values(by).map(x=>{const p=prod(x.sku),q=x.use+x.waste+x.treat;return {...x,p,q:r2(q),rm:r2((isLinen(p)?x.waste:q)*unitCost(x.sku)),wrm:r2(x.waste*unitCost(x.sku)),cat:isSup(p)?(p.cat||'Other'):p.type==='backbar'?'Backbar':'Retail (used, not sold)'};}).filter(x=>x.q>0);
+ USE[m]={rows,visits:sl.filter(s=>(s.items||[]).some(i=>i.kind==='service'||i.kind==='redeem')).length+rd.length};
+}
+function invUsage(){
+ if(!USEM)USEM=today().slice(0,7);const m=USEM,trend=[];for(let i=5;i>=0;i--)trend.push(mShift(m,-i));
+ const need=trend.filter(k=>!USE[k]);
+ const nav='<div class="card"><div class="spread"><div class="row" style="gap:8px"><button class="iconbtn" onclick="useMonth(-1)">'+ic('left',16)+'</button><b style="min-width:140px;text-align:center">'+mLabel(m)+'</b><button class="iconbtn" onclick="useMonth(1)">'+ic('right',16)+'</button></div>'+
+  '<button class="btn sm ghost" onclick="useCSV()">'+ic('download',14)+'CSV</button></div></div>';
+ if(need.length){if(!USE.__busy){USE.__busy=1;Promise.all(need.map(useLoad)).then(()=>{delete USE.__busy;if(TAB==='inv'&&INVV==='use')render();});}
+  return nav+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Adding up what was used…</p></div></div>';}
+ const U=USE[m],cats={};U.rows.forEach(r=>{const c=cats[r.cat]=cats[r.cat]||{rm:0,w:0,n:0};c.rm+=r.rm;c.w+=r.wrm;c.n++;});
+ const tot=r2(U.rows.reduce((t,r)=>t+r.rm,0)),waste=r2(U.rows.reduce((t,r)=>t+r.wrm,0)),mx=Math.max(1,...trend.map(k=>USE[k].rows.reduce((t,r)=>t+r.rm,0)));
+ const sup=r2(U.rows.filter(r=>isSup(r.p)).reduce((t,r)=>t+r.rm,0));
+ return nav+'<div class="crmkpis">'+kpi('Used',rm(tot),'at cost, '+mLabel(m).split(' ')[0],'stock')+kpi('Supplies',rm(sup),U.visits?rm(r2(sup/U.visits))+' per treatment visit':'—','receipt')+
+   kpi('Written off',rm(waste),'damaged, expired, lost','alert')+kpi('Treatment visits',String(U.visits),'bills with treatments','spark')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' By category</h3>'+(Object.keys(cats).length?Object.entries(cats).sort((a,b)=>b[1].rm-a[1].rm).map(([c,v])=>
+   '<div style="margin:7px 0"><div class="spread tiny"><span>'+esc(c)+' <span class="muted">· '+v.n+' item'+(v.n>1?'s':'')+(v.w?' · '+rm(r2(v.w))+' written off':'')+'</span></span><span>'+rm(r2(v.rm))+'</span></div><div class="bar"><i style="width:'+(tot?v.rm/tot*100:0)+'%"></i></div></div>').join('')
+   :'<div class="empty">Nothing recorded as used in '+mLabel(m)+'.</div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('list',15)+' Items</h3><div class="scroll"><table class="mjt"><tr><th>Item</th><th class="num">By treatments</th><th class="num">Recorded use</th><th class="num">Written off</th><th class="num">RM</th></tr>'+
+   U.rows.sort((a,b)=>b.rm-a.rm).map(r=>'<tr><td>'+esc(r.p.name||r.sku)+'<br><span class="tiny muted">'+esc(r.cat)+'</span></td><td class="num">'+(r.treat?r2(r.treat):'')+'</td><td class="num">'+(r.use?r2(r.use):'')+'</td><td class="num">'+(r.waste?r2(r.waste):'')+'</td><td class="num">'+rm(r.rm)+'</td></tr>').join('')+'</table></div></div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('chart',15)+' Last 6 months</h3><div class="pltrend">'+trend.map(k=>{const v=r2(USE[k].rows.reduce((t,r)=>t+r.rm,0));
+   return '<div class="pltm"><div class="plbars"><i class="c" style="height:'+(v/mx*100)+'%"></i></div><b>'+rmk(v)+'</b><small>'+mLabel(k).slice(0,3)+'</small></div>';}).join('')+'</div>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Treatments count what their product list says they use. Supplies are costs when bought (Expenses); this shows where they went. Linen is washed and used again, so only what is lost or damaged counts in ringgit.</p></div>';
+}
+window.useCSV=()=>{const U=USE[USEM];if(!U)return;csvDownload((bizC().name||'spa').replace(/\W+/g,'-')+'-usage-'+USEM+'.csv',[['Category','Item','Unit','Used by treatments','Recorded use','Written off','Total','Cost each','RM'],
+ ...U.rows.map(r=>[r.cat,r.p.name||r.sku,r.p.unit||'',r2(r.treat),r2(r.use),r2(r.waste),r.q,r2(unitCost(r.sku)),r.rm])]);};
+
+/* ---------- reminders on Home ---------- */
+{const _pa=paperAlerts;paperAlerts=al=>{_pa(al);try{supAlerts(al);}catch(e){console.warn('stock alerts',e);}};}
+function supAlerts(al){
+ if(COUNTS===null&&ME&&!isAcct()){COUNTS=[];cntLoad().then(()=>{if(TAB==='home')render();});return;}
+ if(boss()&&cntPending().length)al.push({i:'list',t:cntPending().length+' stock count'+(cntPending().length>1?'s':'')+' waiting for approval',d:cntPending().map(c=>c.scopeName+' · '+esc(c.byName||'')).slice(0,2).join(', '),go:"invView('count');go('inv')"});
+ const last=(COUNTS||[]).find(c=>c.status==='approved'),every=+((D.meta||{}).countDays)||30,has=D.products.some(p=>isSup(p)&&p.active!==false);
+ if(has&&(!last||daysBetween(String(last.at).slice(0,10),today())>every))al.push({i:'list',t:'Stock count due',d:last?'Last approved count '+dshort(last.at):'Count your supplies to start the record',go:"invView('count');go('inv')"});
+}
 
 </script>
