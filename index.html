@@ -1671,6 +1671,12 @@ body.demo .syncbar{top:106px}
 .segwrap.canl::before,.segwrap.canr::after{opacity:1}
 .finhead{flex-wrap:wrap;gap:8px}
 @media (max-width:560px){.pltbl td,.pltbl th{font-size:12.5px}.pltbl td:first-child{min-width:110px}}
+.sstp{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.sstm{display:flex;align-items:flex-end;gap:4px;height:70px;margin:8px 0 6px}.sstm div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;align-items:center}
+.sstm i{display:block;width:100%;background:var(--brass);border-radius:4px 4px 0 0;min-height:3px}.sstm small{font-size:9.5px;color:var(--ink-3);margin-top:3px}
+.compi{display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid var(--line);cursor:pointer}.compi:last-child{border-bottom:0}
+.compi small{display:block;color:var(--ink-3);font-size:12px;line-height:1.35}.compd{font-size:12px;font-weight:650;min-width:52px;color:var(--ink-2)}
+.compi.done b{text-decoration:line-through;color:var(--ink-3)}.compi.late .compd{color:var(--rose)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -1928,7 +1934,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-25o';
+const BUILD='2026-09-26a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3641,9 +3647,9 @@ function cartTotals(){
  const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
  const pd=pointsWorth(cart.points||0);
  const net=Math.max(0,sub-cart.discount-v-pd);
- const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
+ const SX=sstCalc(cart.items,sub,net),sst=SX.sst;
  const total=net+sst,paid=cart.payments.reduce((a,p)=>a+p.amount,0);
- return{sub,v,pd,net,sst,total,paid,balance:total-paid};}
+ return{sub,v,pd,net,sst,sstBase:SX.base,total,paid,balance:total-paid};}
 function vPosOld(){
  const t=cartTotals();
  let h=cashierBar()+'<div class="card"><label>Client</label>'+
@@ -8454,7 +8460,7 @@ function buildReceiptPDF(s,jsPDF){
  row('Subtotal',pdfRM(sub));
  if(s.discount)row('Discount'+(s.voucher?' ('+s.voucher+')':''),'- '+pdfRM(s.discount),{muted:true});
  if(s.pointsUsed)row('Loyalty points used',String(s.pointsUsed)+' pts',{muted:true});
- if(s.sst)row('SST '+((D.meta.biz||{}).sstRate||8)+'%'+(b.sstNo?' ('+b.sstNo+')':''),pdfRM(s.sst),{muted:true});
+ if(s.sst)row('SST '+(s.sstRate||(D.meta.biz||{}).sstRate||8)+'%'+(s.sstBase!==undefined?' on '+pdfRM(s.sstBase):'')+(b.sstNo?' ('+b.sstNo+')':''),pdfRM(s.sst),{muted:true});
  y+=1;
  doc.setFillColor(...INK);doc.roundedRect(tx,y-4.6,tw,9,1.5,1.5,'F');
  font(10.5,'bold',[255,255,255]);T('TOTAL',tx+3,y+1.4);T(pdfRM(s.total),vx-1,y+1.4,{align:'right'});
@@ -8797,7 +8803,7 @@ window.checkout=async()=>{
   const v=cart.voucher?(cart.voucher.type==='pct'?sub*cart.voucher.value/100:cart.voucher.value):0;
   const pd=pointsWorth(cart.points||0);
   const net=Math.max(0,sub-cart.discount-v-pd);
-  const sst=D.meta.biz.sst?net*(D.meta.biz.sstRate||8)/100:0;
+  const SX=sstCalc(items,sub,net),sst=SX.sst;
   const total=net+sst;
   const c=cust(cart.customerId);
   const invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8);
@@ -8847,7 +8853,7 @@ window.checkout=async()=>{
    cashierId:actorId()||UID,cashierName:actorName(),cashierVerified:cashierValid()||!isBranch(),
    discount:cart.discount+v+pd,pointsUsed:cart.points||0,
    voucher:cart.voucher?cart.voucher.id:'',voucherKind:cart.voucher?(cart.voucher.kind||'campaign'):'',
-   voucherAmt:r2(v),lineDiscTotal,sst,total,date:today(),at:new Date().toISOString(),
+   voucherAmt:r2(v),lineDiscTotal,sst,...(SX.rate?{sstBase:SX.base,sstRate:SX.rate}:{}),total,date:today(),at:new Date().toISOString(),
    voided:false,payments:pays,createdBy:UID,invoiceNo,
    net:r2(net),paid,balance,status:balance>0?'partial':'paid',
    dueDate:balance>0?(cart.dueDate||''):'',tendered,change,
@@ -9022,7 +9028,8 @@ function bizPanel(){
    esc(b.sstNo||'')+'"></div><div><label>SST rate %</label><input class="f" type="number" id="bz-sstr" value="'+
    (b.sstRate||8)+'"></div></div>'+
   '<label class="row" style="gap:9px;margin-bottom:0"><input type="checkbox" id="bz-sst"'+
-   (b.sst?' checked':'')+'> Charge SST on every bill</label></div>'+
+   (b.sst?' checked':'')+'> Registered for SST — charge service tax on taxable items</label>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Each treatment, package and product has its own SST setting in the Catalogue (treatments and packages are taxable by default, retail products are not). Full company and tax details are in Finance → Tax &amp; compliance.</p></div>'+
 
   '<div class="fieldset"><h3>'+ic('clock',13)+'Opening hours</h3>'+
   '<div class="grid g2"><div><label>Opens at</label><input class="f" type="number" id="bz-o" value="'+
@@ -9116,7 +9123,7 @@ function receiptHTML(s){
    (s.discount?'<tr><td>Discount'+(s.voucher?' ('+esc(s.voucher)+')':'')+'</td><td class="num">-'+
     rm(s.discount)+'</td></tr>':'')+
    (s.pointsUsed?'<tr><td>Loyalty points used</td><td class="num">'+s.pointsUsed+'</td></tr>':'')+
-   (s.sst?'<tr><td>SST '+((D.meta.biz||{}).sstRate||8)+'%</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
+   (s.sst?'<tr><td>SST '+(s.sstRate||(D.meta.biz||{}).sstRate||8)+'%'+(s.sstBase!==undefined?' on '+rm(s.sstBase):'')+'</td><td class="num">'+rm(s.sst)+'</td></tr>':'')+
    '<tr class="grand"><td>Total</td><td class="num">'+rm(s.total)+'</td></tr>'+
    (s.payments||[]).map(p=>'<tr class="pay"><td>'+esc(p.method)+(p.ref?' <span class="muted">· Ref '+esc(p.ref)+'</span>':'')+
     ((p.date&&p.date!==s.date)?' · '+dshort(p.at||p.date):'')+
@@ -9431,6 +9438,7 @@ window.editService=id=>{
   '<label>Name</label><input class="f" id="sv-n" value="'+esc(s.name)+'">'+
   '<div class="grid g2"><div><label>Category</label>'+catSelect('service','sv-cat',s.cat||'')+'</div>'+
   '<div><label>Price (RM)</label><input class="f" type="number" step="0.01" id="sv-p" value="'+(s.price||0)+'"></div></div>'+
+  '<label>SST</label>'+taxSelect('sv-tax',s.tax,'SV')+
   '<div class="grid g3"><div><label>Duration (min)</label><input class="f" type="number" id="sv-d" value="'+(s.dur||60)+'"></div>'+
   '<div><label>Buffer (min)</label><input class="f" type="number" id="sv-b" value="'+(s.buffer||0)+'"></div>'+
   '<div><label>Sales commission %</label><input class="f" type="number" id="sv-c" value="'+(s.comm||0)+'"></div></div>'+
@@ -9490,7 +9498,7 @@ window.editService=id=>{
       sku:r.querySelector('[data-sku]').value,qty:+r.querySelector('[data-qty]').value||0}))
       .filter(u=>u.sku&&u.qty>0);
     catRemember('service',$('#sv-cat').value);
-    catSave('services',id,{name,cat:$('#sv-cat').value==='__new'?'':$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
+    catSave('services',id,{name,tax:($('#sv-tax')||{}).value||'SV',cat:$('#sv-cat').value==='__new'?'':$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
      dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
      room:$('#sv-r').value,use,active:$('#sv-a').checked,
      concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
@@ -9551,6 +9559,7 @@ window.editProduct=id=>{
    '>Retail — sold to clients</option><option value="backbar"'+(p.type==='backbar'?' selected':'')+
    '>Backbar — used during treatments</option></select>'+
   '<label>Category</label>'+catSelect('product','pr-cat',p.cat||'')+
+  '<label>SST</label>'+taxSelect('pr-tax',p.tax,'EX')+
   '<div class="grid g2"><div><label>Selling price (RM)</label><input class="f" type="number" step="0.01" id="pr-p" value="'+
    (+p.price||0)+'"></div><div><label>Cost price (RM)</label><input class="f" type="number" step="0.01" id="pr-c" value="'+
    (+p.cost||0)+'">'+(id&&boss()?'<button type="button" class="btn ghost sm" style="margin:-4px 0 8px" onclick="costCalc(\''+esc(id)+'\')">'+ic('chart',13)+(p.costCalc?'Cost calculator · '+rm(p.costCalc.total):'Cost calculator')+'</button>'+
@@ -9587,7 +9596,7 @@ window.editProduct=id=>{
     const data={name,type:$('#pr-t').value,price:+$('#pr-p').value||0,cost:+$('#pr-c').value||0,
      unit:$('#pr-u').value||'pcs',size:+$('#pr-s').value||1,active:$('#pr-a').checked,
      image:imgValue('pr-img',p.image||''),concerns:chipVals('pr-con'),
-     step:$('#pr-step').value,cat:(()=>{const v=($('#pr-cat')||{}).value||'';return v==='__new'?'':v.trim();})()};
+     step:$('#pr-step').value,tax:($('#pr-tax')||{}).value||'EX',cat:(()=>{const v=($('#pr-cat')||{}).value||'';return v==='__new'?'':v.trim();})()};
     const btn=$('#pr-go');btn.disabled=true;
     await catRemember('product',data.cat);
     try{
@@ -12185,7 +12194,7 @@ window.editPackage=id=>{
  PKD={id:id||'',type:pkgType(p),name:p.name||'',days:p.days||365,active:p.active!==false,
   items:(p.items||[]).map(i=>({...i})),price:+p.price||0,
   serviceId:p.serviceId||((p.items||[])[0]||{}).serviceId||((D.services[0]||{}).id)||'',
-  buy:+p.buy||5,free:+p.free||1,pct:+p.pct||10,round:p.round!==false,cat:p.cat||''};
+  buy:+p.buy||5,free:+p.free||1,pct:+p.pct||10,round:p.round!==false,cat:p.cat||'',tax:p.tax||'SV'};
  if(!PKD.items.length&&PKD.type!=='bxgy'&&D.services[0])PKD.items=[{serviceId:D.services[0].id,n:1}];
  paintPkgEd();
 };
@@ -12224,6 +12233,7 @@ function paintPkgEd(){
   '<label>Package name</label><input class="f" id="pk-n" value="'+esc(P.name)+'" oninput="pkdSet(\'name\',this.value,1)" placeholder="'+
    (P.type==='bxgy'?'Hydra Facial Buy 5 Free 1':P.type==='disc'?'Glow Programme 20% off':'Glow Hydra 6x')+'">'+
   '<label>Category</label>'+catSelect('package','pk-cat',P.cat||'',"if(this.value!=='__new')pkdSet('cat',this.value,1)")+
+  '<label>SST</label>'+taxSelect('pk-tax',P.tax,'SV').replace('<select ','<select onchange="pkdSet(\'tax\',this.value,1)" ')+
   (P.type==='bxgy'?
    '<label>Treatment</label><select class="f" id="pk-s" onchange="pkdSet(\'serviceId\',this.value)">'+svcOpts(P.serviceId)+'</select>'+
    '<div class="grid g2"><div><label>Buy (paid sessions)</label><input class="f" id="pk-b" type="number" min="1" value="'+P.buy+'" oninput="pkdSet(\'buy\',this.value,1)"></div>'+
@@ -12265,7 +12275,7 @@ window.pkdSave=()=>{
  if(P.type==='disc'&&!(P.pct>0&&P.pct<100)){toast('Discount must be between 1% and 99%');return;}
  if(!(c.price>0)){toast('The package needs a price');return;}
  const pc=String(P.cat||'').trim();catRemember('package',pc);
- const data={name,type:P.type,price:c.price,days:+P.days||365,items:c.items,active:!!P.active,cat:pc};
+ const data={name,type:P.type,price:c.price,days:+P.days||365,items:c.items,active:!!P.active,cat:pc,tax:P.tax||'SV'};
  if(P.type==='bxgy')Object.assign(data,{serviceId:P.serviceId,buy:P.buy,free:P.free});
  if(P.type==='disc')Object.assign(data,{pct:P.pct,round:!!P.round});
  const deal=pkgDeal(data);
@@ -14537,9 +14547,9 @@ function vFin(){
  const unpaid=(EXPENSES||[]).filter(e=>e.status==='unpaid');
  const tabs=[['pl','Profit & loss','chart',''],['bal','Money & balances','wallet',''],['cf','Cash flow','money',''],['tp','Treatments','spark',''],['bud','Budget & break-even','target',''],
   ...(isOwnerMe()&&(D.branches||[]).length>1?[['brc','Branches','grid','']]:[]),['exp','Expenses','receipt',''],['bills','Bills to pay','clock',unpaid.length||''],
-  ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['coa','Accounts & settings','list','']];
+  ['rec','Recurring','refresh',''],['jnl','Journal & export','download',''],['tax','Tax & compliance','flag',(()=>{try{return compItems().filter(x=>x.late||x.soon).length||'';}catch(e){return '';}})()],['coa','Accounts & settings','list','']];
  if(!tabs.some(t=>t[0]===FINV))FINV='pl';
- const V={pl:finPL,bal:finBal,cf:finCash,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
+ const V={pl:finPL,bal:finBal,cf:finCash,tax:finTax,tp:finTP,bud:finBud,brc:finBrc,exp:finExpenses,bills:finBills,rec:finRecurring,jnl:finJournal,coa:finAccounts};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(FINV===t[0]?'on':'')+'" onclick="finTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+
   (EXPENSES===null?'<div class="card"><div class="center"><div class="spin"></div></div></div>':V[FINV]());
@@ -14940,7 +14950,7 @@ async function finJournalB(m,add,br,tr){
 const PL_SECS=[['rev','Revenue'],['cogs','Cost of products'],['staff','Staff costs'],['opex','Operating expenses']];
 const plSec=c=>{const t=acType(c);if(t==='revenue')return 'rev';if(t!=='expense')return '';if(c==='5000')return 'cogs';if(/^51/.test(c))return 'staff';return 'opex';};
 function plOf(J){const o={};(J||[]).forEach(l=>{const s=plSec(l.account);if(!s)return;o[l.account]=(o[l.account]||0)+(s==='rev'?l.credit-l.debit:l.debit-l.credit);});return o;}
-const plMonths=m=>{const ytd=[];for(let k=m.slice(0,4)+'-01';k<=m;k=mShift(k,1))ytd.push(k);
+const plMonths=m=>{const ytd=[];for(let k=fyOf(m);k<=m;k=mShift(k,1))ytd.push(k);
  const trend=[];for(let i=5;i>=0;i--)trend.push(mShift(m,-i));return {ytd,trend,all:[...new Set([...ytd,mShift(m,-1),...trend])]};};
 function plBuild(m){
  const M=plMonths(m),A=plOf(FINJ[m]),B=plOf(FINJ[mShift(m,-1)]),Y={};
@@ -17924,5 +17934,226 @@ function segEnhance(){
 function uiAfter(){try{segEnhance();fitFigures();}catch(e){console.warn('ui',e);}}
 {const _r=render;render=function(){_r();uiAfter();};window.render=render;}
 if(typeof window.addEventListener==='function'){let t=null;window.addEventListener('resize',()=>{clearTimeout(t);t=setTimeout(uiAfter,120);});}
+
+
+/* ============ Finance phase D: company profile, SST by item, SST returns, compliance calendar ============ */
+/* Service tax applies to taxable services such as beauty treatments, not to everything on a
+   bill: each treatment, package, add-on, product and set carries its own SST code, and a
+   bill charges SST only on its taxable lines (bill discounts shared across lines). The
+   Tax & compliance tab keeps the company's registration details, works out the SST-02
+   figures for each taxable period (or, before registering, watches the 12-month threshold),
+   and lists the filing and payment dates the business has to keep. */
+const TAXC=[['SV','Service tax — taxable service'],['EX','Not subject to SST']];
+const taxSelect=(id,val,def)=>'<select class="f" id="'+id+'">'+TAXC.map(t=>'<option value="'+t[0]+'"'+((val||def)===t[0]?' selected':'')+'>'+t[1]+'</option>').join('')+'</select>';
+function taxOf(i){
+ if(!i||i.kind==='redeem')return 'EX';
+ const src=i.kind==='service'?svc(i.id):i.kind==='package'?pkgOf(i.id):i.kind==='product'?prod(i.id):i.kind==='set'?setOf(i.id):i.kind==='addon'?addonOf(i.id):null;
+ const t=src&&src.tax;if(t==='SV'||t==='EX')return t;
+ return ['service','package','addon'].includes(i.kind)?'SV':'EX';
+}
+/* SST on a bill: taxable lines only, after their share of bill-level discounts */
+function sstCalc(items,sub,net){
+ const b=D.meta.biz||{};if(!b.sst)return{sst:0,base:0,rate:0};
+ const rate=+b.sstRate||8,tx=(items||[]).reduce((t,i)=>t+(taxOf(i)==='SV'?lineAmt(i):0),0);
+ const base=sub>0?r2(tx*Math.min(1,net/sub)):0;
+ return{sst:r2(base*rate/100),base,rate};
+}
+/* the taxable service value of a saved bill (bills from before this build have no sstBase) */
+function saleTaxable(s){
+ if(!s||s.voided)return 0;
+ if(s.sstBase!==undefined)return +s.sstBase||0;
+ const sub=(s.items||[]).reduce((t,i)=>t+lineAmt(i),0),net=(+s.total||0)-(+s.sst||0);
+ const tx=(s.items||[]).reduce((t,i)=>t+(taxOf(i)==='SV'?lineAmt(i):0),0);
+ return sub>0?r2(tx*Math.min(1,net/sub)):0;
+}
+const bizC=()=>D.meta.biz||{};
+const ENT_T=[['sole','Sole proprietor (enterprise)'],['partner','Partnership'],['plt','PLT'],['sdnbhd','Sdn Bhd']];
+const fyStartM=()=>Math.min(12,Math.max(1,+bizC().fyStart||1));
+function fyOf(m){const fs=fyStartM();let y=+m.slice(0,4);if(+m.slice(5,7)<fs)y--;return y+'-'+String(fs).padStart(2,'0');}
+const fyEnd=m=>mShift(fyOf(m),11);
+
+/* ---------- SST taxable periods (two months by default) ---------- */
+function sstPeriods(n){
+ const b=bizC(),len=Math.max(1,+b.sstLen||2),start=String(b.sstStart||b.sstFrom||today()).slice(0,7);
+ const cur=today().slice(0,7),out=[];let p=start;
+ while(mShift(p,len)<=cur)p=mShift(p,len);
+ for(let k=0;k<n;k++){const from=mShift(p,-k*len);if(from<start)break;const to=mShift(from,len-1);
+  out.push({from,to,due:mEnd(mShift(to,1)),label:mLabel(from).split(' ')[0].slice(0,3)+(len>1?'–'+mLabel(to).slice(0,3):'')+' '+to.slice(0,4)});}
+ return out;
+}
+let SSTCALC={};
+async function sstLoad(from,to){
+ const s=await getDocs(query(collection(db,'sales'),where('date','>=',from+'-01'),where('date','<=',mEnd(to))));
+ return s.docs.map(d=>({id:d.id,...d.data()})).filter(x=>!x.voided&&(x.branchId||ME.branchId)===ME.branchId);
+}
+window.sstRun=async(from,to)=>{
+ const k=from+'_'+to;SSTCALC[k]={busy:true};render();
+ try{const L=await sstLoad(from,to);
+  const tax=r2(L.reduce((t,s)=>t+saleTaxable(s),0)),sst=r2(L.reduce((t,s)=>t+(+s.sst||0),0)),
+   all=r2(L.reduce((t,s)=>t+((+s.total||0)-(+s.sst||0)),0));
+  SSTCALC[k]={tax,sst,exempt:r2(all-tax),bills:L.length,withTax:L.filter(s=>+s.sst>0).length,rows:L};
+ }catch(e){SSTCALC[k]={err:friendly(e)};}
+ render();
+};
+window.sstCSV=(from,to)=>{const R=SSTCALC[from+'_'+to];if(!R||!R.rows)return;
+ csvDownload((bizC().name||'spa').replace(/\W+/g,'-')+'-SST-'+from+'-to-'+to+'.csv',[['Date','Invoice','Client','Taxable service value','SST charged','Not taxable','Bill total'],
+  ...R.rows.sort((a,b)=>String(a.date).localeCompare(b.date)).map(s=>{const tx=saleTaxable(s),net=r2((+s.total||0)-(+s.sst||0));
+   return [s.date,s.invoiceNo||s.id,s.customerName||'',tx.toFixed(2),(+s.sst||0).toFixed(2),r2(net-tx).toFixed(2),(+s.total||0).toFixed(2)];}),
+  ['','','Total',R.tax.toFixed(2),R.sst.toFixed(2),R.exempt.toFixed(2),'']]);};
+
+/* ---------- before registering: the 12-month threshold ---------- */
+const SST_LIMIT=500000;
+window.sstWatchRun=async()=>{
+ const W={...((bizC().sstWatch)||{})},cur=today().slice(0,7),months=[];
+ for(let i=11;i>=0;i--)months.push(mShift(cur,-i));
+ SSTCALC.watch={busy:true};render();
+ try{
+  const M={...(W.months||{})};
+  for(const m of months){if(M[m]!==undefined&&m<cur)continue;           /* closed months are kept */
+   const L=await sstLoad(m,m);M[m]=r2(L.reduce((t,s)=>t+saleTaxable(s),0));}
+  Object.keys(M).forEach(k=>{if(!months.includes(k))delete M[k];});
+  const sw={months:M,asOf:new Date().toISOString()};
+  await setDoc(doc(db,'meta','settings'),{biz:{sstWatch:sw}},{merge:true});D.meta.biz={...bizC(),sstWatch:sw};
+  SSTCALC.watch=null;
+ }catch(e){SSTCALC.watch={err:friendly(e)};}
+ render();
+};
+function sstWatchView(){
+ const W=bizC().sstWatch,st=SSTCALC.watch;
+ if(st&&st.busy)return '<div class="center"><div class="spin"></div><p class="tiny muted">Adding up 12 months of bills…</p></div>';
+ if(!W||!W.months)return '<p class="tiny muted" style="margin:0 0 8px">Not registered for SST. Businesses providing taxable services must register once taxable service value goes over RM500,000 in 12 months. Check where you stand:</p>'+
+  '<button class="btn sm" onclick="sstWatchRun()">'+ic('chart',14)+'Check the last 12 months</button>'+(st&&st.err?'<p class="tiny" style="color:var(--rose)">'+esc(st.err)+'</p>':'');
+ const vals=Object.entries(W.months).sort(),tot=r2(vals.reduce((t,[,v])=>t+v,0)),last3=vals.slice(-4,-1).reduce((t,[,v])=>t+v,0)/3||0;
+ const proj=r2(last3*12),pct=Math.min(100,tot/SST_LIMIT*100);
+ return '<div class="spread"><b>'+rm(tot)+'</b><span class="tiny muted">of '+rm(SST_LIMIT)+' in 12 months</span></div>'+
+  '<div class="bar" style="margin:6px 0"><i style="width:'+pct+'%;'+(pct>=80?'background:var(--rose)':'')+'"></i></div>'+
+  '<p class="tiny muted" style="margin:0 0 6px">Taxable services only (treatments, packages, add-ons — as coded in the catalogue). At the pace of the last 3 full months: about '+rm(proj)+' a year.'+
+  (tot>=SST_LIMIT||proj>=SST_LIMIT?' <b style="color:var(--rose)">Over the threshold — talk to your accountant about registering with Customs (MySST).</b>':pct>=80?' <b style="color:var(--rose)">Getting close to the threshold.</b>':'')+'</p>'+
+  '<div class="sstm">'+vals.map(([m,v])=>'<div><i style="height:'+(tot?Math.max(3,v/Math.max(...vals.map(x=>x[1]),1)*100):3)+'%"></i><small>'+mLabel(m).slice(0,3)+'</small></div>').join('')+'</div>'+
+  '<div class="spread tiny muted"><span>Checked '+dshort(W.asOf)+'</span><button class="btn sm ghost" onclick="sstWatchRun()">'+ic('refresh',13)+'Check again</button></div>';
+}
+
+/* ---------- compliance calendar ---------- */
+function compItems(){
+ const b=bizC(),t=b.entityType||'sole',out=[],td=today(),end=ymd(addDays(new Date(),183)),start=ymd(addDays(new Date(),-20));
+ const staff=(D.staff||[]).some(s=>s.active!==false&&s.role!=='owner'&&s.role!=='branch');
+ const push=(key,date,title,note,who)=>{if(date>=start&&date<=end)out.push({key,date,title,note,who});};
+ const mm=[];for(let i=-2;i<=4;i++)mm.push(mShift(td.slice(0,7),i));
+ mm.forEach(m=>{const prev=mShift(m,-1),d15=m+'-15';
+  if(staff){push('epf_'+prev,d15,'KWSP, PERKESO & SIP for '+mLabel(prev),'Contributions for the month before, due by the 15th.','KWSP · PERKESO');
+   push('pcb_'+prev,d15,'PCB for '+mLabel(prev),'Monthly tax deductions to LHDN (e-PCB / MyTax), due by the 15th.','LHDN');}
+  if(b.cp204On&&(+b.cp204Amt||0)>0)push('cp204_'+m,d15,'CP204 instalment · '+mLabel(m),'Monthly tax instalment '+rm(+b.cp204Amt)+' to LHDN.','LHDN');});
+ if(b.sst)sstPeriods(4).forEach(p=>push('sst_'+p.from,p.due,'SST-02 for '+p.label,'Return and payment to Customs, by the last day of the month after the taxable period.','Customs'));
+ const yrs=[+td.slice(0,4),+td.slice(0,4)+1];
+ yrs.forEach(y=>{
+  if(staff){push('ea_'+(y-1),y+'-02-'+(y%4?'28':'29'),'EA forms '+(y-1)+' to every employee','Statement of remuneration for last year.','Staff');
+   push('e_'+(y-1),y+'-03-31','Form E '+(y-1)+' (employer return)','Employer return to LHDN.','LHDN');}
+  if(t==='sole')push('b_'+(y-1),y+'-06-30','Form B '+(y-1)+' (business income tax)','Individual with business income, e-filing.','LHDN');
+  if(t==='partner')push('p_'+(y-1),y+'-06-30','Form P '+(y-1)+' (partnership)','Partnership return, e-filing.','LHDN');
+ });
+ if(t==='sdnbhd'||t==='plt'){
+  const fe=fyEnd(td.slice(0,7)),pfe=mShift(fe,-12);
+  [pfe,fe].forEach(e=>{push((t==='plt'?'pt_':'c_')+e,mEnd(mShift(e,7)),(t==='plt'?'Form PT':'Form C')+' for the year to '+mLabel(e),'Income tax return, 7 months after the financial year end.','LHDN');});
+  if(b.incDate){yrs.forEach(y=>{const a=y+b.incDate.slice(4);push('ar_'+y,ymd(addDays(new Date(a+'T00:00:00'),30)),'SSM annual return '+y,'Within 30 days of the incorporation anniversary.','SSM');});}
+ }
+ if(t!=='sdnbhd'&&t!=='plt'&&b.ssmExpiry)yrs.forEach(y=>{const d=y+b.ssmExpiry.slice(4);push('ssm_'+y,d,'Renew SSM business registration','Registration expires '+dstr(d)+'.','SSM');});
+ const done=b.compDone||{};
+ const L=out.map(x=>({...x,done:!!done[x.key],late:!done[x.key]&&x.date<td,soon:!done[x.key]&&x.date>=td&&daysBetween(td,x.date)<=7}))
+  .sort((a,b)=>a.date.localeCompare(b.date));
+ /* monthly items: anything late or just ticked, and only the next one ahead */
+ const seen={};
+ return L.filter(x=>{const f=x.key.split('_')[0];if(!['epf','pcb','cp204','sst'].includes(f))return true;
+  if(x.date<td)return x.late||(x.done&&daysBetween(x.date,td)<=20);
+  if(seen[f])return false;seen[f]=1;return true;});
+}
+window.compDone=async(key,on)=>{
+ const done={...((bizC().compDone)||{})};if(on)done[key]=new Date().toISOString().slice(0,10);else delete done[key];
+ try{await setDoc(doc(db,'meta','settings'),{biz:{compDone:done}},{merge:true});D.meta.biz={...bizC(),compDone:done};
+  await audit('Compliance item '+(on?'done':'reopened'),key);render();}catch(e){toast(friendly(e));}
+};
+function compAlerts(al){
+ if(!boss())return;
+ const L=compItems().filter(x=>x.late||x.soon);
+ if(L.length)al.push({i:'flag',t:L.length+' compliance date'+(L.length>1?'s':'')+(L.some(x=>x.late)?' overdue or':'')+' due within 7 days',
+  d:L.slice(0,2).map(x=>x.title+' · '+dshort(x.date)).join(', '),go:"finGo('tax')"});
+}
+{const _fa=finAlerts;finAlerts=al=>{_fa(al);compAlerts(al);};}
+
+/* ---------- the tab ---------- */
+function finTax(){
+ const b=bizC(),ent=(ENT_T.find(x=>x[0]===(b.entityType||'sole'))||ENT_T[0])[1];
+ const miss=[['legalName','Registered name'],['ssm','SSM number'],['tin','TIN'],['msic','MSIC code'],['address','Address']].filter(([k])=>!String(b[k]||'').trim());
+ const row=(k,v)=>'<div class="k">'+k+'</div><div class="v">'+(v||'<span class="muted">—</span>')+'</div>';
+ const P=b.sst?sstPeriods(4):[],C=compItems();
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('idcard',15)+' Company</h3>'+(isOwnerMe()?'<button class="btn sm" onclick="cyForm()">'+ic('edit',14)+'Edit</button>':'')+'</div>'+
+   '<div class="kv">'+row('Registered name',esc(b.legalName||b.name||''))+row('Type',esc(ent))+row('SSM',esc(b.ssm||''))+row('TIN',esc(b.tin||''))+row('MSIC',esc(b.msic||''))+
+   row('Financial year','Starts '+mLabel('2000-'+String(fyStartM()).padStart(2,'0')).split(' ')[0]+' · this year '+mLabel(fyOf(today().slice(0,7)))+' – '+mLabel(fyEnd(today().slice(0,7))))+
+   row('SST',b.sst?'Registered'+(b.sstNo?' · '+esc(b.sstNo):'')+' · '+(+b.sstRate||8)+'% service tax'+(b.sstFrom?' · from '+dstr(b.sstFrom):''):'Not registered')+
+   row('Bank accounts',(b.banks||[]).filter(x=>x.bank).map(x=>esc(x.bank)+(x.no?' ···'+esc(x.no):'')+(x.name?' ('+esc(x.name)+')':'')).join('<br>'))+
+   row('e-Invoice',b.einv?'Required — keep buyer details on invoices':'Not required for this business (check the exemption with your accountant)')+'</div>'+
+   (miss.length?'<div class="warnbox" style="margin-top:8px">'+ic('alert',13)+' Missing: '+miss.map(x=>x[1]).join(', ')+'. Needed on invoices and for e-Invoice.</div>':'')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('receipt',15)+' SST</h3><span class="pill '+(b.sst?'g':'')+'">'+(b.sst?'Registered':'Not registered')+'</span></div>'+
+   (b.sst?'<p class="tiny muted" style="margin:0 0 8px">Service tax is charged only on lines coded as taxable services in the catalogue. The SST-02 is due by the last day of the month after each taxable period.</p>'+
+    P.map(p=>{const R=SSTCALC[p.from+'_'+p.to];
+     return '<div class="sstp"><div class="spread"><b>'+esc(p.label)+'</b><span class="pill '+(p.due<today()?'':'a')+'">due '+dshort(p.due)+'</span></div>'+
+      (!R?'<button class="btn sm ghost" style="margin-top:6px" onclick="sstRun(\''+p.from+'\',\''+p.to+'\')">'+ic('chart',13)+'Work out SST-02 figures</button>':
+       R.busy?'<div class="spin" style="margin:8px auto"></div>':R.err?'<p class="tiny" style="color:var(--rose)">'+esc(R.err)+'</p>':
+       '<div class="aprsnap" style="margin-top:6px"><div><small>Taxable services</small><b>'+rm(R.tax)+'</b></div><div><small>SST charged</small><b>'+rm(R.sst)+'</b></div>'+
+        '<div><small>Not taxable</small><b>'+rm(R.exempt)+'</b></div><div><small>Bills</small><b>'+R.bills+'</b></div></div>'+
+       (Math.abs(r2(R.tax*(+b.sstRate||8)/100)-R.sst)>1?'<p class="tiny" style="color:var(--rose);margin:6px 0 0">SST charged differs from '+(+b.sstRate||8)+'% of taxable services — some bills were made before SST was switched on or before items were coded.</p>':'')+
+       '<button class="btn sm ghost" style="margin-top:6px" onclick="sstCSV(\''+p.from+'\',\''+p.to+'\')">'+ic('download',13)+'Bills in this period (CSV)</button>')+'</div>';}).join('')
+    :sstWatchView())+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 4px">'+ic('calendar',15)+' Dates to keep</h3>'+
+   '<p class="tiny muted" style="margin:0 0 8px">From your company details and team. General dates — confirm with your accountant, and tick each one when done.</p>'+
+   (C.length?C.map(x=>'<label class="compi'+(x.done?' done':x.late?' late':x.soon?' soon':'')+'"><input type="checkbox"'+(x.done?' checked':'')+(boss()?'':' disabled')+
+    ' onchange="compDone(\''+x.key+'\',this.checked)"><span class="compd">'+dshort(x.date)+'</span><span style="flex:1;min-width:0"><b>'+esc(x.title)+'</b><small>'+esc(x.note)+'</small></span>'+
+    '<span class="pill '+(x.done?'g':x.late?'r':x.soon?'a':'')+'">'+(x.done?'done':x.late?'late':x.soon?'this week':esc(x.who))+'</span></label>').join('')
+    :'<div class="empty">Nothing in the next few months.</div>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('shield',15)+' e-Invoice readiness</h3>'+
+   '<p class="tiny muted" style="margin:0 0 8px">Whether e-Invoice applies depends on the business\'s annual turnover and its related companies — HASiL exempts taxpayers below the threshold it sets. Keep these ready so it can be switched on when needed.</p>'+
+   [['TIN',b.tin],['SSM / registration number',b.ssm],['MSIC code',b.msic],['Registered address',b.address],['SST number (if registered)',b.sst?b.sstNo:'n/a']].map(([k,v])=>
+    '<div class="spread tiny" style="padding:4px 0"><span>'+k+'</span>'+(v?'<span class="pill g">'+ic('check',10)+' ready</span>':'<span class="pill a">missing</span>')+'</div>').join('')+'</div>';
+}
+window.cyForm=()=>{
+ const b=bizC(),banks=[...(b.banks||[]),{},{}].slice(0,Math.max(2,(b.banks||[]).length+1));
+ const inp=(id,label,v,ph,type)=>'<div><label>'+label+'</label><input class="f" id="'+id+'"'+(type?' type="'+type+'"':'')+' value="'+esc(v||'')+'" placeholder="'+(ph||'')+'"></div>';
+ modal('Company details','<div class="card">'+
+  '<div class="grid g2">'+inp('cy-ln','Registered name',b.legalName||b.name,'as on the SSM certificate')+
+   '<div><label>Type</label><select class="f" id="cy-t">'+ENT_T.map(x=>'<option value="'+x[0]+'"'+((b.entityType||'sole')===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></div>'+
+   inp('cy-ssm','SSM number',b.ssm)+inp('cy-tin','TIN (income tax no.)',b.tin)+inp('cy-msic','MSIC code',b.msic,'e.g. 96020')+
+   '<div><label>Financial year starts</label><select class="f" id="cy-fy">'+[...Array(12)].map((_,i)=>'<option value="'+(i+1)+'"'+(fyStartM()===i+1?' selected':'')+'>'+mLabel('2000-'+String(i+1).padStart(2,'0')).split(' ')[0]+'</option>').join('')+'</select></div>'+
+   inp('cy-inc','Incorporation / registration date',b.incDate,'','date')+inp('cy-exp','SSM registration expires (enterprise)',b.ssmExpiry,'','date')+'</div>'+
+  '<label>Registered address</label><input class="f" id="cy-ad" value="'+esc(b.address||'')+'">'+
+  '<div class="fieldset"><h3>'+ic('wallet',13)+'Bank accounts</h3><p class="tiny muted" style="margin:0 0 6px">Only the last 4 digits are kept.</p>'+
+   banks.map((x,k)=>'<div class="grid g3" data-bank>'+inp('cy-bk'+k,'Bank',x.bank,'e.g. Maybank')+inp('cy-bn'+k,'Account name',x.name)+inp('cy-bd'+k,'Last 4 digits',x.no,'1234')+'</div>').join('')+'</div>'+
+  '<div class="fieldset"><h3>'+ic('receipt',13)+'SST</h3>'+
+   '<label class="row" style="gap:9px"><input type="checkbox" id="cy-sst"'+(b.sst?' checked':'')+'> Registered for SST — charge service tax on taxable services</label>'+
+   '<div class="grid g2">'+inp('cy-sstno','SST registration no.',b.sstNo)+inp('cy-sstr','Service tax rate %',b.sstRate||8,'','number')+
+    inp('cy-sstf','Registered from',b.sstFrom,'','date')+
+    '<div><label>First taxable period starts (month)</label><input class="f" type="month" id="cy-ssts" value="'+esc(b.sstStart||String(b.sstFrom||'').slice(0,7))+'"></div>'+
+    '<div><label>Taxable period</label><select class="f" id="cy-sstl">'+[[2,'Every 2 months'],[1,'Every month'],[3,'Every 3 months'],[6,'Every 6 months']].map(x=>'<option value="'+x[0]+'"'+((+b.sstLen||2)===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></div></div></div>'+
+  '<div class="fieldset"><h3>'+ic('shield',13)+'Income tax & e-Invoice</h3>'+
+   '<label class="row" style="gap:9px"><input type="checkbox" id="cy-cp"'+(b.cp204On?' checked':'')+'> Pay CP204 tax instalments</label>'+
+   '<div class="grid g2">'+inp('cy-cpa','CP204 monthly instalment (RM)',b.cp204Amt,'','number')+'</div>'+
+   '<label class="row" style="gap:9px"><input type="checkbox" id="cy-ei"'+(b.einv?' checked':'')+'> This business must issue e-Invoices</label></div>'+
+  '<div id="cy-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="cySave()">'+ic('check',16)+'Save company details</button></div>');
+};
+window.cySave=async()=>{
+ const g=id=>((document.getElementById(id)||{}).value||'').trim(),c=id=>!!(document.getElementById(id)||{}).checked,e=$('#cy-e');
+ const banks=[...document.querySelectorAll('[data-bank]')].map((_,k)=>({bank:g('cy-bk'+k).slice(0,40),name:g('cy-bn'+k).slice(0,60),no:g('cy-bd'+k).replace(/\D/g,'').slice(-4)})).filter(x=>x.bank);
+ const sst=c('cy-sst'),rate=+g('cy-sstr')||8;
+ if(sst&&!(rate>0&&rate<=20)){e.textContent='Check the SST rate.';return;}
+ if(sst&&!g('cy-ssts')&&!g('cy-sstf')){e.textContent='Enter when the first taxable period starts.';return;}
+ const tin=g('cy-tin').toUpperCase().replace(/\s/g,'');
+ const P={legalName:g('cy-ln').slice(0,120),entityType:g('cy-t')||'sole',ssm:g('cy-ssm').slice(0,40),tin,msic:g('cy-msic').replace(/\D/g,'').slice(0,5),
+  fyStart:+g('cy-fy')||1,incDate:g('cy-inc'),ssmExpiry:g('cy-exp'),address:g('cy-ad').slice(0,200),banks,
+  sst:sst?1:0,sstNo:g('cy-sstno').slice(0,40),sstRate:rate,sstFrom:g('cy-sstf'),sstStart:g('cy-ssts')||g('cy-sstf').slice(0,7),sstLen:+g('cy-sstl')||2,
+  cp204On:c('cy-cp'),cp204Amt:r2(+g('cy-cpa')||0),einv:c('cy-ei')};
+ try{await setDoc(doc(db,'meta','settings'),{biz:P},{merge:true});D.meta.biz={...bizC(),...P};
+  await audit('Company details updated',P.legalName+' · SST '+(sst?'registered '+rate+'%':'not registered')+' · FY from month '+P.fyStart);
+  window.closeModal();render();toast('Company details saved');}
+ catch(err){e.textContent=friendly(err);}
+};
 
 </script>
