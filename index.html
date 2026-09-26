@@ -1990,6 +1990,23 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .lprev{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}.lprev.off{opacity:.5;background:var(--surface-2)}
 .lprev p{margin:6px 0;font-size:13px;line-height:1.45}.lprev small{font-size:11.5px;color:var(--ink-3)}.lpst{color:#C8912E;letter-spacing:1px}
 .lpadd{border:1px dashed var(--line);border-radius:12px;padding:8px 12px;margin-bottom:8px}.lpadd summary{cursor:pointer;font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center}
+.lpsv.offp{opacity:.55}
+.lpsw{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 0}
+.lpswi{display:inline-flex!important;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;color:var(--ink-2);margin:0!important;position:relative;white-space:nowrap;font-weight:500}
+.lpswi span{white-space:nowrap}
+.lpswi input{position:absolute;opacity:0;width:1px;height:1px}
+.lpswi i{display:inline-block;font-style:normal;width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .2s;flex:none}
+.lpswi i::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.lpswi input:checked+i{background:var(--jade)}.lpswi input:checked+i::after{transform:translateX(14px)}
+.lpswi input:focus-visible+i{outline:2px solid var(--brass);outline-offset:2px}
+.lpslides{display:flex;gap:8px;flex-wrap:wrap}
+.lpslide{position:relative;width:132px;height:88px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2)}
+.lpslide img{width:100%;height:100%;object-fit:cover}.lpslide .lpimg{width:100%;height:100%}
+.lpsn{position:absolute;left:6px;top:6px;background:rgba(20,18,15,.7);color:#fff;font-size:11px;font-weight:700;border-radius:99px;padding:1px 7px}
+.lpsa{position:absolute;right:4px;bottom:4px;display:flex;gap:3px}
+.lpsa button{width:26px;height:26px;border-radius:8px;border:0;background:rgba(255,255,255,.9);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.lpslide.add{display:grid;place-items:center;align-content:center;gap:2px;border-style:dashed;cursor:pointer;color:var(--ink-3);font:inherit}
+.lpen{border:1px dashed var(--line);border-radius:12px;padding:8px 12px;margin:14px 0 4px}.lpen summary{cursor:pointer;font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2249,7 +2266,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26k';
+const BUILD='2026-09-26l';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -21570,14 +21587,14 @@ window.chatAck=async(id,sid)=>{
 const LP_DEF={on:false,headline:'',sub:'',ticks:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas, tanpa caj tersembunyi'],
  usps:[{t:'Konsultasi percuma',d:'Therapist semak keadaan kulit anda sebelum sebarang rawatan.'},{t:'Rawatan ikut kulit anda',d:'Setiap rawatan disesuaikan dengan jenis dan masalah kulit anda.'},
   {t:'Book online 24 jam',d:'Pilih rawatan, therapist dan masa sendiri — terus disahkan.'}],
- faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',threads:'',gReviews:'',rv:{hide:[],manual:[]},px:{meta:'',tt:'',ga:''}};
+ faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',threads:'',gReviews:'',rv:{hide:[],manual:[]},slides:[],promoImg:{},promoBar:true,promoPop:true,headlineEn:'',subEn:'',ticksEn:['','',''],waMsgEn:'',px:{meta:'',tt:'',ga:''}};
 const lpFaq0=()=>{const W=typeof wbSet==='function'?wbSet():{};return [
  {q:'Perlu book dulu atau boleh walk-in?',a:'Digalakkan book dahulu supaya slot dan therapist tersedia untuk anda. Walk-in diterima jika ada slot kosong.'},
  {q:'Rawatan mana yang sesuai untuk saya?',a:'Tak pasti? Isi borang konsultasi percuma atau WhatsApp kami — therapist akan cadangkan rawatan ikut jenis dan masalah kulit anda.'},
  {q:'Berapa lama satu sesi?',a:'Tempoh setiap rawatan tertera pada senarai rawatan. Sila datang 10 minit awal untuk konsultasi ringkas.'},
  {q:'Boleh tukar atau batal tempahan?',a:'Boleh. Guna pautan dalam pengesahan tempahan anda, atau WhatsApp kami sekurang-kurangnya '+(+W.cutoff||24)+' jam sebelum janji temu.'}];};
 const lpSet=()=>{const L={...LP_DEF,...((D.meta||{}).landing||{})};if(!L.faq)L.faq=lpFaq0();L.px={...LP_DEF.px,...(L.px||{})};L.branches=L.branches||{};L.rv={hide:[],manual:[],...(L.rv||{})};return L;};
-let LPPUB,LPIMG,LPD=null,LPSTATS=null,LPCAMP='',LPBUSY=false;
+let LPTH={},LPTHQ=new Set(),LPUP=new Set(),LPPUB,LPIMG,LPD=null,LPSTATS=null,LPCAMP='',LPBUSY=false;
 const lpBase=()=>{let u='';try{u=location.origin+location.pathname.replace(/[^/]*$/,'');}catch(e){}return u+'lp.html';};
 const LP_BM_DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
 
@@ -21601,8 +21618,21 @@ function lpPromoOut(p){
  const brs=(p.branchIds||[]).length&&(D.branches||[]).length>1?p.branchIds.map(id=>(D.branches.find(b=>b.id===id)||{}).name).filter(Boolean).join(', '):'';
  return {id:p.id,t:String(p.name||'').slice(0,60),desc:String(p.desc||'').slice(0,200),type:p.type,value:v,badge,deal,all,svc,
   newOnly:p.audience==='new',returning:p.audience==='return',limit:+p.limit||0,left:+p.limit>0?Math.max(0,(+p.limit)-(+p.used||0)):0,
-  start:p.start||'',end:p.end||'',daysTxt:days,brTxt:brs};
+  start:p.start||'',end:p.end||'',daysTxt:days,brTxt:brs,...lpPromoEn(p,T,nm,gn,v,rmv),...lpPromoImgOut(p.id)};
 }
+const LP_EN_DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function lpPromoEn(p,T,nm,gn,v,rmv){
+ const on=T.scope==='all'?'all treatments & products':T.scope==='kind'?((T.kinds||[]).includes('service')?'all treatments':'selected items'):T.scope==='cat'?T.cat:
+  (T.items||[]).slice(0,3).map(x=>nm(x.kind,x.id)).join(', ')+((T.items||[]).length>3?' and more':'');
+ const dealEn=p.type==='pct'?v+'% off '+on:p.type==='amt'?rmv(v)+' off '+on:p.type==='price'?on+' for only '+rmv(v):
+  p.type==='bxgy'?'Buy '+(p.buyQty||1)+' '+on+', get '+(p.getQty||1)+(gn?' '+gn:'')+' '+((+p.getPct||100)>=100?'free':p.getPct+'% off'):
+  'Spend '+rmv(p.minSpend||0)+' ('+on+'), save '+(p.unit==='rm'?rmv(v):v+'%');
+ const badgeEn=p.type==='bxgy'?'Buy '+(p.buyQty||1)+' Get '+(p.getQty||1):p.type==='spend'?'Save '+(p.unit==='rm'?rmv(v):v+'%'):undefined;
+ const daysTxtEn=(p.days||[]).length&&p.days.length<7?p.days.slice().sort().map(d=>LP_EN_DAYS[d]).join(', '):'';
+ return {dealEn,...(badgeEn?{badgeEn}:{}),daysTxtEn};
+}
+/* a promotion's own photo, uploaded on the Landing page screen */
+function lpPromoImgOut(id){const h=((lpSet().promoImg)||{})[id];return h?{img:'promo_'+id,ih:h}:{};}
 function lpBuild(img){
  const L=lpSet(),b=D.meta.biz||{},W=typeof wbSet==='function'?wbSet():{on:false},td=today();
  const bookable=new Set(typeof wbSvcs==='function'?wbSvcs().map(s=>s.id):[]);
@@ -21614,8 +21644,12 @@ function lpBuild(img){
  const rv=lpReviewPool(L).filter(r=>r.on).slice(0,12).map(r=>({n:r.n,s:r.s,t:r.t,svc:r.svc,d:r.d,src:r.src}));
  return {on:!!L.on,v:1,
   biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||'',th:L.threads||''},gReviews:/^https:\/\//.test(L.gReviews||'')?String(L.gReviews).slice(0,300):'',
-  hero:{t:String(L.headline||'').slice(0,120),s:String(L.sub||'').slice(0,240),ticks:(L.ticks||[]).filter(Boolean).slice(0,3),img:img||''},
-  usps:(L.usps||[]).filter(u=>u&&u.t).slice(0,4),faq:(L.faq||[]).filter(f=>f&&f.q).slice(0,10),waMsg:String(L.waMsg||'').slice(0,200),
+  hero:{t:String(L.headline||'').slice(0,120),s:String(L.sub||'').slice(0,240),ticks:(L.ticks||[]).filter(Boolean).slice(0,3),
+   tEn:String(L.headlineEn||'').slice(0,120),sEn:String(L.subEn||'').slice(0,240),ticksEn:(L.ticksEn||[]).slice(0,3).map(x=>String(x||'').slice(0,40)),
+   slides:(L.slides||[]).filter(x=>x&&x.id).slice(0,6).map(x=>({id:x.id,ih:x.ih||''})),img:(L.slides||[]).length?'':(img||'')},
+  promoBar:L.promoBar!==false,promoPop:L.promoPop!==false,waMsgEn:String(L.waMsgEn||'').slice(0,200),
+  imgs:[...(L.slides||[]).map(x=>'hero_'+x.id),...Object.keys(L.promoImg||{}).map(id=>'promo_'+id)],
+  usps:(L.usps||[]).filter(u=>u&&u.t).slice(0,4).map(u=>({t:u.t,d:u.d||'',...(u.tEn?{tEn:u.tEn}:{}),...(u.dEn?{dEn:u.dEn}:{})})),faq:(L.faq||[]).filter(f=>f&&f.q).slice(0,10).map(f=>({q:f.q,a:f.a||'',...(f.qEn?{qEn:f.qEn}:{}),...(f.aEn?{aEn:f.aEn}:{})})),waMsg:String(L.waMsg||'').slice(0,200),
   showPrices:L.showPrices!==false,bookOn:!!W.on,
   services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,400),b:bookable.has(s.id),...(s.image?{ih:wbHash(s.image)}:{})})),
   promos:(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&(!p.start||daysBetween(td,p.start)<=31)&&!(+p.limit>0&&promoLeft(p)<=0))
@@ -21645,6 +21679,8 @@ async function lpSyncImgs(d,old){
  const was={};((old&&old.services)||[]).forEach(s=>{if(s.ih)was[s.id]=s.ih;});
  for(const s of d.services){if(!s.ih||was[s.id]===s.ih)continue;const x=svc(s.id);if(x&&x.image)await setDoc(doc(db,'lpImg',s.id),{img:x.image,h:s.ih,at:new Date().toISOString()});}
  const keep=new Set(d.services.filter(s=>s.ih).map(s=>s.id));
+ const now=new Set(d.imgs||[]);for(const id of new Set([...((old&&old.imgs)||[]),...LPUP]))if(!now.has(id)){try{await deleteDoc(doc(db,'lpImg',id));}catch(e){console.warn('lpImg',e);}}
+ LPUP.clear();
  for(const id of Object.keys(was))if(!keep.has(id)){try{await deleteDoc(doc(db,'lpImg',id));}catch(e){console.warn('lpImg',e);}}
 }
 /* every review that could go on the page: clients' own 4★+ feedback (first name only when they
@@ -21724,9 +21760,7 @@ function vLanding(){
   '<label>Headline</label>'+tx('lp-h','headline',L.headline,'Kulit sihat & *bercahaya*, dijaga dengan teliti',120)+'<p class="tiny muted" style="margin:-6px 0 0">Put *stars* around a word to show it in gold italics.</p>'+
   '<label>Under the headline</label><textarea class="f" rows="2" maxlength="240" oninput="lpF(\'sub\',this.value)" placeholder="Rawatan wajah dan kulit oleh therapist terlatih…">'+esc(L.sub||'')+'</textarea>'+
   '<label>Three short points under the buttons</label><div class="grid g3">'+[0,1,2].map(i=>'<input class="f" maxlength="40" value="'+esc((L.ticks||[])[i]||'')+'" oninput="lpArr(\'ticks\','+i+',this.value)">').join('')+'</div>'+
-  '<label>Photo at the top</label><div class="row" style="gap:10px;align-items:center">'+(img?'<img src="'+img+'" alt="" class="lpimg">':'<span class="lpimg none">'+ic('image',20)+'</span>')+
-   '<button class="btn sm ghost" onclick="lpPhoto()">'+ic('upload',13)+(img?'Change':'Add a photo')+'</button>'+(img?'<button class="btn sm ghost" onclick="lpNoPhoto()">Remove</button>':'')+
-   '<span class="tiny muted">A bright photo of the spa or a treatment. Without one, a gold pattern with your name is shown.</span></div>'+
+  lpSlidesHTML(L,img)+
   '<label>Highlights</label>'+(L.usps||[]).map((u,i)=>'<div class="grid g2 lprow"><input class="f" maxlength="40" value="'+esc(u.t||'')+'" placeholder="Title" oninput="lpUsp('+i+',\'t\',this.value)"><input class="f" maxlength="100" value="'+esc(u.d||'')+'" placeholder="One line" oninput="lpUsp('+i+',\'d\',this.value)"></div>').join('')+
    ((L.usps||[]).length<4?'<button class="btn sm ghost" onclick="lpUspAdd()">'+ic('plus',13)+'Highlight</button>':'')+
   '<label>Questions & answers</label>'+(L.faq||[]).map((f,i)=>'<div class="lpfaq"><input class="f" maxlength="120" value="'+esc(f.q||'')+'" placeholder="Question" oninput="lpFaqF('+i+',\'q\',this.value)">'+
@@ -21735,8 +21769,7 @@ function vLanding(){
   '<label>WhatsApp message the client starts with</label>'+tx('lp-wa','waMsg',L.waMsg,'Hi {bisnes}, saya nak tanya tentang rawatan.',200)+
   '<div class="row" style="gap:16px;flex-wrap:wrap;margin-top:10px"><label class="row lptog"><input type="checkbox" '+(L.showPrices!==false?'checked':'')+' onchange="lpF(\'showPrices\',this.checked)"> Show prices</label>'+
    '<label class="row lptog"><input type="checkbox" '+(L.showReviews!==false?'checked':'')+' onchange="lpF(\'showReviews\',this.checked)"> Show client reviews</label></div>'+
-  '<label>Treatments on the page</label><div class="lpsvcs"><label class="row lptog"><input type="checkbox" '+(!sel?'checked':'')+' onchange="lpSvcAll(this.checked)"> All active treatments</label>'+
-   (sel?S.map(s=>'<label class="row lptog"><input type="checkbox" '+(sel.includes(s.id)?'checked':'')+' onchange="lpSvc(\''+s.id+'\',this.checked)"> '+esc(s.name)+'</label>').join(''):'')+'</div>'+
+  lpEnHTML(L)+
   '<h3 style="margin:16px 0 4px">'+ic('pin',15)+' Branches</h3>'+brs+
   '<h3 style="margin:16px 0 4px">'+ic('link',15)+' Social & ad tracking</h3><div class="grid g2"><div><label>TikTok username</label>'+tx('lp-tt','tiktok',L.tiktok,'@luunaskinspa',40)+'</div><div><label>Facebook page link</label>'+tx('lp-fb','facebook',L.facebook,'https://facebook.com/…',120)+'</div>'+
    '<div><label>Threads username</label>'+tx('lp-th','threads',L.threads,'@luunaskinspa',40)+'</div></div>'+
@@ -21744,7 +21777,7 @@ function vLanding(){
    '<div><label>Google Analytics (G-…)</label><input class="f" value="'+esc(L.px.ga||'')+'" oninput="lpPx(\'ga\',this.value)"></div></div>'+
   '<p class="tiny muted">Optional. With a pixel the ad platform learns who enquires and books, so your ads find more people like them.</p>'+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
- return status+lpStatsHTML()+links+lpSvcCard()+lpRevCard(L)+content;
+ return status+lpStatsHTML()+links+lpPromoCard(L)+lpSvcCard()+lpRevCard(L)+content;
 }
 window.lpF=(k,v)=>{LPD[k]=v;};
 window.lpArr=(k,i,v)=>{LPD[k]=LPD[k]||[];LPD[k][i]=v;};
@@ -21773,10 +21806,13 @@ async function lpShrink(f){
 window.lpSave=async()=>{
  if(!boss())return;
  const L=JSON.parse(JSON.stringify(LPD||lpSet()));
- L.usps=(L.usps||[]).filter(u=>u&&String(u.t||'').trim()).map(u=>({t:String(u.t).trim().slice(0,40),d:String(u.d||'').trim().slice(0,100)}));
- L.faq=(L.faq||[]).filter(f=>f&&String(f.q||'').trim()).map(f=>({q:String(f.q).trim().slice(0,120),a:String(f.a||'').trim().slice(0,500)}));
+ L.usps=(L.usps||[]).filter(u=>u&&String(u.t||'').trim()).map(u=>({t:String(u.t).trim().slice(0,40),d:String(u.d||'').trim().slice(0,100),tEn:String(u.tEn||'').trim().slice(0,40),dEn:String(u.dEn||'').trim().slice(0,100)}));
+ L.faq=(L.faq||[]).filter(f=>f&&String(f.q||'').trim()).map(f=>({q:String(f.q).trim().slice(0,120),a:String(f.a||'').trim().slice(0,500),qEn:String(f.qEn||'').trim().slice(0,120),aEn:String(f.aEn||'').trim().slice(0,500)}));
+ L.ticksEn=(L.ticksEn||[]).map(x=>String(x||'').trim().slice(0,40));
  L.ticks=(L.ticks||[]).map(x=>String(x||'').trim().slice(0,40));
- try{await setDoc(doc(db,'meta','settings'),{landing:L},{merge:true});D.meta.landing=L;LPD=null;
+ try{if(!(L.slides||[]).length){const old=LPIMG!==undefined?LPIMG:((LPPUB&&LPPUB.hero&&LPPUB.hero.img)||'');
+   if(old){const id='s'+Date.now().toString(36);await setDoc(doc(db,'lpImg','hero_'+id),{img:old,h:wbHash(old),at:new Date().toISOString()});LPTH['hero_'+id]=old;L.slides=[{id,ih:wbHash(old)}];LPIMG='';}}
+  await lpMetaPut('landing',L);LPD=null;
   await lpPublish(true);await audit('Landing page published',L.on?'live':'off');render();toast(L.on?'Published — the page is live':'Saved — the page is off');}
  catch(e){toast(friendly(e));}
 };
@@ -21836,15 +21872,28 @@ window.fbShare=on=>{if(typeof FBPUB!=='undefined'&&FBPUB)FBPUB.share=!!on;};
 
 /* ---------- treatment photos and descriptions, straight on the catalogue ---------- */
 function lpSvcCard(){
- const L=LPD||lpSet(),S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id))),n=S.filter(s=>s.image).length;
- return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Treatment photos & descriptions</h3><span class="pill '+(n===S.length&&n?'g':'a')+'">'+n+' of '+S.length+' with a photo</span></div>'+
-  '<p class="tiny muted" style="margin:6px 0 8px">Saved on the treatment in the catalogue (also under Catalogue → Treatments). The page shows each photo on the treatment\'s card; tapping the card opens it large with the description.</p>'+
-  S.map(x=>'<div class="lpsv"><button type="button" class="lpsvimg'+(x.image?'':' none')+'" onclick="lpSvcPhoto(\''+x.id+'\')" title="'+(x.image?'Change photo':'Add photo')+'">'+
+ const L=LPD||lpSet(),W=typeof wbSet==='function'?wbSet():{},S=D.services.filter(s=>s.active!==false&&s.id),n=S.filter(s=>s.image).length;
+ const onPage=x=>!L.svcs||L.svcs.includes(x.id),onBook=x=>!W.services||W.services.includes(x.id);
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Treatments on the page & booking</h3><span class="pill '+(n===S.length&&n?'g':'a')+'">'+n+' of '+S.length+' with a photo</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">Switch each treatment on or off for the landing page and for online booking — it changes straight away. Photos and descriptions are saved on the treatment (also under Catalogue → Treatments); tapping a card on the page opens it large.</p>'+
+  S.map(x=>'<div class="lpsv'+(onPage(x)?'':' offp')+'"><button type="button" class="lpsvimg'+(x.image?'':' none')+'" onclick="lpSvcPhoto(\''+x.id+'\')" title="'+(x.image?'Change photo':'Add photo')+'">'+
     (x.image?'<img src="'+x.image+'" alt="">':ic('image',18)+'<small>Add</small>')+'</button>'+
    '<div class="lpsvb"><div class="spread"><b>'+esc(x.name)+'</b><span class="tiny muted">'+rm(x.price)+' · '+(x.dur||60)+' min</span></div>'+
+   '<div class="lpsw"><label class="lpswi"><input type="checkbox" '+(onPage(x)?'checked':'')+' onchange="lpSvcShow(\''+x.id+'\',this.checked)"><i></i><span>Landing page</span></label>'+
+    '<label class="lpswi"><input type="checkbox" '+(onBook(x)?'checked':'')+' onchange="lpSvcBook(\''+x.id+'\',this.checked)"><i></i><span>Online booking</span></label></div>'+
    '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea>'+
    (x.image?'<button type="button" class="lpx" onclick="lpSvcNoPhoto(\''+x.id+'\')">Remove photo</button>':'')+'</div></div>').join('')+'</div>';
 }
+/* a whole settings field replaced at once (a merge would keep keys that were taken out) */
+async function lpMetaPut(k,v){try{await updateDoc(doc(db,'meta','settings'),{[k]:v});}catch(e){await setDoc(doc(db,'meta','settings'),{[k]:v},{merge:true});}D.meta[k]=v;}
+window.lpSvcShow=async(id,on)=>{
+ const all=D.services.filter(s=>s.active!==false&&s.id).map(s=>s.id),cur=lpSet().svcs||all;let list=cur.filter(x=>x!==id);if(on)list.push(id);
+ if(all.every(x=>list.includes(x)))list=null;
+ try{await lpMetaPut('landing',{...((D.meta||{}).landing||{}),svcs:list});if(LPD)LPD.svcs=list;lpPublish(false).catch(()=>{});render();toast(on?'Shown on the landing page':'Hidden from the landing page');}catch(e){toast(friendly(e));}};
+window.lpSvcBook=async(id,on)=>{
+ const W=wbSet(),all=D.services.filter(s=>s.active!==false&&s.id&&s.dur).map(s=>s.id),cur=W.services||all;let list=cur.filter(x=>x!==id);if(on)list.push(id);
+ if(W.on&&!list.length){toast('At least one treatment must stay on for online booking');render();return;}
+ try{await lpMetaPut('webBook',{...W,services:list});if(typeof wbPublish==='function')await wbPublish(true);lpPublish(false).catch(()=>{});render();toast(on?'Bookable online':'Taken off online booking');}catch(e){toast(friendly(e));}};
 async function lpSvcPut(id,patch,msg){
  try{await setDoc(doc(db,'services',id),patch,{merge:true});const x=svc(id);if(x)Object.assign(x,patch);
   if((D.meta||{}).landing)lpPublish(false).catch(()=>{});render();if(msg)toast(msg);}catch(e){toast(friendly(e));}}
@@ -21885,5 +21934,58 @@ window.lpRevAdd=()=>{const M=LPREV||{};if(String(M.t||'').trim().length<8){toast
  LPREV=null;render();toast('Review added — Save & publish to put it on the page');};
 window.lpRevDel=id=>{LPD.rv.manual=(LPD.rv.manual||[]).filter(m=>m.id!==id);render();};
 window.lpRevShow=(id,on)=>{LPD.rv=LPD.rv||{hide:[],manual:[]};LPD.rv.hide=(LPD.rv.hide||[]).filter(x=>x!==id);if(!on)LPD.rv.hide.push(id);render();};
+
+/* ---------- the photo slide show at the top ---------- */
+function lpThumb(id){if(LPTH[id]!==undefined||LPTHQ.has(id))return LPTH[id]||'';LPTHQ.add(id);
+ getDoc(doc(db,'lpImg',id)).then(x=>{LPTH[id]=x.exists()?(x.data().img||''):'';if(TAB==='lp')render();}).catch(()=>{LPTH[id]='';});return '';}
+function lpSlidesHTML(L,legacy){
+ const S=L.slides||[];
+ return '<label>Photos at the top <span class="muted">— a slide show, up to 6; the first one shows straight away</span></label><div class="lpslides">'+
+  S.map((x,i)=>{const im=lpThumb('hero_'+x.id);return '<div class="lpslide">'+(im?'<img src="'+im+'" alt="">':'<span class="lpimg none">'+ic('image',18)+'</span>')+'<span class="lpsn">'+(i+1)+'</span>'+
+   '<div class="lpsa">'+(i?'<button type="button" onclick="lpSlideMove('+i+',-1)" title="Earlier">'+ic('left',13)+'</button>':'')+(i<S.length-1?'<button type="button" onclick="lpSlideMove('+i+',1)" title="Later">'+ic('right',13)+'</button>':'')+
+   '<button type="button" onclick="lpSlideDel('+i+')" title="Remove">'+ic('trash',13)+'</button></div></div>';}).join('')+
+  (!S.length&&legacy?'<div class="lpslide"><img src="'+legacy+'" alt=""><span class="lpsn">1</span></div>':'')+
+  (S.length<6?'<button type="button" class="lpslide add" onclick="lpSlideAdd()">'+ic('plus',18)+'<small>Add photo</small></button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:4px 0 0">Bright, wide photos of the spa, treatments or results. Without any, a gold pattern with your name is shown. Changes go live with Save & publish.</p>';
+}
+window.lpSlideAdd=()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{const img=await lpShrink(f),id='s'+Date.now().toString(36);
+  await setDoc(doc(db,'lpImg','hero_'+id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH['hero_'+id]=img;LPUP.add('hero_'+id);
+  LPD.slides=[...(LPD.slides||[]),{id,ih:wbHash(img)}];render();toast('Photo added — Save & publish to show it');}catch(e){toast(friendly(e));}};i.click();};
+window.lpSlideDel=i=>{LPD.slides=(LPD.slides||[]).filter((_,k)=>k!==i);render();};
+window.lpSlideMove=(i,d)=>{const S=LPD.slides||[],j=i+d;if(j<0||j>=S.length)return;[S[i],S[j]]=[S[j],S[i]];render();};
+
+/* ---------- promotions on the page: banner, pop-up and a photo each ---------- */
+function lpPromoCard(L){
+ const td=today(),P=(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&!(+p.limit>0&&promoLeft(p)<=0)).sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999')));
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('tag',15)+' Promotions on the page</h3><span class="pill '+(P.length?'g':'a')+'">'+P.length+' running or coming</span></div>'+
+  '<div class="row" style="gap:16px;flex-wrap:wrap;margin:8px 0"><label class="row lptog"><input type="checkbox" '+(L.promoBar!==false?'checked':'')+' onchange="lpF(\'promoBar\',this.checked)"> Banner across the top of the page</label>'+
+   '<label class="row lptog"><input type="checkbox" '+(L.promoPop!==false?'checked':'')+' onchange="lpF(\'promoPop\',this.checked)"> Pop-up after a few seconds (once a visit)</label></div>'+
+  (P.length?P.map(p=>{const h=(L.promoImg||{})[p.id],im=h?lpThumb('promo_'+p.id):'',T=p.target||{},one=T.scope==='items'&&(T.items||[]).filter(x=>x.kind==='service').length===1?svc((T.items||[]).find(x=>x.kind==='service').id):null;
+   return '<div class="lpsv"><button type="button" class="lpsvimg'+(h?'':' none')+'" onclick="lpPromoPhoto(\''+p.id+'\')">'+(h&&im?'<img src="'+im+'" alt="">':h?ic('image',18):ic('image',18)+'<small>Add</small>')+'</button>'+
+    '<div class="lpsvb"><div class="spread"><b>'+esc(p.name)+'</b><span class="tiny muted">'+(p.start&&p.start>td?'starts '+dshort(p.start):'running')+(p.end?' · until '+dshort(p.end):'')+'</span></div>'+
+    '<div class="tiny muted" style="margin-top:3px">'+(h?'Its own photo, blended into the card.':one&&one.image?'Uses the photo of '+esc(one.name)+' — add one to use a different photo.':'No photo — shown as a dark card. Add one to make it stand out.')+'</div>'+
+    (h?'<button type="button" class="lpx" onclick="lpPromoNoPhoto(\''+p.id+'\')">Remove photo</button>':'')+'</div></div>';}).join('')
+   :'<div class="empty">No promotion running. Set one up under Clients → Promotions and it appears here, on the banner and in the pop-up.</div>')+'</div>';
+}
+window.lpPromoPhoto=id=>{const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{const img=await lpShrink(f);await setDoc(doc(db,'lpImg','promo_'+id),{img,h:wbHash(img),at:new Date().toISOString()});
+  LPTH['promo_'+id]=img;LPUP.add('promo_'+id);LPD.promoImg={...(LPD.promoImg||{}),[id]:wbHash(img)};render();toast('Photo added — Save & publish to show it');}catch(e){toast(friendly(e));}};i.click();};
+window.lpPromoImgSet=async(id,img)=>{await setDoc(doc(db,'lpImg','promo_'+id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH['promo_'+id]=img;LPUP.add('promo_'+id);LPD.promoImg={...(LPD.promoImg||{}),[id]:wbHash(img)};render();};
+window.lpSlideSet=async img=>{const id='s'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);await setDoc(doc(db,'lpImg','hero_'+id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH['hero_'+id]=img;LPUP.add('hero_'+id);LPD.slides=[...(LPD.slides||[]),{id,ih:wbHash(img)}];render();};
+window.lpPromoNoPhoto=id=>{const m={...(LPD.promoImg||{})};delete m[id];LPD.promoImg=m;render();};
+
+/* ---------- the English version of the owner's own words ---------- */
+function lpEnHTML(L){
+ const en=(k,v,ph,max,fn)=>'<input class="f" maxlength="'+(max||120)+'" value="'+esc(v||'')+'" placeholder="'+esc(ph||'')+'" oninput="'+fn+'">';
+ return '<details class="lpen"'+(L.headlineEn?' open':'')+'><summary>'+ic('msg',14)+' English version <span class="muted">— shown when a visitor taps EN; leave blank to show the Malay text</span></summary>'+
+  '<label>Headline</label>'+en('headlineEn',L.headlineEn,'Healthy, *glowing* skin, cared for with attention',120,"lpF('headlineEn',this.value)")+
+  '<label>Under the headline</label><textarea class="f" rows="2" maxlength="240" oninput="lpF(\'subEn\',this.value)">'+esc(L.subEn||'')+'</textarea>'+
+  '<label>Three short points</label><div class="grid g3">'+[0,1,2].map(i=>en('',(L.ticksEn||[])[i],(L.ticks||[])[i]||'',40,"lpArr('ticksEn',"+i+",this.value)")).join('')+'</div>'+
+  ((L.usps||[]).length?'<label>Highlights</label>'+(L.usps||[]).map((u,i)=>'<div class="grid g2 lprow">'+en('',u.tEn,u.t||'',40,"lpUsp("+i+",'tEn',this.value)")+en('',u.dEn,u.d||'',100,"lpUsp("+i+",'dEn',this.value)")+'</div>').join(''):'')+
+  ((L.faq||[]).length?'<label>Questions & answers</label>'+(L.faq||[]).map((f,i)=>'<div class="lpfaq">'+en('',f.qEn,f.q||'',120,"lpFaqF("+i+",'qEn',this.value)")+
+   '<textarea class="f" rows="2" maxlength="500" placeholder="'+esc(f.a||'')+'" oninput="lpFaqF('+i+',\'aEn\',this.value)">'+esc(f.aEn||'')+'</textarea></div>').join(''):'')+
+  '<label>WhatsApp message</label>'+en('',L.waMsgEn,"Hi {bisnes}, I'd like to ask about your treatments.",200,"lpF('waMsgEn',this.value)")+'</details>';
+}
 
 </script>

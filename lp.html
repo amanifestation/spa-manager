@@ -63,7 +63,7 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(36px,6.4vw,62px);letter-spacing:-.03em;line-height:1.04;margin:14px 0 16px}
 .hero h1 em{font-style:italic;color:var(--brass)}
 .hero .sub{font-size:clamp(16px,2vw,18px);color:var(--ink-2);max-width:520px;margin:0 0 22px}
-.rate{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 13px 6px 10px;font-size:13px;margin-bottom:6px}
+.rate{text-decoration:none;display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 13px 6px 10px;font-size:13px;margin-bottom:6px}
 .rate .st{color:#C8912E;letter-spacing:1px}.rate b{font-weight:700}
 .ctas{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px}
 .ticks{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2);margin:0;padding:0;list-style:none}
@@ -90,7 +90,7 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 .usp .i{width:40px;height:40px;border-radius:12px;background:var(--brass-soft);color:var(--brass);display:grid;place-items:center;flex:none}
 .usp b{display:block;font-size:15px;margin-bottom:2px}.usp span{font-size:13.5px;color:var(--ink-2)}
 /* promos */
-.promos{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.promos{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;align-items:start}
 .pc{position:relative;background:var(--ink);color:var(--cream);border-radius:24px;padding:22px;overflow:hidden;display:flex;flex-direction:column;gap:10px;min-height:250px}
 .pc::after{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(226,197,143,.28),transparent 70%)}
 .pc .bdg{align-self:flex-start;font-family:var(--serif);font-size:34px;line-height:1;color:var(--gold);font-weight:600;letter-spacing:-.02em}
@@ -222,6 +222,93 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 .skel{min-height:100vh;display:grid;place-items:center}.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brass);animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .pv{position:fixed;top:0;left:0;right:0;z-index:70;height:26px;background:#9C6B15;color:#fff;text-align:center;font-size:12.5px;padding:5px}
+/* ---- 26l: language switch ---- */
+.lang{display:flex;background:rgba(255,255,255,.55);border:1px solid var(--line);border-radius:99px;padding:3px;margin-left:14px;backdrop-filter:blur(8px)}
+.lang button{border:0;background:none;border-radius:99px;padding:5px 10px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink-3);cursor:pointer}
+.lang button.on{background:var(--ink);color:var(--gold)}
+.top .btn{margin-left:10px}
+@media(max-width:860px){.lang{margin-left:auto}.top .btn{margin-left:8px}}
+@media(max-width:420px){.brand b{font-size:16px}.top .btn.sm{padding:9px 12px}}
+/* ---- promotion banner across the top ---- */
+.abar{position:relative;z-index:41;color:#fff;background:linear-gradient(100deg,#7A2E24 0%,#A8473A 38%,#C9864F 72%,#E2C58F 100%);background-size:200% 100%;animation:abshift 9s ease-in-out infinite alternate;box-shadow:inset 0 -1px 0 rgba(255,255,255,.15)}
+@keyframes abshift{to{background-position:100% 0}}
+.abar .wrap{display:flex;align-items:center;gap:10px;min-height:44px;padding-top:6px;padding-bottom:6px}
+.abi{flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;animation:abpulse 1.6s ease-in-out infinite}
+@keyframes abpulse{50%{box-shadow:0 0 0 6px rgba(255,255,255,0);transform:scale(1.08)}0%{box-shadow:0 0 0 0 rgba(255,255,255,.45)}}
+.abm{flex:1;min-width:0;position:relative;height:22px}
+.abx{position:absolute;inset:0;border:0;background:none;color:#fff;font:inherit;font-size:14px;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ opacity:0;transform:translateY(8px);transition:opacity .45s,transform .45s;padding:0}
+.abx.on{opacity:1;transform:none}.abx b{background:#fff;color:#7A2E24;border-radius:6px;padding:1px 7px;margin-right:6px;font-weight:800;font-size:13px}.abs{opacity:.9}
+.abc{flex:none;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:99px;background:#fff;color:#7A2E24;font-weight:700;font-size:13px;padding:7px 14px;cursor:pointer;box-shadow:0 6px 16px -8px rgba(0,0,0,.5)}
+.abz{flex:none;border:0;background:rgba(255,255,255,.14);color:#fff;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+@media(max-width:600px){.abm{height:36px}.abx{font-size:12.5px;white-space:normal;line-height:1.35;display:flex;align-items:center;flex-wrap:wrap;column-gap:4px}.abx b{margin-right:2px}.abs{display:none}.abc{padding:6px 11px;font-size:12px}.abc .ico{display:none}.abi{display:none}}
+/* ---- hero: soft colour behind the glass ---- */
+.hero .blob,.uband .blob{position:absolute;border-radius:50%;filter:blur(40px);pointer-events:none;opacity:.55}
+.hero .b1{width:420px;height:420px;left:-120px;top:40px;background:radial-gradient(circle,rgba(226,197,143,.75),transparent 70%)}
+.hero .b2{width:360px;height:360px;left:28%;bottom:-160px;background:radial-gradient(circle,rgba(46,107,82,.28),transparent 70%)}
+/* ---- the three short points: glass pills ---- */
+.ticks{gap:8px}
+.ticks li{gap:8px;padding:7px 14px 7px 7px;border-radius:99px;font-weight:500;color:var(--ink);
+ background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,255,255,.38));backdrop-filter:blur(14px) saturate(170%);-webkit-backdrop-filter:blur(14px) saturate(170%);
+ border:1px solid rgba(255,255,255,.85);box-shadow:0 10px 26px -16px rgba(80,58,24,.55),inset 0 1px 0 rgba(255,255,255,.9)}
+.ticks .tk{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;
+ background:linear-gradient(135deg,#E8CB93,#A67C3D);box-shadow:0 4px 10px -4px rgba(166,124,61,.9),inset 0 1px 0 rgba(255,255,255,.5)}
+.ticks .tk .ico{color:#fff}
+.ticks.dark li{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border-color:rgba(255,255,255,.14);color:#EDE6D8;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+/* ---- highlights: glass cards on a soft gradient band ---- */
+.uband{position:relative;padding:34px 0 30px;margin-top:-6px;overflow:hidden;
+ background:linear-gradient(180deg,rgba(243,233,216,0),rgba(243,233,216,.8) 30%,rgba(236,223,205,.9) 70%,rgba(244,240,231,0))}
+.uband .b3{width:380px;height:380px;left:6%;top:-90px;background:radial-gradient(circle,rgba(201,163,106,.8),transparent 70%)}
+.uband .b4{width:420px;height:420px;right:4%;bottom:-160px;background:radial-gradient(circle,rgba(155,74,74,.35),transparent 70%)}
+.usps{margin-top:0;position:relative}
+.usp{position:relative;border-radius:24px;padding:22px 20px;gap:14px;border:1px solid rgba(255,255,255,.75);
+ background:linear-gradient(150deg,rgba(255,255,255,.78),rgba(255,255,255,.32));backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+ box-shadow:0 22px 44px -28px rgba(80,58,24,.55),inset 0 1px 0 rgba(255,255,255,.95);overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s}
+.usp::before{content:'';position:absolute;left:20px;right:20px;top:0;height:2px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,transparent,#C9A36A,transparent)}
+.usp:hover{transform:translateY(-3px);box-shadow:0 28px 54px -28px rgba(80,58,24,.65),inset 0 1px 0 rgba(255,255,255,.95)}
+.usp .i{width:48px;height:48px;border-radius:15px;color:#fff;background:linear-gradient(140deg,#EBD2A0 0%,#C9A36A 45%,#8E6630 100%);
+ box-shadow:0 10px 20px -10px rgba(142,102,48,.9),inset 0 1px 0 rgba(255,255,255,.55)}
+.usp b{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:-.01em;margin-bottom:4px}
+.usp span span{color:var(--ink-2);line-height:1.5}
+/* ---- the photo carousel ---- */
+.art.car{background:#1c1813}
+.slides{position:absolute;inset:0}
+.slide{position:absolute;inset:0;background:linear-gradient(160deg,#2a241c,#14120F) center/cover no-repeat;opacity:0;transform:scale(1.06);transition:opacity 1s var(--ease),transform 6s linear}
+.slide.on{opacity:1;transform:scale(1)}
+.art.car::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,15,0) 55%,rgba(20,18,15,.45));pointer-events:none}
+.sla{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.5);cursor:pointer;display:grid;place-items:center;color:#fff;
+ background:rgba(255,255,255,.18);backdrop-filter:blur(10px);opacity:0;transition:opacity .25s}
+.sla.l{left:14px}.sla.r{right:14px}.art:hover .sla{opacity:1}
+.dots{position:absolute;left:0;right:0;top:16px;z-index:3;display:flex;justify-content:center;gap:6px}
+.dots button{width:8px;height:8px;border-radius:99px;border:0;padding:0;background:rgba(255,255,255,.55);cursor:pointer;transition:width .3s,background .3s}
+.dots button.on{width:26px;background:#fff}
+.art .cap{z-index:4}
+@media(hover:none){.sla{display:none}}
+/* ---- promotions with their photo blended in ---- */
+.pc{padding:0;min-height:0}
+.pcin{position:relative;z-index:2;padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+.pc.img{min-height:420px;justify-content:flex-end;background:#14120F}
+.pc.img .pcin{flex:0 0 auto;padding-top:120px;background:linear-gradient(180deg,rgba(20,18,15,0) 0%,rgba(20,18,15,.72) 28%,#14120F 62%)}
+.pcimg{position:absolute;inset:0 0 25% 0;z-index:0;background:linear-gradient(150deg,#3a3025,#14120F) center/cover no-repeat;transition:transform 6s var(--ease)}
+.pc.img:hover .pcimg{transform:scale(1.05)}
+.pc.img::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:linear-gradient(115deg,rgba(166,124,61,.35),rgba(20,18,15,0) 45%),radial-gradient(120% 60% at 50% 100%,rgba(20,18,15,.9),rgba(20,18,15,0) 70%)}
+.pc.img::after{z-index:1}
+.pc.img .bdg{font-size:40px;text-shadow:0 4px 18px rgba(0,0,0,.45)}
+/* ---- the promotion pop-up ---- */
+.pop{position:fixed;left:20px;bottom:22px;z-index:50;width:min(360px,calc(100vw - 28px));display:flex;background:var(--ink);color:var(--cream);border-radius:22px;overflow:hidden;
+ box-shadow:0 30px 70px -24px rgba(20,18,15,.75);animation:popin .5s var(--ease)}
+@keyframes popin{from{opacity:0;transform:translateY(30px) scale(.96)}}
+.popimg{flex:0 0 118px;background:linear-gradient(150deg,#3a3025,#14120F) center/cover no-repeat;position:relative}
+.popimg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(20,18,15,0) 40%,#14120F)}
+.popimg.none{display:grid;place-items:center;color:var(--gold)}.popimg.none::after{display:none}
+.popb{padding:16px 16px 16px 12px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;min-width:0}
+.popk{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#F0B49A}
+.popbdg{font-family:var(--serif);font-size:28px;line-height:1;color:var(--gold)}
+.pop h4{margin:0;font-size:15px;color:#fff}.pop small{color:#CFC7B8;font-size:12px}
+.pop .btn{margin-top:6px;background:var(--gold);color:var(--ink)}
+.popx{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer}
+@media(max-width:760px){.pop{left:14px;right:14px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -230,18 +317,78 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 <noscript><p style="padding:20px">Sila hidupkan JavaScript untuk melihat halaman ini.</p></noscript>
 <script>
 /* Luuna landing page. One small page that reads the public details the spa app publishes
-   (public/landing: treatments, prices, promotions, branches, reviews) and writes two things:
-   the enquiry itself (leads) and a light visit counter (lpHits). It talks to Firestore over
-   plain HTTPS so it loads fast on a phone from an Instagram or TikTok link. Where each visitor
-   came from is worked out on arrival (link tags, ad click ids, the in-app browser, the page
-   they came from) and kept for 30 days, so the lead lands in the CRM already sorted by source,
-   and a booking made later on the booking page carries the same source. */
+   (public/landing: treatments, prices, promotions, branches, reviews; photos one per document
+   in lpImg) and writes two things: the enquiry itself (leads) and a light visit counter
+   (lpHits). It talks to Firestore over plain HTTPS so it loads fast on a phone from an
+   Instagram or TikTok link. Where each visitor came from is worked out on arrival (link tags,
+   ad click ids, the in-app browser, the page they came from) and kept for 30 days, so the lead
+   lands in the CRM already sorted by source, and a booking made later carries the same source.
+   Bahasa Malaysia by default; English with one tap (the owner's own words switch too when an
+   English version has been written). */
 (()=>{
 'use strict';
 const KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM',PROJECT='spa-manager-c586b';
 const API='https://firestore.googleapis.com/v1/projects/'+PROJECT+'/databases/(default)/documents/';
 const Q=new URLSearchParams(location.search),PREVIEW=Q.has('preview');
-let P=null,CAT='',SHOWALL=false,SHEET=null,REVALL=false;
+let P=null,CAT='',SHOWALL=false,SHEET=null,REVALL=false,LANG='ms',SLIDE=0,SLTIMER=null,ABTIMER=null,POPT=null;
+try{LANG=(Q.get('lang')||localStorage.getItem('luunaLang')||'ms')==='en'?'en':'ms';}catch(e){}
+
+/* ---------- words, in both languages ---------- */
+const TX={
+ ms:{promo:'Promosi',treat:'Rawatan',rev:'Ulasan',loc:'Lokasi',faq:'Soalan',book:'Book',bookNow:'Book slot sekarang',bookNow2:'Tempah sekarang',waUs:'WhatsApp kami',
+  subDef:'Rawatan wajah dan kulit oleh therapist terlatih. Pilih rawatan, pilih masa, dan kami uruskan selebihnya.',headDef:'Kulit sihat & *bercahaya*, dijaga dengan teliti',
+  ticksDef:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas'],of:(a,n)=>'daripada '+n+' ulasan pelanggan',left:n=>'Tinggal '+n+' slot',ends:d=>'Tamat '+d,see:'Lihat',
+  pEy:'Promosi terkini',pH:'Tawaran sedang berjalan',pP:'Slot promosi terhad — claim sekarang, team kami akan WhatsApp untuk sahkan tarikh anda.',newOnly:'Khas pelanggan baru',
+  retOnly:'Untuk pelanggan sedia ada',only:x=>x+' sahaja',hot:'Hampir habis',leftOf:(l,n)=>'Tinggal <b>'+l+'</b> daripada '+n+' slot',endsIn:t=>'Tamat dalam <b>'+t+'</b>',ended:'Tamat',
+  claim:'Claim promo',bookDirect:'Book terus',tEy:'Rawatan',tH:'Pilih rawatan anda',askPrice:'Tanya harga terkini melalui WhatsApp.',clear:'Harga jelas, tanpa caj tersembunyi.',
+  unsure:'Tak pasti yang mana sesuai?',getConsult:'Dapatkan konsultasi percuma',sEy:'Mudah',sH:'Tiga langkah ke kulit yang anda suka',
+  steps:b=>[['Pilih rawatan & masa',b?'Book online bila-bila masa, atau WhatsApp kami untuk nasihat.':'WhatsApp atau isi borang, kami akan sahkan slot anda.'],
+   ['Konsultasi & rawatan','Therapist semak keadaan kulit anda dahulu, kemudian rawatan dibuat ikut keperluan kulit anda.'],['Nasihat penjagaan','Anda pulang dengan tips penjagaan di rumah dan cadangan sesi seterusnya.']],
+  lEy:'Lokasi',lH:'Jumpa kami di sini',bookHere:'Book di sini',call:'Call',fEy:'Soalan lazim',fH:'Ada soalan?',cEy:'Konsultasi percuma',cH:'Tak pasti rawatan mana yang sesuai?',
+  cP:'Beritahu kami sedikit tentang kulit anda. Team kami akan WhatsApp anda dengan cadangan rawatan dan slot yang ada — tanpa sebarang komitmen.',
+  cT:['Balasan melalui WhatsApp dalam waktu operasi','Cadangan ikut jenis & masalah kulit anda','Maklumat anda dilindungi (PDPA)'],bookShort:'Book sekarang',bookShort2:'Tempah',
+  rEy:'Ulasan pelanggan',rH:'Apa kata pelanggan kami',rP:'Ulasan sebenar daripada pelanggan selepas rawatan mereka.',rN:n=>n+' ulasan selepas rawatan',afterT:'Selepas rawatan',via:x=>'via '+x,
+  verified:'Pelanggan disahkan',gRev:'Ulasan di Google',allRev:n=>'Lihat semua '+n+' ulasan',all:'Semua',other:'Lain-lain',min:'minit',allTreat:n=>'Lihat semua '+n+' rawatan',ask:'Tanya',
+  bookThis:'Book rawatan ini',askFirst:'Tanya dulu',name:'Nama',nameP:'Nama anda',wa:'No. WhatsApp',interest:'Berminat dengan',unsureOpt:'Belum pasti — nak nasihat',branch:'Cawangan',
+  when:'Masa yang sesuai',times:['Pagi','Tengah hari','Petang','Malam','Hujung minggu'],concern:'Masalah kulit / soalan',opt:'(pilihan)',concernP:'Contoh: jerawat, jeragat, kulit kusam',
+  agree:b=>'Saya setuju '+b+' menghubungi saya melalui WhatsApp dan menyimpan maklumat ini (Akta Perlindungan Data Peribadi 2010).',toWa:'Teruskan ke WhatsApp',claimThis:'Claim promo ini',
+  send:'Hantar — kami WhatsApp anda',eName:'Sila isi nama anda.',ePhone:'Sila isi nombor telefon yang betul.',eOk:'Sila tandakan persetujuan untuk kami menghubungi anda.',
+  pvNo:'Pratonton: borang tidak dihantar.',thanks:n=>'Terima kasih, '+n+'!',thanksP:'Team kami akan WhatsApp anda secepat mungkin dalam waktu operasi.',held:' Slot promo anda sedang kami simpan.',
+  pickSlot:'Terus pilih slot sekarang',eSend:'Maaf, tidak dapat dihantar. Sila cuba lagi atau WhatsApp kami terus.',close:'Tutup',waDef:'Hi {bisnes}, saya nak tanya tentang rawatan.',nameL:'Nama',
+  chat:'Chat dengan kami',chatP:'Isi nama & nombor supaya team kami boleh bantu lebih cepat — atau terus ke WhatsApp.',skip:'Terus ke WhatsApp tanpa isi',leftL:n=>' · tinggal '+n+' slot',until:d=>' · sehingga '+d,
+  wantBook:s=>'Nak book '+s,wantRes:'Nak buat tempahan',pickBr:'Pilih cawangan',pickBrP:'Di mana anda nak buat rawatan?',pv:'Pratonton — kiraan pelawat dan borang tidak direkod',pvBtn:u=>'Pratonton — butang ini akan buka: '+u,
+  priceOf:s=>'Harga & slot '+s,updating:'Laman ini sedang dikemas kini',tryLater:'Sila cuba sebentar lagi.',openNow:t=>'Buka sekarang · tutup '+t,closedToday:t=>'Tutup · buka hari ini '+t,
+  closedNext:(d,t)=>'Tutup · buka '+d+' '+t,tomorrow:'esok',closed:'Tutup',days:['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'],dayS:['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'],
+  everyDay:'Setiap hari',mon:['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'],dh:(d,h)=>d+' hari '+h+' jam',hm:(h,m)=>h+' jam '+m+' minit',
+  offer:'Tawaran terhad',claimNow:'Claim sekarang',dismiss:'Tutup',prev:'Sebelum',next:'Seterusnya',map:n=>'Peta '+n},
+ en:{promo:'Offers',treat:'Treatments',rev:'Reviews',loc:'Location',faq:'FAQ',book:'Book',bookNow:'Book a slot now',bookNow2:'Book now',waUs:'WhatsApp us',
+  subDef:'Facial and skin treatments by trained therapists. Pick a treatment, pick a time, and we take care of the rest.',headDef:'Healthy, *glowing* skin, cared for with attention',
+  ticksDef:['Free skin consultation','Book online 24/7','Clear prices'],of:(a,n)=>'from '+n+' client reviews',left:n=>n+' slots left',ends:d=>'Ends '+d,see:'See',
+  pEy:'Latest offers',pH:'Offers running now',pP:'Limited promo slots — claim now and our team will WhatsApp you to confirm your date.',newOnly:'New clients only',
+  retOnly:'For returning clients',only:x=>x+' only',hot:'Almost gone',leftOf:(l,n)=>'<b>'+l+'</b> of '+n+' slots left',endsIn:t=>'Ends in <b>'+t+'</b>',ended:'Ended',
+  claim:'Claim offer',bookDirect:'Book now',tEy:'Treatments',tH:'Choose your treatment',askPrice:'Ask us for today\'s prices on WhatsApp.',clear:'Clear prices, no hidden charges.',
+  unsure:'Not sure which one suits you?',getConsult:'Get a free consultation',sEy:'Easy',sH:'Three steps to skin you love',
+  steps:b=>[['Choose a treatment & time',b?'Book online any time, or WhatsApp us for advice.':'WhatsApp us or fill in the form and we will confirm your slot.'],
+   ['Consultation & treatment','Your therapist checks your skin first, then tailors the treatment to what it needs.'],['Aftercare advice','You leave with home-care tips and a suggestion for your next session.']],
+  lEy:'Location',lH:'Find us here',bookHere:'Book here',call:'Call',fEy:'Questions',fH:'Got a question?',cEy:'Free consultation',cH:'Not sure which treatment is right for you?',
+  cP:'Tell us a little about your skin. Our team will WhatsApp you with treatment suggestions and available slots — no commitment.',
+  cT:['We reply on WhatsApp during opening hours','Suggestions for your skin type and concerns','Your details are protected (PDPA)'],bookShort:'Book now',bookShort2:'Book',
+  rEy:'Client reviews',rH:'What our clients say',rP:'Real reviews from clients after their treatment.',rN:n=>n+' reviews after treatment',afterT:'After treatment',via:x=>'via '+x,
+  verified:'Verified client',gRev:'Reviews on Google',allRev:n=>'See all '+n+' reviews',all:'All',other:'Other',min:'min',allTreat:n=>'See all '+n+' treatments',ask:'Ask',
+  bookThis:'Book this treatment',askFirst:'Ask first',name:'Name',nameP:'Your name',wa:'WhatsApp number',interest:'Interested in',unsureOpt:'Not sure yet — I\'d like advice',branch:'Branch',
+  when:'Best time for you',times:['Morning','Midday','Afternoon','Evening','Weekend'],concern:'Skin concern / question',opt:'(optional)',concernP:'e.g. acne, pigmentation, dull skin',
+  agree:b=>'I agree that '+b+' may contact me on WhatsApp and keep these details (Personal Data Protection Act 2010).',toWa:'Continue to WhatsApp',claimThis:'Claim this offer',
+  send:'Send — we\'ll WhatsApp you',eName:'Please enter your name.',ePhone:'Please enter a valid phone number.',eOk:'Please tick the box so we may contact you.',
+  pvNo:'Preview: the form was not sent.',thanks:n=>'Thank you, '+n+'!',thanksP:'Our team will WhatsApp you as soon as possible during opening hours.',held:' We are holding your promo slot.',
+  pickSlot:'Pick a slot now',eSend:'Sorry, it could not be sent. Please try again or WhatsApp us directly.',close:'Close',waDef:'Hi {bisnes}, I\'d like to ask about your treatments.',nameL:'Name',
+  chat:'Chat with us',chatP:'Leave your name and number so our team can help faster — or go straight to WhatsApp.',skip:'Go to WhatsApp without filling in',leftL:n=>' · '+n+' slots left',until:d=>' · until '+d,
+  wantBook:s=>'I\'d like to book '+s,wantRes:'I\'d like to make a booking',pickBr:'Choose a branch',pickBrP:'Where would you like your treatment?',pv:'Preview — visits and forms are not recorded',pvBtn:u=>'Preview — this button opens: '+u,
+  priceOf:s=>'Price & slots for '+s,updating:'This page is being updated',tryLater:'Please try again shortly.',openNow:t=>'Open now · closes '+t,closedToday:t=>'Closed · opens today '+t,
+  closedNext:(d,t)=>'Closed · opens '+d+' '+t,tomorrow:'tomorrow',closed:'Closed',days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],dayS:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+  everyDay:'Every day',mon:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dh:(d,h)=>d+' day'+(d>1?'s':'')+' '+h+' hr',hm:(h,m)=>h+' hr '+m+' min',
+  offer:'Limited offer',claimNow:'Claim now',dismiss:'Close',prev:'Previous',next:'Next',map:n=>'Map of '+n}};
+const T=k=>TX[LANG][k]!==undefined?TX[LANG][k]:TX.ms[k];
+const pick=(ms,en)=>LANG==='en'&&en?en:ms;
 
 /* ---------- tiny helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -251,16 +398,17 @@ const waNum=p=>{const d=digits(p);return d.startsWith('60')?d:d.startsWith('0')?
 const rm=v=>{v=+v||0;return 'RM'+(Math.round(v)===v?v.toLocaleString('en-MY'):v.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2}));};
 const kl=()=>new Date(Date.now()+8*3600e3);
 const klDate=()=>kl().toISOString().slice(0,10);
-const MON=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
-const dshort=d=>{const x=new Date(d+'T12:00:00Z');return x.getUTCDate()+' '+MON[x.getUTCMonth()];};
-const hm=h=>{const H=Math.floor(h),M=Math.round((h-H)*60),ap=H>=12?'ptg':'pg';return ((H%12)||12)+(M?':'+String(M).padStart(2,'0'):'')+' '+(H<12?'pagi':H<14?'tgh':H<19?'ptg':'mlm');};
+const dshort=d=>{const x=new Date(d+'T12:00:00Z');return x.getUTCDate()+' '+T('mon')[x.getUTCMonth()];};
+const hm=h=>{const H=Math.floor(h),M=Math.round((h-H)*60),hh=((H%12)||12)+(M?':'+String(M).padStart(2,'0'):'');
+ return LANG==='en'?hh+(H<12?'am':'pm'):hh+' '+(H<12?'pagi':H<14?'tgh':H<19?'ptg':'mlm');};
 const IC={
  check:'M5 12.5l4.2 4.2L19 7',clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7.5V12l3 2',pin:'M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
  phone:'M5 4.5h3.5l1.5 4-2 1.3a11 11 0 005.2 5.2l1.3-2 4 1.5v3.5a1.5 1.5 0 01-1.5 1.5A15.5 15.5 0 013.5 6 1.5 1.5 0 015 4.5z',
  cal:'M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4',spark:'M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6-5.6-1.9 5.6-1.9zM18.5 3v3M17 4.5h3',
  heart:'M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0112 7.3 4.3 4.3 0 0119.5 10c0 5.4-7.5 10-7.5 10z',leaf:'M5 19c0-8 5-13 14-14-1 9-6 14-14 14zM5 19l7-7',
  shield:'M12 3.5l7 2.7v5.3c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6.2z',star:'M12 3.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z',
- x:'M6 6l12 12M18 6L6 18',arrow:'M5 12h14M13 6l6 6-6 6',map:'M9 4.5l-5 2v13l5-2 6 2 5-2v-13l-5 2-6-2zM9 4.5v13M15 6.5v13',
+ x:'M6 6l12 12M18 6L6 18',arrow:'M5 12h14M13 6l6 6-6 6',left:'M14.5 6l-6 6 6 6',right:'M9.5 6l6 6-6 6',map:'M9 4.5l-5 2v13l5-2 6 2 5-2v-13l-5 2-6-2zM9 4.5v13M15 6.5v13',
+ fire:'M12 21c-3.6 0-6-2.5-6-5.8 0-3.3 2.6-5.3 3.4-8.2.5 1.6 1.3 2.6 2.4 3.2.3-2.6 1.4-4.9 3.5-6.7-.2 3.6 2.7 5.4 2.7 9.4 0 4.3-2.4 8.1-6 8.1z',
  ig:'M7.5 3.5h9a4 4 0 014 4v9a4 4 0 01-4 4h-9a4 4 0 01-4-4v-9a4 4 0 014-4zM12 16a4 4 0 100-8 4 4 0 000 8zM17.2 6.8h.01',
  tt:'M14 3.5v11a3.5 3.5 0 11-3.5-3.5M14 3.5c.5 2.6 2.4 4.3 5 4.5',th:'M16.6 11.3c-.3-2.7-2-4.3-4.6-4.3-2.8 0-4.7 2-4.7 5s1.9 5 4.8 5c2.6 0 4.3-1.5 4.3-3.7 0-1.9-1.4-3-3.6-3-2 0-3.2 1-3.2 2.4 0 1.2 1 2 2.3 2 1.7 0 2.7-1.3 2.9-3.6M12 21a9 9 0 119-9',fb:'M14 8.5h2.5V5H14a3.5 3.5 0 00-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.5L17 11h-3V9a.5.5 0 01.5-.5z',
  gift:'M4.5 10h15v10h-15zM3.5 7h17v3h-17zM12 7v13M12 7s-1.5-3.5-4-3.5a1.8 1.8 0 000 3.5M12 7s1.5-3.5 4-3.5a1.8 1.8 0 010 3.5',
@@ -295,10 +443,10 @@ function detect(o){
  const paidTag=/(cpc|ppc|paid|ads?$|^ad|cpm|sponsor|boost)/.test(um)||/(^|[-_])(paid|ads?)($|[-_])/.test(src);
  const inApp=/Barcelona/.test(ua)?'Threads':/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV|FB_IAB|FBIOS|FB4A/i.test(ua)?'Facebook':/musical_ly|TikTok|BytedanceWebview|trill/i.test(ua)?'TikTok':'';
  let s='',m='',d='';
- const map=(v,T)=>{for(const [re,n] of T)if(re.test(v))return n;return '';};
+ const map=(v,M)=>{for(const [re,n] of M)if(re.test(v))return n;return '';};
  if(src){s=map(src.replace(/[-_ ](ads?|paid|bio|story|post|reels?)$/,''),SRCMAP)||map(src,SRCMAP);d='src='+src;
   if(!s&&/^(qr|flyer|poster|banner|brochure)/.test(src)){s='Other';m='QR';}}
- if(!s&&us){s=map(us,SRCMAP)||(/youtube|yt/.test(us)?'Other':/threads/.test(us)?'Other':'Other');d='utm '+us+(um?'/'+um:'');}
+ if(!s&&us){s=map(us,SRCMAP)||'Other';d='utm '+us+(um?'/'+um:'');}
  if(!s&&q.get('ttclid')){s='TikTok';m='Paid';d='ttclid';}
  if(!s&&(q.get('gclid')||q.get('gbraid')||q.get('wbraid'))){s='Google';m='Paid';d='gclid';}
  if(!s&&q.get('fbclid')){s=inApp==='Instagram'?'Instagram':'Facebook';d='fbclid';}
@@ -335,133 +483,17 @@ function pixels(){
   window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',px.ga);}
 }
 function track(ev,extra){try{
- const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent'},T={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion'};
- if(window.fbq&&M[ev])fbq('track',M[ev],extra||{});if(window.ttq&&T[ev])ttq.track(T[ev],extra||{});if(window.gtag&&G[ev])gtag('event',G[ev],extra||{});}catch(e){}}
+ const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent'},TT={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion'};
+ if(window.fbq&&M[ev])fbq('track',M[ev],extra||{});if(window.ttq&&TT[ev])ttq.track(TT[ev],extra||{});if(window.gtag&&G[ev])gtag('event',G[ev],extra||{});}catch(e){}}
 
-/* ---------- what is on offer ---------- */
-const brOf=id=>(P.branches||[]).find(b=>b.id===id)||(P.branches||[])[0]||{};
-const svcOf=id=>(P.services||[]).find(s=>s.id===id);
-const livePromos=()=>(P.promos||[]).filter(p=>(!p.start||p.start<=klDate())&&(!p.end||p.end>=klDate())&&!(p.limit>0&&p.left<=0));
-function bestPromo(s){let best=null;
- livePromos().forEach(p=>{if(!(p.all||(p.svc||[]).includes(s.id)))return;let v=null;
-  if(p.type==='pct')v=s.p*(1-p.value/100);else if(p.type==='amt')v=Math.max(0,s.p-p.value);else if(p.type==='price'&&p.value<s.p)v=p.value;
-  if(v!=null&&(!best||v<best.v))best={p,v:Math.round(v*100)/100};});return best;}
-function openNow(b){
- const n=kl(),dow=n.getUTCDay(),h=n.getUTCHours()+n.getUTCMinutes()/60,days=b.days||[0,1,2,3,4,5,6],o=+b.open||9,c=+b.close||20;
- if(days.includes(dow)&&h>=o&&h<c)return {on:true,t:'Buka sekarang · tutup '+hm(c)};
- for(let i=0;i<8;i++){const d=(dow+i)%7;if(!days.includes(d))continue;if(i===0&&h<o)return {on:false,t:'Tutup · buka hari ini '+hm(o)};if(i>0)return {on:false,t:'Tutup · buka '+(i===1?'esok':['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'][d])+' '+hm(o)};}
- return {on:false,t:'Tutup'};}
-const DAYN=['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
-function daysTxt(days){days=(days||[0,1,2,3,4,5,6]).slice().sort();if(days.length===7)return 'Setiap hari';
- const ord=[1,2,3,4,5,6,0].filter(d=>days.includes(d));const runs=[];let st=null,pv=null;
- [1,2,3,4,5,6,0].forEach(d=>{const on=days.includes(d);if(on&&st===null)st=d;if(!on&&st!==null){runs.push([st,pv]);st=null;}pv=d;});if(st!==null)runs.push([st,0]);
- return runs.map(([a,b])=>a===b?DAYN[a]:DAYN[a]+'–'+DAYN[b]).join(', ')||ord.map(d=>DAYN[d]).join(', ');}
-function left(end){const ms=Date.parse(end+'T23:59:59+08:00')-Date.now();if(ms<=0)return '';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
- return d>=1?d+' hari '+h+' jam':h+' jam '+m+' minit';}
-
-/* ---------- the page ---------- */
-function render(){
- const b=P.biz||{},H=P.hero||{},L=livePromos(),top=L[0],R=P.rating||{},br=(P.branches||[])[0]||{};
- document.title=(b.name||'Luuna')+(br.city?' '+br.city:'')+' · Book rawatan';
- const logo=b.logo?'<img src="'+esc(b.logo)+'" alt="">':'<span class="mk">'+ic('spark',20)+'</span>';
- const stars=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
- const head=(H.t||'Kulit sihat & *bercahaya*, dijaga dengan teliti');
- const h1=esc(head).replace(/\*([^*]+)\*/g,'<em>$1</em>');
- let h='';
- if(PREVIEW){document.body.classList.add('pvm');h+='<div class="pv">Pratonton — kiraan pelawat dan borang tidak direkod</div>';}
- h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
-  '<nav class="nav">'+(L.length?'<a href="#promo">Promosi</a>':'')+'<a href="#rawatan">Rawatan</a>'+((P.reviews||[]).length||(P.rating||{}).n>=3?'<a href="#ulasan">Ulasan</a>':'')+'<a href="#lokasi">Lokasi</a><a href="#soalan">Soalan</a></nav>'+
-  '<button class="btn pri sm" data-go="book">'+ic('cal',16)+'Book</button></div></header>';
- /* hero */
- h+='<section class="hero"><div class="wrap"><div class="rv0">'+
-  '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
-  '<h1>'+h1+'</h1><p class="sub">'+esc(H.s||'Rawatan wajah dan kulit oleh therapist terlatih. Pilih rawatan, pilih masa, dan kami uruskan selebihnya.')+'</p>'+
-  (R.n>=3?'<a class="rate" href="#ulasan"><span class="st">'+stars(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>daripada '+R.n+' ulasan pelanggan</span></a><br>':'')+
-  (top?'<button class="promo-strip" data-promo="'+esc(top.id)+'"><span class="bdg">'+esc(top.badge)+'</span><span>'+esc(top.t)+'</span><small>'+(top.limit>0?'Tinggal '+top.left+' slot':top.end?'Tamat '+dshort(top.end):'Lihat')+' →</small></button>':'')+
-  '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book slot sekarang':'Tempah sekarang')+'</button>'+
-   '<button class="btn ghost" data-go="wa">'+ic('wa',18)+'WhatsApp kami</button></div>'+
-  '<ul class="ticks">'+(H.ticks||['Konsultasi kulit percuma','Book online 24 jam','Harga jelas']).slice(0,3).map(t=>'<li>'+ic('check',16)+esc(t)+'</li>').join('')+'</ul></div>'+
-  '<div class="art rv0">'+(H.img?'<img src="'+esc(H.img)+'" alt="'+esc(b.name||'')+'" fetchpriority="high">':'<span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><div class="wm">'+esc(b.name||'Luuna')+'</div>')+
-   '<div class="cap"><span class="dot">'+ic('clock',20)+'</span><span><b>'+esc(openNow(br).t)+'</b><small>'+esc(br.name||'')+(br.addrShort?' · '+esc(br.addrShort):'')+'</small></span></div></div></div></section>';
- /* highlights */
- const U=(P.usps||[]).filter(u=>u&&u.t);
- if(U.length)h+='<div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],20)+'</span><span><b>'+esc(u.t)+'</b><span>'+esc(u.d||'')+'</span></span></div>').join('')+'</div></div>';
- /* promotions */
- if(L.length)h+='<section class="sec" id="promo"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Promosi terkini</span><h2>Tawaran sedang berjalan</h2><p>Slot promosi terhad — claim sekarang, team kami akan WhatsApp untuk sahkan tarikh anda.</p></div></div>'+
-  '<div class="promos">'+L.map(p=>{const pct=p.limit>0?Math.max(3,Math.round(p.left/p.limit*100)):0,hot=p.limit>0&&p.left<=Math.max(5,p.limit*0.2);
-   return '<article class="pc rv0"><div class="bdg">'+esc(p.badge)+'</div><h3>'+esc(p.t)+'</h3><p>'+esc(p.deal)+(p.desc?' — '+esc(p.desc):'')+'</p>'+
-    '<div class="tags">'+(p.newOnly?'<span class="tg">Khas pelanggan baru</span>':'')+(p.returning?'<span class="tg">Untuk pelanggan sedia ada</span>':'')+(p.daysTxt?'<span class="tg">'+esc(p.daysTxt)+' sahaja</span>':'')+
-     (p.brTxt?'<span class="tg">'+esc(p.brTxt)+'</span>':'')+(hot?'<span class="tg hot">Hampir habis</span>':'')+'</div>'+
-    (p.limit>0?'<div class="qbar"><i style="width:'+pct+'%"></i></div>':'')+
-    '<div class="meta"><span>'+(p.limit>0?'Tinggal <b>'+p.left+'</b> daripada '+p.limit+' slot':'')+'</span><span data-end="'+esc(p.end||'')+'">'+(p.end?'Tamat dalam <b>'+left(p.end)+'</b>':'')+'</span></div>'+
-    '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+'Claim promo</button>'+
-     (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">Book terus</button>':'')+'</div></article>';}).join('')+'</div></div></section>';
- /* treatments */
- h+='<section class="sec" id="rawatan" style="'+(L.length?'padding-top:8px':'')+'"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Rawatan</span><h2>Pilih rawatan anda</h2><p>'+(P.showPrices===false?'Tanya harga terkini melalui WhatsApp.':'Harga jelas, tanpa caj tersembunyi.')+' Tak pasti yang mana sesuai? <a href="#konsultasi">Dapatkan konsultasi percuma</a>.</p></div></div>'+
-  '<div id="svcs"></div></div></section>';
- /* how it works */
- h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Mudah</span><h2>Tiga langkah ke kulit yang anda suka</h2></div></div><div class="steps">'+
-  [['Pilih rawatan & masa',P.bookOn?'Book online bila-bila masa, atau WhatsApp kami untuk nasihat.':'WhatsApp atau isi borang, kami akan sahkan slot anda.'],
-   ['Konsultasi & rawatan','Therapist semak keadaan kulit anda dahulu, kemudian rawatan dibuat ikut keperluan kulit anda.'],
-   ['Nasihat penjagaan','Anda pulang dengan tips penjagaan di rumah dan cadangan sesi seterusnya.']].map(s=>'<div class="step rv0"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
- /* reviews */
- h+=reviewsHTML();
- /* location */
- h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Lokasi</span><h2>Jumpa kami di sini</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
-  (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
-   return '<article class="loc rv0">'+(x.addr||x.mapsQ?'<iframe class="map" loading="lazy" title="Peta '+esc(x.name)+'" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q='+q+'&output=embed"></iframe>':'')+
-    '<div class="bd"><h3>'+esc(x.name)+'</h3><span class="open'+(o.on?'':' no')+'"><i></i>'+esc(o.t)+'</span>'+
-    (x.addr?'<div class="ln">'+ic('pin',16)+'<span>'+esc(x.addr)+'</span></div>':'')+
-    '<div class="ln">'+ic('clock',16)+'<span>'+esc(daysTxt(x.days))+' · '+hm(+x.open||9)+' – '+hm(+x.close||20)+'</span></div>'+
-    (x.phone?'<div class="ln">'+ic('phone',16)+'<span>'+esc(x.phone)+'</span></div>':'')+
-    '<div class="acts">'+(x.addr||x.mapsQ?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(x.maps||'https://www.google.com/maps/search/?api=1&query='+q)+'" data-hit="map">'+ic('map',16)+'Google Maps</a>'+
-      '<a class="btn light sm" target="_blank" rel="noopener" href="https://waze.com/ul?q='+q+'&navigate=yes" data-hit="map">Waze</a>':'')+
-     (x.phone?'<a class="btn light sm" href="tel:'+esc(digits(x.phone))+'" data-hit="call">'+ic('phone',16)+'Call</a>':'')+
-     '<button class="btn pri sm" data-book-br="'+esc(x.id)+'">'+ic('cal',16)+'Book di sini</button></div></div></article>';}).join('')+'</div></div></section>';
- /* faq */
- const F=(P.faq||[]).filter(f=>f&&f.q);
- if(F.length)h+='<section class="sec" id="soalan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Soalan lazim</span><h2>Ada soalan?</h2></div></div><div class="faq">'+
-  F.map((f,i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(f.q)+'</summary><p>'+esc(f.a||'')+'</p></details>').join('')+'</div></div></section>';
- /* final: the form */
- h+='<section class="sec" id="konsultasi" style="padding-top:0"><div class="wrap"><div class="final"><div class="rv0"><span class="eyebrow" style="color:var(--gold)">Konsultasi percuma</span>'+
-  '<h2 style="margin:12px 0 12px">Tak pasti rawatan mana yang sesuai?</h2><p>Beritahu kami sedikit tentang kulit anda. Team kami akan WhatsApp anda dengan cadangan rawatan dan slot yang ada — tanpa sebarang komitmen.</p>'+
-  '<ul class="ticks" style="margin-top:16px;flex-direction:column;gap:8px"><li>'+ic('check',16)+'Balasan melalui WhatsApp dalam waktu operasi</li><li>'+ic('check',16)+'Cadangan ikut jenis & masalah kulit anda</li><li>'+ic('check',16)+'Maklumat anda dilindungi (PDPA)</li></ul></div>'+
-  '<div class="form rv0" id="fbox">'+formHTML('f',{})+'</div></div></div></section>';
- h+='<footer><div class="wrap"><span>© '+new Date().getFullYear()+' '+esc(b.name||'')+(b.ssm?' ('+esc(b.ssm)+')':'')+'</span><div class="soc">'+
-  (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
-  (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
-  (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
-  (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
-  (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
- h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book sekarang':'Tempah')+'</button></div>'+
-  '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
- $('#app').innerHTML=h;
- paintSvcs();bindForm('f');reveal();
- const t=$('#top'),bar=$('#bar');
- const onS=()=>{t.classList.toggle('sc',scrollY>8);bar.classList.toggle('on',scrollY>420);};addEventListener('scroll',onS,{passive:true});onS();
- setInterval(()=>document.querySelectorAll('[data-end]').forEach(e=>{const en=e.dataset.end;if(en)e.innerHTML=left(en)?'Tamat dalam <b>'+left(en)+'</b>':'Tamat';}),30000);
-}
-
-const STARS=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
-function reviewsHTML(){
- const RV=P.reviews||[],R=P.rating||{};if(!RV.length&&!(R.n>=3))return '';
- const dist=R.dist||[],mx=Math.max(1,...dist,0),more=RV.length>6&&!REVALL;
- const sum=R.n>=3?'<div class="rsum rv0"><div class="rbig"><span class="big">'+R.avg.toFixed(1)+'</span><span class="st">'+STARS(R.avg)+'</span><small>'+R.n+' ulasan selepas rawatan</small></div>'+
-   (dist.length?'<div class="rbars">'+[5,4,3,2,1].map((k,i)=>'<div><span>'+k+'★</span><i><b style="width:'+Math.round((dist[i]||0)/mx*100)+'%"></b></i><em>'+(dist[i]||0)+'</em></div>').join('')+'</div>':'')+'</div>':'';
- const card=r=>'<figure class="rv rv0"><div class="rvh"><span class="st">'+STARS(r.s)+'</span>'+(r.src==='spa'?'<span class="rsrc ok">'+ic('check',12)+'Selepas rawatan</span>':r.src?'<span class="rsrc">via '+esc(r.src)+'</span>':'')+'</div>'+
-  '<blockquote class="clamp">'+esc(r.t)+'</blockquote><figcaption><span class="av">'+(r.n?esc(r.n.charAt(0).toUpperCase()):ic('check',14))+'</span><span><b>'+esc(r.n||'Pelanggan disahkan')+'</b><small>'+[r.svc,r.d?dshort(r.d):''].filter(Boolean).map(esc).join(' · ')+'</small></span></figcaption></figure>';
- return '<section class="sec" id="ulasan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Ulasan pelanggan</span><h2>Apa kata pelanggan kami</h2>'+
-   '<p>Ulasan sebenar daripada pelanggan selepas rawatan mereka.</p></div>'+(P.gReviews?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(P.gReviews)+'" data-hit="map">'+ic('star',15)+'Ulasan di Google</a>':'')+'</div>'+
-  (sum||'')+(RV.length?'<div class="revs">'+RV.slice(0,more?6:12).map(card).join('')+'</div>'+(more?'<div class="more"><button class="btn light" data-revall="1">Lihat semua '+RV.length+' ulasan</button></div>':''):'')+'</div></section>';
-}
-/* ---------- treatment photos: loaded one by one as the cards come into view ---------- */
+/* ---------- photos: one document each, loaded when needed ---------- */
 const IMGS={};
 function loadImg(id){
  if(IMGS[id]!==undefined)return Promise.resolve(IMGS[id]);
  IMGS[id]=fetch(API+'lpImg/'+encodeURIComponent(id)+'?key='+KEY).then(r=>r.ok?r.json():null).then(j=>{const v=j&&j.fields&&dec(j.fields.img)||'';IMGS[id]=v;return v;}).catch(()=>{IMGS[id]='';return '';});
  return IMGS[id];
 }
-function paintImg(el){const id=el.dataset.img;Promise.resolve(loadImg(id)).then(v=>{if(v){el.style.backgroundImage='url("'+v+'")';el.classList.add('on');}});}
+function paintImg(el){const id=el.dataset.img;if(!id)return;Promise.resolve(loadImg(id)).then(v=>{if(v){el.style.backgroundImage='url("'+v+'")';el.classList.add('on');}});}
 let IMGIO=null;
 function watchImgs(){
  const els=[...document.querySelectorAll('[data-img]:not(.w)')];els.forEach(e=>e.classList.add('w'));
@@ -469,25 +501,186 @@ function watchImgs(){
  IMGIO=IMGIO||new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){paintImg(e.target);IMGIO.unobserve(e.target);}}),{rootMargin:'300px 0px'});
  els.forEach(e=>IMGIO.observe(e));
 }
+
+/* ---------- what is on offer ---------- */
+const svcOf=id=>(P.services||[]).find(s=>s.id===id);
+const livePromos=()=>(P.promos||[]).filter(p=>(!p.start||p.start<=klDate())&&(!p.end||p.end>=klDate())&&!(p.limit>0&&p.left<=0));
+const pDeal=p=>pick(p.deal,p.dealEn),pDays=p=>pick(p.daysTxt,p.daysTxtEn),pBadge=p=>pick(p.badge,p.badgeEn);
+function bestPromo(s){let best=null;
+ livePromos().forEach(p=>{if(!(p.all||(p.svc||[]).includes(s.id)))return;let v=null;
+  if(p.type==='pct')v=s.p*(1-p.value/100);else if(p.type==='amt')v=Math.max(0,s.p-p.value);else if(p.type==='price'&&p.value<s.p)v=p.value;
+  if(v!=null&&(!best||v<best.v))best={p,v:Math.round(v*100)/100};});return best;}
+function openNow(b){
+ const n=kl(),dow=n.getUTCDay(),h=n.getUTCHours()+n.getUTCMinutes()/60,days=b.days||[0,1,2,3,4,5,6],o=+b.open||9,c=+b.close||20;
+ if(days.includes(dow)&&h>=o&&h<c)return {on:true,t:T('openNow')(hm(c))};
+ for(let i=0;i<8;i++){const d=(dow+i)%7;if(!days.includes(d))continue;if(i===0&&h<o)return {on:false,t:T('closedToday')(hm(o))};if(i>0)return {on:false,t:T('closedNext')(i===1?T('tomorrow'):T('days')[d],hm(o))};}
+ return {on:false,t:T('closed')};}
+function daysTxt(days){days=(days||[0,1,2,3,4,5,6]).slice().sort();if(days.length===7)return T('everyDay');const N=T('dayS');
+ const runs=[];let st=null,pv=null;
+ [1,2,3,4,5,6,0].forEach(d=>{const on=days.includes(d);if(on&&st===null)st=d;if(!on&&st!==null){runs.push([st,pv]);st=null;}pv=d;});if(st!==null)runs.push([st,0]);
+ return runs.map(([a,b])=>a===b?N[a]:N[a]+'–'+N[b]).join(', ');}
+function left(end){const ms=Date.parse(end+'T23:59:59+08:00')-Date.now();if(ms<=0)return '';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
+ return d>=1?T('dh')(d,h):T('hm')(h,m);}
+const STARS=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
+/* the photo for a promotion: its own, else the photo of the one treatment it is for */
+const promoImg=p=>p.img||(p.svc&&p.svc.length===1&&(svcOf(p.svc[0])||{}).ih?p.svc[0]:'');
+const slides=()=>{const H=P.hero||{};return (H.slides||[]).filter(s=>s&&s.id);};
+
+/* ---------- the page ---------- */
+function render(){
+ const b=P.biz||{},H=P.hero||{},L=livePromos(),top=L[0],R=P.rating||{},br=(P.branches||[])[0]||{},SL=slides();
+ document.documentElement.lang=LANG;
+ document.title=(b.name||'Luuna')+(br.city?' '+br.city:'')+' · '+(LANG==='en'?'Book a treatment':'Book rawatan');
+ const logo=b.logo?'<img src="'+esc(b.logo)+'" alt="">':'<span class="mk">'+ic('spark',20)+'</span>';
+ const h1=esc(pick(H.t,H.tEn)||T('headDef')).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+ const ticks=(H.ticks&&H.ticks.length?H.ticks:T('ticksDef')).map((x,i)=>LANG==='en'&&(H.ticksEn||[])[i]?H.ticksEn[i]:(H.ticks&&H.ticks.length?x:T('ticksDef')[i]));
+ let h='';
+ if(PREVIEW){document.body.classList.add('pvm');h+='<div class="pv">'+T('pv')+'</div>';}
+ /* the promotion banner across the top */
+ let abOff=false;try{abOff=sessionStorage.getItem('lpab')==='x';}catch(e){}
+ if(L.length&&P.promoBar!==false&&!abOff)h+='<div class="abar" id="abar"><div class="wrap"><span class="abi">'+ic('fire',16)+'</span><div class="abm" id="abm">'+L.map((p,i)=>
+   '<button type="button" class="abx'+(i===0?' on':'')+'" data-claim="'+esc(p.id)+'"><b>'+esc(pBadge(p))+'</b> '+esc(p.t)+'<span class="abs">'+(p.limit>0?' · '+T('left')(p.left):'')+(p.end&&left(p.end)?' · '+T('endsIn')(left(p.end)).replace(/<\/?b>/g,''):'')+'</span></button>').join('')+'</div>'+
+  '<button type="button" class="abc" data-claim="'+esc(top.id)+'" id="abc">'+T('claimNow')+ic('arrow',14)+'</button><button type="button" class="abz" data-abx="1" aria-label="'+T('dismiss')+'">'+ic('x',14)+'</button></div></div>';
+ h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
+  '<nav class="nav">'+(L.length?'<a href="#promo">'+T('promo')+'</a>':'')+'<a href="#rawatan">'+T('treat')+'</a>'+((P.reviews||[]).length||R.n>=3?'<a href="#ulasan">'+T('rev')+'</a>':'')+'<a href="#lokasi">'+T('loc')+'</a><a href="#soalan">'+T('faq')+'</a></nav>'+
+  '<div class="lang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div>'+
+  '<button class="btn pri sm" data-go="book">'+ic('cal',16)+T('book')+'</button></div></header>';
+ /* hero */
+ const art=SL.length?'<div class="slides" id="slides">'+SL.map((s,i)=>'<div class="slide'+(i===0?' on':'')+'" data-img="hero_'+esc(s.id)+'"'+(i===0?' data-first="1"':'')+'></div>').join('')+'</div>'+
+    (SL.length>1?'<button type="button" class="sla l" data-sl="-1" aria-label="'+T('prev')+'">'+ic('left',18)+'</button><button type="button" class="sla r" data-sl="1" aria-label="'+T('next')+'">'+ic('right',18)+'</button>'+
+     '<div class="dots">'+SL.map((s,i)=>'<button type="button" class="'+(i===0?'on':'')+'" data-dot="'+i+'" aria-label="'+(i+1)+'"></button>').join('')+'</div>':'')
+  :H.img?'<img src="'+esc(H.img)+'" alt="'+esc(b.name||'')+'" fetchpriority="high">':'<span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><div class="wm">'+esc(b.name||'Luuna')+'</div>';
+ h+='<section class="hero"><span class="blob b1"></span><span class="blob b2"></span><div class="wrap"><div class="rv0">'+
+  '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
+  '<h1>'+h1+'</h1><p class="sub">'+esc(pick(H.s,H.sEn)||T('subDef'))+'</p>'+
+  (R.n>=3?'<a class="rate" href="#ulasan"><span class="st">'+STARS(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>'+T('of')(R.avg,R.n)+'</span></a><br>':'')+
+  (top?'<button class="promo-strip" data-promo="'+esc(top.id)+'"><span class="bdg">'+esc(pBadge(top))+'</span><span>'+esc(top.t)+'</span><small>'+(top.limit>0?T('left')(top.left):top.end?T('ends')(dshort(top.end)):T('see'))+' →</small></button>':'')+
+  '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?T('bookNow'):T('bookNow2'))+'</button>'+
+   '<button class="btn ghost" data-go="wa">'+ic('wa',18)+T('waUs')+'</button></div>'+
+  '<ul class="ticks">'+ticks.slice(0,3).map(t=>'<li><span class="tk">'+ic('check',12)+'</span>'+esc(t)+'</li>').join('')+'</ul></div>'+
+  '<div class="art rv0'+(SL.length?' car':'')+'">'+art+
+   '<div class="cap"><span class="dot">'+ic('clock',20)+'</span><span><b>'+esc(openNow(br).t)+'</b><small>'+esc(br.name||'')+(br.addrShort?' · '+esc(br.addrShort):'')+'</small></span></div></div></div></section>';
+ /* highlights */
+ const U=(P.usps||[]).filter(u=>u&&u.t);
+ if(U.length)h+='<div class="uband"><span class="blob b3"></span><span class="blob b4"></span><div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],21)+'</span><span><b>'+esc(pick(u.t,u.tEn))+'</b><span>'+esc(pick(u.d,u.dEn)||'')+'</span></span></div>').join('')+'</div></div></div>';
+ /* promotions */
+ if(L.length)h+='<section class="sec" id="promo"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('pEy')+'</span><h2>'+T('pH')+'</h2><p>'+T('pP')+'</p></div></div>'+
+  '<div class="promos">'+L.map(p=>{const pct=p.limit>0?Math.max(3,Math.round(p.left/p.limit*100)):0,hot=p.limit>0&&p.left<=Math.max(5,p.limit*0.2),im=promoImg(p),dt=pDays(p);
+   return '<article class="pc rv0'+(im?' img':'')+'">'+(im?'<div class="pcimg" data-img="'+esc(im)+'"></div>':'')+'<div class="pcin"><div class="bdg">'+esc(pBadge(p))+'</div><h3>'+esc(p.t)+'</h3><p>'+esc(pDeal(p))+(p.desc?' — '+esc(pick(p.desc,p.descEn)):'')+'</p>'+
+    '<div class="tags">'+(p.newOnly?'<span class="tg">'+T('newOnly')+'</span>':'')+(p.returning?'<span class="tg">'+T('retOnly')+'</span>':'')+(dt?'<span class="tg">'+esc(T('only')(dt))+'</span>':'')+
+     (p.brTxt?'<span class="tg">'+esc(p.brTxt)+'</span>':'')+(hot?'<span class="tg hot">'+T('hot')+'</span>':'')+'</div>'+
+    (p.limit>0?'<div class="qbar"><i style="width:'+pct+'%"></i></div>':'')+
+    '<div class="meta"><span>'+(p.limit>0?T('leftOf')(p.left,p.limit):'')+'</span><span data-end="'+esc(p.end||'')+'">'+(p.end?T('endsIn')(left(p.end)):'')+'</span></div>'+
+    '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+T('claim')+'</button>'+
+     (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])&&svcOf(p.svc[0]).b!==false?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">'+T('bookDirect')+'</button>':'')+'</div></div></article>';}).join('')+'</div></div></section>';
+ /* treatments */
+ h+='<section class="sec" id="rawatan" style="'+(L.length?'padding-top:8px':'')+'"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('tEy')+'</span><h2>'+T('tH')+'</h2><p>'+(P.showPrices===false?T('askPrice'):T('clear'))+' '+T('unsure')+' <a href="#konsultasi">'+T('getConsult')+'</a>.</p></div></div>'+
+  '<div id="svcs"></div></div></section>';
+ /* how it works */
+ h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('sEy')+'</span><h2>'+T('sH')+'</h2></div></div><div class="steps">'+
+  T('steps')(P.bookOn).map(s=>'<div class="step rv0"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
+ h+=reviewsHTML();
+ /* location */
+ h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('lEy')+'</span><h2>'+T('lH')+'</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
+  (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
+   return '<article class="loc rv0">'+(x.addr||x.mapsQ?'<iframe class="map" loading="lazy" title="'+esc(T('map')(x.name))+'" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q='+q+'&output=embed"></iframe>':'')+
+    '<div class="bd"><h3>'+esc(x.name)+'</h3><span class="open'+(o.on?'':' no')+'"><i></i>'+esc(o.t)+'</span>'+
+    (x.addr?'<div class="ln">'+ic('pin',16)+'<span>'+esc(x.addr)+'</span></div>':'')+
+    '<div class="ln">'+ic('clock',16)+'<span>'+esc(daysTxt(x.days))+' · '+hm(+x.open||9)+' – '+hm(+x.close||20)+'</span></div>'+
+    (x.phone?'<div class="ln">'+ic('phone',16)+'<span>'+esc(x.phone)+'</span></div>':'')+
+    '<div class="acts">'+(x.addr||x.mapsQ?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(x.maps||'https://www.google.com/maps/search/?api=1&query='+q)+'" data-hit="map">'+ic('map',16)+'Google Maps</a>'+
+      '<a class="btn light sm" target="_blank" rel="noopener" href="https://waze.com/ul?q='+q+'&navigate=yes" data-hit="map">Waze</a>':'')+
+     (x.phone?'<a class="btn light sm" href="tel:'+esc(digits(x.phone))+'" data-hit="call">'+ic('phone',16)+T('call')+'</a>':'')+
+     '<button class="btn pri sm" data-book-br="'+esc(x.id)+'">'+ic('cal',16)+T('bookHere')+'</button></div></div></article>';}).join('')+'</div></div></section>';
+ /* faq */
+ const F=(P.faq||[]).filter(f=>f&&f.q);
+ if(F.length)h+='<section class="sec" id="soalan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('fEy')+'</span><h2>'+T('fH')+'</h2></div></div><div class="faq">'+
+  F.map((f,i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(pick(f.q,f.qEn))+'</summary><p>'+esc(pick(f.a,f.aEn)||'')+'</p></details>').join('')+'</div></div></section>';
+ /* final: the form */
+ h+='<section class="sec" id="konsultasi" style="padding-top:0"><div class="wrap"><div class="final"><div class="rv0"><span class="eyebrow" style="color:var(--gold)">'+T('cEy')+'</span>'+
+  '<h2 style="margin:12px 0 12px">'+T('cH')+'</h2><p>'+T('cP')+'</p>'+
+  '<ul class="ticks dark" style="margin-top:16px;flex-direction:column;gap:8px">'+T('cT').map(x=>'<li><span class="tk">'+ic('check',12)+'</span>'+x+'</li>').join('')+'</ul></div>'+
+  '<div class="form rv0" id="fbox">'+formHTML('f',{})+'</div></div></div></section>';
+ h+='<footer><div class="wrap"><span>© '+new Date().getFullYear()+' '+esc(b.name||'')+'</span><div class="soc">'+
+  (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
+  (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
+  (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
+  (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
+  (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
+ h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?T('bookShort'):T('bookShort2'))+'</button></div>'+
+  '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
+ $('#app').innerHTML=h;
+ paintSvcs();bindForm('f');reveal();startSlides();startBanner();watchImgs();
+ const t=$('#top'),bar=$('#bar');
+ if(!window.__lpS){window.__lpS=1;const onS=()=>{const tt=$('#top'),bb=$('#bar');if(tt)tt.classList.toggle('sc',scrollY>8);if(bb)bb.classList.toggle('on',scrollY>420);};addEventListener('scroll',onS,{passive:true});}
+ if(t)t.classList.toggle('sc',scrollY>8);if(bar)bar.classList.toggle('on',scrollY>420);
+ if(!window.__lpE)window.__lpE=setInterval(()=>document.querySelectorAll('[data-end]').forEach(e=>{const en=e.dataset.end;if(en)e.innerHTML=left(en)?T('endsIn')(left(en)):T('ended');}),30000);
+ schedulePop();
+}
+
+/* ---------- the photo carousel at the top ---------- */
+function startSlides(){
+ clearInterval(SLTIMER);const box=$('#slides');if(!box)return;SLIDE=0;
+ const first=box.querySelector('[data-first]');if(first){first.classList.add('w');paintImg(first);}
+ const all=[...box.querySelectorAll('.slide')];if(all.length<2)return;
+ setTimeout(()=>all.slice(1).forEach(el=>{el.classList.add('w');paintImg(el);}),900);
+ SLTIMER=setInterval(()=>{if(!document.hidden&&!box.matches(':hover'))goSlide(SLIDE+1);},5200);
+ let x0=null;box.parentNode.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;},{passive:true});
+ box.parentNode.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)goSlide(SLIDE+(dx<0?1:-1));},{passive:true});
+}
+function goSlide(i){const all=[...document.querySelectorAll('#slides .slide')],n=all.length;if(!n)return;SLIDE=(i%n+n)%n;
+ all.forEach((el,k)=>el.classList.toggle('on',k===SLIDE));document.querySelectorAll('.art .dots button').forEach((d,k)=>d.classList.toggle('on',k===SLIDE));}
+
+/* ---------- the promotion banner: one offer at a time, and a short pop-up once a visit ---------- */
+function startBanner(){
+ clearInterval(ABTIMER);const all=[...document.querySelectorAll('#abm .abx')];if(all.length<2)return;let i=0;
+ ABTIMER=setInterval(()=>{if(document.hidden)return;all[i].classList.remove('on');i=(i+1)%all.length;all[i].classList.add('on');const c=$('#abc');if(c)c.dataset.claim=all[i].dataset.claim;},4500);
+}
+function schedulePop(){
+ clearTimeout(POPT);const L=livePromos();if(!L.length||P.promoPop===false)return;
+ try{if(sessionStorage.getItem('lppop'))return;}catch(e){}
+ POPT=setTimeout(()=>{if(SHEET||document.getElementById('pop'))return;const p=livePromos()[0];if(!p)return;try{sessionStorage.setItem('lppop','1');}catch(e){}
+  const im=promoImg(p),el=document.createElement('div');el.className='pop';el.id='pop';el.setAttribute('role','dialog');
+  el.innerHTML=(im?'<div class="popimg" data-img="'+esc(im)+'"></div>':'<div class="popimg none">'+ic('gift',30)+'</div>')+'<div class="popb"><span class="popk">'+ic('fire',13)+T('offer')+'</span><b class="popbdg">'+esc(pBadge(p))+'</b><h4>'+esc(p.t)+'</h4>'+
+   '<small>'+(p.limit>0?T('left')(p.left):'')+(p.limit>0&&p.end?' · ':'')+(p.end&&left(p.end)?T('endsIn')(left(p.end)).replace(/<\/?b>/g,''):'')+'</small>'+
+   '<button type="button" class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',15)+T('claimNow')+'</button></div><button type="button" class="popx" data-popx="1" aria-label="'+T('dismiss')+'">'+ic('x',15)+'</button>';
+  document.body.appendChild(el);watchImgs();hit('promo');},PREVIEW?1500:8000);
+}
+function closePop(){const e=document.getElementById('pop');if(e)e.remove();}
+
+/* ---------- reviews ---------- */
+function reviewsHTML(){
+ const RV=P.reviews||[],R=P.rating||{};if(!RV.length&&!(R.n>=3))return '';
+ const dist=R.dist||[],mx=Math.max(1,...dist,0),more=RV.length>6&&!REVALL;
+ const sum=R.n>=3?'<div class="rsum rv0"><div class="rbig"><span class="big">'+R.avg.toFixed(1)+'</span><span class="st">'+STARS(R.avg)+'</span><small>'+T('rN')(R.n)+'</small></div>'+
+   (dist.length?'<div class="rbars">'+[5,4,3,2,1].map((k,i)=>'<div><span>'+k+'★</span><i><b style="width:'+Math.round((dist[i]||0)/mx*100)+'%"></b></i><em>'+(dist[i]||0)+'</em></div>').join('')+'</div>':'')+'</div>':'';
+ const card=r=>'<figure class="rv rv0"><div class="rvh"><span class="st">'+STARS(r.s)+'</span>'+(r.src==='spa'?'<span class="rsrc ok">'+ic('check',12)+T('afterT')+'</span>':r.src?'<span class="rsrc">'+esc(T('via')(r.src))+'</span>':'')+'</div>'+
+  '<blockquote class="clamp">'+esc(r.t)+'</blockquote><figcaption><span class="av">'+(r.n?esc(r.n.charAt(0).toUpperCase()):ic('check',14))+'</span><span><b>'+esc(r.n||T('verified'))+'</b><small>'+[r.svc,r.d?dshort(r.d):''].filter(Boolean).map(esc).join(' · ')+'</small></span></figcaption></figure>';
+ return '<section class="sec" id="ulasan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('rEy')+'</span><h2>'+T('rH')+'</h2>'+
+   '<p>'+T('rP')+'</p></div>'+(P.gReviews?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(P.gReviews)+'" data-hit="map">'+ic('star',15)+T('gRev')+'</a>':'')+'</div>'+
+  (sum||'')+(RV.length?'<div class="revs">'+RV.slice(0,more?6:12).map(card).join('')+'</div>'+(more?'<div class="more"><button class="btn light" data-revall="1">'+T('allRev')(RV.length)+'</button></div>':''):'')+'</div></section>';
+}
+/* ---------- treatments ---------- */
 function svcSheet(id){
  const x=svcOf(id);if(!x)return;const bp=P.showPrices===false?null:bestPromo(x);
- sheet((x.ih?'<div class="shimg" data-img="'+esc(x.id)+'"></div>':'')+'<h3>'+esc(x.n)+'</h3><p class="lead">'+[x.c,(x.d||60)+' minit'].filter(Boolean).map(esc).join(' · ')+'</p>'+
-  (P.showPrices===false?'':'<div class="shpr">'+(bp?'<s>'+rm(x.p)+'</s><b class="now">'+rm(bp.v)+'</b><span class="ptag">'+esc(bp.p.badge)+' · '+esc(bp.p.t)+'</span>':'<b>'+rm(x.p)+'</b>')+'</div>')+
-  (x.x?'<p class="shx">'+esc(x.x)+'</p>':'')+
-  '<div class="shacts">'+(P.bookOn&&x.b!==false?'<button class="btn pri" data-book="'+esc(x.id)+'">'+ic('cal',18)+'Book rawatan ini</button>':'')+'<button class="btn light" data-ask="'+esc(x.id)+'">'+ic('wa',18)+'Tanya dulu</button></div>');
+ sheet((x.ih?'<div class="shimg" data-img="'+esc(x.id)+'"></div>':'')+'<h3>'+esc(x.n)+'</h3><p class="lead">'+[x.c,(x.d||60)+' '+T('min')].filter(Boolean).map(esc).join(' · ')+'</p>'+
+  (P.showPrices===false?'':'<div class="shpr">'+(bp?'<s>'+rm(x.p)+'</s><b class="now">'+rm(bp.v)+'</b><span class="ptag">'+esc(pBadge(bp.p))+' · '+esc(bp.p.t)+'</span>':'<b>'+rm(x.p)+'</b>')+'</div>')+
+  (x.x?'<p class="shx">'+esc(pick(x.x,x.xEn))+'</p>':'')+
+  '<div class="shacts">'+(P.bookOn&&x.b!==false?'<button class="btn pri" data-book="'+esc(x.id)+'">'+ic('cal',18)+T('bookThis')+'</button>':'')+'<button class="btn light" data-ask="'+esc(x.id)+'">'+ic('wa',18)+T('askFirst')+'</button></div>');
  watchImgs();hit('svc');
 }
 function paintSvcs(){
  const el=$('#svcs');if(!el)return;
- const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||'Lain-lain'))];
- const list=S.filter(s=>!CAT||(s.c||'Lain-lain')===CAT),lim=SHOWALL||CAT?list.length:9,anyImg=S.some(s=>s.ih);
- el.innerHTML=(cats.length>1?'<div class="cats"><button class="'+(CAT?'':'on')+'" data-cat="">Semua</button>'+cats.map(c=>'<button class="'+(CAT===c?'on':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div>':'')+
+ const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||''))];
+ const list=S.filter(s=>!CAT||(s.c||'')===CAT),lim=SHOWALL||CAT?list.length:9,anyImg=S.some(s=>s.ih);
+ el.innerHTML=(cats.length>1?'<div class="cats"><button class="'+(CAT?'':'on')+'" data-cat="">'+T('all')+'</button>'+cats.map(c=>'<button class="'+(CAT===c?'on':'')+'" data-cat="'+esc(c)+'">'+esc(c||T('other'))+'</button>').join('')+'</div>':'')+
   '<div class="svcs">'+list.slice(0,lim).map(s=>{const bp=P.showPrices===false?null:bestPromo(s);
-   return '<article class="sv'+(anyImg?' hasimg':'')+'">'+(anyImg?'<button type="button" class="ph'+(s.ih?'':' blank')+'" '+(s.ih?'data-img="'+esc(s.id)+'" ':'')+'data-sv="'+esc(s.id)+'" aria-label="'+esc(s.n)+'"><span>'+esc((s.n||'?').charAt(0))+'</span></button>':'')+'<div class="hd"><div><h3 data-sv="'+esc(s.id)+'">'+esc(s.n)+(bp?'<span class="ptag">'+esc(bp.p.badge)+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
+   return '<article class="sv'+(anyImg?' hasimg':'')+'">'+(anyImg?'<button type="button" class="ph'+(s.ih?'':' blank')+'" '+(s.ih?'data-img="'+esc(s.id)+'" ':'')+'data-sv="'+esc(s.id)+'" aria-label="'+esc(s.n)+'"><span>'+esc((s.n||'?').charAt(0))+'</span></button>':'')+
+    '<div class="hd"><div><h3 data-sv="'+esc(s.id)+'">'+esc(s.n)+(bp?'<span class="ptag">'+esc(pBadge(bp.p))+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
     '<div class="pr">'+(P.showPrices===false?'':bp?'<s>'+rm(s.p)+'</s><b class="now">'+rm(bp.v)+'</b>':s.p?'<b>'+rm(s.p)+'</b>':'')+'</div></div>'+
-    (s.x?'<p>'+esc(s.x)+'</p>':'')+'<div class="ft"><span class="dur">'+ic('clock',14)+(s.d||60)+' minit</span>'+
-    (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">Book</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',15)+'Tanya</button>')+'</div></article>';}).join('')+'</div>'+
-  (list.length>lim?'<div class="more"><button class="btn light" data-more="1">Lihat semua '+list.length+' rawatan</button></div>':'');
+    (s.x?'<p>'+esc(pick(s.x,s.xEn))+'</p>':'')+'<div class="ft"><span class="dur">'+ic('clock',14)+(s.d||60)+' '+T('min')+'</span>'+
+    (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">'+T('book')+'</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',15)+T('ask')+'</button>')+'</div></article>';}).join('')+'</div>'+
+  (list.length>lim?'<div class="more"><button class="btn light" data-more="1">'+T('allTreat')(list.length)+'</button></div>':'');
  watchImgs();
 }
 function reveal(){
@@ -498,106 +691,114 @@ function reveal(){
 }
 
 /* ---------- the enquiry form (inline and in the sheet) ---------- */
+const TIMEKEYS=['Pagi','Tengah hari','Petang','Malam','Hujung minggu'];
 function formHTML(k,o){
  const S=P.services||[],brs=P.branches||[];
  return '<form id="'+k+'-form" novalidate>'+
-  '<label for="'+k+'-n">Nama</label><input class="f" id="'+k+'-n" autocomplete="name" placeholder="Nama anda" required>'+
-  '<label for="'+k+'-p">No. WhatsApp</label><input class="f" id="'+k+'-p" type="tel" inputmode="tel" autocomplete="tel" placeholder="012-345 6789" required>'+
-  (o.mode==='wa'?'':'<label for="'+k+'-i">Berminat dengan</label><select class="f" id="'+k+'-i"><option value="">Belum pasti — nak nasihat</option>'+
+  '<label for="'+k+'-n">'+T('name')+'</label><input class="f" id="'+k+'-n" autocomplete="name" placeholder="'+T('nameP')+'" required>'+
+  '<label for="'+k+'-p">'+T('wa')+'</label><input class="f" id="'+k+'-p" type="tel" inputmode="tel" autocomplete="tel" placeholder="012-345 6789" required>'+
+  (o.mode==='wa'?'':'<label for="'+k+'-i">'+T('interest')+'</label><select class="f" id="'+k+'-i"><option value="">'+T('unsureOpt')+'</option>'+
    (o.promo?'<option selected>'+esc(o.promo)+'</option>':'')+S.map(s=>'<option'+(o.interest===s.n?' selected':'')+'>'+esc(s.n)+'</option>').join('')+'</select>')+
-  (brs.length>1?'<label for="'+k+'-b">Cawangan</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
-  (o.mode==='wa'?'':'<label>Masa yang sesuai</label><div class="chips" id="'+k+'-t">'+['Pagi','Tengah hari','Petang','Malam','Hujung minggu'].map(t=>'<button type="button" data-t="'+t+'">'+t+'</button>').join('')+'</div>'+
-   '<label for="'+k+'-q">Masalah kulit / soalan <span style="font-weight:400;color:var(--ink-3)">(pilihan)</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="Contoh: jerawat, jeragat, kulit kusam"></textarea>')+
-  '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>Saya setuju '+esc((P.biz||{}).name||'kami')+' menghubungi saya melalui WhatsApp dan menyimpan maklumat ini (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+  (brs.length>1?'<label for="'+k+'-b">'+T('branch')+'</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
+  (o.mode==='wa'?'':'<label>'+T('when')+'</label><div class="chips" id="'+k+'-t">'+TIMEKEYS.map((t,i)=>'<button type="button" data-t="'+t+'">'+T('times')[i]+'</button>').join('')+'</div>'+
+   '<label for="'+k+'-q">'+T('concern')+' <span style="font-weight:400;color:var(--ink-3)">'+T('opt')+'</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="'+T('concernP')+'"></textarea>')+
+  '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>'+esc(T('agree')((P.biz||{}).name||'kami'))+'</span></label>'+
   '<div class="err" id="'+k+'-e" role="alert"></div>'+
-  '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.mode==='wa'?ic('wa',18)+'Teruskan ke WhatsApp':o.promo?ic('gift',18)+'Claim promo ini':ic('arrow',18)+'Hantar — kami WhatsApp anda')+'</button></form>';
+  '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.mode==='wa'?ic('wa',18)+T('toWa'):o.promo?ic('gift',18)+T('claimThis'):ic('arrow',18)+T('send'))+'</button></form>';
 }
 function bindForm(k,o){
- o=o||{};const f=document.getElementById(k+'-form');if(!f)return;const T=new Set();
- f.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const t=b.dataset.t;T.has(t)?T.delete(t):T.add(t);b.classList.toggle('on');});
+ o=o||{};const f=document.getElementById(k+'-form');if(!f)return;const TS=new Set();
+ f.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const t=b.dataset.t;TS.has(t)?TS.delete(t):TS.add(t);b.classList.toggle('on');});
  f.onsubmit=async ev=>{ev.preventDefault();
   const n=document.getElementById(k+'-n').value.trim(),p=document.getElementById(k+'-p').value.trim(),e=document.getElementById(k+'-e');
   const it=document.getElementById(k+'-i'),q=document.getElementById(k+'-q'),bs=document.getElementById(k+'-b');
-  if(n.length<2){e.textContent='Sila isi nama anda.';return;}
-  if(digits(p).length<9||digits(p).length>15){e.textContent='Sila isi nombor telefon yang betul.';return;}
-  if(!document.getElementById(k+'-ok').checked){e.textContent='Sila tandakan persetujuan untuk kami menghubungi anda.';return;}
+  if(n.length<2){e.textContent=T('eName');return;}
+  if(digits(p).length<9||digits(p).length>15){e.textContent=T('ePhone');return;}
+  if(!document.getElementById(k+'-ok').checked){e.textContent=T('eOk');return;}
   e.textContent='';const go=document.getElementById(k+'-go');go.disabled=true;
   const x=touch(),a=attrLoad(),br=(bs&&bs.value)||o.br||((P.branches||[])[0]||{}).id||'';
   const interest=(it&&it.value)||o.promo||o.interest||'';
   const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:br,stage:'new',createdAt:new Date().toISOString(),
    createdBy:'landing',web:true,consent:true,
-   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':'form',d:x.d||'',land:x.l||'',dev:dev(),first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
+   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':'form',d:x.d||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
   if(interest)d.interest=interest.slice(0,200);
-  const nt=[q&&q.value.trim(),T.size?'Masa sesuai: '+[...T].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
-  if(PREVIEW){e.textContent='Pratonton: borang tidak dihantar.';go.disabled=false;return;}
+  /* the note is for the spa team, so it stays in Malay whichever language the page was in */
+  const nt=[q&&q.value.trim(),TS.size?'Masa sesuai: '+[...TS].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':'',LANG==='en'?'(borang dalam English)':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
+  if(PREVIEW){e.textContent=T('pvNo');go.disabled=false;return;}
   try{const id=await add('leads',d);try{localStorage.setItem('luunaLead',JSON.stringify({id,at:d.createdAt}));}catch(_){}
    hit(o.mode==='wa'?'wa':'lead');track('lead',{content_name:interest||'konsultasi'});
    if(o.mode==='wa'){closeSheet();openWa(o.msg,n);return;}
    const box=k==='f'?$('#fbox'):document.querySelector('.sheet .form');
-   box.innerHTML='<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>Terima kasih, '+esc(n.split(' ')[0])+'!</h3><p>Team kami akan WhatsApp anda secepat mungkin dalam waktu operasi.'+(o.promo?' Slot promo anda sedang kami simpan.':'')+'</p>'+
-    (P.bookOn?'<button class="btn pri" data-go="book">'+ic('cal',18)+'Terus pilih slot sekarang</button>':'')+'<button class="btn light" data-go="wa-direct">'+ic('wa',18)+'WhatsApp kami</button></div>';}
-  catch(err){console.warn(err);e.textContent='Maaf, tidak dapat dihantar. Sila cuba lagi atau WhatsApp kami terus.';go.disabled=false;}};
+   box.innerHTML='<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+esc(T('thanks')(n.split(' ')[0]))+'</h3><p>'+T('thanksP')+(o.promo?T('held'):'')+'</p>'+
+    (P.bookOn?'<button class="btn pri" data-go="book">'+ic('cal',18)+T('pickSlot')+'</button>':'')+'<button class="btn light" data-go="wa-direct">'+ic('wa',18)+T('waUs')+'</button></div>';}
+  catch(err){console.warn(err);e.textContent=T('eSend');go.disabled=false;}};
 }
 
 /* ---------- sheets ---------- */
-function sheet(html){closeSheet();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet" role="dialog" aria-modal="true"><button class="x" aria-label="Tutup" data-x="1">'+ic('x',18)+'</button>'+html+'</div>';
+function sheet(html){closeSheet();closePop();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet" role="dialog" aria-modal="true"><button class="x" aria-label="'+T('close')+'" data-x="1">'+ic('x',18)+'</button>'+html+'</div>';
  v.addEventListener('click',e=>{if(e.target===v||e.target.closest('[data-x]'))closeSheet();});document.body.appendChild(v);document.body.classList.add('sheet-open');SHEET=v;}
 function closeSheet(){if(SHEET){SHEET.remove();SHEET=null;}document.body.classList.remove('sheet-open');}
-function waText(ctx){const b=P.biz||{};return (P.waMsg||'Hi {nama}, saya nak tanya tentang rawatan.').replace('{nama}',b.name||'').replace('{bisnes}',b.name||'')+(ctx?' ('+ctx+')':'');}
+function waText(ctx){const b=P.biz||{};return (pick(P.waMsg,P.waMsgEn)||T('waDef')).replace('{nama}',b.name||'').replace('{bisnes}',b.name||'')+(ctx?' ('+ctx+')':'');}
 function openWa(msg,name){const b=P.biz||{},num=waNum(b.wa||b.phone||'');
- const t=(msg||waText())+(name?'\n\nNama: '+name:'');hit('wa');track('wa');
+ const t=(msg||waText())+(name?'\n\n'+T('nameL')+': '+name:'');hit('wa');track('wa');
  location.href='https://wa.me/'+num+'?text='+encodeURIComponent(t);}
 function waSheet(ctx,interest){
  const msg=waText(ctx);
  let done=null;try{done=JSON.parse(localStorage.getItem('luunaLead')||'null');}catch(e){}
  if(done&&Date.now()-new Date(done.at)<DAY30)return openWa(msg);
- sheet('<h3>Chat dengan kami</h3><p class="lead">Isi nama & nombor supaya team kami boleh bantu lebih cepat — atau terus ke WhatsApp.</p><div class="form">'+formHTML('w',{mode:'wa'})+'</div>'+
-  '<button class="skip" id="w-skip">Terus ke WhatsApp tanpa isi</button>');
+ sheet('<h3>'+T('chat')+'</h3><p class="lead">'+T('chatP')+'</p><div class="form">'+formHTML('w',{mode:'wa'})+'</div>'+
+  '<button class="skip" id="w-skip">'+T('skip')+'</button>');
  bindForm('w',{mode:'wa',msg,interest});document.getElementById('w-skip').onclick=()=>{closeSheet();openWa(msg);};
 }
 function claim(id){
- const p=(P.promos||[]).find(x=>x.id===id);if(!p)return;hit('promo');track('promo',{content_name:p.t});
- sheet('<h3>'+esc(p.t)+'</h3><p class="lead">'+esc(p.deal)+(p.limit>0?' · tinggal '+p.left+' slot':'')+(p.end?' · sehingga '+dshort(p.end):'')+'</p><div class="form">'+formHTML('s',{promo:p.t})+'</div>');
- bindForm('s',{promo:p.t});}
+ const p=(P.promos||[]).find(x=>x.id===id);if(!p)return;hit('promo');track('promo',{content_name:p.t});const im=promoImg(p);
+ sheet((im?'<div class="shimg" data-img="'+esc(im)+'"></div>':'')+'<h3>'+esc(p.t)+'</h3><p class="lead">'+esc(pDeal(p))+(p.limit>0?T('leftL')(p.left):'')+(p.end?T('until')(dshort(p.end)):'')+'</p><div class="form">'+formHTML('s',{promo:p.t})+'</div>');
+ bindForm('s',{promo:p.t});watchImgs();}
 function bookUrl(br,svc){const u=new URL('./',location.href);u.search='';const q=new URLSearchParams();q.set('book',br);if(svc)q.set('svc',svc);u.search=q.toString();return u.toString();}
 function book(svc,brId){
- if(!P.bookOn)return waSheet(svc&&svcOf(svc)?'Nak book '+svcOf(svc).n:'Nak buat tempahan');
+ if(!P.bookOn||(svc&&svcOf(svc)&&svcOf(svc).b===false))return waSheet(svc&&svcOf(svc)?T('wantBook')(svcOf(svc).n):T('wantRes'));
  const brs=P.branches||[];
  const go=b=>{hit('book');track('book',{content_name:svc&&svcOf(svc)?svcOf(svc).n:''});if(PREVIEW){alertPv(bookUrl(b,svc));return;}location.href=bookUrl(b,svc);};
  if(brId||brs.length<2)return go(brId||(brs[0]||{}).id||'');
- sheet('<h3>Pilih cawangan</h3><p class="lead">Di mana anda nak buat rawatan?</p><div class="brpick">'+brs.map(b=>'<button data-pick="'+esc(b.id)+'">'+ic('pin',20)+'<span><b>'+esc(b.name)+'</b><small>'+esc(b.addr||'')+'</small></span></button>').join('')+'</div>');
+ sheet('<h3>'+T('pickBr')+'</h3><p class="lead">'+T('pickBrP')+'</p><div class="brpick">'+brs.map(b=>'<button data-pick="'+esc(b.id)+'">'+ic('pin',20)+'<span><b>'+esc(b.name)+'</b><small>'+esc(b.addr||'')+'</small></span></button>').join('')+'</div>');
  SHEET.querySelectorAll('[data-pick]').forEach(x=>x.onclick=()=>{closeSheet();go(x.dataset.pick);});
 }
-function alertPv(u){const e=document.createElement('div');e.className='pv';e.style.top='26px';e.textContent='Pratonton — butang ini akan buka: '+u;document.body.appendChild(e);setTimeout(()=>e.remove(),5000);}
+function alertPv(u){const e=document.createElement('div');e.className='pv';e.style.top='26px';e.textContent=T('pvBtn')(u);document.body.appendChild(e);setTimeout(()=>e.remove(),5000);}
+function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('luunaLang',l);}catch(e){}const y=scrollY;render();scrollTo(0,y);}
 
 /* one listener for every button on the page */
 document.addEventListener('click',e=>{
- const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],blockquote.clamp');if(!t)return;
+ const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],[data-lang],[data-sl],[data-dot],[data-abx],[data-popx],blockquote.clamp');if(!t)return;
  if(t.dataset.hit){hit(t.dataset.hit);return;}
  if(t.matches('blockquote.clamp')){t.classList.toggle('open');return;}
  e.preventDefault();
- if(t.dataset.go==='book'){closeSheet();book();}
+ if(t.dataset.lang)setLang(t.dataset.lang);
+ else if(t.dataset.sl){goSlide(SLIDE+(+t.dataset.sl));}
+ else if(t.dataset.dot!==undefined){goSlide(+t.dataset.dot);}
+ else if(t.dataset.abx){const a=$('#abar');if(a)a.remove();try{sessionStorage.setItem('lpab','x');}catch(_){}}
+ else if(t.dataset.popx)closePop();
+ else if(t.dataset.go==='book'){closeSheet();book();}
  else if(t.dataset.go==='wa')waSheet();
  else if(t.dataset.go==='wa-direct')openWa();
  else if(t.dataset.book!==undefined){closeSheet();book(t.dataset.book);}
  else if(t.dataset.bookBr!==undefined)book('',t.dataset.bookBr);
- else if(t.dataset.claim)claim(t.dataset.claim);
+ else if(t.dataset.claim){closePop();claim(t.dataset.claim);}
  else if(t.dataset.promo){const el=document.getElementById('promo');if(el)el.scrollIntoView({behavior:'smooth'});}
- else if(t.dataset.ask){closeSheet();const s=svcOf(t.dataset.ask);waSheet(s?'Harga & slot '+s.n:'',s&&s.n);}
+ else if(t.dataset.ask){closeSheet();const s=svcOf(t.dataset.ask);waSheet(s?T('priceOf')(s.n):'',s&&s.n);}
  else if(t.dataset.cat!==undefined){CAT=t.dataset.cat;paintSvcs();}
  else if(t.dataset.more){SHOWALL=true;paintSvcs();}
  else if(t.dataset.sv){svcSheet(t.dataset.sv);}
  else if(t.dataset.revall){REVALL=true;const el=document.getElementById('ulasan');if(el){el.outerHTML=reviewsHTML();reveal();}}
 });
-addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closePop();}});
 
 /* ---------- start ---------- */
-window.__lp={detect,capture,touch,get P(){return P;}};
+window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();
 (async()=>{
  try{P=await getPub();}catch(e){console.warn(e);P=null;}
  if(!P||(!P.on&&!PREVIEW)){
-  $('#app').innerHTML='<div class="skel"><div style="text-align:center;padding:30px;max-width:420px"><h2 style="margin-bottom:10px">Laman ini sedang dikemas kini</h2><p style="color:#4A453C">Sila cuba sebentar lagi.</p></div></div>';return;}
+  $('#app').innerHTML='<div class="skel"><div style="text-align:center;padding:30px;max-width:420px"><h2 style="margin-bottom:10px">'+T('updating')+'</h2><p style="color:#4A453C">'+T('tryLater')+'</p></div></div>';return;}
  render();hit('view');pixels();
 })();
 })();
