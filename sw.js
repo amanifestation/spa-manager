@@ -2,7 +2,7 @@
    Keeps the app openable when the line drops, without ever holding back an update:
    the page itself is fetched from the network first and only falls back to the last
    good copy. Firestore traffic is never touched — that has its own offline cache. */
-const VERSION = '2026-09-26i';
+const VERSION = '2026-09-26j';
 const SHELL = 'luuna-shell-' + VERSION;
 const LIB = 'luuna-lib-v1';
 const SHELL_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png',
@@ -68,13 +68,16 @@ self.addEventListener('fetch', e => {
     e.respondWith((async () => {
       try {
         const fresh = await timeout(fetch(req), 6000);
-        if (fresh && fresh.ok) {
+        /* only the app itself is kept as the offline copy — never lp.html or another page */
+        if (fresh && fresh.ok && /(\/|index\.html)$/.test(url.pathname)) {
           const c = await caches.open(SHELL);
           c.put('./index.html', fresh.clone());
         }
         return fresh;
       } catch (err) {
         const c = await caches.open(SHELL);
+        if (!/(\/|index\.html)$/.test(url.pathname)) return new Response('<h1>Offline</h1><p>Sambungan internet diperlukan.</p>',
+          { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
         return (await c.match('./index.html')) || (await c.match('./')) ||
           new Response('<h1>Offline</h1><p>Sambungan internet diperlukan buat kali pertama.</p>',
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } });

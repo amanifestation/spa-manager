@@ -1964,6 +1964,23 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
  .chpanel .chhd{padding-top:calc(13px + env(safe-area-inset-top))}
  .chm{max-width:88%}}
 @media print{.chfab,.chpanel,.chpeek,.churgent{display:none!important}}
+/* landing page admin */
+.lphero h2{display:flex;align-items:center;gap:8px}
+.lptog{gap:7px;align-items:center;font-size:13.5px;cursor:pointer}.lptog input{width:17px;height:17px;accent-color:var(--ink)}
+.lplink{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2)}.lplink:last-child{border-bottom:0}
+.lplink>div{flex:1;min-width:0}.lplink b{display:block;font-size:13.5px}.lplink small{display:block;font-size:11.5px;color:var(--ink-3)}
+.lplink code{display:block;font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;background:var(--surface-2);border-radius:6px;padding:2px 6px}
+.lpbr{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:8px 0;background:var(--surface-2)}
+.lpfaq{display:grid;grid-template-columns:1fr 1.4fr auto;gap:6px;align-items:start;margin-bottom:6px}.lpfaq .f{margin:0}
+.lprow{margin-bottom:6px}.lprow .f{margin:0}
+.lpimg{width:84px;height:60px;border-radius:10px;object-fit:cover;flex:none}.lpimg.none{display:grid;place-items:center;background:var(--line-2);color:var(--ink-3)}
+.lpsvcs{display:flex;flex-wrap:wrap;gap:6px 16px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:10px}
+.lpsrc{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px}.lpsrc>span{font-size:12px;color:var(--ink-3);display:inline-flex;gap:5px;align-items:center;margin-right:4px}
+.lpsrc button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.lpsrc button b{margin-left:3px;color:var(--ink)}.lpsrc button.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}.lpsrc button.on b{color:var(--gold,#E2C58F)}
+.ksrc.m{background:var(--line-2);color:var(--ink-2);margin-left:4px}.ksrc.m.p{background:var(--rose-soft);color:var(--rose)}
+.fbshare{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:10px 0 0;text-align:left;cursor:pointer}.fbshare input{margin-top:3px;width:17px;height:17px;flex:none}
+@media(max-width:640px){.lpfaq{grid-template-columns:1fr auto}.lpfaq textarea{grid-column:1/2}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2223,7 +2240,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26i';
+const BUILD='2026-09-26j';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2616,7 +2633,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -6022,7 +6039,7 @@ function fbPubPaint(){
    (r.nps!==false?'<div class="fbq2">'+esc(L.nps)+'</div><div class="fbnps">'+[...Array(11)].map((_,i)=>
     '<button type="button" class="'+(FBPUB.nps===i?'on':'')+'" onclick="fbNps('+i+')">'+i+'</button>').join('')+'</div>'+
     '<div class="fbnpsl"><span>'+esc(L.npsL[0])+'</span><span>'+esc(L.npsL[1])+'</span></div>':'')+
-   '<div class="fbq2">'+esc(L.c)+'</div><textarea id="fbc" maxlength="1000" rows="4" oninput="fbComment(this.value)">'+esc(FBPUB.comment)+'</textarea>':
+   '<div class="fbq2">'+esc(L.c)+'</div><textarea id="fbc" maxlength="1000" rows="4" oninput="fbComment(this.value)">'+esc(FBPUB.comment)+'</textarea>'+'<label class="fbshare"><input type="checkbox" id="fbshare" '+(FBPUB.share?'checked':'')+' onchange="fbShare(this.checked)"> <span>'+(FBPUB.lang==='en'?'You may show my review on your website (first name only)':'Boleh papar ulasan saya di laman web (nama pertama sahaja)')+'</span></label>':
    '<p class="fbsub" style="margin-top:14px">'+esc(L.sub)+'</p>')+
   '<div id="fberr" class="fberr"></div>'+
   '<button class="fbsend" id="fbgo"'+(o?'':' disabled')+' onclick="fbSubmit()">'+esc(L.send)+'</button></div></div>';
@@ -6045,7 +6062,7 @@ window.fbSubmit=async()=>{
  const data={token:r.id,overall:FBPUB.overall,staff,tags:FBPUB.tags.slice(0,12),comment:String(FBPUB.comment||'').trim().slice(0,1000),
   at:new Date().toISOString(),branchId:r.branchId,customerId:r.customerId,firstName:r.firstName,staffIds:r.staffIds,
   staffNames:r.staffNames,services:r.services,saleId:r.saleId,apptId:r.apptId,lang:FBPUB.lang};
- if(Number.isInteger(FBPUB.nps))data.nps=FBPUB.nps;
+ if(Number.isInteger(FBPUB.nps))data.nps=FBPUB.nps;if(FBPUB.share&&String(data.comment||'').trim())data.shareOk=true;
  try{
   const bt=writeBatch(db);
   bt.set(doc(db,'feedback',r.id),data);
@@ -12899,7 +12916,7 @@ function crmPipe(){
  const card=l=>{const s=stageOf(l.stage),od=openLead(l)&&l.nextAt&&l.nextAt<today(),dueT=openLead(l)&&l.nextAt===today();
   return '<button class="kcard" onclick="leadOpen(\''+l.id+'\')">'+
    '<div class="spread"><b>'+esc(l.name)+'</b>'+(l.assignedTo?'<span class="kwho" title="'+esc(stf(l.assignedTo).name||'')+'">'+esc(initials(stf(l.assignedTo).name||'?'))+'</span>':'<span class="kwho none">?</span>')+'</div>'+
-   '<div class="kmeta"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+'</div>'+
+   '<div class="kmeta"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+lpMedTag(l)+'</div>'+
    (l.interest?'<div class="tiny muted" style="margin-top:3px">'+esc(l.interest)+'</div>':'')+
    '<div class="kfoot"><span>'+agoTxt(l.createdAt)+'</span>'+(od?'<span class="kdue od">'+ic('clock',11)+'overdue</span>':dueT?'<span class="kdue">'+ic('clock',11)+'today</span>':
     l.stage==='lost'?'<span class="tiny muted">'+esc(l.lostReason||'')+'</span>':'')+'</div></button>';};
@@ -12985,11 +13002,11 @@ window.leadOpen=id=>{
  modal(l.name,'<div id="ld-box"><div class="card">'+
   '<div class="ldhead"><span class="avatar">'+esc(initials(l.name))+'</span><div style="flex:1;min-width:0">'+
    '<div class="tiny muted">'+esc(l.phone||'')+(l.email?' · '+esc(l.email):'')+'</div>'+
-   '<div class="kmeta" style="margin-top:4px"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+
+   '<div class="kmeta" style="margin-top:4px"><span class="ksrc">'+esc(l.source||'Other')+'</span>'+(l.campaign?'<span class="ksrc c">'+esc(l.campaign)+'</span>':'')+lpMedTag(l)+
    '<span class="pill">'+agoTxt(l.createdAt)+'</span>'+(l.firstContactAt?'<span class="pill g">replied in '+Math.max(1,Math.round((new Date(l.firstContactAt)-new Date(l.createdAt))/6e4))+' min</span>':
     '<span class="pill a">not contacted yet</span>')+'</div></div></div>'+
   (l.interest?'<div class="ldline">'+ic('spark',13)+' Interested in <b>'+esc(l.interest)+'</b></div>':'')+
-  (l.note?'<div class="ldline">'+ic('note',13)+' '+esc(l.note)+'</div>':'')+
+  (l.note?'<div class="ldline">'+ic('note',13)+' '+esc(l.note)+'</div>':'')+lpLeadLine(l)+
   '<div class="ldstages">'+STAGES.map(x=>'<button class="'+(x[0]===l.stage?'on':'')+' st-'+x[0]+'" onclick="leadStage(\''+id+'\',\''+x[0]+'\')">'+ic(x[2],13)+x[1]+'</button>').join('')+'</div>'+
   '<div class="ldacts">'+
    '<button class="btn sm" onclick="crmWa(\'lead\',\''+id+'\')">'+ic('msg',14)+'WhatsApp</button>'+
@@ -16709,7 +16726,8 @@ async function bookingPage(branchId,manageId){
  WB={cfg:c,br:(c.branches||[]).find(b=>b.id===branchId)||(c.branches||[])[0],svc:null,staff:'',day:'',slot:null,busy:{},cat:''};
  try{WB.r=String(new URLSearchParams(location.search).get('ref')||'').toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,16);}catch(e){}
  if(manageId)return wbManage(manageId);
- wbPaint();
+ lpCapture();
+ wbPaint();lpPreSvc();
 }
 window.bookingPage=bookingPage;
 function wbHead(){const c=WB.cfg,b=c.biz||{};
@@ -16816,7 +16834,7 @@ window.wbBook=async()=>{
  const appt={branchId:br.id,customerId:'',customerName:n.slice(0,80),phone:p.slice(0,20),email:em.slice(0,100),
   staffId:x.staff,staffName:stn,serviceId:s.id,serviceName:s.n,roomId:x.room,date:d,
   start:new Date(x.st).toISOString(),finish:new Date(x.en).toISOString(),duration:s.d,buffer:s.b,status:'booked',deposit:0,
-  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff,...(rc?{refCode:rc}:{})};
+  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff,...(rc?{refCode:rc}:{}),...lpApptAttr()};
  const b=writeBatch(db);b.set(doc(db,'appointments',id),appt);
  /* lock every 15 minutes the room and the therapist are held, so nobody else can take them at the same moment */
  const cells=[];for(let t=Math.floor(x.st/9e5)*9e5;t<x.eb;t+=9e5)cells.push(t);
@@ -16827,7 +16845,7 @@ window.wbBook=async()=>{
   ['n','p','e','x'].forEach(k=>{WB[k]=({n,p,e:em,x:nt})[k];});WB.r=rc;
   await wbLoadBusy([WB.day]);wbPaint();const ee=$('#wb-err')||document.querySelector('.wbstep:last-child');
   toast('Maaf, slot itu baru sahaja diambil. Sila pilih masa lain.');return;}
- wbDone({id,...appt});
+ lpAfterBook(id,appt);wbDone({id,...appt});
 };
 function wbIcs(a){
  const f=t=>new Date(t).toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');
@@ -21528,5 +21546,263 @@ window.chatAck=async(id,sid)=>{
  try{await updateDoc(doc(chatCol(br),id),up);}catch(e){toast(friendly(e));}
  window.chatOpen(br);
 };
+
+
+/* ============ Landing page: one page for ads and social media, leads straight into the CRM ============ */
+/* The page itself is lp.html, a small separate file next to the app so it opens fast from an
+   Instagram or TikTok link. It can only read what the app publishes to public/landing: the
+   treatments and prices, the promotions running (with the slots left), the branches with their
+   address and hours, reviews that clients agreed to show, and the owner's own words for the
+   headline, highlights and questions. The app keeps that copy up to date by itself.
+   Enquiries from the page go into leads already sorted by where the visitor came from (the
+   link's tag, an ad's click id, the in-app browser, or the site they came from), and a booking
+   made afterwards on the booking page carries the same source. Every visit and tap is counted
+   in lpHits so the owner can see which channel brings people who actually enquire and book. */
+const LP_DEF={on:false,headline:'',sub:'',ticks:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas, tanpa caj tersembunyi'],
+ usps:[{t:'Konsultasi percuma',d:'Therapist semak keadaan kulit anda sebelum sebarang rawatan.'},{t:'Rawatan ikut kulit anda',d:'Setiap rawatan disesuaikan dengan jenis dan masalah kulit anda.'},
+  {t:'Book online 24 jam',d:'Pilih rawatan, therapist dan masa sendiri — terus disahkan.'}],
+ faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',px:{meta:'',tt:'',ga:''}};
+const lpFaq0=()=>{const W=typeof wbSet==='function'?wbSet():{};return [
+ {q:'Perlu book dulu atau boleh walk-in?',a:'Digalakkan book dahulu supaya slot dan therapist tersedia untuk anda. Walk-in diterima jika ada slot kosong.'},
+ {q:'Rawatan mana yang sesuai untuk saya?',a:'Tak pasti? Isi borang konsultasi percuma atau WhatsApp kami — therapist akan cadangkan rawatan ikut jenis dan masalah kulit anda.'},
+ {q:'Berapa lama satu sesi?',a:'Tempoh setiap rawatan tertera pada senarai rawatan. Sila datang 10 minit awal untuk konsultasi ringkas.'},
+ {q:'Boleh tukar atau batal tempahan?',a:'Boleh. Guna pautan dalam pengesahan tempahan anda, atau WhatsApp kami sekurang-kurangnya '+(+W.cutoff||24)+' jam sebelum janji temu.'}];};
+const lpSet=()=>{const L={...LP_DEF,...((D.meta||{}).landing||{})};if(!L.faq)L.faq=lpFaq0();L.px={...LP_DEF.px,...(L.px||{})};L.branches=L.branches||{};return L;};
+let LPPUB,LPIMG,LPD=null,LPSTATS=null,LPCAMP='',LPBUSY=false;
+const lpBase=()=>{let u='';try{u=location.origin+location.pathname.replace(/[^/]*$/,'');}catch(e){}return u+'lp.html';};
+const LP_BM_DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
+
+/* ---------- what the page is allowed to know ---------- */
+function lpPromoOut(p){
+ const T=p.target||{scope:'all'},nm=(k,id)=>((itemSrc(k,id)||{}).name||'');
+ let all=false,svc=[];
+ if(T.scope==='all')all=true;
+ else if(T.scope==='kind')all=(T.kinds||[]).includes('service');
+ else if(T.scope==='cat')svc=T.kind==='service'?D.services.filter(s=>catOf(s)===T.cat).map(s=>s.id):[];
+ else svc=(T.items||[]).filter(x=>x.kind==='service').map(x=>x.id);
+ const on=T.scope==='all'?'semua rawatan & produk':T.scope==='kind'?((T.kinds||[]).includes('service')?'semua rawatan':'terpilih'):T.scope==='cat'?T.cat:
+  (T.items||[]).slice(0,3).map(x=>nm(x.kind,x.id)).join(', ')+((T.items||[]).length>3?' dan lain-lain':'');
+ const G=prGet(p),gn=G?nm(G.kind,G.id):'';
+ const v=+p.value||0,rmv=x=>'RM'+(+x||0).toLocaleString('en-MY');
+ const deal=p.type==='pct'?'Diskaun '+v+'% untuk '+on:p.type==='amt'?'Jimat '+rmv(v)+' untuk '+on:p.type==='price'?on+' hanya '+rmv(v):
+  p.type==='bxgy'?'Beli '+(p.buyQty||1)+' '+on+', '+((+p.getPct||100)>=100?'percuma ':'diskaun '+p.getPct+'% untuk ')+(p.getQty||1)+(gn?' '+gn:''):
+  'Belanja '+rmv(p.minSpend||0)+' ('+on+'), jimat '+(p.unit==='rm'?rmv(v):v+'%');
+ const badge=p.type==='pct'?'-'+v+'%':p.type==='amt'?'-'+rmv(v):p.type==='price'?rmv(v):p.type==='bxgy'?'Beli '+(p.buyQty||1)+' Free '+(p.getQty||1):'Jimat '+(p.unit==='rm'?rmv(v):v+'%');
+ const days=(p.days||[]).length&&p.days.length<7?p.days.slice().sort().map(d=>LP_BM_DAYS[d]).join(', '):'';
+ const brs=(p.branchIds||[]).length&&(D.branches||[]).length>1?p.branchIds.map(id=>(D.branches.find(b=>b.id===id)||{}).name).filter(Boolean).join(', '):'';
+ return {id:p.id,t:String(p.name||'').slice(0,60),desc:String(p.desc||'').slice(0,200),type:p.type,value:v,badge,deal,all,svc,
+  newOnly:p.audience==='new',returning:p.audience==='return',limit:+p.limit||0,left:+p.limit>0?Math.max(0,(+p.limit)-(+p.used||0)):0,
+  start:p.start||'',end:p.end||'',daysTxt:days,brTxt:brs};
+}
+function lpBuild(img){
+ const L=lpSet(),b=D.meta.biz||{},W=typeof wbSet==='function'?wbSet():{on:false},td=today();
+ const bookable=new Set(typeof wbSvcs==='function'?wbSvcs().map(s=>s.id):[]);
+ const cats=typeof catList==='function'?catList('service'):[];D.services.forEach(s=>{const c=catOf(s);if(c&&!cats.includes(c))cats.push(c);});
+ const S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id)))
+  .sort((a,b)=>((cats.indexOf(catOf(a))+1||99)-(cats.indexOf(catOf(b))+1||99))||String(a.name).localeCompare(b.name));
+ const main=(D.branches[0]||{}).id,full=[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', ');
+ const FB=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall));
+ const rv=FB.filter(f=>f.shareOk&&star(f.overall)>=4&&String(f.comment||'').trim().length>=12).slice(0,6)
+  .map(f=>({n:String(f.firstName||'Pelanggan').split(' ')[0].slice(0,20),s:star(f.overall),t:String(f.comment).trim().slice(0,300),svc:String((f.services||[])[0]||'').slice(0,60),d:String(f.at||'').slice(0,10)}));
+ return {on:!!L.on,v:1,
+  biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||''},
+  hero:{t:String(L.headline||'').slice(0,120),s:String(L.sub||'').slice(0,240),ticks:(L.ticks||[]).filter(Boolean).slice(0,3),img:img||''},
+  usps:(L.usps||[]).filter(u=>u&&u.t).slice(0,4),faq:(L.faq||[]).filter(f=>f&&f.q).slice(0,10),waMsg:String(L.waMsg||'').slice(0,200),
+  showPrices:L.showPrices!==false,bookOn:!!W.on,
+  services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,240),b:bookable.has(s.id)})),
+  promos:(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&(!p.start||daysBetween(td,p.start)<=31)&&!(+p.limit>0&&promoLeft(p)<=0))
+   .sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999'))).slice(0,8).map(lpPromoOut),
+  rating:FB.length?{avg:Math.round(FB.reduce((t,f)=>t+star(f.overall),0)/FB.length*10)/10,n:FB.length}:{avg:0,n:0},
+  reviews:L.showReviews===false?[]:rv,
+  branches:D.branches.map(br=>{const x=L.branches[br.id]||{},m=br.id===main;const addr=x.addr||(m?full:'');
+   return {id:br.id,name:br.name||'',addr,city:x.city||(m?b.city||'':''),addrShort:x.city||(m?b.city||'':''),maps:x.maps||'',mapsQ:(b.name?b.name+' ':'')+(addr||br.name||''),
+    phone:x.phone||(m?b.phone||'':''),open:+D.meta.open||9,close:+D.meta.close||20,days:(W.days&&W.days.length?W.days:[0,1,2,3,4,5,6])};}),
+  px:{meta:String(L.px.meta||'').replace(/\D/g,'').slice(0,20),tt:String(L.px.tt||'').replace(/[^A-Za-z0-9]/g,'').slice(0,30),ga:String(L.px.ga||'').replace(/[^A-Za-z0-9-]/g,'').slice(0,20)}};
+}
+async function lpLoadPub(){try{const s=await getDoc(doc(db,'public','landing'));LPPUB=s.exists()?s.data():null;}catch(e){LPPUB=null;}}
+async function lpPublish(force){
+ if(!boss())return false;
+ if(PROMOS===null){if(!force)return false;}
+ await lpLoadPub();
+ const img=LPIMG!==undefined?LPIMG:((LPPUB&&LPPUB.hero&&LPPUB.hero.img)||'');
+ const d=lpBuild(img),h=wbHash(JSON.stringify(d));
+ if(!force&&LPPUB&&LPPUB.hash===h)return false;
+ d.hash=h;d.updatedAt=new Date().toISOString();d.by=ME.name;
+ await setDoc(doc(db,'public','landing'),d);LPPUB=d;LPIMG=undefined;return true;
+}
+/* keep it current by itself: when the owner's app opens, every 10 minutes, and after a promotion is saved */
+{const _ws=window.wbStart;window.wbStart=function(){try{if(_ws)_ws.apply(this,arguments);}catch(e){console.warn(e);}
+ if(boss()&&(D.meta||{}).landing){const run=()=>lpPublish(false).catch(e=>console.warn('landing',e));setTimeout(run,5000);
+  if(!window.__lpTick)window.__lpTick=setInterval(()=>{if(ME&&boss())run();},10*60e3);}};}
+{const _ps=window.promoSave;if(_ps)window.promoSave=async function(){const r=await _ps.apply(this,arguments);if(boss()&&(D.meta||{}).landing)lpPublish(false).catch(()=>{});return r;};}
+
+/* ---------- the owner's screen ---------- */
+TABS.splice(TABS.findIndex(t=>t.id==='crm')+1,0,{id:'lp',ic:'mega',label:'Landing page',perm:'report',group:'Clients',desc:'Your page for ads and social media, leads straight into the CRM'});
+const LP_LINKS=[['ig','Instagram bio','src=ig','Link in bio, story link sticker'],['tt','TikTok bio','src=tt','Profile link'],['fb','Facebook page','src=fb','Page button, posts'],
+ ['wa','WhatsApp','src=wa','Status, broadcast, auto-reply'],['gmb','Google Business','src=gmb','Website button on your Google listing'],['qr','QR / flyer','src=qr','Printed flyers, counter stand, banner'],
+ ['ref','Friends (referral)','src=ref','For clients to share'],['meta','Meta ads (FB & IG)','utm_source={{site_source_name}}&utm_medium=paid','Paste into the ad\'s URL parameters — Meta fills in fb or ig'],
+ ['ttads','TikTok ads','utm_source=tiktok&utm_medium=paid','Ad destination URL'],['gads','Google ads','utm_source=google&utm_medium=paid','Final URL (the click id is added by Google)']];
+const lpLink=(q,camp)=>lpBase()+'?'+q+(camp?(q.includes('utm_')?'&utm_campaign=':'&c=')+encodeURIComponent(camp):'');
+async function lpLoadStats(){
+ const from=ymd(addDays(new Date(),-29));
+ try{const s=await getDocs(query(collection(db,'lpHits'),where('d','>=',from)));LPSTATS=s.docs.map(d=>d.data());}catch(e){console.warn(e);LPSTATS=[];}
+ if(TAB==='lp')render();
+}
+function lpStatsHTML(){
+ if(!LPSTATS)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const by={},T={view:0,lead:0,wa:0,book:0,booked:0,promo:0};
+ LPSTATS.forEach(h=>{const k=h.s||'Website',x=by[k]=by[k]||{view:0,lead:0,wa:0,book:0,booked:0,paid:0};if(x[h.t]!==undefined)x[h.t]++;if(T[h.t]!==undefined)T[h.t]++;if(h.m==='Paid'&&h.t==='view')x.paid++;});
+ const conv=x=>x.view?Math.round((x.lead+x.wa+x.booked)/x.view*1000)/10:0;
+ const rows=Object.entries(by).sort((a,b)=>b[1].view-a[1].view);
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('chart',15)+' Results · last 30 days</h3><button class="btn sm ghost" onclick="lpStatsRe()">'+ic('refresh',13)+'</button></div>'+
+  '<div class="sdgrid" style="margin-top:8px">'+kpi('Visitors',T.view,'people who opened the page','users')+kpi('Enquiries',T.lead+T.wa,T.lead+' form · '+T.wa+' WhatsApp','target')+
+   kpi('Booked online',T.booked,T.book+' tapped Book','calendar')+kpi('Conversion',(T.view?Math.round((T.lead+T.wa+T.booked)/T.view*1000)/10:0)+'%','enquired or booked','spark')+'</div>'+
+  (rows.length?'<div class="scroll"><table class="pltbl sdtbl"><tr><th>Source</th><th class="num">Visitors</th><th class="num">Enquiries</th><th class="num">WhatsApp</th><th class="num">Tapped Book</th><th class="num">Booked</th><th class="num">Conversion</th></tr>'+
+   rows.map(([k,x])=>'<tr onclick="lpLeads(\''+esc(k)+'\')" style="cursor:pointer"><td><b>'+esc(k)+'</b>'+(x.paid?' <span class="pill b">'+x.paid+' from ads</span>':'')+'</td><td class="num">'+x.view+'</td><td class="num">'+x.lead+'</td><td class="num">'+x.wa+'</td><td class="num">'+x.book+'</td><td class="num">'+x.booked+'</td><td class="num"><b>'+conv(x)+'%</b></td></tr>').join('')+'</table></div>'+
+   '<p class="tiny muted">Tap a source for its leads in the CRM. Enquiries are forms and WhatsApp taps where the visitor left a name and number; Booked is a booking made on the booking page after visiting.</p>'
+   :'<div class="empty">No visits yet. Put the links below in your bio, ads and WhatsApp.</div>')+'</div>';
+}
+window.lpStatsRe=()=>{LPSTATS=null;render();lpLoadStats();};
+window.lpLeads=s=>{LEADF.src=s;LEADF.who='all';CRMV='pipe';window.go('crm');};
+function vLanding(){
+ if(!boss())return '<div class="card"><div class="empty">The landing page is set up by the owner or a manager.</div></div>';
+ if(LPPUB===undefined){lpLoadPub().then(()=>{if(TAB==='lp')render();});return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ if(!LPSTATS&&!LPBUSY){LPBUSY=true;lpLoadStats().finally(()=>{LPBUSY=false;});}
+ if(!LPD)LPD=JSON.parse(JSON.stringify(lpSet()));
+ const L=LPD,live=LPPUB&&LPPUB.on,link=lpBase(),img=LPIMG!==undefined?LPIMG:((LPPUB&&LPPUB.hero&&LPPUB.hero.img)||'');
+ const status='<div class="card lphero"><div class="spread" style="gap:10px;flex-wrap:wrap"><div><h2 style="margin:0">'+ic('mega',18)+' Landing page</h2>'+
+   '<p class="tiny muted" style="margin:4px 0 0">One page with your treatments, prices, promotions and location. Enquiries go straight into CRM → Leads, already sorted by where the person came from.</p></div>'+
+   '<span class="pill '+(live?'g':'a')+'">'+(live?'Live':LPPUB?'Off':'Not published yet')+'</span></div>'+
+  '<div class="row" style="gap:6px;margin-top:12px;flex-wrap:wrap"><input class="f" id="lp-link" style="margin:0;flex:1;min-width:220px" readonly value="'+esc(link)+'">'+
+   '<button class="btn sm" onclick="lpCopy(\''+esc(link)+'\')">'+ic('check',13)+'Copy</button><a class="btn sm ghost" target="_blank" href="'+esc(link)+'?preview=1">'+ic('right',13)+'Preview</a></div>'+
+  (LPPUB?'<p class="tiny muted" style="margin:8px 0 0">Updated '+dstr(String(LPPUB.updatedAt).slice(0,10))+' '+tstr(LPPUB.updatedAt)+' · '+(LPPUB.services||[]).length+' treatments · '+(LPPUB.promos||[]).length+' promotions · '+(LPPUB.reviews||[]).length+' reviews. It updates itself when treatments, prices or promotions change.</p>':'')+
+  '<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap"><label class="row lptog"><input type="checkbox" id="lp-on" '+(L.on?'checked':'')+' onchange="lpF(\'on\',this.checked)"> <b>Page is live</b></label>'+
+   '<button class="btn" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>'+
+  (typeof wbSet==='function'&&!wbSet().on?'<p class="tiny" style="color:var(--amber);margin:8px 0 0">'+ic('alert',12)+' Online booking is off, so the Book buttons open WhatsApp instead. Turn it on in Settings → Online booking.</p>':'')+'</div>';
+ const links='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('link',15)+' Links for each channel</h3>'+
+   '<select class="f" style="margin:0;width:auto" onchange="lpCamp(this.value)"><option value="">No campaign</option>'+(CAMPAIGNS||[]).filter(c=>c.active!==false).map(c=>'<option value="'+esc(c.code)+'"'+(LPCAMP===c.code?' selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">Use a different link in each place, so every lead is tagged with where it came from. Pick a campaign to tag its leads too.</p>'+
+  LP_LINKS.map(([k,n,q,where])=>{const u=lpLink(q,LPCAMP);return '<div class="lplink"><div><b>'+esc(n)+'</b><small>'+esc(where)+'</small><code>'+esc(u)+'</code></div>'+
+   '<button class="btn sm ghost" onclick="lpCopy(\''+esc(u).replace(/'/g,'\\\'')+'\')">Copy</button><button class="btn sm ghost" onclick="lpQR(\''+k+'\')">'+ic('qr',14)+'</button></div>';}).join('')+'</div>';
+ const tx=(id,k,v,ph,max)=>'<input class="f" id="'+id+'" maxlength="'+(max||120)+'" value="'+esc(v||'')+'" placeholder="'+esc(ph||'')+'" oninput="lpF(\''+k+'\',this.value)">';
+ const brs=(D.branches||[]).map((br,i)=>{const x=L.branches[br.id]||{},b=D.meta.biz||{},m=i===0;
+  return '<div class="lpbr"><b>'+esc(br.name)+'</b><div class="grid g2"><div><label>Address</label><input class="f" value="'+esc(x.addr||'')+'" placeholder="'+esc(m?[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', '):'Street, postcode, city')+'" oninput="lpBr(\''+br.id+'\',\'addr\',this.value)"></div>'+
+   '<div><label>Town (shown under the name)</label><input class="f" value="'+esc(x.city||'')+'" placeholder="'+esc(m?b.city||'Kulai':'')+'" oninput="lpBr(\''+br.id+'\',\'city\',this.value)"></div>'+
+   '<div><label>Google Maps link</label><input class="f" value="'+esc(x.maps||'')+'" placeholder="https://maps.app.goo.gl/…" oninput="lpBr(\''+br.id+'\',\'maps\',this.value)"></div>'+
+   '<div><label>Phone</label><input class="f" value="'+esc(x.phone||'')+'" placeholder="'+esc(m?b.phone||'':'')+'" oninput="lpBr(\''+br.id+'\',\'phone\',this.value)"></div></div></div>';}).join('');
+ const S=D.services.filter(s=>s.active!==false&&s.id),sel=L.svcs;
+ const shared=(FEEDBACK||[]).filter(f=>f.shareOk&&!f.hidden&&star(f.overall)>=4&&String(f.comment||'').trim().length>=12).length;
+ const content='<div class="card"><h3 style="margin:0 0 4px">'+ic('edit',15)+' What the page says</h3><p class="tiny muted" style="margin:0 0 6px">Treatments, prices, promotions and hours come from the app by themselves. These are your own words.</p>'+
+  '<label>Headline</label>'+tx('lp-h','headline',L.headline,'Kulit sihat & *bercahaya*, dijaga dengan teliti',120)+'<p class="tiny muted" style="margin:-6px 0 0">Put *stars* around a word to show it in gold italics.</p>'+
+  '<label>Under the headline</label><textarea class="f" rows="2" maxlength="240" oninput="lpF(\'sub\',this.value)" placeholder="Rawatan wajah dan kulit oleh therapist terlatih…">'+esc(L.sub||'')+'</textarea>'+
+  '<label>Three short points under the buttons</label><div class="grid g3">'+[0,1,2].map(i=>'<input class="f" maxlength="40" value="'+esc((L.ticks||[])[i]||'')+'" oninput="lpArr(\'ticks\','+i+',this.value)">').join('')+'</div>'+
+  '<label>Photo at the top</label><div class="row" style="gap:10px;align-items:center">'+(img?'<img src="'+img+'" alt="" class="lpimg">':'<span class="lpimg none">'+ic('image',20)+'</span>')+
+   '<button class="btn sm ghost" onclick="lpPhoto()">'+ic('upload',13)+(img?'Change':'Add a photo')+'</button>'+(img?'<button class="btn sm ghost" onclick="lpNoPhoto()">Remove</button>':'')+
+   '<span class="tiny muted">A bright photo of the spa or a treatment. Without one, a gold pattern with your name is shown.</span></div>'+
+  '<label>Highlights</label>'+(L.usps||[]).map((u,i)=>'<div class="grid g2 lprow"><input class="f" maxlength="40" value="'+esc(u.t||'')+'" placeholder="Title" oninput="lpUsp('+i+',\'t\',this.value)"><input class="f" maxlength="100" value="'+esc(u.d||'')+'" placeholder="One line" oninput="lpUsp('+i+',\'d\',this.value)"></div>').join('')+
+   ((L.usps||[]).length<4?'<button class="btn sm ghost" onclick="lpUspAdd()">'+ic('plus',13)+'Highlight</button>':'')+
+  '<label>Questions & answers</label>'+(L.faq||[]).map((f,i)=>'<div class="lpfaq"><input class="f" maxlength="120" value="'+esc(f.q||'')+'" placeholder="Question" oninput="lpFaqF('+i+',\'q\',this.value)">'+
+   '<textarea class="f" rows="2" maxlength="500" placeholder="Answer" oninput="lpFaqF('+i+',\'a\',this.value)">'+esc(f.a||'')+'</textarea><button class="btn sm ghost" onclick="lpFaqDel('+i+')">'+ic('trash',13)+'</button></div>').join('')+
+   ((L.faq||[]).length<10?'<button class="btn sm ghost" onclick="lpFaqAdd()">'+ic('plus',13)+'Question</button>':'')+
+  '<label>WhatsApp message the client starts with</label>'+tx('lp-wa','waMsg',L.waMsg,'Hi {bisnes}, saya nak tanya tentang rawatan.',200)+
+  '<div class="row" style="gap:16px;flex-wrap:wrap;margin-top:10px"><label class="row lptog"><input type="checkbox" '+(L.showPrices!==false?'checked':'')+' onchange="lpF(\'showPrices\',this.checked)"> Show prices</label>'+
+   '<label class="row lptog"><input type="checkbox" '+(L.showReviews!==false?'checked':'')+' onchange="lpF(\'showReviews\',this.checked)"> Show reviews ('+shared+' client'+(shared===1?'':'s')+' agreed)</label></div>'+
+  '<p class="tiny muted" style="margin:4px 0 0">Only reviews of 4★ and up whose client ticked "show my review" on the feedback page appear, with their first name.</p>'+
+  '<label>Treatments on the page</label><div class="lpsvcs"><label class="row lptog"><input type="checkbox" '+(!sel?'checked':'')+' onchange="lpSvcAll(this.checked)"> All active treatments</label>'+
+   (sel?S.map(s=>'<label class="row lptog"><input type="checkbox" '+(sel.includes(s.id)?'checked':'')+' onchange="lpSvc(\''+s.id+'\',this.checked)"> '+esc(s.name)+'</label>').join(''):'')+'</div>'+
+  '<h3 style="margin:16px 0 4px">'+ic('pin',15)+' Branches</h3>'+brs+
+  '<h3 style="margin:16px 0 4px">'+ic('link',15)+' Social & ad tracking</h3><div class="grid g2"><div><label>TikTok username</label>'+tx('lp-tt','tiktok',L.tiktok,'@luunaskinspa',40)+'</div><div><label>Facebook page link</label>'+tx('lp-fb','facebook',L.facebook,'https://facebook.com/…',120)+'</div></div>'+
+  '<div class="grid g3"><div><label>Meta Pixel ID</label><input class="f" value="'+esc(L.px.meta||'')+'" placeholder="15–16 digits" oninput="lpPx(\'meta\',this.value)"></div><div><label>TikTok Pixel ID</label><input class="f" value="'+esc(L.px.tt||'')+'" oninput="lpPx(\'tt\',this.value)"></div>'+
+   '<div><label>Google Analytics (G-…)</label><input class="f" value="'+esc(L.px.ga||'')+'" oninput="lpPx(\'ga\',this.value)"></div></div>'+
+  '<p class="tiny muted">Optional. With a pixel the ad platform learns who enquires and books, so your ads find more people like them.</p>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
+ return status+lpStatsHTML()+links+content;
+}
+window.lpF=(k,v)=>{LPD[k]=v;};
+window.lpArr=(k,i,v)=>{LPD[k]=LPD[k]||[];LPD[k][i]=v;};
+window.lpUsp=(i,k,v)=>{LPD.usps[i]=LPD.usps[i]||{};LPD.usps[i][k]=v;};
+window.lpUspAdd=()=>{LPD.usps=LPD.usps||[];LPD.usps.push({t:'',d:''});render();};
+window.lpFaqF=(i,k,v)=>{LPD.faq[i][k]=v;};
+window.lpFaqAdd=()=>{LPD.faq.push({q:'',a:''});render();};
+window.lpFaqDel=i=>{LPD.faq.splice(i,1);render();};
+window.lpBr=(id,k,v)=>{LPD.branches[id]=LPD.branches[id]||{};LPD.branches[id][k]=v.trim();};
+window.lpPx=(k,v)=>{LPD.px[k]=v.trim();};
+window.lpSvcAll=on=>{LPD.svcs=on?null:D.services.filter(s=>s.active!==false&&s.id).map(s=>s.id);render();};
+window.lpSvc=(id,on)=>{LPD.svcs=(LPD.svcs||[]).filter(x=>x!==id);if(on)LPD.svcs.push(id);};
+window.lpCamp=v=>{LPCAMP=v;render();};
+window.lpCopy=u=>{try{navigator.clipboard.writeText(u);}catch(e){}toast('Link copied');};
+window.lpQR=k=>{const L=LP_LINKS.find(x=>x[0]===k);if(!L)return;const u=lpLink(L[2],LPCAMP);
+ modal('QR · '+L[1],'<div class="card" style="text-align:center"><span class="pfqr" data-qr="'+esc(u)+'" data-px="240" style="width:240px;height:240px;display:inline-block"></span>'+
+  '<p class="tiny muted" style="word-break:break-all">'+esc(u)+'</p><p class="tiny muted">Screenshot or print it — scanning it opens the landing page, and leads are tagged '+esc(L[1])+'.</p></div>',()=>setTimeout(paintQRs,0));};
+window.lpPhoto=()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{LPIMG=await lpShrink(f);render();toast('Photo ready — Save & publish to put it on the page');}catch(e){toast('Could not read that photo');}};i.click();};
+window.lpNoPhoto=()=>{LPIMG='';render();};
+async function lpShrink(f){
+ const url=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f);});
+ const im=await new Promise((ok,no)=>{const m=new Image();m.onload=()=>ok(m);m.onerror=no;m.src=url;});
+ const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+ c.getContext('2d').drawImage(im,0,0,c.width,c.height);let q=0.8,out=c.toDataURL('image/jpeg',q);while(out.length>300000&&q>0.35){q-=0.08;out=c.toDataURL('image/jpeg',q);}return out;}
+window.lpSave=async()=>{
+ if(!boss())return;
+ const L=JSON.parse(JSON.stringify(LPD||lpSet()));
+ L.usps=(L.usps||[]).filter(u=>u&&String(u.t||'').trim()).map(u=>({t:String(u.t).trim().slice(0,40),d:String(u.d||'').trim().slice(0,100)}));
+ L.faq=(L.faq||[]).filter(f=>f&&String(f.q||'').trim()).map(f=>({q:String(f.q).trim().slice(0,120),a:String(f.a||'').trim().slice(0,500)}));
+ L.ticks=(L.ticks||[]).map(x=>String(x||'').trim().slice(0,40));
+ try{await setDoc(doc(db,'meta','settings'),{landing:L},{merge:true});D.meta.landing=L;LPD=null;
+  await lpPublish(true);await audit('Landing page published',L.on?'live':'off');render();toast(L.on?'Published — the page is live':'Saved — the page is off');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- the CRM: leads sorted by source ---------- */
+if(!LEAD_SOURCES.includes('Website'))LEAD_SOURCES.splice(LEAD_SOURCES.indexOf('Web form'),0,'Website');
+function lpMedTag(l){return l.medium&&l.medium!=='Organic'?'<span class="ksrc m'+(l.medium==='Paid'?' p':'')+'">'+esc(l.medium==='Paid'?'Ads':l.medium)+'</span>':'';}
+function lpLeadLine(l){if(l.createdBy!=='landing')return '';const x=l.lp||{};
+ const how={form:'filled in the form',promo:'claimed a promotion',wa:'tapped WhatsApp',book:'booked online'}[x.ctx]||'enquired';
+ return '<div class="ldline">'+ic('mega',13)+' Landing page — '+how+(l.medium?' · '+esc(l.medium):'')+(x.d?' · '+esc(x.d):'')+(x.dev?' · '+esc(x.dev):'')+(x.first?'<br><span class="tiny muted">First visit: '+esc(x.first)+'</span>':'')+'</div>';}
+{const _cp=crmPipe;crmPipe=function(){let h=_cp.apply(this,arguments);
+ const all=LEADS.filter(myBranch).filter(l=>hrsAgo(l.createdAt)<=720);
+ if(all.length){const by={};all.forEach(l=>{const s=l.source||'Other';by[s]=(by[s]||0)+1;});
+  const chips='<div class="lpsrc"><span>'+ic('target',13)+' Where leads came from · 30 days</span>'+Object.entries(by).sort((a,b)=>b[1]-a[1]).map(([s,n])=>
+   '<button class="'+(LEADF.src===s?'on':'')+'" onclick="leadSrc(\''+(LEADF.src===s?'':esc(s))+'\')">'+esc(s)+' <b>'+n+'</b></button>').join('')+'</div>';
+  const k=h.indexOf('<div class="card"><div class="crmbar">');h=k<0?h+chips:h.slice(0,k)+chips+h.slice(k);}
+ if(boss())h=h.replace('Web form</button>','Web form</button><button class="btn sm ghost" onclick="go(\'lp\')">'+ic('mega',14)+'Landing page</button>');
+ return h;};}
+
+/* ---------- the booking page: carry the source, and put a landing-page booking in the CRM ---------- */
+function lpAttr(){try{return JSON.parse(localStorage.getItem('luunaAttr')||'null')||{};}catch(e){return {};}}
+function lpDetect(){
+ const q=new URLSearchParams(location.search),ua=navigator.userAgent||'';let ref='';try{ref=document.referrer?new URL(document.referrer).hostname.replace(/^www\.|^m\.|^l\.|^lm\./,''):'';}catch(e){}
+ if(ref===location.hostname)ref='';
+ const src=(q.get('src')||q.get('utm_source')||'').toLowerCase(),um=(q.get('utm_medium')||'').toLowerCase();
+ const M=[[/^(ig|insta)/,'Instagram'],[/^(fb|facebook|meta)/,'Facebook'],[/^(tt|tiktok)/,'TikTok'],[/^(g|google|gmb)/,'Google'],[/^(wa|whatsapp)/,'WhatsApp'],[/^(ref|friend)/,'Referral']];
+ let s='';for(const [re,n] of M)if(re.test(src)){s=n;break;}
+ if(!s&&q.get('fbclid'))s=/Instagram/.test(ua)?'Instagram':'Facebook';if(!s&&q.get('gclid'))s='Google';if(!s&&q.get('ttclid'))s='TikTok';
+ if(!s&&/Instagram/.test(ua))s='Instagram';if(!s&&/FBAN|FBAV/.test(ua))s='Facebook';if(!s&&/musical_ly|TikTok|Bytedance/i.test(ua))s='TikTok';
+ if(!s&&ref)s=/instagram/.test(ref)?'Instagram':/facebook|fb\./.test(ref)?'Facebook':/tiktok/.test(ref)?'TikTok':/google\./.test(ref)?'Google':'Other';
+ if(!s&&src)s='Other';
+ if(!s)return null;
+ return {s,m:/cpc|paid|ads?$/.test(um)||q.get('gclid')||q.get('ttclid')?'Paid':'Organic',c:(q.get('utm_campaign')||q.get('c')||'').slice(0,24),d:(src?'src='+src:ref||'in-app').slice(0,80),at:new Date().toISOString()};
+}
+/* a direct link to the booking page (from a bio or an ad) is tagged the same way */
+function lpCapture(){try{const t=lpDetect();if(!t)return;const a=lpAttr();a.last=t;if(!a.first||Date.now()-new Date(a.first.at)>30*864e5)a.first=t;localStorage.setItem('luunaAttr',JSON.stringify(a));}catch(e){}}
+function lpTouch(){const a=lpAttr(),x=a.last||a.first;if(!x||Date.now()-new Date(x.at)>30*864e5)return null;return x;}
+function lpApptAttr(){const x=lpTouch();return x?{lpSrc:String(x.s||'').slice(0,20),lpMed:String(x.m||'').slice(0,12),lpCamp:String(x.c||'').slice(0,24)}:{};}
+function lpPreSvc(){try{const id=new URLSearchParams(location.search).get('svc');if(id&&WB&&WB.cfg&&(WB.cfg.services||[]).some(s=>s.id===id))window.wbSvc(id);}catch(e){}}
+async function lpAfterBook(id,a){
+ try{const A=lpAttr(),x=lpTouch();if(!x||!A.lpAt||Date.now()-new Date(A.lpAt)>30*864e5)return;
+  const hitDoc={d:new Date(Date.now()+8*3600e3).toISOString().slice(0,10),t:'booked',s:String(x.s).slice(0,20),m:String(x.m).slice(0,12),c:String(x.c||'').slice(0,24),at:new Date().toISOString()};
+  addDoc(collection(db,'lpHits'),hitDoc).catch(()=>{});
+  let L=null;try{L=JSON.parse(localStorage.getItem('luunaLead')||'null');}catch(e){}
+  if(L&&Date.now()-new Date(L.at)<30*864e5)return;
+  const when=new Date(a.start).toLocaleString('en-MY',{timeZone:'Asia/Kuala_Lumpur',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+  const d={name:a.customerName,phone:a.phone,source:x.s,medium:x.m,campaign:String(x.c||'').slice(0,24),branchId:a.branchId,stage:'booked',createdAt:new Date().toISOString(),
+   createdBy:'landing',web:true,consent:true,interest:String(a.serviceName||'').slice(0,200),note:('Book online · '+a.webRef+' · '+when).slice(0,500),apptId:id,
+   lp:{ctx:'book',d:String(x.d||'').slice(0,80),dev:/iPhone|iPad/.test(navigator.userAgent)?'iOS':/Android/.test(navigator.userAgent)?'Android':'desktop'}};
+  await addDoc(collection(db,'leads'),d);try{localStorage.setItem('luunaLead',JSON.stringify({id:'book',at:d.createdAt}));}catch(e){}
+ }catch(e){console.warn('landing lead',e);}
+}
+
+/* ---------- the feedback page: may we show this review on the website? ---------- */
+window.fbShare=on=>{if(typeof FBPUB!=='undefined'&&FBPUB)FBPUB.share=!!on;};
 
 </script>

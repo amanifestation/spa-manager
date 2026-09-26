@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Luuna Skin Spa · Book rawatan kulit & wajah</title>
+<meta name="description" content="Rawatan wajah dan kulit di Luuna Skin Spa. Lihat senarai rawatan, harga dan promosi terkini, dan book slot anda secara online.">
+<meta name="theme-color" content="#14120F">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luuna Skin Spa · Book rawatan kulit & wajah">
+<meta property="og:description" content="Senarai rawatan, promosi terkini dan booking online.">
+<meta property="og:image" content="icon-512.png">
+<link rel="icon" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://firestore.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--cream:#F4F0E7;--surface:#FFFDF8;--surface-2:#FAF7F0;--ink:#14120F;--ink-2:#4A453C;--ink-3:#8C8577;--line:#E3DDD0;--line-2:#EFEAE0;
+ --brass:#A67C3D;--brass-2:#C9A36A;--brass-soft:#F3E9D8;--jade:#2E6B52;--jade-soft:#E4EEE8;--rose:#9B4A4A;--rose-soft:#F6E5E3;--gold:#E2C58F;
+ --ease:cubic-bezier(.22,.61,.36,1);--shadow:0 1px 2px rgba(20,18,15,.04),0 10px 30px -14px rgba(20,18,15,.22);--serif:'Fraunces',Georgia,'Times New Roman',serif}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.6 'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body.sheet-open{overflow:hidden}
+body.pvm{padding-top:26px}body.pvm .top{top:26px}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+img{max-width:100%;display:block}
+.ico{display:inline-flex;flex:none}.ico svg{display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.02em;line-height:1.15}
+h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+.eyebrow::before{content:'';width:22px;height:1px;background:currentColor}
+.sec{padding:64px 0}.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.sec-h p{margin:8px 0 0;color:var(--ink-2);max-width:560px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:0;border-radius:99px;padding:14px 24px;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none;
+ transition:transform .18s var(--ease),box-shadow .2s,background .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--ink);color:var(--gold);box-shadow:0 14px 30px -14px rgba(20,18,15,.7)}
+.btn.pri:hover{box-shadow:0 18px 36px -14px rgba(20,18,15,.8);transform:translateY(-1px)}
+.btn.wa{background:#1F8F55;color:#fff;box-shadow:0 14px 30px -16px rgba(31,143,85,.8)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn.light{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:10px 16px;font-size:13.5px}
+.btn[disabled]{opacity:.55;pointer-events:none}
+/* top bar */
+.top{position:sticky;top:0;z-index:40;background:rgba(244,240,231,.86);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid transparent;transition:border-color .2s}
+.top.sc{border-color:var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
+.brand img,.brand .mk{width:38px;height:38px;border-radius:11px;object-fit:cover;background:var(--ink);color:var(--gold);display:grid;place-items:center;flex:none}
+.brand b{font-family:var(--serif);font-weight:600;font-size:19px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{display:flex;gap:22px;margin-left:auto;font-size:14px}.nav a{text-decoration:none;color:var(--ink-2)}.nav a:hover{color:var(--ink)}
+.top .btn{margin-left:14px}
+@media(max-width:860px){.nav{display:none}.top .btn{margin-left:auto}}
+/* hero */
+.hero{padding:34px 0 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:-200px -200px auto auto;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(166,124,61,.18),transparent 65%);pointer-events:none}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;position:relative}
+.hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(36px,6.4vw,62px);letter-spacing:-.03em;line-height:1.04;margin:14px 0 16px}
+.hero h1 em{font-style:italic;color:var(--brass)}
+.hero .sub{font-size:clamp(16px,2vw,18px);color:var(--ink-2);max-width:520px;margin:0 0 22px}
+.rate{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 13px 6px 10px;font-size:13px;margin-bottom:6px}
+.rate .st{color:#C8912E;letter-spacing:1px}.rate b{font-weight:700}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px}
+.ticks{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2);margin:0;padding:0;list-style:none}
+.ticks li{display:flex;align-items:center;gap:6px}.ticks .ico{color:var(--jade)}
+.promo-strip{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);border-radius:14px;padding:10px 14px;margin:0 0 18px;text-decoration:none;max-width:520px;cursor:pointer;border:0;width:100%;text-align:left}
+.promo-strip .bdg{flex:none;background:var(--gold);color:var(--ink);font-weight:700;font-size:12.5px;border-radius:8px;padding:3px 8px}
+.promo-strip span:nth-child(2){flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.promo-strip small{flex:none;color:var(--gold);font-size:12px}
+.art{position:relative;aspect-ratio:4/5;border-radius:30px;overflow:hidden;background:linear-gradient(160deg,#2a241c,#14120F);box-shadow:0 40px 80px -40px rgba(20,18,15,.6)}
+.art img{width:100%;height:100%;object-fit:cover}
+.art .orb{position:absolute;border-radius:50%;filter:blur(2px)}
+.art .o1{width:70%;aspect-ratio:1;left:-12%;top:-8%;background:radial-gradient(circle at 35% 35%,#E2C58F,#A67C3D 55%,transparent 72%);opacity:.75}
+.art .o2{width:55%;aspect-ratio:1;right:-10%;bottom:6%;background:radial-gradient(circle at 40% 40%,#F4F0E7,#C9A36A 50%,transparent 72%);opacity:.5}
+.art .o3{width:30%;aspect-ratio:1;right:22%;top:30%;background:radial-gradient(circle,#fff,transparent 70%);opacity:.25}
+.art .cap{position:absolute;left:18px;right:18px;bottom:18px;background:rgba(255,253,248,.92);backdrop-filter:blur(10px);border-radius:18px;padding:13px 15px;display:flex;align-items:center;gap:12px}
+.art .cap .dot{width:40px;height:40px;border-radius:12px;background:var(--ink);color:var(--gold);display:grid;place-items:center;flex:none}
+.art .cap b{display:block;font-size:14px}.art .cap small{display:block;color:var(--ink-3);font-size:12.5px}
+.art .wm{position:absolute;left:0;right:0;top:40%;text-align:center;font-family:var(--serif);font-size:clamp(40px,7vw,72px);color:rgba(244,240,231,.9);letter-spacing:-.02em}
+@media(max-width:860px){.hero{padding:14px 0 36px}.hero .wrap{grid-template-columns:1fr;gap:24px}.art{aspect-ratio:16/10;border-radius:24px}.art .wm{top:24%}
+ .ctas .btn{flex:1 1 100%}.hero h1{margin:10px 0 12px}}
+/* usps */
+.usps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:-10px}
+.usp{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;gap:13px;align-items:flex-start}
+.usp .i{width:40px;height:40px;border-radius:12px;background:var(--brass-soft);color:var(--brass);display:grid;place-items:center;flex:none}
+.usp b{display:block;font-size:15px;margin-bottom:2px}.usp span{font-size:13.5px;color:var(--ink-2)}
+/* promos */
+.promos{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
+.pc{position:relative;background:var(--ink);color:var(--cream);border-radius:24px;padding:22px;overflow:hidden;display:flex;flex-direction:column;gap:10px;min-height:250px}
+.pc::after{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(226,197,143,.28),transparent 70%)}
+.pc .bdg{align-self:flex-start;font-family:var(--serif);font-size:34px;line-height:1;color:var(--gold);font-weight:600;letter-spacing:-.02em}
+.pc h3{font-size:19px;color:#fff}.pc p{margin:0;color:#CFC7B8;font-size:14px}
+.pc .tags{display:flex;flex-wrap:wrap;gap:6px}.pc .tg{font-size:11.5px;font-weight:600;border-radius:99px;padding:3px 9px;background:rgba(255,255,255,.1);color:#EDE6D8}
+.pc .tg.hot{background:#B5533F;color:#fff}
+.pc .qbar{height:6px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden}.pc .qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),#F0D9A8);border-radius:99px}
+.pc .meta{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:#CFC7B8}.pc .meta b{color:var(--gold)}
+.pc .acts{display:flex;gap:8px;margin-top:auto;padding-top:6px;flex-wrap:wrap}
+.pc .btn.pri{background:var(--gold);color:var(--ink)}
+.pc .btn.light{background:transparent;color:var(--cream);border-color:rgba(255,255,255,.25)}
+/* treatments */
+.cats{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;scrollbar-width:none}.cats::-webkit-scrollbar{display:none}
+.cats button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 16px;font-size:14px;cursor:pointer;color:var(--ink-2)}
+.cats button.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.svcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.sv{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .2s,transform .2s}
+.sv:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.sv .hd{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sv h3{font-size:17px}.sv .c{font-size:12px;color:var(--ink-3);margin-top:2px}
+.sv .pr{text-align:right;flex:none}.sv .pr b{font-size:17px;display:block;white-space:nowrap}.sv .pr s{font-size:12.5px;color:var(--ink-3);display:block}
+.sv .pr .now{color:var(--rose)}
+.sv p{margin:0;font-size:13.5px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.sv .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:6px}
+.sv .dur{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-3)}
+.sv .ptag{display:inline-block;font-size:11px;font-weight:700;background:var(--rose-soft);color:var(--rose);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.more{text-align:center;margin-top:18px}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+.step{position:relative;padding:22px 20px 20px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line-2)}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--serif);font-size:44px;line-height:1;color:var(--brass);opacity:.55;display:block;margin-bottom:10px}
+.step b{display:block;font-size:16px;margin-bottom:4px}.step span{font-size:14px;color:var(--ink-2)}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+/* reviews */
+.revs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.rv{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
+.rv .st{color:#C8912E;letter-spacing:2px;font-size:15px}.rv q{font-size:15px;line-height:1.55;quotes:'“' '”'}
+.rv small{color:var(--ink-3);font-size:12.5px;margin-top:auto}
+.revsum{display:flex;align-items:center;gap:14px}.revsum .big{font-family:var(--serif);font-size:48px;line-height:1}
+.revsum .st{color:#C8912E;letter-spacing:2px}.revsum small{display:block;color:var(--ink-3);font-size:13px}
+/* location */
+.locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.loc{background:var(--surface);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column}
+.loc .map{height:240px;background:var(--line-2);border:0;width:100%;display:block}
+.locs.one{grid-template-columns:1fr}.locs.one .loc{display:grid;grid-template-columns:1fr 1.15fr}.locs.one .loc .map{height:100%;min-height:320px;order:2}
+@media(max-width:760px){.locs.one .loc{grid-template-columns:1fr}.locs.one .loc .map{order:0;min-height:0;height:220px}}
+.loc .bd{padding:18px;display:flex;flex-direction:column;gap:10px}
+.loc h3{font-size:18px}.loc .ln{display:flex;gap:10px;font-size:14px;color:var(--ink-2)}.loc .ln .ico{color:var(--brass);margin-top:3px}
+.open{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--jade-soft);color:var(--jade);align-self:flex-start}
+.open.no{background:var(--rose-soft);color:var(--rose)}.open i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.loc .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+/* faq */
+.faq{max-width:780px}
+.faq details{border-bottom:1px solid var(--line)}.faq summary{list-style:none;cursor:pointer;padding:18px 40px 18px 0;font-weight:600;font-size:16px;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';position:absolute;right:6px;top:12px;font-size:26px;font-weight:300;color:var(--brass);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 18px;color:var(--ink-2);white-space:pre-line}
+/* final + form */
+.final{background:var(--ink);color:var(--cream);border-radius:32px;padding:clamp(24px,5vw,54px);display:grid;grid-template-columns:1fr 1fr;gap:clamp(22px,4vw,54px);position:relative;overflow:hidden}
+.final::before{content:'';position:absolute;left:-120px;bottom:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(226,197,143,.22),transparent 70%)}
+.final h2{color:#fff}.final>div:first-child p{color:#CFC7B8}
+.final .ticks{color:#CFC7B8}.final .ticks .ico{color:var(--gold)}
+@media(max-width:860px){.final{grid-template-columns:1fr;border-radius:26px}}
+.final>*{min-width:0}
+.form{background:var(--surface);color:var(--ink);border-radius:22px;padding:22px;position:relative;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
+.form label{display:block;font-size:13px;font-weight:600;margin:12px 0 5px}
+.form label:first-child{margin-top:0}
+.form .f{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:13px;padding:12px 14px;font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
+.form .f:focus{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.form textarea.f{resize:vertical;min-height:70px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips button{border:1px solid var(--line);background:var(--surface-2);border-radius:99px;padding:7px 13px;font-size:13px;cursor:pointer}
+.chips button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.form .consent,.consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);margin:14px 0 4px;font-weight:400!important;cursor:pointer}
+.consent input{margin-top:3px;width:17px;height:17px;accent-color:var(--ink);flex:none}
+.err{color:var(--rose);font-size:13px;min-height:18px;margin:6px 0}
+.form .btn{width:100%}
+.done{text-align:center;padding:10px 0}.done .ok{width:62px;height:62px;border-radius:50%;background:var(--jade-soft);color:var(--jade);display:grid;place-items:center;margin:0 auto 12px}
+.done h3{font-family:var(--serif);font-size:24px;font-weight:500;margin-bottom:6px}.done p{color:var(--ink-2);margin:0 0 16px}
+.done .btn{margin:4px}
+/* footer */
+footer{padding:40px 0 120px;color:var(--ink-3);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+.soc{display:flex;gap:8px}.soc a{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--ink-2);background:var(--surface)}
+/* sticky bar & floating */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:45;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,253,248,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+ border-top:1px solid var(--line);display:none;gap:10px;transform:translateY(110%);transition:transform .3s var(--ease)}
+.bar.on{transform:none}.bar .btn{flex:1;padding:13px 10px}
+.fwa{position:fixed;right:22px;bottom:22px;z-index:45;width:60px;height:60px;border-radius:50%;background:#1F8F55;color:#fff;display:grid;place-items:center;border:0;cursor:pointer;box-shadow:0 16px 34px -12px rgba(31,143,85,.8);transition:transform .2s}
+.fwa:hover{transform:scale(1.06)}
+@media(max-width:760px){.bar{display:flex}.fwa{display:none}}
+/* sheet */
+.veil{position:fixed;inset:0;z-index:60;background:rgba(20,18,15,.5);backdrop-filter:blur(4px);display:flex;align-items:flex-end;justify-content:center;animation:fi .2s}
+.sheet{background:var(--surface);width:100%;max-width:480px;border-radius:26px 26px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;animation:su .28s var(--ease);position:relative}
+.sheet h3{font-family:var(--serif);font-weight:500;font-size:24px;margin:0 36px 4px 0}.sheet .lead{margin:0 0 14px;color:var(--ink-2);font-size:14px}
+.sheet .x{position:absolute;right:14px;top:14px;width:36px;height:36px;border-radius:50%;border:0;background:var(--line-2);cursor:pointer;display:grid;place-items:center}
+.sheet .form{padding:0;box-shadow:none}
+.skip{display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--ink-3);background:none;border:0;cursor:pointer;text-decoration:underline;width:100%}
+.brpick button{display:flex;width:100%;text-align:left;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface-2);border-radius:16px;padding:14px;margin-bottom:8px;cursor:pointer}
+.brpick b{display:block}.brpick small{color:var(--ink-3)}
+@media(min-width:700px){.veil{align-items:center}.sheet{border-radius:26px}}
+@keyframes fi{from{opacity:0}}@keyframes su{from{transform:translateY(40px);opacity:0}}
+.rv0{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease)}.rv1{opacity:1;transform:none}
+.skel{min-height:100vh;display:grid;place-items:center}.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brass);animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pv{position:fixed;top:0;left:0;right:0;z-index:70;height:26px;background:#9C6B15;color:#fff;text-align:center;font-size:12.5px;padding:5px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="app"><div class="skel"><div class="spin"></div></div></div>
+<noscript><p style="padding:20px">Sila hidupkan JavaScript untuk melihat halaman ini.</p></noscript>
+<script>
+/* Luuna landing page. One small page that reads the public details the spa app publishes
+   (public/landing: treatments, prices, promotions, branches, reviews) and writes two things:
+   the enquiry itself (leads) and a light visit counter (lpHits). It talks to Firestore over
+   plain HTTPS so it loads fast on a phone from an Instagram or TikTok link. Where each visitor
+   came from is worked out on arrival (link tags, ad click ids, the in-app browser, the page
+   they came from) and kept for 30 days, so the lead lands in the CRM already sorted by source,
+   and a booking made later on the booking page carries the same source. */
+(()=>{
+'use strict';
+const KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM',PROJECT='spa-manager-c586b';
+const API='https://firestore.googleapis.com/v1/projects/'+PROJECT+'/databases/(default)/documents/';
+const Q=new URLSearchParams(location.search),PREVIEW=Q.has('preview');
+let P=null,CAT='',SHOWALL=false,SHEET=null;
+
+/* ---------- tiny helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const digits=s=>String(s||'').replace(/\D/g,'');
+const waNum=p=>{const d=digits(p);return d.startsWith('60')?d:d.startsWith('0')?'6'+d:d;};
+const rm=v=>{v=+v||0;return 'RM'+(Math.round(v)===v?v.toLocaleString('en-MY'):v.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2}));};
+const kl=()=>new Date(Date.now()+8*3600e3);
+const klDate=()=>kl().toISOString().slice(0,10);
+const MON=['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'];
+const dshort=d=>{const x=new Date(d+'T12:00:00Z');return x.getUTCDate()+' '+MON[x.getUTCMonth()];};
+const hm=h=>{const H=Math.floor(h),M=Math.round((h-H)*60),ap=H>=12?'ptg':'pg';return ((H%12)||12)+(M?':'+String(M).padStart(2,'0'):'')+' '+(H<12?'pagi':H<14?'tgh':H<19?'ptg':'mlm');};
+const IC={
+ check:'M5 12.5l4.2 4.2L19 7',clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7.5V12l3 2',pin:'M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+ phone:'M5 4.5h3.5l1.5 4-2 1.3a11 11 0 005.2 5.2l1.3-2 4 1.5v3.5a1.5 1.5 0 01-1.5 1.5A15.5 15.5 0 013.5 6 1.5 1.5 0 015 4.5z',
+ cal:'M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4',spark:'M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6-5.6-1.9 5.6-1.9zM18.5 3v3M17 4.5h3',
+ heart:'M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0112 7.3 4.3 4.3 0 0119.5 10c0 5.4-7.5 10-7.5 10z',leaf:'M5 19c0-8 5-13 14-14-1 9-6 14-14 14zM5 19l7-7',
+ shield:'M12 3.5l7 2.7v5.3c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6.2z',star:'M12 3.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z',
+ x:'M6 6l12 12M18 6L6 18',arrow:'M5 12h14M13 6l6 6-6 6',map:'M9 4.5l-5 2v13l5-2 6 2 5-2v-13l-5 2-6-2zM9 4.5v13M15 6.5v13',
+ ig:'M7.5 3.5h9a4 4 0 014 4v9a4 4 0 01-4 4h-9a4 4 0 01-4-4v-9a4 4 0 014-4zM12 16a4 4 0 100-8 4 4 0 000 8zM17.2 6.8h.01',
+ tt:'M14 3.5v11a3.5 3.5 0 11-3.5-3.5M14 3.5c.5 2.6 2.4 4.3 5 4.5',fb:'M14 8.5h2.5V5H14a3.5 3.5 0 00-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.5L17 11h-3V9a.5.5 0 01.5-.5z',
+ gift:'M4.5 10h15v10h-15zM3.5 7h17v3h-17zM12 7v13M12 7s-1.5-3.5-4-3.5a1.8 1.8 0 000 3.5M12 7s1.5-3.5 4-3.5a1.8 1.8 0 010 3.5',
+ wa:'M12 3.5a8.5 8.5 0 00-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1012 3.5zM8.8 8.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.3 1.8 2.4 2.4.2.1.4.1.5 0l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .6-.3 1.4-.9 1.7-.6.4-1.5.5-3.4-.3-2.3-1-3.8-3.3-3.9-3.5-.1-.2-1-1.3-1-2.5 0-1.1.6-1.7.8-1.9z'};
+const ic=(n,s)=>'<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+IC[n]+'"/></svg></span>';
+
+/* ---------- Firestore over HTTPS ---------- */
+function dec(v){if(!v)return null;if('stringValue' in v)return v.stringValue;if('integerValue' in v)return +v.integerValue;if('doubleValue' in v)return +v.doubleValue;
+ if('booleanValue' in v)return v.booleanValue;if('timestampValue' in v)return v.timestampValue;if('mapValue' in v)return decF(v.mapValue.fields||{});
+ if('arrayValue' in v)return (v.arrayValue.values||[]).map(dec);return null;}
+const decF=f=>{const o={};for(const k in f)o[k]=dec(f[k]);return o;};
+function enc(x){if(x===null||x===undefined)return {nullValue:null};if(typeof x==='boolean')return {booleanValue:x};
+ if(typeof x==='number')return Number.isInteger(x)?{integerValue:String(x)}:{doubleValue:x};if(typeof x==='string')return {stringValue:x};
+ if(Array.isArray(x))return {arrayValue:{values:x.map(enc)}};return {mapValue:{fields:encF(x)}};}
+const encF=o=>{const f={};for(const k in o)if(o[k]!==undefined)f[k]=enc(o[k]);return f;};
+async function getPub(){const r=await fetch(API+'public/landing?key='+KEY);if(!r.ok)throw new Error('HTTP '+r.status);return decF((await r.json()).fields||{});}
+async function add(col,data){
+ const r=await fetch(API+col+'?key='+KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:encF(data)})});
+ if(!r.ok)throw new Error('HTTP '+r.status+' '+(await r.text()).slice(0,200));const j=await r.json();return String(j.name||'').split('/').pop();}
+
+/* ---------- where the visitor came from ---------- */
+const SRCMAP=[[/^(ig|insta|instagram)/,'Instagram'],[/^(fb|facebook|meta|msg|messenger|an)$/,'Facebook'],[/facebook/,'Facebook'],[/^(tt|tiktok|tik)/,'TikTok'],
+ [/^(g|google|gmb|gbp|gmaps|maps|adwords)/,'Google'],[/^(wa|whatsapp)/,'WhatsApp'],[/^(ref|referral|friend|kawan)/,'Referral'],[/^(web|site|direct)/,'Website'],[/^(event|expo|booth|roadshow)/,'Event']];
+const REFMAP=[[/(^|\.)instagram\.com$/,'Instagram'],[/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/,'Facebook'],[/(^|\.)tiktok\.com$/,'TikTok'],
+ [/(^|\.)google\.[a-z.]+$/,'Google'],[/(^|\.)(wa\.me|whatsapp\.com)$/,'WhatsApp']];
+function detect(o){
+ o=o||{};const q=new URLSearchParams(o.search!=null?o.search:location.search),ua=String(o.ua!=null?o.ua:navigator.userAgent||''),refUrl=String(o.ref!=null?o.ref:document.referrer||'');
+ let host='';try{host=refUrl?new URL(refUrl).hostname.replace(/^www\.|^m\.|^l\.|^lm\.|^web\./,''):'';}catch(e){}
+ if(host&&typeof location!=='undefined'&&host===location.hostname)host='';
+ const us=(q.get('utm_source')||'').toLowerCase().trim(),um=(q.get('utm_medium')||'').toLowerCase().trim(),src=(q.get('src')||'').toLowerCase().trim();
+ const camp=(q.get('utm_campaign')||q.get('c')||'').trim().slice(0,24);
+ const paidTag=/(cpc|ppc|paid|ads?$|^ad|cpm|sponsor|boost)/.test(um)||/paid|ads/.test(src);
+ const inApp=/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV|FB_IAB|FBIOS|FB4A/i.test(ua)?'Facebook':/musical_ly|TikTok|BytedanceWebview|trill/i.test(ua)?'TikTok':'';
+ let s='',m='',d='';
+ const map=(v,T)=>{for(const [re,n] of T)if(re.test(v))return n;return '';};
+ if(src){s=map(src.replace(/[-_ ](ads?|paid|bio|story|post|reels?)$/,''),SRCMAP)||map(src,SRCMAP);d='src='+src;
+  if(!s&&/^(qr|flyer|poster|banner|brochure)/.test(src)){s='Other';m='QR';}}
+ if(!s&&us){s=map(us,SRCMAP)||(/youtube|yt/.test(us)?'Other':/threads/.test(us)?'Other':'Other');d='utm '+us+(um?'/'+um:'');}
+ if(!s&&q.get('ttclid')){s='TikTok';m='Paid';d='ttclid';}
+ if(!s&&(q.get('gclid')||q.get('gbraid')||q.get('wbraid'))){s='Google';m='Paid';d='gclid';}
+ if(!s&&q.get('fbclid')){s=inApp==='Instagram'?'Instagram':'Facebook';d='fbclid';}
+ if(!s&&inApp){s=inApp;d='in-app browser';}
+ if(!s&&host){s=map(host,REFMAP)||'Other';d=host;if(s==='Other')m='Referral';}
+ if(s==='Instagram'&&us&&/^(fb|facebook)$/.test(us))s='Facebook';
+ if(!m)m=!s?'Direct':paidTag||q.get('gclid')||q.get('ttclid')?'Paid':s==='Referral'?'Referral':s==='WhatsApp'?'Messaging':'Organic';
+ if(!s){s='Website';d='direct';}
+ if(host&&d!==host)d+=' · '+host;
+ return {s,m,c:camp,d:d.slice(0,80),l:(location.pathname.split('/').pop()+location.search).slice(0,120),at:new Date().toISOString()};
+}
+const AKEY='luunaAttr',DAY30=30*864e5;
+function attrLoad(){try{return JSON.parse(localStorage.getItem(AKEY)||'null')||{};}catch(e){return {};}}
+function attrSave(a){try{localStorage.setItem(AKEY,JSON.stringify(a));}catch(e){}}
+function capture(){
+ const t=detect(),a=attrLoad(),now=Date.now(),fresh=x=>x&&now-new Date(x.at)<DAY30;
+ if(!fresh(a.first))a.first=t;
+ if(t.m!=='Direct'||!fresh(a.last))a.last=t;
+ a.seen=new Date().toISOString();a.lpAt=a.seen;attrSave(a);return a;}
+const touch=()=>{const a=attrLoad();return a.last||a.first||detect();};
+function dev(){const u=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(u)?'iOS':/Android/.test(u)?'Android':/Mobi/.test(u)?'mobile':'desktop';}
+
+/* ---------- counting visits and taps (never blocks the visitor) ---------- */
+function hit(t){
+ if(PREVIEW)return;
+ if(t==='view'){try{if(sessionStorage.getItem('lpv'))return;sessionStorage.setItem('lpv','1');}catch(e){}}
+ const x=touch();add('lpHits',{d:klDate(),t,s:x.s,m:x.m,c:x.c||'',at:new Date().toISOString()}).catch(()=>{});}
+/* ad pixels, only when the owner has set them */
+function pixels(){
+ const px=P.px||{};
+ if(/^\d{6,20}$/.test(px.meta||'')){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init',px.meta);fbq('track','PageView');}
+ if(/^[A-Z0-9]{8,30}$/i.test(px.tt||'')){!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.load=function(e){var n='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._u=n;ttq._t=ttq._t||{};ttq._t[e]=+new Date;var o=document.createElement('script');o.type='text/javascript';o.async=!0;o.src=n+'?sdkid='+e+'&lib='+t;var a=document.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load(px.tt);ttq.page();}(window,document,'ttq');}
+ if(/^G-[A-Z0-9]{4,15}$/i.test(px.ga||'')){const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+px.ga;document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',px.ga);}
+}
+function track(ev,extra){try{
+ const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent'},T={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion'};
+ if(window.fbq&&M[ev])fbq('track',M[ev],extra||{});if(window.ttq&&T[ev])ttq.track(T[ev],extra||{});if(window.gtag&&G[ev])gtag('event',G[ev],extra||{});}catch(e){}}
+
+/* ---------- what is on offer ---------- */
+const brOf=id=>(P.branches||[]).find(b=>b.id===id)||(P.branches||[])[0]||{};
+const svcOf=id=>(P.services||[]).find(s=>s.id===id);
+const livePromos=()=>(P.promos||[]).filter(p=>(!p.start||p.start<=klDate())&&(!p.end||p.end>=klDate())&&!(p.limit>0&&p.left<=0));
+function bestPromo(s){let best=null;
+ livePromos().forEach(p=>{if(!(p.all||(p.svc||[]).includes(s.id)))return;let v=null;
+  if(p.type==='pct')v=s.p*(1-p.value/100);else if(p.type==='amt')v=Math.max(0,s.p-p.value);else if(p.type==='price'&&p.value<s.p)v=p.value;
+  if(v!=null&&(!best||v<best.v))best={p,v:Math.round(v*100)/100};});return best;}
+function openNow(b){
+ const n=kl(),dow=n.getUTCDay(),h=n.getUTCHours()+n.getUTCMinutes()/60,days=b.days||[0,1,2,3,4,5,6],o=+b.open||9,c=+b.close||20;
+ if(days.includes(dow)&&h>=o&&h<c)return {on:true,t:'Buka sekarang · tutup '+hm(c)};
+ for(let i=0;i<8;i++){const d=(dow+i)%7;if(!days.includes(d))continue;if(i===0&&h<o)return {on:false,t:'Tutup · buka hari ini '+hm(o)};if(i>0)return {on:false,t:'Tutup · buka '+(i===1?'esok':['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'][d])+' '+hm(o)};}
+ return {on:false,t:'Tutup'};}
+const DAYN=['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'];
+function daysTxt(days){days=(days||[0,1,2,3,4,5,6]).slice().sort();if(days.length===7)return 'Setiap hari';
+ const ord=[1,2,3,4,5,6,0].filter(d=>days.includes(d));const runs=[];let st=null,pv=null;
+ [1,2,3,4,5,6,0].forEach(d=>{const on=days.includes(d);if(on&&st===null)st=d;if(!on&&st!==null){runs.push([st,pv]);st=null;}pv=d;});if(st!==null)runs.push([st,0]);
+ return runs.map(([a,b])=>a===b?DAYN[a]:DAYN[a]+'–'+DAYN[b]).join(', ')||ord.map(d=>DAYN[d]).join(', ');}
+function left(end){const ms=Date.parse(end+'T23:59:59+08:00')-Date.now();if(ms<=0)return '';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
+ return d>=1?d+' hari '+h+' jam':h+' jam '+m+' minit';}
+
+/* ---------- the page ---------- */
+function render(){
+ const b=P.biz||{},H=P.hero||{},L=livePromos(),top=L[0],R=P.rating||{},br=(P.branches||[])[0]||{};
+ document.title=(b.name||'Luuna')+(br.city?' '+br.city:'')+' · Book rawatan';
+ const logo=b.logo?'<img src="'+esc(b.logo)+'" alt="">':'<span class="mk">'+ic('spark',20)+'</span>';
+ const stars=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
+ const head=(H.t||'Kulit sihat & *bercahaya*, dijaga dengan teliti');
+ const h1=esc(head).replace(/\*([^*]+)\*/g,'<em>$1</em>');
+ let h='';
+ if(PREVIEW){document.body.classList.add('pvm');h+='<div class="pv">Pratonton — kiraan pelawat dan borang tidak direkod</div>';}
+ h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
+  '<nav class="nav">'+(L.length?'<a href="#promo">Promosi</a>':'')+'<a href="#rawatan">Rawatan</a>'+((P.reviews||[]).length?'<a href="#ulasan">Ulasan</a>':'')+'<a href="#lokasi">Lokasi</a><a href="#soalan">Soalan</a></nav>'+
+  '<button class="btn pri sm" data-go="book">'+ic('cal',16)+'Book</button></div></header>';
+ /* hero */
+ h+='<section class="hero"><div class="wrap"><div class="rv0">'+
+  '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
+  '<h1>'+h1+'</h1><p class="sub">'+esc(H.s||'Rawatan wajah dan kulit oleh therapist terlatih. Pilih rawatan, pilih masa, dan kami uruskan selebihnya.')+'</p>'+
+  (R.n>=3?'<div class="rate"><span class="st">'+stars(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>daripada '+R.n+' ulasan pelanggan</span></div><br>':'')+
+  (top?'<button class="promo-strip" data-promo="'+esc(top.id)+'"><span class="bdg">'+esc(top.badge)+'</span><span>'+esc(top.t)+'</span><small>'+(top.limit>0?'Tinggal '+top.left+' slot':top.end?'Tamat '+dshort(top.end):'Lihat')+' →</small></button>':'')+
+  '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book slot sekarang':'Tempah sekarang')+'</button>'+
+   '<button class="btn ghost" data-go="wa">'+ic('wa',18)+'WhatsApp kami</button></div>'+
+  '<ul class="ticks">'+(H.ticks||['Konsultasi kulit percuma','Book online 24 jam','Harga jelas']).slice(0,3).map(t=>'<li>'+ic('check',16)+esc(t)+'</li>').join('')+'</ul></div>'+
+  '<div class="art rv0">'+(H.img?'<img src="'+esc(H.img)+'" alt="'+esc(b.name||'')+'" fetchpriority="high">':'<span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><div class="wm">'+esc(b.name||'Luuna')+'</div>')+
+   '<div class="cap"><span class="dot">'+ic('clock',20)+'</span><span><b>'+esc(openNow(br).t)+'</b><small>'+esc(br.name||'')+(br.addrShort?' · '+esc(br.addrShort):'')+'</small></span></div></div></div></section>';
+ /* highlights */
+ const U=(P.usps||[]).filter(u=>u&&u.t);
+ if(U.length)h+='<div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],20)+'</span><span><b>'+esc(u.t)+'</b><span>'+esc(u.d||'')+'</span></span></div>').join('')+'</div></div>';
+ /* promotions */
+ if(L.length)h+='<section class="sec" id="promo"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Promosi terkini</span><h2>Tawaran sedang berjalan</h2><p>Slot promosi terhad — claim sekarang, team kami akan WhatsApp untuk sahkan tarikh anda.</p></div></div>'+
+  '<div class="promos">'+L.map(p=>{const pct=p.limit>0?Math.max(3,Math.round(p.left/p.limit*100)):0,hot=p.limit>0&&p.left<=Math.max(5,p.limit*0.2);
+   return '<article class="pc rv0"><div class="bdg">'+esc(p.badge)+'</div><h3>'+esc(p.t)+'</h3><p>'+esc(p.deal)+(p.desc?' — '+esc(p.desc):'')+'</p>'+
+    '<div class="tags">'+(p.newOnly?'<span class="tg">Khas pelanggan baru</span>':'')+(p.returning?'<span class="tg">Untuk pelanggan sedia ada</span>':'')+(p.daysTxt?'<span class="tg">'+esc(p.daysTxt)+' sahaja</span>':'')+
+     (p.brTxt?'<span class="tg">'+esc(p.brTxt)+'</span>':'')+(hot?'<span class="tg hot">Hampir habis</span>':'')+'</div>'+
+    (p.limit>0?'<div class="qbar"><i style="width:'+pct+'%"></i></div>':'')+
+    '<div class="meta"><span>'+(p.limit>0?'Tinggal <b>'+p.left+'</b> daripada '+p.limit+' slot':'')+'</span><span data-end="'+esc(p.end||'')+'">'+(p.end?'Tamat dalam <b>'+left(p.end)+'</b>':'')+'</span></div>'+
+    '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+'Claim promo</button>'+
+     (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">Book terus</button>':'')+'</div></article>';}).join('')+'</div></div></section>';
+ /* treatments */
+ h+='<section class="sec" id="rawatan" style="'+(L.length?'padding-top:8px':'')+'"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Rawatan</span><h2>Pilih rawatan anda</h2><p>'+(P.showPrices===false?'Tanya harga terkini melalui WhatsApp.':'Harga jelas, tanpa caj tersembunyi.')+' Tak pasti yang mana sesuai? <a href="#konsultasi">Dapatkan konsultasi percuma</a>.</p></div></div>'+
+  '<div id="svcs"></div></div></section>';
+ /* how it works */
+ h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Mudah</span><h2>Tiga langkah ke kulit yang anda suka</h2></div></div><div class="steps">'+
+  [['Pilih rawatan & masa',P.bookOn?'Book online bila-bila masa, atau WhatsApp kami untuk nasihat.':'WhatsApp atau isi borang, kami akan sahkan slot anda.'],
+   ['Konsultasi & rawatan','Therapist semak keadaan kulit anda dahulu, kemudian rawatan dibuat ikut keperluan kulit anda.'],
+   ['Nasihat penjagaan','Anda pulang dengan tips penjagaan di rumah dan cadangan sesi seterusnya.']].map(s=>'<div class="step rv0"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
+ /* reviews */
+ const RV=P.reviews||[];
+ if(RV.length)h+='<section class="sec" id="ulasan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Ulasan pelanggan</span><h2>Kata mereka</h2></div>'+
+  (R.n>=3?'<div class="revsum"><span class="big">'+R.avg.toFixed(1)+'</span><span><span class="st">'+stars(R.avg)+'</span><small>'+R.n+' ulasan selepas rawatan</small></span></div>':'')+'</div>'+
+  '<div class="revs">'+RV.slice(0,6).map(r=>'<figure class="rv rv0" style="margin:0"><span class="st">'+stars(r.s)+'</span><q>'+esc(r.t)+'</q><small>'+esc(r.n)+(r.svc?' · '+esc(r.svc):'')+(r.d?' · '+dshort(r.d):'')+'</small></figure>').join('')+'</div></div></section>';
+ /* location */
+ h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Lokasi</span><h2>Jumpa kami di sini</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
+  (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
+   return '<article class="loc rv0">'+(x.addr||x.mapsQ?'<iframe class="map" loading="lazy" title="Peta '+esc(x.name)+'" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q='+q+'&output=embed"></iframe>':'')+
+    '<div class="bd"><h3>'+esc(x.name)+'</h3><span class="open'+(o.on?'':' no')+'"><i></i>'+esc(o.t)+'</span>'+
+    (x.addr?'<div class="ln">'+ic('pin',16)+'<span>'+esc(x.addr)+'</span></div>':'')+
+    '<div class="ln">'+ic('clock',16)+'<span>'+esc(daysTxt(x.days))+' · '+hm(+x.open||9)+' – '+hm(+x.close||20)+'</span></div>'+
+    (x.phone?'<div class="ln">'+ic('phone',16)+'<span>'+esc(x.phone)+'</span></div>':'')+
+    '<div class="acts">'+(x.addr||x.mapsQ?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(x.maps||'https://www.google.com/maps/search/?api=1&query='+q)+'" data-hit="map">'+ic('map',16)+'Google Maps</a>'+
+      '<a class="btn light sm" target="_blank" rel="noopener" href="https://waze.com/ul?q='+q+'&navigate=yes" data-hit="map">Waze</a>':'')+
+     (x.phone?'<a class="btn light sm" href="tel:'+esc(digits(x.phone))+'" data-hit="call">'+ic('phone',16)+'Call</a>':'')+
+     '<button class="btn pri sm" data-book-br="'+esc(x.id)+'">'+ic('cal',16)+'Book di sini</button></div></div></article>';}).join('')+'</div></div></section>';
+ /* faq */
+ const F=(P.faq||[]).filter(f=>f&&f.q);
+ if(F.length)h+='<section class="sec" id="soalan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Soalan lazim</span><h2>Ada soalan?</h2></div></div><div class="faq">'+
+  F.map((f,i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(f.q)+'</summary><p>'+esc(f.a||'')+'</p></details>').join('')+'</div></div></section>';
+ /* final: the form */
+ h+='<section class="sec" id="konsultasi" style="padding-top:0"><div class="wrap"><div class="final"><div class="rv0"><span class="eyebrow" style="color:var(--gold)">Konsultasi percuma</span>'+
+  '<h2 style="margin:12px 0 12px">Tak pasti rawatan mana yang sesuai?</h2><p>Beritahu kami sedikit tentang kulit anda. Team kami akan WhatsApp anda dengan cadangan rawatan dan slot yang ada — tanpa sebarang komitmen.</p>'+
+  '<ul class="ticks" style="margin-top:16px;flex-direction:column;gap:8px"><li>'+ic('check',16)+'Balasan melalui WhatsApp dalam waktu operasi</li><li>'+ic('check',16)+'Cadangan ikut jenis & masalah kulit anda</li><li>'+ic('check',16)+'Maklumat anda dilindungi (PDPA)</li></ul></div>'+
+  '<div class="form rv0" id="fbox">'+formHTML('f',{})+'</div></div></div></section>';
+ h+='<footer><div class="wrap"><span>© '+new Date().getFullYear()+' '+esc(b.name||'')+(b.ssm?' ('+esc(b.ssm)+')':'')+'</span><div class="soc">'+
+  (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
+  (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
+  (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
+  (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
+ h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book sekarang':'Tempah')+'</button></div>'+
+  '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
+ $('#app').innerHTML=h;
+ paintSvcs();bindForm('f');reveal();
+ const t=$('#top'),bar=$('#bar');
+ const onS=()=>{t.classList.toggle('sc',scrollY>8);bar.classList.toggle('on',scrollY>420);};addEventListener('scroll',onS,{passive:true});onS();
+ setInterval(()=>document.querySelectorAll('[data-end]').forEach(e=>{const en=e.dataset.end;if(en)e.innerHTML=left(en)?'Tamat dalam <b>'+left(en)+'</b>':'Tamat';}),30000);
+}
+function paintSvcs(){
+ const el=$('#svcs');if(!el)return;
+ const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||'Lain-lain'))];
+ const list=S.filter(s=>!CAT||(s.c||'Lain-lain')===CAT),lim=SHOWALL||CAT?list.length:9;
+ el.innerHTML=(cats.length>1?'<div class="cats"><button class="'+(CAT?'':'on')+'" data-cat="">Semua</button>'+cats.map(c=>'<button class="'+(CAT===c?'on':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div>':'')+
+  '<div class="svcs">'+list.slice(0,lim).map(s=>{const bp=P.showPrices===false?null:bestPromo(s);
+   return '<article class="sv"><div class="hd"><div><h3>'+esc(s.n)+(bp?'<span class="ptag">'+esc(bp.p.badge)+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
+    '<div class="pr">'+(P.showPrices===false?'':bp?'<s>'+rm(s.p)+'</s><b class="now">'+rm(bp.v)+'</b>':s.p?'<b>'+rm(s.p)+'</b>':'')+'</div></div>'+
+    (s.x?'<p>'+esc(s.x)+'</p>':'')+'<div class="ft"><span class="dur">'+ic('clock',14)+(s.d||60)+' minit</span>'+
+    (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">Book</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',15)+'Tanya</button>')+'</div></article>';}).join('')+'</div>'+
+  (list.length>lim?'<div class="more"><button class="btn light" data-more="1">Lihat semua '+list.length+' rawatan</button></div>':'');
+}
+function reveal(){
+ const els=[...document.querySelectorAll('.rv0')];
+ if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('rv1'));return;}
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('rv1');io.unobserve(e.target);}}),{rootMargin:'0px 0px -40px 0px'});
+ els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('rv1')),2500);
+}
+
+/* ---------- the enquiry form (inline and in the sheet) ---------- */
+function formHTML(k,o){
+ const S=P.services||[],brs=P.branches||[];
+ return '<form id="'+k+'-form" novalidate>'+
+  '<label for="'+k+'-n">Nama</label><input class="f" id="'+k+'-n" autocomplete="name" placeholder="Nama anda" required>'+
+  '<label for="'+k+'-p">No. WhatsApp</label><input class="f" id="'+k+'-p" type="tel" inputmode="tel" autocomplete="tel" placeholder="012-345 6789" required>'+
+  (o.mode==='wa'?'':'<label for="'+k+'-i">Berminat dengan</label><select class="f" id="'+k+'-i"><option value="">Belum pasti — nak nasihat</option>'+
+   (o.promo?'<option selected>'+esc(o.promo)+'</option>':'')+S.map(s=>'<option'+(o.interest===s.n?' selected':'')+'>'+esc(s.n)+'</option>').join('')+'</select>')+
+  (brs.length>1?'<label for="'+k+'-b">Cawangan</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
+  (o.mode==='wa'?'':'<label>Masa yang sesuai</label><div class="chips" id="'+k+'-t">'+['Pagi','Tengah hari','Petang','Malam','Hujung minggu'].map(t=>'<button type="button" data-t="'+t+'">'+t+'</button>').join('')+'</div>'+
+   '<label for="'+k+'-q">Masalah kulit / soalan <span style="font-weight:400;color:var(--ink-3)">(pilihan)</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="Contoh: jerawat, jeragat, kulit kusam"></textarea>')+
+  '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>Saya setuju '+esc((P.biz||{}).name||'kami')+' menghubungi saya melalui WhatsApp dan menyimpan maklumat ini (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+  '<div class="err" id="'+k+'-e" role="alert"></div>'+
+  '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.mode==='wa'?ic('wa',18)+'Teruskan ke WhatsApp':o.promo?ic('gift',18)+'Claim promo ini':ic('arrow',18)+'Hantar — kami WhatsApp anda')+'</button></form>';
+}
+function bindForm(k,o){
+ o=o||{};const f=document.getElementById(k+'-form');if(!f)return;const T=new Set();
+ f.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const t=b.dataset.t;T.has(t)?T.delete(t):T.add(t);b.classList.toggle('on');});
+ f.onsubmit=async ev=>{ev.preventDefault();
+  const n=document.getElementById(k+'-n').value.trim(),p=document.getElementById(k+'-p').value.trim(),e=document.getElementById(k+'-e');
+  const it=document.getElementById(k+'-i'),q=document.getElementById(k+'-q'),bs=document.getElementById(k+'-b');
+  if(n.length<2){e.textContent='Sila isi nama anda.';return;}
+  if(digits(p).length<9||digits(p).length>15){e.textContent='Sila isi nombor telefon yang betul.';return;}
+  if(!document.getElementById(k+'-ok').checked){e.textContent='Sila tandakan persetujuan untuk kami menghubungi anda.';return;}
+  e.textContent='';const go=document.getElementById(k+'-go');go.disabled=true;
+  const x=touch(),a=attrLoad(),br=(bs&&bs.value)||o.br||((P.branches||[])[0]||{}).id||'';
+  const interest=(it&&it.value)||o.promo||o.interest||'';
+  const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:br,stage:'new',createdAt:new Date().toISOString(),
+   createdBy:'landing',web:true,consent:true,
+   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':'form',d:x.d||'',land:x.l||'',dev:dev(),first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
+  if(interest)d.interest=interest.slice(0,200);
+  const nt=[q&&q.value.trim(),T.size?'Masa sesuai: '+[...T].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
+  if(PREVIEW){e.textContent='Pratonton: borang tidak dihantar.';go.disabled=false;return;}
+  try{const id=await add('leads',d);try{localStorage.setItem('luunaLead',JSON.stringify({id,at:d.createdAt}));}catch(_){}
+   hit(o.mode==='wa'?'wa':'lead');track('lead',{content_name:interest||'konsultasi'});
+   if(o.mode==='wa'){closeSheet();openWa(o.msg,n);return;}
+   const box=k==='f'?$('#fbox'):document.querySelector('.sheet .form');
+   box.innerHTML='<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>Terima kasih, '+esc(n.split(' ')[0])+'!</h3><p>Team kami akan WhatsApp anda secepat mungkin dalam waktu operasi.'+(o.promo?' Slot promo anda sedang kami simpan.':'')+'</p>'+
+    (P.bookOn?'<button class="btn pri" data-go="book">'+ic('cal',18)+'Terus pilih slot sekarang</button>':'')+'<button class="btn light" data-go="wa-direct">'+ic('wa',18)+'WhatsApp kami</button></div>';}
+  catch(err){console.warn(err);e.textContent='Maaf, tidak dapat dihantar. Sila cuba lagi atau WhatsApp kami terus.';go.disabled=false;}};
+}
+
+/* ---------- sheets ---------- */
+function sheet(html){closeSheet();const v=document.createElement('div');v.className='veil';v.innerHTML='<div class="sheet" role="dialog" aria-modal="true"><button class="x" aria-label="Tutup" data-x="1">'+ic('x',18)+'</button>'+html+'</div>';
+ v.addEventListener('click',e=>{if(e.target===v||e.target.closest('[data-x]'))closeSheet();});document.body.appendChild(v);document.body.classList.add('sheet-open');SHEET=v;}
+function closeSheet(){if(SHEET){SHEET.remove();SHEET=null;}document.body.classList.remove('sheet-open');}
+function waText(ctx){const b=P.biz||{};return (P.waMsg||'Hi {nama}, saya nak tanya tentang rawatan.').replace('{nama}',b.name||'').replace('{bisnes}',b.name||'')+(ctx?' ('+ctx+')':'');}
+function openWa(msg,name){const b=P.biz||{},num=waNum(b.wa||b.phone||'');
+ const t=(msg||waText())+(name?'\n\nNama: '+name:'');hit('wa');track('wa');
+ location.href='https://wa.me/'+num+'?text='+encodeURIComponent(t);}
+function waSheet(ctx,interest){
+ const msg=waText(ctx);
+ let done=null;try{done=JSON.parse(localStorage.getItem('luunaLead')||'null');}catch(e){}
+ if(done&&Date.now()-new Date(done.at)<DAY30)return openWa(msg);
+ sheet('<h3>Chat dengan kami</h3><p class="lead">Isi nama & nombor supaya team kami boleh bantu lebih cepat — atau terus ke WhatsApp.</p><div class="form">'+formHTML('w',{mode:'wa'})+'</div>'+
+  '<button class="skip" id="w-skip">Terus ke WhatsApp tanpa isi</button>');
+ bindForm('w',{mode:'wa',msg,interest});document.getElementById('w-skip').onclick=()=>{closeSheet();openWa(msg);};
+}
+function claim(id){
+ const p=(P.promos||[]).find(x=>x.id===id);if(!p)return;hit('promo');track('promo',{content_name:p.t});
+ sheet('<h3>'+esc(p.t)+'</h3><p class="lead">'+esc(p.deal)+(p.limit>0?' · tinggal '+p.left+' slot':'')+(p.end?' · sehingga '+dshort(p.end):'')+'</p><div class="form">'+formHTML('s',{promo:p.t})+'</div>');
+ bindForm('s',{promo:p.t});}
+function bookUrl(br,svc){const u=new URL('./',location.href);u.search='';const q=new URLSearchParams();q.set('book',br);if(svc)q.set('svc',svc);u.search=q.toString();return u.toString();}
+function book(svc,brId){
+ if(!P.bookOn)return waSheet(svc&&svcOf(svc)?'Nak book '+svcOf(svc).n:'Nak buat tempahan');
+ const brs=P.branches||[];
+ const go=b=>{hit('book');track('book',{content_name:svc&&svcOf(svc)?svcOf(svc).n:''});if(PREVIEW){alertPv(bookUrl(b,svc));return;}location.href=bookUrl(b,svc);};
+ if(brId||brs.length<2)return go(brId||(brs[0]||{}).id||'');
+ sheet('<h3>Pilih cawangan</h3><p class="lead">Di mana anda nak buat rawatan?</p><div class="brpick">'+brs.map(b=>'<button data-pick="'+esc(b.id)+'">'+ic('pin',20)+'<span><b>'+esc(b.name)+'</b><small>'+esc(b.addr||'')+'</small></span></button>').join('')+'</div>');
+ SHEET.querySelectorAll('[data-pick]').forEach(x=>x.onclick=()=>{closeSheet();go(x.dataset.pick);});
+}
+function alertPv(u){const e=document.createElement('div');e.className='pv';e.style.top='26px';e.textContent='Pratonton — butang ini akan buka: '+u;document.body.appendChild(e);setTimeout(()=>e.remove(),5000);}
+
+/* one listener for every button on the page */
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit]');if(!t)return;
+ if(t.dataset.hit){hit(t.dataset.hit);return;}
+ e.preventDefault();
+ if(t.dataset.go==='book'){closeSheet();book();}
+ else if(t.dataset.go==='wa')waSheet();
+ else if(t.dataset.go==='wa-direct')openWa();
+ else if(t.dataset.book!==undefined)book(t.dataset.book);
+ else if(t.dataset.bookBr!==undefined)book('',t.dataset.bookBr);
+ else if(t.dataset.claim)claim(t.dataset.claim);
+ else if(t.dataset.promo){const el=document.getElementById('promo');if(el)el.scrollIntoView({behavior:'smooth'});}
+ else if(t.dataset.ask){const s=svcOf(t.dataset.ask);waSheet(s?'Harga & slot '+s.n:'',s&&s.n);}
+ else if(t.dataset.cat!==undefined){CAT=t.dataset.cat;paintSvcs();}
+ else if(t.dataset.more){SHOWALL=true;paintSvcs();}
+});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
+
+/* ---------- start ---------- */
+window.__lp={detect,capture,touch,get P(){return P;}};
+capture();
+(async()=>{
+ try{P=await getPub();}catch(e){console.warn(e);P=null;}
+ if(!P||(!P.on&&!PREVIEW)){
+  $('#app').innerHTML='<div class="skel"><div style="text-align:center;padding:30px;max-width:420px"><h2 style="margin-bottom:10px">Laman ini sedang dikemas kini</h2><p style="color:#4A453C">Sila cuba sebentar lagi.</p></div></div>';return;}
+ render();hit('view');pixels();
+})();
+})();
+</script>
+</body>
+</html>
