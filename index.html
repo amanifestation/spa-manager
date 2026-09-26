@@ -1981,6 +1981,15 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .ksrc.m{background:var(--line-2);color:var(--ink-2);margin-left:4px}.ksrc.m.p{background:var(--rose-soft);color:var(--rose)}
 .fbshare{display:flex;gap:9px;align-items:flex-start;font-size:13px;margin:10px 0 0;text-align:left;cursor:pointer}.fbshare input{margin-top:3px;width:17px;height:17px;flex:none}
 @media(max-width:640px){.lpfaq{grid-template-columns:1fr auto}.lpfaq textarea{grid-column:1/2}}
+.lpsv{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line-2)}.lpsv:last-child{border-bottom:0}
+.lpsvimg{flex:0 0 92px;height:70px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2);padding:0;cursor:pointer;display:grid;place-items:center;color:var(--ink-3)}
+.lpsvimg img{width:100%;height:100%;object-fit:cover}.lpsvimg.none{border-style:dashed;gap:2px;align-content:center}.lpsvimg small{font-size:11px}
+.lpsvb{flex:1;min-width:0}.lpsvb .f{margin:6px 0 0;font-size:13px}
+.lpx{border:0;background:none;padding:0;font:inherit;font-size:11.5px;color:var(--rose);text-decoration:underline;cursor:pointer;margin-top:4px}
+.lprevs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;max-height:460px;overflow:auto;margin-bottom:10px}
+.lprev{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}.lprev.off{opacity:.5;background:var(--surface-2)}
+.lprev p{margin:6px 0;font-size:13px;line-height:1.45}.lprev small{font-size:11.5px;color:var(--ink-3)}.lpst{color:#C8912E;letter-spacing:1px}
+.lpadd{border:1px dashed var(--line);border-radius:12px;padding:8px 12px;margin-bottom:8px}.lpadd summary{cursor:pointer;font-size:13px;font-weight:600;display:flex;gap:6px;align-items:center}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2240,7 +2249,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26j';
+const BUILD='2026-09-26k';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -9766,7 +9775,7 @@ window.editService=id=>{
    (s.handsOnValue||0)+'"></div></div>'+
   '<p class="tiny muted" style="margin:0">Earned by whoever performs it, including sessions redeemed from a '+
   'package. For a percentage on a package session, the treatment\'s normal price is used.</p></div>'+
-  '<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
+  '<label>Description <span class="muted">— shown on the landing and booking page</span></label><textarea class="f" id="sv-desc" rows="2" maxlength="400" placeholder="What it does and who it is for">'+esc(s.desc||'')+'</textarea>'+imageField('sv-img',s.image||'','service','Photo for the landing page')+'<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
    (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
   '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
   chipField('sv-con',CONCERNS,s.concerns||[],'This treats','used by the programme builder')+
@@ -9790,7 +9799,7 @@ window.editService=id=>{
   '<button class="btn" style="width:100%;justify-content:center" id="sv-go">Save treatment</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
    'data-id="'+esc(id)+'" data-name="'+esc(s.name||'')+'" onclick="catDelete(\'services\',this.dataset.id,this.dataset.name)">Delete</button>':'')+
-  '</div>',()=>{
+  '</div>',()=>{imgReset('sv-img',s.image||'');
    const box=$('#sv-use');
    const backbar=D.products.filter(p=>['backbar','supply'].includes(p.type)&&p.active!==false).sort((a,b)=>natCmp(a.type,b.type)||natCmp(a.name,b.name));
    const rowHtml=(sku,qty)=>'<div class="row" style="margin-bottom:6px" data-use>'+
@@ -9820,7 +9829,7 @@ window.editService=id=>{
      concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
      intervalDays:+$('#sv-int').value||14,courseSessions:+$('#sv-crs').value||4,
      intensity:$('#sv-ity').value,
-     handsOnType:($('#sv-hot')||{}).value||'',handsOnValue:+(($('#sv-hov')||{}).value)||0},
+     handsOnType:($('#sv-hot')||{}).value||'',handsOnValue:+(($('#sv-hov')||{}).value)||0,desc:(($('#sv-desc')||{}).value||'').trim().slice(0,400),image:imgValue('sv-img',s.image||'')},
      name,id?'Treatment updated':'Treatment added');};
   });};
 
@@ -10110,7 +10119,7 @@ window.editVoucher=id=>{
 /* Firebase Cloud Storage needs the paid Blaze plan, so pictures are shrunk in the
    browser and stored inline in the Firestore document. A document can hold 1 MB in
    total, so every picture is squeezed under a strict budget before it is saved. */
-const IMG_BUDGET={logo:150000,product:110000,notice:420000,paylogo:26000};
+const IMG_BUDGET={logo:150000,product:110000,service:100000,notice:420000,paylogo:26000};
 function pickImage(kind){
  return new Promise(resolve=>{
   const inp=document.createElement('input');
@@ -10128,7 +10137,7 @@ function pickImage(kind){
 }
 function compressImage(file,kind){
  const budget=IMG_BUDGET[kind]||200000;
- const maxPx=kind==='logo'?420:kind==='paylogo'?180:(kind==='product'?720:1600);
+ const maxPx=kind==='logo'?420:kind==='paylogo'?180:((kind==='product'||kind==='service')?800:1600);
  return new Promise((resolve,reject)=>{
   const fr=new FileReader();
   fr.onerror=()=>reject(new Error('read failed'));
@@ -20948,7 +20957,7 @@ function sdClients(R){
   done:A.length,rb,rebook:A.length?Math.round(rb/A.length*100):null,rebookOf:rebook,freq,clv,active:act.length,dorm,src};
 }
 function sdChan(s){s=String(s||'').toLowerCase();
- if(/insta|\big\b|facebook|\bfb\b|meta/.test(s))return 'Meta (FB & IG)';if(/tiktok/.test(s))return 'TikTok';if(/google|gmaps|search/.test(s))return 'Google';
+ if(/insta|\big\b|facebook|\bfb\b|meta/.test(s))return 'Meta (FB & IG)';if(/tiktok/.test(s))return 'TikTok';if(/threads/.test(s))return 'Threads';if(/google|gmaps|search/.test(s))return 'Google';
  if(/walk/.test(s))return 'Walk-in';if(/refer|friend|kawan/.test(s))return 'Referral';if(/return/.test(s))return 'Returning';if(/web|site/.test(s))return 'Website';return s?'Other':'Not recorded';}
 
 /* ---------- funnel ---------- */
@@ -21561,13 +21570,13 @@ window.chatAck=async(id,sid)=>{
 const LP_DEF={on:false,headline:'',sub:'',ticks:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas, tanpa caj tersembunyi'],
  usps:[{t:'Konsultasi percuma',d:'Therapist semak keadaan kulit anda sebelum sebarang rawatan.'},{t:'Rawatan ikut kulit anda',d:'Setiap rawatan disesuaikan dengan jenis dan masalah kulit anda.'},
   {t:'Book online 24 jam',d:'Pilih rawatan, therapist dan masa sendiri — terus disahkan.'}],
- faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',px:{meta:'',tt:'',ga:''}};
+ faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',threads:'',gReviews:'',rv:{hide:[],manual:[]},px:{meta:'',tt:'',ga:''}};
 const lpFaq0=()=>{const W=typeof wbSet==='function'?wbSet():{};return [
  {q:'Perlu book dulu atau boleh walk-in?',a:'Digalakkan book dahulu supaya slot dan therapist tersedia untuk anda. Walk-in diterima jika ada slot kosong.'},
  {q:'Rawatan mana yang sesuai untuk saya?',a:'Tak pasti? Isi borang konsultasi percuma atau WhatsApp kami — therapist akan cadangkan rawatan ikut jenis dan masalah kulit anda.'},
  {q:'Berapa lama satu sesi?',a:'Tempoh setiap rawatan tertera pada senarai rawatan. Sila datang 10 minit awal untuk konsultasi ringkas.'},
  {q:'Boleh tukar atau batal tempahan?',a:'Boleh. Guna pautan dalam pengesahan tempahan anda, atau WhatsApp kami sekurang-kurangnya '+(+W.cutoff||24)+' jam sebelum janji temu.'}];};
-const lpSet=()=>{const L={...LP_DEF,...((D.meta||{}).landing||{})};if(!L.faq)L.faq=lpFaq0();L.px={...LP_DEF.px,...(L.px||{})};L.branches=L.branches||{};return L;};
+const lpSet=()=>{const L={...LP_DEF,...((D.meta||{}).landing||{})};if(!L.faq)L.faq=lpFaq0();L.px={...LP_DEF.px,...(L.px||{})};L.branches=L.branches||{};L.rv={hide:[],manual:[],...(L.rv||{})};return L;};
 let LPPUB,LPIMG,LPD=null,LPSTATS=null,LPCAMP='',LPBUSY=false;
 const lpBase=()=>{let u='';try{u=location.origin+location.pathname.replace(/[^/]*$/,'');}catch(e){}return u+'lp.html';};
 const LP_BM_DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
@@ -21601,18 +21610,17 @@ function lpBuild(img){
  const S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id)))
   .sort((a,b)=>((cats.indexOf(catOf(a))+1||99)-(cats.indexOf(catOf(b))+1||99))||String(a.name).localeCompare(b.name));
  const main=(D.branches[0]||{}).id,full=[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', ');
- const FB=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall));
- const rv=FB.filter(f=>f.shareOk&&star(f.overall)>=4&&String(f.comment||'').trim().length>=12).slice(0,6)
-  .map(f=>({n:String(f.firstName||'Pelanggan').split(' ')[0].slice(0,20),s:star(f.overall),t:String(f.comment).trim().slice(0,300),svc:String((f.services||[])[0]||'').slice(0,60),d:String(f.at||'').slice(0,10)}));
+ const FB=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall)),dist=[5,4,3,2,1].map(k=>FB.filter(f=>star(f.overall)===k).length);
+ const rv=lpReviewPool(L).filter(r=>r.on).slice(0,12).map(r=>({n:r.n,s:r.s,t:r.t,svc:r.svc,d:r.d,src:r.src}));
  return {on:!!L.on,v:1,
-  biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||''},
+  biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||'',th:L.threads||''},gReviews:/^https:\/\//.test(L.gReviews||'')?String(L.gReviews).slice(0,300):'',
   hero:{t:String(L.headline||'').slice(0,120),s:String(L.sub||'').slice(0,240),ticks:(L.ticks||[]).filter(Boolean).slice(0,3),img:img||''},
   usps:(L.usps||[]).filter(u=>u&&u.t).slice(0,4),faq:(L.faq||[]).filter(f=>f&&f.q).slice(0,10),waMsg:String(L.waMsg||'').slice(0,200),
   showPrices:L.showPrices!==false,bookOn:!!W.on,
-  services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,240),b:bookable.has(s.id)})),
+  services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,400),b:bookable.has(s.id),...(s.image?{ih:wbHash(s.image)}:{})})),
   promos:(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&(!p.start||daysBetween(td,p.start)<=31)&&!(+p.limit>0&&promoLeft(p)<=0))
    .sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999'))).slice(0,8).map(lpPromoOut),
-  rating:FB.length?{avg:Math.round(FB.reduce((t,f)=>t+star(f.overall),0)/FB.length*10)/10,n:FB.length}:{avg:0,n:0},
+  rating:FB.length?{avg:Math.round(FB.reduce((t,f)=>t+star(f.overall),0)/FB.length*10)/10,n:FB.length,dist}:{avg:0,n:0,dist},
   reviews:L.showReviews===false?[]:rv,
   branches:D.branches.map(br=>{const x=L.branches[br.id]||{},m=br.id===main;const addr=x.addr||(m?full:'');
    return {id:br.id,name:br.name||'',addr,city:x.city||(m?b.city||'':''),addrShort:x.city||(m?b.city||'':''),maps:x.maps||'',mapsQ:(b.name?b.name+' ':'')+(addr||br.name||''),
@@ -21628,7 +21636,27 @@ async function lpPublish(force){
  const d=lpBuild(img),h=wbHash(JSON.stringify(d));
  if(!force&&LPPUB&&LPPUB.hash===h)return false;
  d.hash=h;d.updatedAt=new Date().toISOString();d.by=ME.name;
+ await lpSyncImgs(d,LPPUB);
  await setDoc(doc(db,'public','landing'),d);LPPUB=d;LPIMG=undefined;return true;
+}
+/* treatment photos live one per document in lpImg, so the page loads only the ones on screen;
+   only photos that changed are written, and photos of treatments taken off the page are removed */
+async function lpSyncImgs(d,old){
+ const was={};((old&&old.services)||[]).forEach(s=>{if(s.ih)was[s.id]=s.ih;});
+ for(const s of d.services){if(!s.ih||was[s.id]===s.ih)continue;const x=svc(s.id);if(x&&x.image)await setDoc(doc(db,'lpImg',s.id),{img:x.image,h:s.ih,at:new Date().toISOString()});}
+ const keep=new Set(d.services.filter(s=>s.ih).map(s=>s.id));
+ for(const id of Object.keys(was))if(!keep.has(id)){try{await deleteDoc(doc(db,'lpImg',id));}catch(e){console.warn('lpImg',e);}}
+}
+/* every review that could go on the page: clients' own 4★+ feedback (first name only when they
+   agreed, otherwise shown without a name) and reviews the owner added from Google, WhatsApp and so on */
+function lpReviewPool(L){
+ L=L||lpSet();const hide=new Set((L.rv||{}).hide||[]);
+ const own=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall)>=4&&String(f.comment||'').trim().length>=12).map(f=>({id:f.id,kind:'fb',on:!hide.has(f.id),
+  n:f.shareOk?String(f.firstName||'').split(' ')[0].slice(0,20):'',named:!!f.shareOk,s:star(f.overall),t:String(f.comment).trim().slice(0,400),
+  svc:String((f.services||[])[0]||'').slice(0,60),d:String(f.at||'').slice(0,10),src:'spa'}));
+ const man=((L.rv||{}).manual||[]).filter(m=>m&&m.t).map(m=>({id:m.id,kind:'man',on:!hide.has(m.id),n:String(m.n||'').slice(0,30),named:!!m.n,s:Math.min(5,Math.max(1,+m.s||5)),
+  t:String(m.t).slice(0,400),svc:String(m.svc||'').slice(0,60),d:String(m.d||'').slice(0,10),src:String(m.src||'').slice(0,20)}));
+ return [...man,...own].sort((a,b)=>String(b.d).localeCompare(String(a.d)));
 }
 /* keep it current by itself: when the owner's app opens, every 10 minutes, and after a promotion is saved */
 {const _ws=window.wbStart;window.wbStart=function(){try{if(_ws)_ws.apply(this,arguments);}catch(e){console.warn(e);}
@@ -21638,7 +21666,7 @@ async function lpPublish(force){
 
 /* ---------- the owner's screen ---------- */
 TABS.splice(TABS.findIndex(t=>t.id==='crm')+1,0,{id:'lp',ic:'mega',label:'Landing page',perm:'report',group:'Clients',desc:'Your page for ads and social media, leads straight into the CRM'});
-const LP_LINKS=[['ig','Instagram bio','src=ig','Link in bio, story link sticker'],['tt','TikTok bio','src=tt','Profile link'],['fb','Facebook page','src=fb','Page button, posts'],
+const LP_LINKS=[['ig','Instagram bio','src=ig','Link in bio, story link sticker'],['tt','TikTok bio','src=tt','Profile link'],['fb','Facebook page','src=fb','Page button, posts'],['th','Threads','src=threads','Profile link, posts and replies'],
  ['wa','WhatsApp','src=wa','Status, broadcast, auto-reply'],['gmb','Google Business','src=gmb','Website button on your Google listing'],['qr','QR / flyer','src=qr','Printed flyers, counter stand, banner'],
  ['ref','Friends (referral)','src=ref','For clients to share'],['meta','Meta ads (FB & IG)','utm_source={{site_source_name}}&utm_medium=paid','Paste into the ad\'s URL parameters — Meta fills in fb or ig'],
  ['ttads','TikTok ads','utm_source=tiktok&utm_medium=paid','Ad destination URL'],['gads','Google ads','utm_source=google&utm_medium=paid','Final URL (the click id is added by Google)']];
@@ -21706,17 +21734,17 @@ function vLanding(){
    ((L.faq||[]).length<10?'<button class="btn sm ghost" onclick="lpFaqAdd()">'+ic('plus',13)+'Question</button>':'')+
   '<label>WhatsApp message the client starts with</label>'+tx('lp-wa','waMsg',L.waMsg,'Hi {bisnes}, saya nak tanya tentang rawatan.',200)+
   '<div class="row" style="gap:16px;flex-wrap:wrap;margin-top:10px"><label class="row lptog"><input type="checkbox" '+(L.showPrices!==false?'checked':'')+' onchange="lpF(\'showPrices\',this.checked)"> Show prices</label>'+
-   '<label class="row lptog"><input type="checkbox" '+(L.showReviews!==false?'checked':'')+' onchange="lpF(\'showReviews\',this.checked)"> Show reviews ('+shared+' client'+(shared===1?'':'s')+' agreed)</label></div>'+
-  '<p class="tiny muted" style="margin:4px 0 0">Only reviews of 4★ and up whose client ticked "show my review" on the feedback page appear, with their first name.</p>'+
+   '<label class="row lptog"><input type="checkbox" '+(L.showReviews!==false?'checked':'')+' onchange="lpF(\'showReviews\',this.checked)"> Show client reviews</label></div>'+
   '<label>Treatments on the page</label><div class="lpsvcs"><label class="row lptog"><input type="checkbox" '+(!sel?'checked':'')+' onchange="lpSvcAll(this.checked)"> All active treatments</label>'+
    (sel?S.map(s=>'<label class="row lptog"><input type="checkbox" '+(sel.includes(s.id)?'checked':'')+' onchange="lpSvc(\''+s.id+'\',this.checked)"> '+esc(s.name)+'</label>').join(''):'')+'</div>'+
   '<h3 style="margin:16px 0 4px">'+ic('pin',15)+' Branches</h3>'+brs+
-  '<h3 style="margin:16px 0 4px">'+ic('link',15)+' Social & ad tracking</h3><div class="grid g2"><div><label>TikTok username</label>'+tx('lp-tt','tiktok',L.tiktok,'@luunaskinspa',40)+'</div><div><label>Facebook page link</label>'+tx('lp-fb','facebook',L.facebook,'https://facebook.com/…',120)+'</div></div>'+
+  '<h3 style="margin:16px 0 4px">'+ic('link',15)+' Social & ad tracking</h3><div class="grid g2"><div><label>TikTok username</label>'+tx('lp-tt','tiktok',L.tiktok,'@luunaskinspa',40)+'</div><div><label>Facebook page link</label>'+tx('lp-fb','facebook',L.facebook,'https://facebook.com/…',120)+'</div>'+
+   '<div><label>Threads username</label>'+tx('lp-th','threads',L.threads,'@luunaskinspa',40)+'</div></div>'+
   '<div class="grid g3"><div><label>Meta Pixel ID</label><input class="f" value="'+esc(L.px.meta||'')+'" placeholder="15–16 digits" oninput="lpPx(\'meta\',this.value)"></div><div><label>TikTok Pixel ID</label><input class="f" value="'+esc(L.px.tt||'')+'" oninput="lpPx(\'tt\',this.value)"></div>'+
    '<div><label>Google Analytics (G-…)</label><input class="f" value="'+esc(L.px.ga||'')+'" oninput="lpPx(\'ga\',this.value)"></div></div>'+
   '<p class="tiny muted">Optional. With a pixel the ad platform learns who enquires and books, so your ads find more people like them.</p>'+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
- return status+lpStatsHTML()+links+content;
+ return status+lpStatsHTML()+links+lpSvcCard()+lpRevCard(L)+content;
 }
 window.lpF=(k,v)=>{LPD[k]=v;};
 window.lpArr=(k,i,v)=>{LPD[k]=LPD[k]||[];LPD[k][i]=v;};
@@ -21754,6 +21782,7 @@ window.lpSave=async()=>{
 };
 
 /* ---------- the CRM: leads sorted by source ---------- */
+if(!LEAD_SOURCES.includes('Threads'))LEAD_SOURCES.splice(LEAD_SOURCES.indexOf('TikTok')+1,0,'Threads');
 if(!LEAD_SOURCES.includes('Website'))LEAD_SOURCES.splice(LEAD_SOURCES.indexOf('Web form'),0,'Website');
 function lpMedTag(l){return l.medium&&l.medium!=='Organic'?'<span class="ksrc m'+(l.medium==='Paid'?' p':'')+'">'+esc(l.medium==='Paid'?'Ads':l.medium)+'</span>':'';}
 function lpLeadLine(l){if(l.createdBy!=='landing')return '';const x=l.lp||{};
@@ -21774,11 +21803,11 @@ function lpDetect(){
  const q=new URLSearchParams(location.search),ua=navigator.userAgent||'';let ref='';try{ref=document.referrer?new URL(document.referrer).hostname.replace(/^www\.|^m\.|^l\.|^lm\./,''):'';}catch(e){}
  if(ref===location.hostname)ref='';
  const src=(q.get('src')||q.get('utm_source')||'').toLowerCase(),um=(q.get('utm_medium')||'').toLowerCase();
- const M=[[/^(ig|insta)/,'Instagram'],[/^(fb|facebook|meta)/,'Facebook'],[/^(tt|tiktok)/,'TikTok'],[/^(g|google|gmb)/,'Google'],[/^(wa|whatsapp)/,'WhatsApp'],[/^(ref|friend)/,'Referral']];
+ const M=[[/^(ig|insta)/,'Instagram'],[/^(fb|facebook|meta)/,'Facebook'],[/^(tt|tiktok)/,'TikTok'],[/^(th|threads)/,'Threads'],[/^(g|google|gmb)/,'Google'],[/^(wa|whatsapp)/,'WhatsApp'],[/^(ref|friend)/,'Referral']];
  let s='';for(const [re,n] of M)if(re.test(src)){s=n;break;}
  if(!s&&q.get('fbclid'))s=/Instagram/.test(ua)?'Instagram':'Facebook';if(!s&&q.get('gclid'))s='Google';if(!s&&q.get('ttclid'))s='TikTok';
- if(!s&&/Instagram/.test(ua))s='Instagram';if(!s&&/FBAN|FBAV/.test(ua))s='Facebook';if(!s&&/musical_ly|TikTok|Bytedance/i.test(ua))s='TikTok';
- if(!s&&ref)s=/instagram/.test(ref)?'Instagram':/facebook|fb\./.test(ref)?'Facebook':/tiktok/.test(ref)?'TikTok':/google\./.test(ref)?'Google':'Other';
+ if(!s&&/Barcelona/.test(ua))s='Threads';if(!s&&/Instagram/.test(ua))s='Instagram';if(!s&&/FBAN|FBAV/.test(ua))s='Facebook';if(!s&&/musical_ly|TikTok|Bytedance/i.test(ua))s='TikTok';
+ if(!s&&ref)s=/threads\.(net|com)/.test(ref)?'Threads':/instagram/.test(ref)?'Instagram':/facebook|fb\./.test(ref)?'Facebook':/tiktok/.test(ref)?'TikTok':/google\./.test(ref)?'Google':'Other';
  if(!s&&src)s='Other';
  if(!s)return null;
  return {s,m:/cpc|paid|ads?$/.test(um)||q.get('gclid')||q.get('ttclid')?'Paid':'Organic',c:(q.get('utm_campaign')||q.get('c')||'').slice(0,24),d:(src?'src='+src:ref||'in-app').slice(0,80),at:new Date().toISOString()};
@@ -21804,5 +21833,57 @@ async function lpAfterBook(id,a){
 
 /* ---------- the feedback page: may we show this review on the website? ---------- */
 window.fbShare=on=>{if(typeof FBPUB!=='undefined'&&FBPUB)FBPUB.share=!!on;};
+
+/* ---------- treatment photos and descriptions, straight on the catalogue ---------- */
+function lpSvcCard(){
+ const L=LPD||lpSet(),S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id))),n=S.filter(s=>s.image).length;
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Treatment photos & descriptions</h3><span class="pill '+(n===S.length&&n?'g':'a')+'">'+n+' of '+S.length+' with a photo</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">Saved on the treatment in the catalogue (also under Catalogue → Treatments). The page shows each photo on the treatment\'s card; tapping the card opens it large with the description.</p>'+
+  S.map(x=>'<div class="lpsv"><button type="button" class="lpsvimg'+(x.image?'':' none')+'" onclick="lpSvcPhoto(\''+x.id+'\')" title="'+(x.image?'Change photo':'Add photo')+'">'+
+    (x.image?'<img src="'+x.image+'" alt="">':ic('image',18)+'<small>Add</small>')+'</button>'+
+   '<div class="lpsvb"><div class="spread"><b>'+esc(x.name)+'</b><span class="tiny muted">'+rm(x.price)+' · '+(x.dur||60)+' min</span></div>'+
+   '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea>'+
+   (x.image?'<button type="button" class="lpx" onclick="lpSvcNoPhoto(\''+x.id+'\')">Remove photo</button>':'')+'</div></div>').join('')+'</div>';
+}
+async function lpSvcPut(id,patch,msg){
+ try{await setDoc(doc(db,'services',id),patch,{merge:true});const x=svc(id);if(x)Object.assign(x,patch);
+  if((D.meta||{}).landing)lpPublish(false).catch(()=>{});render();if(msg)toast(msg);}catch(e){toast(friendly(e));}}
+window.lpSvcPhoto=async id=>{const d=await pickImage('service');if(!d)return;await lpSvcPut(id,{image:d},'Photo saved · '+Math.round(d.length/1024)+' KB');};
+window.lpSvcNoPhoto=id=>lpSvcPut(id,{image:''},'Photo removed');
+window.lpSvcDesc=(id,v)=>lpSvcPut(id,{desc:String(v||'').trim().slice(0,400)},'Description saved');
+window.lpSvcImgSet=(id,d)=>lpSvcPut(id,{image:d},'Photo saved');
+
+/* ---------- client reviews on the page ---------- */
+const LP_RSRC=['Google','WhatsApp','Instagram','Facebook','TikTok','Threads','Lain-lain'];
+let LPREV=null;
+function lpRevCard(L){
+ const P=lpReviewPool(LPD||L),on=P.filter(r=>r.on),FB=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall));
+ const avg=FB.length?Math.round(FB.reduce((t,f)=>t+star(f.overall),0)/FB.length*10)/10:0,st=n=>'★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n);
+ const M=LPREV||{n:'',s:5,t:'',svc:'',src:'Google',d:today()};
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('star',15)+' Client reviews on the page</h3><span class="pill '+(on.length?'g':'a')+'">'+Math.min(12,on.length)+' showing</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">'+(FB.length?'Rating '+avg+'★ from '+FB.length+' reviews after treatment. ':'')+'Every 4★ and 5★ review with a comment shows by itself, newest first (up to 12). A client\'s first name shows only if they ticked "show my review" on the feedback form; otherwise it says "Pelanggan disahkan". Untick any you would rather not show.</p>'+
+  (P.length?'<div class="lprevs">'+P.slice(0,40).map(r=>'<div class="lprev'+(r.on?'':' off')+'"><div class="spread"><span class="lpst">'+st(r.s)+'</span><label class="row lptog"><input type="checkbox" '+(r.on?'checked':'')+' onchange="lpRevShow(\''+esc(r.id)+'\',this.checked)"> Show</label></div>'+
+   '<p>'+esc(r.t)+'</p><small>'+(r.named?'<b>'+esc(r.n)+'</b>':'<span class="muted">No name — '+(r.kind==='fb'?'client did not agree to show it':'none given')+'</span>')+(r.svc?' · '+esc(r.svc):'')+(r.d?' · '+dstr(r.d):'')+
+    ' · <span class="pill '+(r.kind==='fb'?'g':'b')+'">'+(r.kind==='fb'?'feedback form':'added · '+esc(r.src||''))+'</span>'+(r.kind==='man'?' <button type="button" class="lpx" onclick="lpRevDel(\''+esc(r.id)+'\')">Delete</button>':'')+'</small></div>').join('')+'</div>'
+   :'<div class="empty">No 4★+ reviews with a comment yet. Send the feedback link after each visit, or add reviews clients gave you elsewhere below.</div>')+
+  '<details class="lpadd"'+(LPREV?' open':'')+'><summary>'+ic('plus',13)+' Add a review a client gave elsewhere (Google, WhatsApp, Instagram…)</summary>'+
+   '<p class="tiny muted" style="margin:6px 0">Only real reviews from real clients, copied word for word. Use their name only if they are happy for it to be shown.</p>'+
+   '<div class="grid g3"><div><label>Client name (optional)</label><input class="f" id="lr-n" maxlength="30" value="'+esc(M.n)+'" oninput="lpRevF(\'n\',this.value)" placeholder="e.g. Aisyah"></div>'+
+   '<div><label>Stars</label><select class="f" id="lr-s" onchange="lpRevF(\'s\',+this.value)">'+[5,4,3].map(k=>'<option value="'+k+'"'+(+M.s===k?' selected':'')+'>'+k+'★</option>').join('')+'</select></div>'+
+   '<div><label>Where</label><select class="f" id="lr-w" onchange="lpRevF(\'src\',this.value)">'+LP_RSRC.map(x=>'<option'+(M.src===x?' selected':'')+'>'+x+'</option>').join('')+'</select></div></div>'+
+   '<label>Review</label><textarea class="f" id="lr-t" rows="3" maxlength="400" oninput="lpRevF(\'t\',this.value)">'+esc(M.t)+'</textarea>'+
+   '<div class="grid g2"><div><label>Treatment (optional)</label><select class="f" id="lr-v" onchange="lpRevF(\'svc\',this.value)"><option value="">—</option>'+D.services.filter(x=>x.active!==false).map(x=>'<option'+(M.svc===x.name?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div>'+
+   '<div><label>Date</label><input class="f" type="date" value="'+esc(M.d)+'" onchange="lpRevF(\'d\',this.value)"></div></div>'+
+   '<button class="btn sm" onclick="lpRevAdd()">'+ic('plus',13)+'Add review</button> <span class="tiny muted">then Save & publish</span></details>'+
+  '<label>Link to your Google reviews (optional)</label><input class="f" id="lp-grv" value="'+esc((LPD||L).gReviews||'')+'" placeholder="https://g.page/r/…/review" oninput="lpF(\'gReviews\',this.value.trim())">'+
+  '</div>';
+}
+window.lpRevF=(k,v)=>{LPREV=LPREV||{n:'',s:5,t:'',svc:'',src:'Google',d:today()};LPREV[k]=v;};
+window.lpRevAdd=()=>{const M=LPREV||{};if(String(M.t||'').trim().length<8){toast('Type the review first');return;}
+ LPD.rv=LPD.rv||{hide:[],manual:[]};LPD.rv.manual=LPD.rv.manual||[];
+ LPD.rv.manual.unshift({id:'m'+Date.now().toString(36),n:String(M.n||'').trim().slice(0,30),s:+M.s||5,t:String(M.t).trim().slice(0,400),svc:M.svc||'',src:M.src||'Google',d:M.d||today()});
+ LPREV=null;render();toast('Review added — Save & publish to put it on the page');};
+window.lpRevDel=id=>{LPD.rv.manual=(LPD.rv.manual||[]).filter(m=>m.id!==id);render();};
+window.lpRevShow=(id,on)=>{LPD.rv=LPD.rv||{hide:[],manual:[]};LPD.rv.hide=(LPD.rv.hide||[]).filter(x=>x!==id);if(!on)LPD.rv.hide.push(id);render();};
 
 </script>

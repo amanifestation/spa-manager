@@ -109,6 +109,17 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 .svcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
 .sv{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .2s,transform .2s}
 .sv:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.sv.hasimg{padding-top:0;overflow:hidden}
+.sv .ph{display:block;width:calc(100% + 36px);margin:0 -18px 4px;aspect-ratio:16/10;border:0;padding:0;cursor:pointer;position:relative;
+ background:linear-gradient(150deg,#2a241c,#14120F) center/cover no-repeat;transition:filter .3s}
+.sv .ph span{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:54px;color:rgba(226,197,143,.55);transition:opacity .3s}
+.sv .ph.on span{opacity:0}.sv .ph.blank{background:radial-gradient(circle at 30% 30%,rgba(226,197,143,.35),transparent 60%),linear-gradient(150deg,#2a241c,#14120F)}
+.sv h3[data-sv]{cursor:pointer}
+@media(max-width:600px){.sv .ph{aspect-ratio:16/8}}
+.shimg{margin:-22px -20px 16px;aspect-ratio:16/10;background:linear-gradient(150deg,#2a241c,#14120F) center/cover no-repeat;border-radius:26px 26px 0 0}
+.shpr{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 10px}.shpr b{font-size:22px}.shpr s{color:var(--ink-3)}.shpr .now{color:var(--rose)}
+.shpr .ptag{font-size:11.5px;font-weight:700;background:var(--rose-soft);color:var(--rose);border-radius:99px;padding:2px 9px}
+.shx{color:var(--ink-2);margin:0 0 16px;white-space:pre-line}.shacts{display:flex;flex-direction:column;gap:8px}
 .sv .hd{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
 .sv h3{font-size:17px}.sv .c{font-size:12px;color:var(--ink-3);margin-top:2px}
 .sv .pr{text-align:right;flex:none}.sv .pr b{font-size:17px;display:block;white-space:nowrap}.sv .pr s{font-size:12.5px;color:var(--ink-3);display:block}
@@ -126,10 +137,24 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 @media(max-width:760px){.steps{grid-template-columns:1fr}}
 /* reviews */
 .revs{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.rv{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px}
-.rv .st{color:#C8912E;letter-spacing:2px;font-size:15px}.rv q{font-size:15px;line-height:1.55;quotes:'“' '”'}
-.rv small{color:var(--ink-3);font-size:12.5px;margin-top:auto}
-.revsum{display:flex;align-items:center;gap:14px}.revsum .big{font-family:var(--serif);font-size:48px;line-height:1}
+.rv{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:12px;margin:0;position:relative}
+.rv::before{content:'“';position:absolute;right:16px;bottom:-18px;font-family:var(--serif);font-size:64px;line-height:1;color:var(--brass-soft)}
+.rvh{display:flex;align-items:center;justify-content:space-between;gap:8px;position:relative}
+.rv .st{color:#C8912E;letter-spacing:2px;font-size:15px}
+.rsrc{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;border-radius:99px;padding:3px 9px;background:var(--line-2);color:var(--ink-2)}.rsrc.ok{background:var(--jade-soft);color:var(--jade)}
+.rv blockquote{margin:0;font-size:15px;line-height:1.6;color:var(--ink);position:relative}
+.clamp{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}.clamp.open{-webkit-line-clamp:unset;display:block}
+.rv figcaption{display:flex;align-items:center;gap:10px;margin-top:auto}
+.rv .av{width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--gold);display:grid;place-items:center;font-family:var(--serif);font-size:17px;flex:none}
+.rv figcaption b{display:block;font-size:14px}.rv figcaption small{display:block;color:var(--ink-3);font-size:12.5px}
+.rsum{display:flex;gap:28px;align-items:center;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px 24px;margin-bottom:16px}
+.rbig{display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center}.rbig .big{grid-row:span 2;font-family:var(--serif);font-size:54px;line-height:1}
+.rbig .st{color:#C8912E;letter-spacing:2px;font-size:17px}.rbig small{color:var(--ink-3);font-size:13px}
+.rbars{flex:1;min-width:220px;display:flex;flex-direction:column;gap:5px}.rbars div{display:grid;grid-template-columns:30px 1fr 28px;gap:8px;align-items:center;font-size:12.5px;color:var(--ink-2)}
+.rbars i{height:8px;border-radius:99px;background:var(--line-2);overflow:hidden}.rbars b{display:block;height:100%;background:linear-gradient(90deg,#C8912E,var(--gold));border-radius:99px}.rbars em{font-style:normal;text-align:right;color:var(--ink-3)}
+@media(max-width:760px){.revs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -20px;padding:2px 20px 10px;scrollbar-width:none}.revs::-webkit-scrollbar{display:none}
+ .revs .rv{flex:0 0 84%;scroll-snap-align:center}.rsum{padding:16px}}
+.revsum{display:none}.revsum .big{font-family:var(--serif);font-size:48px;line-height:1}
 .revsum .st{color:#C8912E;letter-spacing:2px}.revsum small{display:block;color:var(--ink-3);font-size:13px}
 /* location */
 .locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
@@ -216,7 +241,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 const KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM',PROJECT='spa-manager-c586b';
 const API='https://firestore.googleapis.com/v1/projects/'+PROJECT+'/databases/(default)/documents/';
 const Q=new URLSearchParams(location.search),PREVIEW=Q.has('preview');
-let P=null,CAT='',SHOWALL=false,SHEET=null;
+let P=null,CAT='',SHOWALL=false,SHEET=null,REVALL=false;
 
 /* ---------- tiny helpers ---------- */
 const $=s=>document.querySelector(s);
@@ -237,7 +262,7 @@ const IC={
  shield:'M12 3.5l7 2.7v5.3c0 4.4-3 8-7 9-4-1-7-4.6-7-9V6.2z',star:'M12 3.8l2.5 5.3 5.8.7-4.3 4 1.1 5.7L12 16.7l-5.1 2.8 1.1-5.7-4.3-4 5.8-.7z',
  x:'M6 6l12 12M18 6L6 18',arrow:'M5 12h14M13 6l6 6-6 6',map:'M9 4.5l-5 2v13l5-2 6 2 5-2v-13l-5 2-6-2zM9 4.5v13M15 6.5v13',
  ig:'M7.5 3.5h9a4 4 0 014 4v9a4 4 0 01-4 4h-9a4 4 0 01-4-4v-9a4 4 0 014-4zM12 16a4 4 0 100-8 4 4 0 000 8zM17.2 6.8h.01',
- tt:'M14 3.5v11a3.5 3.5 0 11-3.5-3.5M14 3.5c.5 2.6 2.4 4.3 5 4.5',fb:'M14 8.5h2.5V5H14a3.5 3.5 0 00-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.5L17 11h-3V9a.5.5 0 01.5-.5z',
+ tt:'M14 3.5v11a3.5 3.5 0 11-3.5-3.5M14 3.5c.5 2.6 2.4 4.3 5 4.5',th:'M16.6 11.3c-.3-2.7-2-4.3-4.6-4.3-2.8 0-4.7 2-4.7 5s1.9 5 4.8 5c2.6 0 4.3-1.5 4.3-3.7 0-1.9-1.4-3-3.6-3-2 0-3.2 1-3.2 2.4 0 1.2 1 2 2.3 2 1.7 0 2.7-1.3 2.9-3.6M12 21a9 9 0 119-9',fb:'M14 8.5h2.5V5H14a3.5 3.5 0 00-3.5 3.5V11H8v3.5h2.5V21H14v-6.5h2.5L17 11h-3V9a.5.5 0 01.5-.5z',
  gift:'M4.5 10h15v10h-15zM3.5 7h17v3h-17zM12 7v13M12 7s-1.5-3.5-4-3.5a1.8 1.8 0 000 3.5M12 7s1.5-3.5 4-3.5a1.8 1.8 0 010 3.5',
  wa:'M12 3.5a8.5 8.5 0 00-7.3 12.8L3.5 20.5l4.3-1.1A8.5 8.5 0 1012 3.5zM8.8 8.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.2.3 0 .5.5.9 1.3 1.8 2.4 2.4.2.1.4.1.5 0l.7-.8c.2-.2.4-.2.6-.1l1.6.8c.2.1.4.2.4.4 0 .6-.3 1.4-.9 1.7-.6.4-1.5.5-3.4-.3-2.3-1-3.8-3.3-3.9-3.5-.1-.2-1-1.3-1-2.5 0-1.1.6-1.7.8-1.9z'};
 const ic=(n,s)=>'<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+IC[n]+'"/></svg></span>';
@@ -257,9 +282,9 @@ async function add(col,data){
  if(!r.ok)throw new Error('HTTP '+r.status+' '+(await r.text()).slice(0,200));const j=await r.json();return String(j.name||'').split('/').pop();}
 
 /* ---------- where the visitor came from ---------- */
-const SRCMAP=[[/^(ig|insta|instagram)/,'Instagram'],[/^(fb|facebook|meta|msg|messenger|an)$/,'Facebook'],[/facebook/,'Facebook'],[/^(tt|tiktok|tik)/,'TikTok'],
+const SRCMAP=[[/^(ig|insta|instagram)/,'Instagram'],[/^(fb|facebook|meta|msg|messenger|an)$/,'Facebook'],[/facebook/,'Facebook'],[/^(tt|tiktok|tik)/,'TikTok'],[/^(th|threads)/,'Threads'],
  [/^(g|google|gmb|gbp|gmaps|maps|adwords)/,'Google'],[/^(wa|whatsapp)/,'WhatsApp'],[/^(ref|referral|friend|kawan)/,'Referral'],[/^(web|site|direct)/,'Website'],[/^(event|expo|booth|roadshow)/,'Event']];
-const REFMAP=[[/(^|\.)instagram\.com$/,'Instagram'],[/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/,'Facebook'],[/(^|\.)tiktok\.com$/,'TikTok'],
+const REFMAP=[[/(^|\.)instagram\.com$/,'Instagram'],[/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/,'Facebook'],[/(^|\.)tiktok\.com$/,'TikTok'],[/(^|\.)threads\.(net|com)$/,'Threads'],
  [/(^|\.)google\.[a-z.]+$/,'Google'],[/(^|\.)(wa\.me|whatsapp\.com)$/,'WhatsApp']];
 function detect(o){
  o=o||{};const q=new URLSearchParams(o.search!=null?o.search:location.search),ua=String(o.ua!=null?o.ua:navigator.userAgent||''),refUrl=String(o.ref!=null?o.ref:document.referrer||'');
@@ -267,8 +292,8 @@ function detect(o){
  if(host&&typeof location!=='undefined'&&host===location.hostname)host='';
  const us=(q.get('utm_source')||'').toLowerCase().trim(),um=(q.get('utm_medium')||'').toLowerCase().trim(),src=(q.get('src')||'').toLowerCase().trim();
  const camp=(q.get('utm_campaign')||q.get('c')||'').trim().slice(0,24);
- const paidTag=/(cpc|ppc|paid|ads?$|^ad|cpm|sponsor|boost)/.test(um)||/paid|ads/.test(src);
- const inApp=/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV|FB_IAB|FBIOS|FB4A/i.test(ua)?'Facebook':/musical_ly|TikTok|BytedanceWebview|trill/i.test(ua)?'TikTok':'';
+ const paidTag=/(cpc|ppc|paid|ads?$|^ad|cpm|sponsor|boost)/.test(um)||/(^|[-_])(paid|ads?)($|[-_])/.test(src);
+ const inApp=/Barcelona/.test(ua)?'Threads':/Instagram/i.test(ua)?'Instagram':/FBAN|FBAV|FB_IAB|FBIOS|FB4A/i.test(ua)?'Facebook':/musical_ly|TikTok|BytedanceWebview|trill/i.test(ua)?'TikTok':'';
  let s='',m='',d='';
  const map=(v,T)=>{for(const [re,n] of T)if(re.test(v))return n;return '';};
  if(src){s=map(src.replace(/[-_ ](ads?|paid|bio|story|post|reels?)$/,''),SRCMAP)||map(src,SRCMAP);d='src='+src;
@@ -345,13 +370,13 @@ function render(){
  let h='';
  if(PREVIEW){document.body.classList.add('pvm');h+='<div class="pv">Pratonton — kiraan pelawat dan borang tidak direkod</div>';}
  h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
-  '<nav class="nav">'+(L.length?'<a href="#promo">Promosi</a>':'')+'<a href="#rawatan">Rawatan</a>'+((P.reviews||[]).length?'<a href="#ulasan">Ulasan</a>':'')+'<a href="#lokasi">Lokasi</a><a href="#soalan">Soalan</a></nav>'+
+  '<nav class="nav">'+(L.length?'<a href="#promo">Promosi</a>':'')+'<a href="#rawatan">Rawatan</a>'+((P.reviews||[]).length||(P.rating||{}).n>=3?'<a href="#ulasan">Ulasan</a>':'')+'<a href="#lokasi">Lokasi</a><a href="#soalan">Soalan</a></nav>'+
   '<button class="btn pri sm" data-go="book">'+ic('cal',16)+'Book</button></div></header>';
  /* hero */
  h+='<section class="hero"><div class="wrap"><div class="rv0">'+
   '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
   '<h1>'+h1+'</h1><p class="sub">'+esc(H.s||'Rawatan wajah dan kulit oleh therapist terlatih. Pilih rawatan, pilih masa, dan kami uruskan selebihnya.')+'</p>'+
-  (R.n>=3?'<div class="rate"><span class="st">'+stars(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>daripada '+R.n+' ulasan pelanggan</span></div><br>':'')+
+  (R.n>=3?'<a class="rate" href="#ulasan"><span class="st">'+stars(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>daripada '+R.n+' ulasan pelanggan</span></a><br>':'')+
   (top?'<button class="promo-strip" data-promo="'+esc(top.id)+'"><span class="bdg">'+esc(top.badge)+'</span><span>'+esc(top.t)+'</span><small>'+(top.limit>0?'Tinggal '+top.left+' slot':top.end?'Tamat '+dshort(top.end):'Lihat')+' →</small></button>':'')+
   '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book slot sekarang':'Tempah sekarang')+'</button>'+
    '<button class="btn ghost" data-go="wa">'+ic('wa',18)+'WhatsApp kami</button></div>'+
@@ -380,10 +405,7 @@ function render(){
    ['Konsultasi & rawatan','Therapist semak keadaan kulit anda dahulu, kemudian rawatan dibuat ikut keperluan kulit anda.'],
    ['Nasihat penjagaan','Anda pulang dengan tips penjagaan di rumah dan cadangan sesi seterusnya.']].map(s=>'<div class="step rv0"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
  /* reviews */
- const RV=P.reviews||[];
- if(RV.length)h+='<section class="sec" id="ulasan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Ulasan pelanggan</span><h2>Kata mereka</h2></div>'+
-  (R.n>=3?'<div class="revsum"><span class="big">'+R.avg.toFixed(1)+'</span><span><span class="st">'+stars(R.avg)+'</span><small>'+R.n+' ulasan selepas rawatan</small></span></div>':'')+'</div>'+
-  '<div class="revs">'+RV.slice(0,6).map(r=>'<figure class="rv rv0" style="margin:0"><span class="st">'+stars(r.s)+'</span><q>'+esc(r.t)+'</q><small>'+esc(r.n)+(r.svc?' · '+esc(r.svc):'')+(r.d?' · '+dshort(r.d):'')+'</small></figure>').join('')+'</div></div></section>';
+ h+=reviewsHTML();
  /* location */
  h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Lokasi</span><h2>Jumpa kami di sini</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
   (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
@@ -408,6 +430,7 @@ function render(){
  h+='<footer><div class="wrap"><span>© '+new Date().getFullYear()+' '+esc(b.name||'')+(b.ssm?' ('+esc(b.ssm)+')':'')+'</span><div class="soc">'+
   (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
   (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
+  (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
   (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
   (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
  h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?'Book sekarang':'Tempah')+'</button></div>'+
@@ -418,17 +441,54 @@ function render(){
  const onS=()=>{t.classList.toggle('sc',scrollY>8);bar.classList.toggle('on',scrollY>420);};addEventListener('scroll',onS,{passive:true});onS();
  setInterval(()=>document.querySelectorAll('[data-end]').forEach(e=>{const en=e.dataset.end;if(en)e.innerHTML=left(en)?'Tamat dalam <b>'+left(en)+'</b>':'Tamat';}),30000);
 }
+
+const STARS=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
+function reviewsHTML(){
+ const RV=P.reviews||[],R=P.rating||{};if(!RV.length&&!(R.n>=3))return '';
+ const dist=R.dist||[],mx=Math.max(1,...dist,0),more=RV.length>6&&!REVALL;
+ const sum=R.n>=3?'<div class="rsum rv0"><div class="rbig"><span class="big">'+R.avg.toFixed(1)+'</span><span class="st">'+STARS(R.avg)+'</span><small>'+R.n+' ulasan selepas rawatan</small></div>'+
+   (dist.length?'<div class="rbars">'+[5,4,3,2,1].map((k,i)=>'<div><span>'+k+'★</span><i><b style="width:'+Math.round((dist[i]||0)/mx*100)+'%"></b></i><em>'+(dist[i]||0)+'</em></div>').join('')+'</div>':'')+'</div>':'';
+ const card=r=>'<figure class="rv rv0"><div class="rvh"><span class="st">'+STARS(r.s)+'</span>'+(r.src==='spa'?'<span class="rsrc ok">'+ic('check',12)+'Selepas rawatan</span>':r.src?'<span class="rsrc">via '+esc(r.src)+'</span>':'')+'</div>'+
+  '<blockquote class="clamp">'+esc(r.t)+'</blockquote><figcaption><span class="av">'+(r.n?esc(r.n.charAt(0).toUpperCase()):ic('check',14))+'</span><span><b>'+esc(r.n||'Pelanggan disahkan')+'</b><small>'+[r.svc,r.d?dshort(r.d):''].filter(Boolean).map(esc).join(' · ')+'</small></span></figcaption></figure>';
+ return '<section class="sec" id="ulasan" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">Ulasan pelanggan</span><h2>Apa kata pelanggan kami</h2>'+
+   '<p>Ulasan sebenar daripada pelanggan selepas rawatan mereka.</p></div>'+(P.gReviews?'<a class="btn light sm" target="_blank" rel="noopener" href="'+esc(P.gReviews)+'" data-hit="map">'+ic('star',15)+'Ulasan di Google</a>':'')+'</div>'+
+  (sum||'')+(RV.length?'<div class="revs">'+RV.slice(0,more?6:12).map(card).join('')+'</div>'+(more?'<div class="more"><button class="btn light" data-revall="1">Lihat semua '+RV.length+' ulasan</button></div>':''):'')+'</div></section>';
+}
+/* ---------- treatment photos: loaded one by one as the cards come into view ---------- */
+const IMGS={};
+function loadImg(id){
+ if(IMGS[id]!==undefined)return Promise.resolve(IMGS[id]);
+ IMGS[id]=fetch(API+'lpImg/'+encodeURIComponent(id)+'?key='+KEY).then(r=>r.ok?r.json():null).then(j=>{const v=j&&j.fields&&dec(j.fields.img)||'';IMGS[id]=v;return v;}).catch(()=>{IMGS[id]='';return '';});
+ return IMGS[id];
+}
+function paintImg(el){const id=el.dataset.img;Promise.resolve(loadImg(id)).then(v=>{if(v){el.style.backgroundImage='url("'+v+'")';el.classList.add('on');}});}
+let IMGIO=null;
+function watchImgs(){
+ const els=[...document.querySelectorAll('[data-img]:not(.w)')];els.forEach(e=>e.classList.add('w'));
+ if(!('IntersectionObserver' in window)){els.forEach(paintImg);return;}
+ IMGIO=IMGIO||new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){paintImg(e.target);IMGIO.unobserve(e.target);}}),{rootMargin:'300px 0px'});
+ els.forEach(e=>IMGIO.observe(e));
+}
+function svcSheet(id){
+ const x=svcOf(id);if(!x)return;const bp=P.showPrices===false?null:bestPromo(x);
+ sheet((x.ih?'<div class="shimg" data-img="'+esc(x.id)+'"></div>':'')+'<h3>'+esc(x.n)+'</h3><p class="lead">'+[x.c,(x.d||60)+' minit'].filter(Boolean).map(esc).join(' · ')+'</p>'+
+  (P.showPrices===false?'':'<div class="shpr">'+(bp?'<s>'+rm(x.p)+'</s><b class="now">'+rm(bp.v)+'</b><span class="ptag">'+esc(bp.p.badge)+' · '+esc(bp.p.t)+'</span>':'<b>'+rm(x.p)+'</b>')+'</div>')+
+  (x.x?'<p class="shx">'+esc(x.x)+'</p>':'')+
+  '<div class="shacts">'+(P.bookOn&&x.b!==false?'<button class="btn pri" data-book="'+esc(x.id)+'">'+ic('cal',18)+'Book rawatan ini</button>':'')+'<button class="btn light" data-ask="'+esc(x.id)+'">'+ic('wa',18)+'Tanya dulu</button></div>');
+ watchImgs();hit('svc');
+}
 function paintSvcs(){
  const el=$('#svcs');if(!el)return;
  const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||'Lain-lain'))];
- const list=S.filter(s=>!CAT||(s.c||'Lain-lain')===CAT),lim=SHOWALL||CAT?list.length:9;
+ const list=S.filter(s=>!CAT||(s.c||'Lain-lain')===CAT),lim=SHOWALL||CAT?list.length:9,anyImg=S.some(s=>s.ih);
  el.innerHTML=(cats.length>1?'<div class="cats"><button class="'+(CAT?'':'on')+'" data-cat="">Semua</button>'+cats.map(c=>'<button class="'+(CAT===c?'on':'')+'" data-cat="'+esc(c)+'">'+esc(c)+'</button>').join('')+'</div>':'')+
   '<div class="svcs">'+list.slice(0,lim).map(s=>{const bp=P.showPrices===false?null:bestPromo(s);
-   return '<article class="sv"><div class="hd"><div><h3>'+esc(s.n)+(bp?'<span class="ptag">'+esc(bp.p.badge)+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
+   return '<article class="sv'+(anyImg?' hasimg':'')+'">'+(anyImg?'<button type="button" class="ph'+(s.ih?'':' blank')+'" '+(s.ih?'data-img="'+esc(s.id)+'" ':'')+'data-sv="'+esc(s.id)+'" aria-label="'+esc(s.n)+'"><span>'+esc((s.n||'?').charAt(0))+'</span></button>':'')+'<div class="hd"><div><h3 data-sv="'+esc(s.id)+'">'+esc(s.n)+(bp?'<span class="ptag">'+esc(bp.p.badge)+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
     '<div class="pr">'+(P.showPrices===false?'':bp?'<s>'+rm(s.p)+'</s><b class="now">'+rm(bp.v)+'</b>':s.p?'<b>'+rm(s.p)+'</b>':'')+'</div></div>'+
     (s.x?'<p>'+esc(s.x)+'</p>':'')+'<div class="ft"><span class="dur">'+ic('clock',14)+(s.d||60)+' minit</span>'+
     (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">Book</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',15)+'Tanya</button>')+'</div></article>';}).join('')+'</div>'+
   (list.length>lim?'<div class="more"><button class="btn light" data-more="1">Lihat semua '+list.length+' rawatan</button></div>':'');
+ watchImgs();
 }
 function reveal(){
  const els=[...document.querySelectorAll('.rv0')];
@@ -512,19 +572,22 @@ function alertPv(u){const e=document.createElement('div');e.className='pv';e.sty
 
 /* one listener for every button on the page */
 document.addEventListener('click',e=>{
- const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit]');if(!t)return;
+ const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],blockquote.clamp');if(!t)return;
  if(t.dataset.hit){hit(t.dataset.hit);return;}
+ if(t.matches('blockquote.clamp')){t.classList.toggle('open');return;}
  e.preventDefault();
  if(t.dataset.go==='book'){closeSheet();book();}
  else if(t.dataset.go==='wa')waSheet();
  else if(t.dataset.go==='wa-direct')openWa();
- else if(t.dataset.book!==undefined)book(t.dataset.book);
+ else if(t.dataset.book!==undefined){closeSheet();book(t.dataset.book);}
  else if(t.dataset.bookBr!==undefined)book('',t.dataset.bookBr);
  else if(t.dataset.claim)claim(t.dataset.claim);
  else if(t.dataset.promo){const el=document.getElementById('promo');if(el)el.scrollIntoView({behavior:'smooth'});}
- else if(t.dataset.ask){const s=svcOf(t.dataset.ask);waSheet(s?'Harga & slot '+s.n:'',s&&s.n);}
+ else if(t.dataset.ask){closeSheet();const s=svcOf(t.dataset.ask);waSheet(s?'Harga & slot '+s.n:'',s&&s.n);}
  else if(t.dataset.cat!==undefined){CAT=t.dataset.cat;paintSvcs();}
  else if(t.dataset.more){SHOWALL=true;paintSvcs();}
+ else if(t.dataset.sv){svcSheet(t.dataset.sv);}
+ else if(t.dataset.revall){REVALL=true;const el=document.getElementById('ulasan');if(el){el.outerHTML=reviewsHTML();reveal();}}
 });
 addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet();});
 
