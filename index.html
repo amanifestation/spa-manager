@@ -1833,6 +1833,39 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .wzdone{text-align:center;padding:10px 0 12px;color:var(--jade)}.wzdone h3{color:var(--ink);margin:6px 0 2px}
 @media(max-width:640px){.wzst span{display:none}.wzst.on span{display:inline}.bkacts .btn>span:not(.ico){display:none}.bkdate span{font-size:16px}
  .bknext{margin-left:0}.bkseg button span{display:inline}}
+/* sales dashboard */
+.sdfil{padding:10px 12px}.sdfil .seg{margin-bottom:0}.sdper button{padding:7px 6px;font-size:12px}
+.sdsel{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:6px;margin-top:8px}.sdsel .f{margin:0;padding:8px 10px;font-size:13px}
+.sdview{flex:0 0 auto;min-width:190px}
+.sddef{margin:-2px 2px 10px;display:flex;align-items:flex-start;gap:5px;line-height:1.45}
+.sdgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.sdgrid>*{min-width:0}
+@media(min-width:761px){.sdgrid.six{grid-template-columns:repeat(3,1fr)}}.card .sdgrid{margin:4px 0 8px}
+.sdk{border-left:4px solid var(--line)}.sdk.g{border-left-color:var(--jade)}.sdk.a{border-left-color:var(--amber)}.sdk.r{border-left-color:var(--rose)}
+.sdk .big{font-size:22px}.sdk .big small{font-size:12px;font-weight:500;color:var(--ink-3);margin-left:2px}
+.sdk .sub{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.45}
+.sdk.g .big{color:var(--jade)}.sdk.r .big{color:var(--rose)}
+.sdchg{font-weight:620;white-space:nowrap}.sdchg.up{color:var(--jade)}.sdchg.down{color:var(--rose)}
+.sdtwo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}.sdtwo>.card{margin:0}.sdtwo>*{min-width:0}
+.sdh{display:flex;align-items:center;gap:6px;font-size:15px;margin:0 0 10px;flex-wrap:wrap}.sdh .tiny{font-weight:400}
+.sdh4{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:6px 0 4px}
+.sdwhy{margin:0;padding:7px 0 7px 14px;border-bottom:1px solid var(--line-2);font-size:13.5px;position:relative;line-height:1.45}
+.sdwhy:last-child{border-bottom:0}.sdwhy::before{content:'';position:absolute;left:2px;top:14px;width:5px;height:5px;border-radius:50%;background:var(--brass)}
+.sdal{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin:0 0 7px;font:inherit;color:inherit;cursor:pointer}
+.sdal>i{flex:0 0 9px;height:9px;border-radius:50%;background:var(--amber)}.sdal.r>i{background:var(--rose)}.sdal.r{border-color:var(--rose-soft);background:linear-gradient(90deg,var(--rose-soft),var(--surface-2) 60%)}
+.sdal>span:nth-child(2){flex:1;min-width:0}.sdal b{display:block;font-size:13.5px}.sdal small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+.sdhol{font-size:9.5px!important;color:var(--brass)!important;text-align:center;line-height:1.1}
+.sdfun{display:grid;grid-template-columns:120px 1fr 44px;gap:4px 10px;align-items:center;padding:6px 0}
+.sdfun>span{font-size:13px}.sdfun>b{text-align:right}.sdfun .bar{height:14px;background:var(--line-2);border-radius:99px;overflow:hidden}
+.sdfun .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brass),#c9a36a);border-radius:99px}
+.sdfun>small{grid-column:2/4;font-size:11.5px;color:var(--ink-3);margin-top:-3px}.sdfun>small:empty{display:none}
+.sdheat{border-collapse:separate;border-spacing:3px;font-size:11px;width:100%}.sdheat th{font-weight:500;color:var(--ink-3);padding:0 2px}
+.sdheat th,.sdheat td{border:0!important;padding:2px 3px!important;text-transform:none!important;letter-spacing:0!important;height:26px}
+.sdheat td{min-width:24px;text-align:center;border-radius:5px;background:var(--line-2);color:var(--ink);font-weight:600}
+.sdtbl td,.sdtbl th{white-space:nowrap}.sdtbl tr[onclick]:hover td{background:var(--surface-2)}.sdtbl .pill{font-size:11px}
+.sdnote{background:var(--amber-soft);color:var(--ink-2);border-radius:10px;padding:8px 10px;display:flex;gap:6px;align-items:flex-start}
+@media(max-width:760px){.sdtwo{grid-template-columns:1fr}.sdgrid{grid-template-columns:1fr 1fr;gap:8px}.sdk .big{font-size:18px}.sdk{padding:10px 11px}
+ .sdper button{font-size:11.5px;padding:7px 2px}.sdsel{grid-template-columns:1fr 1fr}.sdview{min-width:0;flex:1}.sdfun{grid-template-columns:92px 1fr 36px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2092,7 +2125,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26g';
+const BUILD='2026-09-26h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2485,7 +2518,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -20664,5 +20697,442 @@ function wzDone(a,c){
   '<div class="wzfoot">'+(ph?'<a class="btn" style="text-decoration:none" target="_blank" onclick="this.href=\'https://wa.me/'+ph+'?text=\'+encodeURIComponent(document.getElementById(\'wz-msg\').value)" href="https://wa.me/'+ph+'">'+ic('msg',15)+'Send confirmation</a>':'<span class="tiny muted">No phone number on file.</span>')+
   '<button type="button" class="btn ghost" onclick="closeModal();newAppt()">'+ic('plus',14)+'Another booking</button><button type="button" class="btn ghost" onclick="closeModal();render()">Done</button></div></div>');
 }
+
+
+/* ============ Sales dashboard: where we are, why, and what to do next ============ */
+/* One screen, one source (bills, bookings, packages, leads, campaigns, feedback, attendance).
+   The summary answers the three questions in half a minute: the figures against target with a
+   run-rate for the period, what moved them, and a list of things to act on. The tabs go deeper:
+   sales, clients, funnel, branches, staff, marketing and forecast. Filters for period, branch,
+   staff and category; every figure is compared with the previous period or last year; tap a
+   branch for its staff, a staff member for their bills. How "sales" is counted (with or without
+   SST, packages when sold or when used) is set once, in Definitions, and says so on screen. */
+if(!ICONS.right)ICONS.right='M9.5 6l6 6-6 6';
+const SD_CAT={service:'Treatments',package:'Packages',product:'Retail',set:'Retail',addon:'Add-ons'};
+const SD_CATS=['Treatments','Packages','Retail','Add-ons'];
+let SDF={per:'month',from:'',to:'',cmp:'prev',br:'',staff:'',cat:'',view:'mgr',tab:'sum',rank:'rev'};
+let SDL=null,SDBUSY=false,SDCM={},SDX=null;
+const sdDef=()=>({sst:false,pkg:'sold',discMax:20,...(((D.meta||{}).salesDef)||{})});
+const sdShiftY=d=>{const y=+d.slice(0,4)-1,r=y+d.slice(4);return r.slice(5)==='02-29'?y+'-02-28':r;};
+const sdAdd=(d,n)=>ymd(addDays(new Date(d+'T00:00:00'),n));
+const sdDays=(a,b)=>daysBetween(a,b)+1;
+const sdPct=(a,b)=>b?Math.round((a-b)/Math.abs(b)*100):null;
+const sdRag=(v,g,a)=>v==null?'':v>=g?'g':v>=a?'a':'r';
+const sdChg=(a,b,inv)=>{const p=sdPct(a,b);if(p==null)return '<span class="muted">—</span>';const up=p>=0,good=inv?!up:up;
+ return '<span class="sdchg '+(p===0?'':good?'up':'down')+'">'+(up?'▲':'▼')+' '+Math.abs(p)+'%</span>';};
+function sdRange(){
+ const t=today(),d=new Date(t+'T00:00:00');let from=t,end=t;
+ if(SDF.per==='week'){from=sdAdd(t,-((d.getDay()+6)%7));end=sdAdd(from,6);}
+ else if(SDF.per==='month'){from=t.slice(0,8)+'01';end=mEnd(t.slice(0,7));}
+ else if(SDF.per==='quarter'){const q=Math.floor(d.getMonth()/3)*3;from=t.slice(0,4)+'-'+String(q+1).padStart(2,'0')+'-01';end=mEnd(mShift(from.slice(0,7),2));}
+ else if(SDF.per==='ytd'){from=t.slice(0,4)+'-01-01';end=t.slice(0,4)+'-12-31';}
+ else if(SDF.per==='custom'){from=SDF.from||t.slice(0,8)+'01';end=SDF.to||t;}
+ const to=SDF.per==='custom'?end:(end<t?end:t),days=sdDays(from,to);
+ let cFrom,cTo;
+ if(SDF.per==='month'){const pm=mShift(from.slice(0,7),-1);cFrom=pm+'-01';cTo=sdAdd(cFrom,days-1);if(cTo>mEnd(pm))cTo=mEnd(pm);}
+ else if(SDF.per==='quarter'){cFrom=mShift(from.slice(0,7),-3)+'-01';cTo=sdAdd(cFrom,days-1);}
+ else if(SDF.per==='ytd'){cFrom=sdShiftY(from);cTo=sdShiftY(to);}
+ else{cTo=sdAdd(from,-1);cFrom=sdAdd(cTo,-(days-1));}
+ return {from,to,end,days,total:sdDays(from,end),cFrom,cTo,yFrom:sdShiftY(from),yTo:sdShiftY(to),
+  label:{today:'Today',week:'This week',month:mLabel(from.slice(0,7)),quarter:'This quarter',ytd:'Year to date',custom:dshort(from)+' – '+dshort(to)}[SDF.per]};
+}
+const sdCmp=R=>SDF.cmp==='yoy'?[R.yFrom,R.yTo,'same period last year']:[R.cFrom,R.cTo,SDF.per==='ytd'?'last year':'the period before'];
+
+/* ---------- loading: once, then everything is worked out in the browser ---------- */
+async function sdLoad(force){
+ const R=sdRange(),need=[R.yFrom,R.cFrom,ymd(addDays(new Date(),-400))].sort()[0];
+ if(SDBUSY||(SDL&&!force&&SDL.from<=need))return;
+ SDBUSY=true;render();
+ const q=(c,...w)=>getDocs(w.length?query(collection(db,c),...w):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(e=>{console.warn('sales dashboard',c,e);return [];});
+ try{
+  const [sales,appts,custs,cps,reds,leads,camps,fb,att,tg,kt,exps]=await Promise.all([q('sales',where('date','>=',need)),q('appointments',where('date','>=',need)),q('customers',limit(8000)),
+   q('customerPackages',limit(5000)),q('redemptions',where('date','>=',need)),q('leads',where('createdAt','>=',need)),q('campaigns'),q('feedback',limit(4000)),
+   q('attendance',where('date','>=',need)),q('salesTargets'),q('kpiTargets'),boss()?q('expenses',where('date','>=',need)):Promise.resolve([])]);
+  const C={};custs.forEach(c=>{C[c.id]=c;});
+  const first={},last={};
+  const seen=(cid,d)=>{if(!cid)return;if(!first[cid]||d<first[cid])first[cid]=d;if(!last[cid]||d>last[cid])last[cid]=d;};
+  sales.forEach(s=>{if(!s.voided)seen(s.customerId,s.date);});appts.forEach(a=>{if(a.status==='done'&&a.date<=today())seen(a.customerId,a.date);});
+  const CP={};cps.forEach(c=>{CP[c.id]=c;});
+  SDL={from:need,at:new Date().toISOString(),sales:sales.filter(s=>!s.voided),appts,C,CP,cps,reds,leads,camps,fb,att,tg:Object.fromEntries(tg.map(x=>[x.id,x])),kt:Object.fromEntries(kt.map(x=>[x.id,x])),
+   exps:exps.filter(e=>e.status!=='void'),first,last};
+ }catch(e){toast(friendly(e));}
+ SDBUSY=false;SDX=null;render();
+}
+window.sdReload=()=>{SDL=null;SDCM={};sdLoad(true);};
+const sdBr=()=>isOwnerMe()?SDF.br:ME.branchId;
+const sdBrOk=b=>!sdBr()||(b||ME.branchId)===sdBr();
+
+/* ---------- bill lines, the unit everything is added up from ---------- */
+function sdCost(i){const q=+i.qty||1;
+ if(i.kind==='product')return unitCost(i.id)*q;
+ if(i.kind==='set')return (i.setItems||[]).reduce((t,z)=>t+unitCost(z.sku)*(+z.qty||1)*q,0);
+ if(i.kind==='service'&&!i.later)return (svc(i.id).use||[]).reduce((t,u)=>t+unitCost(u.sku)*(+u.qty||0),0)*q;
+ return 0;}
+function sdComm(i,sid){const u=stf(sid);const c=(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!=='')?+i.commAmt:lineAmt(i)*(+salesRate(i,u)||0)/100;return r2(c+(+i.handsOnComm||0));}
+function sdLines(from,to,o){
+ o=o||{};const def=sdDef(),out=[],br=o.br!==undefined?o.br:sdBr(),st=o.staff!==undefined?o.staff:SDF.staff,cat=o.cat!==undefined?o.cat:SDF.cat;
+ SDL.sales.forEach(s=>{if(s.date<from||s.date>to)return;if(br&&(s.branchId||ME.branchId)!==br)return;
+  const items=(s.items||[]).filter(i=>i.kind!=='redeem'),sum=items.reduce((t,i)=>t+lineAmt(i),0);
+  const net=(+s.total||0)-(def.sst?0:(+s.sst||0)),k=sum>0?net/sum:0,bd=sum>0?(+s.discount||0)/sum:0;
+  items.forEach(i=>{const c=SD_CAT[i.kind]||'Other';if(def.pkg==='used'&&c==='Packages')return;
+   const sid=i.staffId||s.createdBy||'';if(st&&sid!==st&&i.handsOnId!==st)return;if(cat&&c!==cat)return;
+   const v=r2(lineAmt(i)*k);out.push({s,i,c,sid,v,g:lineGross(i),disc:r2((+i.lineDisc||0)+lineAmt(i)*bd),cost:r2(sdCost(i)),comm:sdComm(i,sid),key:i.kind+':'+i.id,name:i.name||i.id});});});
+ if(def.pkg==='used'&&(!cat||cat==='Packages'))sdReds(from,to,br).forEach(r=>{if(st&&r.staffId!==st)return;
+  out.push({s:null,r,c:'Packages',sid:r.staffId||'',v:r.value,g:r.value,disc:0,cost:0,comm:0,key:'redeem:'+(r.serviceId||''),name:(r.serviceName||'Session')+' (package)'});});
+ return out;
+}
+function sdReds(from,to,br){return SDL.reds.filter(r=>r.date>=from&&r.date<=to&&(!br||(r.branchId||ME.branchId)===br)).map(r=>{const cp=SDL.CP[r.customerPackageId]||{};
+ return {...r,value:r2((+cp.price||0)/(cpTot(cp)||1))};});}
+function sdAgg(from,to,o){
+ const L=sdLines(from,to,o),bills=new Set(),clients=new Set(),byCat={},byItem={},byStaff={},byBr={};
+ let v=0,g=0,disc=0,cost=0,comm=0;
+ L.forEach(x=>{v+=x.v;g+=x.g;disc+=x.disc;cost+=x.cost;comm+=x.comm;if(x.s){bills.add(x.s.id);if(x.s.customerId)clients.add(x.s.customerId);}
+  const c=byCat[x.c]=byCat[x.c]||{v:0,cost:0,n:0};c.v+=x.v;c.cost+=x.cost;c.n++;
+  const it=byItem[x.key]=byItem[x.key]||{name:x.name,c:x.c,v:0,cost:0,q:0};it.v+=x.v;it.cost+=x.cost;it.q+=+((x.i||{}).qty)||1;
+  const s=byStaff[x.sid]=byStaff[x.sid]||{v:0,bills:new Set(),comm:0};s.v+=x.v;s.comm+=x.comm;if(x.s)s.bills.add(x.s.id);
+  const b=x.s?(x.s.branchId||ME.branchId):(x.r&&x.r.branchId)||ME.branchId,bb=byBr[b]=byBr[b]||{v:0,bills:new Set()};bb.v+=x.v;if(x.s)bb.bills.add(x.s.id);});
+ v=r2(v);return {L,v,g:r2(g),disc:r2(disc),cost:r2(cost),comm:r2(comm),bills:bills.size,atv:bills.size?r2(v/bills.size):0,margin:r2(v-cost),mPct:v?Math.round((v-cost)/v*100):0,
+  clients,byCat,byItem,byStaff,byBr};
+}
+function sdCash(from,to){let c=0;SDL.sales.forEach(s=>{if(!sdBrOk(s.branchId))return;(s.payments||[]).forEach(p=>{const d=p.date||s.date;if(d>=from&&d<=to)c+=+p.amount||0;});});return r2(c);}
+function sdRecog(from,to){const def=sdDef();let v=0;
+ sdLines(from,to,{cat:''}).forEach(x=>{if(x.c==='Packages'&&def.pkg!=='used')return;if(x.i&&x.i.kind==='service'&&x.i.later)return;v+=x.v;});
+ if(def.pkg!=='used')sdReds(from,to,sdBr()).forEach(r=>{v+=r.value;});return r2(v);}
+
+/* ---------- targets ---------- */
+function sdMonthTarget(m,br,sid){
+ if(sid){const t=SDL.kt[m+'_'+(br||ME.branchId)]||{},o=(t.staff||{})[sid]||{},d=t.default||{};if(o.sales!=null&&o.sales!=='')return +o.sales||0;return stf(sid).takes?(+d.sales||0):0;}
+ const brs=br?[br]:(D.branches||[]).map(b=>b.id);
+ return r2(brs.reduce((tot,b)=>{const x=SDL.tg[b+'_'+m];if(x&&+x.target)return tot+(+x.target);
+  const t=SDL.kt[m+'_'+b]||{},d=t.default||{};return tot+D.staff.filter(s=>s.branchId===b&&s.active!==false&&s.takes).reduce((a,s)=>{const o=(t.staff||{})[s.id]||{};return a+(+(o.sales!=null&&o.sales!==''?o.sales:d.sales)||0);},0);},0));
+}
+function sdTarget(from,to,br,sid){ /* the target for any span, month targets shared out by day */
+ let t=0;for(let m=from.slice(0,7);m<=to.slice(0,7);m=mShift(m,1)){const a=from>m+'-01'?from:m+'-01',b=to<mEnd(m)?to:mEnd(m);t+=sdMonthTarget(m,br,sid)*sdDays(a,b)/sdDays(m+'-01',mEnd(m));}return r2(t);}
+
+/* ---------- clients ---------- */
+/* new = first visit in the period, and not a client on the books from before the data we read (they are coming back, not new) */
+const sdIsNew=(cid,from,to)=>{const f=SDL.first[cid],c=SDL.C[cid]||{};return !!f&&f>=from&&f<=to&&!(c.createdAt&&String(c.createdAt).slice(0,10)<SDL.from);};
+function sdClients(R){
+ const [cf,ct]=sdCmp(R),cur=sdAgg(R.from,R.to,{cat:'',staff:''}),prev=sdAgg(cf,ct,{cat:'',staff:''});
+ const nw=[...cur.clients].filter(c=>sdIsNew(c,R.from,R.to)),rep=[...cur.clients].filter(c=>!nw.includes(c));
+ const rev=cid=>cur.L.filter(x=>x.s&&x.s.customerId===cid).reduce((t,x)=>t+x.v,0),nwRev=r2(nw.reduce((t,c)=>t+rev(c),0));
+ const kept=[...prev.clients].filter(c=>cur.clients.has(c)).length;
+ const A=SDL.appts.filter(a=>a.date>=R.from&&a.date<=R.to&&a.status==='done'&&sdBrOk(a.branchId));
+ const rebook=a=>SDL.appts.some(b=>b.id!==a.id&&b.customerId===a.customerId&&b.date>a.date&&String(b.createdAt||'').slice(0,10)<=a.date&&String(b.createdAt||'').slice(0,10)>=a.date);
+ const rb=A.filter(rebook).length;
+ const y0=sdAdd(R.to,-364),Y=sdAgg(y0,R.to,{cat:'',staff:''}),vis={},val={};
+ Y.L.forEach(x=>{if(!x.s||!x.s.customerId)return;(vis[x.s.customerId]=vis[x.s.customerId]||new Set()).add(x.s.date);val[x.s.customerId]=(val[x.s.customerId]||0)+x.v;});
+ const act=Object.keys(vis),freq=act.length?Math.round(act.reduce((t,c)=>t+vis[c].size,0)/act.length*10)/10:0,clv=act.length?r2(act.reduce((t,c)=>t+val[c],0)/act.length):0;
+ const td=today(),dorm={60:[],90:[],180:[]};
+ Object.values(SDL.C).forEach(c=>{if(!sdBrOk(c.branchId))return;const l=SDL.last[c.id];
+  const d=l?daysBetween(l,td):(c.createdAt&&daysBetween(String(c.createdAt).slice(0,10),td)>=180?999:null);if(d==null)return;
+  if(d>=180)dorm[180].push({c,l,d});else if(d>=90)dorm[90].push({c,l,d});else if(d>=60)dorm[60].push({c,l,d});});
+ const src={};nw.forEach(cid=>{const s=sdChan((SDL.C[cid]||{}).source);const x=src[s]=src[s]||{n:0,v:0};x.n++;x.v+=rev(cid);});
+ return {cur,prev,nw,rep,nwRev,kept,prevN:prev.clients.size,retention:prev.clients.size?Math.round(kept/prev.clients.size*100):null,
+  done:A.length,rb,rebook:A.length?Math.round(rb/A.length*100):null,rebookOf:rebook,freq,clv,active:act.length,dorm,src};
+}
+function sdChan(s){s=String(s||'').toLowerCase();
+ if(/insta|\big\b|facebook|\bfb\b|meta/.test(s))return 'Meta (FB & IG)';if(/tiktok/.test(s))return 'TikTok';if(/google|gmaps|search/.test(s))return 'Google';
+ if(/walk/.test(s))return 'Walk-in';if(/refer|friend|kawan/.test(s))return 'Referral';if(/return/.test(s))return 'Returning';if(/web|site/.test(s))return 'Website';return s?'Other':'Not recorded';}
+
+/* ---------- funnel ---------- */
+function sdFunnel(R){
+ const L=SDL.leads.filter(l=>String(l.createdAt).slice(0,10)>=R.from&&String(l.createdAt).slice(0,10)<=R.to&&sdBrOk(l.branchId));
+ const after=(cid,d)=>SDL.appts.filter(a=>a.customerId===cid&&String(a.createdAt||a.date)>=d);
+ const bought=(cid,d)=>SDL.sales.some(s=>s.customerId===cid&&s.date>=d.slice(0,10)&&(s.items||[]).some(i=>i.kind==='package'));
+ const st=L.map(l=>{const cid=l.customerId,d=String(l.createdAt),A=cid?after(cid,d):[];
+  const booked=['booked','won'].includes(l.stage)||A.length>0,came=A.some(a=>a.status==='done')||(cid&&SDL.sales.some(s=>s.customerId===cid&&s.date>=d.slice(0,10)));
+  const consult=came&&(A.some(a=>a.status==='done'&&(a.undecided||['consult','new'].includes(a.visitType)))||A.some(a=>a.status==='done'));
+  const pkg=!!cid&&bought(cid,d);const firstA=A.map(a=>String(a.createdAt||'')).filter(Boolean).sort()[0];
+  return {l,booked,came,consult,pkg,wait:firstA?Math.max(0,(new Date(firstA)-new Date(d))/864e5):null};});
+ const n=k=>st.filter(x=>x[k]).length,W=st.filter(x=>x.wait!=null);
+ const AP=SDL.appts.filter(a=>a.date>=R.from&&a.date<=R.to&&a.date<=today()&&sdBrOk(a.branchId)&&(!SDF.staff||a.staffId===SDF.staff));
+ const cnt=k=>AP.filter(a=>a.status===k).length,tot=AP.length;
+ const CO=AP.filter(a=>a.status==='done'&&(a.undecided||a.visitType==='consult'));
+ const conv=a=>SDL.sales.some(s=>s.customerId===a.customerId&&s.date>=a.date&&s.date<=sdAdd(a.date,14)&&(s.items||[]).some(i=>i.kind==='package'));
+ return {leads:L.length,booked:n('booked'),came:n('came'),consult:n('consult'),pkg:n('pkg'),wait:W.length?Math.round(W.reduce((t,x)=>t+x.wait,0)/W.length*10)/10:null,
+  appts:tot,done:cnt('done')+cnt('in'),no:cnt('no'),cancel:cnt('cancel'),consults:CO.length,consultPkg:CO.filter(conv).length,conv};
+}
+
+/* ---------- staff ---------- */
+function sdStaff(R,br){
+ const people=D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role)&&(!br||s.branchId===br));
+ const A=sdAgg(R.from,R.to,{br,staff:'',cat:''}),F=sdFunnel(R),C=sdClients(R);
+ return people.map(p=>{
+  const s=A.byStaff[p.id]||{v:0,bills:new Set(),comm:0},bills=[...s.bills],t=sdTarget(R.from,R.to,p.branchId,p.id);
+  const svcBills=bills.filter(id=>{const b=SDL.sales.find(x=>x.id===id);return b&&(b.items||[]).some(i=>i.kind==='service'&&(i.staffId===p.id||i.handsOnId===p.id));});
+  const attach=svcBills.filter(id=>{const b=SDL.sales.find(x=>x.id===id);return (b.items||[]).some(i=>retailKind(i.kind));}).length;
+  const AP=SDL.appts.filter(a=>a.staffId===p.id&&a.date>=R.from&&a.date<=R.to&&a.status==='done');
+  const co=AP.filter(a=>a.undecided||a.visitType==='consult'),rb=AP.filter(C.rebookOf).length;
+  const bookedMin=AP.reduce((t,a)=>t+(+a.duration||0),0);
+  const worked=SDL.att.filter(x=>x.staffId===p.id&&x.date>=R.from&&x.date<=R.to&&x.clockIn).reduce((t,x)=>{const o=x.clockOut?new Date(x.clockOut):null;return t+(o&&o>new Date(x.clockIn)?(o-new Date(x.clockIn))/6e4:0);},0);
+  const fb=SDL.fb.filter(f=>!f.hidden&&(f.staffIds||[]).includes(p.id)&&String(f.at).slice(0,10)>=R.from&&String(f.at).slice(0,10)<=R.to),rt=fb.map(f=>staffStar(f,p.id)).filter(Boolean);
+  const req=Object.values(SDL.C).filter(c=>c.preferredStaff===p.id).length;
+  return {p,v:r2(s.v),t,pct:t?Math.round(s.v/t*100):null,bills:bills.length,atv:bills.length?r2(s.v/bills.length):0,
+   attach:svcBills.length?Math.round(attach/svcBills.length*100):null,consults:co.length,cPkg:co.filter(F.conv).length,
+   rebook:AP.length?Math.round(rb/AP.length*100):null,util:worked?Math.round(bookedMin/worked*100):null,req,
+   rating:rt.length?Math.round(rt.reduce((a,b)=>a+b,0)/rt.length*10)/10:null,reviews:rt.length,complaints:rt.filter(v=>v<=2).length,comm:r2(s.comm),commPct:s.v?Math.round(s.comm/s.v*100):null};
+ }).filter(x=>x.v||x.t||x.bills||x.consults||(x.p.takes)).sort((a,b)=>b.v-a.v);
+}
+
+/* ---------- alerts: what needs doing ---------- */
+function sdAlerts(R,X){
+ const out=[],td=today(),m=td.slice(0,7),mid=+td.slice(8,10)>=15&&R.from.slice(0,7)===m;
+ if(mid)X.staff.forEach(s=>{const t=sdTarget(m+'-01',td,s.p.branchId,s.p.id);if(t>0){const v=sdAgg(m+'-01',td,{br:s.p.branchId,staff:s.p.id,cat:''}).v,p=Math.round(v/t*100);
+  if(p<70)out.push({lv:'r',t:esc(s.p.name)+' at '+p+'% of target so far this month',d:rm(v)+' of '+rm(t)+' expected by today',go:"sdStaffBills('"+s.p.id+"')"});}});
+ const pm=mShift(m,-1),dd=+td.slice(8,10),pTo=sdAdd(pm+'-01',dd-1)>mEnd(pm)?mEnd(pm):sdAdd(pm+'-01',dd-1);
+ (D.branches||[]).filter(b=>!sdBr()||b.id===sdBr()).forEach(b=>{const a=sdAgg(m+'-01',td,{br:b.id,staff:'',cat:''}).v,p=sdAgg(pm+'-01',pTo,{br:b.id,staff:'',cat:''}).v,c=sdPct(a,p);
+  if(c!=null&&c<=-15)out.push({lv:'r',t:esc(b.name)+' down '+Math.abs(c)+'% on last month',d:rm(a)+' vs '+rm(p)+' by the same day',go:"sdBranch('"+b.id+"')"});});
+ const F=X.fun,rate=F.appts?F.no/F.appts:0,[cf,ct]=sdCmp(R),pa=SDL.appts.filter(a=>a.date>=cf&&a.date<=ct&&sdBrOk(a.branchId)),pr=pa.length?pa.filter(a=>a.status==='no').length/pa.length:0;
+ if(F.appts>=5&&rate>Math.max(0.1,pr*1.5))out.push({lv:rate>0.2?'r':'a',t:'No-shows at '+Math.round(rate*100)+'%',d:'Usually about '+Math.round(pr*100)+'%. Send reminders the day before; take deposits for first visits.',go:"sdTab('fun')"});
+ const idle=X.pkgIdle.length;if(idle)out.push({lv:'a',t:idle+' package client'+(idle>1?'s':'')+' not seen for 60 days or more',d:rm(r2(X.pkgIdle.reduce((t,x)=>t+x.val,0)))+' of sessions waiting — call them before they forget',go:'sdIdle()'});
+ const lim=sdDef().discMax,big=X.cur.L.filter(x=>x.s).reduce((m2,x)=>{const b=m2[x.s.id]=m2[x.s.id]||{s:x.s,g:0,d:0};b.g+=x.g;b.d+=x.disc;return m2;},{}),over=Object.values(big).filter(b=>b.g&&b.d/b.g*100>lim);
+ if(over.length)out.push({lv:'a',t:over.length+' bill'+(over.length>1?'s':'')+' discounted more than '+lim+'%',d:rm(r2(over.reduce((t,b)=>t+b.d,0)))+' given away',go:'sdDiscBills()'});
+ if(X.cl.dorm[60].length)out.push({lv:'a',t:X.cl.dorm[60].length+' client'+(X.cl.dorm[60].length>1?'s':'')+' slipping away (60–89 days)',d:'The easiest to win back — a message now',go:"sdTab('cli')"});
+ if(F.consults>=3&&F.consultPkg/F.consults<0.3)out.push({lv:'a',t:'Consultations turning into packages: '+Math.round(F.consultPkg/F.consults*100)+'%',d:F.consultPkg+' of '+F.consults+' — review the consultation script and offer',go:"sdTab('fun')"});
+ return out.sort((a,b)=>(a.lv==='r'?0:1)-(b.lv==='r'?0:1));
+}
+function sdPkgIdle(){const td=today();return SDL.cps.filter(c=>sdBrOk(c.branchId)&&String(c.expiry||'9')>=td&&cpLeft(c)>0).map(c=>{const l=String(c.lastRedeemedAt||c.soldAt||'').slice(0,10);
+ return {c,l,d:l?daysBetween(l,td):999,val:r2((+c.price||0)*cpLeft(c)/(cpTot(c)||1))};}).filter(x=>x.d>=60).sort((a,b)=>b.val-a.val);}
+
+/* ---------- the screen ---------- */
+TABS.splice(TABS.findIndex(t=>t.id==='rep')+1,0,{id:'sd',ic:'target',label:'Sales',perm:'report',group:'Money',desc:'Where sales are, why, and what to do next'});
+window.sdSet=(k,v)=>{SDF[k]=v;if(k==='per'||k==='cmp'||k==='from'||k==='to'){const R=sdRange();if(!SDL||SDL.from>[R.yFrom,R.cFrom].sort()[0])return sdLoad(true);}SDX=null;render();};
+window.sdTab=t=>{SDF.tab=t;SDF.view='mgr';SDX=null;render();window.scrollTo(0,0);};
+window.sdBranch=b=>{SDF.br=b;SDF.tab='staff';SDF.view='mgr';SDX=null;render();};
+function sdFilters(){
+ const br=isOwnerMe()&&(D.branches||[]).length>1?'<select class="f" onchange="sdSet(\'br\',this.value)"><option value="">All branches</option>'+D.branches.map(b=>'<option value="'+b.id+'"'+(SDF.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'';
+ const ppl=D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role)&&(!sdBr()||s.branchId===sdBr()));
+ return '<div class="card sdfil"><div class="seg sdper">'+[['today','Today'],['week','Week'],['month','Month'],['quarter','Quarter'],['ytd','YTD'],['custom','Custom']].map(([k,t])=>'<button type="button" class="'+(SDF.per===k?'on':'')+'" onclick="sdSet(\'per\',\''+k+'\')">'+t+'</button>').join('')+'</div>'+
+  (SDF.per==='custom'?'<div class="row" style="gap:6px;margin-top:8px"><input class="f" type="date" value="'+esc(SDF.from||'')+'" onchange="sdSet(\'from\',this.value)"><input class="f" type="date" value="'+esc(SDF.to||'')+'" onchange="sdSet(\'to\',this.value)"></div>':'')+
+  '<div class="sdsel"><select class="f" onchange="sdSet(\'cmp\',this.value)"><option value="prev"'+(SDF.cmp==='prev'?' selected':'')+'>vs period before</option><option value="yoy"'+(SDF.cmp==='yoy'?' selected':'')+'>vs last year</option></select>'+br+
+   '<select class="f" onchange="sdSet(\'staff\',this.value)"><option value="">All staff</option>'+ppl.map(s=>'<option value="'+s.id+'"'+(SDF.staff===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+   '<select class="f" onchange="sdSet(\'cat\',this.value)"><option value="">All categories</option>'+SD_CATS.map(c=>'<option'+(SDF.cat===c?' selected':'')+'>'+c+'</option>').join('')+'</select></div>'+
+  '<div class="spread" style="margin-top:8px;gap:8px;flex-wrap:wrap"><div class="seg sdview"><button type="button" class="'+(SDF.view==='bod'?'on':'')+'" onclick="sdSet(\'view\',\'bod\')">BOD</button><button type="button" class="'+(SDF.view==='mgr'?'on':'')+'" onclick="sdSet(\'view\',\'mgr\')">Manager</button></div>'+
+   '<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="sdDefs()">'+ic('gear',13)+'Definitions & targets</button><button class="btn sm ghost" onclick="sdReload()">'+ic('refresh',13)+'</button></div></div></div>';
+}
+function vSales(){
+ if(!can('report'))return '<div class="card"><div class="empty">Sales figures are for the owner and managers.</div></div>';
+ if(!SDL){sdLoad();return sdFilters()+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Reading bills, bookings, packages and leads…</p></div></div>';}
+ if(SDBUSY)return sdFilters()+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const R=sdRange(),[cf,ct,cl]=sdCmp(R);
+ if(!SDX){const cur=sdAgg(R.from,R.to),prev=sdAgg(cf,ct),yoy=sdAgg(R.yFrom,R.yTo);
+  SDX={R,cur,prev,yoy,cl:sdClients(R),fun:sdFunnel(R),staff:sdStaff(R,sdBr()),pkgIdle:sdPkgIdle()};SDX.alerts=sdAlerts(R,SDX);}
+ const X=SDX,def=sdDef();
+ const defLine='<p class="tiny muted sddef">'+ic('note',11)+' Sales '+(def.sst?'include':'exclude')+' SST · packages counted '+(def.pkg==='used'?'when sessions are used':'when sold')+' · compared with '+cl+' ('+dshort(cf)+' – '+dshort(ct)+')'+(SDF.staff?' · '+esc(stf(SDF.staff).name||''):'')+(SDF.cat?' · '+SDF.cat:'')+'</p>';
+ const tabs=[['sum','Summary'],['sales','Sales'],['cli','Clients'],['fun','Funnel'],['br','Branches'],['staff','Staff'],['mkt','Marketing'],['fc','Forecast']];
+ if(SDF.view==='bod')return sdFilters()+defLine+sdSummary(X,cl,true)+sdTrend(12)+sdBranchCard(X,true)+sdForecastCard(X,true);
+ return sdFilters()+'<div class="crmtop"><div class="crmseg">'+tabs.map(([k,t])=>'<button class="'+(SDF.tab===k?'on':'')+'" onclick="sdTab(\''+k+'\')">'+t+(k==='sum'&&X.alerts.length?'<i>'+X.alerts.length+'</i>':'')+'</button>').join('')+'</div></div>'+defLine+
+  ({sum:()=>sdSummary(X,cl,false),sales:()=>sdSalesTab(X),cli:()=>sdCliTab(X),fun:()=>sdFunTab(X),br:()=>sdBranchCard(X,false),staff:()=>sdStaffTab(X),mkt:()=>sdMktTab(X),fc:()=>sdForecastCard(X,false)}[SDF.tab]||(()=>''))();
+}
+/* 1 · where we are, why, what next */
+function sdSummary(X,cl,bod){
+ const R=X.R,c=X.cur,p=X.prev,y=X.yoy,t=sdTarget(R.from,R.end,sdBr(),SDF.staff),tSoFar=sdTarget(R.from,R.to,sdBr(),SDF.staff);
+ const run=R.days<R.total&&R.from<=today()?r2(c.v/R.days*R.total):c.v,ach=t?Math.round(c.v/t*100):null,pace=tSoFar?Math.round(c.v/tSoFar*100):null;
+ const cash=sdCash(R.from,R.to),rec=sdRecog(R.from,R.to);
+ const k=(lab,val,sub,icn,rag)=>'<div class="kpi sdk '+(rag||'')+'"><div class="lab">'+ic(icn,13)+lab+'</div><div class="big">'+val+'</div><div class="sub">'+sub+'</div></div>';
+ const why=[];
+ const bc=sdPct(c.bills,p.bills),ac=sdPct(c.atv,p.atv);
+ if(bc!=null)why.push((bc>=0?'More':'Fewer')+' bills: '+c.bills+' vs '+p.bills+' ('+(bc>=0?'+':'')+bc+'%).');
+ if(ac!=null&&Math.abs(ac)>=3)why.push('Average ticket '+(ac>=0?'up':'down')+' '+Math.abs(ac)+'% to '+rm(c.atv)+'.');
+ const mv=SD_CATS.map(k2=>({k:k2,d:((c.byCat[k2]||{}).v||0)-((p.byCat[k2]||{}).v||0)})).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
+ if(mv&&Math.abs(mv.d)>=1)why.push(mv.k+' '+(mv.d>=0?'added':'lost')+' '+rm(Math.abs(r2(mv.d)))+' — the biggest change.');
+ const sm=Object.keys({...c.byStaff,...p.byStaff}).filter(Boolean).map(id=>({id,d:((c.byStaff[id]||{}).v||0)-((p.byStaff[id]||{}).v||0)})).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
+ if(sm&&Math.abs(sm.d)>=1&&stf(sm.id).name)why.push(esc(stf(sm.id).name)+' '+(sm.d>=0?'+':'−')+rm(Math.abs(r2(sm.d)))+'.');
+ const nwp=X.cl.nw.length;why.push(nwp+' new client'+(nwp!==1?'s':'')+(X.cl.retention!=null?' · '+X.cl.retention+'% of last period\'s clients came back':'')+'.');
+ if(c.g&&c.disc/c.g>0.1)why.push('Discounts took '+Math.round(c.disc/c.g*100)+'% off list prices ('+rm(c.disc)+').');
+ return '<div class="sdgrid six">'+
+  k('Sales',rm(c.v),(t?'target '+rm(t)+' · '+ach+'%':'no target set')+' · '+sdChg(c.v,p.v),'chart',sdRag(pace,100,85))+
+  k('Run-rate',rm(run),R.days<R.total?'if this pace holds to '+dshort(R.end)+(t?' · '+Math.round(run/t*100)+'% of target':''):'period complete','target',t?sdRag(Math.round(run/t*100),100,90):'')+
+  k('vs last year',y.v?sdChg(c.v,y.v):'—',y.v?rm(y.v)+' same period last year':'no data for last year','calendar')+
+  k('Bills · ATV',c.bills+' · '+rm(c.atv),'bills '+sdChg(c.bills,p.bills)+' · ticket '+sdChg(c.atv,p.atv),'receipt')+
+  k('Gross margin',c.mPct+'%',rm(c.margin)+' after product costs · discounts '+rm(c.disc)+(c.g?' ('+Math.round(c.disc/c.g*100)+'%)':''),'spark',sdRag(c.mPct,70,55))+
+  k('Cash in · earned',rm(cash)+' · '+rm(rec),'money received vs revenue earned (sessions used, not packages sold)','wallet')+'</div>'+
+  '<div class="sdtwo"><div class="card"><h3 class="sdh">'+ic('search',15)+' Why</h3>'+why.map(x=>'<p class="sdwhy">'+x+'</p>').join('')+'</div>'+
+  '<div class="card"><h3 class="sdh">'+ic('flag',15)+' What to do next</h3>'+(X.alerts.length?X.alerts.map(a=>'<button class="sdal '+a.lv+'" onclick="'+a.go+'"><i></i><span><b>'+a.t+'</b><small>'+a.d+'</small></span>'+ic('right',13)+'</button>').join('')
+   :'<div class="empty">'+ic('check',20)+'<div>Nothing needs attention.</div></div>')+'</div></div>'+
+  (bod?'':sdTrend(6));
+}
+function sdTrend(n){
+ const e=today().slice(0,7),ms=[];for(let i=n-1;i>=0;i--)ms.push(mShift(e,-i));
+ const v=ms.map(m=>({m,v:sdAgg(m+'-01',m===e?today():mEnd(m)).v,t:sdTarget(m+'-01',mEnd(m),sdBr(),SDF.staff)})),mx=Math.max(1,...v.map(x=>Math.max(x.v,x.t)));
+ return '<div class="card"><h3 class="sdh">'+ic('chart',15)+' Last '+n+' months</h3><div class="pltrend" style="grid-template-columns:repeat('+n+',1fr)">'+v.map(x=>{const h=holInMonth(x.m);
+  return '<div class="pltm"><div class="plbars"><i class="r" style="height:'+(x.v/mx*100)+'%"></i>'+(x.t?'<i class="c" style="height:'+(x.t/mx*100)+'%;opacity:.35"></i>':'')+'</div><b>'+rmk(x.v)+'</b><small>'+mLabel(x.m).slice(0,3)+'</small>'+(h?'<small class="sdhol">'+esc(h)+'</small>':'')+'</div>';}).join('')+'</div>'+
+  '<div class="tiny muted"><span class="lg r"></span>Sales<span class="lg c" style="opacity:.35"></span>Target · the festival or holiday of each month is written under it</div></div>';
+}
+function holInMonth(m){ /* the festival that shapes the month, else the first public holiday */
+ const big=[[/aidilfitri/i,'Raya'],[/raya haji|aidiladha/i,'Raya Haji'],[/tahun baru cina|chinese new/i,'CNY'],[/deepavali/i,'Deepavali'],[/krismas|christmas/i,'Year end']];let first='';
+ for(let d=1;d<=31;d++){const x=m+'-'+String(d).padStart(2,'0');if(x>mEnd(m))break;for(const h of holOf(x).filter(z=>z.h)){const b=big.find(([r])=>r.test(h.n));if(b)return b[1];if(!first)first=h.n.split(' (')[0].split(' ').slice(0,2).join(' ');}}
+ return m.slice(5)==='12'?'Year end':first;}
+/* payday: the days around the end of the month against the rest */
+function sdPayday(){const td=today(),from=sdAdd(td,-179),by={};sdLines(from,td,{cat:''}).forEach(x=>{const d=x.s?x.s.date:x.r.date;by[d]=(by[d]||0)+x.v;});
+ let a=0,na=0,b=0,nb=0;for(let d=from;d<=td;d=sdAdd(d,1)){const n=+d.slice(8,10),v=by[d]||0;if(n>=25||n<=5){a+=v;na++;}else{b+=v;nb++;}}
+ return {pay:na?a/na:0,rest:nb?b/nb:0};}
+/* 2 · sales */
+function sdSalesTab(X){
+ const c=X.cur,p=X.prev;
+ const cats='<div class="card"><h3 class="sdh">'+ic('grid',15)+' By category</h3><div class="scroll"><table class="pltbl"><tr><th>Category</th><th class="num">Sales</th><th class="num">Share</th><th class="num">Change</th><th class="num">Margin</th></tr>'+
+  SD_CATS.map(k=>{const x=c.byCat[k]||{v:0,cost:0},y=p.byCat[k]||{v:0};return '<tr><td>'+k+'</td><td class="num">'+rm(r2(x.v))+'</td><td class="num">'+(c.v?Math.round(x.v/c.v*100):0)+'%</td><td class="num">'+sdChg(x.v,y.v)+'</td><td class="num">'+(x.v?Math.round((x.v-x.cost)/x.v*100)+'%':'—')+'</td></tr>';}).join('')+'</table></div>'+
+  (sdDef().pkg==='used'?'':'<p class="tiny muted">Packages here are packages sold. Switch to "when sessions are used" in Definitions to count them as they are used.</p>')+'</div>';
+ const it=Object.values(c.byItem).map(x=>({...x,m:r2(x.v-x.cost)}));const key=SDF.rank==='margin'?'m':'v';
+ const top=[...it].sort((a,b)=>b[key]-a[key]).slice(0,10),bot=[...it].sort((a,b)=>a[key]-b[key]).slice(0,10);
+ const tbl=(L,h)=>'<div><h4 class="sdh4">'+h+'</h4><table class="mjt">'+L.map((x,i)=>'<tr><td>'+(i+1)+'. '+esc(x.name)+'<br><span class="tiny muted">'+x.c+' · '+r2(x.q)+' sold</span></td><td class="num">'+rm(r2(x.v))+'<br><span class="tiny muted">margin '+rm(x.m)+'</span></td></tr>').join('')+'</table></div>';
+ const rank='<div class="card"><div class="sec-h"><h3 class="sdh" style="margin:0">'+ic('award',15)+' Top & bottom 10</h3><div class="seg"><button type="button" class="'+(SDF.rank!=='margin'?'on':'')+'" onclick="sdSet(\'rank\',\'rev\')">By sales</button><button type="button" class="'+(SDF.rank==='margin'?'on':'')+'" onclick="sdSet(\'rank\',\'margin\')">By margin</button></div></div>'+
+  (it.length?'<div class="sdtwo">'+tbl(top,'Top 10')+tbl(bot,'Bottom 10')+'</div>':'<div class="empty">No sales in this period.</div>')+'</div>';
+ const act=SDL.cps.filter(x=>sdBrOk(x.branchId)&&String(x.expiry||'9')>=today()),left=act.reduce((t,x)=>t+cpLeft(x),0),val=r2(act.reduce((t,x)=>t+(+x.price||0)*cpLeft(x)/(cpTot(x)||1),0));
+ const yr=SDL.cps.filter(x=>sdBrOk(x.branchId)&&String(x.soldAt||'').slice(0,10)>=sdAdd(today(),-365)),tot=yr.reduce((t,x)=>t+cpTot(x),0),used=yr.reduce((t,x)=>t+cpTot(x)-cpLeft(x),0);
+ const pk='<div class="card"><h3 class="sdh">'+ic('package',15)+' Packages</h3><div class="sdgrid">'+
+  '<div class="kpi sdk"><div class="lab">Sessions still owed</div><div class="big">'+left+'</div><div class="sub">'+rm(val)+' — owed to clients, and '+left+' visits to come</div></div>'+
+  '<div class="kpi sdk '+sdRag(tot?Math.round(used/tot*100):null,50,30)+'"><div class="lab">Redemption (12 months)</div><div class="big">'+(tot?Math.round(used/tot*100):0)+'%</div><div class="sub">'+used+' of '+tot+' sessions sold used</div></div>'+
+  '<div class="kpi sdk '+(X.pkgIdle.length?'a':'')+'"><div class="lab">Not seen 60+ days</div><div class="big">'+X.pkgIdle.length+'</div><div class="sub"><a href="#" class="bklink" onclick="sdIdle();return false">see who</a> — slow use often means unhappy or forgotten</div></div></div></div>';
+ const pr={},sale={};c.L.forEach(x=>{if(!x.s)return;const id=x.i.promoId;if(id){const o=pr[id]=pr[id]||{n:x.i.promoName||id,bills:new Set(),d:0,nw:new Set(),old:new Set()};o.bills.add(x.s.id);o.d+=+x.i.lineDisc||0;
+  if(x.s.customerId)(sdIsNew(x.s.customerId,X.R.from,X.R.to)?o.nw:o.old).add(x.s.customerId);}sale[x.s.id]=x.s;});
+ const vch=r2(Object.values(sale).reduce((t,s)=>t+(+s.voucherAmt||0),0)),man=r2(c.L.filter(x=>x.i&&['pct','rm'].includes(x.i.discType)).reduce((t,x)=>t+(+x.i.lineDisc||0),0));
+ const promo='<div class="card"><h3 class="sdh">'+ic('tag',15)+' Discounts & promotions</h3><p class="tiny muted" style="margin:0 0 8px">'+rm(c.disc)+' off list prices in total ('+(c.g?Math.round(c.disc/c.g*100):0)+'%) · manual discounts '+rm(man)+' · vouchers '+rm(vch)+'</p>'+
+  (Object.keys(pr).length?'<table class="mjt"><tr><th>Promotion</th><th class="num">Bills</th><th class="num">Given</th><th class="num">New clients</th><th class="num">Existing</th></tr>'+Object.values(pr).map(o=>'<tr><td>'+esc(o.n)+'</td><td class="num">'+o.bills.size+'</td><td class="num">'+rm(r2(o.d))+'</td><td class="num"><b>'+o.nw.size+'</b></td><td class="num">'+o.old.size+'</td></tr>').join('')+'</table>'+
+   '<p class="tiny muted">A promotion earns its keep when it brings new clients, not when it only makes things cheaper for clients who would have come anyway.</p>':'<div class="tiny muted">No promotion used in this period.</div>')+'</div>';
+ return cats+rank+pk+promo;
+}
+window.sdIdle=()=>{const L=(SDX&&SDX.pkgIdle)||sdPkgIdle();
+ modal('Package clients not seen for 60+ days','<div class="card">'+(L.length?L.slice(0,80).map(x=>{const cu=SDL.C[x.c.customerId]||{},ph=waNum(cu.phone||'');
+  return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(x.c.customerName||cu.name||'')+'</b><small>'+esc(cpName(x.c))+' · '+cpLeft(x.c)+' left · '+(x.d>=999?'never used':'last '+dshort(x.l))+'</small></div><b class="finamt">'+rm(x.val)+'</b>'+
+   (ph?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/'+ph+'?text='+encodeURIComponent('Hi '+String(x.c.customerName||cu.name||'').split(' ')[0]+', anda masih ada '+cpLeft(x.c)+' sesi '+cpName(x.c)+' di '+(bizC().name||'kami')+'. Jom book slot minggu ni? 🌿')+'">'+ic('msg',13)+'</a>':'')+'</div>';}).join(''):'<div class="empty">None.</div>')+'</div>');};
+window.sdDiscBills=()=>{const lim=sdDef().discMax,by={};SDX.cur.L.filter(x=>x.s).forEach(x=>{const b=by[x.s.id]=by[x.s.id]||{s:x.s,g:0,d:0};b.g+=x.g;b.d+=x.disc;});
+ sdBillList(Object.values(by).filter(b=>b.g&&b.d/b.g*100>lim).map(b=>b.s),'Bills discounted more than '+lim+'%',s=>{const b=by[s.id];return Math.round(b.d/b.g*100)+'% off · −'+rm(r2(b.d));});};
+function sdBillList(S,title,extra){
+ modal(title,'<div class="card">'+(S.length?S.sort((a,b)=>String(b.date).localeCompare(a.date)).slice(0,150).map(s=>'<button class="bkrow" onclick="closeModal();showReceipt(\''+s.id+'\')"><span class="bkd">'+dshort(s.date)+'</span><span class="bkdesc">'+esc(s.customerName||'Walk-in')+' · '+esc(s.invoiceNo||'')+
+  '<small>'+esc((s.items||[]).map(i=>i.name).join(', ').slice(0,80))+(extra?' · '+extra(s):'')+'</small></span><b class="bkamt">'+rm(s.total)+'</b></button>').join(''):'<div class="empty">None.</div>')+'</div>');}
+/* 3 · clients */
+function sdCliTab(X){
+ const C=X.cl,nr=C.nwRev,tv=C.cur.v||1;
+ const dm=(k,lab)=>'<button class="suprow" onclick="sdDorm('+k+')"><span class="supn"><b>'+lab+'</b><small>'+(k===60?'the easiest to win back':k===90?'a reason to come back — an offer or a new treatment':'long gone — a bigger offer, or let go')+'</small></span><span class="supq">'+C.dorm[k].length+'</span></button>';
+ return '<div class="sdgrid">'+
+  '<div class="kpi sdk"><div class="lab">New clients</div><div class="big">'+C.nw.length+'</div><div class="sub">'+rm(nr)+' · '+Math.round(nr/tv*100)+'% of sales</div></div>'+
+  '<div class="kpi sdk"><div class="lab">Returning clients</div><div class="big">'+C.rep.length+'</div><div class="sub">'+rm(r2(C.cur.v-nr))+' · '+Math.round((C.cur.v-nr)/tv*100)+'% of sales</div></div>'+
+  '<div class="kpi sdk '+sdRag(C.retention,60,40)+'"><div class="lab">Retention</div><div class="big">'+(C.retention==null?'—':C.retention+'%')+'</div><div class="sub">'+C.kept+' of '+C.prevN+' clients from the period before came back</div></div>'+
+  '<div class="kpi sdk '+sdRag(C.rebook,50,30)+'"><div class="lab">Rebooked before leaving</div><div class="big">'+(C.rebook==null?'—':C.rebook+'%')+'</div><div class="sub">'+C.rb+' of '+C.done+' completed visits booked their next one the same day</div></div>'+
+  '<div class="kpi sdk"><div class="lab">Visits a year</div><div class="big">'+C.freq+'</div><div class="sub">per active client · '+C.active+' active in 12 months</div></div>'+
+  '<div class="kpi sdk"><div class="lab">Client value (12 months)</div><div class="big">'+rm(C.clv)+'</div><div class="sub">average spent per active client in a year</div></div></div>'+
+  '<div class="card"><h3 class="sdh">'+ic('users',15)+' Dormant clients — win them back</h3>'+dm(60,'60–89 days')+dm(90,'90–179 days')+dm(180,'180 days or more')+'</div>'+
+  '<div class="card"><h3 class="sdh">'+ic('flag',15)+' Where new clients came from</h3>'+(Object.keys(C.src).length?'<table class="mjt"><tr><th>Source</th><th class="num">New clients</th><th class="num">Their sales</th></tr>'+
+   Object.entries(C.src).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>'<tr><td>'+esc(k)+'</td><td class="num">'+v.n+'</td><td class="num">'+rm(r2(v.v))+'</td></tr>').join('')+'</table>':'<div class="tiny muted">No new clients in this period.</div>')+'</div>';
+}
+window.sdDorm=k=>{const L=SDX.cl.dorm[k].sort((a,b)=>a.d-b.d);
+ modal('Not seen '+(k===60?'60–89':k===90?'90–179':'180+')+' days','<div class="card"><div class="row" style="gap:6px;margin:0 0 8px"><button class="btn sm ghost" onclick="sdDormCSV('+k+')">'+ic('download',13)+'CSV</button></div>'+
+  (L.length?L.slice(0,150).map(x=>{const ph=waNum(x.c.phone||'');return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(x.c.name||'')+'</b><small>'+(x.l?'last visit '+dstr(x.l)+' · '+x.d+' days':'no visit on record')+(x.c.source?' · '+esc(x.c.source):'')+'</small></div>'+
+   (ph?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/'+ph+'?text='+encodeURIComponent('Hi '+String(x.c.name||'').split(' ')[0]+', lama tak jumpa! Kami di '+(bizC().name||'')+' rindu nak manjakan kulit anda. Jom book sesi minggu ni — ada tawaran istimewa untuk anda. 🌿')+'">'+ic('msg',13)+'Win back</a>':'')+'</div>';}).join(''):'<div class="empty">None.</div>')+'</div>');};
+window.sdDormCSV=k=>csvDownload('dormant-'+k+'-days.csv',[['Name','Phone','Last visit','Days','Source'],...SDX.cl.dorm[k].map(x=>[x.c.name||'',x.c.phone||'',x.l||'',x.d>=999?'':x.d,x.c.source||''])]);
+/* 4 · funnel */
+function sdFunTab(X){
+ const F=X.fun,st=[['Leads',F.leads],['Booked',F.booked],['Came',F.came],['Consultation',F.consult],['Bought a package',F.pkg]],mx=Math.max(1,F.leads);
+ return '<div class="card"><h3 class="sdh">'+ic('funnel',15)+' Leads to packages <span class="tiny muted">— leads added in this period</span></h3>'+
+  (F.leads?st.map(([l,n],k)=>'<div class="sdfun"><span>'+l+'</span><div class="bar"><i style="width:'+Math.max(2,n/mx*100)+'%"></i></div><b>'+n+'</b><small>'+(k?(st[k-1][1]?Math.round(n/st[k-1][1]*100)+'% of '+st[k-1][0].toLowerCase():'—'):'')+'</small></div>').join('')+
+   '<p class="tiny muted">'+(F.wait!=null?'On average '+F.wait+' days from lead to booking.':'')+' The step with the lowest % is where the funnel leaks.</p>':'<div class="empty">No leads added in this period (CRM → Leads).</div>')+'</div>'+
+  '<div class="sdgrid">'+
+  '<div class="kpi sdk '+sdRag(F.appts?100-Math.round(F.no/F.appts*100):null,92,85)+'"><div class="lab">Show-up</div><div class="big">'+(F.appts?Math.round(F.done/F.appts*100):0)+'%</div><div class="sub">'+F.done+' of '+F.appts+' bookings came</div></div>'+
+  '<div class="kpi sdk '+(F.appts&&F.no/F.appts>0.1?'r':'')+'"><div class="lab">No-show</div><div class="big">'+(F.appts?Math.round(F.no/F.appts*100):0)+'%</div><div class="sub">'+F.no+' bookings</div></div>'+
+  '<div class="kpi sdk"><div class="lab">Cancelled</div><div class="big">'+(F.appts?Math.round(F.cancel/F.appts*100):0)+'%</div><div class="sub">'+F.cancel+' bookings</div></div>'+
+  '<div class="kpi sdk '+sdRag(F.consults?Math.round(F.consultPkg/F.consults*100):null,40,25)+'"><div class="lab">Consultation → package</div><div class="big">'+(F.consults?Math.round(F.consultPkg/F.consults*100)+'%':'—')+'</div><div class="sub">'+F.consultPkg+' of '+F.consults+' consultations bought a package within 14 days</div></div></div>';
+}
+/* 5 · branches */
+function sdBranchCard(X,bod){
+ const R=X.R,[cf,ct]=sdCmp(R),B=(D.branches||[]).filter(b=>!sdBr()||b.id===sdBr()||isOwnerMe());
+ const rows=B.map(b=>{const c=sdAgg(R.from,R.to,{br:b.id,staff:'',cat:SDF.cat}),p=sdAgg(cf,ct,{br:b.id,staff:'',cat:SDF.cat}),y=sdAgg(R.yFrom,R.yTo,{br:b.id,staff:'',cat:SDF.cat}),t=sdTarget(R.from,R.to,b.id);
+  const rooms=D.rooms.filter(r=>r.branchId===b.id).length||1,hrs=Math.max(1,(D.meta.close||20)-(D.meta.open||9));
+  const mins=SDL.appts.filter(a=>(a.branchId||ME.branchId)===b.id&&a.date>=R.from&&a.date<=R.to&&!['cancel','no'].includes(a.status)).reduce((s,a)=>s+(+a.duration||0),0);
+  return {b,c,p,y,t,pct:t?Math.round(c.v/t*100):null,util:Math.round(mins/(rooms*hrs*60*R.days)*100),perRoom:r2(c.v/rooms),rooms};}).sort((a,b)=>b.c.v-a.c.v);
+ const tbl='<div class="card"><h3 class="sdh">'+ic('grid',15)+' Branches</h3><div class="scroll"><table class="pltbl sdtbl"><tr><th>Branch</th><th class="num">Sales</th><th class="num">Target</th><th class="num">vs before</th>'+(bod?'':'<th class="num">Like-for-like YoY</th><th class="num">Bills · ATV</th><th class="num">Rooms used</th><th class="num">Per room</th>')+'</tr>'+
+  rows.map(r=>'<tr onclick="sdBranch(\''+r.b.id+'\')" style="cursor:pointer"><td><b>'+esc(r.b.name)+'</b></td><td class="num">'+rm(r.c.v)+'</td><td class="num"><span class="pill '+sdRag(r.pct,100,85)+'">'+(r.pct==null?'—':r.pct+'%')+'</span>'+(r.t?'<br><span class="tiny muted">of '+rm(r.t)+'</span>':'')+'</td><td class="num">'+sdChg(r.c.v,r.p.v)+'</td>'+
+   (bod?'':'<td class="num">'+(r.y.v?sdChg(r.c.v,r.y.v):'<span class="muted">new</span>')+'</td><td class="num">'+r.c.bills+' · '+rm(r.c.atv)+'</td><td class="num"><span class="pill '+sdRag(r.util,60,40)+'">'+r.util+'%</span></td><td class="num">'+rm(r.perRoom)+'</td>')+'</tr>').join('')+'</table></div>'+
+  (bod?'':'<p class="tiny muted">Rooms used = booked treatment hours ÷ room hours open. Like-for-like compares each branch only with its own sales a year ago. Tap a branch for its staff.</p>')+'</div>';
+ if(bod)return tbl;
+ const br=sdBr()||ME.branchId,O=D.meta.open||9,C=D.meta.close||20,from=R.days<28?sdAdd(R.to,-27):R.from,H={};let mx=1;
+ SDL.appts.filter(a=>(a.branchId||ME.branchId)===br&&a.date>=from&&a.date<=R.to&&!['cancel','no'].includes(a.status)).forEach(a=>{const d=new Date(a.start),k=((d.getDay()+6)%7)+'_'+d.getHours();H[k]=(H[k]||0)+1;mx=Math.max(mx,H[k]);});
+ const heat='<div class="card"><h3 class="sdh">'+ic('clock',15)+' Busy days & hours <span class="tiny muted">— '+esc((D.branches.find(b=>b.id===br)||{}).name||'')+', bookings '+dshort(from)+' – '+dshort(R.to)+'</span></h3><div class="scroll"><table class="sdheat"><tr><th></th>'+
+  [...Array(C-O)].map((_,i)=>'<th>'+(O+i)+'</th>').join('')+'</tr>'+['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((dn,di)=>'<tr><th>'+dn+'</th>'+[...Array(C-O)].map((_,i)=>{const v=H[di+'_'+(O+i)]||0;
+   return '<td'+(v?' style="background:rgba(166,124,61,'+(0.15+0.85*v/mx)+');color:'+(v/mx>0.55?'#fff':'var(--ink)')+'"':'')+' title="'+dn+' '+(O+i)+':00 · '+v+'">'+(v||'')+'</td>';}).join('')+'</tr>').join('')+'</table></div>'+
+  '<p class="tiny muted">Light cells are quiet hours — good for off-peak promotions; dark ones need the most staff.</p></div>';
+ const m=R.from.slice(0,7),one=R.to.slice(0,7)===m;
+ const cm='<div class="card"><h3 class="sdh">'+ic('wallet',15)+' Contribution after branch costs</h3>'+(!isOwnerMe()?'<p class="tiny muted">For the owner.</p>':!one?'<p class="tiny muted">Pick a single month (Month) to see this.</p>':
+  (SDCM[m]?'<table class="mjt"><tr><th>Branch</th><th class="num">Revenue</th><th class="num">Staff</th><th class="num">Rent</th><th class="num">Products</th><th class="num">Marketing</th><th class="num">Contribution</th></tr>'+SDCM[m].map(x=>'<tr><td>'+esc(x.name)+'</td><td class="num">'+rm(x.rev)+'</td><td class="num">'+rm(x.staff)+'</td><td class="num">'+rm(x.rent)+'</td><td class="num">'+rm(x.prod)+'</td><td class="num">'+rm(x.mkt)+'</td><td class="num"><b class="'+(x.cm<0?'neg':'')+'">'+rm(x.cm)+'</b> <span class="tiny muted">'+(x.rev?Math.round(x.cm/x.rev*100)+'%':'')+'</span></td></tr>').join('')+'</table><p class="tiny muted">From the Finance books for '+mLabel(m)+' (revenue as earned).</p>'
+   :'<button class="btn sm" onclick="sdContrib(\''+m+'\')">'+ic('chart',13)+'Work it out from the books</button>'))+'</div>';
+ return tbl+heat+cm;
+}
+window.sdContrib=async m=>{toast('Reading the books…');const out=[];
+ for(const b of D.branches||[]){try{const J=await finJournalOf(m,b.id),P=plOf(J),s=(f)=>r2(Object.keys(P).filter(f).reduce((t,c)=>t+P[c],0));
+  const rev=s(c=>plSec(c)==='rev'),staff=s(c=>/^51/.test(c)),rent=s(c=>c==='6000'),prod=s(c=>c==='5000'),mkt=s(c=>c==='6030');out.push({name:b.name,rev,staff,rent,prod,mkt,cm:r2(rev-staff-rent-prod-mkt)});}catch(e){console.warn(e);}}
+ SDCM[m]=out.sort((a,b)=>b.cm-a.cm);render();};
+/* 6 · staff */
+function sdStaffTab(X){
+ const L=X.staff,c=(v,g,a,t)=>'<span class="pill '+sdRag(v,g,a)+'">'+(v==null?'—':v+(t||'%'))+'</span>';
+ return '<div class="card"><div class="sec-h"><h3 class="sdh" style="margin:0">'+ic('users',15)+' Staff'+(sdBr()?' · '+esc((D.branches.find(b=>b.id===sdBr())||{}).name||''):'')+'</h3><button class="btn sm ghost" onclick="sdStaffCSV()">'+ic('download',13)+'CSV</button></div>'+
+  '<div class="scroll"><table class="pltbl sdtbl"><tr><th>Staff</th><th class="num">Sales</th><th class="num">Target</th><th class="num">ATV</th><th class="num">Consult → pkg</th><th class="num">Retail attach</th><th class="num">Rebooking</th><th class="num">Utilisation</th><th class="num">Requested by</th><th class="num">Rating</th><th class="num">Commission</th></tr>'+
+  L.map(s=>'<tr onclick="sdStaffBills(\''+s.p.id+'\')" style="cursor:pointer"><td><b>'+esc(s.p.name)+'</b><br><span class="tiny muted">'+esc(ROLE[s.p.role]||'')+'</span></td><td class="num">'+rm(s.v)+'</td><td class="num">'+(s.t?c(s.pct,100,80)+'<br><span class="tiny muted">'+rm(s.t)+'</span>':'—')+'</td><td class="num">'+rm(s.atv)+'</td>'+
+   '<td class="num">'+(s.consults?c(Math.round(s.cPkg/s.consults*100),40,25)+'<br><span class="tiny muted">'+s.cPkg+'/'+s.consults+'</span>':'—')+'</td><td class="num">'+c(s.attach,30,15)+'</td><td class="num">'+c(s.rebook,50,30)+'</td><td class="num">'+c(s.util,70,50)+'</td>'+
+   '<td class="num">'+s.req+'</td><td class="num">'+(s.rating?'<span class="pill '+(s.rating>=4.5?'g':s.rating>=4?'a':'r')+'">'+s.rating+'★</span><br><span class="tiny muted">'+s.reviews+(s.complaints?' · '+s.complaints+' low':'')+'</span>':'—')+'</td>'+
+   '<td class="num">'+rm(s.comm)+(s.commPct!=null?'<br><span class="tiny muted">'+s.commPct+'% of sales</span>':'')+'</td></tr>').join('')+'</table></div>'+
+  '<p class="tiny sdnote">'+ic('alert',12)+' Do not judge staff on sales alone. High sales with low rebooking or a low rating can hurt the brand in the long run — look at the whole row.</p>'+
+  '<p class="tiny muted">Consult → pkg: consultations they did that bought a package within 14 days. Retail attach: treatment bills that also had a product. Rebooking: completed visits that booked the next one the same day. Utilisation: booked treatment time ÷ time clocked in. Requested by: clients who name them as preferred. Tap a name for their bills.</p></div>';
+}
+window.sdStaffBills=sid=>{const R=sdRange(),L=sdLines(R.from,R.to,{staff:sid,cat:''}).filter(x=>x.s),S=[...new Map(L.map(x=>[x.s.id,x.s])).values()];
+ sdBillList(S,(stf(sid).name||'Staff')+' · '+R.label,s=>rm(r2(L.filter(x=>x.s.id===s.id).reduce((t,x)=>t+x.v,0)))+' credited');};
+window.sdStaffCSV=()=>csvDownload('staff-'+sdRange().from+'.csv',[['Staff','Sales','Target','% of target','Bills','ATV','Consultations','Became packages','Retail attach %','Rebooking %','Utilisation %','Requested by','Rating','Reviews','Low ratings','Commission'],
+ ...SDX.staff.map(s=>[s.p.name,s.v,s.t,s.pct??'',s.bills,s.atv,s.consults,s.cPkg,s.attach??'',s.rebook??'',s.util??'',s.req,s.rating??'',s.reviews,s.complaints,s.comm])]);
+/* 7 · marketing */
+function sdMktTab(X){
+ const R=X.R,ch={},get=k=>ch[k]=ch[k]||{spend:0,leads:0,booked:0,nw:0,rev:0,camps:[]};
+ SDL.camps.filter(c=>sdBrOk(c.branchId)).forEach(c=>{const s=c.start||String(c.createdAt||'').slice(0,10),e=c.end||s;if(!s||e<R.from||s>R.to)return;
+  const ov=sdDays(s>R.from?s:R.from,e<R.to?e:R.to),all=Math.max(1,sdDays(s,e<s?s:e)),x=get(sdChan(c.channel||c.name));x.spend+=(+c.cost||0)*Math.min(1,ov/all);x.camps.push(c.name);});
+ SDL.exps.filter(e=>e.date>=R.from&&e.date<=R.to&&sdBrOk(e.branchId)).forEach(e=>expLines(e).filter(l=>l.account==='6030').forEach(l=>{get(sdChan(e.supplier+' '+(e.desc||'')+' '+(l.desc||''))).spend+=+l.amount||0;}));
+ const F=sdFunnel(R);SDL.leads.filter(l=>String(l.createdAt).slice(0,10)>=R.from&&String(l.createdAt).slice(0,10)<=R.to&&sdBrOk(l.branchId)).forEach(l=>{const x=get(sdChan(l.source));x.leads++;if(['booked','won'].includes(l.stage)||(l.customerId&&SDL.appts.some(a=>a.customerId===l.customerId)))x.booked++;});
+ const C=X.cl,cur=C.cur;C.nw.forEach(cid=>{const x=get(sdChan((SDL.C[cid]||{}).source));x.nw++;x.rev+=cur.L.filter(l=>l.s&&l.s.customerId===cid).reduce((t,l)=>t+l.v,0);});
+ const rows=Object.entries(ch).filter(([k,v])=>v.spend||v.leads||v.nw).sort((a,b)=>b[1].spend-a[1].spend),tot=rows.reduce((t,[k,v])=>t+v.spend,0);
+ const f=v=>v==null?'—':rm(r2(v));
+ return '<div class="card"><h3 class="sdh">'+ic('mega',15)+' Marketing against sales <span class="tiny muted">— spend '+rm(r2(tot))+'</span></h3>'+
+  (rows.length?'<div class="scroll"><table class="pltbl sdtbl"><tr><th>Channel</th><th class="num">Spend</th><th class="num">Leads</th><th class="num">Per lead</th><th class="num">Per booking</th><th class="num">New clients</th><th class="num">CAC</th><th class="num">ROAS</th><th class="num">CLV : CAC</th></tr>'+
+   rows.map(([k,v])=>{const cac=v.nw&&v.spend?v.spend/v.nw:null,roas=v.spend?v.rev/v.spend:null,ratio=cac?C.clv/cac:null;
+    return '<tr><td><b>'+esc(k)+'</b>'+(v.camps.length?'<br><span class="tiny muted">'+esc(v.camps.slice(0,3).join(', '))+'</span>':'')+'</td><td class="num">'+rm(r2(v.spend))+'</td><td class="num">'+v.leads+'</td><td class="num">'+f(v.leads&&v.spend?v.spend/v.leads:null)+'</td><td class="num">'+f(v.booked&&v.spend?v.spend/v.booked:null)+'</td>'+
+     '<td class="num">'+v.nw+'</td><td class="num">'+f(cac)+'</td><td class="num">'+(roas==null?'—':'<span class="pill '+sdRag(Math.round(roas*100),300,100)+'">'+(Math.round(roas*10)/10)+'×</span>')+'</td>'+
+     '<td class="num">'+(ratio==null?'—':'<span class="pill '+(ratio>=3?'g':ratio>=1?'a':'r')+'">'+(Math.round(ratio*10)/10)+' : 1</span>')+'</td></tr>';}).join('')+'</table></div>'
+   :'<div class="empty">No spend, leads or new clients by channel in this period.</div>')+
+  '<p class="tiny muted">Spend comes from CRM campaigns (shared across their dates) and Expenses under Marketing. Leads by their source; new clients by the source on their client record. ROAS = what the new clients spent in this period ÷ spend. CLV : CAC uses the 12-month client value ('+rm(C.clv)+'); healthy is 3 : 1 or better.</p></div>';
+}
+/* 8 · forecast */
+function sdForecastCard(X,bod){
+ const td=today(),up=d=>{const L=SDL.appts.filter(a=>a.date>td&&a.date<=sdAdd(td,d)&&['booked','confirm'].includes(a.status)&&sdBrOk(a.branchId)&&(!SDF.staff||a.staffId===SDF.staff));
+  return {n:L.length,v:r2(L.reduce((t,a)=>t+(a.serviceId?+(svc(a.serviceId).price)||0:X.cur.atv),0))};};
+ const u7=up(7),u14=up(14),u30=up(30);
+ const d90=sdAgg(sdAdd(td,-89),td).v/90,nm=mShift(td.slice(0,7),1),ly=mShift(nm,-12),lyv=sdAgg(ly+'-01',mEnd(ly)).v,lyb=[1,2,3].map(i=>sdAgg(mShift(ly,-i)+'-01',mEnd(mShift(ly,-i))).v).filter(Boolean);
+ const season=lyv&&lyb.length?lyv/(lyb.reduce((a,b)=>a+b,0)/lyb.length):1,fc=r2(d90*sdDays(nm+'-01',mEnd(nm))*season),nt=sdTarget(nm+'-01',mEnd(nm),sdBr());
+ const qs=Math.floor(new Date(td+'T00:00:00').getMonth()/3)*3,qf=td.slice(0,4)+'-'+String(qs+1).padStart(2,'0')+'-01',qe=mEnd(mShift(qf.slice(0,7),2)),qa=sdAgg(qf,td).v,qfc=r2(qa+d90*daysBetween(td,qe)),qt=sdTarget(qf,qe,sdBr());
+ const act=SDL.cps.filter(x=>sdBrOk(x.branchId)&&String(x.expiry||'9')>=td),val=r2(act.reduce((t,x)=>t+(+x.price||0)*cpLeft(x)/(cpTot(x)||1),0)),r90=r2(sdReds(sdAdd(td,-89),td,sdBr()).reduce((t,r)=>t+r.value,0)/3);
+ return '<div class="card"><h3 class="sdh">'+ic('target',15)+' Forecast</h3><div class="sdgrid">'+
+  '<div class="kpi sdk"><div class="lab">Booked ahead</div><div class="big">'+rm(u30.v)+'</div><div class="sub">7 days '+u7.n+' · '+rm(u7.v)+'<br>14 days '+u14.n+' · '+rm(u14.v)+'<br>30 days '+u30.n+' · '+rm(u30.v)+'</div></div>'+
+  '<div class="kpi sdk '+(nt?sdRag(Math.round(fc/nt*100),100,90):'')+'"><div class="lab">'+mLabel(nm)+'</div><div class="big">'+rm(fc)+'</div><div class="sub">'+(nt?Math.round(fc/nt*100)+'% of the '+rm(nt)+' target':'no target yet')+(season!==1?' · season ×'+(Math.round(season*100)/100):'')+'</div></div>'+
+  '<div class="kpi sdk '+(qt?sdRag(Math.round(qfc/qt*100),100,90):'')+'"><div class="lab">This quarter</div><div class="big">'+rm(qfc)+'</div><div class="sub">'+rm(qa)+' so far'+(qt?' · target '+rm(qt):'')+'</div></div>'+
+  (()=>{const P=sdPayday(),d=P.rest?Math.round((P.pay-P.rest)/P.rest*100):null;return '<div class="kpi sdk"><div class="lab">Payday effect</div><div class="big">'+(d==null?'—':(d>=0?'+':'')+d+'%')+'</div><div class="sub">a day between the 25th and the 5th: '+rm(r2(P.pay))+' vs '+rm(r2(P.rest))+' on other days (last 6 months)</div></div>';})()+
+  '<div class="kpi sdk"><div class="lab">Package sessions to be used</div><div class="big">'+rm(r90)+'<small>/month</small></div><div class="sub">of '+rm(val)+' still owed, at the pace of the last 90 days</div></div></div>'+
+  '<p class="tiny muted">Next month = average day over the last 90 days × days in the month'+(season!==1?' × how that month did last year against the months before it':'')+'. Booked ahead values each booking at its treatment price.</p></div>'+(bod?'':sdTrend(12));
+}
+/* ---------- definitions & targets ---------- */
+window.sdDefs=()=>{
+ const d=sdDef(),m=today().slice(0,7),nm=mShift(m,1),brs=isOwnerMe()?(D.branches||[]):(D.branches||[]).filter(b=>b.id===ME.branchId);
+ const tv=(b,mm)=>{const x=SDL&&SDL.tg[b+'_'+mm];return x&&+x.target?+x.target:'';};
+ modal('Definitions & targets','<div class="card">'+
+  '<label>"Sales" means</label><div class="seg"><button type="button" class="'+(!d.sst?'on':'')+'" onclick="sdDefSet(\'sst\',false)">Before SST</button><button type="button" class="'+(d.sst?'on':'')+'" onclick="sdDefSet(\'sst\',true)">Including SST</button></div>'+
+  '<label>Packages count</label><div class="seg"><button type="button" class="'+(d.pkg!=='used'?'on':'')+'" onclick="sdDefSet(\'pkg\',\'sold\')">When sold</button><button type="button" class="'+(d.pkg==='used'?'on':'')+'" onclick="sdDefSet(\'pkg\',\'used\')">When sessions are used</button></div>'+
+  '<label>Flag bills discounted more than (%)</label><input class="f" type="number" min="1" max="100" value="'+d.discMax+'" onchange="sdDefSet(\'discMax\',+this.value||20)">'+
+  '<p class="tiny muted">Everyone sees the same definitions; they are written under the filters. New client = first bill in the period. Returning = billed before. Retention = clients of the period before who came back. ATV = sales ÷ bills.</p>'+
+  '<h3 class="sdh" style="margin-top:12px">'+ic('target',14)+' Branch sales targets</h3><p class="tiny muted" style="margin:0 0 6px">Leave blank to use the sum of the staff sales targets (HR → KPI).</p>'+
+  '<table class="mjt"><tr><th>Branch</th><th>'+mLabel(m)+'</th><th>'+mLabel(nm)+'</th></tr>'+brs.map(b=>'<tr><td>'+esc(b.name)+'</td>'+[m,nm].map(mm=>'<td><input class="f" type="number" min="0" step="100" style="margin:0" value="'+tv(b.id,mm)+'" data-b="'+b.id+'" data-m="'+mm+'"></td>').join('')+'</tr>').join('')+'</table>'+
+  (boss()?'<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="sdTargetsSave()">'+ic('check',15)+'Save targets</button>':'')+'</div>');
+};
+window.sdDefSet=async(k,v)=>{const d={...sdDef(),[k]:v};
+ try{if(boss())await setDoc(doc(db,'meta','settings'),{salesDef:d},{merge:true});D.meta.salesDef=d;SDX=null;window.sdDefs();render();}catch(e){toast(friendly(e));}};
+window.sdTargetsSave=async()=>{
+ try{for(const i of [...document.querySelectorAll('#modal input[data-b]')]){const id=i.dataset.b+'_'+i.dataset.m,v=+i.value||0,old=SDL.tg[id];
+   if((old&&+old.target)===v||(!old&&!v))continue;const d={branchId:i.dataset.b,month:i.dataset.m,target:v,by:UID,byName:ME.name,at:new Date().toISOString()};
+   await setDoc(doc(db,'salesTargets',id),d);SDL.tg[id]={id,...d};}
+  await audit('Sales targets set','branches');SDX=null;window.closeModal();render();toast('Targets saved');}catch(e){toast(friendly(e));}};
 
 </script>
