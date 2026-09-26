@@ -1762,6 +1762,77 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .rsline{border:1px solid var(--line);border-radius:12px;padding:8px;margin:0 0 8px}.rsline>.f{margin:0 0 6px}
 .rsq{display:grid;grid-template-columns:80px minmax(0,1fr) minmax(0,1fr) auto;gap:6px;align-items:center}.rsq .f{margin:0;min-width:0}
 .lntbl{width:100%;font-size:13px}.lntbl tr{cursor:pointer}.lntbl td small{display:block;font-size:11px;color:var(--ink-3)}
+/* Bookings */
+.bkhead{padding:12px 14px}
+.bkrow1{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.bknav{display:flex;align-items:center;gap:6px;min-width:0}
+.bkdate{position:relative;display:flex;flex-direction:column;padding:2px 10px;cursor:pointer;min-width:0}
+.bkdate span{font-weight:700;font-size:18px;letter-spacing:-.01em;white-space:nowrap}.bkdate small{font-size:12px;color:var(--ink-3)}
+.bkdate input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.bkacts{display:flex;gap:6px}
+.btn.bknew{background:var(--jade);border-color:var(--jade);color:#fff}
+.bkseg{margin:0}.bkseg button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.bkstrip,.wzdays{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;margin:0 0 8px;scrollbar-width:thin}
+.bkday{flex:0 0 58px;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 4px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font:inherit;color:inherit;cursor:pointer}
+.bkday b{font-size:18px;line-height:1.1}.bkday small{font-size:10.5px;color:var(--ink-3)}
+.bkday.today{border-color:var(--brass)}.bkday.hol b{color:var(--rose)}
+.bkday.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}.bkday.on small{color:rgba(244,240,231,.7)}
+.bkload{display:block;width:30px;height:4px;border-radius:4px;background:var(--line-2);overflow:hidden}.bkload em{display:block;height:100%;background:var(--brass)}
+.bkday.on .bkload{background:rgba(255,255,255,.18)}
+.bkday.pickd{position:relative;justify-content:center}.bkday.pickd input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.bkstats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;align-items:center}
+.bkst{display:inline-flex;align-items:baseline;gap:5px;padding:6px 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+.bkst b{font-size:14px;color:var(--ink)}.bkst.a b{color:var(--amber)}.bkst.g b{color:var(--jade)}.bkst.r b{color:var(--rose)}
+.bknext{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:0;background:var(--brass-soft);font:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;margin-left:auto}
+.bknext em{font-style:normal;color:var(--brass);font-weight:600}
+.bkbody{padding:12px}
+.bkbody .tl{border-radius:14px}
+.bk-day .tlcol[data-col]{cursor:copy}.bk-week .tlcol[data-day]{cursor:copy}
+.bkbody .blk{border-radius:10px;box-shadow:0 1px 2px rgba(20,18,15,.08),0 4px 12px -6px rgba(20,18,15,.25);border-left-width:4px}
+.bkpart{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:12px 2px 6px}
+.bkpart:first-child{margin-top:0}
+.bkcard{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-left:5px solid var(--bk);border-radius:14px;background:var(--surface);margin:0 0 8px;cursor:pointer}
+.bkcard.dim{opacity:.62}
+.bkt{flex:0 0 52px;display:flex;flex-direction:column}.bkt b{font-size:16px}.bkt small{font-size:11px;color:var(--ink-3)}
+.bkb{flex:1;min-width:0}.bkb .tiny{margin-top:2px}.bknote{font-style:italic}
+/* the new-booking steps */
+.sheet.wzsheet{max-width:760px;width:100%}
+.wzbar{display:flex;gap:4px;margin:0 0 10px;overflow-x:auto}
+.wzst{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:8px;border:0;border-radius:12px;background:var(--surface-2);font:inherit;font-size:12px;color:var(--ink-3);cursor:pointer;white-space:nowrap}
+.wzst i{flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;background:var(--line-2);color:var(--ink-2)}
+.wzst span{overflow:hidden;text-overflow:ellipsis}
+.wzst.on{background:var(--ink);color:var(--cream)}.wzst.on i{background:var(--brass);color:#fff}
+.wzst.done{color:var(--ink)}.wzst.done i{background:var(--jade);color:#fff}.wzst:disabled{cursor:default;opacity:.7}
+.wzsum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.wzsum span{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 10px;border-radius:999px;background:var(--brass-soft)}
+.wzbody{min-height:220px}.wzh{margin:4px 0 10px;font-size:16px}
+.wzerr{color:var(--rose);min-height:16px;margin:8px 0 0}
+.wzfoot{display:flex;justify-content:space-between;gap:8px;margin-top:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.wzfoot .btn{justify-content:center}
+.wzinfo{margin-top:10px}.wzchips{display:flex;flex-wrap:wrap;gap:6px}
+.wzgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:0 0 10px}
+.wzsvc{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);font:inherit;color:inherit;text-align:left;cursor:pointer}
+.wzsvc b{font-size:13.5px;line-height:1.3}.wzsvc small{font-size:12px;color:var(--ink-3)}
+.wzsvc.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.wzund{border:1px dashed var(--line);border-radius:14px;padding:10px 12px;margin:0 0 10px}.wzund.on{background:var(--brass-soft);border-style:solid;border-color:transparent}
+.wzund2{margin-top:8px}
+.wzpart{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin:10px 0 6px}
+.wzslots{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:6px}
+.wzslot{position:relative;padding:9px 4px;border-radius:11px;border:1px solid var(--line);background:var(--surface);font:inherit;font-weight:600;cursor:pointer}
+.wzslot small{position:absolute;top:2px;right:5px;font-size:9.5px;color:var(--jade);font-weight:700}
+.wzslot.off{background:var(--surface-2);color:var(--ink-3);text-decoration:line-through;cursor:default;font-weight:400}
+.wzslot.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.wzslot.on small{color:var(--brass-soft)}
+.wzwho{display:grid;gap:8px;margin:0 0 12px}
+.wzperson{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);font:inherit;color:inherit;text-align:left;cursor:pointer}
+.wzperson>span:nth-child(2){flex:1;min-width:0}.wzperson small{display:block;font-size:12px;color:var(--ink-3)}.wzperson i{font-style:normal}
+.wzperson .avatar{width:36px;height:36px;font-size:13px}
+.wzperson.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}.wzperson.off{opacity:.5;cursor:default}
+.wzcard{border:1px solid var(--line);border-radius:14px;padding:4px 12px;margin:0 0 10px;background:var(--surface-2)}
+.wzline{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.wzline:last-child{border-bottom:0}
+.wzline>span{color:var(--brass);padding-top:2px}.wzline small{display:block;font-size:12px;color:var(--ink-3)}
+.wz .chip{display:inline-flex;align-items:center;gap:5px}
+.wzdone{text-align:center;padding:10px 0 12px;color:var(--jade)}.wzdone h3{color:var(--ink);margin:6px 0 2px}
+@media(max-width:640px){.wzst span{display:none}.wzst.on span{display:inline}.bkacts .btn>span:not(.ico){display:none}.bkdate span{font-size:16px}
+ .bknext{margin-left:0}.bkseg button span{display:inline}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2021,7 +2092,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26f';
+const BUILD='2026-09-26g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2635,7 +2706,7 @@ function vHome(){
 
  /* ---- what happens next ---- */
  h+='<div class="card"><div class="sec-h"><h2>'+ic('clock',16)+' Coming up</h2>'+
-  '<button class="btn sm ghost" onclick="go(\'book\')">'+ic('calendar',14)+'Calendar</button></div>'+
+  '<button class="btn sm ghost" onclick="go(\'book\')">'+ic('calendar',14)+'Bookings</button></div>'+
   (upcoming.length?upcoming.map(apptRow).join('')
    :'<div class="empty">'+ic('calendar',24)+'<div>Nothing left on today\'s schedule.</div></div>')+
   '</div>';
@@ -2676,7 +2747,7 @@ function vBook(){
   '</div>'+({day:calDay,week:calWeek,month:calMonthView}[calMode])()+'</div>';
  return h;}
 const onDay=d=>APPTS.filter(a=>a.date===d&&a.status!=='cancel').sort((a,b)=>a.start.localeCompare(b.start));
-const calNav=(label,step)=>'<div class="calbar"><button class="iconbtn" onclick="shiftCal(-'+step+')">'+ic('left',17)+
+const calNav=(label,step)=>'';const calNavOld=(label,step)=>'<div class="calbar"><button class="iconbtn" onclick="shiftCal(-'+step+')">'+ic('left',17)+
  '</button><div class="title">'+label+'</div><button class="iconbtn" onclick="shiftCal('+step+')">'+ic('right',17)+'</button></div>';
 function calDay(){
  const ap=onDay(calDate);
@@ -2708,7 +2779,7 @@ function calDay(){
    String(O+i).padStart(2,'0')+':00</span>').join('')+'</div>';
  const nowMin=(new Date().getHours()-O)*60+new Date().getMinutes();
  cols.forEach((c,ci)=>{
-  h+='<div class="tlcol'+(ci===0?' first':'')+(calBy==='staff'&&onLeave(c.id,calDate)&&!onLeave(c.id,calDate).half?' onleave':'')+'">'+
+  h+='<div class="tlcol'+(ci===0?' first':'')+(calBy==='staff'&&onLeave(c.id,calDate)&&!onLeave(c.id,calDate).half?' onleave':'')+'" data-col="'+esc(c.id)+'" data-hrs="'+hrs+'">'+
    [...Array(hrs*2)].map((_,i)=>'<div class="hline'+(i%2?' half':'')+'" style="top:'+(i*ROW/2)+'px"></div>').join('')+
    (calDate===today()&&nowMin>0&&nowMin<hrs*60?'<div class="nowline" style="top:'+(nowMin*px)+'px"></div>':'');
   const inCol=ap.filter(a=>colOf(a)===c.id),LN=apptLanes(inCol);
@@ -2747,7 +2818,7 @@ function calWeek(){
   '<div class="tlgut">'+[...Array(hrs+1)].map((_,i)=>'<span style="top:'+(i*ROW)+'px">'+
    String(O+i).padStart(2,'0')+'</span>').join('')+'</div>';
  days.forEach((d,di)=>{
-  h+='<div class="tlcol'+(di===0?' first':'')+'">'+
+  h+='<div class="tlcol'+(di===0?' first':'')+'" data-day="'+d+'" data-hrs="'+hrs+'">'+
    [...Array(hrs)].map((_,i)=>'<div class="hline" style="top:'+(i*ROW)+'px"></div>').join('');
   const dayAp=onDay(d),LN=apptLanes(dayAp);
   dayAp.forEach(a=>{const t=new Date(a.start),top=((t.getHours()-O)*60+t.getMinutes())*px;
@@ -20277,6 +20348,321 @@ function supAlerts(al){
  if(boss()&&cntPending().length)al.push({i:'list',t:cntPending().length+' stock count'+(cntPending().length>1?'s':'')+' waiting for approval',d:cntPending().map(c=>c.scopeName+' · '+esc(c.byName||'')).slice(0,2).join(', '),go:"invView('count');go('inv')"});
  const last=(COUNTS||[]).find(c=>c.status==='approved'),every=+((D.meta||{}).countDays)||30,has=D.products.some(p=>isSup(p)&&p.active!==false);
  if(has&&(!last||daysBetween(String(last.at).slice(0,10),today())>every))al.push({i:'list',t:'Stock count due',d:last?'Last approved count '+dshort(last.at):'Count your supplies to start the record',go:"invView('count');go('inv')"});
+}
+
+/* ============ Bookings: a calmer screen and a step-by-step new booking ============ */
+/* The calendar becomes Bookings. One header carries the date, the way back and forward, the
+   view (Day, List, Week, Month) and New booking; a strip of the next two weeks shows how full
+   each day is; a line of figures says how the day is going. An empty slot on the day or week
+   can be tapped to book it. A new booking goes step by step, like checkout: the client, the
+   treatment, a time that is actually free, the therapist and room, then a last look before
+   saving — with a WhatsApp confirmation ready at the end. The one-page form stays available. */
+{const t=TABS.find(x=>x.id==='book');if(t){t.label='Bookings';t.desc='Day, list, week and month';}}
+const bkIsPhone=()=>typeof window.matchMedia==='function'&&window.matchMedia('(max-width:640px)').matches;
+let BKFIRST=true;
+function bkStats(d){
+ const ap=onDay(d),now=Date.now();
+ const n=k=>ap.filter(a=>a.status===k).length,noShow=APPTS.filter(a=>a.date===d&&a.status==='no').length;
+ const next=ap.filter(a=>['booked','confirm'].includes(a.status)&&+new Date(a.start)>=now-10*6e4).sort((a,b)=>a.start.localeCompare(b.start))[0];
+ const worth=r2(ap.filter(a=>a.status!=='no').reduce((t,a)=>t+(+(svc(a.serviceId).price)||0),0));
+ const staff=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes).length,hrs=Math.max(1,(D.meta.close||20)-(D.meta.open||9));
+ const util=staff?Math.round(ap.reduce((t,a)=>t+(a.duration||0),0)/(staff*hrs*60)*100):0;
+ return {ap,booked:n('booked')+n('confirm'),inn:n('in'),done:n('done'),noShow,next,worth,util};
+}
+function bkHead(){
+ const lab=calMode==='week'?(()=>{const b=new Date(calDate),m=addDays(b,-((b.getDay()+6)%7));return dshort(ymd(m))+' – '+dshort(ymd(addDays(m,6)));})():
+  calMode==='month'?new Date(calDate).toLocaleDateString('en-MY',{month:'long',year:'numeric'}):new Date(calDate).toLocaleDateString('en-MY',{weekday:'long',day:'numeric',month:'long'});
+ const step=calMode==='week'?7:1;
+ return '<div class="card bkhead"><div class="bkrow1"><div class="bknav"><button class="iconbtn" aria-label="Back" onclick="shiftCal(-'+step+')">'+ic('left',17)+'</button>'+
+   '<label class="bkdate"><span>'+esc(lab)+'</span><small>'+(calDate===today()?'Today':calDate===ymd(addDays(new Date(),1))?'Tomorrow':calDate===ymd(addDays(new Date(),-1))?'Yesterday':dstr(calDate))+'</small>'+
+   '<input type="date" value="'+calDate+'" onchange="if(this.value)bkGoDay(this.value)" aria-label="Pick a date"></label>'+
+   '<button class="iconbtn" aria-label="Forward" onclick="shiftCal('+step+')">'+ic('right',17)+'</button>'+
+   (calDate!==today()?'<button class="btn sm ghost" onclick="bkToday()">Today</button>':'')+'</div>'+
+  '<div class="bkacts">'+(can('customer')?'<button class="btn sm ghost" onclick="newCust({book:true})">'+ic('user',14)+'<span>New client</span></button>':'')+
+   (can('booking')?'<button class="btn sm bknew" onclick="newAppt()">'+ic('plus',15)+'New booking</button>':'')+'</div></div>'+
+  '<div class="seg bkseg">'+[['day','Day','clock'],['list','List','list'],['week','Week','grid'],['month','Month','calendar']].map(m=>
+   '<button type="button" class="'+(calMode===m[0]?'on':'')+'" onclick="setCal(\''+m[0]+'\')">'+ic(m[2],14)+'<span>'+m[1]+'</span></button>').join('')+'</div></div>';
+}
+window.bkToday=()=>{calDate=today();const need=needsWindow();render();if(need)watchAppointments();};
+function bkStrip(){
+ const base=today(),start=calDate<base?calDate:ymd(addDays(new Date(base+'T00:00:00'),-1)),days=[...Array(15)].map((_,i)=>ymd(addDays(new Date(start+'T00:00:00'),i)));
+ if(!days.includes(calDate))days.splice(0,1,calDate);
+ const cap=Math.max(1,D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes).length*((D.meta.close||20)-(D.meta.open||9))*60);
+ return '<div class="bkstrip" id="bkstrip">'+days.map(d=>{const ap=onDay(d),load=Math.min(100,Math.round(ap.reduce((t,a)=>t+(a.duration||0),0)/cap*100)),dt=new Date(d+'T00:00:00');
+  return '<button type="button" class="bkday'+(d===calDate?' on':'')+(d===base?' today':'')+(isHoliday(d)?' hol':'')+'" onclick="bkGoDay(\''+d+'\')">'+
+   '<small>'+dt.toLocaleDateString('en-MY',{weekday:'short'})+'</small><b>'+dt.getDate()+'</b><i class="bkload"><em style="width:'+load+'%"></em></i><small>'+(ap.length?ap.length+' bk':'free')+'</small></button>';}).join('')+'</div>';
+}
+window.bkGoDay=d=>{calDate=d;const need=needsWindow();render();if(need)watchAppointments();};
+{const _p=window.pickDate;window.pickDate=d=>{_p(d);if(bkIsPhone()&&calMode==='day'){calMode='list';render();}};}
+function bkStatsHTML(){
+ const S=bkStats(calDate),nx=S.next;
+ const mins=nx?Math.round((+new Date(nx.start)-Date.now())/6e4):0;
+ return '<div class="bkstats">'+
+  '<span class="bkst"><b>'+S.ap.length+'</b>booked</span><span class="bkst"><b>'+S.booked+'</b>to arrive</span><span class="bkst a"><b>'+S.inn+'</b>in treatment</span>'+
+  '<span class="bkst g"><b>'+S.done+'</b>done</span>'+(S.noShow?'<span class="bkst r"><b>'+S.noShow+'</b>no-show</span>':'')+
+  (boss()?'<span class="bkst"><b>'+rmk(S.worth)+'</b>on the books</span>':'')+'<span class="bkst"><b>'+S.util+'%</b>full</span>'+
+  (nx&&calDate===today()?'<button type="button" class="bknext" onclick="openAppt(\''+nx.id+'\')">'+ic('clock',13)+'<span>Next: <b>'+esc(String(nx.customerName||'').split(' ')[0])+'</b> '+tstr(nx.start)+
+   ' · '+esc(nx.serviceName||'')+' <em>'+(mins<=0?'now':mins<60?'in '+mins+' min':'in '+Math.floor(mins/60)+'h '+(mins%60)+'m')+'</em></span></button>':'')+'</div>';
+}
+/* the list: the day as cards, with what to do next on each */
+function calList(){
+ const ap=onDay(calDate).concat(APPTS.filter(a=>a.date===calDate&&a.status==='no')).sort((a,b)=>a.start.localeCompare(b.start));
+ if(!ap.length)return (holOf(calDate).length?'<div class="holbar">'+holTags(calDate)+'</div>':'')+'<div class="empty">'+ic('calendar',26)+'<div>Nothing booked.</div>'+(can('booking')?'<button class="btn" style="margin-top:8px" onclick="newAppt()">'+ic('plus',14)+'New booking</button>':'')+'</div>';
+ const part=a=>{const h=new Date(a.start).getHours();return h<12?'Morning':h<17?'Afternoon':'Evening';};let last='';
+ return (holOf(calDate).length?'<div class="holbar">'+holTags(calDate)+'</div>':'')+ap.map(a=>{
+  const st=STATUS[a.status]||['',''],P=apptPal(a),c=cust(a.customerId),p=part(a),head=p!==last?(last=p,'<div class="bkpart">'+p+'</div>'):'';
+  const acts=[];
+  if(a.status==='booked'||a.status==='confirm'){if(calDate===today())acts.push('<button class="btn sm" onclick="event.stopPropagation();setStat(\''+a.id+'\',\'in\')">'+ic('check',13)+'Arrived</button>');
+   if(a.status==='booked')acts.push('<button class="btn sm ghost" onclick="event.stopPropagation();waLink(\''+a.id+'\')">'+ic('msg',13)+'Remind</button>');}
+  if(a.status==='in')acts.push('<button class="btn sm" onclick="event.stopPropagation();checkoutFromAppt(\''+a.id+'\')">'+ic('card',13)+'Checkout</button>');
+  return head+'<div class="bkcard'+(['done','no','cancel'].includes(a.status)?' dim':'')+'" onclick="openAppt(\''+a.id+'\')" style="--bk:'+P.bg+'">'+
+   '<div class="bkt"><b>'+tstr(a.start)+'</b><small>'+tstr(a.finish)+'</small><small>'+(a.duration||0)+' min</small></div>'+
+   '<div class="bkb"><div class="spread"><b>'+esc(a.customerName||'')+'</b><span class="pill '+st[1]+'">'+st[0]+(a.saleId?' · paid':'')+'</span></div>'+
+    '<div class="tiny">'+esc(a.serviceName||'')+(a.undecided?' <span class="muted">(to decide)</span>':'')+'</div>'+
+    '<div class="tiny muted">'+ic('user',11)+' '+esc(a.staffName||'—')+' · '+ic('room',11)+' '+esc(room(a.roomId).name||'—')+
+     ((visitOf(a.visitType)||{}).label?' · '+visitOf(a.visitType).label:'')+(a.deposit?' · deposit '+rm(a.deposit):'')+(c&&c.allergies?' · <span class="odue">allergy</span>':'')+'</div>'+
+    (a.notes?'<div class="tiny muted bknote">“'+esc(String(a.notes).slice(0,120))+'”</div>':'')+
+    (acts.length?'<div class="row wrap2" style="gap:6px;margin-top:6px">'+acts.join('')+'</div>':'')+'</div></div>';}).join('');
+}
+vBook=function(){
+ if(BKFIRST){BKFIRST=false;if(bkIsPhone()&&calMode==='day')calMode='list';}
+ const body={day:calDay,week:calWeek,month:calMonthView,list:calList}[calMode]||calDay;
+ return bkHead()+(calMode==='day'||calMode==='list'?bkStrip()+bkStatsHTML():'')+'<div class="card bkbody bk-'+calMode+'">'+body()+'</div>'+
+  (calMode==='day'&&can('booking')?'<p class="tiny muted" style="margin:-4px 4px 12px">Tap an empty time to book it.</p>':'');
+};
+/* an empty slot on the day or week books straight into it */
+function bkBindSlots(){
+ if(TAB!=='book'||!can('booking'))return;
+ const O=D.meta.open||9;
+ document.querySelectorAll('#app .tlcol[data-hrs]').forEach(col=>{
+  col.onclick=e=>{if(e.target.closest&&e.target.closest('.blk,.buf'))return;
+   const r=col.getBoundingClientRect(),hrs=+col.dataset.hrs,mins=Math.max(0,Math.floor((e.clientY-r.top)/r.height*hrs*60/15)*15),tm=O*60+mins;
+   const time=String(Math.floor(tm/60)).padStart(2,'0')+':'+String(tm%60).padStart(2,'0');
+   const pre={date:col.dataset.day||calDate,time};
+   if(col.dataset.col&&col.dataset.col!=='__none'){if(calBy==='staff')pre.staffId=col.dataset.col;else pre.roomId=col.dataset.col;}
+   window.newAppt(pre);};});
+ const s=document.getElementById('bkstrip');if(s){const on=s.querySelector('.on');if(on&&on.scrollIntoView&&s.scrollWidth>s.clientWidth)s.scrollLeft=Math.max(0,on.offsetLeft-s.clientWidth/2+on.offsetWidth/2);}
+}
+{const _r=render;render=function(){_r.apply(this,arguments);try{bkBindSlots();}catch(e){}};window.render=render;}
+
+/* ---------- the new booking, step by step ---------- */
+window.newApptClassic=window.newAppt;
+let WZ=null;
+const WZ_STEPS=[['client','Client'],['svc','Treatment'],['time','Time'],['who','Therapist & room'],['ok','Confirm']];
+const wzS=()=>WZ.und?{id:'',name:'Consultation — to decide',dur:+WZ.undDur||60,buffer:15,price:0}:svc(WZ.sid);
+const wzStaffAll=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes);
+const wzRooms=()=>{const s=wzS();return D.rooms.filter(r=>r.branchId===ME.branchId&&(WZ.und||!s.room||r.type===s.room));};
+window.newAppt=async pre=>{
+ pre=pre||{};
+ if(!CUSTS.length)try{await loadCustomers('');}catch(e){}
+ WZ={step:0,cid:pre.customerId||'',sid:'',und:false,undDur:60,undCon:[],undShort:[],date:pre.date||(calDate>=today()?calDate:today()),time:pre.time||'',
+  staff:pre.staffId||'',room:pre.roomId||'',anyStaff:!pre.staffId,visit:pre.visitType||'',color:pre.color||'',dep:'',notes:'',q:'',cat:'',days:{},warn:'',pre};
+ if(WZ.cid)wzClient(WZ.cid,true);
+ WZ.step=WZ.cid?1:0;wzPaint();
+};
+function wzClient(id,quiet){
+ WZ.cid=id;const c=cust(id);if(!c)return;
+ const seen=APPTS.some(a=>a.customerId===id&&a.status!=='cancel')||(SALES||[]).some(s=>s.customerId===id&&!s.voided);
+ if(!WZ.pre.visitType)WZ.visit=seen?'return':'new';
+ if(c.preferredStaff&&!WZ.pre.staffId&&wzStaffAll().some(s=>s.id===c.preferredStaff))WZ.pref=c.preferredStaff;else WZ.pref='';
+ if(!quiet&&WZ.step===0){WZ.step=1;wzPaint();}
+}
+function wzPkgLeft(sid){const L=(HELD||[]).filter(p=>p.customerId===WZ.cid&&String(p.expiry||'9')>=today());let n=0;
+ L.forEach(p=>(p.balances||[]).forEach(b=>{if(b.serviceId===sid)n+=+b.left||0;}));return n;}
+/* the day's bookings for the date being looked at: the live calendar, or read once */
+function wzDay(d){
+ if(calWin&&d>=calWin.from&&d<=calWin.to)return APPTS.filter(a=>a.date===d);
+ if(WZ.days[d])return WZ.days[d];
+ if(WZ.days[d]===undefined){WZ.days[d]=null;getDocs(query(collection(db,'appointments'),where('date','==',d))).then(s=>{
+  WZ.days[d]=s.docs.map(x=>({id:x.id,...x.data()})).filter(a=>a.branchId===ME.branchId);if(WZ&&WZ.step===2)wzPaint();}).catch(()=>{WZ.days[d]=[];});}
+ return null;
+}
+function wzSlot(d,t,list){
+ const s=wzS(),start=new Date(d+'T'+t+':00'),s0=+start,finish=new Date(s0+(s.dur||60)*6e4),e0=+finish+(s.buffer||0)*6e4;
+ const busy=busyAt(list||[],s0,e0,''),taken=new Set(busy.map(a=>a.roomId));
+ const rooms=wzRooms(),freeRooms=rooms.filter(r=>!taken.has(r.id));
+ const staff=wzStaffAll().map(x=>({x,mine:busy.filter(a=>a.staffId===x.id),leave:leaveBlock(x.id,start,finish)}));
+ const freeStaff=staff.filter(z=>!z.mine.length&&!z.leave);
+ const past=d===today()&&s0<Date.now();
+ const ok=!past&&freeRooms.length>0&&(WZ.anyStaff?freeStaff.length>0:freeStaff.some(z=>z.x.id===WZ.staff));
+ return {ok,past,start,finish,busy,rooms,freeRooms,staff,freeStaff};
+}
+function wzTimes(){const O=D.meta.open||9,C=D.meta.close||20,dur=wzS().dur||60,out=[];
+ for(let m=O*60;m+dur<=C*60;m+=15)out.push(String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'));return out;}
+/* who and where: the preferred therapist if free, else whoever has least that day; the first free room */
+function wzAssign(){
+ const list=wzDay(WZ.date)||[],S=wzSlot(WZ.date,WZ.time,list);
+ if(WZ.anyStaff||!WZ.staff){const free=S.freeStaff.map(z=>z.x.id);
+  const load=id=>list.filter(a=>a.staffId===id&&!['cancel','no'].includes(a.status)).reduce((t,a)=>t+(a.duration||0),0);
+  WZ.staff=WZ.pref&&free.includes(WZ.pref)?WZ.pref:(free.sort((a,b)=>load(a)-load(b))[0]||WZ.staff||'');}
+ if(!WZ.room||!S.freeRooms.some(r=>r.id===WZ.room))WZ.room=(S.freeRooms[0]||{}).id||'';
+}
+window.wzGo=k=>{if(k<WZ.step||wzCan(k)){WZ.step=k;wzPaint();}};
+function wzCan(k){if(k>=1&&!WZ.cid)return false;if(k>=2&&!WZ.sid&&!WZ.und)return false;if(k>=3&&!WZ.time)return false;if(k>=4&&(!WZ.staff||!WZ.room))return false;return true;}
+window.wzNext=()=>{
+ if(WZ.step===0&&!WZ.cid){wzErr('Choose the client, or add a new one.');return;}
+ if(WZ.step===1&&!WZ.sid&&!WZ.und){wzErr('Choose the treatment.');return;}
+ if(WZ.step===2){if(!WZ.time){wzErr('Pick a time.');return;}wzAssign();}
+ if(WZ.step===3){if(!WZ.staff){wzErr('Choose the therapist.');return;}if(!WZ.room){wzErr('Choose a room.');return;}}
+ WZ.step=Math.min(4,WZ.step+1);wzPaint();};
+window.wzBack=()=>{WZ.step=Math.max(0,WZ.step-1);wzPaint();};
+const wzErr=t=>{const e=document.getElementById('wz-e');if(e)e.textContent=t;};
+function wzSummary(){
+ const c=cust(WZ.cid),s=(WZ.sid||WZ.und)?wzS():null,bits=[];
+ if(c)bits.push(ic('user',12)+esc(c.name));
+ if(s)bits.push(ic('spark',12)+esc(s.name)+' · '+(s.dur||60)+' min');
+ if(WZ.time&&WZ.step>=3)bits.push(ic('clock',12)+dshort(WZ.date)+' '+WZ.time);
+ if(WZ.staff&&WZ.step>=4)bits.push(ic('user',12)+esc(stf(WZ.staff).name||''));
+ return bits.length?'<div class="wzsum">'+bits.map(b=>'<span>'+b+'</span>').join('')+'</div>':'';
+}
+function wzPaint(){
+ const st=WZ.step;
+ const bar='<div class="wzbar">'+WZ_STEPS.map((x,k)=>'<button type="button" class="wzst'+(k===st?' on':k<st?' done':'')+'"'+(k<st||wzCan(k)?'':' disabled')+' onclick="wzGo('+k+')"><i>'+(k<st?ic('check',11):k+1)+'</i><span>'+x[1]+'</span></button>').join('')+'</div>';
+ const body=[wzClientStep,wzSvcStep,wzTimeStep,wzWhoStep,wzOkStep][st]();
+ const foot='<div class="wzfoot">'+(st>0?'<button type="button" class="btn ghost" onclick="wzBack()">'+ic('left',14)+'Back</button>':'<button type="button" class="btn ghost sm" onclick="closeModal();newApptClassic(WZPRE())">One-page form</button>')+
+  (st<4?'<button type="button" class="btn" onclick="wzNext()"'+(wzCan(st+1)?'':' disabled')+'>Next'+ic('right',14)+'</button>':'<button type="button" class="btn bknew" id="wz-go" onclick="wzSave()">'+ic('check',16)+'Confirm booking</button>')+'</div>';
+ modal('New booking','<div class="wz">'+bar+wzSummary()+'<div class="wzbody">'+body+'</div><div id="wz-e" class="tiny wzerr"></div>'+foot+'</div>');
+ const sh=document.querySelector('#modal .sheet');if(sh)sh.classList.add('wzsheet');
+}
+window.WZPRE=()=>({customerId:WZ.cid,date:WZ.date,time:WZ.time,staffId:WZ.staff,roomId:WZ.room});
+/* 1 · client */
+function wzClientStep(){
+ const c=cust(WZ.cid);
+ let info='';
+ if(c){const pk=(HELD||[]).filter(p=>p.customerId===c.id&&String(p.expiry||'9')>=today()&&cpLeft(p)>0);
+  const last=APPTS.filter(a=>a.customerId===c.id&&a.date<today()&&a.status==='done').sort((a,b)=>b.date.localeCompare(a.date))[0];
+  info='<div class="wzinfo">'+(c.allergies?'<div class="warnbox">'+ic('alert',13)+' Allergies: '+esc(c.allergies)+'</div>':'')+
+   '<div class="wzchips">'+(WZ.visit==='new'?'<span class="pill b">'+ic('star',11)+' New client</span>':'<span class="pill">Returning</span>')+
+   (last?'<span class="pill">Last visit '+dshort(last.date)+' · '+esc(last.serviceName||'')+'</span>':'')+
+   (WZ.pref?'<span class="pill">Prefers '+esc(stf(WZ.pref).name||'')+'</span>':'')+
+   pk.map(p=>'<span class="pill g">'+ic('package',11)+' '+esc(cpName(p))+' · '+cpLeft(p)+' left</span>').join('')+'</div></div>';}
+ return '<h3 class="wzh">Who is it for?</h3>'+clientPicker('wz-c',WZ.cid,{onPick:id=>{if(!id){WZ.cid='';wzPaint();return;}wzClient(id);if(WZ.step===0){WZ.step=1;}wzPaint();}})+info;
+}
+/* 2 · treatment */
+function wzSvcStep(){
+ const q=String(WZ.q||'').toLowerCase(),list=D.services.filter(s=>s.active!==false&&(!q||String(s.name).toLowerCase().includes(q)));
+ const groups=catGroup('service',list,s=>s.cat||'Treatments'),cats=groups.map(g=>g[0]);
+ const G=WZ.cat&&cats.includes(WZ.cat)?groups.filter(g=>g[0]===WZ.cat):groups;
+ const card=s=>{const left=WZ.cid?wzPkgLeft(s.id):0,pt=typeof promoTag==='function'?promoTag('service',s):'',on=WZ.und?WZ.undShort.includes(s.id):WZ.sid===s.id;
+  return '<button type="button" class="wzsvc'+(on?' on':'')+'" onclick="wzSvc(\''+esc(s.id)+'\')"><b>'+esc(s.name)+'</b><small>'+(s.dur||0)+' min · '+rm(s.price)+'</small>'+
+   (left?'<span class="pill g">'+ic('package',10)+' '+left+' in package</span>':'')+(pt?'<span class="pk2promo">'+esc(pt)+'</span>':'')+'</button>';};
+ return '<h3 class="wzh">Which treatment?</h3>'+
+  '<div class="wzund'+(WZ.und?' on':'')+'"><label class="row" style="gap:8px;margin:0"><input type="checkbox"'+(WZ.und?' checked':'')+' onchange="wzUnd(this.checked)"> <b>Not decided yet</b> <span class="tiny muted">— book a consultation; choose the treatment on the day</span></label>'+
+   (WZ.und?'<div class="wzund2"><label>How long to hold</label><div class="seg">'+[30,45,60,90].map(m=>'<button type="button" class="'+(+WZ.undDur===m?'on':'')+'" onclick="wzUndDur('+m+')">'+m+' min</button>').join('')+'</div>'+
+    '<label>What they want help with <span class="muted">— optional</span></label><div class="row wrap2" style="gap:6px">'+CONCERNS.map(x=>'<button type="button" class="chip'+(WZ.undCon.includes(x.id)?' on':'')+'" onclick="wzUndCon(\''+x.id+'\')">'+esc(x.label)+'</button>').join('')+'</div>'+
+    '<p class="tiny muted" style="margin:8px 0 0">Tap treatments below to shortlist what they might take.</p></div>':'')+'</div>'+
+  '<input class="f" placeholder="Search treatments" value="'+esc(WZ.q||'')+'" oninput="wzQ(this.value)" id="wz-q" autocomplete="off">'+
+  (cats.length>1?'<div class="pk2cats"><button type="button" class="chip'+(WZ.cat?'':' on')+'" onclick="wzCat(\'\')">All</button>'+cats.map(c=>'<button type="button" class="chip'+(WZ.cat===c?' on':'')+'" data-c="'+esc(c)+'" onclick="wzCat(this.dataset.c)">'+esc(c)+'</button>').join('')+'</div>':'')+
+  '<div id="wz-svcs">'+(G.length?G.map(([g,xs])=>(groups.length>1?'<div class="pk2sec">'+esc(g)+' <span>'+xs.length+'</span></div>':'')+'<div class="wzgrid">'+xs.map(card).join('')+'</div>').join(''):'<div class="empty">Nothing matches.</div>')+'</div>';
+}
+window.wzQ=v=>{WZ.q=v;const y=document.getElementById('wz-q');wzPaint();const n=document.getElementById('wz-q');if(n){n.focus();n.setSelectionRange(v.length,v.length);}};
+window.wzCat=c=>{WZ.cat=c||'';wzPaint();};
+window.wzUnd=on=>{WZ.und=!!on;if(on)WZ.sid='';wzPaint();};
+window.wzUndDur=m=>{WZ.undDur=m;wzPaint();};
+window.wzUndCon=id=>{const k=WZ.undCon.indexOf(id);if(k>=0)WZ.undCon.splice(k,1);else WZ.undCon.push(id);wzPaint();};
+window.wzSvc=id=>{
+ if(WZ.und){const k=WZ.undShort.indexOf(id);if(k>=0)WZ.undShort.splice(k,1);else WZ.undShort.push(id);wzPaint();return;}
+ WZ.sid=id;if(WZ.cid&&wzPkgLeft(id)>0&&!WZ.pre.visitType)WZ.visit='package';
+ /* came from an empty slot: the time is already known */
+ if(WZ.time){const S=wzSlot(WZ.date,WZ.time,wzDay(WZ.date)||[]);if(!WZ.staff&&!WZ.anyStaff)WZ.anyStaff=true;if(S.freeRooms.length){wzAssign();WZ.step=3;wzPaint();return;}}
+ WZ.step=2;wzPaint();
+};
+/* 3 · time */
+function wzTimeStep(){
+ const base=today(),days=[...Array(21)].map((_,i)=>ymd(addDays(new Date(base+'T00:00:00'),i)));
+ if(!days.includes(WZ.date))days.unshift(WZ.date);
+ const list=wzDay(WZ.date);
+ const staffChips='<div class="row wrap2" style="gap:6px;margin:0 0 10px"><button type="button" class="chip'+(WZ.anyStaff?' on':'')+'" onclick="wzAny()">Any therapist</button>'+
+  wzStaffAll().map(s=>'<button type="button" class="chip'+(!WZ.anyStaff&&WZ.staff===s.id?' on':'')+'" onclick="wzPickStaff(\''+s.id+'\')">'+esc(s.name)+(WZ.pref===s.id?' ★':'')+(onLeave(s.id,WZ.date)?' · leave':'')+'</button>').join('')+'</div>';
+ let slots='';
+ if(list===null)slots='<div class="center"><div class="spin"></div></div>';
+ else{const T=wzTimes().map(t=>({t,S:wzSlot(WZ.date,t,list)}));
+  const parts=[['Morning',x=>x.t<'12:00'],['Afternoon',x=>x.t>='12:00'&&x.t<'17:00'],['Evening',x=>x.t>='17:00']];
+  const any=T.some(x=>x.S.ok);
+  slots=(any?'':'<div class="warnbox">'+ic('alert',13)+' Nothing free on '+dstr(WZ.date)+(WZ.anyStaff?'':' for '+esc(stf(WZ.staff).name||''))+'. Try another day'+(WZ.anyStaff?'':' or any therapist')+'.</div>')+
+   parts.map(([p,f])=>{const xs=T.filter(f);if(!xs.length)return '';
+    return '<div class="wzpart">'+p+'</div><div class="wzslots">'+xs.map(({t,S})=>'<button type="button" class="wzslot'+(WZ.time===t?' on':'')+(S.ok?'':' off')+'"'+(S.ok?'':' disabled')+' onclick="wzTime(\''+t+'\')" title="'+(S.past?'Past':S.freeRooms.length?S.freeStaff.length+' therapist(s) free':'No room free')+'">'+t+
+     (S.ok&&WZ.anyStaff?'<small>'+S.freeStaff.length+'</small>':'')+'</button>').join('')+'</div>';}).join('');}
+ return '<h3 class="wzh">When?</h3><div class="wzdays">'+days.map(d=>{const dt=new Date(d+'T00:00:00'),n=(calWin&&d>=calWin.from&&d<=calWin.to)?onDay(d).length:null;
+   return '<button type="button" class="bkday'+(d===WZ.date?' on':'')+(isHoliday(d)?' hol':'')+'" onclick="wzDate(\''+d+'\')"><small>'+dt.toLocaleDateString('en-MY',{weekday:'short'})+'</small><b>'+dt.getDate()+'</b><small>'+(d===base?'today':n!=null?n+' bk':dt.toLocaleDateString('en-MY',{month:'short'}))+'</small></button>';}).join('')+
+   '<label class="bkday pickd">'+ic('calendar',15)+'<small>Other</small><input type="date" value="'+WZ.date+'" min="'+base+'" onchange="if(this.value)wzDate(this.value)"></label></div>'+
+  holNote(WZ.date)+staffChips+slots;
+}
+window.wzDate=d=>{WZ.date=d;WZ.time='';wzPaint();};
+window.wzAny=()=>{WZ.anyStaff=true;WZ.time='';wzPaint();};
+window.wzPickStaff=id=>{WZ.anyStaff=false;WZ.staff=id;WZ.time='';wzPaint();};
+window.wzTime=t=>{WZ.time=t;wzAssign();WZ.step=3;wzPaint();};
+/* 4 · therapist and room */
+function wzWhoStep(){
+ const list=wzDay(WZ.date)||[],S=wzSlot(WZ.date,WZ.time,list),s=wzS();
+ return '<h3 class="wzh">Who and where? <span class="tiny muted">'+dstr(WZ.date)+' · '+WZ.time+'–'+tstr(S.finish)+'</span></h3>'+
+  '<div class="wzwho">'+S.staff.map(z=>{const busy=z.mine.length,on=WZ.staff===z.x.id;
+   return '<button type="button" class="wzperson'+(on?' on':'')+(z.leave?' off':'')+'"'+(z.leave?' disabled':'')+' onclick="wzStaff(\''+z.x.id+'\')"><span class="avatar">'+esc(initials(z.x.name))+'</span>'+
+    '<span><b>'+esc(z.x.name)+(WZ.pref===z.x.id?' <span class="pill b">preferred</span>':'')+'</b><small>'+(z.leave?'On leave':busy?'Also has '+z.mine.map(a=>esc(a.customerName||'')+' '+tstr(a.start)+' ('+esc(room(a.roomId).name||'')+')').join(', '):'Free')+'</small></span>'+
+    '<i class="pill '+(z.leave?'r':busy?'a':'g')+'">'+(z.leave?'leave':busy?'busy':'free')+'</i></button>';}).join('')+'</div>'+
+  '<label>Room'+(s.room?' <span class="muted">— '+esc(s.room)+' rooms</span>':'')+'</label><div class="row wrap2" style="gap:6px">'+
+   (S.rooms.length?S.rooms.map(r=>{const tk=!S.freeRooms.some(x=>x.id===r.id);return '<button type="button" class="chip'+(WZ.room===r.id?' on':'')+'"'+(tk?' disabled':'')+' onclick="wzRoom(\''+r.id+'\')">'+esc(r.name)+(tk?' · taken':'')+'</button>';}).join('')
+    :'<span class="tiny" style="color:var(--rose)">No room is set up for this treatment yet — add one under Catalogue.</span>')+'</div>';
+}
+window.wzStaff=id=>{WZ.staff=id;WZ.anyStaff=false;WZ.warn='';wzPaint();};
+window.wzRoom=id=>{WZ.room=id;wzPaint();};
+/* 5 · confirm */
+function wzOkStep(){
+ const c=cust(WZ.cid)||{},s=wzS(),S=wzSlot(WZ.date,WZ.time,wzDay(WZ.date)||[]),left=WZ.sid?wzPkgLeft(WZ.sid):0,vt=WZ.visit||'return',auto=(visitOf(vt)||{}).color||'ink';
+ return '<h3 class="wzh">Check and confirm</h3><div class="wzcard">'+
+   '<div class="wzline"><span>'+ic('user',14)+'</span><div><b>'+esc(c.name||'')+'</b><small>'+esc(c.phone||'')+'</small></div></div>'+
+   '<div class="wzline"><span>'+ic('spark',14)+'</span><div><b>'+esc(s.name)+'</b><small>'+(s.dur||60)+' min'+(s.price?' · '+rm(s.price):'')+(left?' · '+left+' session(s) in their package':'')+
+    (WZ.und&&WZ.undShort.length?' · shortlist: '+WZ.undShort.map(id=>esc(svc(id).name||'')).join(', '):'')+'</small></div></div>'+
+   '<div class="wzline"><span>'+ic('clock',14)+'</span><div><b>'+new Date(WZ.date+'T00:00:00').toLocaleDateString('en-MY',{weekday:'long',day:'numeric',month:'long'})+'</b><small>'+WZ.time+' – '+tstr(S.finish)+(s.buffer?' · then '+s.buffer+' min to reset the room':'')+'</small></div></div>'+
+   '<div class="wzline"><span>'+ic('room',14)+'</span><div><b>'+esc(stf(WZ.staff).name||'')+' · '+esc(room(WZ.room).name||'')+'</b></div></div></div>'+
+  holNote(WZ.date)+
+  '<label>Visit type</label><div class="row wrap2" style="gap:6px">'+VISITS.map(v=>'<button type="button" class="chip'+(vt===v.id?' on':'')+'" onclick="wzVisit(\''+v.id+'\')">'+ic(v.icon,12)+v.label+'</button>').join('')+'</div>'+
+  '<label>Colour on Bookings</label><div class="swatches">'+PALETTE.map(p=>'<button type="button" class="sw'+((WZ.color?WZ.color===p.id:p.id===auto)?' on':'')+(!WZ.color&&p.id===auto?' auto':'')+'" style="background:'+p.bg+';border-color:'+p.bd+'" title="'+p.name+'" onclick="wzColor(\''+p.id+'\')"></button>').join('')+'</div>'+
+  '<div class="grid g2"><div><label>Deposit taken (RM)</label><input class="f" type="number" min="0" step="0.01" value="'+esc(WZ.dep)+'" oninput="wzSetF(\'dep\',this.value)" placeholder="0"></div>'+
+   '<div><label>Note for the team</label><input class="f" value="'+esc(WZ.notes)+'" oninput="wzSetF(\'notes\',this.value)" placeholder="e.g. first time, sensitive skin"></div></div>';
+}
+window.wzVisit=v=>{WZ.visit=v;WZ.color='';wzPaint();};
+window.wzColor=c=>{WZ.color=WZ.color===c?'':c;wzPaint();};
+window.wzSetF=(k,v)=>{WZ[k]=v;};
+window.wzSave=async()=>{
+ const btn=document.getElementById('wz-go');if(btn)btn.disabled=true;
+ try{
+  const s=wzS(),c=cust(WZ.cid)||{};
+  if(!WZ.cid)throw new Error('Choose the client.');
+  if(!WZ.und&&!s.id)throw new Error('Choose the treatment.');
+  const start=new Date(WZ.date+'T'+WZ.time+':00');if(isNaN(+start))throw new Error('Pick the date and time.');
+  const finish=new Date(+start+(s.dur||60)*6e4);
+  {const lb=leaveBlock(WZ.staff,start,finish);if(lb)throw new Error(lb);}
+  if(!WZ.room)throw new Error('Choose a room.');
+  const day=await getDocs(query(collection(db,'appointments'),where('date','==',WZ.date)));
+  const list=day.docs.map(d=>({id:d.id,...d.data()}));
+  const busy=busyAt(list,+start,+finish+(s.buffer||0)*6e4,''),inRoom=busy.find(a=>a.roomId===WZ.room);
+  if(inRoom){WZ.days[WZ.date]=list.filter(a=>a.branchId===ME.branchId);throw new Error(room(WZ.room).name+' has just been taken at '+tstr(inRoom.start)+'. Go back and pick another room or time.');}
+  const mine=busy.filter(a=>a.staffId===WZ.staff),key=WZ.date+WZ.time+WZ.staff+WZ.room;
+  if(mine.length&&WZ.warn!==key){WZ.warn=key;if(btn)btn.disabled=false;
+   wzErr((stf(WZ.staff).name||'')+' also has '+mine.map(a=>(a.customerName||'')+' at '+tstr(a.start)+' in '+(room(a.roomId).name||'another room')).join(', ')+'. Tap Confirm booking again to book both.');return;}
+  const d={visitType:WZ.visit||'return',color:WZ.color||'',branchId:ME.branchId,customerId:WZ.cid,customerName:c.name||'',staffId:WZ.staff,staffName:stf(WZ.staff).name||'',
+   serviceId:s.id||'',serviceName:s.name,roomId:WZ.room,date:WZ.date,start:start.toISOString(),finish:finish.toISOString(),duration:s.dur||60,buffer:s.buffer||0,status:'booked',
+   ...(WZ.und?{undecided:true,concerns:[...WZ.undCon],shortlist:[...WZ.undShort]}:{}),deposit:+WZ.dep||0,notes:String(WZ.notes||'').slice(0,400),createdBy:UID,createdAt:new Date().toISOString()};
+  const r=await addDoc(collection(db,'appointments'),d);
+  logEvent('booking','New booking · '+(c.name||''),s.name+' · '+dstr(start)+' '+tstr(start)+' with '+(stf(WZ.staff).name||''),{refType:'appt'});
+  await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
+  calDate=WZ.date;if(calMode==='week'||calMode==='month')calMode=bkIsPhone()?'list':'day';
+  if(needsWindow())watchAppointments();
+  wzDone({id:r.id,...d},c);render();
+ }catch(e){wzErr(friendly(e));if(btn)btn.disabled=false;}
+};
+function wzDone(a,c){
+ const b=bizC(),first=String(c.name||'').split(' ')[0],ph=waNum(c.phone||'');
+ const bn=branch().name||'',where=bn.toLowerCase().startsWith(String(b.name||'').toLowerCase())?bn:((b.name||'kami')+' '+bn).trim();
+ const msg='Hi '+first+', tempahan anda di '+where+' telah disahkan:\n\n'+a.serviceName+'\n'+
+  new Date(a.date+'T00:00:00').toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'})+', jam '+tstr(a.start)+'\nBersama '+a.staffName+
+  (a.deposit?'\nDeposit diterima: '+rm(a.deposit):'')+'\n\nSila datang 10 minit awal. Jumpa nanti! 🌿';
+ window.__lastBookMsg=msg;
+ modal('Booked','<div class="wz"><div class="wzdone">'+ic('check',30)+'<h3>'+esc(c.name||'')+' is booked</h3><p class="tiny muted">'+esc(a.serviceName)+' · '+dstr(a.date)+' '+tstr(a.start)+' · '+esc(a.staffName)+' · '+esc(room(a.roomId).name||'')+'</p></div>'+
+  '<textarea class="f" rows="7" id="wz-msg">'+esc(msg)+'</textarea>'+
+  '<div class="wzfoot">'+(ph?'<a class="btn" style="text-decoration:none" target="_blank" onclick="this.href=\'https://wa.me/'+ph+'?text=\'+encodeURIComponent(document.getElementById(\'wz-msg\').value)" href="https://wa.me/'+ph+'">'+ic('msg',15)+'Send confirmation</a>':'<span class="tiny muted">No phone number on file.</span>')+
+  '<button type="button" class="btn ghost" onclick="closeModal();newAppt()">'+ic('plus',14)+'Another booking</button><button type="button" class="btn ghost" onclick="closeModal();render()">Done</button></div></div>');
 }
 
 </script>
