@@ -2007,6 +2007,10 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .lpsa button{width:26px;height:26px;border-radius:8px;border:0;background:rgba(255,255,255,.9);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
 .lpslide.add{display:grid;place-items:center;align-content:center;gap:2px;border-style:dashed;cursor:pointer;color:var(--ink-3);font:inherit}
 .lpen{border:1px dashed var(--line);border-radius:12px;padding:8px 12px;margin:14px 0 4px}.lpen summary{cursor:pointer;font-size:13.5px;font-weight:600;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.lpsvimg.wide{flex-basis:150px;height:92px}
+.lpcon{margin:6px 0 0}.lpcon summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.lpconc{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 12px;padding:8px 0 2px}
+.lpck{display:flex!important;gap:6px;align-items:center;font-size:12.5px;margin:0!important;font-weight:400;cursor:pointer}.lpck input{width:15px;height:15px;accent-color:var(--ink)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2266,7 +2270,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-26l';
+const BUILD='2026-09-28a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -9792,7 +9796,7 @@ window.editService=id=>{
    (s.handsOnValue||0)+'"></div></div>'+
   '<p class="tiny muted" style="margin:0">Earned by whoever performs it, including sessions redeemed from a '+
   'package. For a percentage on a package session, the treatment\'s normal price is used.</p></div>'+
-  '<label>Description <span class="muted">— shown on the landing and booking page</span></label><textarea class="f" id="sv-desc" rows="2" maxlength="400" placeholder="What it does and who it is for">'+esc(s.desc||'')+'</textarea>'+imageField('sv-img',s.image||'','service','Photo for the landing page')+'<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
+  '<label>Description <span class="muted">— shown on the landing and booking page</span></label><textarea class="f" id="sv-desc" rows="2" maxlength="400" placeholder="What it does and who it is for">'+esc(s.desc||'')+'</textarea>'+'<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
    (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
   '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
   chipField('sv-con',CONCERNS,s.concerns||[],'This treats','used by the programme builder')+
@@ -21587,7 +21591,7 @@ window.chatAck=async(id,sid)=>{
 const LP_DEF={on:false,headline:'',sub:'',ticks:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas, tanpa caj tersembunyi'],
  usps:[{t:'Konsultasi percuma',d:'Therapist semak keadaan kulit anda sebelum sebarang rawatan.'},{t:'Rawatan ikut kulit anda',d:'Setiap rawatan disesuaikan dengan jenis dan masalah kulit anda.'},
   {t:'Book online 24 jam',d:'Pilih rawatan, therapist dan masa sendiri — terus disahkan.'}],
- faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',threads:'',gReviews:'',rv:{hide:[],manual:[]},slides:[],promoImg:{},promoBar:true,promoPop:true,headlineEn:'',subEn:'',ticksEn:['','',''],waMsgEn:'',px:{meta:'',tt:'',ga:''}};
+ faq:null,waMsg:'Hi {bisnes}, saya nak tanya tentang rawatan.',showPrices:true,showReviews:true,svcs:null,branches:{},tiktok:'',facebook:'',threads:'',gReviews:'',rv:{hide:[],manual:[]},slides:[],promoImg:{},catImg:{},catDesc:{},promoBar:true,promoPop:true,headlineEn:'',subEn:'',ticksEn:['','',''],waMsgEn:'',px:{meta:'',tt:'',ga:''}};
 const lpFaq0=()=>{const W=typeof wbSet==='function'?wbSet():{};return [
  {q:'Perlu book dulu atau boleh walk-in?',a:'Digalakkan book dahulu supaya slot dan therapist tersedia untuk anda. Walk-in diterima jika ada slot kosong.'},
  {q:'Rawatan mana yang sesuai untuk saya?',a:'Tak pasti? Isi borang konsultasi percuma atau WhatsApp kami — therapist akan cadangkan rawatan ikut jenis dan masalah kulit anda.'},
@@ -21648,10 +21652,11 @@ function lpBuild(img){
    tEn:String(L.headlineEn||'').slice(0,120),sEn:String(L.subEn||'').slice(0,240),ticksEn:(L.ticksEn||[]).slice(0,3).map(x=>String(x||'').slice(0,40)),
    slides:(L.slides||[]).filter(x=>x&&x.id).slice(0,6).map(x=>({id:x.id,ih:x.ih||''})),img:(L.slides||[]).length?'':(img||'')},
   promoBar:L.promoBar!==false,promoPop:L.promoPop!==false,waMsgEn:String(L.waMsgEn||'').slice(0,200),
-  imgs:[...(L.slides||[]).map(x=>'hero_'+x.id),...Object.keys(L.promoImg||{}).map(id=>'promo_'+id)],
+  imgs:[...(L.slides||[]).map(x=>'hero_'+x.id),...Object.keys(L.promoImg||{}).map(id=>'promo_'+id),...Object.keys(L.catImg||{}).map(c=>'cat_'+lpSlug(c))],
   usps:(L.usps||[]).filter(u=>u&&u.t).slice(0,4).map(u=>({t:u.t,d:u.d||'',...(u.tEn?{tEn:u.tEn}:{}),...(u.dEn?{dEn:u.dEn}:{})})),faq:(L.faq||[]).filter(f=>f&&f.q).slice(0,10).map(f=>({q:f.q,a:f.a||'',...(f.qEn?{qEn:f.qEn}:{}),...(f.aEn?{aEn:f.aEn}:{})})),waMsg:String(L.waMsg||'').slice(0,200),
   showPrices:L.showPrices!==false,bookOn:!!W.on,
-  services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,400),b:bookable.has(s.id),...(s.image?{ih:wbHash(s.image)}:{})})),
+  services:S.map(s=>({id:s.id,n:s.name,c:catOf(s),p:+s.price||0,d:+s.dur||60,x:String(s.desc||'').slice(0,400),b:bookable.has(s.id),k:(s.concerns||[]).filter(k=>CONCERNS.some(c=>c.id===k)),sk:(s.skins||[]).filter(k=>SKINS.includes(k))})),
+  ...lpFinderOut(S,L),
   promos:(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&(!p.start||daysBetween(td,p.start)<=31)&&!(+p.limit>0&&promoLeft(p)<=0))
    .sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999'))).slice(0,8).map(lpPromoOut),
   rating:FB.length?{avg:Math.round(FB.reduce((t,f)=>t+star(f.overall),0)/FB.length*10)/10,n:FB.length,dist}:{avg:0,n:0,dist},
@@ -21677,8 +21682,7 @@ async function lpPublish(force){
    only photos that changed are written, and photos of treatments taken off the page are removed */
 async function lpSyncImgs(d,old){
  const was={};((old&&old.services)||[]).forEach(s=>{if(s.ih)was[s.id]=s.ih;});
- for(const s of d.services){if(!s.ih||was[s.id]===s.ih)continue;const x=svc(s.id);if(x&&x.image)await setDoc(doc(db,'lpImg',s.id),{img:x.image,h:s.ih,at:new Date().toISOString()});}
- const keep=new Set(d.services.filter(s=>s.ih).map(s=>s.id));
+ const keep=new Set();
  const now=new Set(d.imgs||[]);for(const id of new Set([...((old&&old.imgs)||[]),...LPUP]))if(!now.has(id)){try{await deleteDoc(doc(db,'lpImg',id));}catch(e){console.warn('lpImg',e);}}
  LPUP.clear();
  for(const id of Object.keys(was))if(!keep.has(id)){try{await deleteDoc(doc(db,'lpImg',id));}catch(e){console.warn('lpImg',e);}}
@@ -21777,7 +21781,7 @@ function vLanding(){
    '<div><label>Google Analytics (G-…)</label><input class="f" value="'+esc(L.px.ga||'')+'" oninput="lpPx(\'ga\',this.value)"></div></div>'+
   '<p class="tiny muted">Optional. With a pixel the ad platform learns who enquires and books, so your ads find more people like them.</p>'+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
- return status+lpStatsHTML()+links+lpPromoCard(L)+lpSvcCard()+lpRevCard(L)+content;
+ return status+lpStatsHTML()+links+lpPromoCard(L)+lpCatCard(L)+lpSvcCard()+lpRevCard(L)+content;
 }
 window.lpF=(k,v)=>{LPD[k]=v;};
 window.lpArr=(k,i,v)=>{LPD[k]=LPD[k]||[];LPD[k][i]=v;};
@@ -21872,17 +21876,17 @@ window.fbShare=on=>{if(typeof FBPUB!=='undefined'&&FBPUB)FBPUB.share=!!on;};
 
 /* ---------- treatment photos and descriptions, straight on the catalogue ---------- */
 function lpSvcCard(){
- const L=LPD||lpSet(),W=typeof wbSet==='function'?wbSet():{},S=D.services.filter(s=>s.active!==false&&s.id),n=S.filter(s=>s.image).length;
+ const L=LPD||lpSet(),W=typeof wbSet==='function'?wbSet():{},S=D.services.filter(s=>s.active!==false&&s.id),withK=S.filter(s=>(s.concerns||[]).length).length;
  const onPage=x=>!L.svcs||L.svcs.includes(x.id),onBook=x=>!W.services||W.services.includes(x.id);
- return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Treatments on the page & booking</h3><span class="pill '+(n===S.length&&n?'g':'a')+'">'+n+' of '+S.length+' with a photo</span></div>'+
-  '<p class="tiny muted" style="margin:6px 0 8px">Switch each treatment on or off for the landing page and for online booking — it changes straight away. Photos and descriptions are saved on the treatment (also under Catalogue → Treatments); tapping a card on the page opens it large.</p>'+
-  S.map(x=>'<div class="lpsv'+(onPage(x)?'':' offp')+'"><button type="button" class="lpsvimg'+(x.image?'':' none')+'" onclick="lpSvcPhoto(\''+x.id+'\')" title="'+(x.image?'Change photo':'Add photo')+'">'+
-    (x.image?'<img src="'+x.image+'" alt="">':ic('image',18)+'<small>Add</small>')+'</button>'+
-   '<div class="lpsvb"><div class="spread"><b>'+esc(x.name)+'</b><span class="tiny muted">'+rm(x.price)+' · '+(x.dur||60)+' min</span></div>'+
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('spark',15)+' Treatments on the page & booking</h3><span class="pill '+(withK===S.length&&withK?'g':'a')+'">'+withK+' of '+S.length+' with skin concerns</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">Switch each treatment on or off for the landing page and for online booking — it changes straight away. Tick the skin concerns each one helps with: the page\'s "find by skin concern" uses them to suggest treatments. Descriptions are saved on the treatment.</p>'+
+  S.map(x=>{const K=x.concerns||[];return '<div class="lpsv'+(onPage(x)?'':' offp')+'">'+
+   '<div class="lpsvb"><div class="spread"><b>'+esc(x.name)+'</b><span class="tiny muted">'+esc(catOf(x)||'')+' · '+rm(x.price)+' · '+(x.dur||60)+' min</span></div>'+
    '<div class="lpsw"><label class="lpswi"><input type="checkbox" '+(onPage(x)?'checked':'')+' onchange="lpSvcShow(\''+x.id+'\',this.checked)"><i></i><span>Landing page</span></label>'+
     '<label class="lpswi"><input type="checkbox" '+(onBook(x)?'checked':'')+' onchange="lpSvcBook(\''+x.id+'\',this.checked)"><i></i><span>Online booking</span></label></div>'+
-   '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea>'+
-   (x.image?'<button type="button" class="lpx" onclick="lpSvcNoPhoto(\''+x.id+'\')">Remove photo</button>':'')+'</div></div>').join('')+'</div>';
+   '<details class="lpcon"><summary>'+ic('target',12)+' Skin concerns: '+(K.length?esc(K.map(k=>LP_CONCERN_MS[k]||k).join(', ')):'<span class="muted">none yet</span>')+'</summary><div class="lpconc">'+
+    CONCERNS.map(c=>'<label class="lpck"><input type="checkbox" '+(K.includes(c.id)?'checked':'')+' onchange="lpSvcCon(\''+x.id+'\',\''+c.id+'\',this.checked)"> '+esc(LP_CONCERN_MS[c.id]||c.label)+'</label>').join('')+'</div></details>'+
+   '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea></div></div>';}).join('')+'</div>';
 }
 /* a whole settings field replaced at once (a merge would keep keys that were taken out) */
 async function lpMetaPut(k,v){try{await updateDoc(doc(db,'meta','settings'),{[k]:v});}catch(e){await setDoc(doc(db,'meta','settings'),{[k]:v},{merge:true});}D.meta[k]=v;}
@@ -21964,7 +21968,7 @@ function lpPromoCard(L){
   (P.length?P.map(p=>{const h=(L.promoImg||{})[p.id],im=h?lpThumb('promo_'+p.id):'',T=p.target||{},one=T.scope==='items'&&(T.items||[]).filter(x=>x.kind==='service').length===1?svc((T.items||[]).find(x=>x.kind==='service').id):null;
    return '<div class="lpsv"><button type="button" class="lpsvimg'+(h?'':' none')+'" onclick="lpPromoPhoto(\''+p.id+'\')">'+(h&&im?'<img src="'+im+'" alt="">':h?ic('image',18):ic('image',18)+'<small>Add</small>')+'</button>'+
     '<div class="lpsvb"><div class="spread"><b>'+esc(p.name)+'</b><span class="tiny muted">'+(p.start&&p.start>td?'starts '+dshort(p.start):'running')+(p.end?' · until '+dshort(p.end):'')+'</span></div>'+
-    '<div class="tiny muted" style="margin-top:3px">'+(h?'Its own photo, blended into the card.':one&&one.image?'Uses the photo of '+esc(one.name)+' — add one to use a different photo.':'No photo — shown as a dark card. Add one to make it stand out.')+'</div>'+
+    '<div class="tiny muted" style="margin-top:3px">'+(h?'Its own photo, blended into the card.':one&&(L.catImg||{})[catOf(one)]?'Uses the photo of the '+esc(catOf(one))+' category — add one to use a different photo.':'No photo — shown as a dark card. Add one to make it stand out.')+'</div>'+
     (h?'<button type="button" class="lpx" onclick="lpPromoNoPhoto(\''+p.id+'\')">Remove photo</button>':'')+'</div></div>';}).join('')
    :'<div class="empty">No promotion running. Set one up under Clients → Promotions and it appears here, on the banner and in the pop-up.</div>')+'</div>';
 }
@@ -21987,5 +21991,40 @@ function lpEnHTML(L){
    '<textarea class="f" rows="2" maxlength="500" placeholder="'+esc(f.a||'')+'" oninput="lpFaqF('+i+',\'aEn\',this.value)">'+esc(f.aEn||'')+'</textarea></div>').join(''):'')+
   '<label>WhatsApp message</label>'+en('',L.waMsgEn,"Hi {bisnes}, I'd like to ask about your treatments.",200,"lpF('waMsgEn',this.value)")+'</details>';
 }
+
+/* ---------- skin concerns and categories for the page ---------- */
+const LP_CONCERN_MS={acne:'Jerawat',scarring:'Parut jerawat & tekstur',pigment:'Jeragat & pigmentasi',dull:'Kulit kusam & tidak sekata',dehydrated:'Kulit kering & tegang',
+ lines:'Garis halus & kedutan',sagging:'Kulit kendur',pores:'Liang pori besar',congestion:'Komedo & kulit tersumbat',redness:'Kemerahan & kulit sensitif',oily:'Kulit berminyak',
+ eyes:'Bawah mata (gelap, sembab)',slimming:'Bentuk badan & melangsingkan',cellulite:'Selulit & regangan kulit',tension:'Otot tegang & sengal-sengal',postnatal:'Pemulihan selepas bersalin',
+ hair:'Bulu tidak diingini',wellness:'Relaks & kesejahteraan'};
+const LP_SKIN_MS={Normal:'Normal',Oily:'Berminyak',Dry:'Kering',Combination:'Kombinasi',Sensitive:'Sensitif','Acne-prone':'Mudah berjerawat',Mature:'Matang'};
+const lpSlug=c=>String(c||'lain').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'lain';
+function lpFinderOut(S,L){
+ const used=new Set(),sk=new Set();S.forEach(s=>{(s.concerns||[]).forEach(k=>used.add(k));(s.skins||[]).forEach(k=>sk.add(k));});
+ const cats=[...new Set(S.map(s=>catOf(s)))];
+ return {concerns:CONCERNS.filter(c=>used.has(c.id)).map(c=>({id:c.id,ms:LP_CONCERN_MS[c.id]||c.label,en:c.label})),
+  skins:SKINS.filter(k=>sk.has(k)).map(k=>({id:k,ms:LP_SKIN_MS[k]||k,en:k})),
+  cats:cats.map(c=>{const h=(L.catImg||{})[c],x=(L.catDesc||{})[c]||{};return {n:c,...(h?{img:'cat_'+lpSlug(c),ih:h}:{}),d:String(x.d||'').slice(0,200),dEn:String(x.dEn||'').slice(0,200)};})};
+}
+function lpCatCard(L){
+ L=LPD||L;const S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id))),cats=[...new Set(S.map(s=>catOf(s)))];
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('grid',15)+' Categories on the page</h3><span class="pill '+(cats.every(c=>(L.catImg||{})[c])?'g':'a')+'">'+cats.filter(c=>(L.catImg||{})[c]).length+' of '+cats.length+' with a photo</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">Treatments are shown in one card per category, each with a single photo that sets its mood — no photo per treatment. Add a line about each category too. Changes go live with Save & publish.</p>'+
+  cats.map(c=>{const h=(L.catImg||{})[c],im=h?lpThumb('cat_'+lpSlug(c)):'',x=(L.catDesc||{})[c]||{},n=S.filter(s=>catOf(s)===c).length,k=esc(c).replace(/'/g,'&#39;');
+   return '<div class="lpsv"><button type="button" class="lpsvimg wide'+(h?'':' none')+'" onclick="lpCatPhoto(\''+esc(lpSlug(c))+'\')">'+(im?'<img src="'+im+'" alt="">':ic('image',18)+'<small>'+(h?'':'Add')+'</small>')+'</button>'+
+    '<div class="lpsvb"><div class="spread"><b>'+esc(c||'Other')+'</b><span class="tiny muted">'+n+' treatment'+(n===1?'':'s')+'</span></div>'+
+    '<div class="grid g2" style="margin-top:6px"><input class="f" style="margin:0" maxlength="200" placeholder="One line about this category (BM)" value="'+esc(x.d||'')+'" oninput="lpCatD(\''+esc(lpSlug(c))+'\',\'d\',this.value)">'+
+    '<input class="f" style="margin:0" maxlength="200" placeholder="English (optional)" value="'+esc(x.dEn||'')+'" oninput="lpCatD(\''+esc(lpSlug(c))+'\',\'dEn\',this.value)"></div>'+
+    (h?'<button type="button" class="lpx" onclick="lpCatNoPhoto(\''+esc(lpSlug(c))+'\')">Remove photo</button>':'')+'</div></div>';}).join('')+'</div>';
+}
+const lpCatBySlug=sl=>{const cats=[...new Set(D.services.map(s=>catOf(s)))];return cats.find(c=>lpSlug(c)===sl);};
+window.lpCatD=(sl,k,v)=>{const c=lpCatBySlug(sl);if(c===undefined)return;LPD.catDesc={...(LPD.catDesc||{})};LPD.catDesc[c]={...(LPD.catDesc[c]||{}),[k]:v};};
+window.lpCatImgSet=async(sl,img)=>{const c=lpCatBySlug(sl);if(c===undefined)return;await setDoc(doc(db,'lpImg','cat_'+sl),{img,h:wbHash(img),at:new Date().toISOString()});
+ LPTH['cat_'+sl]=img;LPUP.add('cat_'+sl);LPD.catImg={...(LPD.catImg||{}),[c]:wbHash(img)};render();};
+window.lpCatPhoto=sl=>{const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{await window.lpCatImgSet(sl,await lpShrink(f));toast('Photo added — Save & publish to show it');}catch(e){toast(friendly(e));}};i.click();};
+window.lpCatNoPhoto=sl=>{const c=lpCatBySlug(sl);const m={...(LPD.catImg||{})};delete m[c];LPD.catImg=m;render();};
+/* what each treatment helps with — the skin-concern finder on the page uses this */
+window.lpSvcCon=async(id,k,on)=>{const x=svc(id);if(!x)return;let a=(x.concerns||[]).filter(z=>z!==k);if(on)a.push(k);await lpSvcPut(id,{concerns:a});};
 
 </script>

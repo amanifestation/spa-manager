@@ -218,7 +218,6 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 .brpick b{display:block}.brpick small{color:var(--ink-3)}
 @media(min-width:700px){.veil{align-items:center}.sheet{border-radius:26px}}
 @keyframes fi{from{opacity:0}}@keyframes su{from{transform:translateY(40px);opacity:0}}
-.rv0{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease)}.rv1{opacity:1;transform:none}
 .skel{min-height:100vh;display:grid;place-items:center}.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brass);animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .pv{position:fixed;top:0;left:0;right:0;z-index:70;height:26px;background:#9C6B15;color:#fff;text-align:center;font-size:12.5px;padding:5px}
@@ -309,6 +308,60 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 .pop .btn{margin-top:6px;background:var(--gold);color:var(--ink)}
 .popx{position:absolute;right:8px;top:8px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer}
 @media(max-width:760px){.pop{left:14px;right:14px;width:auto;bottom:calc(84px + env(safe-area-inset-bottom))}}
+/* ---- 28a: find by skin concern ---- */
+.finder{position:relative;padding-top:40px}
+.fbox{position:relative;border-radius:30px;padding:clamp(22px,4vw,40px);overflow:hidden;border:1px solid rgba(255,255,255,.8);
+ background:linear-gradient(135deg,rgba(255,255,255,.85),rgba(255,255,255,.45)),radial-gradient(90% 120% at 100% 0,rgba(201,163,106,.35),transparent 60%),radial-gradient(80% 100% at 0 100%,rgba(46,107,82,.14),transparent 60%);
+ box-shadow:0 30px 60px -36px rgba(80,58,24,.55),inset 0 1px 0 #fff;backdrop-filter:blur(18px)}
+.fchips{display:flex;flex-wrap:wrap;gap:8px}
+.fchips button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:rgba(255,255,255,.75);border-radius:99px;padding:10px 16px;font-size:14px;font-weight:500;cursor:pointer;color:var(--ink);
+ transition:transform .2s var(--ease),background .2s,border-color .2s,box-shadow .2s}
+.fchips button:hover{transform:translateY(-2px);box-shadow:0 8px 18px -12px rgba(80,58,24,.6)}
+.fchips button.on{background:linear-gradient(135deg,#2a241c,#14120F);color:var(--gold);border-color:#14120F;box-shadow:0 10px 22px -12px rgba(20,18,15,.7)}
+.fchips.sm button{padding:7px 13px;font-size:13px}
+.fsk{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px}.fsk>span{font-size:13px;color:var(--ink-3);font-weight:600}
+.fhint{display:flex;align-items:center;gap:8px;color:var(--ink-3);font-size:14px;margin:18px 0 0}
+.fres{margin-top:22px;animation:frin .5s var(--ease) both}
+.fresh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.fresh b{font-family:var(--serif);font-size:20px;font-weight:500}
+.fclear{border:0;background:none;color:var(--ink-3);text-decoration:underline;cursor:pointer;font-size:13px}
+.frl{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px}
+.frc{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;animation:frin .55s var(--ease) both;animation-delay:var(--d,0s)}
+.frc.top{border-color:#C9A36A;box-shadow:0 0 0 1px #C9A36A,0 18px 36px -24px rgba(142,102,48,.7)}
+.frc p{margin:0;padding:0 18px 14px;font-size:13px;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.frc .svr{border-top:0}
+.fbest{position:absolute;right:12px;top:-1px;z-index:1;display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#E8CB93,#A67C3D);color:#fff;font-size:11px;font-weight:700;border-radius:0 0 10px 10px;padding:3px 9px}
+.fcta{margin-top:14px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--ink);color:var(--cream);border-radius:18px;padding:16px 18px}
+.fcta b{display:block;font-size:15px;color:#fff}.fcta span{font-size:13px;color:#CFC7B8}.fcb{display:flex;gap:8px;flex-wrap:wrap}
+.fcta .btn.pri{background:var(--gold);color:var(--ink)}.fcta .btn.light{background:transparent;color:var(--cream);border-color:rgba(255,255,255,.25)}
+@keyframes frin{from{opacity:0;transform:translateY(14px)}}
+/* ---- treatments: one card per category ---- */
+.catg:has(>.catc:only-child){max-width:560px}.catg{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;align-items:start}
+.catc{background:var(--surface);border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:0 22px 44px -34px rgba(20,18,15,.5)}
+.cath{position:relative;aspect-ratio:16/9;max-height:240px;width:100%;background:linear-gradient(150deg,#3a3025,#14120F) center/cover no-repeat;overflow:hidden}
+.cath::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,15,0) 35%,rgba(20,18,15,.78));pointer-events:none}
+.cath.blank{background:radial-gradient(circle at 25% 25%,rgba(226,197,143,.45),transparent 55%),radial-gradient(circle at 85% 90%,rgba(155,74,74,.35),transparent 55%),linear-gradient(150deg,#2a241c,#14120F)}
+.catm{position:absolute;right:18px;top:6px;font-family:var(--serif);font-size:96px;line-height:1;color:rgba(226,197,143,.22);transition:opacity .4s}
+.cath.on .catm{opacity:0}
+.catt{position:absolute;left:20px;right:20px;bottom:16px;z-index:1;color:#fff}.catt h3{font-family:var(--serif);font-weight:500;font-size:28px;letter-spacing:-.01em}
+.catt small{display:block;color:rgba(255,255,255,.8);font-size:13px;margin-top:2px}
+.catd{margin:0;padding:14px 20px 0;color:var(--ink-2);font-size:14px}
+.catl{padding:8px 0 6px}
+.svr{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:12px 20px;border-top:1px solid var(--line-2);cursor:pointer;transition:background .2s}
+.catl .svr:first-child{border-top:0}
+.svr:hover{background:var(--surface-2)}.svr:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+.svx{display:block;margin-top:3px;font-size:12px;line-height:1.4;color:#8E6630}.svn{min-width:0}.svn b{display:block;font-size:15px;font-weight:600}.svn small{display:flex;align-items:center;gap:4px;color:var(--ink-3);font-size:12.5px;margin-top:2px;flex-wrap:wrap}
+.svn .ptag{display:inline-block;font-size:10.5px;font-weight:700;background:var(--rose-soft);color:var(--rose);border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:2px}
+.svp{text-align:right;white-space:nowrap}.svp b{font-size:15px}.svp s{display:block;font-size:12px;color:var(--ink-3)}.svp .now{color:var(--rose)}
+.catmore{display:block;width:100%;border:0;border-top:1px solid var(--line-2);background:none;padding:12px;font:inherit;font-size:13.5px;font-weight:600;color:var(--brass);cursor:pointer}
+@media(max-width:600px){.fchips{gap:6px}.fchips button{padding:8px 13px;font-size:13.5px}.catg{grid-template-columns:1fr}.svr{grid-template-columns:1fr auto;padding:12px 16px}.svr .btn{grid-column:1/-1;justify-self:start;display:none}.frl{grid-template-columns:1fr}.catt h3{font-size:24px}}
+/* ---- smooth scroll animations ---- */
+.sprog{position:fixed;left:0;top:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);z-index:80;background:linear-gradient(90deg,#A67C3D,#E2C58F,#B5533F);pointer-events:none}
+.rv0{opacity:0;transform:translateY(26px) scale(.985);filter:blur(6px);transition:opacity .8s var(--ease),transform .9s var(--ease),filter .8s var(--ease);transition-delay:var(--d,0s)}
+.rv1{opacity:1;transform:none;filter:none}
+.sec-h.rv0 .eyebrow::before{width:0;transition:width .9s var(--ease) .25s}.sec-h.rv1 .eyebrow::before{width:22px}
+.sec-h.rv0 h2{clip-path:inset(0 0 100% 0);transition:clip-path 1s var(--ease) .1s}.sec-h.rv1 h2{clip-path:inset(0 0 -20% 0)}
+[data-par]{will-change:transform}
+@media(prefers-reduced-motion:reduce){.rv0{opacity:1;transform:none;filter:none}.sec-h.rv0 h2{clip-path:none}.sprog{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -330,7 +383,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;
 const KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM',PROJECT='spa-manager-c586b';
 const API='https://firestore.googleapis.com/v1/projects/'+PROJECT+'/databases/(default)/documents/';
 const Q=new URLSearchParams(location.search),PREVIEW=Q.has('preview');
-let P=null,CAT='',SHOWALL=false,SHEET=null,REVALL=false,LANG='ms',SLIDE=0,SLTIMER=null,ABTIMER=null,POPT=null;
+let P=null,CAT='',SHOWALL=false,SELK=new Set(),SELS='',CATOPEN=new Set(),SHEET=null,REVALL=false,LANG='ms',SLIDE=0,SLTIMER=null,ABTIMER=null,POPT=null;
 try{LANG=(Q.get('lang')||localStorage.getItem('luunaLang')||'ms')==='en'?'en':'ms';}catch(e){}
 
 /* ---------- words, in both languages ---------- */
@@ -360,6 +413,10 @@ const TX={
   priceOf:s=>'Harga & slot '+s,updating:'Laman ini sedang dikemas kini',tryLater:'Sila cuba sebentar lagi.',openNow:t=>'Buka sekarang · tutup '+t,closedToday:t=>'Tutup · buka hari ini '+t,
   closedNext:(d,t)=>'Tutup · buka '+d+' '+t,tomorrow:'esok',closed:'Tutup',days:['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'],dayS:['Ahd','Isn','Sel','Rab','Kha','Jum','Sab'],
   everyDay:'Setiap hari',mon:['Jan','Feb','Mac','Apr','Mei','Jun','Jul','Ogo','Sep','Okt','Nov','Dis'],dh:(d,h)=>d+' hari '+h+' jam',hm:(h,m)=>h+' jam '+m+' minit',
+  fEy2:'Cari ikut masalah kulit',fH2:'Apa yang anda mahu perbaiki?',fP2:'Pilih satu atau lebih masalah kulit — kami cadangkan rawatan yang paling sesuai untuk anda.',
+  skinQ:'Jenis kulit anda (pilihan)',pickC:'Pilih masalah kulit di atas untuk lihat cadangan.',forYou:'Cadangan untuk anda',goodFor:x=>'Sesuai untuk: '+x,best:'Paling sesuai',
+  noMatch:'Belum ada rawatan tersenarai untuk pilihan ini — therapist kami boleh cadangkan yang terbaik untuk anda.',confirmT:'Nak pengesahan therapist?',confirmP:'Dapatkan konsultasi percuma — kami semak kulit anda dan sahkan rawatan yang sesuai.',
+  freeC:'Konsultasi percuma',sendWa:'Tanya melalui WhatsApp',clearSel:'Kosongkan',nTreat:n=>n+' rawatan',showAll:n=>'Lihat semua '+n,less:'Tutup senarai',concernsL:'Masalah kulit',skinL:'Jenis kulit',
   offer:'Tawaran terhad',claimNow:'Claim sekarang',dismiss:'Tutup',prev:'Sebelum',next:'Seterusnya',map:n=>'Peta '+n},
  en:{promo:'Offers',treat:'Treatments',rev:'Reviews',loc:'Location',faq:'FAQ',book:'Book',bookNow:'Book a slot now',bookNow2:'Book now',waUs:'WhatsApp us',
   subDef:'Facial and skin treatments by trained therapists. Pick a treatment, pick a time, and we take care of the rest.',headDef:'Healthy, *glowing* skin, cared for with attention',
@@ -386,6 +443,10 @@ const TX={
   priceOf:s=>'Price & slots for '+s,updating:'This page is being updated',tryLater:'Please try again shortly.',openNow:t=>'Open now · closes '+t,closedToday:t=>'Closed · opens today '+t,
   closedNext:(d,t)=>'Closed · opens '+d+' '+t,tomorrow:'tomorrow',closed:'Closed',days:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],dayS:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
   everyDay:'Every day',mon:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],dh:(d,h)=>d+' day'+(d>1?'s':'')+' '+h+' hr',hm:(h,m)=>h+' hr '+m+' min',
+  fEy2:'Find by skin concern',fH2:'What would you like to improve?',fP2:'Pick one or more skin concerns — we\'ll suggest the treatments that suit you best.',
+  skinQ:'Your skin type (optional)',pickC:'Pick a skin concern above to see suggestions.',forYou:'Suggested for you',goodFor:x=>'Good for: '+x,best:'Best match',
+  noMatch:'No listed treatment for this yet — our therapists can suggest the best one for you.',confirmT:'Want a therapist to confirm?',confirmP:'Get a free consultation — we check your skin and confirm the right treatment.',
+  freeC:'Free consultation',sendWa:'Ask on WhatsApp',clearSel:'Clear',nTreat:n=>n+' treatment'+(n===1?'':'s'),showAll:n=>'See all '+n,less:'Show less',concernsL:'Skin concerns',skinL:'Skin type',
   offer:'Limited offer',claimNow:'Claim now',dismiss:'Close',prev:'Previous',next:'Next',map:n=>'Map of '+n}};
 const T=k=>TX[LANG][k]!==undefined?TX[LANG][k]:TX.ms[k];
 const pick=(ms,en)=>LANG==='en'&&en?en:ms;
@@ -523,7 +584,10 @@ function left(end){const ms=Date.parse(end+'T23:59:59+08:00')-Date.now();if(ms<=
  return d>=1?T('dh')(d,h):T('hm')(h,m);}
 const STARS=n=>'★★★★★'.slice(0,Math.round(n))+'☆☆☆☆☆'.slice(0,5-Math.round(n));
 /* the photo for a promotion: its own, else the photo of the one treatment it is for */
-const promoImg=p=>p.img||(p.svc&&p.svc.length===1&&(svcOf(p.svc[0])||{}).ih?p.svc[0]:'');
+const catOf=n=>(P.cats||[]).find(c=>c.n===n)||{};
+const promoImg=p=>p.img||(p.svc&&p.svc.length===1&&svcOf(p.svc[0])?(catOf(svcOf(p.svc[0]).c).img||''):'');
+const cLabel=id=>{const c=(P.concerns||[]).find(x=>x.id===id);return c?pick(c.ms,c.en):id;};
+const sLabel=id=>{const c=(P.skins||[]).find(x=>x.id===id);return c?pick(c.ms,c.en):id;};
 const slides=()=>{const H=P.hero||{};return (H.slides||[]).filter(s=>s&&s.id);};
 
 /* ---------- the page ---------- */
@@ -541,8 +605,9 @@ function render(){
  if(L.length&&P.promoBar!==false&&!abOff)h+='<div class="abar" id="abar"><div class="wrap"><span class="abi">'+ic('fire',16)+'</span><div class="abm" id="abm">'+L.map((p,i)=>
    '<button type="button" class="abx'+(i===0?' on':'')+'" data-claim="'+esc(p.id)+'"><b>'+esc(pBadge(p))+'</b> '+esc(p.t)+'<span class="abs">'+(p.limit>0?' · '+T('left')(p.left):'')+(p.end&&left(p.end)?' · '+T('endsIn')(left(p.end)).replace(/<\/?b>/g,''):'')+'</span></button>').join('')+'</div>'+
   '<button type="button" class="abc" data-claim="'+esc(top.id)+'" id="abc">'+T('claimNow')+ic('arrow',14)+'</button><button type="button" class="abz" data-abx="1" aria-label="'+T('dismiss')+'">'+ic('x',14)+'</button></div></div>';
+ h+='<div class="sprog" id="sprog"></div>';
  h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
-  '<nav class="nav">'+(L.length?'<a href="#promo">'+T('promo')+'</a>':'')+'<a href="#rawatan">'+T('treat')+'</a>'+((P.reviews||[]).length||R.n>=3?'<a href="#ulasan">'+T('rev')+'</a>':'')+'<a href="#lokasi">'+T('loc')+'</a><a href="#soalan">'+T('faq')+'</a></nav>'+
+  '<nav class="nav">'+(L.length?'<a href="#promo">'+T('promo')+'</a>':'')+((P.concerns||[]).length?'<a href="#cari">'+T('concernsL')+'</a>':'')+'<a href="#rawatan">'+T('treat')+'</a>'+((P.reviews||[]).length||R.n>=3?'<a href="#ulasan">'+T('rev')+'</a>':'')+'<a href="#lokasi">'+T('loc')+'</a><a href="#soalan">'+T('faq')+'</a></nav>'+
   '<div class="lang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div>'+
   '<button class="btn pri sm" data-go="book">'+ic('cal',16)+T('book')+'</button></div></header>';
  /* hero */
@@ -550,7 +615,7 @@ function render(){
     (SL.length>1?'<button type="button" class="sla l" data-sl="-1" aria-label="'+T('prev')+'">'+ic('left',18)+'</button><button type="button" class="sla r" data-sl="1" aria-label="'+T('next')+'">'+ic('right',18)+'</button>'+
      '<div class="dots">'+SL.map((s,i)=>'<button type="button" class="'+(i===0?'on':'')+'" data-dot="'+i+'" aria-label="'+(i+1)+'"></button>').join('')+'</div>':'')
   :H.img?'<img src="'+esc(H.img)+'" alt="'+esc(b.name||'')+'" fetchpriority="high">':'<span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><div class="wm">'+esc(b.name||'Luuna')+'</div>';
- h+='<section class="hero"><span class="blob b1"></span><span class="blob b2"></span><div class="wrap"><div class="rv0">'+
+ h+='<section class="hero"><span class="blob b1" data-par="0.18"></span><span class="blob b2" data-par="-0.12"></span><div class="wrap"><div class="rv0">'+
   '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
   '<h1>'+h1+'</h1><p class="sub">'+esc(pick(H.s,H.sEn)||T('subDef'))+'</p>'+
   (R.n>=3?'<a class="rate" href="#ulasan"><span class="st">'+STARS(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>'+T('of')(R.avg,R.n)+'</span></a><br>':'')+
@@ -562,23 +627,25 @@ function render(){
    '<div class="cap"><span class="dot">'+ic('clock',20)+'</span><span><b>'+esc(openNow(br).t)+'</b><small>'+esc(br.name||'')+(br.addrShort?' · '+esc(br.addrShort):'')+'</small></span></div></div></div></section>';
  /* highlights */
  const U=(P.usps||[]).filter(u=>u&&u.t);
- if(U.length)h+='<div class="uband"><span class="blob b3"></span><span class="blob b4"></span><div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],21)+'</span><span><b>'+esc(pick(u.t,u.tEn))+'</b><span>'+esc(pick(u.d,u.dEn)||'')+'</span></span></div>').join('')+'</div></div></div>';
+ if(U.length)h+='<div class="uband"><span class="blob b3" data-par="0.2"></span><span class="blob b4" data-par="-0.15"></span><div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0" style="--d:'+i*0.09+'s"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],21)+'</span><span><b>'+esc(pick(u.t,u.tEn))+'</b><span>'+esc(pick(u.d,u.dEn)||'')+'</span></span></div>').join('')+'</div></div></div>';
  /* promotions */
  if(L.length)h+='<section class="sec" id="promo"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('pEy')+'</span><h2>'+T('pH')+'</h2><p>'+T('pP')+'</p></div></div>'+
-  '<div class="promos">'+L.map(p=>{const pct=p.limit>0?Math.max(3,Math.round(p.left/p.limit*100)):0,hot=p.limit>0&&p.left<=Math.max(5,p.limit*0.2),im=promoImg(p),dt=pDays(p);
-   return '<article class="pc rv0'+(im?' img':'')+'">'+(im?'<div class="pcimg" data-img="'+esc(im)+'"></div>':'')+'<div class="pcin"><div class="bdg">'+esc(pBadge(p))+'</div><h3>'+esc(p.t)+'</h3><p>'+esc(pDeal(p))+(p.desc?' — '+esc(pick(p.desc,p.descEn)):'')+'</p>'+
+  '<div class="promos">'+L.map((p,pi)=>{const pct=p.limit>0?Math.max(3,Math.round(p.left/p.limit*100)):0,hot=p.limit>0&&p.left<=Math.max(5,p.limit*0.2),im=promoImg(p),dt=pDays(p);
+   return '<article class="pc rv0'+(im?' img':'')+'" style="--d:'+(pi%3)*0.09+'s">'+(im?'<div class="pcimg" data-img="'+esc(im)+'"></div>':'')+'<div class="pcin"><div class="bdg">'+esc(pBadge(p))+'</div><h3>'+esc(p.t)+'</h3><p>'+esc(pDeal(p))+(p.desc?' — '+esc(pick(p.desc,p.descEn)):'')+'</p>'+
     '<div class="tags">'+(p.newOnly?'<span class="tg">'+T('newOnly')+'</span>':'')+(p.returning?'<span class="tg">'+T('retOnly')+'</span>':'')+(dt?'<span class="tg">'+esc(T('only')(dt))+'</span>':'')+
      (p.brTxt?'<span class="tg">'+esc(p.brTxt)+'</span>':'')+(hot?'<span class="tg hot">'+T('hot')+'</span>':'')+'</div>'+
     (p.limit>0?'<div class="qbar"><i style="width:'+pct+'%"></i></div>':'')+
     '<div class="meta"><span>'+(p.limit>0?T('leftOf')(p.left,p.limit):'')+'</span><span data-end="'+esc(p.end||'')+'">'+(p.end?T('endsIn')(left(p.end)):'')+'</span></div>'+
     '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+T('claim')+'</button>'+
      (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])&&svcOf(p.svc[0]).b!==false?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">'+T('bookDirect')+'</button>':'')+'</div></div></article>';}).join('')+'</div></div></section>';
+ /* find by skin concern */
+ if((P.concerns||[]).length)h+='<section class="sec finder" id="cari"><div class="wrap"><div class="fbox rv0"><div class="sec-h" style="margin-bottom:16px"><div><span class="eyebrow">'+T('fEy2')+'</span><h2>'+T('fH2')+'</h2><p>'+T('fP2')+'</p></div></div><div id="finder"></div></div></div></section>';
  /* treatments */
  h+='<section class="sec" id="rawatan" style="'+(L.length?'padding-top:8px':'')+'"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('tEy')+'</span><h2>'+T('tH')+'</h2><p>'+(P.showPrices===false?T('askPrice'):T('clear'))+' '+T('unsure')+' <a href="#konsultasi">'+T('getConsult')+'</a>.</p></div></div>'+
   '<div id="svcs"></div></div></section>';
  /* how it works */
  h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('sEy')+'</span><h2>'+T('sH')+'</h2></div></div><div class="steps">'+
-  T('steps')(P.bookOn).map(s=>'<div class="step rv0"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
+  T('steps')(P.bookOn).map((s,i)=>'<div class="step rv0" style="--d:'+i*0.1+'s"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
  h+=reviewsHTML();
  /* location */
  h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('lEy')+'</span><h2>'+T('lH')+'</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
@@ -610,7 +677,7 @@ function render(){
  h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?T('bookShort'):T('bookShort2'))+'</button></div>'+
   '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
  $('#app').innerHTML=h;
- paintSvcs();bindForm('f');reveal();startSlides();startBanner();watchImgs();
+ paintSvcs();paintFinder();bindForm('f');reveal();onScrollFx();startSlides();startBanner();watchImgs();
  const t=$('#top'),bar=$('#bar');
  if(!window.__lpS){window.__lpS=1;const onS=()=>{const tt=$('#top'),bb=$('#bar');if(tt)tt.classList.toggle('sc',scrollY>8);if(bb)bb.classList.toggle('on',scrollY>420);};addEventListener('scroll',onS,{passive:true});}
  if(t)t.classList.toggle('sc',scrollY>8);if(bar)bar.classList.toggle('on',scrollY>420);
@@ -662,33 +729,82 @@ function reviewsHTML(){
 }
 /* ---------- treatments ---------- */
 function svcSheet(id){
- const x=svcOf(id);if(!x)return;const bp=P.showPrices===false?null:bestPromo(x);
- sheet((x.ih?'<div class="shimg" data-img="'+esc(x.id)+'"></div>':'')+'<h3>'+esc(x.n)+'</h3><p class="lead">'+[x.c,(x.d||60)+' '+T('min')].filter(Boolean).map(esc).join(' · ')+'</p>'+
+ const x=svcOf(id);if(!x)return;const bp=P.showPrices===false?null:bestPromo(x),K=(x.k||[]).map(cLabel);
+ sheet('<span class="eyebrow">'+esc(x.c||T('other'))+'</span><h3 style="margin-top:6px">'+esc(x.n)+'</h3><p class="lead">'+(x.d||60)+' '+T('min')+(K.length?' · '+esc(T('goodFor')(K.join(', '))):'')+'</p>'+
   (P.showPrices===false?'':'<div class="shpr">'+(bp?'<s>'+rm(x.p)+'</s><b class="now">'+rm(bp.v)+'</b><span class="ptag">'+esc(pBadge(bp.p))+' · '+esc(bp.p.t)+'</span>':'<b>'+rm(x.p)+'</b>')+'</div>')+
   (x.x?'<p class="shx">'+esc(pick(x.x,x.xEn))+'</p>':'')+
   '<div class="shacts">'+(P.bookOn&&x.b!==false?'<button class="btn pri" data-book="'+esc(x.id)+'">'+ic('cal',18)+T('bookThis')+'</button>':'')+'<button class="btn light" data-ask="'+esc(x.id)+'">'+ic('wa',18)+T('askFirst')+'</button></div>');
- watchImgs();hit('svc');
+ hit('svc');
 }
+/* one row of a treatment, used in the category cards and the suggestions */
+function svcRow(s,extra){
+ const bp=P.showPrices===false?null:bestPromo(s);
+ return '<div class="svr" data-sv="'+esc(s.id)+'" role="button" tabindex="0"><div class="svn"><b>'+esc(s.n)+(bp?'<span class="ptag">'+esc(pBadge(bp.p))+'</span>':'')+'</b>'+
+  '<small>'+ic('clock',12)+(s.d||60)+' '+T('min')+'</small>'+(extra?'<span class="svx">'+extra+'</span>':'')+'</div>'+
+  '<div class="svp">'+(P.showPrices===false?'':bp?'<s>'+rm(s.p)+'</s><b class="now">'+rm(bp.v)+'</b>':s.p?'<b>'+rm(s.p)+'</b>':'')+'</div>'+
+  (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">'+T('book')+'</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',14)+T('ask')+'</button>')+'</div>';
+}
+/* treatments: one card per category, one photo each */
 function paintSvcs(){
  const el=$('#svcs');if(!el)return;
  const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||''))];
- const list=S.filter(s=>!CAT||(s.c||'')===CAT),lim=SHOWALL||CAT?list.length:9,anyImg=S.some(s=>s.ih);
+ const show=cats.filter(c=>!CAT||c===CAT);
  el.innerHTML=(cats.length>1?'<div class="cats"><button class="'+(CAT?'':'on')+'" data-cat="">'+T('all')+'</button>'+cats.map(c=>'<button class="'+(CAT===c?'on':'')+'" data-cat="'+esc(c)+'">'+esc(c||T('other'))+'</button>').join('')+'</div>':'')+
-  '<div class="svcs">'+list.slice(0,lim).map(s=>{const bp=P.showPrices===false?null:bestPromo(s);
-   return '<article class="sv'+(anyImg?' hasimg':'')+'">'+(anyImg?'<button type="button" class="ph'+(s.ih?'':' blank')+'" '+(s.ih?'data-img="'+esc(s.id)+'" ':'')+'data-sv="'+esc(s.id)+'" aria-label="'+esc(s.n)+'"><span>'+esc((s.n||'?').charAt(0))+'</span></button>':'')+
-    '<div class="hd"><div><h3 data-sv="'+esc(s.id)+'">'+esc(s.n)+(bp?'<span class="ptag">'+esc(pBadge(bp.p))+'</span>':'')+'</h3>'+(s.c?'<div class="c">'+esc(s.c)+'</div>':'')+'</div>'+
-    '<div class="pr">'+(P.showPrices===false?'':bp?'<s>'+rm(s.p)+'</s><b class="now">'+rm(bp.v)+'</b>':s.p?'<b>'+rm(s.p)+'</b>':'')+'</div></div>'+
-    (s.x?'<p>'+esc(pick(s.x,s.xEn))+'</p>':'')+'<div class="ft"><span class="dur">'+ic('clock',14)+(s.d||60)+' '+T('min')+'</span>'+
-    (P.bookOn&&s.b!==false?'<button class="btn pri sm" data-book="'+esc(s.id)+'">'+T('book')+'</button>':'<button class="btn light sm" data-ask="'+esc(s.id)+'">'+ic('wa',15)+T('ask')+'</button>')+'</div></article>';}).join('')+'</div>'+
-  (list.length>lim?'<div class="more"><button class="btn light" data-more="1">'+T('allTreat')(list.length)+'</button></div>':'');
- watchImgs();
+  '<div class="catg">'+show.map((c,i)=>{const L=S.filter(s=>(s.c||'')===c),C=catOf(c),open=CATOPEN.has(c)||L.length<=6,list=open?L:L.slice(0,5);
+   return '<article class="catc rv0" style="--d:'+(i%2)*0.08+'s"><div class="cath'+(C.img?'':' blank')+'"'+(C.img?' data-img="'+esc(C.img)+'"':'')+'><span class="catm">'+esc((c||T('other')).charAt(0))+'</span>'+
+    '<div class="catt"><h3>'+esc(c||T('other'))+'</h3><small>'+T('nTreat')(L.length)+'</small></div></div>'+
+    (pick(C.d,C.dEn)?'<p class="catd">'+esc(pick(C.d,C.dEn))+'</p>':'')+
+    '<div class="catl">'+list.map(s=>svcRow(s)).join('')+'</div>'+
+    (L.length>6?'<button type="button" class="catmore" data-catopen="'+esc(c)+'">'+(open?T('less'):T('showAll')(L.length))+'</button>':'')+'</article>';}).join('')+'</div>';
+ watchImgs();reveal();
+}
+/* find by skin concern: pick concerns (and a skin type), get the treatments that fit */
+function paintFinder(){
+ const el=$('#finder');if(!el)return;
+ const C=P.concerns||[],SK=P.skins||[];
+ let h='<div class="fchips">'+C.map(c=>'<button type="button" class="'+(SELK.has(c.id)?'on':'')+'" data-k="'+esc(c.id)+'">'+(SELK.has(c.id)?ic('check',13):'')+esc(pick(c.ms,c.en))+'</button>').join('')+'</div>';
+ if(SK.length)h+='<div class="fsk"><span>'+T('skinQ')+'</span><div class="fchips sm">'+SK.map(k=>'<button type="button" class="'+(SELS===k.id?'on':'')+'" data-sk="'+esc(k.id)+'">'+esc(pick(k.ms,k.en))+'</button>').join('')+'</div></div>';
+ if(!SELK.size){h+='<p class="fhint">'+ic('arrow',14)+T('pickC')+'</p>';el.innerHTML=h;return;}
+ const R=(P.services||[]).map(s=>{const m=(s.k||[]).filter(k=>SELK.has(k)),sk=SELS&&(s.sk||[]).includes(SELS);return {s,m,score:m.length*2+(sk?1:0)};})
+  .filter(x=>x.m.length).sort((a,b)=>b.score-a.score||a.s.p-b.s.p).slice(0,4);
+ const picked=[...SELK].map(cLabel).join(', ')+(SELS?' · '+T('skinL')+': '+sLabel(SELS):'');
+ h+='<div class="fres"><div class="fresh"><b>'+T('forYou')+'</b><button type="button" class="fclear" data-kclear="1">'+T('clearSel')+'</button></div>'+
+  (R.length?'<div class="frl">'+R.map((x,i)=>'<div class="frc'+(i===0?' top':'')+'" style="--d:'+i*0.07+'s">'+(i===0?'<span class="fbest">'+ic('star',12)+T('best')+'</span>':'')+
+    svcRow(x.s,esc(T('goodFor')(x.m.map(cLabel).join(', '))))+(x.s.x?'<p>'+esc(pick(x.s.x,x.s.xEn))+'</p>':'')+'</div>').join('')+'</div>':'<p class="fhint">'+T('noMatch')+'</p>')+
+  '<div class="fcta"><div><b>'+T('confirmT')+'</b><span>'+T('confirmP')+'</span></div><div class="fcb"><button type="button" class="btn pri sm" data-quiz="form">'+ic('spark',15)+T('freeC')+'</button>'+
+  '<button type="button" class="btn light sm" data-quiz="wa">'+ic('wa',15)+T('sendWa')+'</button></div></div></div>';
+ el.innerHTML=h;el.dataset.picked=picked;
+}
+function quizLead(how){
+ const R=(P.services||[]).filter(s=>(s.k||[]).some(k=>SELK.has(k)));const top=R[0];
+ const note='Masalah kulit: '+[...SELK].map(id=>{const c=(P.concerns||[]).find(x=>x.id===id);return c?c.ms:id;}).join(', ')+(SELS?' · Jenis kulit: '+((P.skins||[]).find(x=>x.id===SELS)||{ms:SELS}).ms:'');
+ if(how==='wa')return waSheet((LANG==='en'?'Skin concerns: ':'Masalah kulit: ')+[...SELK].map(cLabel).join(', '),top&&top.n,note);
+ sheet('<h3>'+T('confirmT')+'</h3><p class="lead">'+esc(T('confirmP'))+'</p><div class="form">'+formHTML('z',{interest:top&&top.n})+'</div>');
+ bindForm('z',{interest:top&&top.n,quiz:note});
 }
 function reveal(){
- const els=[...document.querySelectorAll('.rv0')];
+ document.querySelectorAll('.sec-h:not(.rv0):not(.rv1)').forEach(e=>e.classList.add('rv0'));
+ document.querySelectorAll('.revs .rv0,.locs .rv0').forEach((e,i)=>e.style.setProperty('--d',(i%3)*0.08+'s'));
+ const els=[...document.querySelectorAll('.rv0:not(.rv1)')];
  if(!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('rv1'));return;}
- const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('rv1');io.unobserve(e.target);}}),{rootMargin:'0px 0px -40px 0px'});
- els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('rv1')),2500);
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('rv1');io.unobserve(e.target);countUp(e.target);}}),{rootMargin:'0px 0px -60px 0px',threshold:.08});
+ els.forEach(e=>io.observe(e));setTimeout(()=>els.forEach(e=>e.classList.add('rv1')),4000);
 }
+/* the rating counts up when it comes into view */
+function countUp(root){const el=root.querySelector&&root.querySelector('.rbig .big');if(!el||el.dataset.done)return;el.dataset.done=1;
+ const to=parseFloat(el.textContent)||0,t0=performance.now();const step=t=>{const k=Math.min(1,(t-t0)/1100),e=1-Math.pow(1-k,3);el.textContent=(to*e).toFixed(1);if(k<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
+/* gentle depth while scrolling: soft colours drift, category photos glide, a thin progress line at the top */
+const RM=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+let PTICK=false;
+function onScrollFx(){
+ if(PTICK)return;PTICK=true;requestAnimationFrame(()=>{PTICK=false;
+  const H=document.documentElement,max=H.scrollHeight-innerHeight,pr=$('#sprog');if(pr)pr.style.transform='scaleX('+(max>0?Math.min(1,scrollY/max):0)+')';
+  if(RM)return;const vh=innerHeight;
+  document.querySelectorAll('[data-par]').forEach(el=>{const r=el.parentNode.getBoundingClientRect();if(r.bottom<-200||r.top>vh+200)return;const c=r.top+r.height/2-vh/2;el.style.transform='translate3d(0,'+(c*-(+el.dataset.par)).toFixed(1)+'px,0)';});
+  document.querySelectorAll('.cath.on').forEach(el=>{const r=el.getBoundingClientRect();if(r.bottom<0||r.top>vh)return;const k=(r.top+r.height/2)/vh-.5;el.style.backgroundPosition='center '+(50+k*18).toFixed(1)+'%';});
+  const art=document.querySelector('.hero .art');if(art&&scrollY<vh*1.2)art.style.transform='translate3d(0,'+(scrollY*0.06).toFixed(1)+'px,0)';
+ });}
+addEventListener('scroll',onScrollFx,{passive:true});addEventListener('resize',onScrollFx);
 
 /* ---------- the enquiry form (inline and in the sheet) ---------- */
 const TIMEKEYS=['Pagi','Tengah hari','Petang','Malam','Hujung minggu'];
@@ -720,10 +836,10 @@ function bindForm(k,o){
   const interest=(it&&it.value)||o.promo||o.interest||'';
   const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:br,stage:'new',createdAt:new Date().toISOString(),
    createdBy:'landing',web:true,consent:true,
-   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':'form',d:x.d||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
+   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':o.quiz?'quiz':'form',d:x.d||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
   if(interest)d.interest=interest.slice(0,200);
   /* the note is for the spa team, so it stays in Malay whichever language the page was in */
-  const nt=[q&&q.value.trim(),TS.size?'Masa sesuai: '+[...TS].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':'',LANG==='en'?'(borang dalam English)':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
+  const nt=[o.quiz||'',q&&q.value.trim(),TS.size?'Masa sesuai: '+[...TS].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':'',LANG==='en'?'(borang dalam English)':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
   if(PREVIEW){e.textContent=T('pvNo');go.disabled=false;return;}
   try{const id=await add('leads',d);try{localStorage.setItem('luunaLead',JSON.stringify({id,at:d.createdAt}));}catch(_){}
    hit(o.mode==='wa'?'wa':'lead');track('lead',{content_name:interest||'konsultasi'});
@@ -742,13 +858,13 @@ function waText(ctx){const b=P.biz||{};return (pick(P.waMsg,P.waMsgEn)||T('waDef
 function openWa(msg,name){const b=P.biz||{},num=waNum(b.wa||b.phone||'');
  const t=(msg||waText())+(name?'\n\n'+T('nameL')+': '+name:'');hit('wa');track('wa');
  location.href='https://wa.me/'+num+'?text='+encodeURIComponent(t);}
-function waSheet(ctx,interest){
+function waSheet(ctx,interest,quiz){
  const msg=waText(ctx);
  let done=null;try{done=JSON.parse(localStorage.getItem('luunaLead')||'null');}catch(e){}
  if(done&&Date.now()-new Date(done.at)<DAY30)return openWa(msg);
  sheet('<h3>'+T('chat')+'</h3><p class="lead">'+T('chatP')+'</p><div class="form">'+formHTML('w',{mode:'wa'})+'</div>'+
   '<button class="skip" id="w-skip">'+T('skip')+'</button>');
- bindForm('w',{mode:'wa',msg,interest});document.getElementById('w-skip').onclick=()=>{closeSheet();openWa(msg);};
+ bindForm('w',{mode:'wa',msg,interest,quiz});document.getElementById('w-skip').onclick=()=>{closeSheet();openWa(msg);};
 }
 function claim(id){
  const p=(P.promos||[]).find(x=>x.id===id);if(!p)return;hit('promo');track('promo',{content_name:p.t});const im=promoImg(p);
@@ -768,7 +884,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('luunaLan
 
 /* one listener for every button on the page */
 document.addEventListener('click',e=>{
- const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],[data-lang],[data-sl],[data-dot],[data-abx],[data-popx],blockquote.clamp');if(!t)return;
+ const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],[data-lang],[data-sl],[data-dot],[data-abx],[data-popx],[data-k],[data-sk],[data-kclear],[data-quiz],[data-catopen],blockquote.clamp');if(!t)return;
  if(t.dataset.hit){hit(t.dataset.hit);return;}
  if(t.matches('blockquote.clamp')){t.classList.toggle('open');return;}
  e.preventDefault();
@@ -777,6 +893,11 @@ document.addEventListener('click',e=>{
  else if(t.dataset.dot!==undefined){goSlide(+t.dataset.dot);}
  else if(t.dataset.abx){const a=$('#abar');if(a)a.remove();try{sessionStorage.setItem('lpab','x');}catch(_){}}
  else if(t.dataset.popx)closePop();
+ else if(t.dataset.k){const k=t.dataset.k;SELK.has(k)?SELK.delete(k):SELK.add(k);paintFinder();}
+ else if(t.dataset.sk!==undefined){SELS=SELS===t.dataset.sk?'':t.dataset.sk;paintFinder();}
+ else if(t.dataset.kclear){SELK.clear();SELS='';paintFinder();}
+ else if(t.dataset.quiz)quizLead(t.dataset.quiz);
+ else if(t.dataset.catopen!==undefined){const c=t.dataset.catopen;CATOPEN.has(c)?CATOPEN.delete(c):CATOPEN.add(c);paintSvcs();}
  else if(t.dataset.go==='book'){closeSheet();book();}
  else if(t.dataset.go==='wa')waSheet();
  else if(t.dataset.go==='wa-direct')openWa();
@@ -790,7 +911,8 @@ document.addEventListener('click',e=>{
  else if(t.dataset.sv){svcSheet(t.dataset.sv);}
  else if(t.dataset.revall){REVALL=true;const el=document.getElementById('ulasan');if(el){el.outerHTML=reviewsHTML();reveal();}}
 });
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closePop();}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closePop();}
+ if(e.key==='Enter'&&e.target&&e.target.classList&&e.target.classList.contains('svr'))svcSheet(e.target.dataset.sv);});
 
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
