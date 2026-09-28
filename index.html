@@ -2154,6 +2154,28 @@ body.clk-on{overflow:hidden}
 .wbpayh{background:#fff;border-radius:10px;padding:10px 12px;font-size:13.5px;font-weight:560;margin-top:8px}
 .wbqr{display:block;width:180px;max-width:70%;margin:10px auto 0;border-radius:10px;background:#fff;padding:6px}
 .wbwl{margin-top:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px}
+
+/* ---- packages, credit, membership ---- */
+.pkvseg{display:flex;flex-wrap:wrap;margin-bottom:12px}.pkvseg button{flex:1 1 auto;display:inline-flex;gap:6px;align-items:center;justify-content:center}
+.pkvseg button i{font-style:normal;background:var(--brass);color:#fff;border-radius:9px;min-width:18px;height:18px;display:inline-grid;place-items:center;font-size:11px;padding:0 5px}
+@media(max-width:560px){.pkvseg button span{display:none}.pkvseg button.on span{display:inline}}
+.pkzacts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.pkzhist .tiny{padding:3px 0;border-bottom:1px solid var(--line-2)}
+.walbal{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.walbal b{font-size:24px;font-weight:650}.walbal span{color:var(--ink-3);font-size:12.5px}
+.waltx{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-top:1px solid var(--line-2)}.waltx em{color:var(--jade);font-style:normal;font-weight:600}
+.waltx .pos{color:var(--jade)}.waltx .neg{color:var(--ink-2)}
+.waltiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-bottom:10px}
+.waltier{position:relative;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 12px;text-align:left;cursor:pointer;font:inherit}
+.waltier b{display:block;font-size:16px}.waltier span{font-size:12px;color:var(--ink-3)}.waltier em{position:absolute;top:8px;right:8px;font-style:normal;font-size:11px;font-weight:650;color:var(--jade)}
+.waltier.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--brass-soft)}
+.walsum{font-weight:620;margin-bottom:6px}
+.memplans{display:grid;gap:8px;margin-bottom:10px}.memplan{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;margin:0}
+.memplan b{display:block}.memplan span{font-size:13px;font-weight:600;color:var(--brass)}.memplan small{display:block;color:var(--ink-3);font-size:12px;margin-top:2px}
+.memplan:has(input:checked){border-color:var(--ink)}
+.membar{display:flex;flex-direction:column;gap:6px;background:var(--brass-soft);border:1px solid #E4D2B2;border-radius:12px;padding:8px 12px;margin-bottom:10px;font-size:13px}
+.membar span{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.membar .btn{padding:4px 10px}
+.pvpk{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--surface)}
+.pvl{display:flex;justify-content:space-between;margin-top:8px;font-size:14px}.pvl small{color:var(--ink-3);font-weight:400}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2413,7 +2435,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29b';
+const BUILD='2026-09-29c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -9320,7 +9342,7 @@ window.checkout=async()=>{
     const snap=await tx.get(pref);
     if(!snap.exists())throw new Error('A package on this bill no longer exists.');
     const d=snap.data();
-    if(d.customerId!==cart.customerId)throw new Error('That package belongs to another client.');
+    if(d.customerId!==cart.customerId&&!(d.shareWith||[]).includes(cart.customerId))throw new Error('That package belongs to another client.');if(pkFrozenNow(d))throw new Error('That package is frozen until '+dstr(d.frozen.until)+'.');
     const bal=(d.balances||[]).map(b=>({...b}));
     for(const r of lines){
      if(!bal[r.line]||bal[r.line].left<r.qty)
@@ -9332,6 +9354,7 @@ window.checkout=async()=>{
    });
    const local=HELD.find(h=>h.id===cpId);if(local)local.balances=after;
   }
+  await walSpend(cart,pays,invoiceNo);
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
@@ -11979,6 +12002,7 @@ window.render=render;
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  const lq=new URLSearchParams(location.search);
  if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
+ if(lq.has('pk')){pkViewPage(String(lq.get('pk')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('appt')){apptLinkPage(String(lq.get('appt')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('book')){bookingPage(String(lq.get('book')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),String(lq.get('m')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
@@ -14991,7 +15015,7 @@ const EXP_ACCTS=()=>[...coa().filter(a=>a[2]==='expense'&&!['5000','5100','5110'
 const PAYSRC=[['1010','Bank transfer / company card'],['1030','Petty cash (outside the drawer)'],['3000','Owner paid personally']];
 const DRAWER_MAP={'Supplies':'6040','Petty cash':'6190','Staff meal':'5140','Transport':'6100','Repairs':'6050','Utilities':'6010','Refund':'4000','Other':'6190'};
 const CLAIM_MAP={'Transport / parking':'6100','Supplies':'6040','Staff meal':'5140','Training / course':'6130','Phone / internet':'6020','Medical':'5140','Other':'6190'};
-const payAcct=m=>/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfer|bank|fpx|duitnow|cheque/i.test(m)?'1010':'1020';
+const payAcct=m=>/client credit/i.test(m)?'2150':/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfer|bank|fpx|duitnow|cheque/i.test(m)?'1010':'1020';
 
 async function finLoad(force){
  if(!boss()&&!isAcct())return;
@@ -15236,13 +15260,14 @@ async function finJournalOf(m,br){
   /* packages and treatments paid now for later are held as Unredeemed packages until used */
   const cat={'4000':0,'4010':0,'4020':0,'4030':0,'2100':0},hold=pkgDefer()&&s.date>=pkgFrom();
   (s.items||[]).forEach(i=>{const a=lineAmt(i);if(i.kind==='addon')cat['4030']+=a;else if(retailKind(i.kind))cat['4010']+=a;
-   else if(i.kind==='package')cat[hold?'2100':'4020']+=a;else if(i.kind==='service'&&i.later)cat[hold?'2100':'4000']+=a;else if(i.kind!=='redeem')cat['4000']+=a;});
+   else if(i.kind==='package')cat[hold?'2100':'4020']+=a;else if(i.kind==='service'&&i.later)cat[hold?'2100':'4000']+=a;else if(i.kind==='wallet')cat['2150']=(cat['2150']||0)+a;else if(i.kind==='membership')cat['4050']=(cat['4050']||0)+a;else if(i.kind!=='redeem')cat['4000']+=a;});
   const gross=Object.values(cat).reduce((t,v)=>t+v,0),sst=+s.sst||0,net=r2((+s.total||0)-sst);
   const k=gross?net/gross:0,lines=[['1100',+s.total||0,0]];let left=net;
   const keys=Object.keys(cat).filter(c=>cat[c]>0);keys.forEach((c,i)=>{const v=i===keys.length-1?r2(left):r2(cat[c]*k);left=r2(left-v);lines.push([c,0,v]);});
   if(!keys.length&&net)lines.push(['4000',0,net]);
   if(sst)lines.push(['2500',0,sst]);
   add(s.date,s.invoiceNo||s.id,'sale:'+s.id,'Bill '+(s.invoiceNo||'')+(s.customerName?' · '+s.customerName:''),lines);
+  if(+s.walletBonus>0)add(s.date,s.invoiceNo||s.id,'wbonus:'+s.id,'Top-up bonus · '+(s.customerName||''),[['6035',+s.walletBonus,0],['2150',0,+s.walletBonus]]);
   /* what the products sold and used on this bill cost, at their cost price */
   if(cogsAuto()){const c=r2(saleCost(s));if(c>0)add(s.date,s.invoiceNo||s.id,'cogs:'+s.id,'Cost of products · '+(s.invoiceNo||''),[['5000',c,0],['1200',0,c]]);}
  });
@@ -23983,5 +24008,514 @@ window.bkRulesSave=async()=>{
 };
 {const _p=wbSetPanel;wbSetPanel=function(){return _p()+bkRulesPanel();};}
 window.bkTickNow=()=>bkTick();
+
+
+/* ============ Packages, prepaid credit and membership ============ */
+/* Packages are most of a spa's cash and most of its disputes, so every change is recorded.
+   · Balances: staff see them everywhere; the client sees theirs on a private page (?pk=…) the
+     spa sends by WhatsApp — sessions left, expiry, credit and membership, nothing else.
+   · Expiry: reminders before a package runs out (30 and 7 days by default).
+   · Liability: what clients have paid for and not used yet — packages, credit and membership
+     sessions — by expiry, with a CSV for the accountant.
+   · Membership: monthly or yearly plans with a price, a discount on the bill and sessions each
+     period. Renewals come due on their date and are charged at the counter with one tap.
+   · Credit: clients top up (e.g. pay RM1,000, get RM1,150) and pay bills from it. The top-up is
+     held as a liability, the bonus is booked as a cost, and each spend is taken in a transaction.
+   · Transfer and sharing (a mother sharing with her daughter) and freezing (pregnancy, illness,
+     travel) follow the rules the owner sets, and keep a history on the package. */
+
+const PKR_DEF={transfer:true,transferFee:0,share:true,shareMax:2,freeze:true,freezeMaxDays:90,freezeMaxTimes:2,
+ remind:[30,7],walletOn:true,topups:[{pay:500,get:550},{pay:1000,get:1150},{pay:2000,get:2400}],memberOn:true,memberGrace:7};
+const pkR=()=>{const m=(D.meta&&D.meta.pkgRules)||{};return{...PKR_DEF,...m,topups:(m.topups||PKR_DEF.topups).filter(t=>+t.pay>0),remind:(m.remind||PKR_DEF.remind).map(Number).filter(n=>n>0)};};
+const PKZ_REASONS=[['preg','Pregnancy'],['sick','Illness or injury'],['away','Away / overseas'],['other','Other']];
+const pkzNow=()=>new Date().toISOString();
+const pkzAddD=(d,n)=>ymd(addDays(new Date(String(d).slice(0,10)+'T12:00:00'),n));
+COA.push(['2150','Client credit (top-ups)','liability'],['4050','Membership fees','revenue'],['6035','Top-up bonus given','expense']);
+
+/* ---------- frozen and shared ---------- */
+const pkFrozenNow=cp=>!!(cp&&cp.frozen&&cp.frozen.from<=today()&&cp.frozen.until>=today());
+const pkShared=(cp,cid)=>!!cp&&cp.customerId!==cid&&(cp.shareWith||[]).includes(cid);
+{const _rl=redeemLines;redeemLines=function(cid){
+ const own=_rl(cid).filter(l=>!pkFrozenNow(HELD.find(h=>h.id===l.cpId)));
+ const sh=[];
+ HELD.filter(p=>pkShared(p,cid)&&!pkFrozenNow(p)).forEach(cp=>(cp.balances||[]).forEach((b,i)=>{if(!(b.left>0))return;
+  sh.push({key:cp.id+'|'+i,cpId:cp.id,line:i,serviceId:b.serviceId,name:svc(b.serviceId).name||'Session',pkgName:cpName(cp)+' · shared by '+String(cp.customerName||'').split(' ')[0],
+   left:b.left,total:b.total,expiry:cp.expiry,expired:pkgExpired(cp),saleId:cp.saleId||'',shared:true});}));
+ return own.concat(sh);};}
+{const _r=window.redeem;window.redeem=async(id,i)=>{const cp=HELD.find(x=>x.id===id);
+ if(pkFrozenNow(cp)){toast('This package is frozen until '+dstr(cp.frozen.until)+'. Unfreeze it first.');return;}return _r(id,i);};}
+/* clients who share a package see it on their own profile too */
+async function pkzLoadShared(cid){
+ try{const s=await getDocs(query(collection(db,'customerPackages'),where('shareWith','array-contains',cid),limit(20)));
+  s.docs.forEach(d=>{const x={id:d.id,...d.data()},i=HELD.findIndex(h=>h.id===x.id);if(i>=0)HELD[i]=x;else HELD.push(x);});}catch(e){}
+}
+{const _l=loadClientPackages;loadClientPackages=async function(cid){await _l(cid);await pkzLoadShared(cid);};}
+{const _m=memberPkgCard;memberPkgCard=function(cid){
+ let h=_m(cid);
+ HELD.filter(p=>p.customerId===cid&&(pkFrozenNow(p)||(p.shareWith||[]).length)).forEach(p=>{
+  const note=(pkFrozenNow(p)?'<span class="pill a">'+ic('clock',11)+' frozen until '+dshort(p.frozen.until)+'</span> ':'')+((p.shareWith||[]).length?'<span class="pill b">'+ic('users',11)+' shared with '+esc((p.shareNames||[]).join(', '))+'</span>':'');
+  h=h.replace('<b>'+esc(cpName(p)),'<b>'+esc(cpName(p))+'</b> '+note+'<b>');});
+ const sh=HELD.filter(p=>pkShared(p,cid));
+ if(sh.length)h+='<div class="card"><div class="sec-h"><h3>'+ic('users',15)+' Shared with this client</h3></div>'+sh.map(p=>'<div class="item" style="cursor:default"><div class="spread"><b>'+esc(cpName(p))+'</b><span class="tiny muted">from '+esc(p.customerName||'')+'</span></div>'+
+  '<div class="tiny muted">'+(p.balances||[]).map(b=>esc(svc(b.serviceId).name||'')+' '+b.left+'/'+b.total).join(' · ')+' · expires '+dstr(p.expiry)+(pkFrozenNow(p)?' · frozen':'')+'</div></div>').join('')+'</div>';
+ return h;};}
+
+/* ---------- the package card: freeze, transfer, share, the client's page ---------- */
+const pkzHist=cp=>[...(cp.freezes||[]).map(f=>({at:f.at,t:'Frozen '+dshort(f.from)+' – '+dshort(f.until)+' ('+(PKZ_REASONS.find(r=>r[0]===f.reason)||['',''])[1]+(f.note?' · '+f.note:'')+')'+(f.endedAt?' · ended '+dshort(f.endedAt):''),by:f.byName})),
+ ...(cp.transfers||[]).map(x=>({at:x.at,t:'Transferred from '+x.fromName+' to '+x.toName+(x.fee?' · fee '+rm(x.fee):''),by:x.byName})),
+ ...(cp.shareLog||[]).map(x=>({at:x.at,t:(x.add?'Shared with ':'Stopped sharing with ')+x.name,by:x.byName}))].sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+{const _d=window.pkgDetail;window.pkgDetail=id=>{
+ _d(id);const cp=HELD.find(x=>x.id===id);const card=document.querySelector('#modal .card');if(!cp||!card)return;
+ const R=pkR(),fz=pkFrozenNow(cp),H=pkzHist(cp);
+ card.insertAdjacentHTML('afterbegin',(fz?'<div class="warnbox">'+ic('clock',13)+' <b>Frozen</b> until '+dstr(cp.frozen.until)+' — '+esc((PKZ_REASONS.find(r=>r[0]===cp.frozen.reason)||['',''])[1])+'. Sessions cannot be used meanwhile; the expiry has moved to '+dstr(cp.expiry)+'.</div>':'')+
+  ((cp.shareWith||[]).length?'<div class="okbox">'+ic('users',13)+' Shared with <b>'+esc((cp.shareNames||[]).join(', '))+'</b> — they can use the sessions too.</div>':''));
+ card.insertAdjacentHTML('beforeend','<div class="pkzacts">'+
+  (boss()&&R.freeze?(fz?'<button class="btn sm" onclick="pkzUnfreeze(\''+id+'\')">'+ic('check',13)+'Unfreeze now</button>':'<button class="btn sm ghost" onclick="pkzFreeze(\''+id+'\')">'+ic('clock',13)+'Freeze</button>'):'')+
+  (boss()&&R.transfer?'<button class="btn sm ghost" onclick="pkzTransfer(\''+id+'\')">'+ic('transfer',13)+'Transfer</button>':'')+
+  (boss()&&R.share?'<button class="btn sm ghost" onclick="pkzShare(\''+id+'\')">'+ic('users',13)+'Share</button>':'')+
+  '<button class="btn sm ghost" onclick="pvSend(\''+cp.customerId+'\')">'+ic('msg',13)+'Send balance to client</button></div>'+
+  (H.length?'<div class="pkzhist"><div class="tiny muted" style="margin:10px 0 4px">'+ic('history',12)+' History</div>'+H.map(x=>'<div class="tiny"><b>'+dshort(x.at)+'</b> · '+esc(x.t)+(x.by?' <span class="muted">— '+esc(x.by)+'</span>':'')+'</div>').join('')+'</div>':'')+
+  (!boss()?'<p class="tiny muted" style="margin-top:8px">Freezing, transferring and sharing are done by the owner or a manager.</p>':''));
+};}
+window.pkzFreeze=id=>{
+ const cp=HELD.find(x=>x.id===id),R=pkR();if(!cp)return;
+ const used=(cp.freezes||[]).length,daysUsed=(cp.freezes||[]).reduce((a,f)=>a+daysBetween(f.from,f.endedAt?String(f.endedAt).slice(0,10):f.until),0);
+ if(used>=+R.freezeMaxTimes){toast('This package has been frozen '+used+' times — the most your rules allow.');return;}
+ const left=Math.max(0,+R.freezeMaxDays-daysUsed);if(!left){toast('No freeze days left on this package ('+R.freezeMaxDays+' allowed).');return;}
+ modal('Freeze package','<div class="card"><p class="tiny muted" style="margin-top:0">'+esc(cpName(cp))+' · '+esc(cp.customerName||'')+'. While frozen the sessions cannot be used, and the expiry moves later by the days frozen.</p>'+
+  '<label>Reason</label><select class="f" id="fz-r">'+PKZ_REASONS.map(r=>'<option value="'+r[0]+'">'+r[1]+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>From</label><input class="f" type="date" id="fz-f" value="'+today()+'"></div><div><label>Until</label><input class="f" type="date" id="fz-u" value="'+pkzAddD(today(),Math.min(30,left))+'"></div></div>'+
+  '<p class="tiny muted" style="margin-top:-4px">Up to '+left+' more day'+(left===1?'':'s')+' on this package · '+(+R.freezeMaxTimes-used)+' freeze'+(+R.freezeMaxTimes-used===1?'':'s')+' left.</p>'+
+  '<label>Note <span class="muted">— e.g. doctor\'s letter seen, flight date</span></label><input class="f" id="fz-n" maxlength="200">'+
+  '<div id="fz-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="pkzFreezeSave(\''+id+'\','+left+')">'+ic('check',15)+'Freeze</button></div>');
+};
+window.pkzFreezeSave=async(id,left)=>{
+ const cp=HELD.find(x=>x.id===id),f=$('#fz-f').value,u=$('#fz-u').value,e=$('#fz-e');
+ if(!f||!u||u<f){e.textContent='Pick the dates.';return;}const n=daysBetween(f,u)+1;if(n>left){e.textContent='That is '+n+' days — only '+left+' allowed.';return;}
+ const fr={from:f,until:u,reason:$('#fz-r').value,note:$('#fz-n').value.trim().slice(0,200),at:pkzNow(),by:UID,byName:ME.name,days:n,expiryBefore:cp.expiry};
+ const expiry=pkzAddD(cp.expiry,n);
+ try{await updateDoc(doc(db,'customerPackages',id),{frozen:fr,freezes:[...(cp.freezes||[]),fr],expiry});Object.assign(cp,{frozen:fr,freezes:[...(cp.freezes||[]),fr],expiry});
+  await audit('Package frozen',(cp.customerName||'')+' · '+cpName(cp)+' · '+dstr(f)+' – '+dstr(u));pvTouch(cp.customerId);window.closeModal();window.pkgDetail(id);toast('Frozen · expiry now '+dstr(expiry));}catch(err){e.textContent=friendly(err);}
+};
+window.pkzUnfreeze=async id=>{
+ const cp=HELD.find(x=>x.id===id);if(!cp||!cp.frozen)return;
+ const F=cp.frozen,used=Math.max(0,daysBetween(F.from,today())),unused=Math.max(0,(+F.days||daysBetween(F.from,F.until)+1)-used);const expiry=pkzAddD(cp.expiry,-unused);
+ const fz=(cp.freezes||[]).map(f=>f.at===cp.frozen.at?{...f,endedAt:pkzNow(),until:ymd(addDays(new Date(),-1))>f.from?ymd(addDays(new Date(),-1)):f.from}:f);
+ try{await updateDoc(doc(db,'customerPackages',id),{frozen:null,freezes:fz,expiry});Object.assign(cp,{frozen:null,freezes:fz,expiry});
+  await audit('Package unfrozen',(cp.customerName||'')+' · '+cpName(cp));pvTouch(cp.customerId);window.closeModal();window.pkgDetail(id);toast('Unfrozen · expiry '+dstr(expiry));}catch(e){toast(friendly(e));}
+};
+window.pkzTransfer=id=>{
+ const cp=HELD.find(x=>x.id===id),R=pkR();if(!cp)return;
+ modal('Transfer package','<div class="card"><p class="tiny muted" style="margin-top:0">Move '+esc(cpName(cp))+' — '+(cp.balances||[]).reduce((a,b)=>a+b.left,0)+' sessions left — from '+esc(cp.customerName||'')+' to another client. The sessions, the expiry and the history move with it.</p>'+
+  '<label>To</label>'+clientPicker('tf-c','',{})+(+R.transferFee>0?'<p class="tiny">Transfer fee in your rules: <b>'+rm(R.transferFee)+'</b> — charge it at checkout.</p>':'')+
+  '<label>Reason</label><input class="f" id="tf-n" maxlength="200" placeholder="e.g. gift to sister">'+
+  '<div id="tf-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="pkzTransferSave(\''+id+'\')">'+ic('transfer',15)+'Transfer</button></div>');
+};
+window.pkzTransferSave=async id=>{
+ const cp=HELD.find(x=>x.id===id),to=cust(cpValue('tf-c')),e=$('#tf-e');
+ if(!to){e.textContent='Choose the client.';return;}if(to.id===cp.customerId){e.textContent='That is the same client.';return;}
+ const x={at:pkzNow(),from:cp.customerId,fromName:cp.customerName||'',to:to.id,toName:to.name,note:$('#tf-n').value.trim().slice(0,200),fee:+pkR().transferFee||0,by:UID,byName:ME.name};
+ const up={customerId:to.id,customerName:to.name,transfers:[...(cp.transfers||[]),x],shareWith:(cp.shareWith||[]).filter(s=>s!==to.id),shareNames:(cp.shareNames||[]).filter((n,i)=>(cp.shareWith||[])[i]!==to.id)};
+ try{await updateDoc(doc(db,'customerPackages',id),up);const old=cp.customerId;Object.assign(cp,up);
+  await audit('Package transferred',cpName(cp)+' · '+x.fromName+' → '+to.name);pvTouch(old);pvTouch(to.id);window.closeModal();render();toast('Transferred to '+to.name);}catch(err){e.textContent=friendly(err);}
+};
+window.pkzShare=id=>{
+ const cp=HELD.find(x=>x.id===id),R=pkR();if(!cp)return;const L=cp.shareWith||[];
+ modal('Share package','<div class="card"><p class="tiny muted" style="margin-top:0">Family members can use '+esc(cpName(cp))+' from '+esc(cp.customerName||'')+'\'s balance. Up to '+R.shareMax+' people.</p>'+
+  (L.length?L.map((c,i)=>'<div class="spread item" style="cursor:default"><b>'+esc((cp.shareNames||[])[i]||'')+'</b><button class="btn sm ghost" onclick="pkzShareDel(\''+id+'\',\''+c+'\')">Stop sharing</button></div>').join(''):'<p class="tiny muted">Not shared yet.</p>')+
+  (L.length<+R.shareMax?'<label>Add</label>'+clientPicker('sh-c','',{})+'<label>Relationship</label><input class="f" id="sh-r" maxlength="40" placeholder="e.g. daughter">'+
+   '<button class="btn" style="width:100%;justify-content:center" onclick="pkzShareAdd(\''+id+'\')">'+ic('users',15)+'Share</button>':'<p class="tiny">This package is shared with the most people your rules allow.</p>')+'</div>');
+};
+window.pkzShareAdd=async id=>{
+ const cp=HELD.find(x=>x.id===id),c=cust(cpValue('sh-c'));if(!c){toast('Choose the client');return;}
+ if(c.id===cp.customerId||(cp.shareWith||[]).includes(c.id)){toast('Already can use it');return;}
+ const rel=$('#sh-r').value.trim().slice(0,40),nm=c.name+(rel?' ('+rel+')':'');
+ const up={shareWith:[...(cp.shareWith||[]),c.id],shareNames:[...(cp.shareNames||[]),nm],shareLog:[...(cp.shareLog||[]),{at:pkzNow(),add:true,id:c.id,name:nm,by:UID,byName:ME.name}]};
+ try{await updateDoc(doc(db,'customerPackages',id),up);Object.assign(cp,up);await audit('Package shared',cpName(cp)+' · '+cp.customerName+' → '+nm);pvTouch(cp.customerId);pvTouch(c.id);window.pkzShare(id);toast('Shared with '+c.name);}catch(e){toast(friendly(e));}
+};
+window.pkzShareDel=async(id,cid)=>{
+ const cp=HELD.find(x=>x.id===id);const i=(cp.shareWith||[]).indexOf(cid);if(i<0)return;const nm=(cp.shareNames||[])[i]||'';
+ const up={shareWith:cp.shareWith.filter((x,j)=>j!==i),shareNames:(cp.shareNames||[]).filter((x,j)=>j!==i),shareLog:[...(cp.shareLog||[]),{at:pkzNow(),add:false,id:cid,name:nm,by:UID,byName:ME.name}]};
+ try{await updateDoc(doc(db,'customerPackages',id),up);Object.assign(cp,up);await audit('Package sharing stopped',cpName(cp)+' · '+nm);pvTouch(cp.customerId);pvTouch(cid);window.pkzShare(id);}catch(e){toast(friendly(e));}
+};
+
+/* ============ credit (e-wallet) ============ */
+const WALC={};
+async function walGet(cid,fresh){
+ if(!cid)return null;if(WALC[cid]&&!fresh&&Date.now()-WALC[cid].t<60000)return WALC[cid];
+ let w={balance:0};try{const s=await getDoc(doc(db,'wallets',cid));if(s.exists())w=s.data();}catch(e){}
+ let tx=[];try{tx=(await getDocs(query(collection(db,'walletTx'),where('customerId','==',cid),limit(100)))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}catch(e){}
+ WALC[cid]={...w,balance:+w.balance||0,tx,t:Date.now()};return WALC[cid];
+}
+const walBal=cid=>WALC[cid]?WALC[cid].balance:0;
+/* every change to a balance runs in a transaction and leaves a line in walletTx */
+async function walMove(cid,name,delta,o){
+ let after=0;
+ await runTransaction(db,async tx=>{
+  const ref=doc(db,'wallets',cid),s=await tx.get(ref),bal=s.exists()?(+s.data().balance||0):0;
+  after=r2(bal+delta);if(after<-0.004)throw new Error('Not enough credit — '+rm(bal)+' left.');
+  tx.set(ref,{balance:after,customerName:name||'',updatedAt:pkzNow(),updatedBy:UID},{merge:true});});
+ await addDoc(collection(db,'walletTx'),{customerId:cid,customerName:name||'',amount:r2(delta),balanceAfter:after,type:o.type,paid:+o.paid||0,bonus:+o.bonus||0,method:o.method||'',
+  saleId:o.saleId||'',invoiceNo:o.invoiceNo||'',note:o.note||'',branchId:ME.branchId,at:pkzNow(),by:UID,byName:typeof actorName==='function'?actorName():ME.name});
+ if(WALC[cid])WALC[cid].t=0;pvTouch(cid);return after;
+}
+function walCard(c){
+ if(!pkR().walletOn)return '';
+ setTimeout(()=>walGet(c.id).then(w=>document.querySelectorAll('[data-wal="'+c.id+'"]').forEach(el=>{el.innerHTML=walHTML(c,w);})),0);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('wallet',14)+' Credit</h3><button class="btn sm" onclick="walTopup(\''+c.id+'\')">'+ic('plus',13)+'Top up</button></div><div data-wal="'+c.id+'">'+(WALC[c.id]?walHTML(c,WALC[c.id]):'<div class="skel" style="width:40%"></div>')+'</div></div>';
+}
+const WAL_T={topup:'Top-up',spend:'Paid a bill',refund:'Refund',adjust:'Adjustment'};
+function walHTML(c,w){
+ return '<div class="walbal"><b>'+rm(w.balance)+'</b><span>available to spend</span></div>'+
+  (w.tx.length?w.tx.slice(0,6).map(t=>'<div class="waltx"><span>'+dshort(t.at)+' · '+esc(WAL_T[t.type]||t.type)+(t.bonus?' <em>+'+rm(t.bonus)+' bonus</em>':'')+(t.invoiceNo?' · '+esc(t.invoiceNo):'')+(t.note?' · '+esc(t.note):'')+'</span><b class="'+(t.amount<0?'neg':'pos')+'">'+(t.amount>0?'+':'')+rm(t.amount)+'</b></div>').join('')
+   :'<p class="tiny muted" style="margin:6px 0 0">No top-ups yet. Paying ahead earns a bonus — e.g. '+(pkR().topups[1]?'pay '+rm(pkR().topups[1].pay)+', get '+rm(pkR().topups[1].get):'')+'.</p>')+
+  (boss()?'<button class="blankf" style="margin-top:6px" onclick="walAdjust(\''+c.id+'\')">Adjust balance</button>':'');
+}
+window.walTopup=cid=>{
+ const c=cust(cid),T=pkR().topups;if(!c)return;
+ modal('Top up credit','<div class="card"><p class="tiny muted" style="margin-top:0">'+esc(c.name)+' pays now and spends the credit on any bill later.</p>'+
+  '<div class="waltiers">'+T.map((t,i)=>'<button type="button" class="waltier'+(i===1?' on':'')+'" data-pay="'+t.pay+'" data-get="'+t.get+'" onclick="walPick(this)"><b>'+rm(t.pay)+'</b><span>get '+rm(t.get)+'</span>'+(t.get>t.pay?'<em>+'+rm(t.get-t.pay)+'</em>':'')+'</button>').join('')+
+  '<button type="button" class="waltier" data-pay="" data-get="" onclick="walPick(this)"><b>Other</b><span>no bonus</span></button></div>'+
+  '<div class="grid g2"><div><label>Client pays (RM)</label><input class="f" type="number" min="1" id="wt-p" value="'+((T[1]||T[0]||{}).pay||'')+'" oninput="walOther()"></div><div><label>Credit given (RM)</label><input class="f" type="number" min="1" id="wt-g" value="'+((T[1]||T[0]||{}).get||'')+'"'+(boss()?'':' readonly')+'></div></div>'+
+  '<label>Payment method</label><select class="f" id="wt-m">'+payOptions()+'</select>'+
+  '<div id="wt-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" id="wt-go" style="width:100%;justify-content:center" onclick="walTopupSave(\''+cid+'\')">'+ic('check',15)+'Take payment and add credit</button></div>');
+};
+window.walPick=b=>{document.querySelectorAll('.waltier').forEach(x=>x.classList.toggle('on',x===b));$('#wt-p').value=b.dataset.pay;$('#wt-g').value=b.dataset.get;if(!b.dataset.pay)$('#wt-p').focus();};
+window.walOther=()=>{const p=+$('#wt-p').value||0,t=pkR().topups.filter(x=>+x.pay<=p).sort((a,b)=>b.pay-a.pay)[0];
+ const on=document.querySelector('.waltier.on');if(!on||!on.dataset.pay||+on.dataset.pay!==p){$('#wt-g').value=t&&+t.pay===p?t.get:p;}};
+window.walTopupSave=async cid=>{
+ const c=cust(cid),pay=r2(+$('#wt-p').value||0),get=r2(+$('#wt-g').value||0),e=$('#wt-e'),m=$('#wt-m').value;
+ if(pay<=0){e.textContent='Enter the amount paid.';return;}if(get<pay){e.textContent='Credit given cannot be less than what is paid.';return;}
+ const tier=pkR().topups.find(t=>+t.pay===pay);if(!boss()&&get>pay&&(!tier||+tier.get!==get)){e.textContent='Only the owner or a manager can give a bonus outside the set top-ups.';return;}
+ $('#wt-go').disabled=true;
+ try{const bonus=r2(get-pay),invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8),at=pkzNow();
+  const sref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:c.id,customerName:c.name,customerNo:idOf(c),invoiceNo,staffId:UID,staffName:ME.name,
+   items:[{kind:'wallet',id:'credit',name:'Credit top-up '+rm(pay)+(bonus?' (+'+rm(bonus)+' bonus)':''),price:pay,qty:1,staffId:UID}],discount:0,sst:0,total:pay,date:today(),at,voided:false,
+   payments:[{method:m,amount:pay,at,date:today(),by:UID,byName:ME.name}],createdBy:UID,walletBonus:bonus,walletCredit:get,paid:pay,balance:0,status:'paid',lastPaidDate:today(),lastPaidAt:at});
+  const after=await walMove(c.id,c.name,get,{type:'topup',paid:pay,bonus,method:m,saleId:sref.id,invoiceNo});
+  await audit('Credit top-up',c.name+' · paid '+rm(pay)+' · credit '+rm(get));
+  window.closeModal();if(typeof loadRecentSales==='function')loadRecentSales().catch(()=>{});toast('Credit added · balance '+rm(after));window.openCust(c.id);
+ }catch(err){e.textContent=friendly(err);$('#wt-go').disabled=false;}
+};
+window.walAdjust=async cid=>{
+ if(!boss())return;const c=cust(cid);const v=prompt('Adjust '+c.name+'\'s credit by (RM, use minus to take off):');if(v===null)return;const n=r2(+v||0);if(!n)return;
+ const why=prompt('Reason')||'';
+ try{await walMove(cid,c.name,n,{type:'adjust',note:why.slice(0,120)});await audit('Credit adjusted',c.name+' · '+rm(n)+' · '+why);toast('Credit adjusted');window.openCust(cid);}catch(e){toast(friendly(e));}
+};
+/* paying from credit at checkout */
+async function walSpend(cart,pays,invoiceNo){
+ const amt=r2(pays.filter(p=>p.method==='Client credit').reduce((a,p)=>a+(+p.amount||0),0));if(amt<=0)return;
+ if(!cart.customerId)throw new Error('Choose the client to pay from credit.');
+ const c=cust(cart.customerId)||{};await walMove(cart.customerId,c.name,-amt,{type:'spend',invoiceNo});
+}
+window.walPay=async()=>{
+ const t=cartTotals(),w=await walGet(cart.customerId,true),left=r2(t.total-t.paid);
+ const amt=r2(Math.min(w.balance,left));if(amt<=0){toast(w.balance>0?'Nothing left to pay':'No credit to use');return;}
+ cart.payments.push({method:'Client credit',amount:amt,ref:'Credit balance'});render();toast(rm(amt)+' paid from credit');
+};
+
+/* ============ membership ============ */
+const memPlans=()=>((D.meta&&D.meta.memberPlans)||[]).filter(p=>p&&p.id);
+const memPlan=id=>memPlans().find(p=>p.id===id)||{};
+let MEMS=null;
+async function memLoad(fresh){
+ if(MEMS&&!fresh)return MEMS;
+ try{MEMS=(await getDocs(query(collection(db,'memberships'),limit(1000)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){MEMS=[];}
+ return MEMS;
+}
+const memNext=(d,per)=>{const x=new Date(String(d).slice(0,10)+'T12:00:00');if(per==='year')x.setFullYear(x.getFullYear()+1);else x.setMonth(x.getMonth()+1);return ymd(x);};
+/* active until the renewal date, plus the grace days; after that the benefits stop */
+const memState=m=>!m?'none':m.status==='cancelled'?'cancelled':m.renewAt>=today()?'active':daysBetween(m.renewAt,today())<=+pkR().memberGrace?'due':'lapsed';
+const memOf=cid=>(MEMS||[]).filter(m=>m.customerId===cid&&m.status!=='cancelled').sort((a,b)=>String(b.renewAt).localeCompare(String(a.renewAt)))[0]||null;
+const memLive=cid=>{const m=memOf(cid),s=memState(m);return s==='active'||s==='due'?m:null;};
+const MEM_ST={active:['Active','g'],due:['Renewal due','a'],lapsed:['Lapsed','r'],cancelled:['Cancelled','']};
+/* each period's sessions arrive as a small package that runs out at the next renewal */
+async function memPeriodPkg(m,c,from){
+ const P=memPlan(m.planId);if(!(P.sessions||[]).length)return;
+ await addDoc(collection(db,'customerPackages'),{customerId:c.id,customerName:c.name,packageId:'member:'+P.id,name:P.name+' · member sessions',price:0,branchId:ME.branchId,
+  soldAt:pkzNow(),expiry:m.renewAt,soldBy:UID,member:true,membershipId:m.id,periodFrom:from,balances:P.sessions.filter(x=>x.serviceId&&+x.n>0).map(x=>({serviceId:x.serviceId,left:+x.n,total:+x.n}))});
+}
+async function memCharge(c,P,method,kind){
+ const invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8),at=pkzNow();
+ const r=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:c.id,customerName:c.name,customerNo:idOf(c),invoiceNo,staffId:UID,staffName:ME.name,
+  items:[{kind:'membership',id:P.id,name:'Membership '+(kind==='renew'?'renewal':'')+': '+P.name+' ('+(P.period==='year'?'1 year':'1 month')+')',price:+P.price,qty:1,staffId:UID}],discount:0,sst:0,total:+P.price,
+  date:today(),at,voided:false,payments:+P.price>0?[{method,amount:+P.price,at,date:today(),by:UID,byName:ME.name}]:[],createdBy:UID,paid:+P.price,balance:0,status:'paid',lastPaidDate:today(),lastPaidAt:at});
+ return{saleId:r.id,invoiceNo};
+}
+window.memJoin=async(cid,planId)=>{
+ await memLoad();const c=cid?cust(cid):null,P=memPlans().filter(p=>p.active!==false);
+ if(!P.length){toast(boss()?'Add a membership plan first (Packages → Membership).':'No membership plans yet.');return;}
+ modal('Join membership','<div class="card">'+(c?'<p style="margin-top:0"><b>'+esc(c.name)+'</b></p>':'<label>Client</label>'+clientPicker('mj-c','',{}))+
+  '<label>Plan</label><div class="memplans">'+P.map((p,i)=>'<label class="memplan"><input type="radio" name="mj-p" value="'+p.id+'"'+((planId?p.id===planId:i===0)?' checked':'')+'><div><b>'+esc(p.name)+'</b><span>'+rm(p.price)+' / '+(p.period==='year'?'year':'month')+'</span>'+
+   '<small>'+esc(memPerks(p))+'</small></div></label>').join('')+'</div>'+
+  '<div class="grid g2"><div><label>Starts</label><input class="f" type="date" id="mj-d" value="'+today()+'"></div><div><label>First payment by</label><select class="f" id="mj-m">'+payOptions()+'</select></div></div>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="mj-a" checked> Renews every period until the client stops it (charged at the counter or by standing instruction)</label>'+
+  '<div id="mj-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" id="mj-go" style="width:100%;justify-content:center" onclick="memJoinSave(\''+(cid||'')+'\')">'+ic('check',15)+'Take payment and start</button></div>');
+};
+const memPerks=p=>[(+p.discSvc?p.discSvc+'% off treatments':''),(+p.discPrd?p.discPrd+'% off products':''),...(p.sessions||[]).filter(x=>+x.n>0).map(x=>x.n+'× '+(svc(x.serviceId).name||'session')+' each '+(p.period==='year'?'year':'month')),p.perks||''].filter(Boolean).join(' · ');
+window.memJoinSave=async cid=>{
+ const c=cust(cid||cpValue('mj-c')),e=$('#mj-e');if(!c){e.textContent='Choose the client.';return;}
+ const P=memPlan((document.querySelector('input[name="mj-p"]:checked')||{}).value);if(!P.id){e.textContent='Choose a plan.';return;}
+ if(memLive(c.id)){e.textContent=c.name+' already has an active membership.';return;}
+ $('#mj-go').disabled=true;
+ try{const start=$('#mj-d').value||today(),{saleId,invoiceNo}=await memCharge(c,P,$('#mj-m').value,'join');
+  const m={customerId:c.id,customerName:c.name,planId:P.id,planName:P.name,period:P.period||'month',price:+P.price,start,renewAt:memNext(start,P.period),status:'active',autoRenew:$('#mj-a').checked,
+   branchId:ME.branchId,createdAt:pkzNow(),by:UID,payments:[{at:pkzNow(),amount:+P.price,saleId,invoiceNo,period:start}]};
+  const r=await addDoc(collection(db,'memberships'),m);const mm={id:r.id,...m};(MEMS=MEMS||[]).push(mm);
+  await memPeriodPkg(mm,c,start);if(typeof makeMember==='function')await makeMember(c.id,{saleId}).catch(()=>{});
+  await audit('Membership started',c.name+' · '+P.name);pvTouch(c.id);window.closeModal();render();toast(c.name+' is now a '+P.name+' member');
+ }catch(err){e.textContent=friendly(err);$('#mj-go').disabled=false;}
+};
+window.memRenew=async id=>{
+ const m=(MEMS||[]).find(x=>x.id===id);if(!m)return;const P=memPlan(m.planId),c=await custGet(m.customerId);
+ modal('Renew membership','<div class="card"><p style="margin-top:0"><b>'+esc(m.customerName)+'</b> · '+esc(m.planName)+'<br><span class="tiny muted">Due '+dstr(m.renewAt)+' · '+rm(P.price||m.price)+'</span></p>'+
+  '<label>Payment method</label><select class="f" id="mr-m">'+payOptions()+'</select><button class="btn" id="mr-go" style="width:100%;justify-content:center" onclick="memRenewSave(\''+id+'\')">'+ic('check',15)+'Charge '+rm(P.price||m.price)+' and renew</button></div>');
+};
+window.memRenewSave=async id=>{
+ const m=MEMS.find(x=>x.id===id),P={...memPlan(m.planId)},c=await custGet(m.customerId);if(!P.id){P.id=m.planId;P.name=m.planName;P.price=m.price;P.period=m.period;}
+ $('#mr-go').disabled=true;
+ try{const {saleId,invoiceNo}=await memCharge(c,P,$('#mr-m').value,'renew');
+  const from=m.renewAt<today()?today():m.renewAt,renewAt=memNext(from,P.period||m.period);
+  const up={renewAt,status:'active',lastRenewedAt:pkzNow(),payments:[...(m.payments||[]),{at:pkzNow(),amount:+P.price,saleId,invoiceNo,period:from}]};
+  await updateDoc(doc(db,'memberships',id),up);Object.assign(m,up);await memPeriodPkg(m,c,from);
+  await audit('Membership renewed',m.customerName+' · until '+dstr(renewAt));pvTouch(m.customerId);window.closeModal();render();toast('Renewed until '+dstr(renewAt));
+ }catch(err){toast(friendly(err));$('#mr-go').disabled=false;}
+};
+window.memCancel=async id=>{
+ const m=MEMS.find(x=>x.id===id);if(!m||!confirm('Stop '+m.customerName+'\'s membership? Benefits run until '+dstr(m.renewAt)+'.'))return;
+ try{await updateDoc(doc(db,'memberships',id),{autoRenew:false,stopAt:m.renewAt,stoppedBy:ME.name,stoppedAt:pkzNow()});Object.assign(m,{autoRenew:false,stopAt:m.renewAt});
+  await audit('Membership stopped',m.customerName+' · ends '+dstr(m.renewAt));pvTouch(m.customerId);render();}catch(e){toast(friendly(e));}
+};
+function memCard(c){
+ if(!pkR().memberOn)return '';
+ if(!MEMS){memLoad().then(()=>document.querySelectorAll('[data-mem="'+c.id+'"]').forEach(el=>{el.outerHTML=memCard(c);}));return '<div data-mem="'+c.id+'"></div>';}
+ const m=memOf(c.id),st=memState(m);
+ if(!m)return '<div class="card" data-mem="'+c.id+'"><div class="sec-h"><h3>'+ic('award',14)+' Membership</h3>'+(memPlans().length?'<button class="btn sm ghost" onclick="memJoin(\''+c.id+'\')">'+ic('plus',13)+'Join</button>':'')+'</div><div class="tiny muted">Not a member.</div></div>';
+ return '<div class="card" data-mem="'+c.id+'"><div class="sec-h"><h3>'+ic('award',14)+' Membership</h3><span class="pill '+MEM_ST[st][1]+'">'+MEM_ST[st][0]+'</span></div>'+
+  '<div class="kv"><div class="k">Plan</div><div class="v"><b>'+esc(m.planName)+'</b> · '+rm(m.price)+' / '+(m.period==='year'?'year':'month')+'</div>'+
+  '<div class="k">Benefits</div><div class="v">'+esc(memPerks(memPlan(m.planId)))+'</div>'+
+  '<div class="k">'+(m.autoRenew===false?'Ends':'Renews')+'</div><div class="v">'+dstr(m.renewAt)+'</div><div class="k">Since</div><div class="v">'+dstr(m.start)+' · '+(m.payments||[]).length+' payment'+((m.payments||[]).length===1?'':'s')+'</div></div>'+
+  '<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">'+(st!=='active'||daysBetween(today(),m.renewAt)<=7?'<button class="btn sm" onclick="memRenew(\''+m.id+'\')">'+ic('check',13)+'Renew</button>':'')+
+  (m.autoRenew!==false?'<button class="btn sm ghost" onclick="memCancel(\''+m.id+'\')">Stop renewing</button>':'')+'</div></div>';
+}
+/* at checkout: the member's discount and credit, in one bar above the bill */
+function memDiscFor(cid){
+ const m=memLive(cid);if(!m)return null;const P=memPlan(m.planId);if(!P.id)return null;
+ let a=0;cart.items.forEach(i=>{const v=lineAmt(i);if(i.kind==='service'&&+P.discSvc)a+=v*P.discSvc/100;else if(retailKind(i.kind)&&+P.discPrd)a+=v*P.discPrd/100;});
+ return{m,P,amt:r2(a)};
+}
+{const _q=quoteBar;quoteBar=function(){
+ let h=_q();if(!cart.customerId)return h;
+ const bits=[],md=memDiscFor(cart.customerId);
+ if(md&&md.amt>0)bits.push(cart.memberDisc?'<span>'+ic('award',13)+' '+esc(md.P.name)+' discount '+rm(cart.memberDisc)+' taken off'+(Math.abs(cart.memberDisc-md.amt)>0.01?' · <button class="blankf" onclick="memDiscApply()">recalculate ('+rm(md.amt)+')</button>':'')+' <button class="blankf" onclick="memDiscOff()">remove</button></span>'
+  :'<span>'+ic('award',13)+' '+esc(md.P.name)+' member · <button class="btn sm" onclick="memDiscApply()">Take off '+rm(md.amt)+'</button></span>');
+ const w=WALC[cart.customerId];
+ if(pkR().walletOn){if(!w)walGet(cart.customerId).then(x=>{if(x.balance>0&&TAB==='pos')render();});
+  else if(w.balance>0){const used=cart.payments.filter(p=>p.method==='Client credit').reduce((a,p)=>a+p.amount,0);
+   bits.push('<span>'+ic('wallet',13)+' Credit '+rm(w.balance)+(used?' · '+rm(used)+' used on this bill':'')+(used<w.balance?' <button class="btn sm ghost" onclick="walPay()">Pay from credit</button>':'')+'</span>');}}
+ return (bits.length?'<div class="membar">'+bits.join('')+'</div>':'')+h;};}
+window.memDiscApply=()=>{const md=memDiscFor(cart.customerId);if(!md)return;cart.discount=r2((+cart.discount||0)-(+cart.memberDisc||0)+md.amt);cart.memberDisc=md.amt;render();};
+window.memDiscOff=()=>{cart.discount=r2(Math.max(0,(+cart.discount||0)-(+cart.memberDisc||0)));cart.memberDisc=0;render();};
+
+/* ============ the client's own page: ?pk=<link> ============ */
+let PVTOK=null,PVSIG={},PVDIRTY=new Set(),PVQ=0;
+async function pvTokens(fresh){
+ if(PVTOK&&!fresh)return PVTOK;PVTOK={};
+ try{(await getDocs(query(collection(db,'customers'),where('pkTok','>',''),limit(3000)))).docs.forEach(d=>{PVTOK[d.id]=d.data().pkTok;});}catch(e){}
+ return PVTOK;
+}
+function pvTouch(cid){if(!cid)return;PVDIRTY.add(cid);clearTimeout(PVQ);PVQ=setTimeout(()=>{const L=[...PVDIRTY];PVDIRTY.clear();L.forEach(id=>pvSync(id).catch(e=>console.warn('pv',e)));},1200);}
+async function pvView(cid){
+ const c=await custGet(cid)||{},w=pkR().walletOn?await walGet(cid,true):null;await memLoad();
+ const pk=HELD.filter(p=>(p.customerId===cid||pkShared(p,cid))&&(p.balances||[]).some(b=>b.left>0)&&!pkgExpired(p)).map(p=>({n:cpName(p),
+  l:(p.balances||[]).map(b=>({s:svc(b.serviceId).name||'Sesi',l:+b.left,t:+b.total})),exp:String(p.expiry).slice(0,10),fz:pkFrozenNow(p)?p.frozen.until:'',from:pkShared(p,cid)?String(p.customerName||'').split(' ')[0]:'',m:!!p.member}));
+ const m=memOf(cid),P=m?memPlan(m.planId):null;
+ return{first:String(c.name||'').split(' ')[0],biz:(bizC().name||''),wa:bizC().whatsapp||bizC().phone||'',pk,credit:w?r2(w.balance):null,
+  mem:m?{n:m.planName,st:memState(m),renew:m.renewAt,auto:m.autoRenew!==false,perks:P&&P.id?memPerks(P):''}:null,updatedAt:pkzNow()};
+}
+async function pvSync(cid){
+ const T=await pvTokens();const tok=T[cid]||(cust(cid)||{}).pkTok;if(!tok)return;
+ const v=await pvView(cid),sig=JSON.stringify({...v,updatedAt:''});if(PVSIG[cid]===sig)return;
+ await setDoc(doc(db,'pkgViews',tok),v);PVSIG[cid]=sig;
+}
+window.pvSend=async cid=>{
+ const c=await custGet(cid);if(!c)return;
+ let tok=c.pkTok;if(!tok){tok=typeof wbId==='function'?wbId(22):Math.random().toString(36).slice(2,14);try{await updateDoc(doc(db,'customers',cid),{pkTok:tok});c.pkTok=tok;(await pvTokens())[cid]=tok;}catch(e){toast(friendly(e));return;}}
+ PVSIG[cid]='';await pvSync(cid);
+ const link=(()=>{let u='';try{u=location.origin+location.pathname;}catch(e){}return u;})()+'?pk='+tok;
+ const v=await pvView(cid),lines=v.pk.map(p=>'• '+p.n+': '+p.l.map(x=>x.s+' '+x.l+'/'+x.t).join(', ')+' (luput '+dstr(p.exp)+')').join('\n');
+ const msg='Hi '+v.first+', ini baki pakej anda di '+v.biz+':\n'+(lines||'Tiada pakej aktif.')+(v.credit?'\nKredit: '+rm(v.credit):'')+'\n\nSemak bila-bila masa di sini:\n'+link;
+ modal('Send balance','<div class="card"><textarea class="f" rows="8" id="pv-m">'+esc(msg)+'</textarea><p class="tiny muted" style="margin:0 0 8px">The page always shows the latest balance — the client can keep the link.</p>'+
+  (c.phone?'<a class="btn" style="display:flex;justify-content:center;text-decoration:none" target="_blank" onclick="this.href=\'https://wa.me/'+waNum(c.phone)+'?text=\'+encodeURIComponent(document.getElementById(\'pv-m\').value)" href="https://wa.me/'+waNum(c.phone)+'">'+ic('msg',16)+'Open in WhatsApp</a>':'<div class="tiny muted">No phone number on file.</div>')+'</div>');
+ window.__pvLink=link;
+};
+async function pkViewPage(tok){
+ document.title='Pakej saya';const root=document.getElementById('root');root.innerHTML='<div class="fbpage wbpage"><div class="center"><div class="spin"></div></div></div>';
+ let v=null;try{const s=await getDoc(doc(db,'pkgViews',tok));if(s.exists())v=s.data();}catch(e){}
+ const head='<div class="fbhead"><div class="fbmark">'+ic('spark',22)+'</div><div class="fbbiz">'+esc((v&&v.biz)||'')+'</div><div class="fbbr">Pakej & kredit anda</div></div>';
+ if(!v){root.innerHTML='<div class="fbpage wbpage">'+head+'<div class="fbbox"><p style="text-align:center">Pautan ini tidak sah. Sila WhatsApp kami.</p></div></div>';return;}
+ const ST={active:'Aktif',due:'Perlu diperbaharui',lapsed:'Tamat',cancelled:'Dibatalkan'};
+ root.innerHTML='<div class="fbpage wbpage">'+head+'<div class="fbbox"><h2 style="margin-top:0">Hai '+esc(v.first)+' 👋</h2>'+
+  (v.pk.length?v.pk.map(p=>{const d=daysBetween(today(),p.exp);return '<div class="pvpk"><div class="spread"><b>'+esc(p.n)+'</b>'+(p.fz?'<span class="pill a">dibekukan hingga '+dshort(p.fz)+'</span>':'<span class="pill '+(d<=30?'a':'g')+'">luput '+dshort(p.exp)+'</span>')+'</div>'+
+   (p.from?'<div class="tiny muted">Dikongsi oleh '+esc(p.from)+'</div>':'')+
+   p.l.map(x=>'<div class="pvl"><span>'+esc(x.s)+'</span><b>'+x.l+' <small>/ '+x.t+' baki</small></b></div><div class="bar"><i class="brass" style="width:'+(x.t?(x.t-x.l)/x.t*100:0)+'%"></i></div>').join('')+
+   (d<=30&&!p.fz?'<p class="tiny" style="color:var(--amber);margin:6px 0 0">Tinggal '+d+' hari — tempah sesi anda sebelum luput.</p>':'')+'</div>';}).join(''):'<p class="tiny muted">Tiada pakej aktif.</p>')+
+  (v.credit!==null&&v.credit!==undefined?'<div class="pvpk"><div class="spread"><b>Kredit</b><b style="font-size:20px">'+rm(v.credit)+'</b></div><div class="tiny muted">Boleh digunakan untuk sebarang rawatan dan produk.</div></div>':'')+
+  (v.mem?'<div class="pvpk"><div class="spread"><b>Keahlian: '+esc(v.mem.n)+'</b><span class="pill '+(v.mem.st==='active'?'g':'a')+'">'+(ST[v.mem.st]||'')+'</span></div><div class="tiny">'+esc(v.mem.perks)+'</div><div class="tiny muted">'+(v.mem.auto?'Diperbaharui ':'Tamat ')+dstr(v.mem.renew)+'</div></div>':'')+
+  '<p class="tiny muted" style="margin-top:12px">Dikemas kini '+dstr(v.updatedAt)+' '+tstr(v.updatedAt)+'.</p>'+
+  (v.wa?'<a class="btn" style="width:100%;justify-content:center" target="_blank" href="https://wa.me/'+String(v.wa).replace(/\D/g,'').replace(/^0/,'60')+'?text='+encodeURIComponent('Hi, saya '+v.first+'. Saya nak tempah sesi pakej saya.')+'">'+ic('msg',15)+'Tempah sesi melalui WhatsApp</a>':'')+'</div></div>';
+}
+window.pkViewPage=pkViewPage;
+
+/* ============ expiring soon: remind the client ============ */
+function pkzExpiring(){
+ const R=pkR(),max=Math.max(0,...R.remind);
+ return HELD.filter(p=>!p.member&&!p.prepaid&&(p.balances||[]).some(b=>b.left>0)&&!pkgExpired(p)&&!pkFrozenNow(p)&&daysBetween(today(),p.expiry)<=max&&(!p.branchId||p.branchId===ME.branchId))
+  .map(p=>{const d=daysBetween(today(),p.expiry),step=R.remind.filter(n=>d<=n).sort((a,b)=>a-b)[0],done=(p.remAt||{})[step];return{p,d,step,done};})
+  .sort((a,b)=>a.d-b.d);
+}
+window.pkzRemind=async id=>{
+ const p=HELD.find(x=>x.id===id);if(!p)return;const d=daysBetween(today(),p.expiry),step=pkR().remind.filter(n=>d<=n).sort((a,b)=>a-b)[0]||d;
+ await window.pvSend(p.customerId);
+ const ta=document.getElementById('pv-m');if(ta){const left=(p.balances||[]).reduce((a,b)=>a+b.left,0);
+  ta.value='Hi '+String(p.customerName||'').split(' ')[0]+', peringatan mesra dari '+(bizC().name||'kami')+' 🌿\nPakej '+cpName(p)+' anda masih ada '+left+' sesi dan akan luput pada '+dstr(p.expiry)+' ('+d+' hari lagi).\nJom tempah sesi anda sekarang supaya tidak terlepas!\n\nBaki penuh: '+(window.__pvLink||'');}
+ const go=document.querySelector('#modal a.btn');if(go)go.addEventListener('click',async()=>{try{const r={...(p.remAt||{}),[step]:pkzNow()};await updateDoc(doc(db,'customerPackages',id),{remAt:r});p.remAt=r;await audit('Package expiry reminder',(p.customerName||'')+' · '+cpName(p));}catch(e){}});
+};
+
+/* ============ what clients have paid for and not used yet ============ */
+let PKLIAB=null;
+async function pkzLiab(){
+ const pk=HELD.map(p=>{const tot=(p.balances||[]).reduce((a,b)=>a+(+b.total||0),0),left=(p.balances||[]).reduce((a,b)=>a+(+b.left||0),0);
+  return{p,left,val:tot?r2((+p.price||0)*left/tot):0,d:daysBetween(today(),p.expiry)};}).filter(x=>x.left>0);
+ let wal=[];try{wal=(await getDocs(query(collection(db,'wallets'),limit(3000)))).docs.map(d=>({id:d.id,...d.data()})).filter(w=>+w.balance>0.004);}catch(e){}
+ await memLoad(true);
+ const mem=(MEMS||[]).filter(m=>m.status!=='cancelled'&&m.renewAt>today()).map(m=>{const days=m.period==='year'?365:30.44,left=Math.min(days,daysBetween(today(),m.renewAt));return{m,val:r2((+m.price||0)*left/days)};});
+ PKLIAB={pk,wal,mem,at:Date.now()};return PKLIAB;
+}
+function pkzLiabHTML(){
+ if(!PKLIAB){pkzLiab().then(()=>{if(TAB==='pkg')render();});return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const L=PKLIAB,live=L.pk.filter(x=>x.d>=0&&!x.p.member),gone=L.pk.filter(x=>x.d<0&&!x.p.member),memS=L.pk.filter(x=>x.d>=0&&x.p.member),sum=a=>r2(a.reduce((t,x)=>t+(x.val!==undefined?x.val:+x.balance||0),0));
+ const b30=live.filter(x=>x.d<=30),b90=live.filter(x=>x.d>30&&x.d<=90),bmore=live.filter(x=>x.d>90);
+ const W=r2(L.wal.reduce((a,w)=>a+(+w.balance||0),0)),M=sum(L.mem),P=sum(live);
+ const row=(k,v,n,s)=>'<tr><td>'+k+(s?'<div class="tiny muted">'+s+'</div>':'')+'</td><td class="num">'+n+'</td><td class="num"><b>'+rm(v)+'</b></td></tr>';
+ return '<div class="grid g3" style="margin-bottom:12px">'+kpi('Still owed to clients',rm(P+W+M),'packages, credit and membership','package')+kpi('Package sessions',rm(P),live.reduce((a,x)=>a+x.left,0)+' sessions','list')+kpi('Credit balances',rm(W),L.wal.length+' client'+(L.wal.length===1?'':'s'),'wallet')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3>Unused, by when it runs out</h3><button class="btn sm ghost" onclick="pkzLiabCSV()">'+ic('download',13)+'CSV for the accountant</button></div><table class="cltbl"><thead><tr><th>What</th><th class="num">Count</th><th class="num">Value</th></tr></thead><tbody>'+
+  row('Packages expiring in 30 days',sum(b30),b30.length,'remind these clients now')+row('Packages expiring in 31–90 days',sum(b90),b90.length)+row('Packages expiring after 90 days',sum(bmore),bmore.length)+
+  row('Frozen packages',sum(live.filter(x=>pkFrozenNow(x.p))),live.filter(x=>pkFrozenNow(x.p)).length,'included above')+
+  row('Client credit (top-ups)',W,L.wal.length,'held as account 2150')+row('Membership paid ahead',M,L.mem.length,'unused part of the current period'+(memS.length?' · '+memS.reduce((a,x)=>a+x.left,0)+' member sessions not used yet':''))+
+  '<tr><td><b>Total still owed</b></td><td></td><td class="num"><b>'+rm(P+W+M)+'</b></td></tr></tbody></table>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Value = what the client paid, for the sessions not yet used. Expired with sessions left: <b>'+rm(sum(gone))+'</b> across '+gone.length+' package'+(gone.length===1?'':'s')+' — no longer owed, counted as expired-package income in Finance.</p></div>'+
+  '<div class="card"><h3 style="margin-bottom:8px">Largest balances</h3>'+live.sort((a,b)=>b.val-a.val).slice(0,12).map(x=>'<div class="spread item" onclick="pkgDetail(\''+x.p.id+'\')"><span><b>'+esc(x.p.customerName||'')+'</b> · '+esc(cpName(x.p))+'<small class="tiny muted"> · '+x.left+' left · expires '+dshort(x.p.expiry)+'</small></span><b>'+rm(x.val)+'</b></div>').join('')+'</div>';
+}
+window.pkzLiabCSV=()=>{
+ const L=PKLIAB;if(!L)return;const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const rows=[['Type','Client','Item','Sessions left','Expires / renews','Value owed (RM)','Status'].map(q).join(',')];
+ L.pk.forEach(x=>rows.push(['Package',x.p.customerName,cpName(x.p),x.left,String(x.p.expiry).slice(0,10),x.val.toFixed(2),x.d<0?'expired':pkFrozenNow(x.p)?'frozen':'active'].map(q).join(',')));
+ L.wal.forEach(w=>rows.push(['Credit',w.customerName,'Top-up credit','',(''),(+w.balance).toFixed(2),'active'].map(q).join(',')));
+ L.mem.forEach(x=>rows.push(['Membership',x.m.customerName,x.m.planName,'',x.m.renewAt,x.val.toFixed(2),memState(x.m)].map(q).join(',')));
+ const csv=rows.join('\n');window.__lastCSV=csv;
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download='Unused-packages-credit-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
+};
+
+/* ============ the Packages screen ============ */
+let PKV='list';
+window.pkvSet=v=>{PKV=v;if(v==='liab')PKLIAB=null;if(v==='mem'||v==='cred')memLoad(true).then(()=>{if(TAB==='pkg')render();});if(v==='cred')WALL=null;render();};
+{const _v=vPkg;vPkg=function(){
+ const R=pkR(),ex=pkzExpiring(),due=(MEMS||[]).filter(m=>m.status!=='cancelled'&&m.autoRenew!==false&&daysBetween(today(),m.renewAt)<=7);
+ if(!MEMS)memLoad().then(()=>{if(TAB==='pkg')render();});
+ const tabs=[['list','Packages','package',0],['exp','Expiring','clock',ex.filter(x=>!x.done).length],...(R.memberOn?[['mem','Membership','award',due.length]]:[]),...(R.walletOn?[['cred','Credit','wallet',0]]:[]),...(boss()?[['liab','Unused value','chart',0]]:[])];
+ if(!tabs.some(t=>t[0]===PKV))PKV='list';
+ const bar='<div class="seg pkvseg">'+tabs.map(t=>'<button type="button" class="'+(PKV===t[0]?'on':'')+'" onclick="pkvSet(\''+t[0]+'\')">'+ic(t[2],13)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div>';
+ let body='';
+ if(PKV==='list')body=_v();
+ if(PKV==='exp')body='<div class="card"><div class="sec-h"><h3>'+ic('clock',14)+' Running out soon</h3><span class="tiny muted">reminders at '+R.remind.join(' and ')+' days</span></div>'+
+  (ex.length?ex.map(x=>{const left=(x.p.balances||[]).reduce((a,b)=>a+b.left,0);return '<div class="bkprow"><div><b>'+esc(x.p.customerName||'')+'</b><small>'+esc(cpName(x.p))+' · '+left+' session'+(left===1?'':'s')+' left · expires '+dstr(x.p.expiry)+' (<b>'+x.d+' days</b>)'+
+   (x.done?' · reminded '+dshort(x.done):'')+'</small></div>'+(x.done?'<span class="pill g">'+ic('check',11)+' sent</span>':'')+'<button class="btn sm'+(x.done?' ghost':'')+'" onclick="pkzRemind(\''+x.p.id+'\')">'+ic('msg',13)+'Remind</button>'+
+   (boss()&&pkR().freeze?'<button class="btn sm ghost" onclick="pkgDetail(\''+x.p.id+'\')">Open</button>':'')+'</div>';}).join(''):'<p class="tiny muted" style="margin:0">Nothing running out in the next '+Math.max(...R.remind)+' days.</p>')+'</div>';
+ if(PKV==='mem')body=memScreen();
+ if(PKV==='cred')body=walScreen();
+ if(PKV==='liab')body=pkzLiabHTML();
+ return bar+body;};}
+function memScreen(){
+ const P=memPlans(),M=(MEMS||[]).filter(m=>m.status!=='cancelled').sort((a,b)=>String(a.renewAt).localeCompare(String(b.renewAt)));
+ const due=M.filter(m=>m.autoRenew!==false&&daysBetween(today(),m.renewAt)<=7);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('award',14)+' Plans</h3>'+(boss()?'<button class="btn sm" onclick="memPlanEdit(\'\')">'+ic('plus',13)+'New plan</button>':'')+'</div>'+
+  (P.length?P.map(p=>'<div class="item"'+(boss()?' onclick="memPlanEdit(\''+p.id+'\')"':'')+'><div class="spread"><b>'+esc(p.name)+(p.active===false?' <span class="pill">off</span>':'')+'</b><span>'+rm(p.price)+' / '+(p.period==='year'?'year':'month')+'</span></div><div class="tiny muted">'+esc(memPerks(p))+' · '+M.filter(m=>m.planId===p.id&&memState(m)!=='lapsed').length+' members</div></div>').join('')
+   :'<p class="tiny muted" style="margin:0">No plans yet. A plan has a monthly or yearly price, a discount on the bill and, if you like, sessions included each period.</p>')+'</div>'+
+  (due.length?'<div class="card"><div class="sec-h"><h3>'+ic('clock',14)+' Renewals due</h3><span class="pill a">'+due.length+'</span></div>'+due.map(m=>'<div class="bkprow"><div><b>'+esc(m.customerName)+'</b><small>'+esc(m.planName)+' · '+rm(m.price)+' · due '+dstr(m.renewAt)+'</small></div>'+
+   '<button class="btn sm" onclick="memRenew(\''+m.id+'\')">'+ic('check',13)+'Charge & renew</button><a class="btn sm ghost" target="_blank" href="https://wa.me/'+waNum((cust(m.customerId)||{}).phone||'')+'?text='+encodeURIComponent('Hi '+String(m.customerName).split(' ')[0]+', keahlian '+m.planName+' anda akan diperbaharui pada '+dstr(m.renewAt)+' ('+rm(m.price)+'). Terima kasih kerana bersama '+(bizC().name||'kami')+'! 🌿')+'">'+ic('msg',13)+'Remind</a></div>').join('')+'</div>':'')+
+  '<div class="card"><div class="sec-h"><h3>Members</h3><button class="btn sm ghost" onclick="memJoin()">'+ic('plus',13)+'Sign up a client</button></div>'+
+  (M.length?M.map(m=>{const st=memState(m);return '<div class="item" onclick="openCust(\''+m.customerId+'\')"><div class="spread"><b>'+esc(m.customerName)+'</b><span class="pill '+MEM_ST[st][1]+'">'+MEM_ST[st][0]+'</span></div><div class="tiny muted">'+esc(m.planName)+' · '+(m.autoRenew===false?'ends ':'renews ')+dstr(m.renewAt)+' · since '+dshort(m.start)+'</div></div>';}).join(''):'<p class="tiny muted" style="margin:0">No members yet.</p>')+'</div>';
+}
+window.memPlanEdit=id=>{
+ if(!boss())return;const p=id?memPlan(id):{name:'',period:'month',price:0,discSvc:10,discPrd:0,sessions:[],perks:'',active:true};
+ const S=[...(p.sessions||[]),{serviceId:'',n:''},{serviceId:'',n:''},{serviceId:'',n:''}].slice(0,3);
+ modal(id?'Edit plan':'New membership plan','<div class="card"><label>Name</label><input class="f" id="mp-n" value="'+esc(p.name)+'" placeholder="Glow Club">'+
+  '<div class="grid g2"><div><label>Charged every</label><select class="f" id="mp-per"><option value="month"'+(p.period!=='year'?' selected':'')+'>Month</option><option value="year"'+(p.period==='year'?' selected':'')+'>Year</option></select></div>'+
+  '<div><label>Price (RM)</label><input class="f" type="number" min="0" id="mp-p" value="'+(+p.price||0)+'"></div></div>'+
+  '<div class="grid g2"><div><label>Discount on treatments (%)</label><input class="f" type="number" min="0" max="100" id="mp-ds" value="'+(+p.discSvc||0)+'"></div><div><label>Discount on products (%)</label><input class="f" type="number" min="0" max="100" id="mp-dp" value="'+(+p.discPrd||0)+'"></div></div>'+
+  '<label>Sessions included each period</label>'+S.map((x,i)=>'<div class="row" style="gap:6px;margin-bottom:6px"><select class="f" style="margin:0;flex:1" id="mp-s'+i+'"><option value="">—</option>'+D.services.filter(s=>s.active!==false).map(s=>'<option value="'+s.id+'"'+(x.serviceId===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select><input class="f" style="margin:0;width:80px" type="number" min="0" id="mp-q'+i+'" value="'+esc(x.n)+'" placeholder="0"></div>').join('')+
+  '<label>Other benefits <span class="muted">— shown to the client</span></label><input class="f" id="mp-x" maxlength="200" value="'+esc(p.perks||'')+'" placeholder="Priority booking, birthday gift">'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="mp-a"'+(p.active!==false?' checked':'')+'> Open for new members</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="memPlanSave(\''+(id||'')+'\')">'+ic('check',15)+'Save plan</button></div>');
+};
+window.memPlanSave=async id=>{
+ const g=k=>document.getElementById(k);const name=g('mp-n').value.trim();if(!name){toast('Name the plan');return;}
+ const p={id:id||('mp'+Date.now().toString(36)),name,period:g('mp-per').value,price:Math.max(0,+g('mp-p').value||0),discSvc:Math.min(100,Math.max(0,+g('mp-ds').value||0)),discPrd:Math.min(100,Math.max(0,+g('mp-dp').value||0)),
+  sessions:[0,1,2].map(i=>({serviceId:g('mp-s'+i).value,n:Math.max(0,Math.round(+g('mp-q'+i).value||0))})).filter(x=>x.serviceId&&x.n>0),perks:g('mp-x').value.trim().slice(0,200),active:g('mp-a').checked};
+ const L=memPlans().filter(x=>x.id!==p.id);L.push(p);
+ try{await lpMetaPut('memberPlans',L);await audit('Membership plan saved',p.name+' · '+rm(p.price));window.closeModal();render();toast('Plan saved');}catch(e){toast(friendly(e));}
+};
+let WALL=null;
+function walScreen(){
+ if(!WALL){WALL=[];getDocs(query(collection(db,'wallets'),limit(3000))).then(s=>{WALL=s.docs.map(d=>({id:d.id,...d.data()})).filter(w=>+w.balance>0.004).sort((a,b)=>b.balance-a.balance);if(TAB==='pkg')render();}).catch(()=>{});}
+ const T=pkR().topups,tot=r2(WALL.reduce((a,w)=>a+(+w.balance||0),0));
+ return '<div class="card"><div class="sec-h"><h3>'+ic('wallet',14)+' Client credit</h3><button class="btn sm" onclick="walTopupPick()">'+ic('plus',13)+'Top up a client</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Top-ups on offer: '+T.map(t=>'pay '+rm(t.pay)+' → '+rm(t.get)).join(' · ')+'. Change them in Settings.</p>'+
+  (WALL.length?'<div class="walsum">'+rm(tot)+' held for '+WALL.length+' client'+(WALL.length===1?'':'s')+'</div>'+WALL.map(w=>'<div class="spread item" onclick="openCust(\''+w.id+'\')"><b>'+esc(w.customerName||'')+'</b><b>'+rm(w.balance)+'</b></div>').join('')
+   :'<p class="tiny muted" style="margin:0">No client has credit yet.</p>')+'</div>';
+}
+window.walTopupPick=()=>{modal('Top up credit','<div class="card"><label>Client</label>'+clientPicker('wp-c','',{onPick:id=>{if(id)window.walTopup(id);}})+'</div>');};
+
+/* ============ client profile ============ */
+{const _cp=custProfile;custProfile=function(c){
+ const h=_cp(c),add=memCard(c)+walCard(c),i=h.indexOf('<div class="card clcard">');return i<0?add+h:h.slice(0,i)+add+h.slice(i);};}
+
+/* ============ Settings: package rules ============ */
+function pkRulesPanel(){
+ if(!boss())return '';const R=pkR();
+ return '<div class="card"><h2 style="margin-bottom:6px">'+ic('package',16)+' Packages, credit & membership</h2>'+
+  '<div class="grid g2"><div class="fieldset"><h3>Transfer & share</h3><label class="row" style="gap:8px"><input type="checkbox" id="pr-tr"'+(R.transfer?' checked':'')+'> Packages can be transferred to another client</label>'+
+  '<label>Transfer fee (RM, charged at checkout)</label><input class="f" type="number" min="0" id="pr-tf" value="'+(+R.transferFee||0)+'">'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="pr-sh"'+(R.share?' checked':'')+'> Packages can be shared (e.g. mother and daughter)</label><label>Share with at most</label><input class="f" type="number" min="1" max="6" id="pr-sm" value="'+(+R.shareMax||2)+'"></div>'+
+  '<div class="fieldset"><h3>Freeze</h3><label class="row" style="gap:8px"><input type="checkbox" id="pr-fz"'+(R.freeze?' checked':'')+'> Packages can be frozen (pregnancy, illness, overseas)</label>'+
+  '<label>Most days per package</label><input class="f" type="number" min="1" max="365" id="pr-fd" value="'+(+R.freezeMaxDays||90)+'"><label>Most times per package</label><input class="f" type="number" min="1" max="10" id="pr-ft" value="'+(+R.freezeMaxTimes||2)+'"></div></div>'+
+  '<label>Expiry reminders (days before, comma between)</label><input class="f" id="pr-rm" value="'+esc(R.remind.join(', '))+'">'+
+  '<div class="grid g2"><div class="fieldset"><h3>Credit</h3><label class="row" style="gap:8px"><input type="checkbox" id="pr-wo"'+(R.walletOn?' checked':'')+'> Clients can top up credit</label>'+
+  '<label>Top-ups <span class="muted">— pay = get, one per line</span></label><textarea class="f" id="pr-tu" rows="3">'+esc(R.topups.map(t=>t.pay+' = '+t.get).join('\n'))+'</textarea></div>'+
+  '<div class="fieldset"><h3>Membership</h3><label class="row" style="gap:8px"><input type="checkbox" id="pr-mo"'+(R.memberOn?' checked':'')+'> Offer membership plans</label>'+
+  '<label>Benefits continue after the renewal date for (days)</label><input class="f" type="number" min="0" max="30" id="pr-mg" value="'+(+R.memberGrace||0)+'"></div></div>'+
+  '<div id="pr-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn sm" onclick="pkRulesSave()">'+ic('check',14)+'Save package rules</button></div>';
+}
+window.pkRulesSave=async()=>{
+ const g=k=>document.getElementById(k),n=(k,a,b,d)=>{const v=Math.round(+g(k).value);return v>=a&&v<=b?v:d;};
+ const tu=g('pr-tu').value.split('\n').map(l=>l.split(/[=→>]/).map(x=>+String(x).replace(/[^\d.]/g,''))).filter(x=>x[0]>0&&x[1]>=x[0]).map(x=>({pay:x[0],get:x[1]}));
+ const R={transfer:g('pr-tr').checked,transferFee:Math.max(0,+g('pr-tf').value||0),share:g('pr-sh').checked,shareMax:n('pr-sm',1,6,2),freeze:g('pr-fz').checked,freezeMaxDays:n('pr-fd',1,365,90),freezeMaxTimes:n('pr-ft',1,10,2),
+  remind:g('pr-rm').value.split(/[,\s]+/).map(Number).filter(x=>x>0&&x<=180).slice(0,4),walletOn:g('pr-wo').checked,topups:tu.slice(0,6),memberOn:g('pr-mo').checked,memberGrace:n('pr-mg',0,30,7)};
+ if(!R.remind.length)R.remind=[30,7];
+ try{await lpMetaPut('pkgRules',R);await audit('Package rules saved','');render();toast('Package rules saved');}catch(e){g('pr-e').textContent=friendly(e);}
+};
+{const _p=wbSetPanel;wbSetPanel=function(){return _p()+pkRulesPanel();};}
+
+/* ============ keep the client pages up to date ============ */
+let PKZBOOT=false;
+function pkzSigs(){const m={};HELD.forEach(p=>{[p.customerId,...(p.shareWith||[])].forEach(id=>{m[id]=(m[id]||'')+p.id+':'+JSON.stringify(p.balances)+p.expiry+(p.frozen?p.frozen.until:'')+'|';});});return m;}
+let PKZLAST=null;
+async function pkzTick(){
+ if(!ME||!can('customer'))return;const T=await pvTokens();const now=pkzSigs();
+ if(PKZLAST)Object.keys({...now,...PKZLAST}).forEach(id=>{if(T[id]&&now[id]!==PKZLAST[id])pvTouch(id);});PKZLAST=now;
+}
+{const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!PKZBOOT){PKZBOOT=true;setInterval(()=>pkzTick().catch(()=>{}),20000);setTimeout(()=>pkzTick().catch(()=>{}),3000);}}catch(e){}};window.render=render;}
+window.pkzTickNow=()=>pkzTick();
 
 </script>
