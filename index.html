@@ -2122,6 +2122,38 @@ body.clk-on{overflow:hidden}
 .clkfoot{display:flex;justify-content:space-between;gap:10px;padding-top:10px}.clkfoot .btn{min-height:50px;padding:0 22px;font-size:16px}
 .clkgo{background:var(--jade)!important;border-color:var(--jade)!important}
 .clkdone{text-align:center;padding-top:10vh;color:var(--jade)}.clkdone h1{color:var(--ink)}.clkdone .clklead{margin-bottom:26px}
+
+/* ---- bookings part 3 ---- */
+.okbox{background:var(--jade-soft);border:1px solid #C9DDD1;border-radius:var(--r-md);padding:10px 12px;font-size:13.5px;color:#1F4D3A;margin-bottom:10px}
+.bkmtag{display:inline-flex;gap:3px;align-items:center;font-size:10.5px;color:var(--ink-3);margin-top:2px}
+.bkwlbar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.bkdep b{font-weight:620}
+.bkline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
+.bkstat{display:inline-flex;align-items:center;border:1px solid;border-left-width:4px;border-radius:8px;padding:3px 9px;font-size:12px;font-weight:620}
+.bkcolsw{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px;margin-right:auto;background:var(--surface)}
+.bkcolsw button{border:0;background:none;font:inherit;font-size:12px;padding:5px 10px;border-radius:99px;color:var(--ink-3);cursor:pointer}
+.bkcolsw button.on{background:var(--ink);color:var(--cream)}
+.bkpanel{padding:10px 12px}
+.bkptabs{display:flex;gap:6px;flex-wrap:wrap}
+.bkptabs button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 11px;font:inherit;font-size:12.5px;color:var(--ink-3);cursor:pointer}
+.bkptabs button i{font-style:normal;font-weight:650;min-width:18px;height:18px;border-radius:9px;display:inline-grid;place-items:center;background:var(--line-2);font-size:11px;padding:0 5px}
+.bkptabs button.has{color:var(--ink)}.bkptabs button.has i{background:var(--brass);color:#fff}
+.bkptabs button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.bkptabs button.on i{background:var(--cream);color:var(--ink)}
+@media(max-width:560px){.bkptabs button span{display:none}.bkptabs button.on span{display:inline}}
+.bkpbody{margin-top:10px;border-top:1px solid var(--line-2);padding-top:8px}
+.bkprow{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line-2);flex-wrap:wrap}.bkprow:first-child{border-top:0}
+.bkprow>div{flex:1;min-width:180px}.bkprow small{display:block;color:var(--ink-3);font-size:12px}.bkprow .btn{padding:5px 10px}
+.bkslots{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.bkslots span{display:inline-flex;align-items:center;gap:6px;border:1px solid #C9DDD1;background:var(--jade-soft);color:#1F4D3A;border-radius:99px;padding:3px 4px 3px 10px;font-size:12.5px;font-weight:600}
+.bkslots a,.bkslots button{border:0;background:#fff;color:var(--jade);font:inherit;font-size:11.5px;font-weight:620;border-radius:99px;padding:3px 8px;cursor:pointer;text-decoration:none}
+.bkns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bkns span{background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:8px 10px;font-size:12px;color:var(--ink-3)}
+.bkns b{display:block;font-size:18px;color:var(--ink)}.bkns .bad b{color:var(--rose)}
+/* the booking page */
+.wbpay{margin-top:14px;background:var(--amber-soft);border:1px solid #E8D9B8;border-radius:14px;padding:14px;text-align:left}
+.wbpay>b{display:flex;gap:6px;align-items:center;font-size:15px}.wbpay p{font-size:13.5px;margin:6px 0}
+.wbpayh{background:#fff;border-radius:10px;padding:10px 12px;font-size:13.5px;font-weight:560;margin-top:8px}
+.wbqr{display:block;width:180px;max-width:70%;margin:10px auto 0;border-radius:10px;background:#fff;padding:6px}
+.wbwl{margin-top:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:12px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2381,7 +2413,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29a';
+const BUILD='2026-09-29b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3256,7 +3288,7 @@ async function saveAppt(){
    staffId,staffName:stf(staffId).name,serviceId:s.id,serviceName:s.name,roomId,date,
    start:start.toISOString(),finish:finish.toISOString(),duration:s.dur,buffer:s.buffer,status:'booked',
    ...(und?{undecided:true,concerns:[...UNDEC.concerns],shortlist:[...UNDEC.short]}:{}),
-   deposit:+$('#n-dep').value||0,notes:$('#n-n').value||'',createdBy:UID,createdAt:new Date().toISOString()});
+   deposit:+$('#n-dep').value||0,...bkCTag(),notes:$('#n-n').value||'',createdBy:UID,createdAt:new Date().toISOString()});
   logEvent('booking','New booking · '+(c.name||''),(und?'Consultation — to decide':s.name)+' · '+dstr(start)+' '+
    tstr(start)+' with '+(stf(staffId).name||''),{refType:'appt'});
   await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
@@ -3440,7 +3472,7 @@ const VISITS=[
  {id:'vip',      label:'VIP',         color:'sand',  icon:'award'},
  {id:'package',  label:'Package session',color:'sage',icon:'package'}];
 const visitOf=id=>VISITS.find(v=>v.id===id);
-const apptPal=a=>pal(a.color||(visitOf(a.visitType)||{}).color||'ink');
+const apptPal=a=>BKCOL==='status'?bkStatusPal(a):pal(a.color||(visitOf(a.visitType)||{}).color||'ink');
 const GENDERS=['Female','Male','Prefer not to say'];
 const SOURCES=['Instagram','TikTok','Facebook','Google Maps','Walk-in','Friend referral','Returning client','Other'];
 const SKINS=['Normal','Oily','Dry','Combination','Sensitive','Acne-prone','Mature'];
@@ -7423,7 +7455,7 @@ window.editApptTime=id=>{
      from:{start:a.start,staffName:a.staffName||'',room:room(a.roomId).name||''},
      to:{start:start.toISOString(),staffName:stf(staffId).name||'',room:room(roomId).name||''}};
     await updateDoc(doc(db,'appointments',id),{date,start:start.toISOString(),finish:finish.toISOString(),
-     staffId,staffName:stf(staffId).name||'',roomId,moves:[...(a.moves||[]),move],
+     staffId,staffName:stf(staffId).name||'',roomId,...bkMoveTag(a,list,start,finish,buf,staffId),moves:[...(a.moves||[]),move],
      updatedBy:UID,updatedAt:new Date().toISOString()});
     logEvent('booking','Booking moved · '+(a.customerName||''),dstr(a.start)+' '+tstr(a.start)+' → '+
      dstr(start)+' '+tstr(start)+' with '+(stf(staffId).name||''),{refType:'appt',refId:id});
@@ -9909,7 +9941,7 @@ window.editService=id=>{
   'package. For a percentage on a package session, the treatment\'s normal price is used.</p></div>'+
   '<label>Description <span class="muted">— shown on the landing and booking page</span></label><textarea class="f" id="sv-desc" rows="2" maxlength="400" placeholder="What it does and who it is for">'+esc(s.desc||'')+'</textarea>'+'<label>Room type needed</label><select class="f" id="sv-r">'+rt.map(t=>'<option value="'+esc(t)+'"'+
    (s.room===t?' selected':'')+'>'+esc(t)+'</option>').join('')+'</select>'+
-  '<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
+  bkSvcFields(s)+'<div class="fieldset"><h3>'+ic('spark',13)+'Programme matching</h3>'+
   chipField('sv-con',CONCERNS,s.concerns||[],'This treats','used by the programme builder')+
   chipField('sv-skin',SKINS.map(x=>[x,x]),s.skins||[],'Best for skin types','leave empty for any')+
   chipField('sv-avoid',FLAGS,s.avoid||[],'Do not use when','the builder removes it automatically')+
@@ -9958,7 +9990,7 @@ window.editService=id=>{
     catSave('services',id,{name,tax:($('#sv-tax')||{}).value||'SV',cat:$('#sv-cat').value==='__new'?'':$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
      dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
      room:$('#sv-r').value,use,active:$('#sv-a').checked,
-     concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
+     machine:(($('#sv-mach')||{}).value||''),staffOnly:chipVals('sv-who'),concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
      intervalDays:+$('#sv-int').value||14,courseSessions:+$('#sv-crs').value||4,
      intensity:$('#sv-ity').value,
      handsOnType:($('#sv-hot')||{}).value||'',handsOnValue:+(($('#sv-hov')||{}).value)||0,desc:(($('#sv-desc')||{}).value||'').trim().slice(0,400),image:imgValue('sv-img',s.image||'')},
@@ -11947,6 +11979,7 @@ window.render=render;
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  const lq=new URLSearchParams(location.search);
  if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
+ if(lq.has('appt')){apptLinkPage(String(lq.get('appt')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('book')){bookingPage(String(lq.get('book')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),String(lq.get('m')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
   if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];APPTSUB=null;
@@ -16847,7 +16880,7 @@ async function wbSync(){
  const dates=[...Array((+W.horizon||30)+1)].map((_,i)=>ymd(addDays(new Date(),i)));
  for(const br of D.branches)for(const d of dates){
   const items=WBAPPTS.filter(a=>a.branchId===br.id&&a.date===d&&!['cancel','no'].includes(a.status))
-   .map(a=>({s:+new Date(a.start),e:+new Date(a.finish)+(+a.buffer||0)*6e4,r:a.roomId||'',t:a.staffId||''})).sort((x,y)=>x.s-y.s||String(x.r).localeCompare(y.r));
+   .map(a=>({s:+new Date(a.start),e:+new Date(a.finish)+(+a.buffer||0)*6e4,r:a.roomId||'',t:a.staffId||'',m:a.machineId||''})).sort((x,y)=>x.s-y.s||String(x.r).localeCompare(y.r));
   const leave=[...new Set(LEAVES.filter(l=>l.status==='approved'&&l.from<=d&&l.to>=d).map(l=>l.staffId).filter(id=>(stf(id)||{}).branchId===br.id))].sort();
   const h=JSON.stringify([items,leave]),id=br.id+'_'+d;
   if(WBBUSY[id]===h)continue;
@@ -16884,14 +16917,14 @@ function wbDays(){
 function wbSlots(d){
  const c=WB.cfg,s=WB.svc,br=WB.br,bz=WB.busy[d];if(!s||!br||!bz)return null;
  const rooms=(br.rooms||[]).filter(r=>!s.r||r.t===s.r);if(!rooms.length)return [];
- const staff=(WB.staff?[WB.staff]:(br.staff||[]).map(x=>x.id)).filter(id=>!(bz.leave||[]).includes(id));if(!staff.length)return [];
+ const staff=(WB.staff?[WB.staff]:(br.staff||[]).map(x=>x.id)).filter(id=>!(bz.leave||[]).includes(id)).filter(id=>!(s.st||[]).length||s.st.includes(id));if(!staff.length)return [];
  const items=bz.items||[],earliest=Date.now()+(c.lead||0)*3600e3,out=[];
  const load={};items.forEach(i=>{load[i.t]=(load[i.t]||0)+(i.e-i.s);});
  for(let m=c.open*60;m+s.d<=c.close*60;m+=c.step){
   const st=wbEpoch(d,m),en=st+s.d*6e4,eb=en+s.b*6e4;if(st<earliest)continue;
   const ov=items.filter(i=>!(eb<=i.s||st>=i.e));
   const fr=rooms.filter(r=>!ov.some(i=>i.r===r.id)),fs=staff.filter(t=>!ov.some(i=>i.t===t)).sort((a,b)=>(load[a]||0)-(load[b]||0));
-  if(fr.length&&fs.length)out.push({m,st,en,eb,room:fr[0].id,staff:fs[0]});
+  const fm=wbMFree(s,br,ov);if(fr.length&&fs.length&&fm!==false)out.push({m,st,en,eb,room:fr[0].id,staff:fs[0],mach:fm||''});
  }
  return out;
 }
@@ -16915,7 +16948,7 @@ function wbPaint(){
   /* 2. therapist */
   if(c.chooseStaff&&(WB.br.staff||[]).length>1)steps.push('<div class="wbstep"><h3><span>2</span>Therapist</h3><div class="wbcats">'+
    '<button class="chip'+(!WB.staff?' on':'')+'" onclick="wbStaff(\'\')">Sesiapa sahaja</button>'+
-   (WB.br.staff||[]).map(t=>'<button class="chip'+(WB.staff===t.id?' on':'')+'" onclick="wbStaff(\''+esc(t.id)+'\')">'+esc(t.n||'Therapist')+'</button>').join('')+'</div></div>');
+   (WB.br.staff||[]).filter(t=>!(WB.svc.st||[]).length||WB.svc.st.includes(t.id)).map(t=>'<button class="chip'+(WB.staff===t.id?' on':'')+'" onclick="wbStaff(\''+esc(t.id)+'\')">'+esc(t.n||'Therapist')+'</button>').join('')+'</div></div>');
   /* 3. day and time */
   const days=wbDays();if(!WB.day)WB.day=days[0]||'';
   const sl=WB.day?wbSlots(WB.day):[];
@@ -16926,7 +16959,7 @@ function wbPaint(){
      (x&&!x.length?'<i>penuh</i>':'')+'</button>';}).join('')+'</div>'+
    (!WB.day?'<p class="tiny muted">Tiada tarikh dibuka buat masa ini.</p>':sl===null?'<div class="center"><div class="spin"></div></div>':
     sl.length?'<div class="wbtimes">'+sl.map(x=>'<button class="wbtime'+(WB.slot&&WB.slot.st===x.st?' on':'')+'" onclick="wbTime('+x.st+')">'+wbT(x.st)+'</button>').join('')+'</div>'
-    :'<p class="wbfull">'+ic('calendar',16)+' Slot pada hari ini sudah penuh. Sila pilih tarikh lain.</p>')+'</div>');
+    :'<p class="wbfull">'+ic('calendar',16)+' Slot pada hari ini sudah penuh. Sila pilih tarikh lain.</p>'+wbWaitBtn())+'</div>');
  }
  if(WB.slot){
   const s=WB.svc;
@@ -16975,12 +17008,12 @@ window.wbBook=async()=>{
  const appt={branchId:br.id,customerId:'',customerName:n.slice(0,80),phone:p.slice(0,20),email:em.slice(0,100),
   staffId:x.staff,staffName:stn,serviceId:s.id,serviceName:s.n,roomId:x.room,date:d,
   start:new Date(x.st).toISOString(),finish:new Date(x.en).toISOString(),duration:s.d,buffer:s.b,status:'booked',deposit:0,
-  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff,...(rc?{refCode:rc}:{}),...lpApptAttr()};
+  notes:nt.slice(0,500),source:'web',createdBy:'web',createdAt:now,webPending:!!s.a,webRef:ref,consent:true,anyStaff:!WB.staff,...(rc?{refCode:rc}:{}),...lpApptAttr(),...wbDepTag(s,x,p),...(x.mach?{machineId:x.mach}:{})};
  const b=writeBatch(db);b.set(doc(db,'appointments',id),appt);
  /* lock every 15 minutes the room and the therapist are held, so nobody else can take them at the same moment */
  const cells=[];for(let t=Math.floor(x.st/9e5)*9e5;t<x.eb;t+=9e5)cells.push(t);
  cells.forEach(t=>{const hm=wbHM(t).replace(':','');
-  [['r',x.room],['s',x.staff]].forEach(([k,v])=>b.set(doc(db,'slotLocks',br.id+'_'+d+'_'+k+'_'+v+'_'+hm),{appt:id,t:new Date(t).toISOString(),k,x:v,b:br.id,d,at:now}));});
+  [['r',x.room],['s',x.staff],...(x.mach?[['m',x.mach]]:[])].forEach(([k,v])=>b.set(doc(db,'slotLocks',br.id+'_'+d+'_'+k+'_'+v+'_'+hm),{appt:id,t:new Date(t).toISOString(),k,x:v,b:br.id,d,at:now}));});
  try{await b.commit();}
  catch(err){console.warn(err);WB.busy[WB.day]=undefined;WB.slot=null;
   ['n','p','e','x'].forEach(k=>{WB[k]=({n,p,e:em,x:nt})[k];});WB.r=rc;
@@ -20702,7 +20735,7 @@ function calList(){
  return (holOf(calDate).length?'<div class="holbar">'+holTags(calDate)+'</div>':'')+ap.map(a=>{
   const st=STATUS[a.status]||['',''],P=apptPal(a),c=cust(a.customerId),p=part(a),head=p!==last?(last=p,'<div class="bkpart">'+p+'</div>'):'';
   const acts=[];
-  if(a.status==='booked'||a.status==='confirm'){if(calDate===today())acts.push('<button class="btn sm" onclick="event.stopPropagation();setStat(\''+a.id+'\',\'in\')">'+ic('check',13)+'Arrived</button>');
+  if(a.status==='booked'||a.status==='confirm'){if(calDate===today())acts.push(a.arrivedAt?'<button class="btn sm" onclick="event.stopPropagation();setStat(\''+a.id+'\',\'in\')">'+ic('clock',13)+'Start</button>':'<button class="btn sm" onclick="event.stopPropagation();bkArrive(\''+a.id+'\')">'+ic('check',13)+'Arrived</button>');
    if(a.status==='booked')acts.push('<button class="btn sm ghost" onclick="event.stopPropagation();waLink(\''+a.id+'\')">'+ic('msg',13)+'Remind</button>');}
   if(a.status==='in')acts.push('<button class="btn sm" onclick="event.stopPropagation();checkoutFromAppt(\''+a.id+'\')">'+ic('card',13)+'Checkout</button>');
   return head+'<div class="bkcard'+(['done','no','cancel'].includes(a.status)?' dim':'')+'" onclick="openAppt(\''+a.id+'\')" style="--bk:'+P.bg+'">'+
@@ -20740,7 +20773,7 @@ window.newApptClassic=window.newAppt;
 let WZ=null;
 const WZ_STEPS=[['client','Client'],['svc','Treatment'],['time','Time'],['who','Therapist & room'],['ok','Confirm']];
 const wzS=()=>WZ.und?{id:'',name:'Consultation — to decide',dur:+WZ.undDur||60,buffer:15,price:0}:svc(WZ.sid);
-const wzStaffAll=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes);
+const wzStaffAll=()=>D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes&&(!WZ||!WZ.sid||WZ.und||skOk(s.id,WZ.sid)));
 const wzRooms=()=>{const s=wzS();return D.rooms.filter(r=>r.branchId===ME.branchId&&(WZ.und||!s.room||r.type===s.room));};
 window.newAppt=async pre=>{
  pre=pre||{};
@@ -20933,7 +20966,7 @@ window.wzSave=async()=>{
    wzErr((stf(WZ.staff).name||'')+' also has '+mine.map(a=>(a.customerName||'')+' at '+tstr(a.start)+' in '+(room(a.roomId).name||'another room')).join(', ')+'. Tap Confirm booking again to book both.');return;}
   const d={visitType:WZ.visit||'return',color:WZ.color||'',branchId:ME.branchId,customerId:WZ.cid,customerName:c.name||'',staffId:WZ.staff,staffName:stf(WZ.staff).name||'',
    serviceId:s.id||'',serviceName:s.name,roomId:WZ.room,date:WZ.date,start:start.toISOString(),finish:finish.toISOString(),duration:s.dur||60,buffer:s.buffer||0,status:'booked',
-   ...(WZ.und?{undecided:true,concerns:[...WZ.undCon],shortlist:[...WZ.undShort]}:{}),...clApptTag(),deposit:+WZ.dep||0,notes:String(WZ.notes||'').slice(0,400),createdBy:UID,createdAt:new Date().toISOString()};
+   ...(WZ.und?{undecided:true,concerns:[...WZ.undCon],shortlist:[...WZ.undShort]}:{}),...clApptTag(),...bkWzTag(),deposit:+WZ.dep||0,notes:String(WZ.notes||'').slice(0,400),createdBy:UID,createdAt:new Date().toISOString()};
   const r=await addDoc(collection(db,'appointments'),d);
   logEvent('booking','New booking · '+(c.name||''),s.name+' · '+dstr(start)+' '+tstr(start)+' with '+(stf(WZ.staff).name||''),{refType:'appt'});
   await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
@@ -23298,5 +23331,657 @@ TABS.splice(TABS.findIndex(t=>t.id==='crm')+1,0,{id:'seg',ic:'users',label:'Segm
  const p='<span class="pill r">'+ic('shield',11)+esc(clFlagShort(f[0]))+(f.length>1?' +'+(f.length-1):'')+'</span>';
  if(h.includes('<div class="crflags">'))return h.replace('<div class="crflags">','<div class="crflags">'+p);
  const i=h.indexOf('<div class="tiny muted">');if(i<0)return h;const j=h.indexOf('</div>',i)+6;return h.slice(0,j)+'<div class="crflags">'+p+'</div>'+h.slice(j);};}
+
+
+/* ============ Bookings, part 3: machines, skills, deposits, reminders, no-shows, waitlist, status colours ============ */
+/* Resources: a booking needs a therapist, a room and — for treatments tied to one — a machine. Machines
+   are set up per branch (Catalogue → Rooms and machines) and grouped by kind, so two HIFU bookings can
+   overlap only if the branch has two HIFU machines. A treatment can also be limited to the therapists
+   qualified for it. The same rules run in the booking wizard, the one-page form, moving a booking and the
+   online booking page (which only sees machine ids and first names, never client details).
+   Deposits: the owner sets when one is needed (price above a line, weekends, clients who keep not
+   turning up). Online, such a booking waits as a request until the deposit arrives, and is released by
+   itself if it doesn't come within the hold time. At the counter the wizard asks for it.
+   Reminders: 24 hours and 2 hours before, each client gets a WhatsApp with a personal link where they
+   confirm, ask for another time (from slots that are really free) or cancel. Sending needs one tap on the
+   spa's phone or tablet — a fully automatic send needs the paid WhatsApp Business API. Replies come back
+   by themselves: a confirmation marks the booking confirmed, a change or cancellation waits for one tap.
+   The waitlist is told when a cancellation frees a slot that fits. */
+
+const BKR_DEF={dep:{on:false,minPrice:300,weekend:true,type:'pct',val:30,fixed:50,noShows:2,hold:12,pay:'',qr:''},
+ rem:{h24:true,h2:true,msg24:'Hi {name}, peringatan dari {biz} 🌿\n{service} — {day}, jam {time} bersama {staff}.\n\nSila sahkan kehadiran atau tukar masa di sini:\n{link}\n\nTerima kasih!',
+  msg2:'Hi {name}, jumpa anda hari ini jam {time} untuk {service} di {biz} 😊\nKalau lewat atau perlu tukar masa, tekan di sini:\n{link}'},
+ wait:{on:true}};
+const bkR=()=>{const m=(D.meta&&D.meta.bkRules)||{};return{dep:{...BKR_DEF.dep,...(m.dep||{})},rem:{...BKR_DEF.rem,...(m.rem||{})},wait:{...BKR_DEF.wait,...(m.wait||{})}};};
+const bkBase=()=>{let u='';try{u=location.origin+location.pathname;}catch(e){}return u;};
+const bkNow=()=>new Date().toISOString();
+const bkFirst=n=>String(n||'').trim().split(' ')[0];
+
+/* ---------- machines ---------- */
+let MACH=[];
+const bkMG=s=>String((s&&s.machine)||'').trim();
+const bkUnits=(g,br)=>MACH.filter(m=>m.active!==false&&m.group===g&&m.branchId===(br||ME.branchId));
+const bkMach=id=>MACH.find(m=>m.id===id)||{};
+/* free machines of the kind a treatment needs, between two times; null when it needs none */
+function bkMFree(s,br,list,s0,e0,exceptId){
+ const g=bkMG(s);if(!g)return null;
+ const units=bkUnits(g,br).map(m=>m.id);
+ const ov=list.filter(a=>a.id!==exceptId&&a.branchId===br&&!['cancel','no'].includes(a.status)).filter(a=>{
+  const as=+new Date(a.start),ae=+new Date(a.finish)+(+a.buffer||0)*6e4;return !(e0<=as||s0>=ae);});
+ const used=new Set(ov.map(a=>a.machineId).filter(Boolean));
+ /* older bookings made before machines were set up still hold one machine each */
+ const loose=ov.filter(a=>!a.machineId&&bkMG(svc(a.serviceId))===g).length;
+ return units.filter(id=>!used.has(id)).slice(loose);
+}
+/* the booking page's version: machine ids from the published config, busy items carry m */
+function wbMFree(s,br,ov){
+ if(!s||!s.m)return '';
+ const units=(br.mach||[]).filter(x=>x.g===s.m).map(x=>x.id),used=new Set(ov.map(i=>i.m).filter(Boolean));
+ const f=units.filter(id=>!used.has(id));return f.length?f[0]:false;
+}
+/* ---------- who may do a treatment ---------- */
+const skOk=(sid,svid)=>{const s=svc(svid);return !(s.staffOnly||[]).length||s.staffOnly.includes(sid);};
+const skNames=s=>(s.staffOnly||[]).map(id=>bkFirst(stf(id).name)).filter(Boolean).join(', ');
+
+/* ---------- no-shows and late cancellations ---------- */
+const NSC={};
+async function bkNs(cid,fresh){
+ if(!cid)return null;const k=NSC[cid];if(k&&!fresh&&Date.now()-k.t<300000)return k;
+ const ids=typeof clIds==='function'?await clIds(cid):[cid];let L=[];
+ for(const id of ids){try{const s=await getDocs(query(collection(db,'appointments'),where('customerId','==',id),limit(300)));L=L.concat(s.docs.map(d=>({id:d.id,...d.data()})));}catch(e){}}
+ const yr=Date.now()-365*864e5,cut=(+wbSet().cutoff||24)*3600e3;
+ const no=L.filter(a=>a.status==='no'&&Date.parse(a.start)>yr);
+ const late=L.filter(a=>a.status==='cancel'&&Date.parse(a.start)>yr&&a.cancelledAt&&Date.parse(a.start)-Date.parse(a.cancelledAt)<cut&&a.cancelledBy!=='system');
+ NSC[cid]={no:no.length,late:late.length,done:L.filter(a=>a.status==='done').length,last:no.concat(late).map(a=>a.date).sort().pop()||'',t:Date.now()};
+ return NSC[cid];
+}
+/* does this booking need a deposit, how much, and why */
+function bkDepFor(c,s,date,ns){
+ const R=bkR().dep;if(!R.on||!s||!s.id)return null;
+ const why=[];
+ if(+R.minPrice>0&&(+s.price||0)>=+R.minPrice)why.push('treatment RM'+(+R.minPrice)+' or more');
+ if(R.weekend&&date&&[0,6].includes(new Date(date+'T12:00:00').getDay()))why.push('weekend slot');
+ if(c&&c.depAlways)why.push('always asked for this client');
+ else if(ns&&+R.noShows>0&&ns.no+ns.late>=+R.noShows)why.push(ns.no+' no-show'+(ns.no===1?'':'s')+(ns.late?' + '+ns.late+' late cancel'+(ns.late>1?'s':''):'')+' in 12 months');
+ if(!why.length)return null;
+ const amt=R.type==='rm'?Math.min(+R.fixed||0,+s.price||0):Math.round((+s.price||0)*(+R.val||0)/100);
+ return amt>0?{amt,why}:null;
+}
+
+/* ---------- the booking wizard ---------- */
+{const _s=wzSlot;wzSlot=function(d,t,list){
+ const S=_s(d,t,list),s=wzS();
+ if(!WZ.und&&bkMG(s)){const fm=bkMFree(s,ME.branchId,list||[],+S.start,+S.finish+(+s.buffer||0)*6e4,'')||[];S.freeMach=fm;if(!fm.length){S.ok=false;S.noMach=true;}}
+ return S;};}
+{const _a=wzAssign;wzAssign=function(){_a();const s=wzS();
+ if(!WZ.und&&bkMG(s)){const S=wzSlot(WZ.date,WZ.time,wzDay(WZ.date)||[]);WZ.mach=(S.freeMach||[]).includes(WZ.mach)?WZ.mach:((S.freeMach||[])[0]||'');}else WZ.mach='';};}
+function bkWz(){
+ if(typeof WZ==='undefined'||!WZ)return;const body=document.querySelector('#modal .wzbody');if(!body)return;
+ const c=cust(WZ.cid),s=WZ.sid&&!WZ.und?svc(WZ.sid):null;
+ if(WZ.cid&&!NSC[WZ.cid]&&!WZ.nsAsked){WZ.nsAsked=1;bkNs(WZ.cid).then(()=>{if(WZ&&document.querySelector('#modal .wzbody'))wzPaint();});}
+ const ns=NSC[WZ.cid];
+ if(WZ.step===0&&ns&&(ns.no||ns.late)){const inf=body.querySelector('.wzchips');if(inf)inf.insertAdjacentHTML('beforeend','<span class="pill r">'+ic('alert',11)+' '+ns.no+' no-show'+(ns.no===1?'':'s')+(ns.late?' · '+ns.late+' late cancel':'')+'</span>');}
+ if(WZ.step===1)body.querySelectorAll('.wzsvc').forEach(b=>{const m=/wzSvc\('([^']+)'\)/.exec(b.getAttribute('onclick')||'');if(!m)return;const x=svc(m[1]);
+  if(bkMG(x))b.insertAdjacentHTML('beforeend','<span class="bkmtag">'+ic('tool',10)+' '+esc(bkMG(x))+'</span>');});
+ if(WZ.step===2&&s){
+  const sl=body.querySelectorAll('.wzslot,.wztime');const anyOk=[...sl].some(b=>!b.disabled&&!b.classList.contains('off'));
+  body.insertAdjacentHTML('beforeend','<div class="bkwlbar">'+(bkMG(s)?'<span class="tiny muted">'+ic('tool',12)+' Needs a '+esc(bkMG(s))+' machine — '+bkUnits(bkMG(s)).length+' at this branch.</span>':'')+
+   (skNames(s)?'<span class="tiny muted">'+ic('user',12)+' Only '+esc(skNames(s))+' can do this.</span>':'')+
+   (bkR().wait.on&&WZ.cid?'<button type="button" class="btn sm ghost" onclick="bkWlFromWz()">'+ic('clock',13)+'No good time? Add to waitlist</button>':'')+'</div>');}
+ if(WZ.step===4&&s){
+  const card=body.querySelector('.wzcard');
+  if(card&&WZ.mach)card.insertAdjacentHTML('beforeend','<div class="wzline"><span>'+ic('tool',14)+'</span><div><b>'+esc(bkMach(WZ.mach).name||'')+'</b><small>'+esc(bkMG(s))+' machine</small></div></div>');
+  const dep=bkDepFor(c,s,WZ.date,ns);
+  if(dep){const took=+WZ.dep>=dep.amt;
+   body.insertAdjacentHTML('afterbegin','<div class="'+(took?'okbox':'warnbox')+' bkdep">'+ic('card',13)+' <b>Deposit '+rm(dep.amt)+' '+(took?'taken':'needed')+'</b> — '+esc(dep.why.join(' · '))+'.'+
+    (took?'':'<div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap"><button type="button" class="btn sm" onclick="bkWzDep('+dep.amt+')">'+ic('check',13)+'Deposit received '+rm(dep.amt)+'</button><span class="tiny muted">Or book now — it shows as "deposit due" until paid.</span></div>')+'</div>');}
+ }
+}
+window.bkWzDep=a=>{WZ.dep=String(a);wzPaint();};
+{const _wp=wzPaint;wzPaint=function(){_wp.apply(this,arguments);try{bkWz();}catch(e){console.warn('bkWz',e);}};}
+{const _ws=window.wzSave;window.wzSave=async()=>{
+ const s=WZ.sid&&!WZ.und?svc(WZ.sid):null,e=document.getElementById('wz-e');
+ if(s&&WZ.staff&&!skOk(WZ.staff,s.id)){if(e)e.textContent=(stf(WZ.staff).name||'')+' is not set up to do '+s.name+'. Choose '+skNames(s)+'.';return;}
+ if(s&&bkMG(s)){
+  const st=new Date(WZ.date+'T'+WZ.time+':00'),fin=+st+(s.dur||60)*6e4;
+  let list=[];try{list=(await getDocs(query(collection(db,'appointments'),where('date','==',WZ.date)))).docs.map(d=>({id:d.id,...d.data()}));}catch(err){}
+  const fm=bkMFree(s,ME.branchId,list,+st,fin+(+s.buffer||0)*6e4,'')||[];
+  if(!fm.length){if(e)e.textContent='Every '+bkMG(s)+' machine is taken at '+WZ.time+'. Go back and pick another time.';return;}
+  if(!fm.includes(WZ.mach))WZ.mach=fm[0];}
+ return _ws();};}
+const bkWzTag=()=>{const s=WZ.sid&&!WZ.und?svc(WZ.sid):null,o={};if(!s)return o;
+ if(bkMG(s)&&WZ.mach)o.machineId=WZ.mach;
+ const dep=bkDepFor(cust(WZ.cid),s,WZ.date,NSC[WZ.cid]);if(dep&&(+WZ.dep||0)<dep.amt){o.depDue=dep.amt;o.depWhy=dep.why.join(' · ');}
+ return o;};
+
+/* ---------- the one-page booking form ---------- */
+let BKCM='';
+{const _sa=saveAppt;saveAppt=async function(){
+ BKCM='';const e=document.getElementById('n-err'),und=(typeof UNDEC!=='undefined'&&UNDEC.on);
+ const s=und?null:svc(($('#n-s')||{}).value),staffId=($('#n-st')||{}).value;
+ if(s&&s.id&&staffId&&!skOk(staffId,s.id)){if(e)e.textContent=(stf(staffId).name||'')+' is not set up to do '+s.name+'. Choose '+skNames(s)+'.';return;}
+ if(s&&bkMG(s)){
+  const date=$('#n-d').value,st=new Date(date+'T'+$('#n-t').value+':00');
+  if(!isNaN(+st)){let list=[];try{list=(await getDocs(query(collection(db,'appointments'),where('date','==',date)))).docs.map(d=>({id:d.id,...d.data()}));}catch(err){}
+   const fm=bkMFree(s,ME.branchId,list,+st,+st+((s.dur||60)+(+s.buffer||0))*6e4,'')||[];
+   if(!fm.length){if(e)e.textContent='Every '+bkMG(s)+' machine is taken at that time. Try another time.';return;}
+   BKCM=fm[0];}}
+ return _sa.apply(this,arguments);};}
+const bkCTag=()=>BKCM?{machineId:BKCM}:{};
+/* ---------- moving a booking ---------- */
+function bkMoveTag(a,list,start,finish,buf,staffId){
+ const s=a.serviceId?svc(a.serviceId):null,o={};if(!s)return o;
+ if(staffId&&!skOk(staffId,s.id))throw new Error((stf(staffId).name||'')+' is not set up to do '+s.name+'. Choose '+skNames(s)+'.');
+ if(bkMG(s)){const fm=bkMFree(s,a.branchId||ME.branchId,list,+start,+finish+(+buf||0)*6e4,a.id)||[];
+  if(!fm.length)throw new Error('Every '+bkMG(s)+' machine is taken at that time. Try another time.');
+  o.machineId=fm.includes(a.machineId)?a.machineId:fm[0];}
+ return o;
+}
+
+/* ---------- Catalogue: machines, and what a treatment needs ---------- */
+{const _cr=catRooms;catRooms=function(){
+ const groups=[...new Set(MACH.map(m=>m.group).filter(Boolean))];
+ return _cr()+'<div class="sec-h" style="margin-top:18px"><h2>Machines</h2>'+(boss()?'<button class="btn sm" onclick="bkMachEdit(\'\')">'+ic('plus',15)+'New</button>':'')+'</div>'+
+  (MACH.length?D.branches.map(b=>{const ms=MACH.filter(m=>m.branchId===b.id);return ms.length?'<h3 class="muted" style="margin:10px 0 6px">'+esc(b.name)+'</h3>'+ms.map(m=>
+   '<div class="item" onclick="bkMachEdit(\''+m.id+'\')"><div class="spread"><b>'+esc(m.name)+'</b><span class="pill'+(m.active===false?'':' b')+'">'+esc(m.group)+(m.active===false?' · off':'')+'</span></div>'+
+   '<div class="tiny muted">'+D.services.filter(s=>bkMG(s)===m.group&&s.active!==false).map(s=>esc(s.name)).join(', ')+'</div></div>').join(''):'';}).join('')
+  :'<div class="empty">No machines yet. Add one per real machine — e.g. "HIFU 1", kind "HIFU" — then pick the kind on each treatment that uses it.</div>')+
+  '<p class="tiny muted" style="margin-top:8px">Two bookings needing the same kind of machine can overlap only if the branch has that many machines of the kind'+(groups.length?' ('+groups.map(g=>esc(g)+': '+MACH.filter(m=>m.group===g&&m.active!==false).length).join(', ')+')':'')+'.</p>';};}
+window.bkMachEdit=id=>{
+ if(!boss())return;const m=id?bkMach(id):{name:'',group:'',branchId:ME.branchId,active:true};
+ const groups=[...new Set(MACH.map(x=>x.group).filter(Boolean))];
+ modal(id?'Edit machine':'New machine','<div class="card"><label>Name</label><input class="f" id="mc-n" value="'+esc(m.name||'')+'" placeholder="HIFU 1">'+
+  '<label>Kind</label><input class="f" id="mc-g" list="mc-gl" value="'+esc(m.group||'')+'" placeholder="HIFU"><datalist id="mc-gl">'+groups.map(g=>'<option value="'+esc(g)+'">').join('')+'</datalist>'+
+  '<p class="tiny muted" style="margin-top:-4px">Machines of the same kind are interchangeable. Treatments pick the kind.</p>'+
+  '<label>Branch</label><select class="f" id="mc-b">'+D.branches.map(b=>'<option value="'+b.id+'"'+(m.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="mc-a"'+(m.active!==false?' checked':'')+'> In use <span class="tiny muted">— untick while it is being repaired</span></label>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="bkMachSave(\''+(id||'')+'\')">'+ic('check',15)+'Save machine</button></div>');
+};
+window.bkMachSave=async id=>{
+ const d={name:$('#mc-n').value.trim().slice(0,60),group:$('#mc-g').value.trim().slice(0,30),branchId:$('#mc-b').value,active:$('#mc-a').checked,updatedAt:bkNow()};
+ if(!d.name||!d.group){toast('Give it a name and a kind');return;}
+ try{if(id)await updateDoc(doc(db,'machines',id),d);else{const r=await addDoc(collection(db,'machines'),d);id=r.id;}
+  const i=MACH.findIndex(m=>m.id===id);if(i>=0)MACH[i]={id,...d};else MACH.push({id,...d});
+  await audit('Machine saved',d.name+' · '+d.group);window.closeModal();render();wbPublish&&wbPublish(true).catch(()=>{});toast('Machine saved');}catch(e){toast(friendly(e));}
+};
+function bkSvcFields(s){
+ const groups=[...new Set(MACH.map(m=>m.group).filter(Boolean))];if(s.machine&&!groups.includes(s.machine))groups.push(s.machine);
+ const staff=D.staff.filter(x=>x.active!==false&&x.takes&&x.role!=='branch');
+ return '<div class="fieldset"><h3>'+ic('tool',13)+'Who and what it needs</h3>'+
+  '<label>Machine</label><select class="f" id="sv-mach"><option value="">No machine</option>'+groups.map(g=>'<option value="'+esc(g)+'"'+(s.machine===g?' selected':'')+'>'+esc(g)+' ('+MACH.filter(m=>m.group===g&&m.active!==false).length+')</option>').join('')+'</select>'+
+  (groups.length?'':'<p class="tiny muted" style="margin-top:-4px">Add machines under Catalogue → Rooms and machines first.</p>')+
+  chipField('sv-who',staff.map(x=>[x.id,x.name]),s.staffOnly||[],'Therapists qualified','leave empty if anyone can do it')+'</div>';
+}
+
+/* ---------- the online booking page ---------- */
+let BKDH=null;
+const bkPh=p=>wbHash(phKey(p)+'|luuna');
+{const _c=wbConfig;wbConfig=function(){
+ const c=_c(),R=bkR().dep;
+ c.services.forEach(x=>{const s=svc(x.id);x.st=(s.staffOnly||[]).slice(0,30);x.m=bkMG(s);});
+ c.branches.forEach(b=>{b.mach=MACH.filter(m=>m.branchId===b.id&&m.active!==false).map(m=>({id:m.id,g:m.group}));});
+ c.dep=R.on?{on:true,minPrice:+R.minPrice||0,weekend:!!R.weekend,type:R.type,val:+R.val||0,fixed:+R.fixed||0,hold:+R.hold||12,pay:String(R.pay||'').slice(0,600),qr:String(R.qr||'').slice(0,160000)}:{on:false};
+ c.dh=R.on?(BKDH||[]).slice(0,800):[];c.wait=!!bkR().wait.on;
+ return c;};}
+/* clients who keep not turning up, as short one-way hashes of their phone numbers: the page can
+   ask them for a deposit without ever holding a list of names or numbers */
+async function bkDhRefresh(){
+ const R=bkR().dep;if(!boss()||!R.on||!(+R.noShows>0))return;
+ try{
+  const yr=ymd(addDays(new Date(),-365)),cut=(+wbSet().cutoff||24)*3600e3,cnt={};
+  const [no,cx]=await Promise.all([getDocs(query(collection(db,'appointments'),where('status','==','no'),limit(1500))),getDocs(query(collection(db,'appointments'),where('status','==','cancel'),limit(2500)))]);
+  no.docs.map(d=>d.data()).filter(a=>a.date>=yr).forEach(a=>{const k=a.customerId||'p:'+digits(a.phone);cnt[k]=(cnt[k]||{n:0,ph:a.phone||''});cnt[k].n++;});
+  cx.docs.map(d=>d.data()).filter(a=>a.date>=yr&&a.cancelledAt&&a.cancelledBy!=='system'&&Date.parse(a.start)-Date.parse(a.cancelledAt)<cut)
+   .forEach(a=>{const k=a.customerId||'p:'+digits(a.phone);cnt[k]=(cnt[k]||{n:0,ph:a.phone||''});cnt[k].n++;});
+  let al=[];try{al=(await getDocs(query(collection(db,'customers'),where('depAlways','==',true),limit(500)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+  const phones=new Set();
+  for(const [k,v] of Object.entries(cnt)){if(v.n<+R.noShows)continue;let p=v.ph;if(!k.startsWith('p:')){const c=await custGet(k);if(c&&c.phone)p=c.phone;}if(p)phones.add(bkPh(p));}
+  al.forEach(c=>{if(c.phone)phones.add(bkPh(c.phone));});
+  const next=[...phones].sort();
+  if(JSON.stringify(next)!==JSON.stringify(BKDH||[])){BKDH=next;await wbPublish(true);}
+ }catch(e){console.warn('bkDh',e);}
+}
+/* the page: qualified therapists only, machines counted, a deposit asked for when the rules say so */
+window.wbDepNeed=(s,x,phone)=>{
+ const D2=(WB.cfg||{}).dep||{};if(!D2.on||!s)return 0;
+ const day=new Date(x.st+8*3600e3).getUTCDay();
+ const hit=(+D2.minPrice>0&&+s.p>=+D2.minPrice)||(D2.weekend&&(day===0||day===6))||((WB.cfg.dh||[]).includes(bkPh(phone)));
+ if(!hit)return 0;return D2.type==='rm'?Math.min(+D2.fixed||0,+s.p||0):Math.round((+s.p||0)*(+D2.val||0)/100);
+};
+const wbDepTag=(s,x,phone)=>{const a=window.wbDepNeed(s,x,phone);return a>0?{depDue:a,webPending:true}:{};};
+function wbPayBox(a){
+ const D2=(WB.cfg||{}).dep||{},b=WB.cfg.biz||{};if(!(+a.depDue>0)||+a.deposit>0||a.status==='cancel')return '';
+ const until=new Date(Date.parse(a.createdAt||bkNow())+(+D2.hold||12)*3600e3);
+ const wa=b.whatsapp?'https://wa.me/'+String(b.whatsapp).replace(/\D/g,'').replace(/^0/,'60')+'?text='+encodeURIComponent('Hi, saya '+a.customerName+'. Ini resit deposit '+rm(a.depDue)+' untuk tempahan '+a.webRef+'.'):'';
+ return '<div class="wbpay"><b>'+ic('card',15)+' Deposit '+rm(a.depDue)+' diperlukan</b><p>Slot anda disimpan sehingga <b>'+until.toLocaleString('ms-MY',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZone:WBZONE})+
+  '</b>. Tempahan disahkan sebaik deposit diterima; jika tidak, slot dilepaskan secara automatik. Deposit ditolak daripada bil anda.</p>'+
+  (D2.pay?'<div class="wbpayh">'+esc(D2.pay).replace(/\n/g,'<br>')+'</div>':'')+(D2.qr?'<img class="wbqr" src="'+D2.qr+'" alt="QR bayaran">':'')+
+  (wa?'<a class="btn" style="width:100%;justify-content:center;margin-top:10px" target="_blank" rel="noopener" href="'+wa+'">'+ic('msg',15)+'Hantar resit melalui WhatsApp</a>':'')+'</div>';
+}
+{const _d=wbDone;wbDone=function(a){_d(a);const box=document.querySelector('.wbpage .fbbox');if(box&&+a.depDue>0){const h=box.querySelector('h2');if(h)h.textContent='Satu langkah lagi — deposit';
+  const p=box.querySelector('h2+p');if(p)p.textContent='Slot anda sedang disimpan.';box.querySelector('.wbsum').insertAdjacentHTML('afterend',wbPayBox(a));}};}
+{const _m=wbManage;wbManage=async function(id){await _m(id);const a=WB.last;const box=document.querySelector('.wbpage .fbbox');
+ if(a&&box&&+a.depDue>0&&!(+a.deposit>0)&&a.status!=='cancel'){const w=box.querySelector('.warnbox');if(w)w.innerHTML=ic('card',14)+' Menunggu deposit '+rm(a.depDue)+'.';const s=box.querySelector('.wbsum');if(s)s.insertAdjacentHTML('afterend',wbPayBox(a));}};}
+{const _sv=window.wbSvc;window.wbSvc=id=>{const s=(WB.cfg.services||[]).find(x=>x.id===id);if(s&&WB.staff&&(s.st||[]).length&&!s.st.includes(WB.staff))WB.staff='';_sv(id);};}
+/* when a day is full: join the waitlist from the page */
+window.wbWaitBtn=()=>WB.cfg&&WB.cfg.wait&&WB.svc?'<button class="btn sm ghost" style="margin-top:8px" onclick="wbWaitOpen()">'+ic('clock',14)+'Masuk senarai menunggu untuk hari ini</button><div id="wb-wl"></div>':'';
+window.wbWaitOpen=()=>{const el=document.getElementById('wb-wl');if(!el)return;
+ el.innerHTML='<div class="wbwl"><p class="tiny">Kami akan WhatsApp anda jika ada slot kosong pada '+new Date(WB.day+'T12:00:00Z').toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'})+'.</p>'+
+  '<label>Nama penuh</label><input class="f" id="wl-n" value="'+esc(WB.n||'')+'"><label>No. telefon (WhatsApp)</label><input class="f" id="wl-p" type="tel" value="'+esc(WB.p||'')+'">'+
+  '<label>Masa yang sesuai</label><select class="f" id="wl-t"><option value="any">Bila-bila masa</option><option value="am">Pagi</option><option value="pm">Tengah hari</option><option value="eve">Petang / malam</option></select>'+
+  '<div id="wl-e" class="tiny" style="color:var(--rose);margin:4px 0"></div><button class="btn" id="wl-go" style="width:100%;justify-content:center" onclick="wbWaitSave()">'+ic('check',15)+'Masukkan saya dalam senarai</button></div>';};
+window.wbWaitSave=async()=>{
+ const n=$('#wl-n').value.trim(),p=$('#wl-p').value.trim(),e=$('#wl-e');
+ if(n.length<2){e.textContent='Sila isi nama.';return;}if(digits(p).length<9){e.textContent='Sila isi nombor telefon yang betul.';return;}
+ $('#wl-go').disabled=true;
+ try{await addDoc(collection(db,'waitlist'),{branchId:WB.br.id,customerId:'',customerName:n.slice(0,80),phone:p.slice(0,20),serviceId:WB.svc.id,serviceName:WB.svc.n,date:WB.day,part:$('#wl-t').value,
+   staffId:WB.staff||'',note:'',status:'waiting',createdAt:bkNow(),by:'web',src:'web'});
+  document.getElementById('wb-wl').innerHTML='<div class="okbox" style="margin-top:8px">'+ic('check',14)+' Anda dalam senarai menunggu. Kami akan WhatsApp jika ada pembatalan.</div>';}
+ catch(err){e.textContent='Tidak dapat disimpan. Sila WhatsApp kami.';$('#wl-go').disabled=false;}
+};
+
+/* ---------- status: arrived, and colours by status ---------- */
+const bkSt=a=>['cancel','no','done','in'].includes(a.status)?a.status:a.arrivedAt?'arrived':a.status==='confirm'?'confirm':'booked';
+const BK_SPAL={booked:{bg:'#EEEAE2',fg:'#4A453C',bd:'#B9B0A0',n:'Booked'},confirm:{bg:'#E2ECF7',fg:'#244E7A',bd:'#5B8BC4',n:'Confirmed'},
+ arrived:{bg:'#FBEFD9',fg:'#7A520D',bd:'#D9A441',n:'Arrived'},in:{bg:'#EDE3F6',fg:'#523079',bd:'#9A72C8',n:'In treatment'},
+ done:{bg:'#E4EEE8',fg:'#2E6B52',bd:'#2E6B52',n:'Completed'},no:{bg:'#F6E5E3',fg:'#9B4A4A',bd:'#9B4A4A',n:'No-show'},cancel:{bg:'#F4F1EA',fg:'#8C8577',bd:'#C9C2B4',n:'Cancelled'}};
+let BKCOL=(()=>{try{return localStorage.getItem('spatify:calColour')||'status';}catch(e){return 'status';}})();
+const bkColour=()=>BKCOL;
+const bkStatusPal=a=>BK_SPAL[bkSt(a)]||BK_SPAL.booked;
+window.bkColourSet=m=>{BKCOL=m;try{localStorage.setItem('spatify:calColour',m);}catch(e){}render();};
+window.bkArrive=async id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return;
+ const entry={from:bkSt(a),to:'arrived',at:bkNow(),by:UID,byName:ME.name};
+ try{await updateDoc(doc(db,'appointments',id),{arrivedAt:entry.at,arrivedBy:clWho?clWho():ME.name,status:a.status==='booked'?'confirm':a.status,statusLog:[...(a.statusLog||[]),entry],updatedAt:entry.at,updatedBy:UID});
+  Object.assign(a,{arrivedAt:entry.at,status:a.status==='booked'?'confirm':a.status});
+  await audit('Client arrived',(a.customerName||'')+' · '+tstr(a.start));window.closeModal();render();toast(bkFirst(a.customerName)+' has arrived');}catch(e){toast(friendly(e));}
+};
+{const _vb=vBook;vBook=function(){
+ let h=_vb();
+ if(calMode==='day'){
+  h=h.replace('<div class="tabs">','<div class="tabs"><span class="bkcolsw"><button type="button" class="'+(BKCOL==='status'?'on':'')+'" onclick="bkColourSet(\'status\')">Status colours</button><button type="button" class="'+(BKCOL!=='status'?'on':'')+'" onclick="bkColourSet(\'type\')">Visit type</button></span>');
+  if(BKCOL==='status'){const i=h.lastIndexOf('<div class="legend">');if(i>=0){const j=h.indexOf('</div>',i);
+   h=h.slice(0,i)+'<div class="legend">'+['booked','confirm','arrived','in','done','no'].map(k=>'<span><i style="background:'+BK_SPAL[k].bg+';border-left:3px solid '+BK_SPAL[k].bd+'"></i>'+BK_SPAL[k].n+'</span>').join('')+
+    '<span><i class="lgpaid">'+ic('receipt',9)+'</i>Paid</span></div>'+h.slice(j+6);}}
+ }
+ return (can('booking')?bkPanel():'')+h;};}
+
+/* ---------- the booking card ---------- */
+{const _oa=window.openAppt;window.openAppt=id=>{
+ const r=_oa(id);const a=APPTS.find(x=>x.id===id);if(!a)return r;
+ const card=document.querySelector('#modal .card');if(!card)return r;
+ const st=bkSt(a),bits=[];
+ bits.push('<span class="bkstat" style="background:'+BK_SPAL[st].bg+';color:'+BK_SPAL[st].fg+';border-color:'+BK_SPAL[st].bd+'">'+BK_SPAL[st].n+(st==='arrived'?' '+tstr(a.arrivedAt):'')+'</span>');
+ if(a.machineId)bits.push('<span class="pill">'+ic('tool',11)+' '+esc(bkMach(a.machineId).name||'machine')+'</span>');
+ if(a.remind24At)bits.push('<span class="pill">'+ic('msg',11)+' reminded '+dshort(a.remind24At)+'</span>');
+ if(a.clientConfirmedAt)bits.push('<span class="pill g">'+ic('check',11)+' client confirmed</span>');
+ let dep='';
+ if(+a.depDue>0&&!(+a.deposit>0)&&!['cancel','no','done'].includes(a.status))dep='<div class="warnbox bkdep">'+ic('card',13)+' <b>Deposit '+rm(a.depDue)+' due</b>'+(a.depWhy?' — '+esc(a.depWhy):'')+
+  (a.source==='web'?' · slot held until '+tstr(new Date(Date.parse(a.createdAt)+(+bkR().dep.hold||12)*3600e3))+' '+dshort(new Date(Date.parse(a.createdAt)+(+bkR().dep.hold||12)*3600e3)):'')+
+  '<div style="margin-top:6px"><button type="button" class="btn sm" onclick="bkDepPaid(\''+id+'\')">'+ic('check',13)+'Deposit received</button></div></div>';
+ card.insertAdjacentHTML('afterbegin','<div class="bkline">'+bits.join('')+'<span id="bkns-'+id+'"></span></div>'+dep);
+ if(a.customerId)bkNs(a.customerId).then(n=>{const el=document.getElementById('bkns-'+id);if(el&&n&&(n.no||n.late))el.innerHTML='<span class="pill r">'+ic('alert',11)+' '+n.no+' no-show'+(n.no===1?'':'s')+(n.late?' · '+n.late+' late cancel':'')+'</span>';});
+ const start=card.querySelector('button[onclick*="\'in\')"]');
+ if(start&&!a.arrivedAt&&['booked','confirm'].includes(a.status)&&a.date===today())start.insertAdjacentHTML('beforebegin','<button class="btn sm" onclick="bkArrive(\''+id+'\')">'+ic('check',14)+'Arrived</button>');
+ return r;};}
+window.bkDepPaid=async id=>{
+ const a=APPTS.find(x=>x.id===id)||(typeof wbFind==='function'?wbFind(id):null);if(!a)return;
+ const up={deposit:+a.depDue,depPaidAt:bkNow(),depPaidBy:ME.name,updatedAt:bkNow(),...(a.source==='web'&&a.webPending?{webPending:false,webApprovedBy:UID,webApprovedByName:ME.name,webApprovedAt:bkNow()}:{})};
+ try{await updateDoc(doc(db,'appointments',id),up);Object.assign(a,up);const x=APPTS.find(y=>y.id===id);if(x)Object.assign(x,up);
+  await audit('Booking deposit received',(a.customerName||'')+' · '+rm(a.depDue));window.closeModal();render();toast('Deposit recorded — it comes off the bill at checkout');
+  if(a.source==='web'&&typeof window.wbWa==='function')window.wbWa(id);}catch(e){toast(friendly(e));}
+};
+
+/* ---------- reminders with a personal link ---------- */
+let RAP=[],ALINKS=[],WLIST=[],BKBOOTED=false,BKTOK={},BKPANEL=null,BKREM_SEEN=new Set();
+const bkNewTok=()=>typeof wbId==='function'?wbId(22):Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+function bkFill(tpl,a,link){
+ const b=bizC(),bn=branch().name||'',where=bn.toLowerCase().startsWith(String(b.name||'').toLowerCase())?bn:((b.name||'kami')+' '+bn).trim();
+ return String(tpl||'').replace(/\{name\}/g,bkFirst(a.customerName)).replace(/\{biz\}/g,where).replace(/\{service\}/g,a.serviceName||'')
+  .replace(/\{day\}/g,new Date(a.start).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'})).replace(/\{time\}/g,tstr(a.start))
+  .replace(/\{staff\}/g,bkFirst(a.staffName)).replace(/\{link\}/g,link||'');
+}
+const bkPhoneOf=a=>{const c=cust(a.customerId);return (c&&c.phone)||a.phone||'';};
+/* one link per booking and kind, made on the spot so the WhatsApp button is a plain link */
+function bkRemLink(a,kind){const k=a.id+'|'+kind;if(!BKTOK[k])BKTOK[k]=a.remTok||bkNewTok();return BKTOK[k];}
+function bkRemHref(a,kind){
+ const tok=bkRemLink(a,kind),R=bkR().rem,link=bkBase()+'?appt='+tok;
+ const msg=bkFill(kind==='2'?R.msg2:R.msg24,a,link);
+ return 'https://wa.me/'+waNum(bkPhoneOf(a))+'?text='+encodeURIComponent(msg);
+}
+window.bkRemSent=async(id,kind)=>{
+ const a=RAP.find(x=>x.id===id)||APPTS.find(x=>x.id===id);if(!a)return;
+ const tok=bkRemLink(a,kind),now=bkNow();
+ const L={apptId:a.id,b:a.branchId,cid:a.customerId||'',first:bkFirst(a.customerName),svc:a.serviceName||'',sid:a.serviceId||'',start:a.start,finish:a.finish,
+  staff:bkFirst(a.staffName),date:a.date,kind,open:true,reply:'',replyAt:'',newStart:'',newEnd:'',newStaff:'',newRoom:'',newMach:'',note:'',createdAt:now,by:UID};
+ const up={['remind'+(kind==='2'?'2':kind==='m'?'M':'24')+'At']:now,remTok:tok};
+ try{await setDoc(doc(db,'apptLinks',tok),L);await updateDoc(doc(db,'appointments',a.id),up);Object.assign(a,up);const x=APPTS.find(y=>y.id===a.id);if(x)Object.assign(x,up);
+  bkPanelPaint();}catch(e){toast(friendly(e));}
+};
+{const _wl=window.waLink;window.waLink=id=>{
+ const a=APPTS.find(x=>x.id===id);if(!a)return _wl(id);
+ const kind=Date.parse(a.start)-Date.now()<3*3600e3?'2':'24',ph=bkPhoneOf(a);
+ const tok=bkRemLink(a,kind),link=bkBase()+'?appt='+tok,msg=bkFill(kind==='2'?bkR().rem.msg2:bkR().rem.msg24,a,link);
+ modal('Reminder','<div class="card"><textarea class="f" rows="8" id="bk-rm">'+esc(msg)+'</textarea>'+
+  '<p class="tiny muted" style="margin:0 0 8px">The link lets '+esc(bkFirst(a.customerName))+' confirm, ask for another time, or cancel — the answer comes straight back to the calendar.</p>'+
+  (ph?'<a class="btn" style="display:flex;justify-content:center;text-decoration:none" target="_blank" id="bk-rmgo" onclick="this.href=\'https://wa.me/'+waNum(ph)+'?text=\'+encodeURIComponent(document.getElementById(\'bk-rm\').value);bkRemSent(\''+id+'\',\''+kind+'\')" href="https://wa.me/'+waNum(ph)+'">'+ic('msg',16)+'Open in WhatsApp</a>'
+   :'<div class="tiny muted">No phone number on file for this client.</div>')+'</div>');};}
+/* which reminders are due now */
+function bkDue(){
+ const R=bkR().rem,now=Date.now(),out=[];
+ RAP.filter(a=>a.branchId===ME.branchId&&['booked','confirm'].includes(a.status)&&!a.arrivedAt&&bkPhoneOf(a)).forEach(a=>{
+  const t=Date.parse(a.start)-now;
+  if(R.h24&&!a.remind24At&&!a.remindMAt&&t>3*3600e3&&t<=30*3600e3&&!a.clientConfirmedAt)out.push({a,kind:'24'});
+  else if(R.h2&&!a.remind2At&&t>20*6e4&&t<=3*3600e3)out.push({a,kind:'2'});});
+ return out.sort((x,y)=>String(x.a.start).localeCompare(String(y.a.start)));
+}
+/* replies from the link */
+async function bkReplies(){
+ for(const L of ALINKS){
+  if(!L.reply||L.reply!=='confirm'||L.handledAt)continue;
+  L.handledAt=bkNow();
+  try{const s=await getDoc(doc(db,'appointments',L.apptId));if(s.exists()){const a={id:s.id,...s.data()};
+    const up={clientConfirmedAt:L.replyAt||bkNow(),updatedAt:bkNow(),...(a.status==='booked'?{status:'confirm',statusLog:[...(a.statusLog||[]),{from:'booked',to:'confirm',at:bkNow(),by:'client',byName:'Client (reminder link)'}]}:{})};
+    await updateDoc(doc(db,'appointments',a.id),up);const x=APPTS.find(y=>y.id===a.id);if(x)Object.assign(x,up);const y=RAP.find(z=>z.id===a.id);if(y)Object.assign(y,up);}
+   await updateDoc(doc(db,'apptLinks',L.id),{open:false,handledAt:L.handledAt,handled:'auto'});
+   toast(L.first+' confirmed '+tstr(L.start)+' · '+L.svc);if(TAB==='book')render();
+  }catch(e){console.warn('reply',e);}
+ }
+ const n=ALINKS.filter(L=>L.reply&&L.reply!=='confirm').length;
+ if(n&&!BKREM_SEEN.has('rep'+n)){BKREM_SEEN.add('rep'+n);try{if(typeof chime==='function')chime();}catch(e){}toast(n+' client repl'+(n>1?'ies':'y')+' to check under Bookings');}
+}
+window.bkReplyDo=async(lid,act)=>{
+ const L=ALINKS.find(x=>x.id===lid);if(!L)return;
+ const done=async h=>{await updateDoc(doc(db,'apptLinks',lid),{open:false,handledAt:bkNow(),handled:h,handledBy:ME.name});ALINKS=ALINKS.filter(x=>x.id!==lid);};
+ try{
+  if(act==='dismiss'){await done('dismissed');bkPanelPaint();return;}
+  const s=await getDoc(doc(db,'appointments',L.apptId));if(!s.exists()){await done('gone');bkPanelPaint();return;}
+  const a={id:s.id,...s.data()};
+  if(act==='cancel'){
+   const entry={from:a.status,to:'cancel',at:bkNow(),by:UID,byName:ME.name};
+   await updateDoc(doc(db,'appointments',a.id),{status:'cancel',cancelledBy:'client',cancelledAt:L.replyAt||bkNow(),cancelReason:('Via reminder link'+(L.note?' — '+L.note:'')).slice(0,200),statusLog:[...(a.statusLog||[]),entry],updatedAt:bkNow(),updatedBy:UID});
+   await done('cancelled');await audit('Booking cancelled by client',(a.customerName||'')+' · '+dstr(a.start)+' '+tstr(a.start));toast('Cancelled — the waitlist is checked for this slot');
+   bkFreed({...a,status:'cancel'});}
+  if(act==='move'){
+   const start=new Date(L.newStart),sv=a.serviceId?svc(a.serviceId):{},dur=a.duration||sv.dur||60,finish=new Date(+start+dur*6e4),date=ymd(start);
+   const list=(await getDocs(query(collection(db,'appointments'),where('date','==',date)))).docs.map(d=>({id:d.id,...d.data()}));
+   const staffId=L.newStaff&&D.staff.some(x=>x.id===L.newStaff)?L.newStaff:a.staffId;
+   const busy=busyAt(list,+start,+finish+(+a.buffer||0)*6e4,a.id);
+   const rooms=D.rooms.filter(r=>r.branchId===a.branchId&&(!sv.room||r.type===sv.room)&&!busy.some(x=>x.roomId===r.id));
+   const roomId=L.newRoom&&rooms.some(r=>r.id===L.newRoom)?L.newRoom:(rooms.some(r=>r.id===a.roomId)?a.roomId:(rooms[0]||{}).id);
+   if(!roomId)throw new Error('That time is no longer free — WhatsApp the client to pick another.');
+   if(busy.some(x=>x.staffId===staffId))throw new Error((stf(staffId).name||'The therapist')+' is no longer free then — WhatsApp the client.');
+   const mt=bkMoveTag(a,list,start,finish,a.buffer,staffId);
+   const move={at:bkNow(),by:UID,byName:ME.name,from:{start:a.start,staffName:a.staffName||'',room:room(a.roomId).name||''},to:{start:start.toISOString(),staffName:stf(staffId).name||'',room:room(roomId).name||''},via:'client link'};
+   await updateDoc(doc(db,'appointments',a.id),{date,start:start.toISOString(),finish:finish.toISOString(),staffId,staffName:stf(staffId).name||'',roomId,...mt,
+    moves:[...(a.moves||[]),move],clientConfirmedAt:bkNow(),status:a.status==='booked'?'confirm':a.status,updatedBy:UID,updatedAt:bkNow()});
+   await done('moved');await audit('Booking moved at client\'s request',(a.customerName||'')+' → '+dstr(start)+' '+tstr(start));
+   bkFreed(a);
+   const msg='Hi '+bkFirst(a.customerName)+', tempahan anda telah ditukar ke '+start.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'})+', jam '+tstr(start)+' bersama '+bkFirst(stf(staffId).name)+'. Jumpa nanti! 🌿';
+   modal('Moved','<div class="card"><p><b>'+esc(a.customerName||'')+'</b> is now on '+dstr(start)+' at '+tstr(start)+'.</p><textarea class="f" rows="4" id="bk-mvm">'+esc(msg)+'</textarea>'+
+    '<a class="btn" style="display:flex;justify-content:center;text-decoration:none" target="_blank" onclick="this.href=\'https://wa.me/'+waNum(bkPhoneOf(a))+'?text=\'+encodeURIComponent(document.getElementById(\'bk-mvm\').value)" href="https://wa.me/'+waNum(bkPhoneOf(a))+'">'+ic('msg',16)+'Send confirmation</a></div>');
+  }
+  if(TAB==='book')render();else bkPanelPaint();
+ }catch(e){toast(friendly(e));}
+};
+
+/* the client's page: ?appt=<link> */
+let AL=null;
+async function apptLinkPage(tok){
+ document.title='Tempahan anda';const root=document.getElementById('root');
+ root.innerHTML='<div class="fbpage wbpage"><div class="center"><div class="spin"></div></div></div>';
+ let L=null,cfg=null;
+ try{const s=await getDoc(doc(db,'apptLinks',tok));if(s.exists())L={id:s.id,...s.data()};}catch(e){}
+ try{const s=await getDoc(doc(db,'public','booking'));if(s.exists())cfg=s.data();}catch(e){}
+ cfg=cfg||{biz:{},branches:[],services:[]};
+ WB={cfg,br:(cfg.branches||[]).find(b=>L&&b.id===L.b)||(cfg.branches||[])[0]||{rooms:[],staff:[]},svc:null,staff:'',day:'',slot:null,busy:{},cat:''};
+ AL={L,view:'main'};alPaint();
+}
+window.apptLinkPage=apptLinkPage;
+function alPaint(){
+ const root=document.getElementById('root'),L=AL.L;
+ const box=h=>{root.innerHTML='<div class="fbpage wbpage">'+wbHead()+'<div class="fbbox">'+h+'</div>'+wbFoot()+'</div>';};
+ if(!L)return box('<p style="text-align:center">Pautan ini tidak sah atau telah tamat. Sila WhatsApp kami.</p>');
+ const when=new Date(L.start).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:WBZONE})+', '+wbT(Date.parse(L.start));
+ const sum='<div class="wbsum"><div><small>Rawatan</small><b>'+esc(L.svc)+'</b></div><div><small>Tarikh & masa</small><b>'+esc(when)+'</b></div>'+(L.staff?'<div><small>Therapist</small><b>'+esc(L.staff)+'</b></div>':'')+'</div>';
+ const past=Date.parse(L.start)<Date.now();
+ if((AL.view==='sent'||L.reply)&&!['change','cancel'].includes(AL.view)){const r=AL.view==='sent'?AL.sent:L.reply;
+  return box('<div style="text-align:center"><div class="fbicon ok">'+ic(r==='confirm'?'check':'clock',26)+'</div><h2>'+(r==='confirm'?'Terima kasih, '+esc(L.first)+'!':r==='cancel'?'Permintaan batal dihantar':'Permintaan tukar masa dihantar')+'</h2>'+
+   '<p>'+(r==='confirm'?'Kehadiran anda disahkan. Jumpa nanti!':'Kami akan sahkan melalui WhatsApp sebentar lagi.')+'</p></div>'+sum+
+   (r==='confirm'&&!past?'<button class="btn sm ghost" style="margin-top:12px" onclick="alView(\'change\')">'+ic('clock',14)+'Perlu tukar masa?</button>':''));}
+ if(past)return box('<h2 style="margin-top:0">Hai '+esc(L.first)+'</h2>'+sum+'<p class="tiny muted">Temujanji ini telah berlalu.</p>');
+ if(AL.view==='change')return box(alChange(sum));
+ if(AL.view==='cancel')return box('<h2 style="margin-top:0">Batalkan tempahan?</h2>'+sum+'<label>Sebab <span class="muted">(pilihan)</span></label><input class="f" id="al-n" maxlength="200">'+
+  '<div class="row" style="gap:8px;margin-top:8px"><button class="btn ghost" onclick="alView(\'main\')">Tidak</button><button class="btn warn" id="al-go" onclick="alSend(\'cancel\')">'+ic('close',15)+'Ya, batalkan</button></div>');
+ box('<h2 style="margin-top:0">Hai '+esc(L.first)+' 👋</h2><p>Temujanji anda:</p>'+sum+
+  '<button class="btn clkgo" id="al-go" style="width:100%;justify-content:center;margin-top:12px" onclick="alSend(\'confirm\')">'+ic('check',16)+'Sahkan kehadiran</button>'+
+  '<div class="row" style="gap:8px;margin-top:8px"><button class="btn ghost" style="flex:1;justify-content:center" onclick="alView(\'change\')">'+ic('clock',15)+'Tukar masa</button>'+
+  '<button class="btn ghost" style="flex:1;justify-content:center" onclick="alView(\'cancel\')">'+ic('close',15)+'Batal</button></div>');
+}
+window.alView=v=>{AL.view=v;if(v==='change'){const s=(WB.cfg.services||[]).find(x=>x.id===AL.L.sid);WB.svc=s||null;WB.slot=null;WB.day='';}alPaint();};
+function alChange(sum){
+ const s=WB.svc;
+ if(!s)return '<h2 style="margin-top:0">Tukar masa</h2>'+sum+'<label>Tarikh pilihan</label><input class="f" type="date" id="al-d" min="'+wbToday()+'">'+
+  '<label>Masa pilihan / nota</label><input class="f" id="al-n" maxlength="200" placeholder="cth. selepas 3 petang">'+
+  '<div class="row" style="gap:8px;margin-top:8px"><button class="btn ghost" onclick="alView(\'main\')">Kembali</button><button class="btn" id="al-go" onclick="alSend(\'change\')">'+ic('check',15)+'Hantar permintaan</button></div>';
+ const days=wbDays().slice(0,14);if(!WB.day)WB.day=days[0]||'';
+ const need=days.filter(d=>WB.busy[d]===undefined);if(need.length)wbLoadBusy(need).then(()=>{if(AL&&AL.view==='change')alPaint();});
+ const sl=WB.day&&WB.busy[WB.day]?wbSlots(WB.day):null;
+ return '<h2 style="margin-top:0">Pilih masa baru</h2>'+sum+
+  '<div class="wbdays">'+days.map(d=>{const dt=new Date(d+'T12:00:00Z'),x=WB.busy[d]?wbSlots(d):null;return '<button class="wbday'+(WB.day===d?' on':'')+(x&&!x.length?' full':'')+'" onclick="alDay(\''+d+'\')"><small>'+dt.toLocaleDateString('ms-MY',{weekday:'short',timeZone:'UTC'})+'</small><b>'+dt.getUTCDate()+'</b><small>'+dt.toLocaleDateString('ms-MY',{month:'short',timeZone:'UTC'})+'</small></button>';}).join('')+'</div>'+
+  (sl===null?'<div class="center"><div class="spin"></div></div>':sl.length?'<div class="wbtimes">'+sl.map(x=>'<button class="wbtime'+(WB.slot&&WB.slot.st===x.st?' on':'')+'" onclick="alTime('+x.st+')">'+wbT(x.st)+'</button>').join('')+'</div>':'<p class="wbfull">Penuh pada hari ini.</p>')+
+  '<label>Nota <span class="muted">(pilihan)</span></label><input class="f" id="al-n" maxlength="200">'+
+  '<div class="row" style="gap:8px;margin-top:8px"><button class="btn ghost" onclick="alView(\'main\')">Kembali</button><button class="btn" id="al-go" onclick="alSend(\'change\')"'+(WB.slot?'':' disabled')+'>'+ic('check',15)+'Minta masa ini</button></div>';
+}
+window.alDay=d=>{WB.day=d;WB.slot=null;alPaint();};
+window.alTime=st=>{WB.slot=(wbSlots(WB.day)||[]).find(z=>z.st===st)||null;alPaint();};
+window.alSend=async r=>{
+ const L=AL.L,b=document.getElementById('al-go');if(b)b.disabled=true;
+ const note=String((document.getElementById('al-n')||{}).value||'').trim().slice(0,200);
+ const up={reply:r,replyAt:bkNow(),open:true,handledAt:'',note:r==='change'&&!WB.slot?[(document.getElementById('al-d')||{}).value,note].filter(Boolean).join(' · ').slice(0,200):note,
+  newStart:r==='change'&&WB.slot?new Date(WB.slot.st).toISOString():'',newEnd:r==='change'&&WB.slot?new Date(WB.slot.en).toISOString():'',
+  newStaff:r==='change'&&WB.slot?WB.slot.staff||'':'',newRoom:r==='change'&&WB.slot?WB.slot.room||'':'',newMach:r==='change'&&WB.slot?WB.slot.mach||'':''};
+ try{await updateDoc(doc(db,'apptLinks',L.id),up);Object.assign(L,up);AL.view='sent';AL.sent=r;alPaint();}
+ catch(e){if(b)b.disabled=false;toast('Tidak dapat dihantar. Sila WhatsApp kami.');}
+};
+
+/* ---------- waitlist ---------- */
+const BKDAY={};
+async function bkDayList(date,fresh){
+ const k=BKDAY[date];if(k&&!fresh&&Date.now()-k.t<60000)return k.L;
+ let L=[];try{L=(await getDocs(query(collection(db,'appointments'),where('date','==',date)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+ BKDAY[date]={L,t:Date.now()};return L;
+}
+/* free start times for a treatment on a day: a qualified therapist, a room and a machine all free */
+function bkFreeSlots(s,date,list,part,staffPref,max){
+ const O=+D.meta.open||9,C=+D.meta.close||20,dur=+s.dur||60,buf=+s.buffer||0,out=[];
+ const staff=D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&x.takes&&skOk(x.id,s.id)&&(!staffPref||x.id===staffPref));
+ const rooms=D.rooms.filter(r=>r.branchId===ME.branchId&&(!s.room||r.type===s.room));
+ for(let m=O*60;m+dur<=C*60;m+=15){
+  if(part==='am'&&m>=720)continue;if(part==='pm'&&(m<720||m>=1020))continue;if(part==='eve'&&m<1020)continue;
+  const hh=String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0'),st=new Date(date+'T'+hh+':00'),s0=+st,e0=s0+(dur+buf)*6e4;
+  if(s0<Date.now()+10*6e4)continue;
+  const busy=busyAt(list,s0,e0,'');
+  const fr=rooms.filter(r=>!busy.some(a=>a.roomId===r.id));if(!fr.length)continue;
+  const fs=staff.filter(x=>!busy.some(a=>a.staffId===x.id)&&!leaveBlock(x.id,st,new Date(s0+dur*6e4)));if(!fs.length)continue;
+  const fm=bkMFree(s,ME.branchId,list,s0,e0,'');if(fm&&!fm.length)continue;
+  out.push({t:hh,staff:fs[0].id,room:fr[0].id});if(out.length>=(max||6))break;
+ }
+ return out;
+}
+const WLM={};let BKALERT=[];
+async function bkWlMatch(){
+ const L=WLIST.filter(w=>['waiting','offered'].includes(w.status)&&w.date>=today());
+ for(const w of L){const s=svc(w.serviceId);if(!s.id){WLM[w.id]=[];continue;}WLM[w.id]=bkFreeSlots(s,w.date,await bkDayList(w.date),w.part,w.staffId,4);}
+}
+/* a booking was cancelled, marked no-show or moved away: does anyone on the waitlist fit? */
+async function bkFreed(a){
+ if(!a||!a.date||a.date<today()||!bkR().wait.on)return;
+ const W=WLIST.filter(w=>['waiting','offered'].includes(w.status)&&w.date===a.date&&w.branchId===(a.branchId||ME.branchId));if(!W.length)return;
+ const list=await bkDayList(a.date,true);
+ const hits=W.map(w=>({w,slots:bkFreeSlots(svc(w.serviceId),w.date,list,w.part,w.staffId,4)})).filter(x=>x.slots.length);
+ hits.forEach(x=>{WLM[x.w.id]=x.slots;});
+ if(!hits.length)return;
+ BKALERT=[{at:bkNow(),date:a.date,time:tstr(a.start),n:hits.length,names:hits.map(x=>bkFirst(x.w.customerName))},...BKALERT].slice(0,5);
+ BKPANEL='wait';toast('Slot freed '+dshort(a.date)+' '+tstr(a.start)+' — '+hits.length+' on the waitlist fit it');try{if(typeof chime==='function')chime();}catch(e){}
+ if(TAB==='book')render();
+}
+window.bkWlNew=pre=>{
+ pre=pre||{};const svs=D.services.filter(s=>s.active!==false);
+ modal('Add to waitlist','<div class="card"><label>Client</label>'+clientPicker('wl-c',pre.customerId||'',{})+
+  '<label>Treatment</label><select class="f" id="wl-s">'+svs.map(s=>'<option value="'+s.id+'"'+(s.id===pre.serviceId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>Date wanted</label><input class="f" type="date" id="wl-d" value="'+esc(pre.date||today())+'" min="'+today()+'"></div>'+
+  '<div><label>Time of day</label><select class="f" id="wl-t"><option value="any">Any time</option><option value="am">Morning</option><option value="pm">Afternoon</option><option value="eve">Evening</option></select></div></div>'+
+  '<label>Therapist</label><select class="f" id="wl-st"><option value="">Anyone</option>'+D.staff.filter(x=>x.branchId===ME.branchId&&x.active!==false&&x.takes).map(x=>'<option value="'+x.id+'"'+(x.id===pre.staffId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select>'+
+  '<label>Note</label><input class="f" id="wl-no" maxlength="200">'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="bkWlSave()">'+ic('check',15)+'Add to waitlist</button></div>');
+};
+window.bkWlFromWz=()=>{const p={customerId:WZ.cid,serviceId:WZ.sid,date:WZ.date,staffId:WZ.anyStaff?'':WZ.staff};window.closeModal();window.bkWlNew(p);};
+window.bkWlSave=async()=>{
+ const cid=cpValue('wl-c'),c=cust(cid);if(!c){toast('Choose the client');return;}
+ const s=svc($('#wl-s').value);
+ const w={branchId:ME.branchId,customerId:c.id,customerName:c.name,phone:c.phone||'',serviceId:s.id,serviceName:s.name,date:$('#wl-d').value||today(),part:$('#wl-t').value,
+  staffId:$('#wl-st').value,note:$('#wl-no').value.trim().slice(0,200),status:'waiting',createdAt:bkNow(),by:UID,src:'staff'};
+ try{const r=await addDoc(collection(db,'waitlist'),w);WLIST.push({id:r.id,...w});await audit('Added to waitlist',c.name+' · '+s.name+' · '+w.date);
+  window.closeModal();BKPANEL='wait';await bkWlMatch();render();toast(bkFirst(c.name)+' is on the waitlist');}catch(e){toast(friendly(e));}
+};
+window.bkWlMark=async(id,st,t)=>{const w=WLIST.find(x=>x.id===id);if(!w)return;
+ const up={status:st,[st+'At']:bkNow(),...(t?{offeredTime:t}:{}),by2:ME.name};
+ try{await updateDoc(doc(db,'waitlist',id),up);Object.assign(w,up);if(TAB==='book')setTimeout(render,300);}catch(e){toast(friendly(e));}};
+const bkWlMsg=(w,t)=>'Hi '+bkFirst(w.customerName)+', ada slot kosong untuk '+w.serviceName+' pada '+new Date(w.date+'T12:00:00').toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long'})+' jam '+t+
+ ' di '+(bizC().name||'kami')+'. Nak kami bookkan untuk anda? Balas YA 😊';
+window.bkWlBook=async(id,t)=>{
+ const w=WLIST.find(x=>x.id===id);if(!w)return;let cid=w.customerId;
+ if(!cid){const d=await clDupes(w.phone,'');if(d.length)cid=d[0].id;else{
+   const data={name:w.customerName,nameLower:w.customerName.toLowerCase(),phone:w.phone,phoneDigits:digits(w.phone),keywords:kwFor(w.customerName,w.phone),source:'Other',branchId:ME.branchId,
+    pdpa:true,marketing:true,tags:[],notes:'',note:'From the online waitlist',active:true,wantNo:true,createdAt:bkNow(),createdBy:UID};
+   const r=await addDoc(collection(db,'customers'),data);CUSTS.unshift({id:r.id,...data});cid=r.id;try{await newClientNo(r.id);}catch(e){}}
+  await updateDoc(doc(db,'waitlist',id),{customerId:cid});w.customerId=cid;}
+ await window.newAppt({customerId:cid,date:w.date,time:t,staffId:w.staffId||undefined});window.wzSvc(w.serviceId);
+};
+
+/* ---------- the panel above the calendar ---------- */
+function bkPanel(){
+ const due=bkDue(),reps=ALINKS.filter(L=>L.reply&&L.reply!=='confirm'),now=Date.now();
+ const depL=[...new Map([...RAP,...APPTS,...(typeof WBAPPTS!=='undefined'?WBAPPTS:[])].filter(a=>a.branchId===ME.branchId&&+a.depDue>0&&!(+a.deposit>0)&&['booked','confirm'].includes(a.status)&&Date.parse(a.start)>now).map(a=>[a.id,a])).values()]
+  .sort((x,y)=>String(x.start).localeCompare(String(y.start)));
+ const wl=WLIST.filter(w=>['waiting','offered'].includes(w.status)&&w.date>=today()).sort((x,y)=>String(x.date).localeCompare(String(y.date)));
+ const tabs=[['rem','Reminders to send',due.length,'msg'],['rep','Client replies',reps.length,'chat'],['dep','Deposits due',depL.length,'card'],['wait','Waitlist',wl.length,'clock']];
+ if(BKPANEL===null)BKPANEL=due.length?'rem':reps.length?'rep':'none';
+ const tab=BKPANEL==='none'?'':BKPANEL;
+ let body='';
+ if(tab==='rem')body=due.length?due.map(x=>{const a=x.a;return '<div class="bkprow"><div><b>'+esc(a.customerName||'')+'</b><small>'+(a.date===today()?'Today':dshort(a.date))+' '+tstr(a.start)+' · '+esc(a.serviceName||'')+' · '+esc(bkFirst(a.staffName))+'</small></div>'+
+   '<span class="pill">'+(x.kind==='2'?'2 hours':'24 hours')+'</span><a class="btn sm" target="_blank" rel="noopener" href="'+bkRemHref(a,x.kind)+'" onclick="bkRemSent(\''+a.id+'\',\''+x.kind+'\')">'+ic('msg',13)+'WhatsApp</a></div>';}).join('')+
+   '<p class="tiny muted" style="margin:6px 0 0">Each message has the client\'s own link to confirm, change or cancel. Confirmations update the calendar by themselves.</p>'
+  :'<p class="tiny muted" style="margin:0">Nothing to send right now. Reminders show up 24 hours and 2 hours before each booking.</p>';
+ if(tab==='rep')body=reps.length?reps.map(L=>'<div class="bkprow"><div><b>'+esc(L.first)+' · '+(L.reply==='cancel'?'wants to cancel':'wants another time')+'</b><small>Now '+dshort(L.start)+' '+tstr(L.start)+' · '+esc(L.svc)+
+   (L.newStart?' → <b>'+dshort(L.newStart)+' '+tstr(L.newStart)+'</b>':'')+(L.note?' · “'+esc(L.note)+'”':'')+'</small></div>'+
+   (L.reply==='cancel'?'<button class="btn sm warn" onclick="bkReplyDo(\''+L.id+'\',\'cancel\')">Cancel booking</button>':L.newStart?'<button class="btn sm" onclick="bkReplyDo(\''+L.id+'\',\'move\')">'+ic('check',13)+'Move to '+tstr(L.newStart)+'</button>':'')+
+   '<button class="btn sm ghost" onclick="bkReplyDo(\''+L.id+'\',\'dismiss\')">Done</button></div>').join(''):'<p class="tiny muted" style="margin:0">No replies waiting.</p>';
+ if(tab==='dep')body=depL.length?depL.map(a=>'<div class="bkprow"><div><b>'+esc(a.customerName||'')+' · '+rm(a.depDue)+'</b><small>'+dshort(a.start)+' '+tstr(a.start)+' · '+esc(a.serviceName||'')+(a.source==='web'?' · online, held until '+tstr(new Date(Date.parse(a.createdAt)+(+bkR().dep.hold||12)*3600e3)):'')+'</small></div>'+
+   '<button class="btn sm" onclick="bkDepPaid(\''+a.id+'\')">'+ic('check',13)+'Received</button></div>').join(''):'<p class="tiny muted" style="margin:0">No deposits outstanding.</p>';
+ if(tab==='wait')body=(BKALERT.length?'<div class="okbox" style="margin-bottom:8px">'+ic('bell',13)+' Slot freed '+dshort(BKALERT[0].date)+' '+BKALERT[0].time+' — '+esc(BKALERT[0].names.join(', '))+' can take it.</div>':'')+
+  (wl.length?wl.map(w=>{const m=WLM[w.id]||[];return '<div class="bkprow"><div><b>'+esc(w.customerName)+(w.src==='web'?' <span class="pill">online</span>':'')+(w.status==='offered'?' <span class="pill a">offered '+esc(w.offeredTime||'')+'</span>':'')+'</b><small>'+esc(w.serviceName)+' · '+dshort(w.date)+
+   ' · '+({any:'any time',am:'morning',pm:'afternoon',eve:'evening'}[w.part]||'any time')+(w.staffId?' · '+esc(bkFirst(stf(w.staffId).name)):'')+(w.note?' · '+esc(w.note):'')+'</small>'+
+   (m.length?'<div class="bkslots">'+m.map(x=>'<span>'+x.t+'<a target="_blank" rel="noopener" href="https://wa.me/'+waNum(w.phone)+'?text='+encodeURIComponent(bkWlMsg(w,x.t))+'" onclick="bkWlMark(\''+w.id+'\',\'offered\',\''+x.t+'\')">Offer</a><button onclick="bkWlBook(\''+w.id+'\',\''+x.t+'\')">Book</button></span>').join('')+'</div>':'<div class="tiny muted">No free slot yet — you\'ll be told when one opens.</div>')+'</div>'+
+   '<button class="btn sm ghost" onclick="bkWlMark(\''+w.id+'\',\'closed\')">Remove</button></div>';}).join(''):'<p class="tiny muted" style="margin:0">Nobody waiting.</p>')+
+  '<button class="btn sm ghost" style="margin-top:8px" onclick="bkWlNew()">'+ic('plus',13)+'Add to waitlist</button>';
+ return '<div class="card bkpanel"><div class="bkptabs">'+tabs.map(t=>'<button type="button" class="'+(tab===t[0]?'on':'')+(t[2]?' has':'')+'" onclick="bkPanelTab(\''+t[0]+'\')">'+ic(t[3],13)+'<span>'+t[1]+'</span><i>'+t[2]+'</i></button>').join('')+'</div>'+
+  (tab?'<div class="bkpbody">'+body+'</div>':'')+'</div>';
+}
+window.bkPanelTab=t=>{BKPANEL=BKPANEL===t?'none':t;if(t==='wait')bkWlMatch().then(()=>{if(TAB==='book')render();});render();};
+function bkPanelPaint(){if(TAB==='book')render();}
+
+/* ---------- every half minute on staff devices ---------- */
+let BKPREV=new Map(),BKDUEN=0;
+async function bkTick(){
+ if(!ME||!can('booking'))return;
+ /* cancellations and no-shows free a slot for the waitlist */
+ const all=new Map([...RAP,...APPTS].map(a=>[a.id,a]));
+ all.forEach(a=>{const k=a.status+'|'+a.start,p=BKPREV.get(a.id);
+  if(p&&p.k!==k&&!['cancel','no'].includes(p.a.status)&&(['cancel','no'].includes(a.status)||p.a.start!==a.start))bkFreed(p.a);
+  BKPREV.set(a.id,{k,a:{...a}});});
+ /* online bookings whose deposit never came are released */
+ const H=(+bkR().dep.hold||12)*3600e3;
+ for(const a of [...all.values(),...(typeof WBAPPTS!=='undefined'?WBAPPTS:[])]){
+  if(a.source==='web'&&a.webPending&&+a.depDue>0&&!(+a.deposit>0)&&a.status==='booked'&&Date.parse(a.createdAt)+H<Date.now()&&!a._rel){
+   a._rel=1;try{await updateDoc(doc(db,'appointments',a.id),{status:'cancel',cancelledBy:'system',cancelledAt:bkNow(),cancelReason:'Deposit not received within '+(+bkR().dep.hold||12)+' hours'});
+    a.status='cancel';await audit('Online booking released',(a.customerName||'')+' · no deposit');}catch(e){}}
+ }
+ /* waitlist entries become booked once the client has a booking that day */
+ for(const w of WLIST.filter(w=>['waiting','offered'].includes(w.status))){
+  const hit=[...all.values()].find(a=>a.date===w.date&&!['cancel','no'].includes(a.status)&&String(a.createdAt||'')>String(w.createdAt)&&
+   ((w.customerId&&a.customerId===w.customerId)||(w.phone&&phKey(a.phone||bkPhoneOf(a))===phKey(w.phone))));
+  if(hit)await window.bkWlMark(w.id,'booked');
+  else if(w.date<today())await window.bkWlMark(w.id,'expired');
+ }
+ const n=bkDue().length;if(n>BKDUEN){toast(n+' WhatsApp reminder'+(n>1?'s':'')+' to send — see Bookings');}BKDUEN=n;
+}
+function bkBoot(){
+ if(BKBOOTED||!ME)return;BKBOOTED=true;
+ try{unsub.push(onSnapshot(collection(db,'machines'),s=>{MACH=s.docs.map(d=>({id:d.id,...d.data()}));},e=>console.warn('machines',e)));}catch(e){}
+ if(!can('booking'))return;
+ const from=today(),to=ymd(addDays(new Date(),2));
+ try{unsub.push(onSnapshot(query(collection(db,'appointments'),where('date','>=',from),where('date','<=',to)),s=>{RAP=s.docs.map(d=>({id:d.id,...d.data()}));},e=>console.warn('rap',e)));}catch(e){}
+ try{unsub.push(onSnapshot(query(collection(db,'apptLinks'),where('b','==',ME.branchId),where('open','==',true)),s=>{
+  const old=new Map(ALINKS.map(x=>[x.id,x]));ALINKS=s.docs.map(d=>{const x={id:d.id,...d.data()};const o=old.get(x.id);if(o&&o.handledAt&&o.replyAt===x.replyAt)x.handledAt=o.handledAt;return x;});bkReplies();if(TAB==='book')render();},e=>console.warn('links',e)));}catch(e){}
+ try{unsub.push(onSnapshot(query(collection(db,'waitlist'),where('branchId','==',ME.branchId)),s=>{WLIST=s.docs.map(d=>({id:d.id,...d.data()}));},e=>console.warn('waitlist',e)));}catch(e){}
+ setInterval(()=>bkTick().catch(e=>console.warn('bkTick',e)),30000);setTimeout(()=>bkTick().catch(()=>{}),4000);
+ if(boss())setTimeout(()=>bkDhRefresh(),6000);
+}
+{const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!BKBOOTED)bkBoot();}catch(e){console.warn('bkBoot',e);}};window.render=render;}
+
+/* ---------- the client's attendance, on their profile ---------- */
+{const _cp=custProfile;custProfile=function(c){
+ const h=_cp(c);
+ setTimeout(()=>bkNs(c.id).then(n=>document.querySelectorAll('[data-bkns="'+c.id+'"]').forEach(el=>{el.innerHTML=bkNsHTML(c,n);})),0);
+ const card='<div class="card"><div class="sec-h"><h3>'+ic('calendar',14)+' Attendance</h3></div><div data-bkns="'+c.id+'">'+(NSC[c.id]?bkNsHTML(c,NSC[c.id]):'<div class="skel" style="width:60%"></div>')+'</div></div>';
+ const i=h.indexOf('<div class="card clcard">');return i<0?card+h:h.slice(0,i)+card+h.slice(i);};}
+function bkNsHTML(c,n){
+ if(!n)return '';const R=bkR().dep,auto=R.on&&+R.noShows>0&&n.no+n.late>=+R.noShows;
+ return '<div class="bkns"><span><b>'+n.done+'</b>completed</span><span class="'+(n.no?'bad':'')+'"><b>'+n.no+'</b>no-show'+(n.no===1?'':'s')+'</span><span class="'+(n.late?'bad':'')+'"><b>'+n.late+'</b>late cancel'+(n.late===1?'':'s')+'</span></div>'+
+  '<div class="tiny muted" style="margin-top:6px">Last 12 months'+(n.last?' · last missed '+dshort(n.last):'')+'.</div>'+
+  (auto||c.depAlways?'<div class="warnbox" style="margin:8px 0 0">'+ic('card',13)+' A deposit is asked for every booking'+(c.depAlways?' (set by hand)':' — '+(n.no+n.late)+' missed in 12 months, policy is '+R.noShows)+'.</div>':'')+
+  '<label class="row" style="gap:8px;margin:8px 0 0"><input type="checkbox"'+(c.depAlways?' checked':'')+' onchange="bkDepAlways(\''+c.id+'\',this.checked)"> Always ask this client for a deposit</label>';
+}
+window.bkDepAlways=async(id,on)=>{const c=cust(id);if(!c)return;
+ try{await updateDoc(doc(db,'customers',id),{depAlways:!!on});c.depAlways=!!on;await audit('Deposit rule for client',c.name+' · '+(on?'always':'normal'));
+  document.querySelectorAll('[data-bkns="'+id+'"]').forEach(el=>{el.innerHTML=bkNsHTML(c,NSC[id]);});if(boss())bkDhRefresh();}catch(e){toast(friendly(e));}};
+
+/* ---------- Settings: the booking rules ---------- */
+let BKQR=undefined;
+function bkRulesPanel(){
+ if(!boss())return '';const R=bkR(),d=R.dep;
+ return '<div class="card"><h2 style="margin-bottom:6px">'+ic('shield',16)+' Booking rules</h2>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Deposits, WhatsApp reminders and the waitlist. They apply at the counter and on the online booking page.</p>'+
+  '<div class="fieldset"><h3>'+ic('card',13)+'Deposit</h3><label class="row" style="gap:8px"><input type="checkbox" id="br-don"'+(d.on?' checked':'')+'> <b>Ask for a deposit when…</b></label>'+
+  '<div class="grid g3"><div><label>Treatment costs at least (RM)</label><input class="f" type="number" min="0" id="br-min" value="'+(+d.minPrice||0)+'"><div class="tiny muted" style="margin-top:-6px">0 = not by price</div></div>'+
+  '<div><label>Client missed at least</label><input class="f" type="number" min="0" max="10" id="br-ns" value="'+(+d.noShows||0)+'"><div class="tiny muted" style="margin-top:-6px">no-shows + late cancels in 12 months · 0 = off</div></div>'+
+  '<div><label>&nbsp;</label><label class="row" style="gap:8px;margin-top:10px"><input type="checkbox" id="br-wk"'+(d.weekend?' checked':'')+'> Every Saturday & Sunday booking</label></div></div>'+
+  '<div class="grid g3"><div><label>Deposit is</label><select class="f" id="br-typ"><option value="pct"'+(d.type!=='rm'?' selected':'')+'>% of the price</option><option value="rm"'+(d.type==='rm'?' selected':'')+'>A fixed amount</option></select></div>'+
+  '<div><label>Percent</label><input class="f" type="number" min="1" max="100" id="br-pct" value="'+(+d.val||30)+'"></div><div><label>Fixed (RM)</label><input class="f" type="number" min="1" id="br-fix" value="'+(+d.fixed||50)+'"></div></div>'+
+  '<label>Online: hold the slot for (hours) until the deposit arrives</label><input class="f" type="number" min="1" max="72" id="br-hold" value="'+(+d.hold||12)+'">'+
+  '<label>How to pay <span class="muted">— shown on the booking page</span></label><textarea class="f" id="br-pay" rows="3" placeholder="Maybank 5123 4567 8910 · Luuna Skin Spa Sdn Bhd&#10;Rujukan: nama anda">'+esc(d.pay||'')+'</textarea>'+
+  '<label>DuitNow QR <span class="muted">— optional</span></label><div class="row" style="gap:10px;align-items:center">'+((BKQR!==undefined?BKQR:d.qr)?'<img src="'+(BKQR!==undefined?BKQR:d.qr)+'" style="width:84px;height:84px;object-fit:contain;border:1px solid var(--line);border-radius:10px;background:#fff">':'')+
+   '<label class="btn sm ghost"><input type="file" accept="image/*" hidden onchange="bkQrPick(this)">'+ic('upload',13)+'Upload QR</label>'+((BKQR!==undefined?BKQR:d.qr)?'<button class="btn sm ghost" onclick="BKQRset(\'\')">Remove</button>':'')+'</div></div>'+
+  '<div class="fieldset"><h3>'+ic('msg',13)+'WhatsApp reminders</h3>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="br-r24"'+(R.rem.h24?' checked':'')+'> 24 hours before</label><textarea class="f" id="br-m24" rows="5">'+esc(R.rem.msg24)+'</textarea>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="br-r2"'+(R.rem.h2?' checked':'')+'> 2 hours before</label><textarea class="f" id="br-m2" rows="4">'+esc(R.rem.msg2)+'</textarea>'+
+  '<p class="tiny muted" style="margin:0">{name} {service} {day} {time} {staff} {biz} {link} are filled in. {link} is the client\'s page to confirm, change or cancel. The spa\'s phone or tablet sends each one with a tap — fully automatic sending needs the paid WhatsApp Business API.</p></div>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="br-wl"'+(R.wait.on?' checked':'')+'> Waitlist — clients can join when a day is full, and are offered freed slots</label>'+
+  '<div id="br-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn sm" onclick="bkRulesSave()">'+ic('check',14)+'Save booking rules</button></div>';
+}
+window.BKQRset=v=>{BKQR=v;render();};
+window.bkQrPick=async inp=>{const f=inp.files&&inp.files[0];if(!f)return;try{BKQR=await compressImage(f,'product');render();}catch(e){toast('That image could not be used');}};
+window.bkRulesSave=async()=>{
+ const g=id=>document.getElementById(id),n=(id,a,b,def)=>{const v=+g(id).value;return isFinite(v)&&v>=a&&v<=b?v:def;};
+ const R={dep:{on:g('br-don').checked,minPrice:n('br-min',0,100000,0),weekend:g('br-wk').checked,noShows:Math.round(n('br-ns',0,10,2)),type:g('br-typ').value,val:n('br-pct',1,100,30),fixed:n('br-fix',1,100000,50),
+  hold:Math.round(n('br-hold',1,72,12)),pay:g('br-pay').value.trim().slice(0,600),qr:BKQR!==undefined?BKQR:(bkR().dep.qr||'')},
+  rem:{h24:g('br-r24').checked,h2:g('br-r2').checked,msg24:g('br-m24').value.slice(0,800)||BKR_DEF.rem.msg24,msg2:g('br-m2').value.slice(0,800)||BKR_DEF.rem.msg2},wait:{on:g('br-wl').checked}};
+ try{await lpMetaPut('bkRules',R);BKQR=undefined;if(wbSet().on)await wbPublish(true);bkDhRefresh();await audit('Booking rules saved',(R.dep.on?'deposit on':'deposit off')+' · reminders '+(R.rem.h24?'24h ':'')+(R.rem.h2?'2h':''));render();toast('Booking rules saved');}
+ catch(e){g('br-e').textContent=friendly(e);}
+};
+{const _p=wbSetPanel;wbSetPanel=function(){return _p()+bkRulesPanel();};}
+window.bkTickNow=()=>bkTick();
 
 </script>
