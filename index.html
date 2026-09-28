@@ -2011,6 +2011,117 @@ body.ro #bellwrap,body.ro #bk-kw,body.ro label:has(#bk-rem),body.ro #syncbtn{dis
 .lpcon{margin:6px 0 0}.lpcon summary{cursor:pointer;font-size:12.5px;color:var(--ink-2);display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .lpconc{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:2px 12px;padding:8px 0 2px}
 .lpck{display:flex!important;gap:6px;align-items:center;font-size:12.5px;margin:0!important;font-weight:400;cursor:pointer}.lpck input{width:15px;height:15px;accent-color:var(--ink)}
+
+/* ---- client 360 and the clinical record ---- */
+.g4{grid-template-columns:repeat(4,1fr)}@media(max-width:760px){.g4{grid-template-columns:1fr 1fr}}
+.amb{color:var(--amber);font-weight:560}.grn{color:var(--jade);font-weight:560}
+.cldup{line-height:1.5}.cldup .btn{font-size:12.5px}
+.clval{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.clval>div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;min-width:0}
+.clval small{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.clval b{display:block;font-size:16.5px;font-weight:620;margin:2px 0;line-height:1.25}
+.clval span{font-size:12px;color:var(--ink-3)}.clval em{color:var(--amber);font-style:normal}
+@media(max-width:520px){.clval{grid-template-columns:1fr 1fr}.clval>div:last-child{grid-column:1/-1}}
+.cltags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.cltags.sug{margin-top:8px}
+.cltag{display:inline-flex;align-items:center;gap:5px;border:1px dashed var(--line);background:var(--surface);color:var(--ink-2);border-radius:99px;padding:5px 10px;font:inherit;font-size:12.5px;cursor:pointer}
+.cltag.on{border-style:solid;background:var(--brass-soft);border-color:#E4D2B2;color:#6B4E22;font-weight:560}
+.cltag:hover{border-color:var(--brass)}
+.cltagin{margin:0!important;width:150px;padding:6px 10px!important;font-size:12.5px!important;border-radius:99px!important}
+.clnote{border-left:3px solid var(--line);padding:6px 0 6px 10px;margin-bottom:8px}.clnote.pin{border-color:var(--brass)}
+.clnote p{margin:0;font-size:14px;white-space:pre-wrap}.clnote small{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--ink-3);font-size:11.5px;margin-top:2px}
+.clnacts{margin-left:auto;display:inline-flex;gap:10px}.clnacts button{border:0;background:none;color:var(--brass);font:inherit;font-size:11.5px;cursor:pointer;padding:0}
+.clsl{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line-2);font-size:13.5px}
+.clsl:first-child{border-top:0}.clsl>span{color:var(--ink-3);font-size:12.5px}.clsl .btn{padding:5px 10px}
+@media(max-width:520px){.clsl{grid-template-columns:1fr auto}.clsl>div{grid-column:1/-1;grid-row:2}}
+.clcard{border-color:#E4D2B2}
+.cltblw{overflow-x:auto;margin:0 -4px}
+.cltbl{width:100%;border-collapse:collapse;font-size:13px}
+.cltbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+.cltbl td{padding:8px;border-bottom:1px solid var(--line-2);vertical-align:top}.cltbl .num{text-align:right;white-space:nowrap}
+.cltbl.segt tbody tr{cursor:pointer}.cltbl.segt tbody tr:hover{background:var(--surface-2)}
+@media(max-width:600px){.cltbl thead{display:none}.cltbl tr{display:block;border-bottom:1px solid var(--line-2);padding:6px 0}
+ .cltbl td{display:flex;justify-content:space-between;gap:10px;border:0;padding:3px 4px;text-align:right}.cltbl td::before{content:attr(data-l);color:var(--ink-3);font-size:12px;text-align:left}
+ .cltbl td[data-l="Client"]{display:block;text-align:left}.cltbl td[data-l="Client"]::before{content:none}}
+/* the clinical record */
+.clsheet{max-width:860px}
+.clxhead{display:flex;gap:12px;align-items:center;margin-bottom:10px}.clxhead .avatar{width:42px;height:42px;border-radius:13px;font-size:14px}
+.clwarn{font-size:13.5px}
+.clseg{display:flex;flex-wrap:wrap;margin:10px 0 12px}.clseg button{flex:1 1 auto;display:inline-flex;gap:6px;align-items:center;justify-content:center}
+@media(max-width:560px){.clseg button .cltl{display:none}.clseg button.on .cltl{display:inline}}
+.clcons summary{cursor:pointer;display:flex;gap:8px;align-items:center;flex-wrap:wrap;list-style:none}.clcons summary::-webkit-details-marker{display:none}
+.clcons summary .pill{margin-left:auto}.clcons .kv{margin-top:10px}
+.clrev{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px}.clrev p{margin:4px 0 0;white-space:pre-wrap}
+.clflags{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-bottom:10px}@media(max-width:560px){.clflags{grid-template-columns:1fr}}
+.clck{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;margin:0;padding:5px 0;cursor:pointer}.clck input{margin-top:3px}
+.clck.sm{display:inline-flex;padding:3px 8px;border:1px solid var(--line);border-radius:99px;font-size:12.5px}
+.clform{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line-2)}.clform:first-of-type{border-top:0}
+.cltext{white-space:pre-wrap;font-size:13.5px;line-height:1.65;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:14px;max-height:360px;overflow:auto}
+.clsigbox{display:flex;gap:14px;align-items:flex-end;margin-top:12px}.clsigbox img{width:220px;max-width:55%;border-bottom:1px solid var(--ink-3);background:#fff}
+.clsigbox b{display:block}.clsigbox small{color:var(--ink-3)}
+.clcmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}.clcmp figure{margin:0}
+.clcmp img{width:100%;aspect-ratio:3/4;max-height:380px;object-fit:cover;border-radius:12px;background:var(--surface-2)}
+.clcmp figcaption{font-size:12.5px;margin-top:4px}.clcmp small{display:block;color:var(--ink-3)}
+.clgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-bottom:6px}
+.clph{position:relative;border:2px solid transparent;border-radius:12px;padding:0;background:var(--surface-2);cursor:pointer;overflow:hidden;text-align:left}
+.clph img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}.clph.on{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass-soft)}
+.clph small{display:block;font-size:11px;color:var(--ink-3);padding:3px 6px}
+.clphb{position:absolute;left:6px;top:6px;background:rgba(20,18,15,.72);color:#fff;font-size:10.5px;font-weight:600;border-radius:99px;padding:2px 7px}
+.clphb.after{background:rgba(46,107,82,.85)}.clphb.progress{background:rgba(166,124,61,.9)}
+.clphx{position:absolute;right:5px;top:5px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center;color:var(--rose)}
+.cllast{background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:10px 12px;margin:10px 0;display:grid;gap:3px}
+.clprods{display:grid;gap:6px;margin-bottom:6px}.clprow{display:grid;grid-template-columns:1fr 80px 90px auto;gap:6px;align-items:center}.clprow .f{margin:0}
+@media(max-width:520px){.clprow{grid-template-columns:1fr 64px 64px auto}}
+.clrec .kv{font-size:13px}
+.clprog{display:flex;align-items:center;gap:10px;margin:10px 0 6px;font-size:13px}.clprog .bar{flex:1}
+.clsess{display:grid;gap:4px}.clses{display:flex;gap:10px;align-items:flex-start;font-size:13px}
+.clses i{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:11px;color:var(--ink-3)}
+.clses.done i{background:var(--jade);border-color:var(--jade);color:#fff}.clses small{display:block;color:var(--ink-3)}
+/* on the booking */
+.clappt{display:block;margin:10px 0 2px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);line-height:1.45;color:var(--ink)}
+.clappt .errbox,.clappt .warnbox{margin:0 0 8px}
+.clapl{display:flex;gap:8px;align-items:center;font-size:13px;padding:3px 0}.clapl>span{flex:1;color:var(--ink-2)}.clapl .btn{padding:4px 9px}
+.clapn{font-size:12.5px;color:#6B4E22;background:var(--brass-soft);border-radius:8px;padding:4px 8px;margin-top:4px}
+.wzsvc.clx{border-color:var(--rose)!important;background:var(--rose-soft)!important}
+.clxb{display:inline-flex;gap:3px;align-items:center;color:var(--rose);font-size:11px;font-weight:600;margin-top:3px}
+/* clinical screen */
+.cltoday{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line-2)}
+.cltoday:first-of-type{border-top:0}.cltoday.bad{background:linear-gradient(90deg,var(--rose-soft),transparent 60%)}
+.cltt{font-weight:620;font-variant-numeric:tabular-nums}.cltn small{display:block;color:var(--ink-3);font-size:12px}
+.cltst{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.cltst .btn{padding:5px 9px;font-size:12px}
+@media(max-width:640px){.cltoday{grid-template-columns:44px 1fr}.cltst{grid-column:1/-1;justify-content:flex-start}}
+.linkb{border:0;background:none;padding:0;font:inherit;color:inherit;cursor:pointer;text-align:left}.linkb:hover b{text-decoration:underline}
+.cldupg{border:1px solid var(--line-2);border-radius:12px;padding:4px 12px;margin-bottom:8px}
+/* the tablet in the client's hands */
+body.clk-on{overflow:hidden}
+#clkiosk{position:fixed;inset:0;z-index:9000;background:var(--cream);overflow:auto;-webkit-overflow-scrolling:touch}
+.clk{max-width:760px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:18px 22px 26px}
+.clktop{display:flex;align-items:center;gap:12px}.clktop>b{font-family:var(--serif,Georgia),serif;font-size:19px;font-weight:500;flex:1}
+.clklang{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:var(--surface)}
+.clklang button{border:0;background:none;border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;font-weight:600;color:var(--ink-3);cursor:pointer}
+.clklang button.on{background:var(--ink);color:var(--cream)}
+.clkstaff{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 11px;font:inherit;font-size:11.5px;color:var(--ink-3);display:inline-flex;gap:5px;align-items:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
+.clkstaff.hold{background:var(--ink);color:var(--cream);transition:background .9s}
+.clkdots{display:flex;gap:6px;margin:16px 0 4px}.clkdots i{flex:1;height:4px;border-radius:4px;background:var(--line)}.clkdots i.done,.clkdots i.on{background:var(--brass)}
+.clkbody{flex:1;padding-top:12px}
+.clkbody h1{font-family:var(--serif,Georgia),serif;font-weight:500;font-size:34px;margin:18px 0 8px;letter-spacing:-.01em}
+.clkbody h2{font-family:var(--serif,Georgia),serif;font-weight:500;font-size:26px;margin:6px 0 10px}
+.clkbody label{display:block;font-size:14.5px;font-weight:600;margin:18px 0 8px}
+.clkbody .f{font-size:16px;padding:12px 14px}
+.clklead{font-size:16px;color:var(--ink-2);line-height:1.55;margin:0 0 10px}.clkmeta{color:var(--ink-3);margin:-4px 0 12px}
+.clkchips{display:flex;flex-wrap:wrap;gap:8px}.clkchips.col{flex-direction:column;align-items:stretch}
+.clkchip{display:inline-flex;align-items:center;gap:7px;min-height:46px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 15px;font:inherit;font-size:15px;color:var(--ink);cursor:pointer;text-align:left}
+.clkchip.on{border-color:var(--ink);background:var(--ink);color:var(--cream)}
+.clkrow{display:grid;grid-template-columns:minmax(200px,auto) 1fr;gap:8px;align-items:center;margin-bottom:8px}.clkrow .f{margin:0}
+@media(max-width:560px){.clkrow{grid-template-columns:1fr}}
+.clktext{white-space:pre-wrap;font-size:15.5px;line-height:1.7;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:12px}
+.clkok{display:flex!important;gap:12px;align-items:flex-start;font-weight:500!important;font-size:15.5px!important;line-height:1.5;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}
+.clkok input{width:22px;height:22px;margin-top:2px;flex:none}
+.clkbox{background:var(--brass-soft);border-radius:14px;padding:14px;margin-top:16px}.clkbox p{margin:4px 0 10px;font-size:14.5px}
+.clsig{aspect-ratio:3/1;margin-bottom:6px}
+.clkerr{color:var(--rose);font-weight:560;min-height:22px;margin-top:10px}
+.clkfoot{display:flex;justify-content:space-between;gap:10px;padding-top:10px}.clkfoot .btn{min-height:50px;padding:0 22px;font-size:16px}
+.clkgo{background:var(--jade)!important;border-color:var(--jade)!important}
+.clkdone{text-align:center;padding-top:10vh;color:var(--jade)}.clkdone h1{color:var(--ink)}.clkdone .clklead{margin-bottom:26px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2270,7 +2381,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-28a';
+const BUILD='2026-09-29a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -2663,7 +2774,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -3172,7 +3283,7 @@ window.openAppt=id=>{
   ic('user',13)+' '+esc(a.staffName||'')+'<br>'+ic('room',13)+' '+esc(room(a.roomId).name||'—')+
   (a.deposit?'<br>'+ic('card',13)+' Deposit '+rm(a.deposit):'')+
   (c&&c.allergy?'<br><span style="color:var(--rose)">'+ic('alert',13)+' '+esc(c.allergy)+'</span>':'')+
-  (a.notes?'<br>'+ic('note',13)+' '+esc(a.notes):'')+
+  clApptBox(a,c)+(a.notes?'<br>'+ic('note',13)+' '+esc(a.notes):'')+
   (ano?'<br>'+ic('folder',13)+' Paper file in '+boxOf(ano).label:'')+
   (a.status==='done'&&a.customerId?'<br><button class="pfrow'+(a.paperFiled?' on':'')+'" style="padding:8px 0" onclick="apptFiled(\''+id+'\')">'+
    '<span class="pchk">'+(a.paperFiled?ic('check',13):'')+'</span><span class="pftext"><b>Treatment record written in the paper file</b>'+
@@ -3379,7 +3490,7 @@ function custForm(id,opts){
 
   '<div class="fieldset"><h3>'+ic('spark',13)+'Relationship</h3>'+
   '<div class="grid g2"><div><label>How they found us</label><select class="f" id="c-src">'+
-   opt(SOURCES,c.source)+'</select></div>'+
+   opt(SOURCES,c.source)+'</select><select class="f" id="c-srcm" aria-label="Paid ad or organic">'+[['','Paid ad or organic?'],['Ads','Paid ad'],['Organic','Organic post / profile'],['Other','Other']].map(o=>'<option value="'+o[0]+'"'+((c.srcMedium||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
   '<div><label>Home branch</label><select class="f" id="c-br">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (c.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
   '<label>Referred by</label><div class="grid g2"><select class="f" id="c-ref" data-self="'+(id||'')+'"><option value="">— nobody —</option>'+
@@ -3430,7 +3541,7 @@ async function saveCustForm(id,thenBook){
   medical:$('#c-med').value.trim(),emergency:$('#c-em').value.trim(),source:$('#c-src').value,
   branchId:$('#c-br').value,referrerId:$('#c-ref').value,referrerName:(()=>{const e=$('#c-ref'),o=e&&e.options&&e.options[e.selectedIndex];return e&&e.value&&o?String(o.textContent||''):'';})(),preferredStaff:$('#c-pref').value,
   tags:$('#c-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
-  note:$('#c-note').value.trim(),pdpa:$('#c-pdpa').checked,marketing:$('#c-mkt').checked,
+  note:$('#c-note').value.trim(),srcMedium:(document.getElementById('c-srcm')||{}).value||'',pdpa:$('#c-pdpa').checked,marketing:$('#c-mkt').checked,
   updatedAt:new Date().toISOString(),updatedBy:UID};
  try{
   if(id){
@@ -3508,7 +3619,7 @@ function custProfile(c){
    row('Emergency',esc(c.emergency||''),'phone')+
   '</div></div>'+
   '<div class="card"><h3 style="margin-bottom:9px">Relationship</h3><div class="kv">'+
-   row('Source',esc(c.source||''),'spark')+
+   row('Source',esc(c.source||'')+(c.srcMedium?' · '+esc(c.srcMedium==='Ads'?'paid ad':c.srcMedium==='Organic'?'organic':c.srcMedium):''),'spark')+
    row('Referred by',esc(ref),'users')+
    row('Prefers',esc(c.preferredStaff?stf(c.preferredStaff).name||'':''),'star')+
    row('Home branch',esc((D.branches.find(b=>b.id===c.branchId)||{}).name||''),'home')+
@@ -13071,13 +13182,13 @@ window.leadConvert=async(id,book)=>{
  const l=LEADS.find(x=>x.id===id);if(!l)return;
  let cid=l.customerId;
  if(!cid){
-  const ex=CUSTS.find(x=>digits(x.phone)===digits(l.phone));
+  const ex=CUSTS.find(x=>x.active!==false&&!x.mergedInto&&phKey(x.phone)===phKey(l.phone))||(await clDupes(l.phone,''))[0];
   if(ex&&confirm(l.phone+' belongs to '+ex.name+'. Link this lead to that client?'))cid=ex.id;
  }
  try{
   if(!cid){
    const data={name:l.name,nameLower:l.name.toLowerCase(),phone:l.phone,phoneDigits:digits(l.phone),keywords:kwFor(l.name,l.phone),
-    email:l.email||'',source:srcToClient(l.source),branchId:ME.branchId,pdpa:true,marketing:true,tags:[],notes:'',
+    email:l.email||'',source:srcToClient(l.source),srcMedium:l.medium==='Paid'?'Ads':l.medium==='Organic'?'Organic':'',branchId:ME.branchId,pdpa:true,marketing:true,tags:[],notes:'',
     note:l.interest?'Interested in '+l.interest:'',active:true,wantNo:true,leadId:id,createdAt:new Date().toISOString(),createdBy:UID};
    if(l.referrerId&&!data.referrerId){const rr=await custGet(l.referrerId);if(rr)Object.assign(data,{referrerId:rr.id,referrerName:rr.name||'',source:'Friend referral'});}
    const inv=await refAttach(data);
@@ -20822,7 +20933,7 @@ window.wzSave=async()=>{
    wzErr((stf(WZ.staff).name||'')+' also has '+mine.map(a=>(a.customerName||'')+' at '+tstr(a.start)+' in '+(room(a.roomId).name||'another room')).join(', ')+'. Tap Confirm booking again to book both.');return;}
   const d={visitType:WZ.visit||'return',color:WZ.color||'',branchId:ME.branchId,customerId:WZ.cid,customerName:c.name||'',staffId:WZ.staff,staffName:stf(WZ.staff).name||'',
    serviceId:s.id||'',serviceName:s.name,roomId:WZ.room,date:WZ.date,start:start.toISOString(),finish:finish.toISOString(),duration:s.dur||60,buffer:s.buffer||0,status:'booked',
-   ...(WZ.und?{undecided:true,concerns:[...WZ.undCon],shortlist:[...WZ.undShort]}:{}),deposit:+WZ.dep||0,notes:String(WZ.notes||'').slice(0,400),createdBy:UID,createdAt:new Date().toISOString()};
+   ...(WZ.und?{undecided:true,concerns:[...WZ.undCon],shortlist:[...WZ.undShort]}:{}),...clApptTag(),deposit:+WZ.dep||0,notes:String(WZ.notes||'').slice(0,400),createdBy:UID,createdAt:new Date().toISOString()};
   const r=await addDoc(collection(db,'appointments'),d);
   logEvent('booking','New booking · '+(c.name||''),s.name+' · '+dstr(start)+' '+tstr(start)+' with '+(stf(WZ.staff).name||''),{refType:'appt'});
   await audit('Booking created',(c.name||'')+' · '+s.name+' · '+dstr(start)+' '+tstr(start));
@@ -22026,5 +22137,1166 @@ window.lpCatPhoto=sl=>{const i=document.createElement('input');i.type='file';i.a
 window.lpCatNoPhoto=sl=>{const c=lpCatBySlug(sl);const m={...(LPD.catImg||{})};delete m[c];LPD.catImg=m;render();};
 /* what each treatment helps with — the skin-concern finder on the page uses this */
 window.lpSvcCon=async(id,k,on)=>{const x=svc(id);if(!x)return;let a=(x.concerns||[]).filter(z=>z!==k);if(on)a.push(k);await lpSvcPut(id,{concerns:a});};
+
+/* ============ Client 360° and the clinical record ============ */
+/* One client, one record. The profile gathers who they are, what they have spent and how
+   often they come, the tags marketing uses, the team's notes, and a warning when the same
+   phone number is registered twice. The clinical record holds what sets a skin spa apart
+   from a shop: the client's own consultation form (filled on the tablet while they wait),
+   medical history checked against every booking, signed and versioned consent forms,
+   before/after photos with a separate yes/no for marketing, the machine settings and
+   products used at each session, and treatment plans with progress per session.
+   Collections: custNotes, consults, consents, consentForms, clinPhotos (+ clinPhotoImg for the
+   full-size picture), txRecords, txPlans. Everything is read by customerId, so a merged
+   duplicate's records still show under the client that was kept. */
+
+/* ---------- words the client reads (tablet forms are in BM and English) ---------- */
+FLAGS.push({id:'retinoid',label:'Retinoid or strong actives on the skin in the last 7 days'},
+ {id:'bloodthin',label:'On blood thinners'},{id:'herpes',label:'Cold sores (herpes) history'},{id:'epilepsy',label:'Epilepsy or seizures'});
+const CL_FLAG_MS={pregnant:'Hamil atau menyusu',accutane:'Ubat jerawat oral (isotretinoin / Roaccutane) dalam 6 bulan lepas',
+ activeacne:'Kulit sedang meradang atau berjangkit',sunburn:'Terbakar matahari atau tan teruk baru-baru ini',keloid:'Mudah berparut teruk / keloid',
+ implant:'Perentak jantung, implan logam atau filler di kawasan rawatan',photosens:'Ambil ubat yang sensitif pada cahaya',
+ eczema:'Luka terbuka atau ekzema di kawasan rawatan',diabetes:'Diabetes',allergy:'Ada alahan pada produk',
+ retinoid:'Guna retinoid atau bahan aktif kuat pada kulit (7 hari lepas)',bloodthin:'Ambil ubat cair darah',herpes:'Pernah kena herpes / kayap mulut',epilepsy:'Epilepsi atau sawan'};
+const CL_FLAG_SHORT={pregnant:'Pregnant',accutane:'Isotretinoin',activeacne:'Inflamed skin',sunburn:'Sunburn',keloid:'Keloid',implant:'Implant/filler',
+ photosens:'Photosensitising meds',eczema:'Open wound/eczema',diabetes:'Diabetic',allergy:'Allergy',retinoid:'Retinoid',bloodthin:'Blood thinners',herpes:'Herpes',epilepsy:'Epilepsy'};
+const clFlagShort=id=>CL_FLAG_SHORT[id]||flagLabel(id);
+const CL_CON_MS={acne:'Jerawat',scarring:'Parut jerawat & tekstur',pigment:'Jeragat & pigmentasi',dull:'Kulit kusam & tidak sekata',dehydrated:'Kulit kering & tegang',
+ lines:'Garis halus & kedutan',sagging:'Kulit kendur',pores:'Liang pori besar',congestion:'Komedo & pori tersumbat',redness:'Kemerahan & sensitif',oily:'Kulit berminyak',
+ eyes:'Masalah bawah mata',slimming:'Bentuk badan & pelangsingan',cellulite:'Selulit & regangan kulit',tension:'Otot tegang & sengal',postnatal:'Pemulihan selepas bersalin',
+ hair:'Bulu tidak diingini',wellness:'Relaks & kesejahteraan'};
+const CL_SKIN_MS={Normal:'Normal',Oily:'Berminyak',Dry:'Kering',Combination:'Kombinasi',Sensitive:'Sensitif','Acne-prone':'Mudah berjerawat',Mature:'Matang'};
+const CL_GOALS=[['bright','Kulit lebih cerah','Brighter skin'],['acne','Kurangkan jerawat','Fewer breakouts'],['marks','Pudarkan parut & tompok','Fade marks and scars'],
+ ['hydrate','Kulit lebih lembap','More hydrated skin'],['age','Anti-penuaan','Anti-ageing'],['event','Glowing untuk majlis','Glow for an event'],['relax','Relaks & rehat','Relax and unwind'],['body','Bentuk badan','Body shaping']];
+const CL_ROUTINE=[['cleanser','Pencuci muka','Cleanser'],['toner','Toner','Toner'],['serum','Serum','Serum'],['moist','Pelembap','Moisturiser'],['spf','Pelindung matahari (SPF)','Sunscreen (SPF)']];
+const CL_ACTIVES=[['retinol','Retinol / retinoid','Retinol / retinoid'],['acid','AHA / BHA','AHA / BHA'],['vitc','Vitamin C','Vitamin C'],['niac','Niacinamide','Niacinamide'],
+ ['hq','Hydroquinone / krim pemutih','Hydroquinone / whitening cream'],['bp','Benzoyl peroxide','Benzoyl peroxide'],['steroid','Krim steroid','Steroid cream']];
+const CL_PROCS=[['laser','Laser','Laser'],['peel','Chemical peel','Chemical peel'],['inject','Botox / filler','Botox / filler'],['needle','Microneedling','Microneedling'],
+ ['ipl','IPL','IPL'],['hifu','HIFU / RF','HIFU / RF'],['thread','Thread lift','Thread lift'],['surgery','Pembedahan kosmetik','Cosmetic surgery']];
+const CL_SINCE=[['new','Kurang 3 bulan','Under 3 months'],['year','3–12 bulan','3–12 months'],['long','Lebih setahun','Over a year']];
+const CL_AREAS=['Face · front','Face · left','Face · right','Neck','Back','Body','Other'];
+const CL_TAGS=['VIP','Acne-prone','Kulit sensitif','Pengantin 2027','Harga sensitif','Suka promo','Datang dengan anak'];
+const CL_NOTE_QUICK=['Suka bilik sejuk','Tak suka dipujuk beli pakej','Datang dengan anak kecil','Suka senyap semasa rawatan','Selalu lewat — ingatkan awal'];
+
+/* ---------- small helpers ---------- */
+const clWho=()=>(ME&&ME.role==='branch'&&typeof cashierValid==='function'&&cashierValid()&&typeof CASHIER!=='undefined'&&CASHIER)?CASHIER.name:(ME?ME.name:'');
+const clNow=()=>new Date().toISOString();
+const clBr=id=>(D.branches.find(b=>b.id===id)||{}).name||'';
+/* 012-345 6789, +60 12 345 6789 and 60123456789 are the same number */
+const phKey=p=>{let d=digits(p);if(d.startsWith('60'))d=d.slice(1);else if(/^1\d{8,9}$/.test(d))d='0'+d;return d;};
+const phVariants=p=>{const k=phKey(p);if(k.length<9)return[];return[...new Set([k,'6'+k,k.slice(1),digits(p)])].filter(Boolean);};
+function clChunks(a,n){const o=[];for(let i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o;}
+async function clByCust(col,ids,max){
+ const out=[];
+ for(const ch of clChunks([...new Set(ids)].filter(Boolean),10)){
+  try{const s=await getDocs(query(collection(db,col),where('customerId','in',ch),limit(max||300)));
+   s.docs.forEach(d=>out.push({id:d.id,...d.data()}));}catch(e){console.warn(col,e);}}
+ return out;
+}
+const clDesc=(k)=>(a,b)=>String(b[k]||'').localeCompare(String(a[k]||''));
+
+/* ---------- duplicates and merged records ---------- */
+async function clDupes(phone,exceptId){
+ const V=phVariants(phone),key=phKey(phone);if(!V.length)return[];
+ const out=new Map();
+ const hit=c=>c&&c.id!==exceptId&&c.active!==false&&!c.mergedInto&&(phKey(c.phone)===key||(c.phone2&&phKey(c.phone2)===key));
+ CUSTS.forEach(c=>{if(hit(c))out.set(c.id,c);});
+ try{const s=await getDocs(query(collection(db,'customers'),where('phoneDigits','in',V.slice(0,10)),limit(10)));
+  s.docs.forEach(d=>{const c={id:d.id,...d.data()};if(hit(c)){out.set(c.id,c);if(!cust(c.id))CUSTS.push(c);}});}catch(e){}
+ return[...out.values()];
+}
+const CLALIAS={};
+async function clAliases(id){
+ if(CLALIAS[id])return CLALIAS[id];
+ try{const s=await getDocs(query(collection(db,'customers'),where('mergedInto','==',id),limit(20)));CLALIAS[id]=s.docs.map(d=>d.id);}catch(e){CLALIAS[id]=[];}
+ return CLALIAS[id];
+}
+const clIds=async id=>[id,...await clAliases(id)];
+/* the full client form warns before a second record is made for the same number */
+let CLDUPOK='';
+{const _s=saveCustForm;saveCustForm=async function(id,thenBook){
+ const el=document.getElementById('c-p'),ph=el?el.value.trim():'',old=id?((cust(id)||{}).phone||''):'';
+ const key=(id||'')+'|'+phKey(ph);
+ if(ph&&phKey(ph)!==phKey(old)&&CLDUPOK!==key){
+  const d=await clDupes(ph,id||'');
+  if(d.length){
+   const box=document.getElementById('c-dup')||(()=>{const x=document.createElement('div');x.id='c-dup';const g=document.getElementById('c-gob')||document.getElementById('c-go');g.parentNode.insertBefore(x,g);return x;})();
+   const x=d[0];
+   box.className='errbox cldup';
+   box.innerHTML=ic('alert',14)+' <b>'+esc(ph)+'</b> is already registered to <b>'+esc(x.name)+'</b>'+(idOf(x)?' ('+esc(idOf(x))+')':'')+
+    (d.length>1?' and '+(d.length-1)+' other record'+(d.length>2?'s':''):'')+'. The same person should have one record, so their history and packages stay together.'+
+    '<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">'+
+    (thenBook&&!id?'<button type="button" class="btn sm" onclick="closeModal();newAppt({customerId:\''+x.id+'\'})">'+ic('calendar',13)+'Book for '+esc(String(x.name).split(' ')[0])+'</button>':'')+
+    '<button type="button" class="btn sm'+(thenBook&&!id?' ghost':'')+'" onclick="closeModal();openCust(\''+x.id+'\')">'+ic('user',13)+'Open '+esc(String(x.name).split(' ')[0])+'</button>'+
+    '<button type="button" class="btn sm ghost" onclick="clDupSave(\''+(id||'')+'\','+(thenBook?1:0)+')">Different person — save anyway</button></div>';
+   box.scrollIntoView&&box.scrollIntoView({block:'center'});
+   return;}
+ }
+ CLDUPOK='';
+ return _s.call(this,id,thenBook);
+};}
+window.clDupSave=(id,book)=>{const el=document.getElementById('c-p');CLDUPOK=(id||'')+'|'+phKey(el?el.value:'');saveCustForm(id||undefined,!!book);};
+/* a merged duplicate's bills, bookings and packages still count for the client kept */
+{const _lh=loadHistory;loadHistory=async function(id){
+ const ids=await clIds(id);if(ids.length<2)return _lh(id);
+ const parts=await Promise.all(ids.map(x=>_lh(x)));const out={appts:[],sales:[],packages:[],redemptions:[]};
+ parts.forEach(p=>Object.keys(out).forEach(k=>out[k].push(...((p&&p[k])||[]))));return out;};}
+
+/* ---------- what a client is worth ---------- */
+function clValue(sales){
+ const ok=sales.filter(s=>!s.voided),net=s=>Math.max(0,(+s.total||0)-(+s.refunded||0));
+ const spend=ok.reduce((a,s)=>a+net(s),0);
+ const days=[...new Set(ok.map(s=>s.date||String(s.at||'').slice(0,10)).filter(Boolean))].sort();
+ const visits=days.length,first=days[0]||'',last=days[visits-1]||'';
+ const months=first?Math.max(1,daysBetween(first,today())/30.44):1;
+ return{spend,visits,bills:ok.length,avg:visits?spend/visits:0,first,last,perMonth:visits/months,gap:visits>1?Math.round(daysBetween(first,last)/(visits-1)):0};
+}
+const CLVC={};
+async function clClv(id,fresh){
+ if(!fresh&&CLVC[id]&&Date.now()-CLVC[id].t<120000)return CLVC[id];
+ const ids=await clIds(id);
+ const sales=(await Promise.all(ids.map(x=>getDocs(query(collection(db,'sales'),where('customerId','==',x),limit(500)))
+  .then(s=>s.docs.map(d=>d.data())).catch(()=>[])))).flat();
+ CLVC[id]={...clValue(sales),t:Date.now()};return CLVC[id];
+}
+const clFreq=v=>!v.visits?'—':v.visits<2?'1 visit so far':v.gap?'every ~'+v.gap+' days':v.perMonth.toFixed(1)+' a month';
+function clRankOf(id){
+ if(!SEGD)return'';const all=SEGD.rows.filter(r=>r.v.spend>0).sort((a,b)=>b.v.spend-a.v.spend);
+ const i=all.findIndex(r=>r.c.id===id);if(i<0||all.length<5)return'';
+ const pct=Math.max(1,Math.ceil((i+1)/all.length*100));return pct<=10?'Top '+pct+'% of clients by spend':pct<=30?'Top 30% by spend':'';
+}
+function clValueHTML(c,v){
+ const rank=clRankOf(c.id),since=v.first?daysBetween(v.first,today()):0;
+ return '<div class="clval"><div><small>Lifetime spend</small><b>'+rm(v.spend)+'</b><span>'+v.bills+' bill'+(v.bills===1?'':'s')+'</span></div>'+
+  '<div><small>Average per visit</small><b>'+rm(v.avg)+'</b><span>'+v.visits+' paid visit'+(v.visits===1?'':'s')+'</span></div>'+
+  '<div><small>How often</small><b>'+esc(clFreq(v))+'</b><span>'+(v.last?'last '+dshort(v.last)+(daysBetween(v.last,today())>60?' · <em>'+daysBetween(v.last,today())+' days ago</em>':''):'no paid visit yet')+'</span></div></div>'+
+  (rank||since>0?'<div class="tiny muted" style="margin-top:8px">'+(rank?'<span class="pill b">'+ic('star',11)+' '+esc(rank)+'</span> ':'')+
+   (since>30?'Client for '+(since>=365?(since/365).toFixed(1)+' years':Math.round(since/30.44)+' months')+' · about '+rm(v.spend/Math.max(1,since/365))+' a year':'')+'</div>':'');
+}
+function clValueCard(c){
+ setTimeout(()=>clClv(c.id).then(v=>document.querySelectorAll('[data-clv="'+c.id+'"]').forEach(el=>{el.innerHTML=clValueHTML(c,v);})),0);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('money',14)+' Client value</h3></div><div data-clv="'+c.id+'"><div class="skel" style="width:70%"></div></div></div>';
+}
+
+/* ---------- tags ---------- */
+const clAllTags=()=>{const m={};CUSTS.forEach(c=>(c.tags||[]).forEach(t=>{m[t]=(m[t]||0)+1;}));return Object.keys(m).sort((a,b)=>m[b]-m[a]);};
+function clTagsCard(c){
+ const tags=c.tags||[],low=tags.map(t=>t.toLowerCase());
+ const sug=[...new Set([...CL_TAGS,...clAllTags()])].filter(t=>!low.includes(t.toLowerCase())).slice(0,12);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('tag',14)+' Tags</h3><span class="tiny muted">used for targeted marketing</span></div>'+
+  '<div class="cltags">'+(tags.length?tags.map(t=>'<button type="button" class="cltag on" data-t="'+esc(t)+'" onclick="clTag(\''+c.id+'\',this.dataset.t)">'+esc(t)+ic('close',11)+'</button>').join(''):'<span class="tiny muted">No tags yet — tap one below or type your own.</span>')+'</div>'+
+  '<div class="cltags sug">'+sug.map(t=>'<button type="button" class="cltag" data-t="'+esc(t)+'" onclick="clTag(\''+c.id+'\',this.dataset.t)">+ '+esc(t)+'</button>').join('')+
+  '<input class="f cltagin" id="cltag-'+c.id+'" maxlength="40" placeholder="New tag, then Enter" onkeydown="if(event.key===\'Enter\'){event.preventDefault();clTag(\''+c.id+'\',this.value);}"></div></div>';
+}
+window.clTag=async(id,t)=>{
+ t=String(t||'').trim().slice(0,40);if(!t)return;const c=cust(id);if(!c)return;
+ const tags=[...(c.tags||[])],k=tags.findIndex(x=>x.toLowerCase()===t.toLowerCase());
+ if(k>=0)tags.splice(k,1);else tags.push(t);
+ try{await updateDoc(doc(db,'customers',id),{tags});c.tags=tags;if(SEGD){const r=SEGD.rows.find(r=>r.c.id===id);if(r)r.c.tags=tags;}clRepaint(id);}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- notes from the team ---------- */
+const CLNOTES={};
+async function clLoadNotes(id){CLNOTES[id]=(await clByCust('custNotes',await clIds(id),200));return CLNOTES[id];}
+function clNotesHTML(c){
+ const L=(CLNOTES[c.id]||[]).slice().sort((a,b)=>(b.pin?1:0)-(a.pin?1:0)||String(b.at).localeCompare(String(a.at)));
+ const mine=n=>boss()||n.by===UID;
+ return (c.note?'<div class="clnote pin"><p>'+esc(c.note)+'</p><small>'+ic('note',11)+' Main note on the client details</small></div>':'')+
+  L.map(n=>'<div class="clnote'+(n.pin?' pin':'')+'"><p>'+esc(n.text)+'</p><small>'+esc(n.byName||'')+' · '+dshort(n.at)+' '+tstr(n.at)+
+   '<span class="clnacts"><button type="button" onclick="clNotePin(\''+c.id+'\',\''+n.id+'\')">'+(n.pin?'Unpin':'Pin')+'</button>'+
+   (mine(n)?'<button type="button" onclick="clNoteDel(\''+c.id+'\',\''+n.id+'\')">Delete</button>':'')+'</span></small></div>').join('')+
+  (!L.length&&!c.note?'<p class="tiny muted" style="margin:0 0 8px">Nothing yet. Short notes help the next person — e.g. likes a cold room, doesn\'t like being pushed to buy.</p>':'')+
+  '<div class="cltags sug" style="margin-top:8px">'+CL_NOTE_QUICK.map(q=>'<button type="button" class="cltag" data-q="'+esc(q)+'" onclick="clNoteQuick(\''+c.id+'\',this.dataset.q)">'+esc(q)+'</button>').join('')+'</div>'+
+  '<div class="row" style="gap:6px;margin-top:6px"><input class="f" style="margin:0;flex:1" id="cln-in-'+c.id+'" maxlength="300" placeholder="Add a note for the team" onkeydown="if(event.key===\'Enter\'){event.preventDefault();clNoteAdd(\''+c.id+'\');}">'+
+  '<button type="button" class="btn sm" onclick="clNoteAdd(\''+c.id+'\')">'+ic('plus',13)+'Add</button></div>';
+}
+function clNotesCard(c){
+ if(!CLNOTES[c.id])setTimeout(()=>clLoadNotes(c.id).then(()=>clPaintNotes(c.id)),0);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('note',14)+' Notes from the team</h3><span class="tiny muted">pinned notes show on every booking</span></div>'+
+  '<div data-cln="'+c.id+'">'+(CLNOTES[c.id]?clNotesHTML(c):'<div class="skel" style="width:60%"></div>')+'</div></div>';
+}
+function clPaintNotes(id){const c=cust(id);if(!c)return;document.querySelectorAll('[data-cln="'+id+'"]').forEach(el=>{el.innerHTML=clNotesHTML(c);});}
+window.clNoteQuick=(id,q)=>{const el=document.getElementById('cln-in-'+id);if(el){el.value=q;el.focus();}};
+window.clNoteAdd=async id=>{
+ const el=document.getElementById('cln-in-'+id),t=el?el.value.trim().slice(0,300):'';if(!t)return;
+ const n={customerId:id,text:t,by:UID,byName:clWho(),at:clNow(),pin:true,branchId:ME.branchId};
+ try{const r=await addDoc(collection(db,'custNotes'),n);(CLNOTES[id]=CLNOTES[id]||[]).push({id:r.id,...n});clPaintNotes(id);toast('Note added');}catch(e){toast(friendly(e));}
+};
+window.clNotePin=async(id,nid)=>{const n=(CLNOTES[id]||[]).find(x=>x.id===nid);if(!n)return;
+ try{await updateDoc(doc(db,'custNotes',nid),{pin:!n.pin});n.pin=!n.pin;clPaintNotes(id);}catch(e){toast(friendly(e));}};
+window.clNoteDel=async(id,nid)=>{if(!confirm('Delete this note?'))return;
+ try{await deleteDoc(doc(db,'custNotes',nid));CLNOTES[id]=(CLNOTES[id]||[]).filter(x=>x.id!==nid);clPaintNotes(id);}catch(e){toast(friendly(e));}};
+
+/* ---------- the clinical bundle for one client ---------- */
+const CLB={};
+async function clLoad(id,fresh){
+ if(!fresh&&CLB[id]&&Date.now()-CLB[id].t<60000)return CLB[id];
+ const ids=await clIds(id);
+ const [consults,consents,recs,plans]=await Promise.all([clByCust('consults',ids,100),clByCust('consents',ids,200),clByCust('txRecords',ids,300),clByCust('txPlans',ids,50)]);
+ consults.sort(clDesc('at'));consents.sort(clDesc('at'));recs.sort(clDesc('at'));plans.sort(clDesc('at'));
+ CLB[id]={consults,consents,recs,plans,photos:CLB[id]&&CLB[id].photos,t:Date.now()};return CLB[id];
+}
+const clDrop=id=>{if(CLB[id])CLB[id].t=0;};
+/* contraindications: what the client declared against what each treatment must not be done with */
+function clFlags(c){const f=new Set(((c&&c.med)||{}).flags||[]);if(c&&String(c.allergy||'').trim())f.add('allergy');return f;}
+function clClash(c,s){if(!c||!s||!s.id)return[];const f=clFlags(c);return (s.avoid||[]).filter(x=>f.has(x));}
+const clHasMed=c=>!!(c&&c.med&&c.med.updatedAt);
+function clFlagPills(c){
+ const f=[...clFlags(c)].filter(x=>x!=='allergy');
+ return f.map(x=>'<span class="pill r">'+ic('alert',11)+esc(clFlagShort(x))+'</span>').join('');
+}
+/* consent forms: the owner's own, or the two standard ones until they write theirs */
+let CLFORMS=null;
+const CL_FORM0=[
+ {id:'general',name:'Consent for skin & spa treatment',v:1,all:true,cats:[],svcs:[],months:12,active:true,std:true,
+  body:'Saya bersetuju untuk menerima rawatan kulit / spa daripada {biz}.\n\n1. Therapist telah menerangkan rawatan yang akan dilakukan, jangkaan hasil dan kesan sampingan yang mungkin berlaku seperti kemerahan, rasa pedih, kering atau mengelupas buat sementara waktu.\n2. Saya faham hasil rawatan berbeza bagi setiap individu dan tiada jaminan hasil tertentu.\n3. Maklumat kesihatan yang saya berikan (alahan, ubat, kehamilan dan prosedur terdahulu) adalah benar dan lengkap. Saya akan memaklumkan jika ada perubahan.\n4. Saya akan mengikut nasihat penjagaan selepas rawatan (aftercare). Kegagalan berbuat demikian boleh menjejaskan hasil.\n5. Saya boleh bertanya soalan atau menghentikan rawatan pada bila-bila masa.\n6. Gambar sebelum/selepas boleh diambil untuk rekod rawatan saya sahaja. Penggunaan untuk pemasaran memerlukan kebenaran berasingan.',
+  bodyEn:'I agree to receive skin / spa treatment from {biz}.\n\n1. The therapist has explained the treatment, the expected results and possible side effects such as temporary redness, stinging, dryness or peeling.\n2. I understand results vary from person to person and no particular result is guaranteed.\n3. The health information I have given (allergies, medication, pregnancy and previous procedures) is true and complete. I will tell the spa if anything changes.\n4. I will follow the aftercare advice given. Not doing so can affect the results.\n5. I may ask questions or stop the treatment at any time.\n6. Before/after photos may be taken for my treatment record only. Using them for marketing needs my separate permission.'},
+ {id:'advanced',name:'Consent for peels, machine & needling treatments',v:1,all:false,cats:[],svcs:[],months:6,active:true,std:true,
+  body:'Saya bersetuju untuk menerima rawatan lanjutan (chemical peel, rawatan mesin, microneedling, laser/IPL atau yang seumpamanya) daripada {biz}.\n\n1. Risiko telah diterangkan kepada saya termasuk kemerahan, bengkak, mengelupas, rasa panas, perubahan warna kulit (hiper/hipopigmentasi), jangkitan atau parut, walaupun jarang berlaku.\n2. Saya mengesahkan saya TIDAK hamil atau menyusu, TIDAK mengambil isotretinoin dalam 6 bulan lepas, dan telah memaklumkan semua ubat serta keadaan kulit saya.\n3. Saya akan mengelak pendedahan matahari, memakai pelindung matahari dan mengikut arahan aftercare.\n4. Beberapa sesi mungkin diperlukan dan hasil tidak dijamin.\n5. Saya boleh menghentikan rawatan pada bila-bila masa.',
+  bodyEn:'I agree to receive advanced treatment (chemical peel, machine treatment, microneedling, laser/IPL or similar) from {biz}.\n\n1. The risks have been explained to me, including redness, swelling, peeling, heat, changes in skin colour (hyper/hypopigmentation), infection or scarring, although these are uncommon.\n2. I confirm I am NOT pregnant or breastfeeding, have NOT taken isotretinoin in the last 6 months, and have told the therapist about all my medication and skin conditions.\n3. I will avoid the sun, wear sunscreen and follow the aftercare instructions.\n4. Several sessions may be needed and results are not guaranteed.\n5. I may stop the treatment at any time.'}];
+async function clLoadForms(fresh){
+ if(CLFORMS&&!fresh)return CLFORMS;
+ let L=[];try{const s=await getDocs(query(collection(db,'consentForms'),limit(50)));L=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+ const have=new Set(L.map(f=>f.id));CLFORMS=[...L,...CL_FORM0.filter(f=>!have.has(f.id))];return CLFORMS;
+}
+const clFormsLive=()=>(CLFORMS||CL_FORM0).filter(f=>f.active!==false);
+/* a form is for every treatment, or only the categories and treatments the owner ticked */
+function clFormFits(f,s){
+ if(f.all)return true;if(!s||!s.id)return false;
+ return (f.svcs||[]).includes(s.id)||(f.cats||[]).includes(s.cat||'');
+}
+/* the state of each form that applies to this treatment: signed on the current version and not expired */
+function clConsentState(b,s){
+ return clFormsLive().filter(f=>clFormFits(f,s)).map(f=>{
+  const last=(b.consents||[]).filter(x=>x.formId===f.id).sort(clDesc('at'))[0];
+  let st='need';
+  if(last){st='ok';if((+last.v||0)<(+f.v||1))st='version';else if(+f.months>0&&daysBetween(last.at,new Date())>f.months*30.44)st='expired';}
+  return{f,last,st};});
+}
+const CL_CST={ok:'Signed',need:'Not signed',version:'Form updated — sign again',expired:'Expired — sign again'};
+
+/* ---------- the profile, gathered ---------- */
+const CLDUPC={};
+function clDupBanner(c){
+ if(!c.phone||c.mergedInto)return c.mergedInto?'<div class="warnbox">'+ic('alert',13)+' This record was merged into '+esc((cust(c.mergedInto)||{}).name||'another client')+'. <button class="btn sm ghost" onclick="openCust(\''+c.mergedInto+'\')">Open</button></div>':'';
+ const paint=d=>document.querySelectorAll('[data-dup="'+c.id+'"]').forEach(el=>{el.innerHTML=!d.length?'':'<div class="errbox cldup">'+ic('alert',14)+' <b>Possible duplicate.</b> '+esc(c.phone)+' is also registered to '+
+  d.map(x=>'<b>'+esc(x.name)+'</b>'+(idOf(x)?' ('+esc(idOf(x))+')':'')).join(', ')+'.<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">'+
+  d.map(x=>'<button type="button" class="btn sm ghost" onclick="openCust(\''+x.id+'\')">Open '+esc(String(x.name).split(' ')[0])+'</button>'+
+   (boss()?'<button type="button" class="btn sm" onclick="clMergeAsk(\''+c.id+'\',\''+x.id+'\')">Merge '+esc(String(x.name).split(' ')[0])+' into this record</button>':'')).join('')+'</div></div>';});
+ const k=CLDUPC[c.id];
+ if(k&&Date.now()-k.t<60000)setTimeout(()=>paint(k.d),0);
+ else setTimeout(()=>clDupes(c.phone,c.id).then(d=>{CLDUPC[c.id]={d,t:Date.now()};paint(d);}),0);
+ return '<div data-dup="'+c.id+'"></div>';
+}
+function clClinSum(c,b){
+ const lc=b.consults[0],lr=b.recs[0],pm=c.photoMkt||{};
+ const act=b.plans.filter(p=>!['done','stopped'].includes(p.status));
+ const med=c.med||{},f=[...clFlags(c)];
+ const line=(k,v,act)=>'<div class="clsl"><span>'+k+'</span><div>'+v+'</div>'+(act||'')+'</div>';
+ return line('Medical history',f.length?f.map(x=>'<span class="pill r">'+esc(clFlagShort(x))+'</span>').join(' ')+(c.allergy?' <span class="tiny" style="color:var(--rose)">'+esc(c.allergy)+'</span>':''):
+   clHasMed(c)?'<span class="muted">Nothing declared · '+dshort(med.updatedAt)+'</span>':'<span class="amb">Not on file</span>')+
+  line('Consultation form',lc?dstr(lc.at)+(lc.review?' · reviewed':' · <span class="amb">not reviewed</span>'):'<span class="amb">None yet</span>',
+   '<button type="button" class="btn sm ghost" onclick="clKiosk(\'consult\',\''+c.id+'\')">'+ic('note',12)+'Tablet</button>')+
+  line('Consent',b.consents.length?b.consents.length+' signed · last '+dshort(b.consents[0].at):'<span class="amb">None signed</span>',
+   '<button type="button" class="btn sm ghost" onclick="clinOpen(\''+c.id+'\',\'consent\')">'+ic('signature',12)+'Sign</button>')+
+  line('Photos',(+c.photoN||0)+' · marketing '+(pm.ok?'<span class="grn">allowed</span>':'not allowed'),
+   '<button type="button" class="btn sm ghost" onclick="clinOpen(\''+c.id+'\',\'photos\')">'+ic('camera',12)+'Photos</button>')+
+  line('Treatment records',lr?b.recs.length+' · last '+dshort(lr.at)+' '+esc(lr.serviceName||''):'<span class="muted">None yet</span>',
+   '<button type="button" class="btn sm ghost" onclick="clinOpen(\''+c.id+'\',\'recs\',{add:1})">'+ic('plus',12)+'Record</button>')+
+  (act.length?act.map(p=>{const n=b.recs.filter(r=>r.planId===p.id).length;return line('Plan',esc(p.name)+' · <b>'+n+' of '+p.sessions+'</b>'+clPlanDue(p,b));}).join(''):line('Treatment plan','<span class="muted">None running</span>'));
+}
+function clClinCard(c){
+ setTimeout(()=>clLoad(c.id).then(b=>document.querySelectorAll('[data-clc="'+c.id+'"]').forEach(el=>{el.innerHTML=clClinSum(c,b);})),0);
+ return '<div class="card clcard"><div class="sec-h"><h3>'+ic('shield',14)+' Clinical record</h3><button type="button" class="btn sm" onclick="clinOpen(\''+c.id+'\')">'+ic('right',13)+'Open</button></div>'+
+  '<div data-clc="'+c.id+'">'+(CLB[c.id]?clClinSum(c,CLB[c.id]):'<div class="skel" style="width:65%"></div><div class="skel" style="width:45%"></div>')+'</div></div>';
+}
+{const _cp=custProfile;custProfile=function(c){
+ return clDupBanner(c)+clValueCard(c)+clClinCard(c)+clNotesCard(c)+'<div data-cltg="'+c.id+'">'+clTagsCard(c)+'</div>'+_cp(c);};}
+{const _hh=custHeadHTML;custHeadHTML=function(c){const h=_hh(c),f=clFlagPills(c);return f?h.replace('<div class="cpflags">','<div class="cpflags">'+f):h;};}
+function clRepaint(id){
+ const c=cust(id);if(!c)return;
+ document.querySelectorAll('[data-cltg="'+id+'"]').forEach(el=>{el.innerHTML=clTagsCard(c);});
+ const h=document.querySelector('#cpane .cphead');if(h&&CSEL===id)h.outerHTML=custHeadHTML(c);
+}
+/* ---------- every visit: date, treatment, therapist, branch and what was paid ---------- */
+let CLVALL=false;
+window.clVisAll=id=>{CLVALL=!CLVALL;const c=cust(id);document.querySelectorAll('[data-clvis="'+id+'"]').forEach(el=>{el.outerHTML=clVisitsCard(c,HIST||{});});};
+function clVisitsCard(c,H){
+ const by={};
+ const at=(d,f)=>{if(!d)return;const v=by[d]||(by[d]={d,svcs:[],staff:new Set(),br:new Set(),val:0,pkg:0,bills:0});f(v);};
+ (H.appts||[]).filter(a=>a.status==='done').forEach(a=>at(a.date||String(a.start||'').slice(0,10),v=>{v.svcs.push(a.serviceName||'');if(a.staffName)v.staff.add(a.staffName);if(a.branchId)v.br.add(clBr(a.branchId));}));
+ (H.redemptions||[]).forEach(r=>at(String(r.at||'').slice(0,10),v=>{v.pkg++;if(r.serviceName&&!v.svcs.includes(r.serviceName))v.svcs.push(r.serviceName);if(r.staffName)v.staff.add(r.staffName);}));
+ (H.sales||[]).filter(s=>!s.voided).forEach(s=>at(s.date||String(s.at||'').slice(0,10),v=>{v.val+=Math.max(0,(+s.total||0)-(+s.refunded||0));v.bills++;if(s.branchId)v.br.add(clBr(s.branchId));
+  if(!v.svcs.length)(s.items||[]).forEach(i=>{if(i.name)v.svcs.push(i.name+(i.qty>1?' ×'+i.qty:''));});}));
+ const rows=Object.values(by).sort((a,b)=>b.d.localeCompare(a.d));
+ if(!rows.length)return '';
+ const show=CLVALL?rows:rows.slice(0,10);
+ return '<div class="card" data-clvis="'+c.id+'"><div class="sec-h"><h3>'+ic('calendar',14)+' Visits</h3><span class="pill">'+rows.length+'</span></div>'+
+  '<div class="cltblw"><table class="cltbl"><thead><tr><th>Date</th><th>Treatment</th><th>Therapist</th><th>Branch</th><th class="num">Paid</th></tr></thead><tbody>'+
+  show.map(v=>'<tr><td data-l="Date">'+dshort(v.d)+' <span class="muted">'+v.d.slice(0,4)+'</span></td><td data-l="Treatment">'+esc(v.svcs.join(', ')||'—')+'</td><td data-l="Therapist">'+esc([...v.staff].join(', ')||'—')+
+   '</td><td data-l="Branch">'+esc([...v.br].join(', ')||'—')+'</td><td data-l="Paid" class="num">'+(v.val?rm(v.val):'')+(v.pkg?(v.val?' + ':'')+'<span class="pill g">package</span>':v.val?'':'—')+'</td></tr>').join('')+
+  '</tbody></table></div>'+(rows.length>10?'<button type="button" class="blankf" style="margin-top:8px" onclick="clVisAll(\''+c.id+'\')">'+(CLVALL?'Show fewer':'Show all '+rows.length+' visits')+'</button>':'')+'</div>';
+}
+{const _ch=custHistory;custHistory=function(c){
+ const h=_ch(c),v=clVisitsCard(c,HIST||{}),m='<div class="card"><div class="sec-h"><h3>Everything, newest first',i=h.indexOf(m);
+ return i<0?h+v:h.slice(0,i)+v+h.slice(i);};}
+
+/* ============ the clinical record ============ */
+let CLV={id:'',tab:'consult',ctx:null,form:null,sel:[]};
+window.clinOpen=async(id,tab,ctx)=>{
+ const c=cust(id)||await custGet(id);if(!c)return;
+ CLV={id,tab:tab||'consult',ctx:ctx||null,form:null,sel:[]};
+ if(ctx&&ctx.add)CLV.form={kind:tab==='plans'?'plan':'rec',...ctx};
+ clPaint(true);
+ await Promise.all([clLoad(id),clLoadForms()]);
+ if(CLV.id!==id)return;
+ if(CLV.form&&CLV.form.kind==='rec')clRecPrefill();
+ clPaint();
+ if(CLV.tab==='photos')clLoadPhotos(id).then(()=>{if(CLV.id===id&&CLV.tab==='photos')clPaint();});
+};
+const CLTABS=[['consult','Consultation','note'],['med','Medical','alert'],['consent','Consent','signature'],['photos','Photos','camera'],['recs','Treatments','spark'],['plans','Plans','plan']];
+function clWarnBox(c){
+ const f=[...clFlags(c)];
+ if(f.length)return '<div class="errbox clwarn">'+ic('alert',14)+' <b>Check before any treatment:</b> '+f.map(x=>esc(x==='allergy'&&c.allergy?'Allergy — '+c.allergy:flagLabel(x))).join(' · ')+'</div>';
+ if(!clHasMed(c))return '<div class="warnbox">'+ic('alert',13)+' No medical history on file yet. Ask the client to fill the consultation form on the tablet.</div>';
+ return '';
+}
+function clPaint(loading){
+ const c=cust(CLV.id);if(!c)return;const b=CLB[CLV.id];
+ const back=CLV.ctx&&CLV.ctx.apptId?'<button type="button" class="btn sm ghost" onclick="clBack(1)">'+ic('left',13)+'Booking</button>':'<button type="button" class="btn sm ghost" onclick="clBack()">'+ic('left',13)+'Client</button>';
+ const head='<div class="clxhead"><div class="avatar">'+esc(initials(c.name))+'</div><div style="flex:1;min-width:0"><b>'+esc(c.name)+'</b>'+cnoTag(c)+
+  '<div class="tiny muted">'+esc(c.phone||'')+(c.skin?' · '+esc(c.skin)+' skin':'')+(c.dob?' · '+Math.floor(daysBetween(c.dob,new Date())/365.25)+' yrs':'')+'</div></div>'+back+'</div>'+clWarnBox(c)+
+  '<div class="seg clseg">'+CLTABS.map(t=>'<button type="button" class="'+(CLV.tab===t[0]?'on':'')+'" onclick="clTab(\''+t[0]+'\')">'+ic(t[2],13)+'<span class="cltl">'+t[1]+'</span></button>').join('')+'</div>';
+ const F={consult:clConsultTab,med:clMedTab,consent:clConsentTab,photos:clPhotosTab,recs:clRecsTab,plans:clPlansTab}[CLV.tab];
+ const body=loading||!b?'<div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div><div class="skel" style="width:40%"></div></div>':F(c,b);
+ const y=(document.querySelector('#modal .sheet')||{}).scrollTop||0;
+ modal('Clinical record',head+'<div id="clbody">'+body+'</div>');
+ const sh=document.querySelector('#modal .sheet');if(sh){sh.classList.add('clsheet');if(!loading&&CLV.keep)sh.scrollTop=y;}
+ CLV.keep=false;
+ if(CLV.form&&CLV.form.kind==='rec')setTimeout(clRecBind,0);
+}
+const clRe=()=>{CLV.keep=true;clPaint();};
+/* inline handlers run outside this module, so they reach its state through these */
+window.clSet=(k,v,paint)=>{CLV[k]=v;if(paint)clRe();};
+window.clState=()=>CLV;
+window.clRProg=x=>{if(CLV.form){CLV.form.progress=CLV.form.progress===x?'':x;clRe();}};
+window.clWzOk=v=>{if(WZ)WZ.clok=!!v;};
+window.clFormAll=v=>{clFormKeep();CLFE.all=!!v;clFormPaint();};
+window.clKSk=v=>{KS.a.skin=KS.a.skin===v?'':v;clKPaint();};
+window.clTab=t=>{CLV.tab=t;CLV.form=null;CLV.sel=[];clPaint();
+ if(t==='photos'&&!(CLB[CLV.id]||{}).photos)clLoadPhotos(CLV.id).then(()=>{if(CLV.tab==='photos')clPaint();});};
+window.clBack=appt=>{const id=CLV.id,a=CLV.ctx&&CLV.ctx.apptId;window.closeModal();if(appt&&a&&APPTS.some(x=>x.id===a))window.openAppt(a);else window.openCust(id);};
+
+/* ---- consultation forms ---- */
+const clL=(ms,en,lang)=>lang==='en'?en:ms;
+function clConsultView(x){
+ const L=[],p=(k,v)=>{if(v)L.push('<div class="k">'+k+'</div><div class="v">'+v+'</div>');};
+ p('Skin type',esc(x.skin||''));
+ p('Main concerns',esc((x.concerns||[]).map(concernLabel).join(', '))+(x.since?' <span class="muted">('+esc((CL_SINCE.find(s=>s[0]===x.since)||[])[2]||'')+')</span>':''));
+ p('Goals',esc([...(x.goals||[]).map(g=>(CL_GOALS.find(z=>z[0]===g)||[])[2]||g),x.goalText].filter(Boolean).join(' · '))+(x.eventDate?' · event '+dstr(x.eventDate):''));
+ const R=x.routine||{};
+ p('Routine',CL_ROUTINE.map(r=>{const v=R[r[0]]||{};return '<span class="'+(v.on?'':'muted')+'">'+(v.on?ic('check',11):'✕ ')+esc(r[2])+(v.txt?' ('+esc(v.txt)+')':'')+'</span>';}).join(' · '));
+ p('Actives used',esc((x.actives||[]).map(a=>(CL_ACTIVES.find(z=>z[0]===a)||[])[2]||a).join(', ')));
+ p('Exfoliates',esc({never:'Never',weekly:'About once a week',more:'More than once a week'}[x.exfol]||''));
+ p('Make-up daily',x.makeup===true?'Yes':x.makeup===false?'No':'');
+ const m=x.med||{};
+ p('Health',(m.flags||[]).length?'<span style="color:var(--rose);font-weight:560">'+esc(m.flags.map(flagLabel).join(', '))+'</span>':'Nothing declared');
+ p('Allergies',m.allergies?'<span style="color:var(--rose)">'+esc(m.allergies)+'</span>':'');p('Medication',esc(m.meds||''));
+ p('Past procedures',esc([(m.procs||[]).map(a=>(CL_PROCS.find(z=>z[0]===a)||[])[2]||a).join(', '),m.procWhen].filter(Boolean).join(' — ')));
+ p('Conditions',esc(m.conditions||''));
+ return '<div class="kv">'+L.join('')+'</div>';
+}
+function clConsultTab(c,b){
+ const L=b.consults;
+ return '<div class="card"><div class="sec-h"><h3>'+ic('note',14)+' Consultation forms</h3><button type="button" class="btn sm" onclick="clKiosk(\'consult\',\''+c.id+'\')">'+ic('note',13)+'Open on the tablet</button></div>'+
+  '<p class="tiny muted" style="margin:0">The client fills it in on the tablet while they wait — skin type, main concerns, goals, current skincare routine and health. Their answers update the medical history, which every booking is checked against.</p></div>'+
+  (L.length?L.map((x,i)=>'<details class="card clcons"'+(i===0?' open':'')+'><summary><b>'+dstr(x.at)+'</b> <span class="tiny muted">'+tstr(x.at)+' · '+(x.byClient?'filled by the client':'filled by '+esc(x.byName||''))+' · '+(x.lang==='en'?'English':'BM')+'</span>'+
+   (x.review?'<span class="pill g">'+ic('check',11)+' reviewed</span>':'<span class="pill a">to review</span>')+'</summary>'+clConsultView(x)+
+   (x.review?'<div class="clrev">'+ic('user',12)+' Reviewed by <b>'+esc(x.review.byName||'')+'</b> · '+dshort(x.review.at)+(x.review.note?'<p>'+esc(x.review.note)+'</p>':'')+'</div>':
+    '<div class="clrev"><label>Therapist\'s findings <span class="muted">— what you see on the skin, what you recommend</span></label><textarea class="f" rows="2" id="clrv-'+x.id+'" maxlength="800"></textarea>'+
+    '<button type="button" class="btn sm" onclick="clReview(\''+x.id+'\')">'+ic('check',13)+'Mark reviewed</button></div>')+'</details>').join('')
+  :'<div class="card"><div class="empty">'+ic('note',26)+'<div>No consultation form yet.</div></div></div>');
+}
+window.clReview=async id=>{
+ const x=(CLB[CLV.id]||{consults:[]}).consults.find(z=>z.id===id);if(!x)return;
+ const note=((document.getElementById('clrv-'+id)||{}).value||'').trim();
+ const review={by:UID,byName:clWho(),at:clNow(),note};
+ try{await updateDoc(doc(db,'consults',id),{review});x.review=review;await audit('Consultation reviewed',(cust(CLV.id)||{}).name||'');clRe();toast('Marked as reviewed');}catch(e){toast(friendly(e));}
+};
+
+/* ---- medical history and contraindications ---- */
+function clMedTab(c,b){
+ const m=c.med||{},f=new Set(m.flags||[]);
+ const bad=D.services.filter(s=>s.active!==false&&clClash(c,s).length);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('alert',14)+' Medical history</h3>'+(m.updatedAt?'<span class="tiny muted">Updated '+dshort(m.updatedAt)+' by '+esc(m.byName||'')+'</span>':'<span class="pill a">Not on file</span>')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Ticked items are checked against every booking. A treatment marked "Do not use when…" in the Catalogue shows a red warning for this client.</p>'+
+  '<div class="clflags">'+FLAGS.map(x=>'<label class="clck"><input type="checkbox" data-mf="'+x.id+'"'+(f.has(x.id)?' checked':'')+'> <span>'+esc(x.label)+'</span></label>').join('')+'</div>'+
+  '<label>Allergies <span class="muted">— products, ingredients, medicine</span></label><input class="f" id="clm-al" maxlength="200" value="'+esc(m.allergies!==undefined?m.allergies:c.allergy||'')+'" placeholder="e.g. lidocaine, fragrance, nuts">'+
+  '<label>Medication and supplements taken now</label><input class="f" id="clm-meds" maxlength="300" value="'+esc(m.meds||'')+'" placeholder="e.g. isotretinoin 20mg, birth control pill">'+
+  '<label>Previous procedures</label><div class="cltags sug">'+CL_PROCS.map(p=>'<label class="clck sm"><input type="checkbox" data-mp="'+p[0]+'"'+((m.procs||[]).includes(p[0])?' checked':'')+'> <span>'+esc(p[2])+'</span></label>').join('')+'</div>'+
+  '<input class="f" id="clm-pw" maxlength="200" value="'+esc(m.procWhen||'')+'" placeholder="When and where — e.g. laser Mar 2026 at a clinic">'+
+  '<label>Medical conditions</label><textarea class="f" id="clm-cond" rows="2" maxlength="500">'+esc(m.conditions||'')+'</textarea>'+
+  '<button type="button" class="btn" style="width:100%;justify-content:center" onclick="clMedSave()">'+ic('check',15)+'Save medical history</button></div>'+
+  (bad.length?'<div class="card"><h3 style="margin-bottom:8px">'+ic('shield',14)+' Not suitable for '+esc(String(c.name).split(' ')[0])+' now</h3>'+
+   bad.map(s=>'<div class="clsl"><span>'+esc(s.name)+'</span><div>'+clClash(c,s).map(x=>'<span class="pill r">'+esc(clFlagShort(x))+'</span>').join(' ')+'</div></div>').join('')+'</div>':'');
+}
+window.clMedSave=async()=>{
+ const c=cust(CLV.id);if(!c)return;
+ const flags=[...document.querySelectorAll('[data-mf]')].filter(x=>x.checked).map(x=>x.dataset.mf);
+ const procs=[...document.querySelectorAll('[data-mp]')].filter(x=>x.checked).map(x=>x.dataset.mp);
+ const g=id=>((document.getElementById(id)||{}).value||'').trim();
+ const med={flags,allergies:g('clm-al'),meds:g('clm-meds'),procs,procWhen:g('clm-pw'),conditions:g('clm-cond'),updatedAt:clNow(),by:UID,byName:clWho(),src:'staff'};
+ const up={med,allergy:med.allergies};
+ try{await updateDoc(doc(db,'customers',c.id),up);Object.assign(c,up);await audit('Medical history updated',c.name);clRe();toast('Medical history saved');}catch(e){toast(friendly(e));}
+};
+
+/* ---- consent ---- */
+function clFormStatus(f,b){
+ const last=(b.consents||[]).filter(x=>x.formId===f.id).sort(clDesc('at'))[0];
+ let st='need';if(last){st='ok';if((+last.v||0)<(+f.v||1))st='version';else if(+f.months>0&&daysBetween(last.at,new Date())>f.months*30.44)st='expired';}
+ return{last,st};
+}
+const clFormFor=f=>f.all?'All treatments':[...(f.cats||[]),...(f.svcs||[]).map(id=>svc(id).name||'')].filter(Boolean).join(', ')||'no treatment linked yet — signed when you choose it';
+function clConsentTab(c,b){
+ if(CLV.form&&CLV.form.kind==='cview')return clConsentView(c,b);
+ const pm=c.photoMkt||{};
+ return '<div class="card"><div class="sec-h"><h3>'+ic('signature',14)+' Consent forms</h3>'+(boss()?'<button type="button" class="btn sm ghost" onclick="closeModal();go(\'clin\')">'+ic('edit',13)+'Edit forms</button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">The client reads and signs on the tablet. Each signature is kept with the date and the exact version of the wording they signed.</p>'+
+  clFormsLive().map(f=>{const S=clFormStatus(f,b);
+   return '<div class="clform"><div style="flex:1;min-width:0"><b>'+esc(f.name)+'</b> <span class="tiny muted">v'+(f.v||1)+'</span><div class="tiny muted">For: '+esc(clFormFor(f))+(+f.months>0?' · renew every '+f.months+' months':'')+'</div>'+
+    '<div class="tiny" style="margin-top:3px">'+(S.st==='ok'?'<span class="grn">'+ic('check',11)+' Signed '+dstr(S.last.at)+'</span>':S.st==='need'?'<span class="amb">Not signed yet</span>':'<span class="amb">'+esc(CL_CST[S.st])+'</span>'+(S.last?' <span class="muted">(last v'+S.last.v+', '+dshort(S.last.at)+')</span>':''))+'</div></div>'+
+    '<button type="button" class="btn sm'+(S.st==='ok'?' ghost':'')+'" onclick="clKiosk(\'consent\',\''+c.id+'\',{formId:\''+esc(f.id)+'\'})">'+ic('signature',13)+(S.st==='ok'?'Sign again':'Sign on the tablet')+'</button></div>';}).join('')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3>'+ic('camera',14)+' Photos for marketing</h3>'+(pm.ok?'<span class="pill g">Allowed</span>':'<span class="pill">Not allowed</span>')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Separate from the treatment consent. Without it, photos are for the treatment record only and must not be posted.</p>'+
+  (pm.ok?'<div class="tiny">Signed '+dstr(pm.at)+(pm.face===false?' · <b>face must be hidden</b>':' · face may be shown')+'</div><button type="button" class="btn sm ghost" style="margin-top:8px" onclick="clPhotoWithdraw()">Client withdraws permission</button>':
+   (pm.withdrawnAt?'<div class="tiny muted">Withdrawn '+dstr(pm.withdrawnAt)+'</div>':'')+'<button type="button" class="btn sm" onclick="clKiosk(\'photo\',\''+c.id+'\')">'+ic('signature',13)+'Ask on the tablet</button>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3>Signed</h3><span class="pill">'+b.consents.length+'</span></div>'+
+  (b.consents.length?b.consents.map(x=>'<button type="button" class="pkrow" onclick="clConsentOpen(\''+x.id+'\')"><span class="cpmeta"><b>'+esc(x.formName||'')+' <span class="muted">v'+(x.v||1)+'</span></b><small>'+dstr(x.at)+' '+tstr(x.at)+
+   (x.serviceName?' · '+esc(x.serviceName):'')+' · witness '+esc(x.staffName||'')+(x.photoOk===true?' · photos for marketing: yes':x.photoOk===false?' · photos for marketing: no':'')+'</small></span>'+ic('right',14)+'</button>').join('')
+   :'<div class="tiny muted">Nothing signed yet.</div>')+'</div>';
+}
+window.clConsentOpen=id=>{CLV.form={kind:'cview',id};clPaint();};
+function clConsentView(c,b){
+ const x=b.consents.find(z=>z.id===CLV.form.id);if(!x){CLV.form=null;return clConsentTab(c,b);}
+ return '<div class="card"><button type="button" class="btn sm ghost" style="margin-bottom:10px" onclick="CLVF0()">'+ic('left',13)+'All consent</button>'+
+  '<h3>'+esc(x.formName||'')+' <span class="tiny muted">version '+(x.v||1)+'</span></h3>'+
+  '<div class="tiny muted" style="margin:4px 0 10px">Signed '+dstr(x.at)+' at '+tstr(x.at)+' · '+esc(clBr(x.branchId))+' · witness '+esc(x.staffName||'')+(x.serviceName?' · for '+esc(x.serviceName):'')+'</div>'+
+  '<div class="cltext">'+esc(x.text||'')+'</div>'+
+  (x.photoOk!==undefined&&x.photoOk!==null?'<p class="tiny" style="margin:10px 0 0">Photos for marketing: <b>'+(x.photoOk?'yes'+(x.face===false?' (face hidden)':''):'no')+'</b></p>':'')+
+  '<div class="clsigbox">'+(x.sig?'<img src="'+x.sig+'" alt="Signature">':'')+'<div><b>'+esc(x.signedName||'')+'</b><small>'+esc(c.idNo?'ID '+c.idNo:c.phone||'')+'</small></div></div>'+
+  '<button type="button" class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="clConsentPDF(\''+x.id+'\')">'+ic('download',15)+'Download PDF</button></div>';
+}
+window.CLVF0=()=>{CLV.form=null;clPaint();};
+window.clPhotoWithdraw=async()=>{
+ const c=cust(CLV.id);if(!c||!confirm('Record that '+c.name+' no longer allows their photos to be used for marketing?'))return;
+ const pm={...(c.photoMkt||{}),ok:false,withdrawnAt:clNow(),withdrawnBy:clWho()};
+ try{await updateDoc(doc(db,'customers',c.id),{photoMkt:pm});c.photoMkt=pm;await audit('Photo marketing consent withdrawn',c.name);clRe();}catch(e){toast(friendly(e));}
+};
+window.clConsentPDF=async id=>{
+ const c=cust(CLV.id)||{},x=((CLB[CLV.id]||{}).consents||[]).find(z=>z.id===id);if(!x)return;
+ try{
+  const J=await loadJsPDF(),d=new J({unit:'mm',format:'a4'}),B=bizC();
+  let y=18;d.setFont('helvetica','bold');d.setFontSize(13);d.text(String(B.name||'Luuna Skin Spa'),105,y,{align:'center'});y+=6;
+  d.setFont('helvetica','normal');d.setFontSize(8.5);d.text([B.address,B.postcode,B.city,B.state].filter(Boolean).join(', ')+(B.phone?' · '+B.phone:''),105,y,{align:'center'});y+=10;
+  d.setFont('helvetica','bold');d.setFontSize(12);d.text(String(x.formName||'Consent'),16,y);d.setFont('helvetica','normal');d.setFontSize(8.5);d.text('Version '+(x.v||1)+' · ref '+x.id,194,y,{align:'right'});y+=7;
+  d.setFontSize(9.5);
+  [['Client',(x.customerName||c.name||'')+(idOf(c)?'  ('+idOf(c)+')':'')],['Phone / ID',[c.phone,c.idNo].filter(Boolean).join('  ·  ')],['Treatment',x.serviceName||'—'],['Signed',dstr(x.at)+' '+tstr(x.at)+'  ·  '+clBr(x.branchId)]].forEach(r=>{d.setFont('helvetica','bold');d.text(r[0],16,y);d.setFont('helvetica','normal');d.text(String(r[1]||''),48,y);y+=5.5;});
+  y+=3;d.setDrawColor(200);d.line(16,y,194,y);y+=7;d.setFontSize(9.5);
+  d.splitTextToSize(String(x.text||''),178).forEach(l=>{if(y>262){d.addPage();y=18;}d.text(l,16,y);y+=4.8;});
+  if(x.photoOk!==undefined&&x.photoOk!==null){y+=3;d.setFont('helvetica','bold');d.text('Photos for marketing: '+(x.photoOk?'YES'+(x.face===false?' (face hidden)':''):'NO'),16,y);d.setFont('helvetica','normal');y+=6;}
+  if(y>235){d.addPage();y=20;}
+  y+=6;if(x.sig)try{d.addImage(x.sig,'PNG',16,y,60,20);}catch(e){}
+  d.line(16,y+22,86,y+22);d.line(120,y+22,190,y+22);
+  d.setFontSize(8.5);d.text('Client: '+(x.signedName||''),16,y+27);d.text('Witness: '+(x.staffName||''),120,y+27);
+  d.text('Signed electronically on '+new Date(x.at).toLocaleString('en-MY'),16,y+33);
+  const name='Consent-'+String(x.customerName||'client').replace(/[^A-Za-z0-9]+/g,'-')+'-'+String(x.at).slice(0,10)+'.pdf';
+  window.__lastPDF={kind:'consent',name,doc:d};d.save(name);
+ }catch(e){toast(friendly(e));}
+};
+
+/* ---- photos: before / after, side by side ---- */
+async function clLoadPhotos(id){
+ const L=await clByCust('clinPhotos',await clIds(id),300);
+ L.sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(a.at).localeCompare(String(b.at)));
+ (CLB[id]||(CLB[id]={consults:[],consents:[],recs:[],plans:[],t:0})).photos=L;return L;
+}
+const CLIMG={};
+async function clFull(id){
+ if(CLIMG[id])return CLIMG[id];
+ try{const s=await getDoc(doc(db,'clinPhotoImg',id));CLIMG[id]=s.exists()?s.data().img:'';}catch(e){CLIMG[id]='';}
+ return CLIMG[id];
+}
+/* one decode, two sizes: the full picture (kept apart, read only when needed) and a thumbnail */
+function clShrink(file){
+ return new Promise((res,rej)=>{
+  const fr=new FileReader();fr.onerror=()=>rej(new Error('Could not read the photo'));
+  fr.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error('That file is not a photo'));
+   im.onload=()=>{
+    const out=(max,budget,q0)=>{const s=Math.min(1,max/Math.max(im.width,im.height)),w=Math.round(im.width*s),h=Math.round(im.height*s);
+     const cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,w,h);g.drawImage(im,0,0,w,h);
+     let q=q0,u=cv.toDataURL('image/jpeg',q);while(u.length>budget&&q>0.4){q-=0.08;u=cv.toDataURL('image/jpeg',q);}return u;};
+    res({img:out(1400,330000,0.84),th:out(360,26000,0.74)});};
+   im.src=fr.result;};
+  fr.readAsDataURL(file);});
+}
+const CL_PH=[['before','Before'],['after','After'],['progress','Progress']];
+function clPhotosTab(c,b){
+ const P=b.photos,pm=c.photoMkt||{},ph=CLV.ph||'before';
+ const up='<div class="card"><div class="sec-h"><h3>'+ic('camera',14)+' Add photos</h3><span class="pill '+(pm.ok?'g':'')+'">'+(pm.ok?'OK for marketing'+(pm.face===false?' · hide face':''):'Treatment record only')+'</span></div>'+
+  '<div class="grid g3"><div><label>Session date</label><input class="f" type="date" id="clp-d" value="'+esc(CLV.pd||(CLV.ctx&&CLV.ctx.date)||today())+'" onchange="clSet(\'pd\',this.value)"></div>'+
+  '<div><label>When</label><div class="seg">'+CL_PH.map(x=>'<button type="button" class="'+(ph===x[0]?'on':'')+'" onclick="clSet(\'ph\',\''+x[0]+'\',1)">'+x[1]+'</button>').join('')+'</div></div>'+
+  '<div><label>Area</label><select class="f" id="clp-a" onchange="clSet(\'pa\',this.value)">'+CL_AREAS.map(a=>'<option'+((CLV.pa||CL_AREAS[0])===a?' selected':'')+'>'+esc(a)+'</option>').join('')+'</select></div></div>'+
+  '<div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn"><input type="file" accept="image/*" capture="environment" hidden onchange="clPhotoUp(this)">'+ic('camera',15)+'Take photo</label>'+
+  '<label class="btn ghost"><input type="file" accept="image/*" multiple hidden onchange="clPhotoUp(this)">'+ic('image',15)+'Choose from gallery</label><span class="tiny muted" id="clp-st"></span></div></div>';
+ if(P===undefined)return up+'<div class="card"><div class="skel" style="width:50%"></div></div>';
+ let cmp='';
+ if(CLV.sel.length===2){
+  const [x,y]=CLV.sel.map(id=>P.find(p=>p.id===id)).filter(Boolean).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  if(x&&y){cmp='<div class="card"><div class="sec-h"><h3>Side by side</h3><button type="button" class="btn sm ghost" onclick="clSet(\'sel\',[],1)">Clear</button></div><div class="clcmp">'+
+   [x,y].map(p=>'<figure><img data-full="'+p.id+'" src="'+p.th+'" alt=""><figcaption><b>'+esc(CL_PH.find(z=>z[0]===p.phase)?CL_PH.find(z=>z[0]===p.phase)[1]:'')+'</b> · '+dstr(p.date)+'<small>'+esc(p.area||'')+'</small></figcaption></figure>').join('')+'</div>'+
+   '<p class="tiny muted" style="margin:8px 0 0;text-align:center">'+daysBetween(x.date,y.date)+' days apart</p></div>';
+   setTimeout(()=>document.querySelectorAll('.clcmp img[data-full]').forEach(async im=>{const u=await clFull(im.dataset.full);if(u)im.src=u;}),0);}
+ }
+ const byDay={};P.forEach(p=>{(byDay[p.date]=byDay[p.date]||[]).push(p);});
+ const days=Object.keys(byDay).sort().reverse();
+ const areas=[...new Set(P.map(p=>p.area))],canPair=areas.some(a=>{const L=P.filter(p=>p.area===a);return L.length>1&&L[0].date!==L[L.length-1].date;});
+ return up+cmp+'<div class="card"><div class="sec-h"><h3>'+P.length+' photo'+(P.length===1?'':'s')+'</h3>'+(canPair?'<button type="button" class="btn sm ghost" onclick="clPair()">First vs latest</button>':'')+'</div>'+
+  (P.length?'<p class="tiny muted" style="margin:0 0 8px">Tap two photos to compare them side by side.</p>'+days.map(d=>'<div class="daysep">'+dstr(d)+'</div><div class="clgal">'+byDay[d].map(p=>
+   '<button type="button" class="clph'+(CLV.sel.includes(p.id)?' on':'')+'" onclick="clPick(\''+p.id+'\')"><img src="'+p.th+'" alt=""><span class="clphb '+esc(p.phase||'')+'">'+esc((CL_PH.find(z=>z[0]===p.phase)||['',''])[1])+'</span><small>'+esc(p.area||'')+'</small>'+
+   (boss()?'<i class="clphx" onclick="event.stopPropagation();clPhotoDel(\''+p.id+'\')">'+ic('close',11)+'</i>':'')+'</button>').join('')+'</div>').join('')
+  :'<div class="empty">'+ic('camera',26)+'<div>No photos yet. Take a before photo at the start of the course, then one at each review.</div></div>')+'</div>';
+}
+window.clPick=id=>{const i=CLV.sel.indexOf(id);if(i>=0)CLV.sel.splice(i,1);else{CLV.sel.push(id);if(CLV.sel.length>2)CLV.sel.shift();}clRe();};
+window.clPair=()=>{const P=(CLB[CLV.id]||{}).photos||[];let best=null;
+ [...new Set(P.map(p=>p.area))].forEach(a=>{const L=P.filter(p=>p.area===a).sort((x,y)=>String(x.date).localeCompare(String(y.date)));
+  if(L.length>1&&L[0].date!==L[L.length-1].date){const span=daysBetween(L[0].date,L[L.length-1].date);if(!best||span>best.span)best={span,ids:[L[0].id,L[L.length-1].id]};}});
+ if(best){CLV.sel=best.ids;clPaint();const s=document.querySelector('#modal .sheet');if(s)s.scrollTop=0;}};
+window.clPhotoUp=async inp=>{
+ const files=[...(inp.files||[])];if(!files.length)return;const c=cust(CLV.id);if(!c)return;
+ const st=document.getElementById('clp-st');const date=(document.getElementById('clp-d')||{}).value||today(),area=(document.getElementById('clp-a')||{}).value||CL_AREAS[0],phase=CLV.ph||'before';
+ let n=0;
+ for(const f of files){
+  if(st)st.textContent='Saving '+(n+1)+' of '+files.length+'…';
+  try{const {img,th}=await clShrink(f);
+   const meta={customerId:c.id,customerName:c.name,date,phase,area,th,apptId:(CLV.ctx&&CLV.ctx.apptId)||'',branchId:ME.branchId,by:UID,byName:clWho(),at:clNow()};
+   const r=await addDoc(collection(db,'clinPhotos'),meta);
+   await setDoc(doc(db,'clinPhotoImg',r.id),{customerId:c.id,img});CLIMG[r.id]=img;
+   ((CLB[c.id]||{}).photos||[]).unshift({id:r.id,...meta});n++;
+  }catch(e){toast(friendly(e));}
+ }
+ if(n){try{await updateDoc(doc(db,'customers',c.id),{photoN:increment(n)});c.photoN=(+c.photoN||0)+n;}catch(e){}
+  await audit('Clinical photos added',c.name+' · '+n);toast(n+' photo'+(n>1?'s':'')+' saved');}
+ inp.value='';clRe();
+};
+window.clPhotoDel=async id=>{
+ const c=cust(CLV.id);if(!c||!confirm('Delete this photo for good?'))return;
+ try{await deleteDoc(doc(db,'clinPhotos',id));await deleteDoc(doc(db,'clinPhotoImg',id));
+  CLB[c.id].photos=CLB[c.id].photos.filter(p=>p.id!==id);CLV.sel=CLV.sel.filter(x=>x!==id);
+  await updateDoc(doc(db,'customers',c.id),{photoN:increment(-1)});c.photoN=Math.max(0,(+c.photoN||1)-1);await audit('Clinical photo deleted',c.name);clRe();}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---- treatment records: machine, settings, products, so the next therapist carries on the same way ---- */
+function clRecPrefill(){
+ const F=CLV.form,b=CLB[CLV.id]||{recs:[],plans:[]};
+ const a=F.apptId?APPTS.find(x=>x.id===F.apptId):null;
+ if(a){F.serviceId=F.serviceId||a.serviceId||'';F.date=F.date||a.date;F.staffId=F.staffId||a.staffId;}
+ const pl=F.planId?b.plans.find(p=>p.id===F.planId):null;if(pl&&!F.serviceId)F.serviceId=pl.serviceId||'';
+ F.date=F.date||today();F.staffId=F.staffId||(ME.takes?UID:'');
+ if(!F.planId&&F.serviceId){const p=b.plans.find(p=>!['done','stopped'].includes(p.status)&&p.serviceId===F.serviceId);if(p)F.planId=p.id;}
+ if(!F.prods){const s=svc(F.serviceId);F.prods=(s.use||[]).map(u=>({name:prod(u.sku).name||u.sku,qty:u.qty,unit:prod(u.sku).unit||''}));}
+ ['machine','settings','response','progress','progressNote','next'].forEach(k=>{if(F[k]===undefined)F[k]='';});
+}
+window.clRF=(k,v)=>{if(CLV.form)CLV.form[k]=v;};
+window.clRP=(i,k,v)=>{const P=CLV.form&&CLV.form.prods;if(P&&P[i])P[i][k]=k==='qty'?v:String(v);};
+window.clRecSvc=v=>{const F=CLV.form;F.serviceId=v;F.prods=null;F.planId='';clRecPrefill();clRe();};
+window.clRecAdd=ctx=>{CLV.form={kind:'rec',...(ctx||{})};clRecPrefill();clRe();};
+window.clProdAdd=()=>{CLV.form.prods.push({name:'',qty:1,unit:''});clRe();};
+window.clProdDel=i=>{CLV.form.prods.splice(i,1);clRe();};
+window.clRecSame=()=>{const F=CLV.form,l=clLastRec(F.serviceId);if(!l)return;F.machine=l.machine||'';F.settings=l.settings||'';F.prods=(l.products||[]).map(p=>({name:p.name,qty:p.qty,unit:p.unit||''}));clRe();toast('Copied from '+dshort(l.at));};
+function clRecBind(){}
+const clLastRec=sid=>((CLB[CLV.id]||{}).recs||[]).find(r=>r.serviceId===sid);
+function clRecForm(c,b){
+ const F=CLV.form,s=svc(F.serviceId),last=F.serviceId?clLastRec(F.serviceId):null;
+ const plans=b.plans.filter(p=>!['done','stopped'].includes(p.status));
+ const mach=[...new Set(b.recs.map(r=>r.machine).filter(Boolean))];
+ const staff=D.staff.filter(x=>x.active!==false&&(x.takes||x.id===F.staffId));
+ return '<div class="card"><div class="sec-h"><h3>'+ic('spark',14)+' Record treatment</h3><button type="button" class="btn sm ghost" onclick="CLVF0()">Cancel</button></div>'+
+  '<div class="grid g3"><div><label>Treatment *</label><select class="f" onchange="clRecSvc(this.value)"><option value="">— choose —</option>'+
+   D.services.filter(x=>x.active!==false||x.id===F.serviceId).map(x=>'<option value="'+esc(x.id)+'"'+(x.id===F.serviceId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div>'+
+  '<div><label>Date</label><input class="f" type="date" value="'+esc(F.date)+'" onchange="clRF(\'date\',this.value)"></div>'+
+  '<div><label>Therapist</label><select class="f" onchange="clRF(\'staffId\',this.value)"><option value="">—</option>'+staff.map(x=>'<option value="'+x.id+'"'+(x.id===F.staffId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div></div>'+
+  (clClash(c,s).length?'<div class="errbox">'+ic('alert',13)+' '+esc(s.name)+' is marked "do not use" for: '+esc(clClash(c,s).map(flagLabel).join(', '))+'.</div>':'')+
+  (plans.length?'<label>Part of a treatment plan</label><select class="f" onchange="clRF(\'planId\',this.value)"><option value="">— not part of a plan —</option>'+plans.map(p=>{const n=b.recs.filter(r=>r.planId===p.id).length;
+   return '<option value="'+p.id+'"'+(p.id===F.planId?' selected':'')+'>'+esc(p.name)+' — session '+(n+1)+' of '+p.sessions+'</option>';}).join('')+'</select>':'')+
+  (last?'<div class="cllast"><div class="spread"><b>'+ic('history',12)+' Last time · '+dstr(last.at)+' · '+esc(last.staffName||'')+'</b><button type="button" class="btn sm ghost" onclick="clRecSame()">Use the same</button></div>'+
+   '<div class="tiny">'+esc([last.machine,last.settings].filter(Boolean).join(' · ')||'No machine settings')+'</div>'+
+   ((last.products||[]).length?'<div class="tiny muted">'+esc(last.products.map(p=>p.name+' '+p.qty+(p.unit?' '+p.unit:'')).join(', '))+'</div>':'')+
+   (last.response?'<div class="tiny muted">Skin: '+esc(last.response)+'</div>':'')+(last.next?'<div class="tiny muted">Next: '+esc(last.next)+'</div>':'')+'</div>':'')+
+  '<label>Machine / device</label><input class="f" list="cl-mach" maxlength="120" value="'+esc(F.machine)+'" oninput="clRF(\'machine\',this.value)" placeholder="e.g. Hydra machine, microneedling pen, LED">'+
+  '<datalist id="cl-mach">'+mach.map(m=>'<option value="'+esc(m)+'">').join('')+'</datalist>'+
+  '<label>Settings</label><textarea class="f" rows="2" maxlength="500" oninput="clRF(\'settings\',this.value)" placeholder="e.g. depth 0.5 mm, 3 passes · LED red 10 min · peel 30% 3 min">'+esc(F.settings)+'</textarea>'+
+  '<label>Products and how much</label><div class="clprods">'+(F.prods||[]).map((p,i)=>'<div class="clprow"><input class="f" list="cl-prod" value="'+esc(p.name)+'" oninput="clRP('+i+',\'name\',this.value)" placeholder="Product">'+
+   '<input class="f" type="number" step="0.1" min="0" value="'+esc(p.qty)+'" oninput="clRP('+i+',\'qty\',this.value)" placeholder="Qty"><input class="f" value="'+esc(p.unit||'')+'" oninput="clRP('+i+',\'unit\',this.value)" placeholder="ml / g / pcs">'+
+   '<button type="button" class="iconbtn" onclick="clProdDel('+i+')">'+ic('close',14)+'</button></div>').join('')+'</div>'+
+  '<datalist id="cl-prod">'+D.products.filter(p=>p.active!==false).map(p=>'<option value="'+esc(p.name)+'">').join('')+'</datalist>'+
+  '<button type="button" class="btn sm ghost" onclick="clProdAdd()">'+ic('plus',13)+'Product</button>'+
+  '<label style="margin-top:10px">How the skin responded</label><textarea class="f" rows="2" maxlength="500" oninput="clRF(\'response\',this.value)" placeholder="e.g. mild redness, settled in 10 min; good extraction on T-zone">'+esc(F.response)+'</textarea>'+
+  '<label>Progress since last session</label><div class="seg">'+[['better','Improving'],['same','No change'],['worse','Worse']].map(x=>'<button type="button" class="'+(F.progress===x[0]?'on':'')+'" onclick="clRProg(\''+x[0]+'\')">'+x[1]+'</button>').join('')+'</div>'+
+  '<input class="f" maxlength="300" value="'+esc(F.progressNote)+'" oninput="clRF(\'progressNote\',this.value)" placeholder="What changed — e.g. fewer active spots, marks lighter">'+
+  '<label>Aftercare and next step</label><textarea class="f" rows="2" maxlength="500" oninput="clRF(\'next\',this.value)" placeholder="e.g. no exfoliant 3 days, SPF daily; next session raise depth to 0.75 mm">'+esc(F.next)+'</textarea>'+
+  '<div id="clr-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button type="button" class="btn" id="clr-go" style="width:100%;justify-content:center" onclick="clRecSave()">'+ic('check',15)+'Save treatment record</button></div>';
+}
+window.clRecSave=async()=>{
+ const F=CLV.form,c=cust(CLV.id),b=CLB[CLV.id];if(!F||!c)return;
+ const e=document.getElementById('clr-e');
+ if(!F.serviceId){if(e)e.textContent='Choose the treatment.';return;}
+ const s=svc(F.serviceId),st=stf(F.staffId),btn=document.getElementById('clr-go');if(btn)btn.disabled=true;
+ const products=(F.prods||[]).filter(p=>String(p.name||'').trim()).map(p=>{const x=D.products.find(z=>String(z.name).toLowerCase()===String(p.name).trim().toLowerCase());
+  return{name:String(p.name).trim().slice(0,80),qty:+p.qty||0,unit:String(p.unit||(x&&x.unit)||'').slice(0,12),...(x?{sku:x.id}:{})};});
+ const plan=F.planId?b.plans.find(p=>p.id===F.planId):null;
+ const r={customerId:c.id,customerName:c.name,apptId:F.apptId||'',date:F.date||today(),at:F.date===today()?clNow():new Date(F.date+'T12:00:00').toISOString(),
+  serviceId:s.id||F.serviceId,serviceName:s.name||'',staffId:F.staffId||'',staffName:st.name||'',branchId:ME.branchId,
+  machine:String(F.machine||'').trim(),settings:String(F.settings||'').trim(),products,response:String(F.response||'').trim(),
+  progress:F.progress||'',progressNote:String(F.progressNote||'').trim(),next:String(F.next||'').trim(),
+  planId:plan?plan.id:'',planN:plan?b.recs.filter(x=>x.planId===plan.id).length+1:0,by:UID,byName:clWho(),createdAt:clNow()};
+ try{const ref=await addDoc(collection(db,'txRecords'),r);b.recs.unshift({id:ref.id,...r});b.recs.sort(clDesc('at'));
+  if(r.apptId){try{await updateDoc(doc(db,'appointments',r.apptId),{txRec:ref.id});const a=APPTS.find(x=>x.id===r.apptId);if(a)a.txRec=ref.id;}catch(err){}}
+  if(plan&&r.planN>=+plan.sessions){try{await updateDoc(doc(db,'txPlans',plan.id),{status:'done',doneAt:clNow()});plan.status='done';}catch(err){}}
+  await audit('Treatment record saved',c.name+' · '+r.serviceName);
+  CLV.form=null;CLV.tab='recs';clPaint();toast('Treatment record saved'+(plan?' · session '+r.planN+' of '+plan.sessions:''));
+ }catch(err){if(e)e.textContent=friendly(err);if(btn)btn.disabled=false;}
+};
+const CL_PROG={better:['Improving','g'],same:['No change',''],worse:['Worse','r']};
+function clRecCard(r,b){
+ const pl=r.planId?b.plans.find(p=>p.id===r.planId):null;
+ return '<div class="card clrec"><div class="spread"><div><b>'+esc(r.serviceName||'')+'</b><div class="tiny muted">'+dstr(r.at)+' · '+esc(r.staffName||r.byName||'')+(r.branchId?' · '+esc(clBr(r.branchId)):'')+'</div></div>'+
+  (r.progress?'<span class="pill '+CL_PROG[r.progress][1]+'">'+CL_PROG[r.progress][0]+'</span>':'')+'</div>'+
+  (pl?'<div class="tiny" style="margin-top:6px">'+ic('plan',11)+' '+esc(pl.name)+' · session '+r.planN+' of '+pl.sessions+'</div>':'')+
+  '<div class="kv" style="margin-top:8px">'+
+  (r.machine||r.settings?'<div class="k">Machine</div><div class="v">'+esc([r.machine,r.settings].filter(Boolean).join(' · '))+'</div>':'')+
+  ((r.products||[]).length?'<div class="k">Products</div><div class="v">'+esc(r.products.map(p=>p.name+' '+p.qty+(p.unit?' '+p.unit:'')).join(', '))+'</div>':'')+
+  (r.response?'<div class="k">Skin</div><div class="v">'+esc(r.response)+'</div>':'')+
+  (r.progressNote?'<div class="k">Progress</div><div class="v">'+esc(r.progressNote)+'</div>':'')+
+  (r.next?'<div class="k">Next</div><div class="v">'+esc(r.next)+'</div>':'')+'</div></div>';
+}
+function clRecsTab(c,b){
+ if(CLV.form&&CLV.form.kind==='rec')return clRecForm(c,b);
+ const svcs=[...new Set(b.recs.map(r=>r.serviceName).filter(Boolean))],f=CLV.rf&&svcs.includes(CLV.rf)?CLV.rf:'';
+ const L=b.recs.filter(r=>!f||r.serviceName===f);
+ return '<div class="card"><div class="sec-h"><h3>'+ic('spark',14)+' Treatment records</h3><button type="button" class="btn sm" onclick="clRecAdd()">'+ic('plus',13)+'Record treatment</button></div>'+
+  '<p class="tiny muted" style="margin:0">Machine, settings and products for each session, so whoever does the next one carries on the same way.</p>'+
+  (svcs.length>1?'<div class="chips" style="margin:10px 0 0"><button type="button" class="chip'+(f?'':' on')+'" onclick="clSet(\'rf\',\'\',1)">All</button>'+svcs.map(x=>'<button type="button" class="chip'+(f===x?' on':'')+'" data-v="'+esc(x)+'" onclick="clSet(\'rf\',this.dataset.v,1)">'+esc(x)+'</button>').join('')+'</div>':'')+'</div>'+
+  (L.length?L.map(r=>clRecCard(r,b)).join(''):'<div class="card"><div class="empty">'+ic('spark',26)+'<div>No treatment recorded yet.</div></div></div>');
+}
+
+/* ---- treatment plans: a course of sessions and how each one went ---- */
+function clPlanDue(p,b){
+ if(['done','stopped'].includes(p.status))return '';
+ const R=b.recs.filter(r=>r.planId===p.id).sort(clDesc('at')),lastD=R[0]?String(R[0].date||R[0].at).slice(0,10):'';
+ const due=lastD?ymd(addDays(new Date(lastD+'T00:00:00'),+p.every||14)):p.start||today();
+ const late=due<today();
+ return ' · '+(late?'<span class="amb">due since '+dshort(due)+'</span>':'next '+dshort(due));
+}
+function clPlanForm(c,b){
+ const F=CLV.form;
+ return '<div class="card"><div class="sec-h"><h3>'+ic('plan',14)+' New treatment plan</h3><button type="button" class="btn sm ghost" onclick="CLVF0()">Cancel</button></div>'+
+  '<div class="grid g2"><div><label>Treatment</label><select class="f" id="cpl-s" onchange="clPlanName()"><option value="">— choose —</option>'+D.services.filter(x=>x.active!==false).map(x=>'<option value="'+esc(x.id)+'"'+(x.id===F.serviceId?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div>'+
+  '<div><label>Plan name</label><input class="f" id="cpl-n" maxlength="80" value="'+esc(F.name||'')+'" placeholder="e.g. 6 sessions acne facial"></div></div>'+
+  '<div class="grid g3"><div><label>Sessions</label><input class="f" type="number" min="1" max="60" id="cpl-k" value="'+(F.sessions||6)+'" oninput="clPlanName()"></div>'+
+  '<div><label>Every (days)</label><input class="f" type="number" min="1" max="120" id="cpl-e" value="'+(F.every||14)+'"></div>'+
+  '<div><label>Start</label><input class="f" type="date" id="cpl-d" value="'+esc(F.start||today())+'"></div></div>'+
+  '<label>Goal</label><input class="f" id="cpl-g" maxlength="200" value="'+esc(F.goal||'')+'" placeholder="e.g. clear active acne, fade marks by the wedding in March">'+
+  '<label>Notes for the team</label><textarea class="f" id="cpl-o" rows="2" maxlength="500">'+esc(F.notes||'')+'</textarea>'+
+  '<button type="button" class="btn" style="width:100%;justify-content:center" onclick="clPlanSave()">'+ic('check',15)+'Start the plan</button></div>';
+}
+window.clPlanName=()=>{const n=document.getElementById('cpl-n'),s=svc((document.getElementById('cpl-s')||{}).value),k=(document.getElementById('cpl-k')||{}).value;
+ if(n&&s.name&&(!n.value||n.dataset.auto)){n.value=(k||6)+' sessions '+s.name;n.dataset.auto='1';}};
+window.clPlanSave=async()=>{
+ const c=cust(CLV.id),b=CLB[CLV.id],g=id=>((document.getElementById(id)||{}).value||'').trim();
+ const s=svc(g('cpl-s'));if(!s.id){toast('Choose the treatment');return;}
+ const p={customerId:c.id,customerName:c.name,serviceId:s.id,serviceName:s.name,name:g('cpl-n')||(g('cpl-k')||6)+' sessions '+s.name,sessions:Math.max(1,Math.min(60,+g('cpl-k')||6)),
+  every:Math.max(1,Math.min(120,+g('cpl-e')||14)),start:g('cpl-d')||today(),goal:g('cpl-g'),notes:g('cpl-o'),status:'active',branchId:ME.branchId,by:UID,byName:clWho(),at:clNow()};
+ try{const r=await addDoc(collection(db,'txPlans'),p);b.plans.unshift({id:r.id,...p});await audit('Treatment plan started',c.name+' · '+p.name);CLV.form=null;clPaint();toast('Plan started');}catch(e){toast(friendly(e));}
+};
+window.clPlanSet=async(id,st)=>{
+ const p=(CLB[CLV.id]||{plans:[]}).plans.find(x=>x.id===id);if(!p)return;
+ if(st==='stopped'&&!confirm('Stop this plan? Sessions already done stay on record.'))return;
+ try{await updateDoc(doc(db,'txPlans',id),{status:st,[st+'At']:clNow()});p.status=st;clRe();}catch(e){toast(friendly(e));}
+};
+window.clPlanRec=id=>{CLV.tab='recs';clRecAdd({planId:id});};
+window.clPlanBook=id=>{const cid=CLV.id;window.closeModal();window.newAppt({customerId:cid});};
+function clPlansTab(c,b){
+ if(CLV.form&&CLV.form.kind==='plan')return clPlanForm(c,b);
+ const L=b.plans;
+ return '<div class="card"><div class="sec-h"><h3>'+ic('plan',14)+' Treatment plans</h3><button type="button" class="btn sm" onclick="clSet(\'form\',{kind:\'plan\'},1)">'+ic('plus',13)+'New plan</button></div>'+
+  '<p class="tiny muted" style="margin:0">A course such as 6 acne facials every 2 weeks. Each treatment record linked to the plan counts as a session, with how the skin is progressing.</p></div>'+
+  (L.length?L.map(p=>{const R=b.recs.filter(r=>r.planId===p.id).sort((x,y)=>String(x.at).localeCompare(String(y.at))),n=R.length,act=!['done','stopped'].includes(p.status);
+   return '<div class="card clplan"><div class="spread"><div><b>'+esc(p.name)+'</b><div class="tiny muted">'+esc(p.serviceName||'')+' · every '+p.every+' days · from '+dshort(p.start)+(p.byName?' · by '+esc(p.byName):'')+'</div></div>'+
+    '<span class="pill '+(p.status==='done'?'g':p.status==='stopped'?'':'b')+'">'+(p.status==='done'?'Completed':p.status==='stopped'?'Stopped':'Active')+'</span></div>'+
+    (p.goal?'<div class="tiny" style="margin-top:6px">'+ic('target',11)+' '+esc(p.goal)+'</div>':'')+
+    '<div class="clprog"><div class="bar"><i class="brass" style="width:'+Math.min(100,n/p.sessions*100)+'%"></i></div><b>'+n+' of '+p.sessions+'</b>'+clPlanDue(p,b)+'</div>'+
+    '<div class="clsess">'+[...Array(+p.sessions||0)].map((_,i)=>{const r=R[i];return '<div class="clses'+(r?' done':'')+'"><i>'+(i+1)+'</i>'+(r?'<div><b>'+dshort(r.at)+'</b>'+(r.staffName?' · '+esc(r.staffName):'')+
+     (r.progress?' <span class="pill '+CL_PROG[r.progress][1]+'">'+CL_PROG[r.progress][0]+'</span>':'')+(r.progressNote?'<small>'+esc(r.progressNote)+'</small>':'')+'</div>':'<div class="muted">—</div>')+'</div>';}).join('')+'</div>'+
+    (p.notes?'<div class="tiny muted" style="margin-top:6px">'+esc(p.notes)+'</div>':'')+
+    (act?'<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px"><button type="button" class="btn sm" onclick="clPlanRec(\''+p.id+'\')">'+ic('plus',13)+'Record session '+(n+1)+'</button>'+
+     '<button type="button" class="btn sm ghost" onclick="clPlanBook(\''+p.id+'\')">'+ic('calendar',13)+'Book next</button>'+
+     '<button type="button" class="btn sm ghost" onclick="clPlanSet(\''+p.id+'\',\'done\')">Mark complete</button><button type="button" class="btn sm ghost" onclick="clPlanSet(\''+p.id+'\',\'stopped\')">Stop</button></div>':'')+'</div>';}).join('')
+  :'<div class="card"><div class="empty">'+ic('plan',26)+'<div>No treatment plan yet.</div></div></div>');
+}
+
+/* ============ the tablet, handed to the client ============ */
+/* Full screen, large targets, BM or English. It covers the whole app so the client sees only
+   their own form; the staff member takes the tablet back with a press-and-hold on "Staff". */
+let KS=null,KPAD=null;
+const kL=(ms,en)=>KS&&KS.lang==='en'?en:ms;
+function clKInit(kind,c,o){
+ if(kind==='consult'){
+  const m=c.med||{},lc=((CLB[c.id]||{}).consults||[])[0]||{};
+  return{skin:c.skin||'',concerns:[...(lc.concerns||[])],since:'',goals:[],goalText:'',eventDate:'',routine:JSON.parse(JSON.stringify(lc.routine||{})),actives:[...(lc.actives||[])],
+   exfol:lc.exfol||'',makeup:lc.makeup===undefined?null:lc.makeup,dob:c.dob||'',
+   med:{flags:[...(m.flags||[])],none:false,allergies:m.allergies!==undefined?m.allergies:(c.allergy||''),meds:m.meds||'',procs:[...(m.procs||[])],procWhen:m.procWhen||'',conditions:m.conditions||''},ok:false,name:c.name||''};}
+ const ap=o.apptId?APPTS.find(a=>a.id===o.apptId):APPTS.find(a=>a.customerId===c.id&&a.date===today()&&!['cancel','no'].includes(a.status));
+ const s=ap?svc(ap.serviceId):{};
+ let f=o.formId?clFormsLive().find(x=>x.id===o.formId):null;
+ if(!f&&kind==='consent'){const need=clConsentState(CLB[c.id]||{consents:[]},s).filter(z=>z.st!=='ok');f=(need[0]||clConsentState(CLB[c.id]||{consents:[]},s)[0]||{}).f||clFormsLive()[0];}
+ return{f,apptId:ap?ap.id:'',serviceId:s.id||'',serviceName:s.name||'',photo:null,ok:false,name:c.name||''};
+}
+const CLK_STEPS={consult:['hello','skin','goals','routine','health','sign'],consent:['read','sign'],photo:['photo']};
+window.clKiosk=async(kind,cid,o)=>{
+ const c=cust(cid)||await custGet(cid);if(!c)return;
+ await Promise.all([clLoadForms(),clLoad(cid)]);
+ KS={kind,cid,lang:'ms',step:0,err:'',o:o||{},a:clKInit(kind,c,o||{})};
+ if(kind==='consent'&&!KS.a.f){toast('There is no consent form yet — add one under Clinical.');KS=null;return;}
+ window.closeModal();
+ let el=document.getElementById('clkiosk');if(!el){el=document.createElement('div');el.id='clkiosk';document.body.appendChild(el);}
+ document.body.classList.add('clk-on');clKPaint();
+};
+window.clKLang=l=>{KS.lang=l;clKPaint();};
+let KHOLD=0;
+window.clKHold=on=>{clearTimeout(KHOLD);const b=document.getElementById('clk-staff');if(b)b.classList.toggle('hold',!!on);if(on)KHOLD=setTimeout(()=>clKClose(true),900);};
+window.clKClose=open=>{
+ const el=document.getElementById('clkiosk');if(el)el.remove();document.body.classList.remove('clk-on');
+ const k=KS;KS=null;KPAD=null;
+ if(open&&k)window.clinOpen(k.cid,k.kind==='consult'?'consult':'consent');
+};
+function clKPaint(){
+ const el=document.getElementById('clkiosk');if(!el||!KS)return;
+ const c=cust(KS.cid)||{},B=bizC(),steps=CLK_STEPS[KS.kind],st=KS.step>=steps.length?'done':steps[KS.step];
+ const first=String(c.name||'').split(' ')[0];KS.y=el.scrollTop;
+ const body={hello:clKHello,skin:clKSkin,goals:clKGoals,routine:clKRoutine,health:clKHealth,sign:KS.kind==='consult'?clKDeclare:clKSign,read:clKRead,photo:clKPhoto,done:clKDone}[st](c,first);
+ el.innerHTML='<div class="clk"><div class="clktop"><b>'+esc(B.name||'Luuna Skin Spa')+'</b><div class="clklang"><button type="button" class="'+(KS.lang==='ms'?'on':'')+'" onclick="clKLang(\'ms\')">BM</button><button type="button" class="'+(KS.lang==='en'?'on':'')+'" onclick="clKLang(\'en\')">EN</button></div>'+
+  '<button type="button" id="clk-staff" class="clkstaff" onpointerdown="clKHold(1)" onpointerup="clKHold(0)" onpointerleave="clKHold(0)">'+ic('user',13)+kL('Staf · tekan lama','Staff · press & hold')+'</button></div>'+
+  (st!=='done'&&steps.length>1?'<div class="clkdots">'+steps.map((x,i)=>'<i class="'+(i<KS.step?'done':i===KS.step?'on':'')+'"></i>').join('')+'</div>':'')+
+  '<div class="clkbody">'+body+'</div>'+
+  (st==='done'?'':'<div class="clkerr">'+esc(KS.err||'')+'</div><div class="clkfoot">'+(KS.step>0?'<button type="button" class="btn ghost" onclick="clKGo(-1)">'+ic('left',16)+kL('Kembali','Back')+'</button>':'<span></span>')+
+   (KS.step<steps.length-1?'<button type="button" class="btn" onclick="clKGo(1)">'+kL('Seterusnya','Next')+ic('right',16)+'</button>':
+    '<button type="button" class="btn clkgo" id="clk-go" onclick="clKSave()">'+ic('check',16)+(KS.kind==='consult'?kL('Hantar','Submit'):kL('Tandatangan & hantar','Sign & submit'))+'</button>')+'</div>')+'</div>';
+ if(KS.shown!==KS.step){KS.shown=KS.step;el.scrollTop=0;}else el.scrollTop=KS.y||0;
+ if(el.querySelector('#clsig'))clPadInit();
+}
+window.clKGo=d=>{
+ const steps=CLK_STEPS[KS.kind],st=steps[KS.step],A=KS.a;KS.err='';
+ if(d>0&&st==='health'&&!A.med.none&&!A.med.flags.length){KS.err=kL('Sila tandakan yang berkenaan, atau "Tiada yang di atas".','Please tick what applies, or "None of the above".');clKPaint();return;}
+ KS.step=Math.max(0,Math.min(steps.length-1,KS.step+d));clKPaint();
+};
+/* toggles and fields: every tap updates the answers and repaints */
+window.clKT=(path,v)=>{const A=KS.a;const [k,sub]=path.split('.');
+ const arr=sub?A[k][sub]:A[k];const i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else arr.push(v);
+ if(path==='med.flags'&&arr.length)A.med.none=false;clKPaint();};
+window.clKS=(path,v,paint)=>{const A=KS.a;const [k,sub,sub2]=path.split('.');
+ if(sub2){A[k][sub]=A[k][sub]||{};A[k][sub][sub2]=v;}else if(sub)A[k][sub]=v;else A[k]=v;
+ if(path==='med.none'&&v)A.med.flags=[];if(paint)clKPaint();};
+const kChip=(on,label,click)=>'<button type="button" class="clkchip'+(on?' on':'')+'" onclick="'+click+'">'+(on?ic('check',14):'')+esc(label)+'</button>';
+function clKHello(c,first){
+ return '<h1>'+kL('Hai','Hi')+' '+esc(first)+'!</h1><p class="clklead">'+kL('Borang ringkas ini membantu therapist kami memahami kulit anda dan memilih rawatan yang selamat untuk anda. Ia mengambil masa lebih kurang 3 minit.',
+  'This short form helps our therapist understand your skin and choose a treatment that is safe for you. It takes about 3 minutes.')+'</p>'+
+  (!c.dob?'<label>'+kL('Tarikh lahir','Date of birth')+' <span class="muted">('+kL('pilihan','optional')+')</span></label><input class="f" type="date" value="'+esc(KS.a.dob)+'" onchange="clKS(\'dob\',this.value)">':'')+
+  '<p class="tiny muted">'+kL('Maklumat anda disimpan secara sulit dan hanya digunakan untuk rawatan anda.','Your answers are kept confidential and used only for your treatment.')+'</p>';
+}
+function clKSkin(){
+ const A=KS.a;
+ return '<h2>'+kL('Kulit anda','Your skin')+'</h2><label>'+kL('Jenis kulit anda','Your skin type')+'</label><div class="clkchips">'+SKINS.map(s=>kChip(A.skin===s,kL(CL_SKIN_MS[s]||s,s),'clKSk(\''+s+'\')')).join('')+'</div>'+
+  '<label>'+kL('Masalah utama yang anda mahu atasi','The main concerns you want help with')+'</label><div class="clkchips">'+CONCERNS.map(x=>kChip(A.concerns.includes(x.id),kL(CL_CON_MS[x.id]||x.label,x.label),'clKT(\'concerns\',\''+x.id+'\')')).join('')+'</div>'+
+  '<label>'+kL('Sudah berapa lama?','How long have you had it?')+'</label><div class="clkchips">'+CL_SINCE.map(x=>kChip(A.since===x[0],kL(x[1],x[2]),'clKS(\'since\',\''+x[0]+'\',1)')).join('')+'</div>';
+}
+function clKGoals(){
+ const A=KS.a;
+ return '<h2>'+kL('Apa sasaran anda?','What would you like to achieve?')+'</h2><div class="clkchips">'+CL_GOALS.map(g=>kChip(A.goals.includes(g[0]),kL(g[1],g[2]),'clKT(\'goals\',\''+g[0]+'\')')).join('')+'</div>'+
+  '<label>'+kL('Dengan perkataan anda sendiri','In your own words')+'</label><textarea class="f" rows="3" maxlength="400" oninput="clKS(\'goalText\',this.value)" placeholder="'+kL('cth. nak jerawat berkurang sebelum majlis kahwin bulan Mac','e.g. fewer breakouts before my wedding in March')+'">'+esc(A.goalText)+'</textarea>'+
+  '<label>'+kL('Ada majlis penting? Tarikh','An important event coming up? Date')+' <span class="muted">('+kL('pilihan','optional')+')</span></label><input class="f" type="date" value="'+esc(A.eventDate)+'" onchange="clKS(\'eventDate\',this.value)">';
+}
+function clKRoutine(){
+ const A=KS.a,R=A.routine;
+ return '<h2>'+kL('Rutin penjagaan kulit sekarang','Your skincare routine now')+'</h2><p class="clklead">'+kL('Tandakan yang anda guna setiap hari. Nama produk jika ingat.','Tick what you use every day. Product names if you remember.')+'</p>'+
+  CL_ROUTINE.map(r=>{const v=R[r[0]]||{};return '<div class="clkrow"><button type="button" class="clkchip'+(v.on?' on':'')+'" onclick="clKS(\'routine.'+r[0]+'.on\','+(!v.on)+',1)">'+(v.on?ic('check',14):'')+esc(kL(r[1],r[2]))+'</button>'+
+   (v.on?'<input class="f" maxlength="80" value="'+esc(v.txt||'')+'" oninput="clKS(\'routine.'+r[0]+'.txt\',this.value)" placeholder="'+kL('Nama produk','Product name')+'">':'')+'</div>';}).join('')+
+  '<label>'+kL('Bahan aktif yang anda guna','Active ingredients you use')+'</label><div class="clkchips">'+CL_ACTIVES.map(x=>kChip(A.actives.includes(x[0]),kL(x[1],x[2]),'clKT(\'actives\',\''+x[0]+'\')')).join('')+'</div>'+
+  '<label>'+kL('Scrub / exfoliate','Scrub / exfoliate')+'</label><div class="clkchips">'+[['never','Tidak pernah','Never'],['weekly','Seminggu sekali','Once a week'],['more','Lebih kerap','More often']].map(x=>kChip(A.exfol===x[0],kL(x[1],x[2]),'clKS(\'exfol\',\''+x[0]+'\',1)')).join('')+'</div>'+
+  '<label>'+kL('Pakai make-up setiap hari?','Wear make-up every day?')+'</label><div class="clkchips">'+kChip(A.makeup===true,kL('Ya','Yes'),'clKS(\'makeup\',true,1)')+kChip(A.makeup===false,kL('Tidak','No'),'clKS(\'makeup\',false,1)')+'</div>';
+}
+function clKHealth(){
+ const M=KS.a.med;
+ return '<h2>'+kL('Kesihatan anda','Your health')+'</h2><p class="clklead">'+kL('Penting untuk keselamatan anda. Tandakan semua yang berkenaan.','Important for your safety. Tick everything that applies.')+'</p>'+
+  '<div class="clkchips col">'+FLAGS.map(x=>kChip(M.flags.includes(x.id),kL(CL_FLAG_MS[x.id]||x.label,x.label),'clKT(\'med.flags\',\''+x.id+'\')')).join('')+
+  kChip(M.none,kL('Tiada yang di atas','None of the above'),'clKS(\'med.none\','+(!M.none)+',1)')+'</div>'+
+  '<label>'+kL('Alahan (produk, bahan, ubat)','Allergies (products, ingredients, medicine)')+'</label><input class="f" maxlength="200" value="'+esc(M.allergies)+'" oninput="clKS(\'med.allergies\',this.value)" placeholder="'+kL('Kosongkan jika tiada','Leave empty if none')+'">'+
+  '<label>'+kL('Ubat atau supplemen yang diambil sekarang','Medication or supplements you take now')+'</label><input class="f" maxlength="300" value="'+esc(M.meds)+'" oninput="clKS(\'med.meds\',this.value)">'+
+  '<label>'+kL('Prosedur yang pernah dibuat','Procedures you have had before')+'</label><div class="clkchips">'+CL_PROCS.map(x=>kChip(M.procs.includes(x[0]),kL(x[1],x[2]),'clKT(\'med.procs\',\''+x[0]+'\')')).join('')+'</div>'+
+  (M.procs.length?'<input class="f" maxlength="200" value="'+esc(M.procWhen)+'" oninput="clKS(\'med.procWhen\',this.value)" placeholder="'+kL('Bila? cth. laser Mac 2026','When? e.g. laser March 2026')+'">':'')+
+  '<label>'+kL('Masalah kesihatan lain','Other medical conditions')+'</label><input class="f" maxlength="300" value="'+esc(M.conditions)+'" oninput="clKS(\'med.conditions\',this.value)">';
+}
+function clKDeclare(){
+ const A=KS.a;
+ return '<h2>'+kL('Pengesahan','Declaration')+'</h2>'+
+  '<label class="clkok"><input type="checkbox"'+(A.ok?' checked':'')+' onchange="clKS(\'ok\',this.checked)"> <span>'+kL('Saya mengesahkan maklumat yang saya berikan adalah benar dan lengkap. Saya akan memaklumkan spa jika ada perubahan, terutamanya kehamilan dan ubat-ubatan.',
+  'I confirm the information I have given is true and complete. I will tell the spa if anything changes, especially pregnancy and medication.')+'</span></label>'+
+  '<label>'+kL('Nama penuh','Full name')+'</label><input class="f" maxlength="80" value="'+esc(A.name)+'" oninput="clKS(\'name\',this.value)">';
+}
+const clFormText=(f,lang)=>String((lang==='en'?(f.bodyEn||f.body):(f.body||f.bodyEn))||'').replace(/\{biz\}/g,bizC().name||'Luuna Skin Spa');
+function clKRead(){
+ const A=KS.a,f=A.f,c=cust(KS.cid)||{};
+ const forms=clFormsLive();
+ return (forms.length>1&&!KS.o.formId?'<div class="clkchips">'+forms.map(x=>kChip(x.id===f.id,x.name,'clKForm(\''+esc(x.id)+'\')')).join('')+'</div>':'')+
+  '<h2>'+esc(f.name)+'</h2><p class="clkmeta">'+esc(c.name||'')+(A.serviceName?' · '+esc(A.serviceName):'')+' · '+kL('Versi','Version')+' '+(f.v||1)+'</p>'+
+  '<div class="clktext">'+esc(clFormText(f,KS.lang))+'</div>';
+}
+window.clKForm=id=>{const f=clFormsLive().find(x=>x.id===id);if(f){KS.a.f=f;clKPaint();}};
+/* picking an answer here must not repaint, or the signature already drawn would be lost */
+const kPhotoQ=()=>{const P=KS.a.photo;return '<div class="clkchips col">'+kChip(P==='yes',kL('Ya, boleh digunakan','Yes, they may be used'),'clKPh(\'yes\',this)')+
+  kChip(P==='noface',kL('Ya, tetapi sembunyikan wajah saya','Yes, but hide my face'),'clKPh(\'noface\',this)')+kChip(P==='no',kL('Tidak','No'),'clKPh(\'no\',this)')+'</div>';};
+window.clKPh=(v,el)=>{KS.a.photo=v;el.parentNode.querySelectorAll('.clkchip').forEach(b=>{const on=b===el,sv=b.querySelector('svg');b.classList.toggle('on',on);
+ if(sv&&!on)sv.remove();if(on&&!sv)b.insertAdjacentHTML('afterbegin',ic('check',14));});};
+const kPad=()=>'<label>'+kL('Tandatangan di dalam kotak','Sign inside the box')+'</label><canvas id="clsig" class="sigpad clsig" width="900" height="300"></canvas>'+
+ '<button type="button" class="btn sm ghost" onclick="clPadClear()">'+ic('refresh',13)+kL('Padam','Clear')+'</button>';
+function clKSign(){
+ const A=KS.a;
+ return '<h2>'+kL('Tandatangan','Signature')+'</h2>'+
+  '<label class="clkok"><input type="checkbox"'+(A.ok?' checked':'')+' onchange="clKS(\'ok\',this.checked)"> <span>'+kL('Saya telah membaca dan memahami borang ini, telah diberi peluang bertanya, dan bersetuju menerima rawatan.','I have read and understood this form, have had the chance to ask questions, and agree to the treatment.')+'</span></label>'+
+  '<div class="clkbox"><b>'+kL('Pilihan berasingan: gambar untuk pemasaran','Separate choice: photos for marketing')+'</b><p>'+kL('Bolehkah gambar sebelum/selepas anda digunakan di media sosial dan iklan kami? Ini tidak menjejaskan rawatan anda.','May your before/after photos be used on our social media and ads? This does not affect your treatment.')+'</p>'+kPhotoQ()+'</div>'+
+  '<label>'+kL('Nama penuh','Full name')+'</label><input class="f" maxlength="80" value="'+esc(A.name)+'" oninput="clKS(\'name\',this.value)">'+kPad();
+}
+function clKPhoto(){
+ const A=KS.a;
+ return '<h2>'+kL('Gambar untuk pemasaran','Photos for marketing')+'</h2><div class="clktext">'+esc(kL(
+  'Kami mengambil gambar sebelum dan selepas untuk rekod rawatan anda. Dengan kebenaran anda, kami juga ingin menggunakan gambar tersebut di media sosial, laman web dan iklan '+(bizC().name||'kami')+'. Nama anda tidak akan dipaparkan. Anda boleh menarik balik kebenaran ini pada bila-bila masa dengan memaklumkan kami; gambar tidak akan digunakan dalam bahan baharu selepas itu.',
+  'We take before and after photos for your treatment record. With your permission, we would also like to use them on '+(bizC().name||'our')+' social media, website and ads. Your name will not be shown. You can withdraw this permission at any time by telling us; the photos will not be used in new material after that.'))+'</div>'+
+  kPhotoQ()+'<label>'+kL('Nama penuh','Full name')+'</label><input class="f" maxlength="80" value="'+esc(A.name)+'" oninput="clKS(\'name\',this.value)">'+kPad();
+}
+function clKDone(c,first){
+ return '<div class="clkdone">'+ic('check',40)+'<h1>'+kL('Terima kasih','Thank you')+', '+esc(first)+'!</h1><p class="clklead">'+kL('Sila serahkan tablet kembali kepada staf kami.','Please hand the tablet back to our staff.')+'</p>'+
+  '<button type="button" class="btn ghost" onclick="clKClose(true)">'+ic('user',14)+kL('Staf: kembali ke rekod','Staff: back to the record')+'</button></div>';
+}
+function clPadInit(){
+ const cv=document.getElementById('clsig');if(!cv||!cv.getContext)return;
+ const g=cv.getContext('2d');g.lineWidth=4;g.lineCap='round';g.lineJoin='round';g.strokeStyle='#14120f';
+ KPAD={cv,g,ink:0,down:false};
+ const pt=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height];};
+ cv.onpointerdown=e=>{KPAD.down=true;const er=document.querySelector('.clkerr');if(er)er.textContent='';const [a,b]=pt(e);g.beginPath();g.moveTo(a,b);try{cv.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();};
+ cv.onpointermove=e=>{if(!KPAD.down)return;const [a,b]=pt(e);g.lineTo(a,b);g.stroke();KPAD.ink++;e.preventDefault();};
+ cv.onpointerup=cv.onpointerleave=()=>{KPAD.down=false;};
+}
+window.clPadClear=()=>{if(KPAD){KPAD.g.clearRect(0,0,KPAD.cv.width,KPAD.cv.height);KPAD.ink=0;}};
+/* the signature, trimmed and shrunk so it stays a few KB inside the record */
+function clSigPng(){
+ const cv=KPAD.cv,s=document.createElement('canvas');s.width=450;s.height=150;const g=s.getContext('2d');g.drawImage(cv,0,0,450,150);return s.toDataURL('image/png');
+}
+window.clKSave=async()=>{
+ const A=KS.a,c=cust(KS.cid);if(!c)return;KS.err='';
+ const need=t=>{KS.err=t;clKPaint();};
+ const btn=document.getElementById('clk-go');
+ try{
+  if(KS.kind==='consult'){
+   if(!A.ok)return need(kL('Sila tandakan kotak pengesahan.','Please tick the declaration box.'));
+   if(btn)btn.disabled=true;
+   const med={flags:[...A.med.flags],allergies:String(A.med.allergies||'').trim(),meds:String(A.med.meds||'').trim(),procs:[...A.med.procs],procWhen:String(A.med.procWhen||'').trim(),conditions:String(A.med.conditions||'').trim()};
+   const x={customerId:c.id,customerName:c.name,at:clNow(),date:today(),lang:KS.lang,byClient:true,by:UID,byName:clWho(),branchId:ME.branchId,
+    skin:A.skin,concerns:A.concerns,since:A.since,goals:A.goals,goalText:String(A.goalText||'').trim(),eventDate:A.eventDate||'',routine:A.routine,actives:A.actives,exfol:A.exfol,makeup:A.makeup,
+    med,declared:true,signedName:String(A.name||'').trim().slice(0,80)};
+   const r=await addDoc(collection(db,'consults'),x);
+   const up={med:{...med,updatedAt:x.at,by:UID,byName:'Client (consultation form)',src:'consult',consultId:r.id},allergy:med.allergies};
+   if(A.skin)up.skin=A.skin;if(A.dob&&!c.dob)up.dob=A.dob;
+   await updateDoc(doc(db,'customers',c.id),up);Object.assign(c,up);
+   (CLB[c.id]||(CLB[c.id]={consults:[],consents:[],recs:[],plans:[],t:0})).consults.unshift({id:r.id,...x});
+   await audit('Consultation form filled',c.name);
+  }else{
+   if(KS.kind==='consent'&&!A.ok)return need(kL('Sila tandakan kotak persetujuan.','Please tick the agreement box.'));
+   if(KS.kind==='photo'&&!A.photo)return need(kL('Sila pilih satu jawapan.','Please choose one answer.'));
+   if(!String(A.name||'').trim())return need(kL('Sila tulis nama penuh anda.','Please write your full name.'));
+   if(!KPAD||KPAD.ink<8)return need(kL('Sila tandatangan di dalam kotak.','Please sign inside the box.'));
+   if(btn)btn.disabled=true;
+   const f=KS.kind==='photo'?{id:'_photo',name:'Photos for marketing',v:1}:A.f;
+   const text=KS.kind==='photo'?String(document.querySelector('.clktext').textContent||''):clFormText(f,KS.lang);
+   const x={customerId:c.id,customerName:c.name,formId:f.id,formName:f.name,v:+f.v||1,text,lang:KS.lang,sig:clSigPng(),signedName:String(A.name).trim().slice(0,80),
+    at:clNow(),branchId:ME.branchId,staffId:UID,staffName:clWho(),apptId:A.apptId||'',serviceId:A.serviceId||'',serviceName:A.serviceName||'',
+    photoOk:A.photo?A.photo!=='no':null,face:A.photo?A.photo==='yes':null};
+   const r=await addDoc(collection(db,'consents'),x);
+   (CLB[c.id]||(CLB[c.id]={consults:[],consents:[],recs:[],plans:[],t:0})).consents.unshift({id:r.id,...x});
+   if(A.photo){const pm={ok:A.photo!=='no',face:A.photo==='yes',at:x.at,consentId:r.id};await updateDoc(doc(db,'customers',c.id),{photoMkt:pm});c.photoMkt=pm;}
+   await audit(KS.kind==='photo'?'Photo marketing consent signed':'Consent form signed',c.name+' · '+f.name+' v'+(f.v||1));
+  }
+  KS.step=CLK_STEPS[KS.kind].length;clKPaint();
+ }catch(e){if(btn)btn.disabled=false;need(friendly(e));}
+};
+
+/* ============ on the booking: warnings, forms still to do, the team's notes ============ */
+function clApptInner(a,c,b){
+ const s=svc(a.serviceId),cl=clClash(c,s),out=[];
+ if(cl.length)out.push('<div class="errbox">'+ic('alert',13)+' <b>Contraindication.</b> '+esc(c.name.split(' ')[0])+' has declared: '+esc(cl.map(flagLabel).join(', '))+'. '+esc(s.name)+' is marked "do not use" for this — check with the doctor before going ahead.'+
+  (a.clinOk?'<div class="tiny" style="margin-top:4px">Booked anyway after a check by '+esc(a.clinOk.byName||'')+'.</div>':'')+'</div>');
+ else if(!clHasMed(c))out.push('<div class="warnbox">'+ic('alert',13)+' No medical history on file — ask the client to fill the consultation form on the tablet.</div>');
+ const lc=b.consults[0],fresh=lc&&daysBetween(lc.at,new Date())<=365;
+ const cs=clConsentState(b,s),todo=cs.filter(x=>x.st!=='ok');
+ const pl=b.plans.find(p=>!['done','stopped'].includes(p.status)&&p.serviceId===a.serviceId);
+ const rec=a.txRec||b.recs.find(r=>r.apptId===a.id);
+ const pins=(CLNOTES[c.id]||[]).filter(n=>n.pin);
+ out.push('<div class="clapl"><span>'+ic('note',12)+' Consultation</span><b class="'+(fresh?'grn':'amb')+'">'+(fresh?dshort(lc.at)+(lc.review?'':' · not reviewed'):lc?'over a year old':'not filled')+'</b>'+
+  (fresh?'':'<button type="button" class="btn sm ghost" onclick="clKiosk(\'consult\',\''+c.id+'\',{apptId:\''+a.id+'\'})">Tablet</button>')+'</div>');
+ cs.forEach(x=>out.push('<div class="clapl"><span>'+ic('signature',12)+' '+esc(x.f.name)+'</span><b class="'+(x.st==='ok'?'grn':'amb')+'">'+(x.st==='ok'?'signed '+dshort(x.last.at):esc(CL_CST[x.st]))+'</b>'+
+  (x.st==='ok'?'':'<button type="button" class="btn sm ghost" onclick="clKiosk(\'consent\',\''+c.id+'\',{formId:\''+esc(x.f.id)+'\',apptId:\''+a.id+'\'})">Sign</button>')+'</div>'));
+ if(pl){const n=b.recs.filter(r=>r.planId===pl.id).length;out.push('<div class="clapl"><span>'+ic('plan',12)+' '+esc(pl.name)+'</span><b>session '+Math.min(n+(rec?0:1),pl.sessions)+' of '+pl.sessions+'</b></div>');}
+ pins.forEach(n=>out.push('<div class="clapn">'+ic('note',11)+' '+esc(n.text)+'</div>'));
+ out.push('<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:8px">'+
+  (rec?'<span class="pill g">'+ic('check',11)+' Treatment recorded</span>':'<button type="button" class="btn sm" onclick="clinOpen(\''+c.id+'\',\'recs\',{add:1,apptId:\''+a.id+'\'})">'+ic('spark',13)+'Record treatment</button>')+
+  '<button type="button" class="btn sm ghost" onclick="clinOpen(\''+c.id+'\',\'photos\',{apptId:\''+a.id+'\',date:\''+a.date+'\'})">'+ic('camera',13)+'Photos</button>'+
+  '<button type="button" class="btn sm ghost" onclick="clinOpen(\''+c.id+'\',\'consult\',{apptId:\''+a.id+'\'})">'+ic('shield',13)+'Clinical record</button></div>');
+ return out.join('');
+}
+function clApptBox(a,c){
+ if(!a||!a.customerId)return '';
+ const id='clap-'+a.id;
+ (async()=>{const cc=c||await custGet(a.customerId);if(!cc)return;
+  const [b]=await Promise.all([clLoad(cc.id),clLoadForms(),CLNOTES[cc.id]?null:clLoadNotes(cc.id)]);
+  const el=document.getElementById(id);if(el)el.innerHTML=clApptInner(a,cc,b);})();
+ return '<div class="clappt" id="'+id+'"><div class="skel" style="width:55%"></div></div>';
+}
+/* booking step by step: treatments that clash are marked, and booking one needs a tick */
+function clWz(){
+ if(typeof WZ==='undefined'||!WZ||!WZ.cid)return;const c=cust(WZ.cid);if(!c)return;
+ const body=document.querySelector('#modal .wzbody');if(!body)return;
+ if(WZ.step===0){const inf=body.querySelector('.wzinfo');const f=clFlagPills(c);
+  if(inf&&(c.allergy||f))inf.insertAdjacentHTML('afterbegin','<div class="warnbox">'+ic('alert',13)+' '+(c.allergy?'Allergy: '+esc(c.allergy)+' ':'')+f+'</div>');}
+ if(WZ.step===1)body.querySelectorAll('.wzsvc').forEach(b=>{const m=/wzSvc\('([^']+)'\)/.exec(b.getAttribute('onclick')||'');if(!m)return;
+  const cl=clClash(c,svc(m[1]));if(cl.length){b.classList.add('clx');b.insertAdjacentHTML('beforeend','<span class="clxb">'+ic('alert',10)+' '+esc(cl.map(clFlagShort).join(', '))+'</span>');}});
+ const cl=WZ.sid&&!WZ.und?clClash(c,svc(WZ.sid)):[];
+ if(cl.length&&WZ.step>=1)body.insertAdjacentHTML('afterbegin','<div class="errbox">'+ic('alert',13)+' <b>Contraindication:</b> '+esc(c.name.split(' ')[0])+' has declared '+esc(cl.map(flagLabel).join(', '))+'. '+esc(svc(WZ.sid).name)+' is marked "do not use" for this.'+
+  (WZ.step===4?'<label class="row" style="gap:8px;margin:8px 0 0;align-items:flex-start"><input type="checkbox" id="wz-clok"'+(WZ.clok?' checked':'')+' onchange="clWzOk(this.checked)"> <span>Checked with the client / doctor — book anyway</span></label>':'')+'</div>');
+ else if(WZ.step===4&&!clHasMed(c))body.insertAdjacentHTML('afterbegin','<div class="warnbox">'+ic('alert',13)+' No medical history on file for '+esc(c.name.split(' ')[0])+'. Ask them to fill the consultation form on the tablet when they arrive.</div>');
+}
+{const _wp=wzPaint;wzPaint=function(){_wp.apply(this,arguments);try{clWz();}catch(e){console.warn('clWz',e);}};}
+{const _ws=window.wzSave;window.wzSave=async()=>{
+ const c=cust(WZ.cid),cl=WZ.sid&&!WZ.und?clClash(c,svc(WZ.sid)):[];
+ if(cl.length&&!WZ.clok){const e=document.getElementById('wz-e');if(e)e.textContent='Tick the contraindication box first, once it has been checked with the client or the doctor.';return;}
+ return _ws();};}
+const clApptTag=()=>{const c=cust(WZ.cid),cl=WZ.sid&&!WZ.und?clClash(c,svc(WZ.sid)):[];return cl.length?{clinFlags:cl,clinOk:{by:UID,byName:clWho(),at:clNow()}}:{};};
+
+/* ============ Clinical: today's clients, and the consent forms ============ */
+let CLT=null,CLTBUSY=false;
+async function clLoadToday(){
+ const L=APPTS.filter(a=>a.date===today()&&a.branchId===ME.branchId&&a.customerId&&!['cancel','no'].includes(a.status)).sort((x,y)=>String(x.start).localeCompare(String(y.start)));
+ const ids=[...new Set(L.map(a=>a.customerId))];
+ await Promise.all([...ids.map(id=>custGet(id)),clLoadForms()]);
+ const [consults,consents,recs]=await Promise.all([clByCust('consults',ids,600),clByCust('consents',ids,600),clByCust('txRecords',ids,600)]);
+ CLT={L,consults,consents,recs,t:Date.now()};
+}
+window.clTodayRefresh=()=>{CLT=null;render();};
+function vClin(){
+ if(!CLT&&!CLTBUSY){CLTBUSY=true;clLoadToday().catch(e=>console.warn(e)).finally(()=>{CLTBUSY=false;if(TAB==='clin')render();});}
+ const forms=CLFORMS||CL_FORM0;
+ let h='<div class="card"><div class="sec-h"><div><h2 style="margin:0">'+ic('shield',18)+' Clinical</h2><p class="tiny muted" style="margin:4px 0 0">Consultation forms, contraindications, consent, photos and treatment records for the clients you see today.</p></div>'+
+  '<button type="button" class="btn sm ghost" onclick="clTodayRefresh()">'+ic('refresh',13)+'Refresh</button></div></div>';
+ if(!CLT)h+='<div class="card"><div class="skel" style="width:60%"></div><div class="skel"></div></div>';
+ else{
+  const rows=CLT.L.map(a=>{const c=cust(a.customerId)||{id:a.customerId,name:a.customerName||''},s=svc(a.serviceId);
+   const cons=CLT.consults.filter(x=>x.customerId===c.id).sort(clDesc('at'))[0],fresh=cons&&daysBetween(cons.at,new Date())<=365;
+   const cs=clConsentState({consents:CLT.consents.filter(x=>x.customerId===c.id)},s),todo=cs.filter(x=>x.st!=='ok');
+   const rec=a.txRec||CLT.recs.some(r=>r.apptId===a.id),cl=clClash(c,s);
+   return{a,c,s,fresh,todo,rec,cl,noMed:!clHasMed(c)};});
+  const n=(f)=>rows.filter(f).length;
+  h+='<div class="grid g4" style="margin-bottom:12px">'+kpi('Clients today',rows.length,esc(branch().name||''),'users')+kpi('Consultation form',n(r=>!r.fresh),'still to fill','note')+
+   kpi('Consent',n(r=>r.todo.length),'still to sign','signature')+kpi('Warnings',n(r=>r.cl.length),'contraindications','alert')+'</div>';
+  h+='<div class="card"><div class="sec-h"><h3>Today</h3><span class="pill">'+rows.length+'</span></div>'+(rows.length?rows.map(r=>
+   '<div class="cltoday'+(r.cl.length?' bad':'')+'"><div class="cltt">'+tstr(r.a.start)+'</div><div class="cltn"><button type="button" class="linkb" onclick="clinOpen(\''+r.c.id+'\',\'consult\',{apptId:\''+r.a.id+'\'})"><b>'+esc(r.c.name)+'</b></button>'+
+    '<small>'+esc(r.a.serviceName||'')+' · '+esc(r.a.staffName||'')+'</small>'+(r.cl.length?'<div>'+r.cl.map(x=>'<span class="pill r">'+ic('alert',11)+esc(clFlagShort(x))+'</span>').join(' ')+'</div>':r.noMed?'<div><span class="pill a">No medical history</span></div>':'')+'</div>'+
+    '<div class="cltst">'+
+     (r.fresh?'<span class="pill g">'+ic('check',11)+'Consultation</span>':'<button type="button" class="btn sm ghost" onclick="clKiosk(\'consult\',\''+r.c.id+'\',{apptId:\''+r.a.id+'\'})">'+ic('note',12)+'Consultation</button>')+
+     (r.todo.length?r.todo.map(x=>'<button type="button" class="btn sm ghost" onclick="clKiosk(\'consent\',\''+r.c.id+'\',{formId:\''+esc(x.f.id)+'\',apptId:\''+r.a.id+'\'})">'+ic('signature',12)+'Sign · '+esc(x.f.name.replace(/^Consent for /,''))+'</button>').join(''):'<span class="pill g">'+ic('check',11)+'Consent</span>')+
+     (r.rec?'<span class="pill g">'+ic('check',11)+'Recorded</span>':r.a.status==='done'||r.a.status==='in'?'<button type="button" class="btn sm" onclick="clinOpen(\''+r.c.id+'\',\'recs\',{add:1,apptId:\''+r.a.id+'\'})">'+ic('spark',12)+'Record</button>':'')+
+    '</div></div>').join(''):'<div class="empty">'+ic('calendar',26)+'<div>No clients booked today at this branch.</div></div>')+'</div>';
+ }
+ const noAvoid=D.services.filter(s=>s.active!==false&&!(s.avoid||[]).length).length,all=D.services.filter(s=>s.active!==false).length;
+ h+='<div class="card"><div class="sec-h"><h3>'+ic('signature',14)+' Consent forms</h3>'+(boss()?'<button type="button" class="btn sm" onclick="clFormEdit(\'\')">'+ic('plus',13)+'New form</button>':'')+'</div>'+
+  forms.map(f=>'<div class="clform"><div style="flex:1;min-width:0"><b>'+esc(f.name)+'</b> <span class="pill">v'+(f.v||1)+'</span>'+(f.active===false?' <span class="pill">off</span>':'')+(f.std?' <span class="tiny muted">standard wording</span>':'')+
+   '<div class="tiny muted">For: '+esc(clFormFor(f))+(+f.months>0?' · renew every '+f.months+' months':' · signed once')+(f.updatedAt?' · updated '+dshort(f.updatedAt)+(f.updatedByName?' by '+esc(f.updatedByName):''):'')+'</div></div>'+
+   (boss()?'<button type="button" class="btn sm ghost" onclick="clFormEdit(\''+esc(f.id)+'\')">'+ic('edit',13)+'Edit</button>':'')+'</div>').join('')+
+  '<p class="tiny muted" style="margin:10px 0 0">Changing the wording makes a new version; clients who signed an older one are asked to sign again. Have the wording checked by your lawyer or doctor.</p></div>';
+ h+='<div class="card"><h3 style="margin-bottom:6px">'+ic('shield',14)+' Contraindication checks</h3><p class="tiny muted" style="margin:0">'+(all-noAvoid)+' of '+all+' treatments have "Do not use when…" set in Catalogue → Treatments. '+
+  (noAvoid?'Set it for peels, machine and needling treatments so bookings for clients who are pregnant, on isotretinoin and so on get a red warning.':'Every treatment is covered.')+'</p></div>';
+ return h;
+}
+let CLFE=null;
+window.clFormEdit=async id=>{
+ await clLoadForms();const f=id?(CLFORMS.find(x=>x.id===id)||{}):{name:'',v:1,all:false,cats:[],svcs:[],months:12,active:true,body:'',bodyEn:''};
+ CLFE={...JSON.parse(JSON.stringify(f)),_id:id};clFormPaint();
+};
+function clFormPaint(){
+ const f=CLFE,cats=[...new Set(D.services.map(s=>s.cat||'').filter(Boolean))];
+ modal(f._id?'Edit consent form':'New consent form','<div class="card">'+
+  '<label>Name</label><input class="f" id="cf-n" maxlength="80" value="'+esc(f.name||'')+'">'+
+  '<label>For which treatments</label><label class="row" style="gap:8px"><input type="checkbox" id="cf-all"'+(f.all?' checked':'')+' onchange="clFormAll(this.checked)"> Every treatment</label>'+
+  (f.all?'':(cats.length?'<div class="tiny muted" style="margin:6px 0 4px">Categories</div><div class="chips">'+cats.map(c=>'<button type="button" class="chip'+((f.cats||[]).includes(c)?' on':'')+'" data-c="'+esc(c)+'" onclick="clFormTog(\'cats\',this.dataset.c)">'+esc(c)+'</button>').join('')+'</div>':'')+
+   '<div class="tiny muted" style="margin:6px 0 4px">Treatments</div><div class="chips">'+D.services.filter(s=>s.active!==false).map(s=>'<button type="button" class="chip'+((f.svcs||[]).includes(s.id)?' on':'')+'" data-c="'+esc(s.id)+'" onclick="clFormTog(\'svcs\',this.dataset.c)">'+esc(s.name)+'</button>').join('')+'</div>')+
+  '<div class="grid g2"><div><label>Sign again after (months)</label><input class="f" type="number" min="0" max="60" id="cf-m" value="'+(+f.months||0)+'"><div class="tiny muted" style="margin-top:-6px">0 = signed once</div></div>'+
+  '<div><label>Status</label><label class="row" style="gap:8px;margin-top:8px"><input type="checkbox" id="cf-on"'+(f.active!==false?' checked':'')+'> In use</label></div></div>'+
+  '<label>Wording in BM <span class="muted">— {biz} becomes your business name</span></label><textarea class="f" id="cf-b" rows="9">'+esc(f.body||'')+'</textarea>'+
+  '<label>Wording in English</label><textarea class="f" id="cf-e" rows="9">'+esc(f.bodyEn||'')+'</textarea>'+
+  (f._id?'<p class="tiny muted">Now version '+(f.v||1)+'. Saving changed wording makes version '+((+f.v||1)+1)+'.</p>':'')+
+  '<button type="button" class="btn" style="width:100%;justify-content:center" onclick="clFormSave()">'+ic('check',15)+'Save form</button></div>');
+}
+window.clFormKeep=()=>{const g=id=>(document.getElementById(id)||{}).value;const f=CLFE;
+ if(document.getElementById('cf-n')){f.name=g('cf-n');f.months=+g('cf-m')||0;f.body=g('cf-b');f.bodyEn=g('cf-e');f.active=document.getElementById('cf-on').checked;}};
+window.clFormTog=(k,v)=>{clFormKeep();const a=CLFE[k]=CLFE[k]||[];const i=a.indexOf(v);if(i>=0)a.splice(i,1);else a.push(v);clFormPaint();};
+window.clFormSave=async()=>{
+ clFormKeep();const f=CLFE,old=f._id?CLFORMS.find(x=>x.id===f._id):null;
+ if(!String(f.name||'').trim()||!String(f.body||f.bodyEn||'').trim()){toast('Give the form a name and its wording');return;}
+ const changed=!old||old.body!==f.body||old.bodyEn!==f.bodyEn;
+ const v=old?((+old.v||1)+(changed?1:0)):1;
+ const d={name:String(f.name).trim(),v,all:!!f.all,cats:f.all?[]:(f.cats||[]),svcs:f.all?[]:(f.svcs||[]),months:Math.max(0,+f.months||0),active:f.active!==false,
+  body:f.body||'',bodyEn:f.bodyEn||'',updatedAt:clNow(),updatedBy:UID,updatedByName:clWho(),
+  hist:[...((old&&old.hist)||[]),...(old&&changed?[{v:+old.v||1,at:old.updatedAt||'',body:old.body||'',bodyEn:old.bodyEn||''}]:[])].slice(-10)};
+ try{const ref=f._id?doc(db,'consentForms',f._id):doc(collection(db,'consentForms'));await setDoc(ref,d);
+  await audit('Consent form saved',d.name+' v'+v);await clLoadForms(true);CLT=null;window.closeModal();render();toast(changed&&old?'Saved as version '+v:'Form saved');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ============ Segments: who is worth what, tags, and lists for targeted marketing ============ */
+let SEGD=null,SEGBUSY=false,SEGF={seg:'all',tags:[],mkt:true,q:'',sort:'spend',n:60};
+const SEGS=[['all','Everyone'],['top','Top 10% by spend'],['loyal','Loyal · 3+ visits in 6 months'],['new','New · first visit in 30 days'],['risk','At risk · 60–120 days away'],['lapsed','Lapsed · over 120 days'],['never','Never paid'],['bday','Birthday this month']];
+async function segLoad(){
+ const [cs,ss]=await Promise.all([getDocs(query(collection(db,'customers'),limit(5000))),
+  getDocs(query(collection(db,'sales'),where('date','>=',ymd(addDays(new Date(),-1100))),limit(20000)))]);
+ const all=cs.docs.map(d=>({id:d.id,...d.data()}));
+ const into={};all.forEach(c=>{if(c.mergedInto)into[c.id]=c.mergedInto;});
+ const by={};ss.docs.forEach(d=>{const s=d.data();const id=into[s.customerId]||s.customerId;if(id)(by[id]=by[id]||[]).push(s);});
+ const d180=ymd(addDays(new Date(),-180));
+ const rows=all.filter(c=>c.active!==false&&!c.mergedInto).map(c=>{const L=by[c.id]||[];const v=clValue(L);
+  v.recent=new Set(L.filter(s=>!s.voided&&String(s.date)>=d180).map(s=>s.date)).size;return{c,v};});
+ const sp=rows.map(r=>r.v.spend).filter(x=>x>0).sort((a,b)=>b-a);
+ const top=sp.length?sp[Math.max(0,Math.ceil(sp.length*0.1)-1)]:Infinity;
+ const groups={};all.filter(c=>c.active!==false&&!c.mergedInto&&phKey(c.phone).length>=9).forEach(c=>{(groups[phKey(c.phone)]=groups[phKey(c.phone)]||[]).push(c);});
+ SEGD={rows,top,dups:Object.values(groups).filter(g=>g.length>1),at:Date.now()};
+}
+function segIn(r,k){
+ const v=r.v,since=v.last?daysBetween(v.last,today()):9999;
+ return k==='all'||(k==='top'&&v.spend>0&&v.spend>=SEGD.top)||(k==='loyal'&&v.recent>=3)||(k==='new'&&v.first&&daysBetween(v.first,today())<=30)||
+  (k==='risk'&&v.visits>=2&&since>60&&since<=120)||(k==='lapsed'&&v.visits>0&&since>120)||(k==='never'&&!v.visits)||
+  (k==='bday'&&r.c.dob&&String(r.c.dob).slice(5,7)===today().slice(5,7));
+}
+function segList(){
+ const F=SEGF,q=String(F.q||'').toLowerCase().trim(),tl=F.tags.map(t=>t.toLowerCase());
+ let L=SEGD.rows.filter(r=>segIn(r,F.seg)&&(!F.mkt||r.c.marketing!==false)&&tl.every(t=>(r.c.tags||[]).some(x=>x.toLowerCase()===t))&&
+  (!q||String(r.c.name||'').toLowerCase().includes(q)||digits(r.c.phone).includes(digits(q)||'@@')));
+ const S={spend:(a,b)=>b.v.spend-a.v.spend,visits:(a,b)=>b.v.visits-a.v.visits,avg:(a,b)=>b.v.avg-a.v.avg,last:(a,b)=>String(b.v.last).localeCompare(String(a.v.last)),name:(a,b)=>String(a.c.name).localeCompare(String(b.c.name))}[F.sort];
+ return L.sort(S);
+}
+window.segSet=(k,v)=>{SEGF[k]=v;if(k!=='n')SEGF.n=60;render();};
+window.segTag=t=>{const i=SEGF.tags.indexOf(t);if(i>=0)SEGF.tags.splice(i,1);else SEGF.tags.push(t);SEGF.n=60;render();};
+window.segQ=v=>{SEGF.q=v;SEGF.n=60;render();const e=document.getElementById('seg-q');if(e){e.focus();e.setSelectionRange(v.length,v.length);}};
+window.segRefresh=()=>{SEGD=null;render();};
+function vSeg(){
+ if(!boss())return '<div class="card"><div class="empty">Segments are for the owner or a manager.</div></div>';
+ if(!SEGD){if(!SEGBUSY){SEGBUSY=true;segLoad().catch(e=>{console.warn(e);toast(friendly(e));}).finally(()=>{SEGBUSY=false;if(TAB==='seg')render();});}
+  return '<div class="card"><div class="center"><div class="spin"></div></div><p class="tiny muted" style="text-align:center">Adding up every client\'s spend and visits…</p></div>';}
+ const L=segList(),F=SEGF,tags={};SEGD.rows.forEach(r=>(r.c.tags||[]).forEach(t=>{tags[t]=(tags[t]||0)+1;}));
+ const tagList=Object.keys(tags).sort((a,b)=>tags[b]-tags[a]);
+ const spend=L.reduce((a,r)=>a+r.v.spend,0);
+ let h='<div class="card"><div class="sec-h"><div><h2 style="margin:0">'+ic('users',18)+' Segments</h2><p class="tiny muted" style="margin:4px 0 0">Client value, tags and lists for targeted marketing. Worked out from '+SEGD.rows.length+' clients and their bills.</p></div>'+
+  '<button type="button" class="btn sm ghost" onclick="segRefresh()">'+ic('refresh',13)+'Refresh</button></div>'+
+  '<div class="chips" style="margin-top:10px">'+SEGS.map(s=>{const n=SEGD.rows.filter(r=>segIn(r,s[0])&&(!F.mkt||r.c.marketing!==false)).length;
+   return '<button type="button" class="chip'+(F.seg===s[0]?' on':'')+'" onclick="segSet(\'seg\',\''+s[0]+'\')">'+esc(s[1])+' <span class="muted">'+n+'</span></button>';}).join('')+'</div>'+
+  (tagList.length?'<div class="tiny muted" style="margin:4px 0">Tags — tap to narrow down</div><div class="chips">'+tagList.map(t=>'<button type="button" class="chip'+(F.tags.includes(t)?' on':'')+'" data-t="'+esc(t)+'" onclick="segTag(this.dataset.t)">'+esc(t)+' <span class="muted">'+tags[t]+'</span></button>').join('')+'</div>':'')+
+  '<div class="row" style="gap:8px;flex-wrap:wrap;align-items:center"><input class="f" id="seg-q" style="margin:0;flex:1;min-width:180px" placeholder="Search name or phone" value="'+esc(F.q)+'" oninput="segQ(this.value)">'+
+  '<select class="f" style="margin:0;width:auto" onchange="segSet(\'sort\',this.value)">'+[['spend','Highest spend'],['visits','Most visits'],['avg','Highest per visit'],['last','Most recent'],['name','Name']].map(o=>'<option value="'+o[0]+'"'+(F.sort===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'+
+  '<label class="row" style="gap:6px;margin:0"><input type="checkbox"'+(F.mkt?' checked':'')+' onchange="segSet(\'mkt\',this.checked)"> Agreed to promotions only</label></div></div>';
+ h+='<div class="card"><div class="sec-h"><h3>'+L.length+' client'+(L.length===1?'':'s')+' <span class="tiny muted">· '+rm(spend)+' spent'+(L.length?' · '+rm(spend/L.length)+' each':'')+'</span></h3>'+
+  '<div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn sm" onclick="segCopy()"'+(L.length?'':' disabled')+'>'+ic('msg',13)+'Copy WhatsApp numbers</button>'+
+  '<button type="button" class="btn sm ghost" onclick="segCSV()"'+(L.length?'':' disabled')+'>'+ic('download',13)+'CSV</button>'+
+  '<button type="button" class="btn sm ghost" onclick="segBulkTag()"'+(L.length?'':' disabled')+'>'+ic('tag',13)+'Tag all</button></div></div>'+
+  (L.length?'<div class="cltblw"><table class="cltbl segt"><thead><tr><th>Client</th><th class="num">Spend</th><th class="num">Visits</th><th class="num">Per visit</th><th>How often</th><th>Last visit</th></tr></thead><tbody>'+
+   L.slice(0,F.n).map(r=>'<tr onclick="clSegOpen(\''+r.c.id+'\')"><td data-l="Client"><b>'+esc(r.c.name)+'</b>'+(r.v.spend>=SEGD.top&&r.v.spend>0?' <span class="pill b">'+ic('star',10)+'top</span>':'')+
+    '<div class="tiny muted">'+esc(r.c.phone||'')+((r.c.tags||[]).length?' · '+esc(r.c.tags.join(', ')):'')+'</div></td>'+
+    '<td data-l="Spend" class="num">'+rm(r.v.spend)+'</td><td data-l="Visits" class="num">'+r.v.visits+'</td><td data-l="Per visit" class="num">'+(r.v.visits?rm(r.v.avg):'—')+'</td>'+
+    '<td data-l="How often">'+esc(clFreq(r.v))+'</td><td data-l="Last visit">'+(r.v.last?dshort(r.v.last)+' <span class="muted">'+daysBetween(r.v.last,today())+'d</span>':'—')+'</td></tr>').join('')+'</tbody></table></div>'+
+   (L.length>F.n?'<button type="button" class="blankf" style="margin-top:8px" onclick="segSet(\'n\','+(F.n+200)+')">Show more ('+(L.length-F.n)+' left)</button>':'')
+  :'<div class="empty">'+ic('users',26)+'<div>No clients match.</div></div>')+'</div>';
+ h+='<div class="card" id="seg-dups"><div class="sec-h"><h3>'+ic('alert',14)+' Possible duplicate records</h3><span class="pill '+(SEGD.dups.length?'a':'g')+'">'+SEGD.dups.length+'</span></div>'+
+  (SEGD.dups.length?'<p class="tiny muted" style="margin:0 0 8px">The same phone number on more than one client. Merging keeps one record: packages and upcoming bookings move across, and past bills and clinical records show under the client kept.</p>'+
+   SEGD.dups.map(g=>'<div class="cldupg">'+g.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt))).map((c,i)=>'<div class="clsl"><span><b>'+esc(c.name)+'</b>'+(idOf(c)?' '+esc(idOf(c)):'')+'<small class="muted"> · '+esc(c.phone||'')+(c.createdAt?' · since '+dshort(c.createdAt):'')+'</small></span><div></div>'+
+    '<div class="row" style="gap:6px"><button type="button" class="btn sm ghost" onclick="clSegOpen(\''+c.id+'\')">Open</button>'+(i>0?'<button type="button" class="btn sm" onclick="clMergeAsk(\''+g[0].id+'\',\''+c.id+'\')">Merge into '+esc(String(g[0].name).split(' ')[0])+'</button>':'')+'</div></div>').join('')+'</div>').join('')
+  :'<p class="tiny muted" style="margin:0">None found — every phone number belongs to one client.</p>')+'</div>';
+ return h;
+}
+window.clSegOpen=async id=>{const c=cust(id)||await custGet(id);if(c)openCustOnTop(id);};
+const segRows=()=>segList();
+window.segCopy=async()=>{
+ const nums=[...new Set(segRows().map(r=>waNum(r.c.phone||'')).filter(Boolean))];
+ const t=nums.join('\n');window.__segCopy=t;
+ try{await navigator.clipboard.writeText(t);toast(nums.length+' numbers copied');}catch(e){modal('WhatsApp numbers','<div class="card"><textarea class="f" rows="10">'+esc(t)+'</textarea></div>');}
+};
+window.segCSV=()=>{
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const L=[['Name','Phone','Client no','Tags','Lifetime spend','Visits','Average per visit','Last visit','Promotions OK','Birthday','Source'].map(q).join(',')].concat(segRows().map(r=>[r.c.name,r.c.phone,idOf(r.c),(r.c.tags||[]).join('; '),r.v.spend.toFixed(2),r.v.visits,r.v.avg.toFixed(2),r.v.last,r.c.marketing!==false?'yes':'no',r.c.dob||'',r.c.source||''].map(q).join(',')));
+ const csv=L.join('\n');window.__lastCSV=csv;
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download='Clients-'+SEGF.seg+'-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
+};
+window.segBulkTag=async()=>{
+ const L=segRows(),t=String(prompt('Tag to add to these '+L.length+' clients')||'').trim().slice(0,40);if(!t)return;
+ let n=0;for(const r of L){const tags=r.c.tags||[];if(tags.some(x=>x.toLowerCase()===t.toLowerCase()))continue;
+  try{await updateDoc(doc(db,'customers',r.c.id),{tags:[...tags,t]});r.c.tags=[...tags,t];const x=cust(r.c.id);if(x)x.tags=r.c.tags;n++;}catch(e){}}
+ await audit('Clients tagged',t+' · '+n);toast(n+' clients tagged "'+t+'"');render();
+};
+/* merging: packages and upcoming bookings move to the client kept; the rest is read through the link */
+window.clMergeAsk=async(keep,dup)=>{
+ if(!boss())return;const K=await custGet(keep),X=await custGet(dup);if(!K||!X)return;
+ modal('Merge duplicate','<div class="card"><p>Keep <b>'+esc(K.name)+'</b>'+(idOf(K)?' ('+esc(idOf(K))+')':'')+' and merge <b>'+esc(X.name)+'</b>'+(idOf(X)?' ('+esc(idOf(X))+')':'')+' into it.</p>'+
+  '<ul class="tiny" style="line-height:1.7;padding-left:18px"><li>Packages and upcoming bookings move to '+esc(K.name)+'.</li><li>Past bills, visits, consultation forms, consent, photos and treatment records show under '+esc(K.name)+'.</li>'+
+  '<li>Details missing on '+esc(K.name)+' (email, birthday, address, allergies…) are filled in; tags are combined.</li><li>'+esc(X.name)+'\'s record is switched off, not deleted.</li>'+
+  (+X.points>0?'<li><b>'+X.points+' loyalty points</b> stay on the old record — add them in Loyalty if needed.</li>':'')+'</ul>'+
+  '<button type="button" class="btn" style="width:100%;justify-content:center" id="clm-go" onclick="clMerge(\''+keep+'\',\''+dup+'\')">'+ic('check',15)+'Merge</button></div>');
+};
+window.clMerge=async(keep,dup)=>{
+ const K=await custGet(keep),X=await custGet(dup),b=document.getElementById('clm-go');if(!K||!X)return;if(b)b.disabled=true;
+ try{
+  const pk=await getDocs(query(collection(db,'customerPackages'),where('customerId','==',dup),limit(100)));
+  for(const d of pk.docs)await updateDoc(doc(db,'customerPackages',d.id),{customerId:keep,customerName:K.name});
+  const ap=await getDocs(query(collection(db,'appointments'),where('customerId','==',dup),limit(300)));
+  for(const d of ap.docs){const a=d.data();if(String(a.date)>=today()&&!['cancel','no','done'].includes(a.status)){await updateDoc(doc(db,'appointments',d.id),{customerId:keep,customerName:K.name});const x=APPTS.find(z=>z.id===d.id);if(x){x.customerId=keep;x.customerName=K.name;}}}
+  const fill={};['email','dob','address','postcode','city','state','idNo','occupation','emergency','skin','allergy','medical','referrerId','referrerName','preferredStaff'].forEach(k=>{if(!K[k]&&X[k])fill[k]=X[k];});
+  if(!K.med&&X.med)fill.med=X.med;
+  if(!K.phone2&&X.phone&&phKey(X.phone)!==phKey(K.phone))fill.phone2=X.phone;
+  const tags=[...(K.tags||[])];(X.tags||[]).forEach(t=>{if(!tags.some(x=>x.toLowerCase()===t.toLowerCase()))tags.push(t);});fill.tags=tags;
+  if(X.note&&X.note!==K.note)fill.note=[K.note,X.note].filter(Boolean).join(' · ').slice(0,500);
+  if(+X.photoN)fill.photoN=(+K.photoN||0)+(+X.photoN||0);
+  if(!K.photoMkt&&X.photoMkt)fill.photoMkt=X.photoMkt;
+  await updateDoc(doc(db,'customers',keep),fill);Object.assign(K,fill);
+  const off={active:false,mergedInto:keep,mergedAt:clNow(),mergedBy:UID,mergedByName:clWho()};
+  await updateDoc(doc(db,'customers',dup),off);Object.assign(X,off);
+  delete CLALIAS[keep];delete CLB[keep];delete CLVC[keep];delete CLNOTES[keep];delete CLDUPC[keep];delete CLDUPC[dup];HIST=null;
+  if(typeof HELD!=='undefined')HELD.forEach(p=>{if(p.customerId===dup){p.customerId=keep;p.customerName=K.name;}});
+  await audit('Duplicate clients merged',X.name+' → '+K.name);
+  SEGD=null;window.closeModal();toast('Merged into '+K.name);
+  if(TAB==='seg')render();else window.openCust(keep);
+ }catch(e){toast(friendly(e));if(b)b.disabled=false;}
+};
+TABS.splice(TABS.findIndex(t=>t.id==='cust')+1,0,{id:'clin',ic:'shield',label:'Clinical',perm:'customer',group:'Clients',desc:'Consultation, consent, photos and treatment records'});
+TABS.splice(TABS.findIndex(t=>t.id==='crm')+1,0,{id:'seg',ic:'users',label:'Segments',perm:'report',group:'Clients',desc:'Client value, tags and lists for targeted marketing'});
+/* the client list marks anyone with a declared contraindication */
+{const _cr=custRow;custRow=function(c){
+ const h=_cr(c),f=[...clFlags(c)].filter(x=>x!=='allergy');if(!f.length)return h;
+ const p='<span class="pill r">'+ic('shield',11)+esc(clFlagShort(f[0]))+(f.length>1?' +'+(f.length-1):'')+'</span>';
+ if(h.includes('<div class="crflags">'))return h.replace('<div class="crflags">','<div class="crflags">'+p);
+ const i=h.indexOf('<div class="tiny muted">');if(i<0)return h;const j=h.indexOf('</div>',i)+6;return h.slice(0,j)+'<div class="crflags">'+p+'</div>'+h.slice(j);};}
 
 </script>
