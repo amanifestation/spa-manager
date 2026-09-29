@@ -705,6 +705,83 @@ footer .wrap{align-items:flex-start}.fcol{display:flex;flex-direction:column;gap
 .newsi h3{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:500;font-size:28px}.newsi h3 .ico{color:#1F8F55}.newsi p{margin:6px 0 0;color:var(--ink-2)}
 .newsf{display:grid;grid-template-columns:1fr 1fr;gap:8px}.newsf .f{margin:0;width:100%;border:var(--hair);background:var(--porcelain);border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}.newsf .f:focus{border-color:var(--gbrush);box-shadow:0 0 0 3px rgba(178,153,110,.18)}.newsf #nw-m,.newsf .consent,.newsf .err,.newsf .btn{grid-column:1/-1}.newsf .consent{font-size:12px;margin:2px 0}
 @media(max-width:860px){.qzbox,.newsi{grid-template-columns:1fr}.qzr{display:none}.magc,.magg.one .magc{grid-template-columns:96px 1fr;gap:14px;padding:14px}.magg.one .magb h3{font-size:21px}.newsf{grid-template-columns:1fr}}
+
+/* ===== 29j: calmer reveal, tighter spacing, category dropdown, quiz card ===== */
+/* cards rise a little and never over the one above; no blur smear */
+.rv0{transform:translateY(12px);filter:none;transition:opacity .7s var(--ease),transform .8s var(--ease);transition-delay:var(--d,0s)}
+.rv0.rv1{transform:none}
+.art.rv0,.art.rv0.rv1{transform:none}
+.tbar{margin:18px 0 6px}
+@media(max-width:860px){.tbar{margin:14px 0 4px}}
+/* spacing between sections */
+.sec{padding:clamp(44px,6vw,80px) 0}
+.hero{padding-bottom:clamp(20px,4vw,40px)}
+.uband{padding:22px 0 8px}
+.newsb{padding-bottom:clamp(28px,5vw,56px)}
+@media(max-width:860px){.sec{padding:40px 0}.sec-h{margin-bottom:18px}.hero{padding-bottom:18px}}
+/* ---------- treatments: dropdown per category ---------- */
+.acchint{display:flex;align-items:center;gap:6px;margin:-6px 0 12px;font-size:12.5px;color:var(--ink-3)}.acchint .ico{color:var(--gbrush)}
+.acc{display:flex;flex-direction:column;gap:10px}
+.accI{background:var(--surface);border:var(--hair);border-radius:22px;box-shadow:var(--lift);overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.accI.on{border-color:rgba(178,153,110,.55)}
+.accH{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;width:100%;border:0;background:none;padding:12px 16px 12px 12px;font:inherit;text-align:left;color:var(--jet);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.accH:focus-visible{outline:2px solid var(--brass);outline-offset:-2px;border-radius:22px}
+.accT{width:58px;height:58px;border-radius:16px;background:var(--surface-2) center/cover no-repeat;display:grid;place-items:center;flex:none}
+.accT.blank{background:radial-gradient(circle at 30% 25%,rgba(215,197,170,.55),transparent 60%),linear-gradient(150deg,#26231F,#0D0D0D)}
+.accT i{font-style:normal;font-family:var(--serif);font-size:28px;color:var(--champagne);line-height:1}
+.accN{min-width:0}.accN b{display:block;font-family:var(--serif);font-weight:500;font-size:23px;line-height:1.15;letter-spacing:-.01em}
+.accN small{display:block;margin-top:3px;font-size:13px;color:var(--ink-3)}
+.accC{width:36px;height:36px;border-radius:50%;border:var(--hair);display:grid;place-items:center;transition:background .3s,border-color .3s,transform .45s var(--ease)}
+.accC::before{content:'';width:8px;height:8px;border-right:1.6px solid currentColor;border-bottom:1.6px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.accH:hover .accC{border-color:var(--gbrush)}
+.accI.on .accC{transform:rotate(180deg);background:var(--jet);border-color:var(--jet);color:var(--champagne)}
+.accP{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.accI.on .accP{grid-template-rows:1fr}
+.accIn{min-height:0;overflow:hidden;visibility:hidden;transition:visibility 0s .45s}
+.accI.on .accIn{visibility:visible;transition:none}
+.accIn .catd{padding:2px 20px 0}
+.accIn .catl{border-top:1px solid var(--line-2);margin-top:6px}
+@media(max-width:600px){.accT{width:50px;height:50px;border-radius:14px}.accN b{font-size:20px}.accH{gap:12px;padding:10px 12px 10px 10px}.accIn .catd{padding:2px 16px 0}}
+@media(prefers-reduced-motion:reduce){.accP,.accC{transition:none}.rv0{opacity:1;transform:none}}
+/* ---------- the quiz card ---------- */
+.qz2{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);align-items:center;border-radius:32px;padding:clamp(26px,5vw,60px);color:var(--porcelain);
+ background:radial-gradient(120% 90% at 100% 0%,rgba(178,153,110,.28),transparent 55%),radial-gradient(90% 80% at 0% 100%,rgba(215,197,170,.14),transparent 60%),linear-gradient(160deg,#1B1916,#0D0D0D 60%)}
+.qz2::before{content:'';position:absolute;inset:0;z-index:-1;opacity:.5;background-image:radial-gradient(rgba(215,197,170,.16) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:linear-gradient(120deg,transparent 30%,#000 90%);mask-image:linear-gradient(120deg,transparent 30%,#000 90%)}
+.qzg{position:absolute;z-index:-1;border-radius:50%;filter:blur(38px);pointer-events:none;animation:qzfl 14s ease-in-out infinite alternate}
+.qzg.g1{width:260px;height:260px;right:6%;top:-80px;background:rgba(215,197,170,.32)}
+.qzg.g2{width:200px;height:200px;left:-60px;bottom:-70px;background:rgba(178,153,110,.28);animation-duration:18s}
+.qzg.g3{width:140px;height:140px;right:38%;bottom:-40px;background:rgba(155,146,137,.3);animation-duration:11s}
+@keyframes qzfl{to{transform:translate(30px,24px) scale(1.12)}}
+.qz2l .eyebrow{color:var(--champagne)}.qz2l .eyebrow::before{background:var(--champagne)}
+.qz2l h2{color:#fff;font-size:clamp(34px,5vw,54px);line-height:1.04;margin:12px 0 12px}
+.qz2l h2 em{font-style:italic;color:var(--champagne)}
+.qz2l p{color:#C9C1B6;line-height:1.75;margin:0 0 18px;max-width:440px}
+.qz2m{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.qz2m>span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--champagne);border:1px solid rgba(215,197,170,.3);background:rgba(215,197,170,.06);border-radius:99px;padding:6px 12px}
+.qz2go{background:var(--champagne)!important;color:var(--jet)!important;box-shadow:0 12px 30px -12px rgba(215,197,170,.6)}.qz2 .btn.pri.qz2go .ico{color:var(--jet)}
+.qz2r{position:relative;padding:10px 0 62px}
+.qz2c{position:relative;z-index:1;background:var(--porcelain);color:var(--jet);border-radius:24px;padding:20px;box-shadow:0 30px 60px -28px rgba(0,0,0,.8),0 0 0 1px rgba(215,197,170,.25);transform:rotate(-1.6deg);animation:qzbob 7s ease-in-out infinite}
+@keyframes qzbob{50%{transform:rotate(-.6deg) translateY(-6px)}}
+.qz2p{display:flex;align-items:center;gap:10px;margin-bottom:10px}.qz2p>span{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--ink-3);white-space:nowrap}
+.qz2p i{flex:1;height:4px;border-radius:99px;background:var(--line-2);overflow:hidden}.qz2p b{display:block;width:20%;height:100%;background:var(--gbrush);border-radius:99px}
+.qz2c h3{font-family:var(--serif);font-weight:500;font-size:22px;line-height:1.2;margin:0 0 12px}
+.qz2o{display:flex;flex-direction:column;gap:7px}
+.qz2o button{display:flex;align-items:center;gap:10px;text-align:left;font:inherit;font-size:14px;color:var(--jet);background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px 14px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s;animation:qzhint 8s ease-in-out infinite;animation-delay:calc(var(--i)*2s)}
+.qz2o button:hover{border-color:var(--jet);transform:translateX(3px)}
+.qz2o button:active{background:var(--jet);color:var(--porcelain)}
+.qz2d{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--mushroom);flex:none;position:relative;transition:border-color .2s}
+.qz2d::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--gbrush);transform:scale(0);transition:transform .25s var(--ease)}
+.qz2o button:hover .qz2d{border-color:var(--jet)}.qz2o button:hover .qz2d::after{transform:scale(1)}
+@keyframes qzhint{0%,20%,100%{border-color:var(--line)}6%,14%{border-color:var(--gbrush);background:#FFFDF8}}
+.qz2o:hover button{animation:none}
+.qz2h{display:flex;align-items:center;gap:6px;margin:12px 0 0;font-size:12px;color:var(--brass);font-weight:600}
+.qz2peek{position:absolute;z-index:0;right:-8px;bottom:0;width:78%;min-height:140px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--champagne);color:var(--jet);border-radius:22px;padding:16px 18px 18px;transform:rotate(4deg);box-shadow:0 20px 40px -24px rgba(0,0,0,.7)}
+.qz2peek>span{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#6E5A3A}
+.qz2peek b{display:block;font-family:var(--serif);font-weight:500;font-size:19px;margin-top:2px}
+.qz2peek i{display:none}.qz2peek>span{display:none}.qz2peek b::before{content:"✦ ";color:#6E5A3A}
+@media(max-width:860px){.qz2{grid-template-columns:1fr;border-radius:28px}.qz2l h2{font-size:36px}.qz2l p{margin-bottom:14px}.qz2m{margin-bottom:16px}
+ .qz2r{padding:0 0 56px}.qz2c{transform:none;animation:none;padding:18px}.qz2peek{right:14px;width:74%;transform:rotate(2.5deg);min-height:120px}}
+@media(prefers-reduced-motion:reduce){.qzg,.qz2c,.qz2o button{animation:none}}
 </style>
 </head>
 <body>
@@ -1736,6 +1813,55 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-qz],[data-
  if(d.qz==='start')quizOpen();else if(d.qz==='next'){if(QZ.k.length){QZ.a[QZ.i]=QZ.k.join(',');QZ.i++;quizPaint();}}else if(d.qz==='back'){QZ.i=Math.max(0,QZ.i-1);quizPaint();}else if(d.qz==='again'){QZ={i:0,a:{},k:[]};quizPaint();}});
 {const _r2=render;render=function(){_r2.apply(this,arguments);try{newsBind();}catch(e){}};}
 window.__lead={quizOpen,exitShow,magSheet,get QZ(){return QZ;}};
+
+
+/* ================= 29j: treatments as a category dropdown, a livelier quiz card ================= */
+Object.assign(LT.ms,{qEy2:'Kuiz kulit percuma',qH2:'Jenis kulit anda <em>apa?</em>',m1:'60 saat',m2:'5 soalan',m3:'Pelan percuma',
+ tapHint:'Tekan jawapan anda untuk mula',peek:'Jenis kulit + pelan rawatan anda',accFrom:'dari',accHint:'Tekan kategori untuk lihat rawatan'});
+Object.assign(LT.en,{qEy2:'Free skin quiz',qH2:'What is your <em>skin type?</em>',m1:'60 seconds',m2:'5 questions',m3:'Free plan',
+ tapHint:'Tap your answer to begin',peek:'Your skin type + treatment plan',accFrom:'from',accHint:'Tap a category to see its treatments'});
+/* ---------- treatments: category headers only; tap to open ---------- */
+let ACC=null;
+paintSvcs=function(){
+ const el=$('#svcs');if(!el)return;
+ const S=(P.services||[]),cats=[...new Set(S.map(s=>s.c||''))],one=cats.length===1;
+ el.innerHTML=(one?'':'<p class="acchint">'+ic('arrow',13)+TL('accHint')+'</p>')+'<div class="acc">'+cats.map((c,i)=>{
+  const L=S.filter(s=>(s.c||'')===c),C=catOf(c),on=one||ACC===c,nm=c||T('other');
+  const ps=P.showPrices===false?[]:L.map(s=>{const bp=bestPromo(s);return bp?bp.v:s.p;}).filter(x=>x>0),min=ps.length?Math.min(...ps):0;
+  const d=pick(C.d,C.dEn);
+  return '<div class="accI'+(on?' on':'')+' rv0" data-acci="'+esc(c)+'" style="--d:'+(i%4)*0.06+'s">'+
+   '<button type="button" class="accH" data-acc="'+esc(c)+'" aria-expanded="'+on+'" aria-controls="accp'+i+'">'+
+    '<span class="accT'+(C.img?'':' blank')+'"'+(C.img?' data-img="'+esc(C.img)+'"':'')+'>'+(C.img?'':'<i>'+esc(nm.charAt(0))+'</i>')+'</span>'+
+    '<span class="accN"><b>'+esc(nm)+'</b><small>'+T('nTreat')(L.length)+(min?' · '+TL('accFrom')+' '+rm(min):'')+'</small></span>'+
+    '<span class="accC" aria-hidden="true"></span></button>'+
+   '<div class="accP" id="accp'+i+'" role="region"><div class="accIn">'+(d?'<p class="catd">'+esc(d)+'</p>':'')+
+    '<div class="catl">'+L.map(s=>svcRow(s)).join('')+'</div></div></div></div>';}).join('')+'</div>';
+ watchImgs();reveal();
+};
+function accSet(c){
+ ACC=ACC===c?null:c;
+ document.querySelectorAll('.accI').forEach(x=>{const on=x.dataset.acci===ACC;x.classList.toggle('on',on);const b=x.querySelector('.accH');if(b)b.setAttribute('aria-expanded',String(on));});
+ if(ACC===null)return;
+ const it=[...document.querySelectorAll('.accI')].find(x=>x.dataset.acci===ACC);
+ setTimeout(()=>{if(!it)return;const r=it.getBoundingClientRect(),hd=(document.querySelector('header')||{offsetHeight:70}).offsetHeight+12;
+  if(r.top<hd||r.top>innerHeight*0.55)scrollTo({top:scrollY+r.top-hd,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth'});},320);
+}
+/* ---------- the quiz card: answer question 1 right on the page ---------- */
+quizHome=function(){if(LC().quiz===false)return '';
+ const q=TL('qs')[0];
+ return '<section class="sec quizs" id="kuiz"><div class="wrap"><div class="qz2 rv0"><span class="qzg g1"></span><span class="qzg g2"></span><span class="qzg g3"></span>'+
+  '<div class="qz2l"><span class="eyebrow">'+TL('qEy2')+'</span><h2>'+TL('qH2')+'</h2><p>'+TL('qP')+'</p>'+
+   '<div class="qz2m"><span>'+ic('clock',14)+TL('m1')+'</span><span>'+ic('check',14)+TL('m2')+'</span><span>'+ic('gift',14)+TL('m3')+'</span></div>'+
+   '<button class="btn pri qz2go" data-qz="start">'+ic('spark',18)+TL('qGo')+'</button></div>'+
+  '<div class="qz2r"><div class="qz2peek" aria-hidden="true"><span>'+TL('resEy')+'</span><b>'+TL('peek')+'</b><i></i><i></i><i></i></div>'+
+   '<div class="qz2c"><div class="qz2p"><span>'+TL('step',1,5)+'</span><i><b></b></i></div><h3>'+esc(q[0])+'</h3>'+
+    '<div class="qz2o">'+q[1].map(([v,l],i)=>'<button type="button" data-qz1="'+esc(v)+'" style="--i:'+i+'"><span class="qz2d"></span>'+esc(l)+'</button>').join('')+'</div>'+
+    '<p class="qz2h">'+ic('arrow',13)+TL('tapHint')+'</p></div></div></div></div></section>';};
+document.addEventListener('click',e=>{if(!P)return;
+ const a=e.target.closest('[data-acc]');if(a){e.preventDefault();accSet(a.dataset.acc);return;}
+ const q=e.target.closest('[data-qz1]');if(q){e.preventDefault();QZ={i:1,a:{0:q.dataset.qz1},k:[]};sheet('<div class="qz"></div>');quizPaint();hit('lead');}
+});
+window.__j29={accSet,get ACC(){return ACC;}};
 
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
