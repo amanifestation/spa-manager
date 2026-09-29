@@ -2217,6 +2217,23 @@ body.clk-on{overflow:hidden}
 .lphsug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
 .lphsug button{font:inherit;font-size:12px;border:1px dashed var(--line);background:var(--surface);color:var(--ink-2);border-radius:99px;padding:5px 10px;cursor:pointer}.lphsug button:hover{border-color:var(--brass);color:var(--ink)}
 .lphoffer{margin-top:8px;background:var(--ink);color:#F4F0E7;border-radius:12px;padding:10px 12px;font-size:13px}.lphoffer s{opacity:.6}.lphoffer .muted{color:#B9B0A0!important}
+/* ===== client pages in the Luuna brand ===== */
+html.pubbrand{--cream:#FAF9F6;--surface:#FFFFFF;--surface-2:#F5F2ED;--ink:#0D0D0D;--ink-2:#4E4944;--ink-3:#7D756D;--line:#E6DFD4;--line-2:#EFEBE4;
+ --brass:#836E4A;--brass-soft:#F1EBE1;--serif:'Cormorant Garamond',Georgia,serif;
+ --shadow:0 1px 2px rgba(13,13,13,.03),0 14px 36px -24px rgba(13,13,13,.22);--shadow-lift:0 2px 6px rgba(13,13,13,.05),0 22px 48px -26px rgba(13,13,13,.3)}
+html.pubbrand body{font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;letter-spacing:.003em;background-color:#FAF9F6;
+ background-image:radial-gradient(900px 420px at 88% -140px,rgba(215,197,170,.28),transparent 70%)}
+html.pubbrand h1,html.pubbrand h2{font-family:var(--serif);font-weight:600;letter-spacing:-.01em}
+html.pubbrand h1{font-size:30px}html.pubbrand h2{font-size:22px}
+html.pubbrand .btn:not(.ghost){background:#0D0D0D;color:#FAF9F6}
+html.pubbrand .btn.ghost{border-color:var(--line)}
+html.pubbrand .card{border-color:var(--line);box-shadow:var(--shadow)}
+html.pubbrand ::selection{background:#D7C5AA}
+html.pubbrand{--jade:#836E4A;--jade-soft:#F1EBE1;--amber:#836E4A;--amber-soft:#F1EBE1}
+html.pubbrand .fbbiz{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.005em}
+html.pubbrand .fbbr{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#836E4A}
+html.pubbrand .fbmark,html.pubbrand .fbhead img{border-radius:50%}
+html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2476,7 +2493,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29e';
+const BUILD='2026-09-29f';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -12038,6 +12055,7 @@ window.render=render;
  }
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
  pwaInit();
+ {const q=new URLSearchParams(location.search);if(['fb','lead','pk','appt','book'].some(k=>q.has(k)))pubBrand();}
  /* a client opening their feedback link sees only the rating page, never the login */
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
@@ -25083,5 +25101,17 @@ async function cr3Tick(){
 {const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!CR3BOOT&&can('customer')){CR3BOOT=true;setInterval(()=>cr3Tick().catch(()=>{}),25000);setTimeout(()=>cr3Tick().catch(()=>{}),4000);}}catch(e){}};window.render=render;}
 window.cr3TickNow=()=>cr3Tick();
 window.cr3State=()=>({R:cr3R(),TP:CR3TP,trials:cr3Trials(),leads:LEADS.map(l=>({id:l.id,name:l.name,stage:l.stage,assignedTo:l.assignedTo,maxRank:l.maxRank,trialAt:l.trialAt,attendedAt:l.attendedAt,wonAt:l.wonAt,campaign:l.campaign,source:l.source,hookDone:l.hookDone,phone:l.phone}))});
+
+
+/* ============ The client-facing pages wear the Luuna brand ============ */
+/* Booking, the appointment link, the package balance, the feedback page and the enquiry form open
+   from the website, so they use the same palette and type as it (Montserrat, Cormorant Garamond,
+   porcelain, jet black, champagne and brushed gold). The staff app keeps its own working look. */
+function pubBrand(){
+ try{document.documentElement.classList.add('pubbrand');
+  if(!document.getElementById('pubfonts')){const l=document.createElement('link');l.id='pubfonts';l.rel='stylesheet';
+   l.href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700&display=swap';document.head.appendChild(l);}
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#FAF9F6');}catch(e){}
+}
 
 </script>
