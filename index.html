@@ -2208,6 +2208,15 @@ body.clk-on{overflow:hidden}
 .cr3tl{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 2px}.cr3tl span{font-size:11px;padding:3px 8px;border-radius:99px;background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line-2)}
 .cr3tl span.on{background:var(--jade-soft);color:#1F4D3A;border-color:#C9DDD1}.cr3tl small{margin-left:4px;opacity:.75}
 .cr3lnk{border:0;background:none;padding:2px 4px;font:inherit;font-size:12px;font-weight:600;color:var(--brass);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+/* ===== landing: top-of-page editor ===== */
+.lphc{border-top:3px solid var(--brass)}
+.lphs{display:grid;grid-template-columns:28px 1fr;gap:10px;padding:12px 0;border-top:1px solid var(--line-2)}.lphs:first-of-type{border-top:0}
+.lphn{width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;margin-top:2px}
+.lphchk{font-size:12px;border-radius:8px;padding:6px 9px;margin:4px 0 6px;display:flex;gap:6px;align-items:flex-start}
+.lphchk.g{background:var(--jade-soft);color:#1F4D3A}.lphchk.a{background:var(--amber-soft);color:#7A5A12}
+.lphsug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:4px 0}
+.lphsug button{font:inherit;font-size:12px;border:1px dashed var(--line);background:var(--surface);color:var(--ink-2);border-radius:99px;padding:5px 10px;cursor:pointer}.lphsug button:hover{border-color:var(--brass);color:var(--ink)}
+.lphoffer{margin-top:8px;background:var(--ink);color:#F4F0E7;border-radius:12px;padding:10px 12px;font-size:13px}.lphoffer s{opacity:.6}.lphoffer .muted{color:#B9B0A0!important}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2467,7 +2476,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29d';
+const BUILD='2026-09-29e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -21962,10 +21971,7 @@ function vLanding(){
  const S=D.services.filter(s=>s.active!==false&&s.id),sel=L.svcs;
  const shared=(FEEDBACK||[]).filter(f=>f.shareOk&&!f.hidden&&star(f.overall)>=4&&String(f.comment||'').trim().length>=12).length;
  const content='<div class="card"><h3 style="margin:0 0 4px">'+ic('edit',15)+' What the page says</h3><p class="tiny muted" style="margin:0 0 6px">Treatments, prices, promotions and hours come from the app by themselves. These are your own words.</p>'+
-  '<label>Headline</label>'+tx('lp-h','headline',L.headline,'Kulit sihat & *bercahaya*, dijaga dengan teliti',120)+'<p class="tiny muted" style="margin:-6px 0 0">Put *stars* around a word to show it in gold italics.</p>'+
-  '<label>Under the headline</label><textarea class="f" rows="2" maxlength="240" oninput="lpF(\'sub\',this.value)" placeholder="Rawatan wajah dan kulit oleh therapist terlatih…">'+esc(L.sub||'')+'</textarea>'+
   '<label>Three short points under the buttons</label><div class="grid g3">'+[0,1,2].map(i=>'<input class="f" maxlength="40" value="'+esc((L.ticks||[])[i]||'')+'" oninput="lpArr(\'ticks\','+i+',this.value)">').join('')+'</div>'+
-  lpSlidesHTML(L,img)+
   '<label>Highlights</label>'+(L.usps||[]).map((u,i)=>'<div class="grid g2 lprow"><input class="f" maxlength="40" value="'+esc(u.t||'')+'" placeholder="Title" oninput="lpUsp('+i+',\'t\',this.value)"><input class="f" maxlength="100" value="'+esc(u.d||'')+'" placeholder="One line" oninput="lpUsp('+i+',\'d\',this.value)"></div>').join('')+
    ((L.usps||[]).length<4?'<button class="btn sm ghost" onclick="lpUspAdd()">'+ic('plus',13)+'Highlight</button>':'')+
   '<label>Questions & answers</label>'+(L.faq||[]).map((f,i)=>'<div class="lpfaq"><input class="f" maxlength="120" value="'+esc(f.q||'')+'" placeholder="Question" oninput="lpFaqF('+i+',\'q\',this.value)">'+
@@ -21982,7 +21988,7 @@ function vLanding(){
    '<div><label>Google Analytics (G-…)</label><input class="f" value="'+esc(L.px.ga||'')+'" oninput="lpPx(\'ga\',this.value)"></div></div>'+
   '<p class="tiny muted">Optional. With a pixel the ad platform learns who enquires and books, so your ads find more people like them.</p>'+
   '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
- return status+lpStatsHTML()+links+lpPromoCard(L)+lpCatCard(L)+lpSvcCard()+lpRevCard(L)+content;
+ return status+lpHeroCard(L,img)+lpStatsHTML()+links+lpPromoCard(L)+lpCatCard(L)+lpSvcCard()+lpRevCard(L)+content;
 }
 window.lpF=(k,v)=>{LPD[k]=v;};
 window.lpArr=(k,i,v)=>{LPD[k]=LPD[k]||[];LPD[k][i]=v;};
@@ -22184,7 +22190,7 @@ window.lpPromoNoPhoto=id=>{const m={...(LPD.promoImg||{})};delete m[id];LPD.prom
 function lpEnHTML(L){
  const en=(k,v,ph,max,fn)=>'<input class="f" maxlength="'+(max||120)+'" value="'+esc(v||'')+'" placeholder="'+esc(ph||'')+'" oninput="'+fn+'">';
  return '<details class="lpen"'+(L.headlineEn?' open':'')+'><summary>'+ic('msg',14)+' English version <span class="muted">— shown when a visitor taps EN; leave blank to show the Malay text</span></summary>'+
-  '<label>Headline</label>'+en('headlineEn',L.headlineEn,'Healthy, *glowing* skin, cared for with attention',120,"lpF('headlineEn',this.value)")+
+  '<label>Headline</label>'+en('headlineEn',L.headlineEn,'Clear, smooth skin in *4 sessions*',120,"lpF('headlineEn',this.value)")+
   '<label>Under the headline</label><textarea class="f" rows="2" maxlength="240" oninput="lpF(\'subEn\',this.value)">'+esc(L.subEn||'')+'</textarea>'+
   '<label>Three short points</label><div class="grid g3">'+[0,1,2].map(i=>en('',(L.ticksEn||[])[i],(L.ticks||[])[i]||'',40,"lpArr('ticksEn',"+i+",this.value)")).join('')+'</div>'+
   ((L.usps||[]).length?'<label>Highlights</label>'+(L.usps||[]).map((u,i)=>'<div class="grid g2 lprow">'+en('',u.tEn,u.t||'',40,"lpUsp("+i+",'tEn',this.value)")+en('',u.dEn,u.d||'',100,"lpUsp("+i+",'dEn',this.value)")+'</div>').join(''):'')+
@@ -22227,6 +22233,128 @@ window.lpCatPhoto=sl=>{const i=document.createElement('input');i.type='file';i.a
 window.lpCatNoPhoto=sl=>{const c=lpCatBySlug(sl);const m={...(LPD.catImg||{})};delete m[c];LPD.catImg=m;render();};
 /* what each treatment helps with — the skin-concern finder on the page uses this */
 window.lpSvcCon=async(id,k,on)=>{const x=svc(id);if(!x)return;let a=(x.concerns||[]).filter(z=>z!==k);if(on)a.push(k);await lpSvcPut(id,{concerns:a});};
+
+
+/* ============ Landing page, part 2: the top of the page that sells ============ */
+/* What a visitor from an ad sees before scrolling decides whether they stay. So the top says:
+   · the result they get (not the shop's name), and who it is for and which problems it fixes;
+   · one main button (Book) and a softer second one (WhatsApp or a free consultation);
+   · real photos or a short video of the spa, with a caption on each;
+   · the main offer with the price it replaces;
+   · a trust bar right under it: Google rating, how many clients, where it is. */
+Object.assign(LP_DEF,{who:'',whoEn:'',probs:[],cta1:'',cta1En:'',cta2k:'wa',cta2:'',cta2En:'',vid:'',yt:'',
+ offer:{mode:'auto',pid:'',t:'',tEn:'',now:0,was:0,note:''},trust:{gr:'',gn:'',gurl:'',clients:'',loc:'',extra:'',extraEn:''}});
+const LPH_HEADS=['Kulit Cerah & Licin Dalam *4 Sesi*','Jerawat Reda, *Yakin* Tanpa Makeup','Jeragat & Pigmentasi *Pudar*, Kulit Sekata Semula','Dari Kusam ke *Glowing* — Nampak Beza Sesi Pertama'];
+const LPH_BAD=/selamat datang|welcome|^\s*(luuna|spa)\b/i;
+let LPCN=undefined;
+async function lpClientCount(){try{const s=await getDocs(collection(db,'clientSeq'));LPCN=s.docs.filter(d=>!/_M$/.test(d.id)).reduce((a,d)=>a+(+d.data().n||0),0);}catch(e){LPCN=0;}return LPCN;}
+/* a real number, rounded down so it is never inflated: 87 → 80+, 430 → 400+, 1,234 → 1,200+ */
+const lpNice=n=>{n=+n||0;if(n<30)return '';const s=n<100?10:n<1000?50:100;return (Math.floor(n/s)*s).toLocaleString('en-MY')+'+';};
+const lpLive=()=>{const td=today();return (PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td)&&(!p.start||daysBetween(td,p.start)<=31)&&!(+p.limit>0&&promoLeft(p)<=0)).sort((a,b)=>String(a.end||'9999').localeCompare(String(b.end||'9999'))).map(lpPromoOut);};
+const lpProbLabel=id=>({ms:LP_CONCERN_MS[id]||concernLabel(id),en:concernLabel(id)});
+/* the main offer: a promotion picked by the owner, the soonest-ending one, or the owner's own words */
+function lpOfferOut(L,promos){
+ const O={...LP_DEF.offer,...(L.offer||{})};if(O.mode==='off')return null;
+ if(O.mode==='manual'){if(!String(O.t||'').trim())return null;return {t:String(O.t).slice(0,60),tEn:String(O.tEn||'').slice(0,60),now:+O.now||0,was:+O.was||0,note:String(O.note||'').slice(0,80)};}
+ const p=O.mode==='promo'?(PROMOS||[]).find(x=>x.id===O.pid):null;
+ const out=p?promos.find(x=>x.id===p.id)||(p.active!==false?lpPromoOut(p):null):promos[0];if(!out)return null;
+ let now=0,was=0;const s=out.svc&&out.svc.length===1?D.services.find(x=>x.id===out.svc[0]):null;
+ if(s){was=+s.price||0;now=out.type==='price'?out.value:out.type==='pct'?was*(1-out.value/100):out.type==='amt'?Math.max(0,was-out.value):0;}
+ if(!(now>0&&was>now)){now=out.type==='price'?out.value:0;was=0;}
+ return {pid:out.id,t:out.t,now:Math.round(now*100)/100,was,note:String(O.note||'').slice(0,80),left:out.limit>0?out.left:null,end:out.end||''};
+}
+{const _b=lpBuild;lpBuild=function(img){
+ const d=_b(img),L=lpSet(),S=(L.slides||[]).filter(x=>x&&x.id).slice(0,6),T={...LP_DEF.trust,...(L.trust||{})};
+ const url=u=>/^https:\/\/[^\s"'<>]+$/.test(String(u||'').trim())?String(u).trim().slice(0,400):'';
+ Object.assign(d.hero,{who:String(L.who||'').slice(0,100),whoEn:String(L.whoEn||'').slice(0,100),
+  probs:(L.probs||[]).filter(id=>CONCERNS.some(c=>c.id===id)).slice(0,5).map(id=>({id,...lpProbLabel(id)})),
+  cta1:String(L.cta1||'').slice(0,30),cta1En:String(L.cta1En||'').slice(0,30),cta2k:L.cta2k==='consult'?'consult':'wa',cta2:String(L.cta2||'').slice(0,30),cta2En:String(L.cta2En||'').slice(0,30),
+  vid:/\.(mp4|webm|mov)(\?|#|$)/i.test(url(L.vid))?url(L.vid):'',yt:(String(L.yt||'').match(/(?:youtu\.be\/|v=|shorts\/|embed\/)([\w-]{11})/)||[])[1]||'',
+  slides:S.map(x=>({id:x.id,ih:x.ih||'',...(x.c?{c:String(x.c).slice(0,50)}:{}),...(x.cEn?{cEn:String(x.cEn).slice(0,50)}:{})})),
+  offer:lpOfferOut(L,d.promos||[])});
+ const br=(d.branches||[])[0]||{},auto=lpNice(LPCN);
+ d.trust={gr:+T.gr>0&&+T.gr<=5?Math.round(+T.gr*10)/10:0,gn:Math.max(0,Math.round(+T.gn||0)),gurl:url(T.gurl)||d.gReviews||'',
+  clients:String(T.clients||'').trim().slice(0,12)||auto,loc:String(T.loc||'').trim().slice(0,30)||br.city||'',extra:String(T.extra||'').slice(0,40),extraEn:String(T.extraEn||'').slice(0,40)};
+ return d;};}
+{const _p=lpPublish;lpPublish=async function(force){if(LPCN===undefined&&boss())await lpClientCount();return _p(force);};}
+
+/* ---------- the owner's screen: one card for the top of the page ---------- */
+function lpHeadCheck(h){
+ const b=(D.meta.biz||{}).name||'';h=String(h||'').trim();
+ if(!h)return ['a','No headline yet — the page shows a general one. Write the result a client gets.'];
+ if(LPH_BAD.test(h)||(b&&h.toLowerCase().replace(/\*/g,'').includes(b.toLowerCase())))return ['a','This reads like a welcome or the shop name. Ads convert better when the headline is the result: what changes on their skin, and how soon.'];
+ if(h.replace(/\*/g,'').length>70)return ['a','A little long — on a phone it takes 4+ lines. Aim for under 60 characters.'];
+ return ['g','Good — a clear result.'];
+}
+function lpHeroCard(L,img){
+ const O={...LP_DEF.offer,...(L.offer||{})},T={...LP_DEF.trust,...(L.trust||{})},hc=lpHeadCheck(L.headline),td=today();
+ const PR=(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td));
+ const tx=(k,v,ph,max,fn)=>'<input class="f" maxlength="'+(max||120)+'" value="'+esc(v||'')+'" placeholder="'+esc(ph||'')+'" oninput="'+(fn||"lpF('"+k+"',this.value)")+'">';
+ const pv=lpOfferOut(L,lpLive()),auto=lpNice(LPCN);
+ if(LPCN===undefined)lpClientCount().then(()=>{if(TAB==='lp')render();});
+ return '<div class="card lphc"><h3 style="margin:0 0 4px">'+ic('star',15)+' Top of the page <span class="muted" style="font-weight:400">— what an ad visitor sees first</span></h3>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Result first, then who it is for, one main button, a real photo or video, the offer, and proof. Changes go live with Save & publish.</p>'+
+  /* 1. headline */
+  '<div class="lphs"><span class="lphn">1</span><div><label style="margin-top:0">Headline — the result, not the shop name</label>'+tx('headline',L.headline,'Kulit Cerah & Licin Dalam *4 Sesi*',120,"lpF('headline',this.value);lpHC(this.value)")+
+   '<div id="lph-chk" class="lphchk '+hc[0]+'">'+ic(hc[0]==='g'?'check':'alert',12)+' '+esc(hc[1])+'</div>'+
+   '<div class="lphsug"><span class="tiny muted">Ideas:</span>'+LPH_HEADS.map(x=>'<button type="button" onclick="lpHSet(\''+esc(x).replace(/'/g,'\\\'')+'\')">'+esc(x.replace(/\*/g,''))+'</button>').join('')+'</div>'+
+   '<p class="tiny muted" style="margin:4px 0 0">*Stars* show a word in gold. Only promise results you can show with real before-and-after photos.</p></div></div>'+
+  /* 2. sub-headline */
+  '<div class="lphs"><span class="lphn">2</span><div><label style="margin-top:0">Who it is for</label>'+tx('who',L.who,'wanita 20–45 tahun di Kulai & sekitar',100)+
+   '<label>Skin problems you fix <span class="muted">— up to 5, shown as buttons that jump to the matching treatments</span></label><div class="cr3chips">'+
+    CONCERNS.map(c=>'<label><input type="checkbox" '+((L.probs||[]).includes(c.id)?'checked':'')+' onchange="lpProb(\''+c.id+'\',this.checked)">'+esc(LP_CONCERN_MS[c.id]||c.label)+'</label>').join('')+'</div>'+
+   '<label>Under the headline</label><textarea class="f" id="lp-sub" rows="2" maxlength="240" oninput="lpF(\'sub\',this.value)" placeholder="Untuk wanita yang bergelut dengan jerawat, jeragat, pigmentasi atau kulit kusam — rawatan ikut jenis kulit oleh therapist terlatih.">'+esc(L.sub||'')+'</textarea>'+
+   '<button type="button" class="btn sm ghost" onclick="lpSubMake()">'+ic('spark',13)+'Write it from who + problems</button></div></div>'+
+  /* 3. buttons */
+  '<div class="lphs"><span class="lphn">3</span><div><div class="grid g2"><div><label style="margin-top:0">Main button</label>'+tx('cta1',L.cta1,'Book Sekarang',30)+'</div>'+
+   '<div><label style="margin-top:0">Second button — for those not ready</label><select class="f" onchange="lpF(\'cta2k\',this.value)"><option value="wa"'+(L.cta2k!=='consult'?' selected':'')+'>WhatsApp us</option><option value="consult"'+(L.cta2k==='consult'?' selected':'')+'>Free consultation form</option></select>'+
+   tx('cta2',L.cta2,L.cta2k==='consult'?'Konsultasi Percuma':'WhatsApp Kami',30)+'</div></div>'+
+   '<p class="tiny muted" style="margin:0">Main button books a slot'+(typeof wbSet==='function'&&wbSet().on?'':' (opens WhatsApp while online booking is off)')+'. Ideas: "Tempah Slot Percuma", "Book Trial RM49".</p></div></div>'+
+  /* 4. photos & video */
+  '<div class="lphs"><span class="lphn">4</span><div>'+lpSlidesHTML(L,img)+
+   ((L.slides||[]).length?'<label>Caption on each photo <span class="muted">— say what it is: "Bilik rawatan kami", "Therapist Mira", "Pelanggan sebenar, sesi ke-4"</span></label><div class="grid g3">'+
+    (L.slides||[]).map((x,i)=>'<input class="f" maxlength="50" value="'+esc(x.c||'')+'" placeholder="Photo '+(i+1)+'" oninput="lpCap('+i+',this.value)">').join('')+'</div>':'')+
+   '<div class="grid g2"><div><label>Short video (MP4 link, plays silently)</label>'+tx('vid',L.vid,'https://…/luuna-hero.mp4',400)+'</div>'+
+    '<div><label>or YouTube / Shorts link (plays when tapped)</label>'+tx('yt',L.yt,'https://youtube.com/shorts/…',200)+'</div></div>'+
+   '<p class="tiny muted" style="margin:0">Real photos of your room, team and clients (with their permission) beat stock photos. For the video, upload a 10–20 s MP4 (under 8 MB) next to lp.html in GitHub and paste its link.</p></div></div>'+
+  /* 5. offer */
+  '<div class="lphs"><span class="lphn">5</span><div><label style="margin-top:0">Main offer, shown right under the headline</label><select class="f" onchange="lpOff(\'mode\',this.value);render()">'+
+    [['auto','The promotion ending soonest'],['promo','A promotion I choose'],['manual','My own words'],['off','None']].map(o=>'<option value="'+o[0]+'"'+(O.mode===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'+
+   (O.mode==='promo'?'<select class="f" onchange="lpOff(\'pid\',this.value);render()"><option value="">— choose —</option>'+PR.map(p=>'<option value="'+p.id+'"'+(O.pid===p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select>':'')+
+   (O.mode==='manual'?'<div class="grid g3"><div><label>Offer</label>'+tx('',O.t,'Trial Facial',60,"lpOff('t',this.value)")+'</div><div><label>Price now (RM)</label><input class="f" type="number" min="0" value="'+(+O.now||'')+'" placeholder="49" oninput="lpOff(\'now\',+this.value)"></div>'+
+    '<div><label>Normal price (RM)</label><input class="f" type="number" min="0" value="'+(+O.was||'')+'" placeholder="180" oninput="lpOff(\'was\',+this.value)"></div></div>':'')+
+   (O.mode!=='off'?'<label>Small print <span class="muted">— optional</span></label>'+tx('',O.note,'Pelanggan baru sahaja · 1 sesi seorang',80,"lpOff('note',this.value)"):'')+
+   (O.mode!=='off'?'<div class="lphoffer">'+(pv?ic('tag',14)+' <b>'+esc(pv.t)+'</b> '+(pv.now?'RM'+pv.now:'')+(pv.was?' <s>RM'+pv.was+'</s> · jimat '+Math.round((1-pv.now/pv.was)*100)+'%':'')+
+     (pv.pid&&!pv.was?'<span class="tiny muted"> — the normal price shows when the promotion is for one treatment</span>':''):'<span class="tiny muted">'+(O.mode==='manual'?'Fill in the offer.':'No promotion running — set one up under Promotions.')+'</span>')+'</div>':'')+'</div></div>'+
+  /* 6. trust bar */
+  '<div class="lphs"><span class="lphn">6</span><div><label style="margin-top:0">Trust bar under the top</label><div class="grid g3">'+
+   '<div><label>Google rating</label><input class="f" type="number" step="0.1" min="1" max="5" value="'+esc(T.gr||'')+'" placeholder="4.9" oninput="lpTr(\'gr\',this.value)"></div>'+
+   '<div><label>Number of Google reviews</label><input class="f" type="number" min="0" value="'+esc(T.gn||'')+'" placeholder="120" oninput="lpTr(\'gn\',this.value)"></div>'+
+   '<div><label>Google reviews link</label>'+tx('',T.gurl,'https://g.page/r/…',400,"lpTr('gurl',this.value)")+'</div>'+
+   '<div><label>Clients</label>'+tx('',T.clients,auto||'e.g. 1,000+',12,"lpTr('clients',this.value)")+'</div>'+
+   '<div><label>Location</label>'+tx('',T.loc,((D.meta.biz||{}).city)||'Kulai',30,"lpTr('loc',this.value)")+'</div>'+
+   '<div><label>One more point</label>'+tx('',T.extra,'Therapist bertauliah',40,"lpTr('extra',this.value)")+'</div></div>'+
+   '<p class="tiny muted" style="margin:0">Copy the rating from your Google Business profile. Clients left blank uses your real count, rounded down'+(LPCN!==undefined?' (now '+(auto||'under 30 — hidden until there are more')+')':'')+'. Without a Google rating, your own client reviews show instead (once there are 3).</p></div></div>'+
+  /* English */
+  '<details class="lpen"><summary>'+ic('msg',14)+' English for these <span class="muted">— leave blank to show the Malay</span></summary><div class="grid g2">'+
+   '<div><label>Who it is for</label>'+tx('whoEn',L.whoEn,L.who||'women 20–45 in Kulai',100)+'</div><div><label>Main button</label>'+tx('cta1En',L.cta1En,'Book now',30)+'</div>'+
+   '<div><label>Second button</label>'+tx('cta2En',L.cta2En,L.cta2k==='consult'?'Free consultation':'WhatsApp us',30)+'</div>'+
+   (O.mode==='manual'?'<div><label>Offer</label>'+tx('',O.tEn,O.t||'Trial facial',60,"lpOff('tEn',this.value)")+'</div>':'')+
+   '<div><label>One more point</label>'+tx('',T.extraEn,T.extra||'Certified therapists',40,"lpTr('extraEn',this.value)")+'</div></div>'+
+   ((L.slides||[]).length?'<label>Photo captions</label><div class="grid g3">'+(L.slides||[]).map((x,i)=>'<input class="f" maxlength="50" value="'+esc(x.cEn||'')+'" placeholder="'+esc(x.c||'Photo '+(i+1))+'" oninput="lpCap('+i+',this.value,1)">').join('')+'</div>':'')+'</details>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:12px" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button></div>';
+}
+window.lpHC=v=>{const e=document.getElementById('lph-chk');if(!e)return;const c=lpHeadCheck(v);e.className='lphchk '+c[0];e.innerHTML=ic(c[0]==='g'?'check':'alert',12)+' '+esc(c[1]);};
+window.lpHSet=v=>{LPD.headline=v;render();};
+window.lpProb=(id,on)=>{let P=(LPD.probs||[]).filter(x=>x!==id);if(on){if(P.length>=5){toast('Up to 5 — untick one first');render();return;}P.push(id);}LPD.probs=P;};
+window.lpSubMake=()=>{const P=(LPD.probs||[]).map(id=>String(LP_CONCERN_MS[id]||concernLabel(id)).toLowerCase());
+ const list=P.length>1?P.slice(0,-1).join(', ')+' atau '+P[P.length-1]:P[0]||'masalah kulit';const who=String(LPD.who||'').trim()||'anda';
+ LPD.sub=('Untuk '+who+' yang bergelut dengan '+list+' — rawatan ikut jenis kulit oleh therapist terlatih, dengan konsultasi percuma.').slice(0,240);
+ const E=(LPD.probs||[]).map(id=>concernLabel(id).toLowerCase()),le=E.length>1?E.slice(0,-1).join(', ')+' or '+E[E.length-1]:E[0]||'skin concerns';
+ LPD.subEn=('For '+(String(LPD.whoEn||'').trim()||'you')+' dealing with '+le+' — treatments matched to your skin by trained therapists, with a free consultation.').slice(0,240);render();};
+window.lpCap=(i,v,en)=>{const s=(LPD.slides||[])[i];if(s)s[en?'cEn':'c']=v;};
+window.lpOff=(k,v)=>{LPD.offer={...LP_DEF.offer,...(LPD.offer||{}),[k]:v};};
+window.lpTr=(k,v)=>{LPD.trust={...LP_DEF.trust,...(LPD.trust||{}),[k]:String(v).trim()};};
 
 /* ============ Client 360° and the clinical record ============ */
 /* One client, one record. The profile gathers who they are, what they have spent and how

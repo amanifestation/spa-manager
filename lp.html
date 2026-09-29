@@ -68,6 +68,36 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 .ctas{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 16px}
 .ticks{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2);margin:0;padding:0;list-style:none}
 .ticks li{display:flex;align-items:center;gap:6px}.ticks .ico{color:var(--jade)}
+.hoffer{display:flex;align-items:center;gap:12px;width:100%;max-width:540px;text-align:left;cursor:pointer;border:0;font:inherit;color:var(--cream);background:linear-gradient(120deg,#1C1915,#2B241A);border-radius:18px;padding:13px 14px 13px 16px;margin:2px 0 16px;position:relative;overflow:hidden;box-shadow:0 18px 40px -24px rgba(20,18,15,.7)}
+.hoffer::after{content:'';position:absolute;right:-40px;top:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(226,197,143,.3),transparent 70%);pointer-events:none}
+.hoL{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.hoL small{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}
+.hoL b{font-size:16px;color:#fff;font-weight:600}.hoP{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px}
+.hoP strong{font-family:var(--serif);font-size:30px;line-height:1.05;color:var(--gold);font-weight:600;letter-spacing:-.02em}
+.hoP s{color:#B9B0A0;font-size:13.5px}.hoP em{font-style:normal;font-size:11.5px;font-weight:700;background:#B5533F;color:#fff;border-radius:99px;padding:2px 8px}.hoN{font-size:12px;color:#CFC7B8}
+.hoR{flex:none;display:flex;align-items:center;gap:4px;background:var(--gold);color:var(--ink);font-weight:700;font-size:13px;border-radius:12px;padding:10px 12px;position:relative;z-index:1}
+.hprobs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-8px 0 16px;max-width:540px}.hprobs>span{font-size:12.5px;color:var(--ink-3);margin-right:2px}
+.hprobs button{display:inline-flex;align-items:center;gap:4px;font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:99px;padding:5px 11px 5px 8px;cursor:pointer}
+.hprobs button .ico{color:var(--jade)}.hprobs button:hover{border-color:var(--brass)}
+.hvid{width:100%;height:100%;object-fit:cover;display:block;background:#14120F}
+.scap{position:absolute;left:14px;top:14px;z-index:3;background:rgba(20,18,15,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#F4F0E7;font-size:12px;font-weight:600;border-radius:99px;padding:5px 11px;max-width:calc(100% - 28px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scap[hidden]{display:none}
+.hplay{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);z-index:3;display:flex;align-items:center;gap:8px;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:14px;background:rgba(255,253,248,.94);color:var(--ink);border-radius:99px;padding:8px 18px 8px 8px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.hplay .ico{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--gold);display:grid;place-items:center}
+.ytw{position:relative;aspect-ratio:9/16;max-height:78vh;margin:0 auto;border-radius:16px;overflow:hidden;background:#000}.ytw iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.tbar{position:relative;z-index:2;margin:-26px 0 26px}
+.tbin{display:grid;grid-template-columns:repeat(var(--n,4),1fr);background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 40px -30px rgba(20,18,15,.45);overflow:hidden}
+.tbin.n1{--n:1}.tbin.n2{--n:2}.tbin.n3{--n:3}.tbin.n4{--n:4}
+.ti{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 7px;padding:14px 12px;font-size:13.5px;color:var(--ink-2);text-decoration:none;border-left:1px solid var(--line);min-width:0;text-align:center}
+.ti:first-child{border-left:0}.ti b{color:var(--ink);font-size:15px;font-weight:700}.ti .st{color:#C8912E;font-size:17px;line-height:1}.ti .ico{color:var(--brass)}a.ti:hover{background:var(--brass-soft)}
+@media(max-width:860px){.tbar{margin:-18px 0 18px}.tbin,.tbin.n3,.tbin.n4{grid-template-columns:1fr 1fr}.tbin.n1{grid-template-columns:1fr}.tbin.n3 .ti:first-child{grid-column:1/-1}
+ .ti{padding:11px 8px;font-size:12.5px;border-left:0;border-top:1px solid var(--line)}.ti b{font-size:14px}
+ .tbin.n2 .ti:nth-child(2),.tbin.n4 .ti:nth-child(2n),.tbin.n3 .ti:nth-child(3){border-left:1px solid var(--line)}
+ .tbin.n1 .ti,.tbin.n2 .ti,.tbin.n3 .ti:first-child,.tbin.n4 .ti:nth-child(-n+2){border-top:0}
+ .hoffer{padding:12px}.hoP strong{font-size:26px}.hoR{padding:9px 10px;font-size:12.5px}.hprobs{margin:-6px 0 14px}}
+.art.car:has(.scap:not([hidden])) .dots{left:auto;right:16px;justify-content:flex-end;top:22px}
+@media(max-width:860px){.hprobs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}.hprobs::-webkit-scrollbar{display:none}.hprobs>span{display:none}.hprobs button{flex:none}
+ .hero .sub{font-size:15.5px;margin-bottom:16px}}
+.hero .wrap>*{min-width:0}
 .promo-strip{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--cream);border-radius:14px;padding:10px 14px;margin:0 0 18px;text-decoration:none;max-width:520px;cursor:pointer;border:0;width:100%;text-align:left}
 .promo-strip .bdg{flex:none;background:var(--gold);color:var(--ink);font-weight:700;font-size:12.5px;border-radius:8px;padding:3px 8px}
 .promo-strip span:nth-child(2){flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -388,7 +418,7 @@ try{LANG=(Q.get('lang')||localStorage.getItem('luunaLang')||'ms')==='en'?'en':'m
 
 /* ---------- words, in both languages ---------- */
 const TX={
- ms:{promo:'Promosi',treat:'Rawatan',rev:'Ulasan',loc:'Lokasi',faq:'Soalan',book:'Book',bookNow:'Book slot sekarang',bookNow2:'Tempah sekarang',waUs:'WhatsApp kami',
+ ms:{promo:'Promosi',treat:'Rawatan',rev:'Ulasan',loc:'Lokasi',faq:'Soalan',book:'Book',bookNow:'Book slot sekarang',bookNow2:'Tempah sekarang',waUs:'WhatsApp kami',offerEy:'Tawaran utama',normal:'Harga asal',save:p=>'Jimat '+p+'%',claimOffer:'Ambil tawaran',clientsL:'Pelanggan',locL:'Lokasi',watch:'Tonton video',consultFree:'Konsultasi percuma',revN:n=>n+' ulasan',ourRev:'Ulasan pelanggan',forProbs:'Bantu atasi',subAuto:(w,l)=>'Untuk '+w+' yang bergelut dengan '+l+' — rawatan ikut jenis kulit oleh therapist terlatih, dengan konsultasi percuma.',or:'atau',you:'anda',
   subDef:'Rawatan wajah dan kulit oleh therapist terlatih. Pilih rawatan, pilih masa, dan kami uruskan selebihnya.',headDef:'Kulit sihat & *bercahaya*, dijaga dengan teliti',
   ticksDef:['Konsultasi kulit percuma','Book online 24 jam','Harga jelas'],of:(a,n)=>'daripada '+n+' ulasan pelanggan',left:n=>'Tinggal '+n+' slot',ends:d=>'Tamat '+d,see:'Lihat',
   pEy:'Promosi terkini',pH:'Tawaran sedang berjalan',pP:'Slot promosi terhad — claim sekarang, team kami akan WhatsApp untuk sahkan tarikh anda.',newOnly:'Khas pelanggan baru',
@@ -418,7 +448,7 @@ const TX={
   noMatch:'Belum ada rawatan tersenarai untuk pilihan ini — therapist kami boleh cadangkan yang terbaik untuk anda.',confirmT:'Nak pengesahan therapist?',confirmP:'Dapatkan konsultasi percuma — kami semak kulit anda dan sahkan rawatan yang sesuai.',
   freeC:'Konsultasi percuma',sendWa:'Tanya melalui WhatsApp',clearSel:'Kosongkan',nTreat:n=>n+' rawatan',showAll:n=>'Lihat semua '+n,less:'Tutup senarai',concernsL:'Masalah kulit',skinL:'Jenis kulit',
   offer:'Tawaran terhad',claimNow:'Claim sekarang',dismiss:'Tutup',prev:'Sebelum',next:'Seterusnya',map:n=>'Peta '+n},
- en:{promo:'Offers',treat:'Treatments',rev:'Reviews',loc:'Location',faq:'FAQ',book:'Book',bookNow:'Book a slot now',bookNow2:'Book now',waUs:'WhatsApp us',
+ en:{promo:'Offers',treat:'Treatments',rev:'Reviews',loc:'Location',faq:'FAQ',book:'Book',bookNow:'Book a slot now',bookNow2:'Book now',waUs:'WhatsApp us',offerEy:'Main offer',normal:'Normally',save:p=>'Save '+p+'%',claimOffer:'Get this offer',clientsL:'Clients',locL:'Located in',watch:'Watch video',consultFree:'Free consultation',revN:n=>n+' reviews',ourRev:'Client reviews',forProbs:'Helps with',subAuto:(w,l)=>'For '+w+' dealing with '+l+' — treatments matched to your skin by trained therapists, with a free consultation.',or:'or',you:'you',
   subDef:'Facial and skin treatments by trained therapists. Pick a treatment, pick a time, and we take care of the rest.',headDef:'Healthy, *glowing* skin, cared for with attention',
   ticksDef:['Free skin consultation','Book online 24/7','Clear prices'],of:(a,n)=>'from '+n+' client reviews',left:n=>n+' slots left',ends:d=>'Ends '+d,see:'See',
   pEy:'Latest offers',pH:'Offers running now',pP:'Limited promo slots — claim now and our team will WhatsApp you to confirm your date.',newOnly:'New clients only',
@@ -463,6 +493,7 @@ const dshort=d=>{const x=new Date(d+'T12:00:00Z');return x.getUTCDate()+' '+T('m
 const hm=h=>{const H=Math.floor(h),M=Math.round((h-H)*60),hh=((H%12)||12)+(M?':'+String(M).padStart(2,'0'):'');
  return LANG==='en'?hh+(H<12?'am':'pm'):hh+' '+(H<12?'pagi':H<14?'tgh':H<19?'ptg':'mlm');};
 const IC={
+ users:'M16 19v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 17.5V19M10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM20 19v-1.5a3.5 3.5 0 00-2.5-3.35M15.5 4.15a3.5 3.5 0 010 6.7',play:'M8 5.5v13l10.5-6.5z',
  check:'M5 12.5l4.2 4.2L19 7',clock:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7.5V12l3 2',pin:'M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21zM12 12a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
  phone:'M5 4.5h3.5l1.5 4-2 1.3a11 11 0 005.2 5.2l1.3-2 4 1.5v3.5a1.5 1.5 0 01-1.5 1.5A15.5 15.5 0 013.5 6 1.5 1.5 0 015 4.5z',
  cal:'M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4',spark:'M12 3.5l1.9 5.6 5.6 1.9-5.6 1.9L12 18.5l-1.9-5.6-5.6-1.9 5.6-1.9zM18.5 3v3M17 4.5h3',
@@ -611,21 +642,42 @@ function render(){
   '<nav class="nav">'+(L.length?'<a href="#promo">'+T('promo')+'</a>':'')+((P.concerns||[]).length?'<a href="#cari">'+T('concernsL')+'</a>':'')+'<a href="#rawatan">'+T('treat')+'</a>'+((P.reviews||[]).length||R.n>=3?'<a href="#ulasan">'+T('rev')+'</a>':'')+'<a href="#lokasi">'+T('loc')+'</a><a href="#soalan">'+T('faq')+'</a></nav>'+
   '<div class="lang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div>'+
   '<button class="btn pri sm" data-go="book">'+ic('cal',16)+T('book')+'</button></div></header>';
- /* hero */
- const art=SL.length?'<div class="slides" id="slides">'+SL.map((s,i)=>'<div class="slide'+(i===0?' on':'')+'" data-img="hero_'+esc(s.id)+'"'+(i===0?' data-first="1"':'')+'></div>').join('')+'</div>'+
+ /* hero: the result, who it is for, the offer, one main button, real photos or a video */
+ const probs=H.probs||[],pl=probs.map(x=>pick(x.ms,x.en).toLowerCase()),who=pick(H.who,H.whoEn);
+ const sub=pick(H.s,H.sEn)||(who||pl.length?T('subAuto')(who||T('you'),pl.length>1?pl.slice(0,-1).join(', ')+' '+T('or')+' '+pl[pl.length-1]:pl[0]||'?'):T('subDef'));
+ const CTA1=pick(H.cta1,H.cta1En)||(P.bookOn?T('bookNow'):T('bookNow2')),c2k=H.cta2k==='consult'?'consult':'wa',cta2=pick(H.cta2,H.cta2En)||(c2k==='consult'?T('consultFree'):T('waUs'));
+ const O=H.offer;let offer='';
+ if(O&&O.t){const pct=O.was>O.now&&O.now>0?Math.round((1-O.now/O.was)*100):0,lf=O.end?left(O.end):'';
+  const bits=[O.left!=null?T('left')(O.left):'',lf?T('endsIn')(lf).replace(/<\/?b>/g,''):'',esc(O.note||'')].filter(Boolean);
+  offer='<button type="button" class="hoffer" '+(O.pid?'data-claim="'+esc(O.pid)+'"':'data-offer="1"')+'><span class="hoL"><small>'+ic('gift',13)+T('offerEy')+'</small><b>'+esc(pick(O.t,O.tEn))+'</b>'+
+   (O.now?'<span class="hoP"><strong>'+rm(O.now)+'</strong>'+(O.was>O.now?'<s>'+T('normal')+' '+rm(O.was)+'</s>':'')+(pct?'<em>'+T('save')(pct)+'</em>':'')+'</span>':'')+
+   (bits.length?'<span class="hoN">'+bits.join(' · ')+'</span>':'')+'</span><span class="hoR">'+T('claimOffer')+ic('arrow',16)+'</span></button>';}
+ const cap0=SL.length?pick(SL[0].c,SL[0].cEn)||'':'';
+ const art=H.vid?'<video class="hvid" src="'+esc(H.vid)+'" autoplay muted loop playsinline preload="metadata" aria-label="'+esc(b.name||'')+'"></video>':
+  SL.length?'<div class="slides" id="slides">'+SL.map((s,i)=>'<div class="slide'+(i===0?' on':'')+'" data-img="hero_'+esc(s.id)+'"'+(i===0?' data-first="1"':'')+' data-c="'+esc(pick(s.c,s.cEn)||'')+'"></div>').join('')+'</div>'+
     (SL.length>1?'<button type="button" class="sla l" data-sl="-1" aria-label="'+T('prev')+'">'+ic('left',18)+'</button><button type="button" class="sla r" data-sl="1" aria-label="'+T('next')+'">'+ic('right',18)+'</button>'+
      '<div class="dots">'+SL.map((s,i)=>'<button type="button" class="'+(i===0?'on':'')+'" data-dot="'+i+'" aria-label="'+(i+1)+'"></button>').join('')+'</div>':'')
   :H.img?'<img src="'+esc(H.img)+'" alt="'+esc(b.name||'')+'" fetchpriority="high">':'<span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><div class="wm">'+esc(b.name||'Luuna')+'</div>';
- h+='<section class="hero"><span class="blob b1" data-par="0.18"></span><span class="blob b2" data-par="-0.12"></span><div class="wrap"><div class="rv0">'+
+ h+='<section class="hero"><span class="blob b1" data-par="0.18"></span><span class="blob b2" data-par="-0.12"></span><div class="wrap"><div class="rv0 hcol">'+
   '<span class="eyebrow">'+esc(b.tagline||'Skin spa'+(br.city?' · '+br.city:''))+'</span>'+
-  '<h1>'+h1+'</h1><p class="sub">'+esc(pick(H.s,H.sEn)||T('subDef'))+'</p>'+
-  (R.n>=3?'<a class="rate" href="#ulasan"><span class="st">'+STARS(R.avg)+'</span><b>'+R.avg.toFixed(1)+'</b><span>'+T('of')(R.avg,R.n)+'</span></a><br>':'')+
-  (top?'<button class="promo-strip" data-promo="'+esc(top.id)+'"><span class="bdg">'+esc(pBadge(top))+'</span><span>'+esc(top.t)+'</span><small>'+(top.limit>0?T('left')(top.left):top.end?T('ends')(dshort(top.end)):T('see'))+' →</small></button>':'')+
-  '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?T('bookNow'):T('bookNow2'))+'</button>'+
-   '<button class="btn ghost" data-go="wa">'+ic('wa',18)+T('waUs')+'</button></div>'+
+  '<h1>'+h1+'</h1><p class="sub">'+esc(sub)+'</p>'+
+  (probs.length?'<div class="hprobs"><span>'+T('forProbs')+':</span>'+probs.map(x=>'<button type="button" data-prob="'+esc(x.id)+'">'+ic('check',12)+esc(pick(x.ms,x.en))+'</button>').join('')+'</div>':'')+
+  offer+
+  '<div class="ctas"><button class="btn pri" data-go="book">'+ic('cal',18)+esc(CTA1)+'</button>'+
+   '<button class="btn ghost" data-go="'+c2k+'">'+ic(c2k==='wa'?'wa':'spark',18)+esc(cta2)+'</button></div>'+
   '<ul class="ticks">'+ticks.slice(0,3).map(t=>'<li><span class="tk">'+ic('check',12)+'</span>'+esc(t)+'</li>').join('')+'</ul></div>'+
-  '<div class="art rv0'+(SL.length?' car':'')+'">'+art+
+  '<div class="art rv0'+(SL.length&&!H.vid?' car':'')+'">'+art+
+   '<span class="scap" id="scap"'+(cap0&&!H.vid?'':' hidden')+'>'+esc(H.vid?'':cap0)+'</span>'+
+   (H.yt?'<button type="button" class="hplay" data-yt="'+esc(H.yt)+'">'+ic('play',20)+'<span>'+T('watch')+'</span></button>':'')+
    '<div class="cap"><span class="dot">'+ic('clock',20)+'</span><span><b>'+esc(openNow(br).t)+'</b><small>'+esc(br.name||'')+(br.addrShort?' · '+esc(br.addrShort):'')+'</small></span></div></div></div></section>';
+ /* the trust bar: rating, clients, where */
+ const TR=P.trust||{},ti=[];
+ if(TR.gr)ti.push('<a class="ti" '+(TR.gurl?'href="'+esc(TR.gurl)+'" target="_blank" rel="noopener"':'href="#ulasan"')+'><span class="st">★</span><b>'+(+TR.gr).toFixed(1)+'</b><span>Google Rating'+(TR.gn?' · '+T('revN')(TR.gn):'')+'</span></a>');
+ else if(R.n>=3)ti.push('<a class="ti" href="#ulasan"><span class="st">★</span><b>'+R.avg.toFixed(1)+'</b><span>'+T('ourRev')+' · '+T('revN')(R.n)+'</span></a>');
+ if(TR.clients)ti.push('<span class="ti">'+ic('users',17)+'<b>'+esc(TR.clients)+'</b><span>'+T('clientsL')+'</span></span>');
+ if(TR.loc)ti.push('<a class="ti" href="#lokasi">'+ic('pin',17)+'<span>'+T('locL')+'</span><b>'+esc(TR.loc)+'</b></a>');
+ if(TR.extra)ti.push('<span class="ti">'+ic('shield',17)+'<span>'+esc(pick(TR.extra,TR.extraEn))+'</span></span>');
+ if(ti.length)h+='<div class="tbar"><div class="wrap"><div class="tbin n'+ti.length+'">'+ti.join('')+'</div></div></div>';
  /* highlights */
  const U=(P.usps||[]).filter(u=>u&&u.t);
  if(U.length)h+='<div class="uband"><span class="blob b3" data-par="0.2"></span><span class="blob b4" data-par="-0.15"></span><div class="wrap"><div class="usps">'+U.slice(0,4).map((u,i)=>'<div class="usp rv0" style="--d:'+i*0.09+'s"><span class="i">'+ic(['spark','shield','heart','leaf'][i%4],21)+'</span><span><b>'+esc(pick(u.t,u.tEn))+'</b><span>'+esc(pick(u.d,u.dEn)||'')+'</span></span></div>').join('')+'</div></div></div>';
@@ -675,7 +727,7 @@ function render(){
   (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
   (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
   (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
- h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+(P.bookOn?T('bookShort'):T('bookShort2'))+'</button></div>'+
+ h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+esc(CTA1.length<=20?CTA1:(P.bookOn?T('bookShort'):T('bookShort2')))+'</button></div>'+
   '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
  $('#app').innerHTML=h;
  paintSvcs();paintFinder();bindForm('f');reveal();onScrollFx();startSlides();startBanner();watchImgs();
@@ -697,7 +749,7 @@ function startSlides(){
  box.parentNode.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40)goSlide(SLIDE+(dx<0?1:-1));},{passive:true});
 }
 function goSlide(i){const all=[...document.querySelectorAll('#slides .slide')],n=all.length;if(!n)return;SLIDE=(i%n+n)%n;
- all.forEach((el,k)=>el.classList.toggle('on',k===SLIDE));document.querySelectorAll('.art .dots button').forEach((d,k)=>d.classList.toggle('on',k===SLIDE));}
+ all.forEach((el,k)=>el.classList.toggle('on',k===SLIDE));const sc=$('#scap');if(sc){const c=all[SLIDE].dataset.c||'';sc.textContent=c;sc.hidden=!c;}document.querySelectorAll('.art .dots button').forEach((d,k)=>d.classList.toggle('on',k===SLIDE));}
 
 /* ---------- the promotion banner: one offer at a time, and a short pop-up once a visit ---------- */
 function startBanner(){
@@ -871,6 +923,9 @@ function claim(id){
  const p=(P.promos||[]).find(x=>x.id===id);if(!p)return;hit('promo');track('promo',{content_name:p.t});const im=promoImg(p);
  sheet((im?'<div class="shimg" data-img="'+esc(im)+'"></div>':'')+'<h3>'+esc(p.t)+'</h3><p class="lead">'+esc(pDeal(p))+(p.limit>0?T('leftL')(p.left):'')+(p.end?T('until')(dshort(p.end)):'')+'</p><div class="form">'+formHTML('s',{promo:p.t})+'</div>');
  bindForm('s',{promo:p.t});watchImgs();}
+function offerSheet(){const O=(P.hero||{}).offer;if(!O)return;const t=pick(O.t,O.tEn);hit('promo');track('promo',{content_name:t});
+ sheet('<h3>'+esc(t)+'</h3><p class="lead">'+(O.now?rm(O.now)+(O.was>O.now?' <s>'+rm(O.was)+'</s>':''):'')+(O.note?' · '+esc(O.note):'')+'</p><div class="form">'+formHTML('s',{promo:t})+'</div>');bindForm('s',{promo:t});}
+function ytSheet(id){if(!/^[\w-]{11}$/.test(id))return;sheet('<div class="ytw"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&playsinline=1&rel=0" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>');}
 function bookUrl(br,svc){const u=new URL('./',location.href);u.search='';const q=new URLSearchParams();q.set('book',br);if(svc)q.set('svc',svc);u.search=q.toString();return u.toString();}
 function book(svc,brId){
  if(!P.bookOn||(svc&&svcOf(svc)&&svcOf(svc).b===false))return waSheet(svc&&svcOf(svc)?T('wantBook')(svcOf(svc).n):T('wantRes'));
@@ -885,7 +940,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('luunaLan
 
 /* one listener for every button on the page */
 document.addEventListener('click',e=>{
- const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],[data-lang],[data-sl],[data-dot],[data-abx],[data-popx],[data-k],[data-sk],[data-kclear],[data-quiz],[data-catopen],blockquote.clamp');if(!t)return;
+ const t=e.target.closest('[data-go],[data-book],[data-book-br],[data-claim],[data-promo],[data-ask],[data-cat],[data-more],[data-hit],[data-sv],[data-revall],[data-lang],[data-sl],[data-dot],[data-abx],[data-popx],[data-k],[data-sk],[data-kclear],[data-quiz],[data-catopen],[data-prob],[data-offer],[data-yt],blockquote.clamp');if(!t)return;
  if(t.dataset.hit){hit(t.dataset.hit);return;}
  if(t.matches('blockquote.clamp')){t.classList.toggle('open');return;}
  e.preventDefault();
@@ -901,6 +956,10 @@ document.addEventListener('click',e=>{
  else if(t.dataset.catopen!==undefined){const c=t.dataset.catopen;CATOPEN.has(c)?CATOPEN.delete(c):CATOPEN.add(c);paintSvcs();}
  else if(t.dataset.go==='book'){closeSheet();book();}
  else if(t.dataset.go==='wa')waSheet();
+ else if(t.dataset.go==='consult'){closeSheet();const el=document.getElementById('konsultasi');if(el){el.scrollIntoView({behavior:'smooth'});setTimeout(()=>{const n=document.getElementById('f-n');if(n)n.focus({preventScroll:true});},650);}}
+ else if(t.dataset.prob){const k=t.dataset.prob,f=document.getElementById('cari');if(f&&(P.concerns||[]).some(c=>c.id===k)){SELK.clear();SELK.add(k);SELS='';paintFinder();f.scrollIntoView({behavior:'smooth'});}else{const r=document.getElementById('rawatan');if(r)r.scrollIntoView({behavior:'smooth'});}}
+ else if(t.dataset.offer)offerSheet();
+ else if(t.dataset.yt)ytSheet(t.dataset.yt);
  else if(t.dataset.go==='wa-direct')openWa();
  else if(t.dataset.book!==undefined){closeSheet();book(t.dataset.book);}
  else if(t.dataset.bookBr!==undefined)book('',t.dataset.bookBr);
