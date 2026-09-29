@@ -673,6 +673,38 @@ footer .wrap{align-items:flex-start}.fcol{display:flex;flex-direction:column;gap
 .gva{display:flex;flex-wrap:wrap;gap:6px}.gva span{border:1px solid rgba(215,197,170,.4);color:var(--champagne);border-radius:99px;padding:4px 10px;font-size:12.5px}.gvc .btn{background:var(--champagne);color:var(--jet)}
 .loyc p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.7}
 @media(max-width:860px){.thero,.tprice,.tfit{grid-template-columns:1fr}.timg{aspect-ratio:16/10;order:-1}.tfacts{grid-template-columns:1fr 1fr}.tfacts div{padding:10px}.tacts .btn{flex:1}}
+/* ===== lead capture ===== */
+.fmore{margin:12px 0 2px;border-top:1px solid var(--line-2);padding-top:8px}.fmore summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--brass);list-style:none}.fmore summary::before{content:'+ '}.fmore[open] summary::before{content:'– '}
+.consent.optin{margin-top:10px}
+.qzbox{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(20px,4vw,56px);align-items:center;background:var(--jet);color:var(--porcelain);border-radius:28px;padding:clamp(24px,5vw,56px);position:relative;overflow:hidden}
+.qzbox::after{content:'';position:absolute;right:-90px;top:-110px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(215,197,170,.22),transparent 70%);pointer-events:none}
+.qzbox .eyebrow{color:var(--champagne)}.qzbox .eyebrow::before{background:var(--champagne)}.qzbox h2{color:#fff;margin:10px 0 8px}.qzbox p{color:#C9C1B6;margin:0 0 18px;max-width:460px;line-height:1.75}
+.qzbox .btn.pri{background:var(--champagne);color:var(--jet)}.qzbox .btn.pri .ico{color:var(--jet)}
+.qzr{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}.qzr span{border:1px solid rgba(215,197,170,.35);border-radius:18px;padding:18px 14px;text-align:center;font-family:var(--serif);font-size:20px;color:var(--champagne)}
+.qz h3{font-family:var(--serif);font-weight:500;font-size:26px;margin:6px 0 10px;line-height:1.2}.qz h4{margin:18px 0 8px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--brass)}
+.qzprog{height:4px;border-radius:99px;background:var(--line-2);overflow:hidden;margin:4px 40px 10px 0}.qzprog i{display:block;height:100%;background:var(--gbrush);transition:width .3s}
+.qzstep{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.qzo{display:flex;flex-direction:column;gap:8px}.qzo button{display:flex;align-items:center;gap:8px;text-align:left;font:inherit;font-size:14.5px;border:var(--hair);background:var(--surface);border-radius:14px;padding:14px 16px;cursor:pointer;color:var(--jet)}
+.qzo button:hover{border-color:var(--gbrush)}.qzo button.on{border-color:var(--jet);background:var(--jet);color:var(--porcelain)}.qzo.multi{flex-direction:row;flex-wrap:wrap}.qzo.multi button{padding:10px 14px;font-size:13.5px}.qzo.multi button .ico{display:none}.qzo.multi button.on .ico{display:inline-flex}
+.qznav{display:flex;justify-content:space-between;margin-top:16px}
+.qzok{margin:0 0 4px!important;background:var(--surface-2);border-radius:14px;padding:12px 14px}
+.qzt small{font-family:var(--sans);font-size:14px;color:var(--ink-3)}.qzrec{border:var(--hair);border-radius:16px;overflow:hidden}
+.qzhc{display:flex;flex-direction:column;gap:6px}.qzp{display:flex;justify-content:space-between;text-decoration:none;border:var(--hair);border-radius:12px;padding:10px 12px;font-size:14px}.qzp small{color:var(--ink-3)}
+.qztips{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;font-size:14px;color:var(--ink-2)}.qztips li{display:flex;gap:8px}.qztips .ico{color:var(--gbrush);margin-top:3px}
+.qzgate{margin-top:18px;background:var(--surface-2);border-radius:18px;padding:16px}.qzgate h4{margin-top:0}.qzgate p{margin:0 0 10px;font-size:13.5px;color:var(--ink-2)}.qzgate .form{background:none;padding:0;box-shadow:none}
+.exit{text-align:center}.exi{width:58px;height:58px;border-radius:50%;background:var(--jet);color:var(--champagne);display:grid;place-items:center;margin:4px auto 10px}.exit h3{margin-right:0!important}.exit .form{text-align:left}
+.exc{text-align:center;background:var(--surface-2);border:1px dashed var(--gbrush);border-radius:18px;padding:18px;margin-bottom:12px}.exc span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:600}
+.exc b{display:block;font:600 30px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;margin:6px 0;user-select:all}.exc p{margin:0;font-size:13px;color:var(--ink-2)}
+.magg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.magc{display:grid;grid-template-columns:130px 1fr;gap:16px;background:var(--surface);border:var(--hair);border-radius:22px;padding:16px;box-shadow:var(--lift);align-items:center}
+.magcov{aspect-ratio:3/4;border-radius:12px;background:var(--jet) center/cover no-repeat;color:var(--champagne);display:flex;flex-direction:column;justify-content:flex-end;padding:10px;box-shadow:0 14px 30px -18px rgba(13,13,13,.6)}
+.magcov span{font-size:9px;letter-spacing:.24em;font-weight:700}.magcov b{font-family:var(--serif);font-weight:500;font-size:15px;line-height:1.2;color:#fff}
+.magg.one{grid-template-columns:1fr;max-width:780px}.magg.one .magc{grid-template-columns:190px 1fr;gap:26px;padding:22px 26px}.magg.one .magb h3{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.15}.magg.one .magb p{font-size:14.5px}
+.magb h3{font-size:15.5px}.magb p{margin:4px 0 10px;font-size:13px;color:var(--ink-2);line-height:1.6}
+.newsb{padding:0 0 clamp(40px,6vw,72px)}.newsi{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:center;border:var(--hair);background:var(--surface);border-radius:28px;padding:clamp(20px,4vw,40px);box-shadow:var(--lift)}
+.newsi h3{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:500;font-size:28px}.newsi h3 .ico{color:#1F8F55}.newsi p{margin:6px 0 0;color:var(--ink-2)}
+.newsf{display:grid;grid-template-columns:1fr 1fr;gap:8px}.newsf .f{margin:0;width:100%;border:var(--hair);background:var(--porcelain);border-radius:12px;padding:12px 14px;font:inherit;font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}.newsf .f:focus{border-color:var(--gbrush);box-shadow:0 0 0 3px rgba(178,153,110,.18)}.newsf #nw-m,.newsf .consent,.newsf .err,.newsf .btn{grid-column:1/-1}.newsf .consent{font-size:12px;margin:2px 0}
+@media(max-width:860px){.qzbox,.newsi{grid-template-columns:1fr}.qzr{display:none}.magc,.magg.one .magc{grid-template-columns:96px 1fr;gap:14px;padding:14px}.magg.one .magb h3{font-size:21px}.newsf{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -969,6 +1001,7 @@ function render(){
     '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+T('claim')+'</button>'+
      (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])&&svcOf(p.svc[0]).b!==false?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">'+T('bookDirect')+'</button>':'')+'</div></div></article>';}).join('')+'</div></div></section>';
  h+=offersHomeHTML();
+ h+=quizHome();
  /* find by skin concern */
  if((P.concerns||[]).length)h+='<section class="sec finder" id="cari"><div class="wrap"><div class="fbox rv0"><div class="sec-h" style="margin-bottom:16px"><div><span class="eyebrow">'+T('fEy2')+'</span><h2>'+T('fH2')+'</h2><p>'+T('fP2')+'</p></div></div><div id="finder"></div></div></div></section>';
  /* treatments */
@@ -977,7 +1010,7 @@ function render(){
  /* how it works */
  h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('sEy')+'</span><h2>'+T('sH')+'</h2></div></div><div class="steps">'+
   T('steps')(P.bookOn).map((s,i)=>'<div class="step rv0" style="--d:'+i*0.1+'s"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
- h+=reviewsHTML();h+=skinHomeHTML();h+=aboutHTML();
+ h+=reviewsHTML();h+=skinHomeHTML();h+=aboutHTML();h+=magHome();
  /* location */
  h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('lEy')+'</span><h2>'+T('lH')+'</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
   (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
@@ -999,7 +1032,7 @@ function render(){
   '<h2 style="margin:12px 0 12px">'+T('cH')+'</h2><p>'+T('cP')+'</p>'+
   '<ul class="ticks dark" style="margin-top:16px;flex-direction:column;gap:8px">'+T('cT').map(x=>'<li><span class="tk">'+ic('check',12)+'</span>'+x+'</li>').join('')+'</ul></div>'+
   '<div class="form rv0" id="fbox">'+formHTML('f',{})+'</div></div></div></section>';
- h+=footHTML();
+ h+=newsHTML();h+=footHTML();
  h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+esc(CTA1.length<=20?CTA1:(P.bookOn?T('bookShort'):T('bookShort2')))+'</button></div>'+
   '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
  $('#app').innerHTML=h;
@@ -1139,14 +1172,14 @@ function formHTML(k,o){
  return '<form id="'+k+'-form" novalidate>'+
   '<label for="'+k+'-n">'+T('name')+'</label><input class="f" id="'+k+'-n" autocomplete="name" placeholder="'+T('nameP')+'" required>'+
   '<label for="'+k+'-p">'+T('wa')+'</label><input class="f" id="'+k+'-p" type="tel" inputmode="tel" autocomplete="tel" placeholder="012-345 6789" required>'+
-  (o.mode==='wa'?'':'<label for="'+k+'-i">'+T('interest')+'</label><select class="f" id="'+k+'-i"><option value="">'+T('unsureOpt')+'</option>'+
+  (o.mode==='wa'||o.mini?'':'<label for="'+k+'-i">'+T('interest')+'</label><select class="f" id="'+k+'-i"><option value="">'+T('unsureOpt')+'</option>'+
    (o.promo?'<option selected>'+esc(o.promo)+'</option>':'')+S.map(s=>'<option'+(o.interest===s.n?' selected':'')+'>'+esc(s.n)+'</option>').join('')+'</select>')+
-  (brs.length>1?'<label for="'+k+'-b">'+T('branch')+'</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
-  (o.mode==='wa'?'':'<label>'+T('when')+'</label><div class="chips" id="'+k+'-t">'+TIMEKEYS.map((t,i)=>'<button type="button" data-t="'+t+'">'+T('times')[i]+'</button>').join('')+'</div>'+
-   '<label for="'+k+'-q">'+T('concern')+' <span style="font-weight:400;color:var(--ink-3)">'+T('opt')+'</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="'+T('concernP')+'"></textarea>')+
+  (brs.length>1&&!o.mini?'<label for="'+k+'-b">'+T('branch')+'</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
+  (o.mode==='wa'||o.mini?'':'<details class="fmore"><summary>'+TL('more')+'</summary><label>'+T('when')+'</label><div class="chips" id="'+k+'-t">'+TIMEKEYS.map((t,i)=>'<button type="button" data-t="'+t+'">'+T('times')[i]+'</button>').join('')+'</div>'+
+   '<label for="'+k+'-q">'+T('concern')+' <span style="font-weight:400;color:var(--ink-3)">'+T('opt')+'</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="'+T('concernP')+'"></textarea></details>')+(o.mode==='wa'?'':'<label class="consent optin"><input type="checkbox" id="'+k+'-oi"><span>'+esc(TL('optin'))+'</span></label>')+
   '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>'+esc(T('agree')((P.biz||{}).name||'kami'))+'</span></label>'+
   '<div class="err" id="'+k+'-e" role="alert"></div>'+
-  '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.mode==='wa'?ic('wa',18)+T('toWa'):o.promo?ic('gift',18)+T('claimThis'):ic('arrow',18)+T('send'))+'</button></form>';
+  '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.btn?ic('arrow',18)+esc(o.btn):o.mode==='wa'?ic('wa',18)+T('toWa'):o.promo?ic('gift',18)+T('claimThis'):ic('arrow',18)+T('send'))+'</button></form>';
 }
 function bindForm(k,o){
  o=o||{};const f=document.getElementById(k+'-form');if(!f)return;const TS=new Set();
@@ -1162,13 +1195,15 @@ function bindForm(k,o){
   const interest=(it&&it.value)||o.promo||o.interest||'';
   const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:br,stage:'new',createdAt:new Date().toISOString(),
    createdBy:'landing',web:true,consent:true,
-   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':o.quiz?'quiz':'form',d:x.d||'',ad:x.a||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
+   lp:{ctx:o.ctx||(o.mode==='wa'?'wa':o.promo?'promo':o.quiz?'quiz':'form'),...(o.mg?{mg:o.mg}:{}),d:x.d||'',ad:x.a||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
   if(interest)d.interest=interest.slice(0,200);
+  {const oi=document.getElementById(k+'-oi');if(oi&&oi.checked)d.optin=true;}
   /* the note is for the spa team, so it stays in Malay whichever language the page was in */
   const nt=[o.quiz||'',q&&q.value.trim(),TS.size?'Masa sesuai: '+[...TS].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':'',LANG==='en'?'(borang dalam English)':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
   if(PREVIEW){e.textContent=T('pvNo');go.disabled=false;return;}
   try{const id=await add('leads',d);try{localStorage.setItem('luunaLead',JSON.stringify({id,at:d.createdAt}));}catch(_){}
    hit(o.mode==='wa'?'wa':'lead');track('lead',{content_name:interest||'konsultasi'});
+   if(o.done){o.done(d);return;}
    if(o.mode==='wa'){closeSheet();openWa(o.msg,n);return;}
    const box=k==='f'?$('#fbox'):document.querySelector('.sheet .form');
    box.innerHTML='<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+esc(T('thanks')(n.split(' ')[0]))+'</h3><p>'+T('thanksP')+(o.promo?T('held'):'')+'</p>'+
@@ -1574,6 +1609,133 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-askpkg],[d
  if(t.dataset.askpkg!==undefined){const k=(P.pkgs||[]).find(x=>x.id===t.dataset.askpkg);if(k)waSheet(k.n,k.n);}
  else if(t.dataset.join!==undefined){const m=(P.mem||[]).find(x=>x.id===t.dataset.join);if(m)waSheet(TO('memH')+' '+m.n,TO('memH')+' '+m.n);}
  else if(t.dataset.gv!==undefined)gvSheet();});
+
+
+/* ================= lead capture: for visitors not ready to book yet ================= */
+const LT={ms:{qEy:'Kuiz kulit · 60 saat',qH:'Jenis kulit anda apa?',qP:'Jawab 5 soalan ringkas — dapatkan jenis kulit anda, rawatan yang sesuai dan rutin di rumah.',qGo:'Mula kuiz',
+  step:(i,n)=>'Soalan '+i+' daripada '+n,next:'Seterusnya',back:'Kembali',pick3:'Pilih sehingga 3',
+  qs:[['Selepas cuci muka dan tunggu sejam, kulit anda rasa…',[['dry','Ketat atau bersisik'],['oily','Berminyak di seluruh muka'],['comb','Berminyak di dahi, hidung & dagu sahaja'],['normal','Selesa — tak berminyak, tak kering']]],
+   ['Kulit anda mudah merah, pedih atau gatal bila cuba produk baru?',[['yes','Ya, selalu'],['some','Kadang-kadang'],['no','Jarang']]],
+   ['Apa yang paling anda mahu perbaiki?',null],
+   ['Umur anda',[['u25','Bawah 25'],['25','25 – 34'],['35','35 – 44'],['45','45 ke atas']]],
+   ['Rutin penjagaan kulit sekarang',[['none','Tiada rutin tetap'],['basic','Asas — pencuci & pelembap'],['full','Lengkap — serum & pelindung matahari']]]],
+  types:{dry:['Kulit Kering','Kulit anda kurang minyak semula jadi, jadi mudah rasa ketat dan kusam. Fokus: lembapkan dan kuatkan lapisan pelindung kulit.'],
+   oily:['Kulit Berminyak','Kulit anda menghasilkan minyak berlebihan — liang pori nampak lebih besar dan mudah tersumbat. Fokus: bersihkan dengan lembut, kawal minyak tanpa mengeringkan.'],
+   comb:['Kulit Kombinasi','Zon-T (dahi, hidung, dagu) berminyak, pipi normal atau kering. Fokus: seimbangkan — rawat setiap zon ikut keperluannya.'],
+   normal:['Kulit Normal','Kulit anda seimbang. Fokus: kekalkan dengan rutin ringkas dan perlindungan matahari setiap hari.']},
+  sens:'· mudah sensitif',tips:{dry:['Pencuci krim tanpa sabun, air suam — bukan panas','Pelembap bertekstur krim, sapu ketika kulit masih lembap','Pelindung matahari SPF30+ setiap pagi'],
+   oily:['Cuci muka 2 kali sehari sahaja — lebih kerap buat kulit hasilkan lebih minyak','Pelembap gel yang ringan, jangan langkau','Pelindung matahari bertekstur ringan / matte'],
+   comb:['Pencuci lembut untuk seluruh muka','Produk kawal minyak di zon-T sahaja','Pelembap ringan di seluruh muka, lebih di pipi jika kering'],
+   normal:['Pencuci lembut pagi & malam','Serum antioksidan atau pelembap ringan','Pelindung matahari setiap hari, walaupun di dalam rumah']},
+  sensTip:'Cuba produk baru di bawah dagu 2–3 hari dahulu (ujian tampalan)',
+  resEy:'Keputusan anda',recH:'Rawatan yang kami cadangkan',hcH:'Rutin di rumah',tipsH:'3 tip untuk kulit anda',
+  gateH:'Dapatkan pelan penuh percuma',gateP:'Kami hantar pelan rawatan & rutin lengkap untuk kulit anda ke WhatsApp — termasuk tawaran pertama kali.',gateBtn:'Hantar pelan saya',
+  unlocked:'Pelan dihantar! Team kami akan WhatsApp anda. Ini cadangan penuh anda:',retake:'Ambil semula kuiz',
+  optin:'Saya mahu terima tips kulit & tawaran eksklusif melalui WhatsApp (boleh berhenti bila-bila masa).',
+  more:'Tambah butiran (pilihan)',exitClaim:'Dapatkan kod saya',exitCode:'Kod anda',exitUse:'Tunjukkan kod ini semasa bayaran, atau sebut semasa book.',exitNo:'Tak apa, terima kasih',
+  magEy:'Panduan percuma',magH:'Panduan PDF percuma',magP:'Panduan ringkas dari therapist kami — terus ke telefon anda.',magGet:'Dapatkan PDF',magDl:'Muat turun PDF',magDone:'Panduan anda sedia!',
+  newsH:'Tips kulit & tawaran eksklusif',newsP:'Sertai senarai WhatsApp kami — tips ringkas dan tawaran untuk pelanggan setia. Tiada spam.',newsBtn:'Sertai',newsDone:'Terima kasih! Anda dalam senarai kami.',
+  email:'E-mel (pilihan)'},
+ en:{qEy:'Skin quiz · 60 seconds',qH:'What is your skin type?',qP:'Answer 5 quick questions — get your skin type, the treatments that suit it and a routine for home.',qGo:'Start the quiz',
+  step:(i,n)=>'Question '+i+' of '+n,next:'Next',back:'Back',pick3:'Pick up to 3',
+  qs:[['An hour after washing your face, your skin feels…',[['dry','Tight or flaky'],['oily','Oily all over'],['comb','Oily on the forehead, nose & chin only'],['normal','Comfortable — not oily, not dry']]],
+   ['Does your skin get red, sting or itch with new products?',[['yes','Yes, often'],['some','Sometimes'],['no','Rarely']]],
+   ['What would you most like to improve?',null],
+   ['Your age',[['u25','Under 25'],['25','25 – 34'],['35','35 – 44'],['45','45 and over']]],
+   ['Your skincare routine now',[['none','No regular routine'],['basic','Basic — cleanser & moisturiser'],['full','Full — serum & sunscreen']]]],
+  types:{dry:['Dry skin','Your skin makes less natural oil, so it feels tight and looks dull. Focus: hydrate and strengthen the skin barrier.'],
+   oily:['Oily skin','Your skin makes extra oil — pores look larger and clog easily. Focus: cleanse gently, control oil without drying out.'],
+   comb:['Combination skin','Your T-zone is oily, cheeks normal or dry. Focus: balance — treat each zone for what it needs.'],
+   normal:['Normal skin','Your skin is balanced. Focus: keep it that way with a simple routine and daily sun protection.']},
+  sens:'· sensitive',tips:{dry:['Soap-free cream cleanser, lukewarm water — not hot','Cream moisturiser on still-damp skin','SPF30+ sunscreen every morning'],
+   oily:['Wash twice a day only — more makes skin produce more oil','A light gel moisturiser; do not skip it','A light / matte sunscreen'],
+   comb:['A gentle cleanser for the whole face','Oil-control products on the T-zone only','Light moisturiser all over, more on dry cheeks'],
+   normal:['Gentle cleanser morning & night','An antioxidant serum or light moisturiser','Sunscreen every day, even indoors']},
+  sensTip:'Try new products under the jaw for 2–3 days first (patch test)',
+  resEy:'Your result',recH:'Treatments we suggest',hcH:'Your routine at home',tipsH:'3 tips for your skin',
+  gateH:'Get your full plan free',gateP:'We send your full treatment plan & routine to WhatsApp — with a first-visit offer.',gateBtn:'Send my plan',
+  unlocked:'Plan sent! Our team will WhatsApp you. Here is your full plan:',retake:'Retake the quiz',
+  optin:'Send me skin tips & exclusive offers on WhatsApp (stop any time).',
+  more:'Add details (optional)',exitClaim:'Get my code',exitCode:'Your code',exitUse:'Show this code when you pay, or mention it when you book.',exitNo:'No thanks',
+  magEy:'Free guide',magH:'Free PDF guide',magP:'A short guide from our therapists — straight to your phone.',magGet:'Get the PDF',magDl:'Download the PDF',magDone:'Your guide is ready!',
+  newsH:'Skin tips & exclusive offers',newsP:'Join our WhatsApp list — short tips and offers for regulars. No spam.',newsBtn:'Join',newsDone:'Thank you! You are on our list.',
+  email:'Email (optional)'}};
+const TL=(k,...a)=>{const v=(LT[LANG]||LT.ms)[k];return typeof v==='function'?v(...a):v;};
+const LC=()=>P.lc||{};
+const leadDone=()=>{try{const L=JSON.parse(localStorage.getItem('luunaLead')||'null');return !!(L&&Date.now()-Date.parse(L.at)<30*864e5);}catch(e){return false;}};
+/* ---------- the skin quiz ---------- */
+let QZ={i:-1,a:{},k:[]};
+const QZ_K0=['acne','pigment','dull','pores','lines','dehydrated','redness','oily'];
+function quizKs(){const C=(P.concerns||[]).map(c=>[c.id,pick(c.ms,c.en)]);return C.length?C:QZ_K0.map(k=>[k,cLabel(k)]);}
+function quizHome(){if(LC().quiz===false)return '';
+ return '<section class="sec quizs" id="kuiz"><div class="wrap"><div class="qzbox rv0"><div class="qzl"><span class="eyebrow">'+TL('qEy')+'</span><h2>'+TL('qH')+'</h2><p>'+TL('qP')+'</p>'+
+  '<button class="btn pri" data-qz="start">'+ic('spark',18)+TL('qGo')+'</button></div><div class="qzr">'+['dry','oily','comb','normal'].map(k=>'<span>'+esc(TL('types')[k][0])+'</span>').join('')+'</div></div></div></section>';}
+function quizSkin(){const a=QZ.a;return a[0]||'normal';}
+function quizResult(){
+ const t=quizSkin(),sens=QZ.a[1]==='yes'||QZ.a[1]==='some',K=QZ.k,mat=QZ.a[3]==='35'||QZ.a[3]==='45';
+ const SK={dry:'Dry',oily:'Oily',comb:'Combination',normal:'Normal'}[t];
+ const R=(P.services||[]).map(s=>{const m=(s.k||[]).filter(k=>K.includes(k)).length,sk=(s.sk||[]).includes(SK)||(sens&&(s.sk||[]).includes('Sensitive'))||(mat&&(s.sk||[]).includes('Mature'));return {s,sc:m*3+(sk?1:0)};}).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc||a.s.p-b.s.p).map(x=>x.s).slice(0,3);
+ const H=(typeof SKP==='function'?SKP():[]).map(p=>({p,sc:(p.k||[]).filter(k=>K.includes(k)).length*2+((p.sk||[]).includes(SK)?1:0)})).filter(x=>x.sc>0).sort((a,b)=>b.sc-a.sc).map(x=>x.p).slice(0,3);
+ return {t,sens,SK,R,H,tips:[...TL('tips')[t],...(sens?[TL('sensTip')]:[])]};}
+function quizNote(){const Q=LT.ms.qs,a=QZ.a,lab=(i,v)=>((Q[i][1]||[]).find(o=>o[0]===v)||[,v])[1];const r=quizResult();
+ return ('Kuiz kulit: '+LT.ms.types[r.t][0]+(r.sens?' (sensitif)':'')+' · Masalah: '+QZ.k.map(k=>{const c=(P.concerns||[]).find(x=>x.id===k);return c?c.ms:k;}).join(', ')+' · Umur: '+lab(3,a[3])+' · Rutin: '+lab(4,a[4])+(r.R[0]?' · Cadangan: '+r.R.map(s=>s.n).join(', '):'')).slice(0,480);}
+function quizPaint(){
+ const el=document.querySelector('.sheet .qz');if(!el)return;const Q=TL('qs'),n=Q.length,i=QZ.i;
+ if(i<n){const [q,opts]=Q[i],O=opts||quizKs(),multi=!opts;
+  el.innerHTML='<div class="qzprog"><i style="width:'+Math.round(i/n*100)+'%"></i></div><span class="qzstep">'+TL('step',i+1,n)+'</span><h3>'+esc(q)+'</h3>'+(multi?'<p class="lead">'+TL('pick3')+'</p>':'')+
+   '<div class="qzo'+(multi?' multi':'')+'">'+O.map(([v,l])=>'<button type="button" data-qa="'+esc(v)+'" class="'+(multi?(QZ.k.includes(v)?'on':''):(QZ.a[i]===v?'on':''))+'">'+(multi?ic('check',14):'')+esc(l)+'</button>').join('')+'</div>'+
+   '<div class="qznav">'+(i?'<button type="button" class="btn light sm" data-qz="back">'+ic('left',14)+TL('back')+'</button>':'<span></span>')+(multi?'<button type="button" class="btn pri sm" data-qz="next"'+(QZ.k.length?'':' disabled')+'>'+TL('next')+ic('arrow',14)+'</button>':'')+'</div>';return;}
+ const r=quizResult(),T2=TL('types')[r.t],open=QZ.open;
+ el.innerHTML=(open?'<p class="okl qzok">'+ic('check',14)+TL('unlocked')+'</p>':'')+'<span class="eyebrow">'+TL('resEy')+'</span><h3 class="qzt">'+esc(T2[0])+(r.sens?' <small>'+TL('sens')+'</small>':'')+'</h3><p class="lead">'+esc(T2[1])+'</p>'+
+  (r.R[0]?'<h4>'+TL('recH')+'</h4><div class="catl qzrec">'+(open?r.R:r.R.slice(0,1)).map(s=>svcRow(s)).join('')+'</div>':'')+
+  (open?(r.H.length?'<h4>'+TL('hcH')+'</h4><div class="qzhc">'+r.H.map(p=>'<a class="qzp" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'"><b>'+esc(p.n)+'</b><small>'+rm(p.p)+'</small></a>').join('')+'</div>':'')+
+   '<h4>'+TL('tipsH')+'</h4><ul class="qztips">'+r.tips.map(x=>'<li>'+ic('check',13)+esc(x)+'</li>').join('')+'</ul>'
+  :'<div class="qzgate"><h4>'+TL('gateH')+'</h4><p>'+TL('gateP')+'</p><div class="form">'+formHTML('qz',{mini:true,btn:TL('gateBtn')})+'</div></div>')+
+  '<button type="button" class="skip" data-qz="again">'+TL('retake')+'</button>';
+ if(!open)bindForm('qz',{ctx:'quiz',quiz:quizNote(),interest:r.R[0]?r.R[0].n:'Kuiz kulit: '+LT.ms.types[r.t][0],done:()=>{QZ.open=true;quizPaint();}});
+ watchImgs();}
+function quizOpen(){QZ={i:0,a:{},k:[]};sheet('<div class="qz"></div>');quizPaint();hit('lead');}
+/* ---------- the short form: details folded away ---------- */
+/* ---------- exit intent: one honest offer before they go ---------- */
+let EXT0=Date.now(),EXSHOWN=false,SCY=0,SCT=0;
+function exitOk(){const X=LC().exit;if(!X||!X.on||EXSHOWN||SHEET||document.getElementById('pop')||route().k!=='home'&&route().k!=='svc')return false;if(Date.now()-EXT0<(PREVIEW?1000:10000))return false;
+ if(leadDone())return false;try{const t=+localStorage.getItem('lpExit')||0;if(Date.now()-t<7*864e5)return false;}catch(e){}return true;}
+function exitShow(){if(!exitOk())return;EXSHOWN=true;try{localStorage.setItem('lpExit',String(Date.now()));sessionStorage.setItem('lppop','1');}catch(e){}closePop();
+ const X=LC().exit,b=P.biz||{};hit('promo');
+ sheet('<div class="exit"><span class="exi">'+ic('gift',26)+'</span><h3>'+esc(pick(X.h,X.hEn)||(LANG==='en'?'Before you go…':'Tunggu sekejap…'))+'</h3><p class="lead">'+esc(pick(X.s,X.sEn)||'')+'</p>'+
+  '<div class="form">'+formHTML('ex',{mini:true,btn:X.code?TL('exitClaim'):T('send')})+'</div><button type="button" class="skip" data-x="1">'+TL('exitNo')+'</button></div>');
+ bindForm('ex',{ctx:'exit',interest:('Tawaran keluar: '+(X.h||'')).slice(0,200),done:()=>{const f=document.querySelector('.sheet .exit .form');if(!f)return;
+  f.innerHTML=X.code?'<div class="exc"><span>'+TL('exitCode')+'</span><b>'+esc(X.code)+'</b><p>'+TL('exitUse')+'</p></div>'+(P.bookOn?'<button class="btn pri" data-go="book" style="width:100%">'+ic('cal',18)+TS('bookNow')+'</button>':'')
+   :'<div class="done"><div class="ok">'+ic('check',30)+'</div><p>'+T('thanksP')+'</p></div>';}});}
+document.addEventListener('mouseout',e=>{if(!P)return;if(!e.relatedTarget&&e.clientY<=0)exitShow();});
+addEventListener('scroll',()=>{if(!P)return;const y=scrollY,t=Date.now(),H=document.documentElement.scrollHeight-innerHeight;
+ if(matchMedia('(hover:none)').matches&&H>0&&SCY/H>0.45&&SCY-y>250&&t-SCT<400)exitShow();if(t-SCT>400||y>SCY){SCY=y;SCT=t;}},{passive:true});
+/* ---------- lead magnets ---------- */
+function magHome(){const M=LC().mag||[];if(!M.length)return '';
+ return '<section class="sec mags" id="panduan"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+TL('magEy')+'</span><h2>'+TL('magH')+'</h2><p>'+TL('magP')+'</p></div></div><div class="magg'+(M.length===1?' one':'')+'">'+
+  M.map(m=>'<article class="magc rv0"><div class="magcov"'+(m.img?' data-img="'+esc(m.img)+'"':'')+'>'+(m.img?'':'<span>PDF</span><b>'+esc(m.t)+'</b>')+'</div><div class="magb"><h3>'+esc(m.t)+'</h3><p>'+esc(m.d||'')+'</p>'+
+   '<button class="btn pri sm" data-mag="'+esc(m.id)+'">'+ic('arrow',15)+TL('magGet')+'</button></div></article>').join('')+'</div></div></section>';}
+function magSheet(id){const m=(LC().mag||[]).find(x=>x.id===id);if(!m)return;hit('promo');
+ sheet('<span class="eyebrow">'+TL('magEy')+'</span><h3>'+esc(m.t)+'</h3><p class="lead">'+esc(m.d||'')+'</p><div class="form">'+formHTML('mg',{mini:true,btn:TL('magGet')})+'</div>');
+ bindForm('mg',{ctx:'magnet',mg:m.id,interest:('Panduan: '+m.t).slice(0,200),done:()=>{const f=document.querySelector('.sheet .form');if(f)f.innerHTML='<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+TL('magDone')+'</h3>'+
+  '<a class="btn pri" href="'+esc(m.url)+'" target="_blank" rel="noopener" download data-hit="lead">'+ic('arrow',18)+TL('magDl')+'</a></div>';}});}
+/* ---------- the WhatsApp list ---------- */
+function newsHTML(){if(LC().news===false)return '';
+ return '<section class="newsb"><div class="wrap"><div class="newsi"><div><h3>'+ic('wa',20)+TL('newsH')+'</h3><p>'+TL('newsP')+'</p></div><form id="nw-form" class="newsf" novalidate>'+
+  '<input class="f" id="nw-n" placeholder="'+T('name')+'" autocomplete="name"><input class="f" id="nw-p" type="tel" placeholder="'+T('wa')+'" autocomplete="tel"><input class="f" id="nw-m" type="email" placeholder="'+TL('email')+'" autocomplete="email">'+
+  '<label class="consent"><input type="checkbox" id="nw-ok"><span>'+esc(TL('optin'))+'</span></label><div class="err" id="nw-e"></div><button class="btn pri" id="nw-go" type="submit">'+TL('newsBtn')+'</button></form></div></div></section>';}
+function newsBind(){const f=document.getElementById('nw-form');if(!f)return;{const c=document.getElementById('nw-ok');if(c)c.onchange=()=>{document.getElementById('nw-e').textContent='';};}f.onsubmit=async ev=>{ev.preventDefault();const g=id=>document.getElementById(id),e=g('nw-e'),n=g('nw-n').value.trim(),p=g('nw-p').value.trim(),m=g('nw-m').value.trim();
+ if(n.length<2){e.textContent=T('eName');return;}if(digits(p).length<9||digits(p).length>15){e.textContent=T('ePhone');return;}if(m&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){e.textContent=LANG==='en'?'Check the email address.':'Semak alamat e-mel.';return;}
+ if(!g('nw-ok').checked){e.textContent=T('eOk');return;}e.textContent='';if(PREVIEW){e.textContent=T('pvNo');return;}g('nw-go').disabled=true;const x=touch(),a=attrLoad();
+ const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:((P.branches||[])[0]||{}).id||'',stage:'new',createdAt:new Date().toISOString(),createdBy:'landing',web:true,consent:true,optin:true,
+  interest:'Senarai WhatsApp: tips & tawaran',lp:{ctx:'news',d:x.d||'',ad:x.a||'',land:x.l||'',dev:dev(),lang:LANG},...(m?{email:m.slice(0,100)}:{})};
+ try{await add('leads',d);hit('lead');track('lead',{content_name:'newsletter'});f.innerHTML='<p class="okl">'+ic('check',16)+TL('newsDone')+'</p>';}catch(err){console.warn(err);e.textContent=T('eSend');g('nw-go').disabled=false;}};}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-qz],[data-qa],[data-mag]');if(!t||!P)return;e.preventDefault();const d=t.dataset;
+ if(d.mag!==undefined)return magSheet(d.mag);
+ if(d.qa!==undefined){const Q=TL('qs')[QZ.i];if(!Q)return;if(!Q[1]){QZ.k=QZ.k.includes(d.qa)?QZ.k.filter(x=>x!==d.qa):QZ.k.length<3?[...QZ.k,d.qa]:QZ.k;quizPaint();return;}QZ.a[QZ.i]=d.qa;QZ.i++;quizPaint();return;}
+ if(d.qz==='start')quizOpen();else if(d.qz==='next'){if(QZ.k.length){QZ.a[QZ.i]=QZ.k.join(',');QZ.i++;quizPaint();}}else if(d.qz==='back'){QZ.i=Math.max(0,QZ.i-1);quizPaint();}else if(d.qz==='again'){QZ={i:0,a:{},k:[]};quizPaint();}});
+{const _r2=render;render=function(){_r2.apply(this,arguments);try{newsBind();}catch(e){}};}
+window.__lead={quizOpen,exitShow,magSheet,get QZ(){return QZ;}};
 
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};

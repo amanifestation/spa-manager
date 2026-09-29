@@ -2251,6 +2251,7 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .tpbai{display:grid;grid-template-columns:1fr 1fr;gap:4px}.tpbai button{height:90px;border:1px dashed var(--line);border-radius:10px;background:var(--surface-2);overflow:hidden;padding:0;cursor:pointer;color:var(--ink-3)}
 .tpbai img{width:100%;height:100%;object-fit:cover}
 .gcbig{font:700 26px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;background:var(--brass-soft);border-radius:12px;padding:14px;margin:6px 0 10px;user-select:all}
+.lccard{border-top:3px solid #B2996E}.lccard h4{margin:16px 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2510,7 +2511,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29h';
+const BUILD='2026-09-29i';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -13321,7 +13322,7 @@ window.leadConvert=async(id,book)=>{
  try{
   if(!cid){
    const data={name:l.name,nameLower:l.name.toLowerCase(),phone:l.phone,phoneDigits:digits(l.phone),keywords:kwFor(l.name,l.phone),
-    email:l.email||'',source:srcToClient(l.source),srcMedium:l.medium==='Paid'?'Ads':l.medium==='Organic'?'Organic':'',branchId:ME.branchId,pdpa:true,marketing:true,tags:[],notes:'',
+    email:l.email||'',source:srcToClient(l.source),srcMedium:l.medium==='Paid'?'Ads':l.medium==='Organic'?'Organic':'',branchId:ME.branchId,pdpa:true,marketing:['landing','web','hook'].includes(l.createdBy)?l.optin===true:true,tags:[],notes:'',
     note:l.interest?'Interested in '+l.interest:'',active:true,wantNo:true,leadId:id,createdAt:new Date().toISOString(),createdBy:UID};
    if(l.referrerId&&!data.referrerId){const rr=await custGet(l.referrerId);if(rr)Object.assign(data,{referrerId:rr.id,referrerName:rr.name||'',source:'Friend referral'});}
    const inv=await refAttach(data);
@@ -22068,8 +22069,8 @@ if(!LEAD_SOURCES.includes('Threads'))LEAD_SOURCES.splice(LEAD_SOURCES.indexOf('T
 if(!LEAD_SOURCES.includes('Website'))LEAD_SOURCES.splice(LEAD_SOURCES.indexOf('Web form'),0,'Website');
 function lpMedTag(l){return l.medium&&l.medium!=='Organic'?'<span class="ksrc m'+(l.medium==='Paid'?' p':'')+'">'+esc(l.medium==='Paid'?'Ads':l.medium)+'</span>':'';}
 function lpLeadLine(l){if(l.createdBy!=='landing')return '';const x=l.lp||{};
- const how={form:'filled in the form',promo:'claimed a promotion',wa:'tapped WhatsApp',book:'booked online'}[x.ctx]||'enquired';
- return '<div class="ldline">'+ic('mega',13)+' Landing page — '+how+(l.medium?' · '+esc(l.medium):'')+(x.d?' · '+esc(x.d):'')+(x.dev?' · '+esc(x.dev):'')+(x.first?'<br><span class="tiny muted">First visit: '+esc(x.first)+'</span>':'')+'</div>';}
+ const how={form:'filled in the form',promo:'claimed a promotion',wa:'tapped WhatsApp',book:'booked online',quiz:'did the skin quiz',exit:'took the exit offer',magnet:'downloaded a free guide',news:'joined the WhatsApp list'}[x.ctx]||'enquired';
+ return '<div class="ldline">'+ic('mega',13)+' Landing page — '+how+(l.medium?' · '+esc(l.medium):'')+(x.d?' · '+esc(x.d):'')+(x.dev?' · '+esc(x.dev):'')+(l.optin?' · <b>opted in to WhatsApp offers</b>':'')+(l.email?' · '+esc(l.email):'')+(x.first?'<br><span class="tiny muted">First visit: '+esc(x.first)+'</span>':'')+'</div>';}
 {const _cp=crmPipe;crmPipe=function(){let h=_cp.apply(this,arguments);
  const all=LEADS.filter(myBranch).filter(l=>hrsAgo(l.createdAt)<=720);
  if(all.length){const by={};all.forEach(l=>{const s=l.source||'Other';by[s]=(by[s]||0)+1;});
@@ -25539,5 +25540,74 @@ window.gcSpend=gcSpend;
  h=h.replace('<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b>','<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b> <span class="pill b">E-voucher for '+esc(o.gift.to||'')+'</span>');});return h;};}
 window.gcFromOrder=id=>{const o=SKORD.find(x=>x.id===id);if(!o)return;window.gcSell({orderId:o.id,amount:o.total,buyerName:o.name,buyerPhone:o.phone,toName:(o.gift||{}).to||'',fromName:(o.gift||{}).from||o.name,msg:(o.gift||{}).msg||''});};
 window.gcState=()=>({GC});
+
+
+/* ============ Lead capture on the website: for visitors not ready to book ============ */
+/* The skin quiz, the short consultation form, one honest offer as a visitor leaves, free PDF
+   guides, and the WhatsApp list. Every one of them lands in CRM → Leads with how it was caught,
+   and people who ticked the WhatsApp opt-in make up the broadcast list. */
+Object.assign(LP_DEF,{lc:{quiz:true,news:true,exit:{on:false,h:'',s:'',code:'',hEn:'',sEn:''},mag:null}});
+const LC_MAG0=()=>[{id:'m1',t:'Panduan Skincare Routine Kulit Berminyak',d:'Rutin pagi & malam langkah demi langkah, bahan aktif yang membantu dan kesilapan yang biasa dibuat.',url:'panduan-kulit-berminyak.pdf',ih:''}];
+const lcR=L=>{const C={...LP_DEF.lc,...((L||lpSet()).lc||{})};C.exit={...LP_DEF.lc.exit,...(C.exit||{})};if(!C.mag)C.mag=LC_MAG0();return C;};
+const LC_CTX={quiz:'Skin quiz',form:'Consultation form',exit:'Exit offer',magnet:'Free guide',news:'WhatsApp list',promo:'Promotion claimed',wa:'WhatsApp button',book:'Booked online'};
+const lcVoucher=code=>(D.vouchers||[]).find(v=>String(v.id).toUpperCase()===String(code||'').toUpperCase());
+{const _b=lpBuild;lpBuild=function(img){const d=_b(img),C=lcR(lpSet()),X=C.exit,t=(x,n)=>String(x||'').trim().slice(0,n);
+ d.lc={quiz:C.quiz!==false,news:C.news!==false,
+  exit:X.on&&t(X.h,80)?{on:true,h:t(X.h,80),s:t(X.s,160),hEn:t(X.hEn,80),sEn:t(X.sEn,160),code:t(X.code,24).toUpperCase()}:null,
+  mag:(C.mag||[]).filter(m=>m&&m.t&&m.url).slice(0,3).map(m=>({id:m.id,t:t(m.t,80),d:t(m.d,200),url:t(m.url,400),...(m.ih?{img:'mag_'+m.id,ih:m.ih}:{})}))};
+ d.imgs=[...new Set([...(d.imgs||[]),...(C.mag||[]).filter(m=>m.ih).map(m=>'mag_'+m.id)])];return d;};}
+
+/* ---------- the owner's card ---------- */
+function lcStats(){const since=Date.now()-30*864e5,L=LEADS.filter(l=>myBranch(l)&&Date.parse(l.createdAt)>=since&&(l.createdBy==='landing'||l.createdBy==='web'));const by={};
+ L.forEach(l=>{const k=(l.lp||{}).ctx||(l.createdBy==='web'?'form':'form');const x=by[k]=by[k]||{n:0,c:0,p:0,o:0};x.n++;if(typeof cr3Reached==='function'?cr3Reached(l,'booked'):l.customerId)x.c++;if(typeof cr3Paid==='function'&&cr3Paid(l))x.p++;if(l.optin)x.o++;});return by;}
+function lpLeadCapCard(L){
+ const C=lcR(L),X=C.exit,V=X.code?lcVoucher(X.code):null,S=lcStats(),rows=Object.entries(S).sort((a,b)=>b[1].n-a[1].n);
+ const vOk=V&&(!V.expiry||V.expiry>=today())&&!(+V.cap&&+V.used>=+V.cap);
+ return '<div class="card lccard"><h3 style="margin:0 0 4px">'+ic('target',15)+' Lead capture — for visitors not ready to book</h3><p class="tiny muted" style="margin:0 0 10px">Every form below drops the person into CRM → Leads with how they were caught. Those who tick the WhatsApp opt-in go on the broadcast list.</p>'+
+  (rows.length?'<div class="scroll"><table class="cr3t"><tr><th>Caught by · 30 days</th><th class="num">Leads</th><th class="num">Booked</th><th class="num">Paid</th><th class="num">Opted in</th></tr>'+rows.map(([k,x])=>'<tr><td>'+esc(LC_CTX[k]||k)+'</td><td class="num">'+x.n+'</td><td class="num">'+x.c+'</td><td class="num">'+x.p+'</td><td class="num">'+x.o+'</td></tr>').join('')+'</table></div>':'')+
+  '<h4>Skin quiz & consultation form</h4><label class="row lptog"><input type="checkbox" '+(C.quiz!==false?'checked':'')+' onchange="lcF(\'quiz\',this.checked)"> Show the 5-question skin quiz (skin type → treatments, homecare and tips; the full plan is sent after name & WhatsApp)</label>'+
+  '<p class="tiny muted" style="margin:0">The consultation form now asks only name and WhatsApp; preferred times and notes are folded under "Tambah butiran".</p>'+
+  '<h4>Exit offer</h4><label class="row lptog"><input type="checkbox" '+(X.on?'checked':'')+' onchange="lcX(\'on\',this.checked)"> One offer when a visitor is about to leave (mouse to the top on a computer, a fast scroll back up on a phone) — once a week, never after they have enquired</label>'+
+  '<div class="grid g2"><div><label>Headline</label><input class="f" maxlength="80" value="'+esc(X.h||'')+'" placeholder="Tunggu! Jimat RM20 untuk sesi pertama" oninput="lcX(\'h\',this.value)"></div><div><label>Line under it</label><input class="f" maxlength="160" value="'+esc(X.s||'')+'" placeholder="Tinggalkan nama & WhatsApp — kod diskaun terus keluar." oninput="lcX(\'s\',this.value)"></div></div>'+
+  '<div class="grid g2"><div><label>Voucher code shown after they leave their number</label><input class="f" maxlength="24" value="'+esc(X.code||'')+'" placeholder="NEW20" oninput="lcX(\'code\',this.value.toUpperCase())" onchange="render()">'+
+   (X.code?(vOk?'<div class="tiny" style="color:var(--jade)">'+ic('check',11)+' '+esc(V.id)+' is a real voucher ('+(V.type==='pct'?V.value+'%':rm(V.value))+' off'+(V.expiry?' · until '+dshort(V.expiry):'')+')</div>':'<div class="tiny" style="color:var(--rose)">'+ic('alert',11)+' No live voucher with this code — make it in Catalogue → Vouchers first, so the offer is real.</div>'):'<div class="tiny muted">Leave blank to just take their details.</div>')+'</div>'+
+   '<div><label>English headline</label><input class="f" maxlength="80" value="'+esc(X.hEn||'')+'" placeholder="Wait! RM20 off your first session" oninput="lcX(\'hEn\',this.value)"></div></div>'+
+  '<h4>Free guides (PDF)</h4>'+(C.mag||[]).map((m,i)=>{const im=m.ih?lpThumb('mag_'+m.id):'';return '<div class="lpsv"><button type="button" class="lpsvimg'+(im?'':' none')+'" onclick="lcMagPhoto('+i+')">'+(im?'<img src="'+im+'" alt="">':ic('image',18)+'<small>Cover</small>')+'</button>'+
+   '<div class="lpsvb"><input class="f" maxlength="80" value="'+esc(m.t||'')+'" placeholder="Title" oninput="lcM('+i+',\'t\',this.value)"><input class="f" maxlength="200" value="'+esc(m.d||'')+'" placeholder="What is inside" oninput="lcM('+i+',\'d\',this.value)">'+
+   '<input class="f" maxlength="400" value="'+esc(m.url||'')+'" placeholder="panduan.pdf or https://…" oninput="lcM('+i+',\'url\',this.value)"><button type="button" class="lpx" onclick="lcMagDel('+i+')">Remove</button></div></div>';}).join('')+
+  ((C.mag||[]).length<3?'<button class="btn sm ghost" onclick="lcMagAdd()">'+ic('plus',13)+'Guide</button>':'')+
+  '<p class="tiny muted">Upload the PDF next to lp.html in GitHub and type its file name here (e.g. panduan-kulit-berminyak.pdf). The download shows only after they leave their name and WhatsApp.</p>'+
+  '<h4>WhatsApp list</h4><label class="row lptog"><input type="checkbox" '+(C.news!==false?'checked':'')+' onchange="lcF(\'news\',this.checked)"> "Tips kulit & tawaran eksklusif" sign-up above the footer</label>'+
+  '<button class="btn sm" style="margin-top:8px" onclick="lcList()">'+ic('users',13)+'Broadcast list (opted in)</button></div>';
+}
+const lcSet=f=>{LPD.lc=lcR(LPD);f(LPD.lc);};
+window.lcF=(k,v)=>lcSet(C=>C[k]=v);
+window.lcX=(k,v)=>lcSet(C=>C.exit[k]=v);
+window.lcM=(i,k,v)=>lcSet(C=>{if(C.mag[i])C.mag[i][k]=v;});
+window.lcMagAdd=()=>{lcSet(C=>C.mag.push({id:'m'+Date.now().toString(36),t:'',d:'',url:'',ih:''}));render();};
+window.lcMagDel=i=>{lcSet(C=>C.mag.splice(i,1));render();};
+window.lcMagPhoto=i=>{const f=document.createElement('input');f.type='file';f.accept='image/*';f.onchange=async()=>{const x=f.files&&f.files[0];if(!x)return;try{await window.lcMagSet(i,await lpShrink(x));}catch(e){toast(friendly(e));}};f.click();};
+window.lcMagSet=async(i,img)=>{const C=lcR(LPD),m=C.mag[i];if(!m)return;const id='mag_'+m.id;await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH[id]=img;LPUP.add(id);lcSet(C2=>C2.mag[i].ih=wbHash(img));render();};
+{const _pc=lpPromoCard;lpPromoCard=function(L){return _pc(L)+lpLeadCapCard(L);};}
+
+/* ---------- the broadcast list: only people who said yes ---------- */
+let LCL=null;
+window.lcList=async()=>{
+ modal('WhatsApp broadcast list','<div class="card"><div class="center"><div class="spin"></div></div></div>');
+ let C=[];try{C=(await getDocs(query(collection(db,'customers'),where('marketing','==',true),limit(3000)))).docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.active!==false&&!c.mergedInto&&(!c.branchId||c.branchId===ME.branchId));}catch(e){}
+ const seen=new Set(),rows=[];const add=(n,p,src,at)=>{const k=phKey(p);if(!k||seen.has(k))return;seen.add(k);rows.push({n,p,src,at});};
+ C.forEach(c=>add(c.name,c.phone,'Client',c.createdAt));LEADS.filter(l=>myBranch(l)&&l.optin&&l.stage!=='lost').forEach(l=>add(l.name,l.phone,'Lead · '+(LC_CTX[(l.lp||{}).ctx]||l.source||''),l.createdAt));
+ LCL=rows;
+ modal('WhatsApp broadcast list','<div class="card"><p class="tiny muted" style="margin-top:0">'+rows.length+' people agreed to hear from you: clients who allow marketing, and website leads who ticked the WhatsApp opt-in. Nobody else is on it.</p>'+
+  '<div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn sm" onclick="lcCopy()">'+ic('note',13)+'Copy numbers</button><button class="btn sm ghost" onclick="lcCsv()">'+ic('download',13)+'Download CSV</button></div>'+
+  '<div class="tiny muted" style="margin:8px 0">WhatsApp Business broadcasts only reach people who have saved your number. For more than a few hundred, or to reach everyone, you need the WhatsApp Business API (a paid provider).</div>'+
+  '<div class="scroll" style="max-height:340px"><table class="cr3t"><tr><th>Name</th><th>Phone</th><th>From</th></tr>'+rows.slice(0,300).map(r=>'<tr><td>'+esc(r.n||'')+'</td><td>'+esc(r.p||'')+'</td><td class="tiny">'+esc(r.src)+'</td></tr>').join('')+'</table></div></div>');
+};
+window.lcCopy=()=>{const t=(LCL||[]).map(r=>waNum(r.p)).join('\n');window.__lcCopy=t;try{navigator.clipboard.writeText(t);}catch(e){}toast((LCL||[]).length+' numbers copied');};
+window.lcCsv=()=>{const q=v=>'"'+String(v||'').replace(/"/g,'""')+'"';const csv='Name,Phone,WhatsApp,From,Since\n'+(LCL||[]).map(r=>[r.n,r.p,waNum(r.p),r.src,String(r.at||'').slice(0,10)].map(q).join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download='broadcast-list-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();window.__lcCsv=csv;};
+/* the Marketing tab gets the list too */
+{const _m=crmMarketing;crmMarketing=function(){return _m.apply(this,arguments).replace('<button class="btn sm ghost" onclick="cr3RulesOpen()">','<button class="btn sm ghost" onclick="lcList()">'+ic('users',14)+'Broadcast list</button><button class="btn sm ghost" onclick="cr3RulesOpen()">');};}
+window.lcState=()=>({stats:lcStats()});
 
 </script>
