@@ -514,6 +514,105 @@ footer{border-top:1px solid var(--line-2);padding-top:44px;letter-spacing:.04em}
 .sv .ptag,.svn .ptag,.shpr .ptag{background:var(--brass-soft);color:var(--brass);border:1px solid rgba(178,153,110,.3)}
 .open.no{background:var(--line-2);color:var(--ink-3)}
 .rsrc.ok{background:var(--brass-soft);color:var(--brass)}
+
+/* ===== LUUNA Skincare ===== */
+.nav a.on{color:var(--jet);box-shadow:inset 0 -1px 0 var(--gbrush)}
+.cartb{position:relative;margin-left:10px;width:40px;height:40px;border-radius:50%;border:var(--hair);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--jet);flex:none}
+.cartb i{position:absolute;top:-4px;right:-4px;min-width:18px;height:18px;border-radius:99px;background:var(--jet);color:var(--champagne);font-style:normal;font-size:10.5px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.cartb i[hidden]{display:none}
+.mnavb{display:none;margin-left:8px;width:40px;height:40px;border-radius:50%;border:var(--hair);background:var(--surface);place-items:center;cursor:pointer;color:var(--jet);flex:none}
+.bks{display:none}
+@media(max-width:860px){.mnavb{display:grid}.cartb{margin-left:auto}.lang{margin-left:10px}}
+@media(max-width:560px){.top .lang{display:none}.bkl{display:none}.bks{display:inline}.cartb{margin-left:auto}}
+.mnav{display:flex;flex-direction:column;margin-top:8px}.mnav a{padding:14px 2px;border-bottom:1px solid var(--line-2);text-decoration:none;font-weight:500;letter-spacing:.04em}
+.mlang{margin:6px 0 4px;display:inline-flex}
+/* homepage section */
+.skin{background:linear-gradient(180deg,rgba(241,235,225,0),rgba(241,235,225,.7) 18%,rgba(241,235,225,.7) 82%,rgba(241,235,225,0))}
+.skhead{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(20px,4vw,56px);align-items:end;margin-bottom:clamp(28px,4vw,44px)}
+.skhead p{color:var(--ink-2);max-width:560px;margin:10px 0 0;line-height:1.75}
+.sksame{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--brass)!important;font-weight:500}.sksame .ico{color:var(--gbrush)}
+.skflow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:f}
+.skflow li{display:flex;align-items:center;gap:12px;font-size:13.5px;font-weight:500;color:var(--ink-2)}
+.skflow li span{width:30px;height:30px;border-radius:50%;border:1px solid var(--gbrush);display:grid;place-items:center;font-family:var(--serif);font-size:17px;color:var(--brass);flex:none;background:var(--surface)}
+.skflow li:not(:last-child)::after{content:'';display:none}
+.skgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.skgrid.n3{grid-template-columns:repeat(3,1fr)}.skgrid.n2{grid-template-columns:repeat(2,minmax(0,340px))}.skgrid.n1{grid-template-columns:minmax(0,340px)}
+.skgrid.all{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.skc{background:var(--surface);border:var(--hair);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--lift);transition:transform .3s var(--ease),box-shadow .3s}
+.skc:hover{transform:translateY(-3px);box-shadow:0 1px 2px rgba(13,13,13,.03),0 30px 60px -34px rgba(13,13,13,.32)}
+.skci{position:relative;display:block;aspect-ratio:4/5;background:var(--surface-2);overflow:hidden}
+.skimg{position:absolute;inset:0;background:var(--surface-2) center/cover no-repeat;transition:transform .8s var(--ease),opacity .4s;filter:saturate(.9) brightness(1.03)}
+.skc:hover .skimg{transform:scale(1.04)}
+.skimg.blank{display:grid;place-items:center;color:var(--gbrush);background:radial-gradient(circle at 30% 25%,#fff,var(--brass-soft) 70%)}
+.skbest{position:absolute;left:12px;top:12px;background:var(--jet);color:var(--champagne);font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;border-radius:99px;padding:5px 10px}
+.skcb{padding:16px 16px 18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.skcb a{text-decoration:none}.skcb h3{font-size:15px;line-height:1.35}.skcb p{margin:0;font-size:12.5px;color:var(--ink-3);line-height:1.5}
+.skpr{display:flex;align-items:baseline;gap:8px;margin-top:auto;padding-top:6px}.skpr b{font-family:var(--serif);font-size:24px;font-weight:600}.skpr small{font-size:12px;color:var(--ink-3)}
+.skacts{display:flex;gap:6px}.skacts .btn{flex:1;padding:10px 10px}
+.skmore{text-align:center;margin-top:28px}
+.skbundle{margin-top:clamp(28px,4vw,44px);display:flex;align-items:center;gap:18px;background:var(--jet);color:var(--porcelain);border-radius:var(--r);padding:clamp(20px,3vw,30px);position:relative;overflow:hidden}
+.skbundle::after{content:'';position:absolute;right:-80px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(215,197,170,.22),transparent 70%);pointer-events:none}
+.skbi{width:56px;height:56px;border-radius:50%;border:1px solid rgba(215,197,170,.45);display:grid;place-items:center;color:var(--champagne);flex:none}
+.skbt{flex:1;min-width:0}.skbt .eyebrow{color:var(--champagne)}.skbt .eyebrow::before{background:var(--champagne)}.skbt h3{font-family:var(--serif);font-weight:500;font-size:clamp(22px,2.6vw,28px);color:#fff;margin:6px 0 2px}.skbt p{margin:0;color:#C9C1B6;font-size:14px}
+.skbundle .btn{background:var(--champagne);color:var(--jet);position:relative;z-index:1}
+@media(max-width:860px){.skhead{grid-template-columns:1fr}.skgrid,.skgrid.n3{grid-template-columns:repeat(2,1fr);gap:12px}.skgrid.n1,.skgrid.n2{grid-template-columns:repeat(2,1fr)}.skgrid.all{grid-template-columns:repeat(2,1fr)}
+ .skcb{padding:12px}.skacts{flex-direction:column}.skpr b{font-size:20px}.skbundle{flex-direction:column;align-items:flex-start}.skbi{display:none}}
+/* about */
+.abg{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(24px,5vw,72px);align-items:center}.abg.noimg{grid-template-columns:1fr;max-width:760px}
+.abimg{aspect-ratio:4/5;border-radius:28px;background:var(--surface-2) center/cover no-repeat;box-shadow:var(--lift);filter:saturate(.9) brightness(1.03)}
+.abtx{white-space:pre-line;color:var(--ink-2);line-height:1.8;margin:14px 0 0}
+@media(max-width:860px){.abg{grid-template-columns:1fr}.abimg{aspect-ratio:16/11}}
+/* footer */
+footer .wrap{align-items:flex-start}.fcol{display:flex;flex-direction:column;gap:12px}.fbrand{font-family:var(--sans);font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--jet);font-size:13px}
+.fnav{display:flex;flex-wrap:wrap;gap:6px 18px}.fnav a{text-decoration:none;color:var(--ink-2);font-size:13px}.fnav a:hover{color:var(--jet)}
+/* shop & product pages */
+.page{min-height:60vh}.page .sec{padding-top:clamp(28px,4vw,48px)}
+.crumb{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;letter-spacing:.04em;color:var(--ink-3);margin-bottom:clamp(20px,3vw,34px)}.crumb a{color:var(--ink-3);text-decoration:none}.crumb a:hover{color:var(--jet)}.crumb b{color:var(--jet);font-weight:500}
+.shoph{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6vw,64px);line-height:1.02;margin:10px 0 0}
+.shop .cats{margin-bottom:18px}
+.pgrid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,5vw,64px);align-items:start}
+.pgal{position:sticky;top:84px}
+.pmain{position:relative;aspect-ratio:1;border-radius:28px;background:var(--surface-2) center/cover no-repeat;border:var(--hair);overflow:hidden;filter:saturate(.92) brightness(1.03)}
+.pmain.blank{display:grid;place-items:center;color:var(--gbrush);background:radial-gradient(circle at 30% 25%,#fff,var(--brass-soft) 70%)}
+.plab{position:absolute;left:14px;bottom:14px;background:rgba(255,255,255,.88);font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;border-radius:99px;padding:5px 11px}
+.pthumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+.pthumbs button{border:var(--hair);background:var(--surface);border-radius:14px;padding:6px;cursor:pointer;display:flex;flex-direction:column;gap:4px;font:inherit}
+.pthumbs button.on{border-color:var(--jet)}.pthumbs span{display:block;aspect-ratio:1;border-radius:10px;background:var(--surface-2) center/cover no-repeat}.pthumbs small{font-size:10.5px;color:var(--ink-3);text-align:center}
+.pinfo h1{font-family:var(--serif);font-weight:500;font-size:clamp(36px,4.6vw,54px);line-height:1.04;margin:10px 0 8px}
+.ptagl{font-size:15.5px;color:var(--ink-2);margin:0 0 10px;line-height:1.65}
+.prate{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:13px;color:var(--ink-2)}.prate .st{color:var(--gbrush)}
+.pprice{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin:16px 0}.pprice b{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1}.pprice span{font-size:13px;color:var(--ink-3);letter-spacing:.02em}
+.pk{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0}.pk span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:600;margin-right:4px;min-width:84px}
+.pk em{font-style:normal;font-size:12.5px;border:var(--hair);background:var(--surface);border-radius:99px;padding:4px 11px}
+.pbuy{display:flex;gap:10px;margin:18px 0 8px}.pbuy .btn{flex:1}
+.qty{display:inline-flex;align-items:center;border:var(--hair);border-radius:99px;background:var(--surface)}.qty button{border:0;background:none;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--jet)}
+.qty span{min-width:22px;text-align:center;font-weight:600;font-size:14px}.qty.big button{width:44px;height:48px}
+.pask{width:100%}
+.pbadge{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--brass);font-weight:500}
+.pnot{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:12px 14px;border:var(--hair);border-radius:16px;background:var(--surface);font-size:13px}.pnot .ico{color:var(--gbrush);margin-top:1px}
+.pnot b{letter-spacing:.06em}.pnot small{display:block;color:var(--ink-3);font-size:11.5px}
+.pdesc{white-space:pre-line;color:var(--ink-2);line-height:1.8;margin:18px 0 0}
+.psec{margin-top:clamp(56px,7vw,96px)}
+.pacts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.pact{background:var(--surface);border:var(--hair);border-radius:var(--r);padding:20px;box-shadow:var(--lift)}.pact span{width:40px;height:40px;border-radius:50%;background:var(--brass-soft);color:var(--brass);display:grid;place-items:center;margin-bottom:10px}
+.pact b{display:block;font-size:15px}.pact p{margin:4px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.puse{background:var(--surface);border:var(--hair);border-radius:var(--r);padding:clamp(18px,3vw,28px);box-shadow:var(--lift)}
+.pwhen{display:flex;gap:8px}.pwhen span{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gbrush);color:var(--brass);border-radius:99px;padding:5px 12px;font-size:12.5px;font-weight:600}
+.pstep{font-weight:600;margin:14px 0 8px}
+.proutine{list-style:none;display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:0 0 10px}.proutine li{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);border:1px dashed var(--line);border-radius:99px;padding:4px 10px 4px 4px}
+.proutine li span{width:20px;height:20px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;font-size:11px;font-weight:700}
+.proutine li.on{border:1px solid var(--jet);color:var(--jet);font-weight:600}.proutine li.on span{background:var(--jet);color:var(--champagne)}
+.ptxt{white-space:pre-line;color:var(--ink-2);margin:6px 0 0;line-height:1.75}
+.ppair{background:var(--surface);border:var(--hair);border-radius:var(--r);overflow:hidden;box-shadow:var(--lift)}
+.rvimg{aspect-ratio:4/3;border-radius:14px;background:var(--surface-2) center/cover no-repeat;margin-bottom:4px}
+@media(max-width:860px){.pgrid{grid-template-columns:1fr}.pgal{position:static}.pmain{aspect-ratio:4/3}.pinfo h1{font-size:36px}.pk span{min-width:0;width:100%}}
+/* bag */
+.okl{display:flex;align-items:center;gap:6px;color:var(--brass)!important;font-weight:500}
+.cartl{display:flex;flex-direction:column;gap:10px;margin:6px 0 12px}
+.cartr{display:flex;align-items:center;gap:12px}.cartim{width:54px;height:54px;border-radius:12px;background:var(--surface-2) center/cover no-repeat;border:var(--hair);flex:none}
+.cartn{flex:1;min-width:0;text-decoration:none}.cartn b{display:block;font-size:14px}.cartn small{color:var(--ink-3);font-size:12px}
+.carttot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line-2);padding-top:10px;margin-bottom:6px}.carttot b{font-family:var(--serif);font-size:26px}
+.howr{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}.howr label{display:flex;align-items:center;gap:6px;font-weight:500!important;margin:0!important}
+.hc{margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:10px}
 </style>
 </head>
 <body>
@@ -697,7 +796,7 @@ function pixels(){
   window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',px.ga);}
 }
 function track(ev,extra){try{
- const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent'},TT={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion'};
+ const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'InitiateCheckout'},TT={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'PlaceAnOrder'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion',view:'view_item',cart:'add_to_cart',order:'begin_checkout'};
  if(window.fbq&&M[ev])fbq('track',M[ev],extra||{});if(window.ttq&&TT[ev])ttq.track(TT[ev],extra||{});if(window.gtag&&G[ev])gtag('event',G[ev],extra||{});}catch(e){}}
 
 /* ---------- photos: one document each, loaded when needed ---------- */
@@ -759,10 +858,7 @@ function render(){
    '<button type="button" class="abx'+(i===0?' on':'')+'" data-claim="'+esc(p.id)+'"><b>'+esc(pBadge(p))+'</b> '+esc(p.t)+'<span class="abs">'+(p.limit>0?' · '+T('left')(p.left):'')+(p.end&&left(p.end)?' · '+T('endsIn')(left(p.end)).replace(/<\/?b>/g,''):'')+'</span></button>').join('')+'</div>'+
   '<button type="button" class="abc" data-claim="'+esc(top.id)+'" id="abc">'+T('claimNow')+ic('arrow',14)+'</button><button type="button" class="abz" data-abx="1" aria-label="'+T('dismiss')+'">'+ic('x',14)+'</button></div></div>';
  h+='<div class="sprog" id="sprog"></div>';
- h+='<header class="top" id="top"><div class="wrap"><a class="brand" href="#">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
-  '<nav class="nav">'+(L.length?'<a href="#promo">'+T('promo')+'</a>':'')+((P.concerns||[]).length?'<a href="#cari">'+T('concernsL')+'</a>':'')+'<a href="#rawatan">'+T('treat')+'</a>'+((P.reviews||[]).length||R.n>=3?'<a href="#ulasan">'+T('rev')+'</a>':'')+'<a href="#lokasi">'+T('loc')+'</a><a href="#soalan">'+T('faq')+'</a></nav>'+
-  '<div class="lang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div>'+
-  '<button class="btn pri sm" data-go="book">'+ic('cal',16)+T('book')+'</button></div></header>';
+ h+=headHTML();
  /* hero: the result, who it is for, the offer, one main button, real photos or a video */
  const probs=H.probs||[],pl=probs.map(x=>pick(x.ms,x.en).toLowerCase()),who=pick(H.who,H.whoEn);
  const sub=pick(H.s,H.sEn)||(who||pl.length?T('subAuto')(who||T('you'),pl.length>1?pl.slice(0,-1).join(', ')+' '+T('or')+' '+pl[pl.length-1]:pl[0]||'?'):T('subDef'));
@@ -820,7 +916,7 @@ function render(){
  /* how it works */
  h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('sEy')+'</span><h2>'+T('sH')+'</h2></div></div><div class="steps">'+
   T('steps')(P.bookOn).map((s,i)=>'<div class="step rv0" style="--d:'+i*0.1+'s"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
- h+=reviewsHTML();
+ h+=reviewsHTML();h+=skinHomeHTML();h+=aboutHTML();
  /* location */
  h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('lEy')+'</span><h2>'+T('lH')+'</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
   (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
@@ -842,12 +938,7 @@ function render(){
   '<h2 style="margin:12px 0 12px">'+T('cH')+'</h2><p>'+T('cP')+'</p>'+
   '<ul class="ticks dark" style="margin-top:16px;flex-direction:column;gap:8px">'+T('cT').map(x=>'<li><span class="tk">'+ic('check',12)+'</span>'+x+'</li>').join('')+'</ul></div>'+
   '<div class="form rv0" id="fbox">'+formHTML('f',{})+'</div></div></div></section>';
- h+='<footer><div class="wrap"><span>© '+new Date().getFullYear()+' '+esc(b.name||'')+'</span><div class="soc">'+
-  (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
-  (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
-  (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
-  (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
-  (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';
+ h+=footHTML();
  h+='<div class="bar" id="bar"><button class="btn wa" data-go="wa">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-go="book">'+ic('cal',18)+esc(CTA1.length<=20?CTA1:(P.bookOn?T('bookShort'):T('bookShort2')))+'</button></div>'+
   '<button class="fwa" data-go="wa" aria-label="WhatsApp">'+ic('wa',28)+'</button>';
  $('#app').innerHTML=h;
@@ -906,9 +997,9 @@ function svcSheet(id){
  const x=svcOf(id);if(!x)return;const bp=P.showPrices===false?null:bestPromo(x),K=(x.k||[]).map(cLabel);
  sheet('<span class="eyebrow">'+esc(x.c||T('other'))+'</span><h3 style="margin-top:6px">'+esc(x.n)+'</h3><p class="lead">'+(x.d||60)+' '+T('min')+(K.length?' · '+esc(T('goodFor')(K.join(', '))):'')+'</p>'+
   (P.showPrices===false?'':'<div class="shpr">'+(bp?'<s>'+rm(x.p)+'</s><b class="now">'+rm(bp.v)+'</b><span class="ptag">'+esc(pBadge(bp.p))+' · '+esc(bp.p.t)+'</span>':'<b>'+rm(x.p)+'</b>')+'</div>')+
-  (x.x?'<p class="shx">'+esc(pick(x.x,x.xEn))+'</p>':'')+
+  (x.x?'<p class="shx">'+esc(pick(x.x,x.xEn))+'</p>':'')+hcHTML(x.id)+
   '<div class="shacts">'+(P.bookOn&&x.b!==false?'<button class="btn pri" data-book="'+esc(x.id)+'">'+ic('cal',18)+T('bookThis')+'</button>':'')+'<button class="btn light" data-ask="'+esc(x.id)+'">'+ic('wa',18)+T('askFirst')+'</button></div>');
- hit('svc');
+ watchImgs();hit('svc');
 }
 /* one row of a treatment, used in the category cards and the suggestions */
 function svcRow(s,extra){
@@ -1094,6 +1185,211 @@ document.addEventListener('click',e=>{
 });
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();closePop();}
  if(e.key==='Enter'&&e.target&&e.target.classList&&e.target.classList.contains('svr'))svcSheet(e.target.dataset.sv);});
+
+
+/* ================= LUUNA Skincare: treatment at the spa, homecare at home ================= */
+const SKT={ms:{home:'Utama',treat:'Rawatan',skin:'LUUNA Skincare',promo:'Promosi',about:'Tentang Kami',bookNow:'Book Sekarang',menu:'Menu',
+  skEy:'LUUNA Homecare',skH:'Rawatan di Luuna, jaga di rumah dengan LUUNA Skincare',skP:'Rutin ringkas yang menyambung hasil rawatan anda setiap hari.',
+  same:'Formula yang sama kami guna di spa, kini untuk rutin anda di rumah',flow:['Rawatan di Luuna','Homecare di rumah','Hasil lebih tahan lama'],
+  buy:'Beli',view:'Lihat',all:n=>'Lihat semua '+n+' produk',best:'Best seller',bundleEy:'Pakej + Homecare',bundleGo:'Tanya tentang pakej',claim:'Claim tawaran',
+  shopP:'Pilih ikut masalah kulit. Setiap produk dipadankan dengan rawatan di spa, supaya hasil rawatan berterusan di rumah.',allK:'Semua',
+  for:'Untuk',skins:'Jenis kulit',size:'Saiz',lasts:w=>'tahan ~'+w+' minggu',qty:'Kuantiti',add:'Tambah ke beg',addWa:'Tanya dahulu',
+  notif:'No. notifikasi kosmetik (NPRA / KKM)',notifP:'Boleh disemak di portal NPRA.',sameB:'Formula sama seperti rawatan di spa',
+  actH:'Bahan aktif utama',actP:'Apa yang setiap satu buat untuk kulit anda.',useH:'Cara guna',am:'Pagi',pm:'Malam',stepN:(n,s)=>'Langkah ke-'+n+' dalam rutin: '+s,
+  steps:['','Pencuci','Toner / esens','Serum','Pelembap','Pelindung matahari','Masker / rawatan'],
+  pairH:'Paling sesuai digabungkan dengan rawatan',pairP:'Mulakan di spa, teruskan di rumah.',rtH:'Lengkapkan rutin anda',rvH:'Kata pelanggan',rvN:n=>n+' ulasan',faqH:'Soalan lazim',
+  noRv:'Belum ada ulasan untuk produk ini.',homecare:'Jaga di rumah selepas rawatan ini',
+  bag:'Beg anda',empty:'Beg anda masih kosong.',sub:'Jumlah',how:'Cara terima',pickup:'Ambil di spa',post:'Pos ke rumah',postNote:'Caj pos dimaklumkan melalui WhatsApp.',
+  addr:'Alamat penghantaran',note:'Nota (pilihan)',send:'Hantar tempahan',sent:r=>'Tempahan '+r+' diterima',sentP:'Team kami akan WhatsApp anda untuk sahkan dan maklumkan cara bayaran.',
+  waConf:'Sahkan di WhatsApp',eAddr:'Masukkan alamat penghantaran.',eBag:'Beg kosong.',added:'Ditambah ke beg',remove:'Buang',keep:'Terus beli-belah',
+  consent:b=>'Saya setuju '+b+' menghubungi saya melalui WhatsApp tentang tempahan ini (Akta Perlindungan Data Peribadi 2010).',
+  abEy:'Tentang Kami',abH:'Kenali Luuna',waOrder:(r,l,t)=>'Hi! Saya baru buat tempahan '+r+':\n'+l+'\nJumlah: '+t,waAsk:n=>'Hi! Saya nak tanya tentang '+n+'.'},
+ en:{home:'Home',treat:'Treatments',skin:'LUUNA Skincare',promo:'Offers',about:'About us',bookNow:'Book now',menu:'Menu',
+  skEy:'LUUNA Homecare',skH:'Treatment at Luuna, care at home with LUUNA Skincare',skP:'A simple routine that keeps your treatment results going every day.',
+  same:'The same formulas we use at the spa, now for your routine at home',flow:['Treatment at Luuna','Homecare at home','Results that last longer'],
+  buy:'Buy',view:'View',all:n=>'See all '+n+' products',best:'Best seller',bundleEy:'Package + Homecare',bundleGo:'Ask about the package',claim:'Claim offer',
+  shopP:'Shop by skin concern. Each product is matched to a spa treatment, so your results carry on at home.',allK:'All',
+  for:'For',skins:'Skin types',size:'Size',lasts:w=>'lasts ~'+w+' weeks',qty:'Quantity',add:'Add to bag',addWa:'Ask first',
+  notif:'Cosmetic notification no. (NPRA / MOH)',notifP:'You can check it on the NPRA portal.',sameB:'Same formula as our spa treatments',
+  actH:'Key actives',actP:'What each one does for your skin.',useH:'How to use',am:'Morning',pm:'Night',stepN:(n,s)=>'Step '+n+' of your routine: '+s,
+  steps:['','Cleanser','Toner / essence','Serum','Moisturiser','Sunscreen','Mask / treatment'],
+  pairH:'Best paired with the treatment',pairP:'Start at the spa, keep going at home.',rtH:'Complete your routine',rvH:'What clients say',rvN:n=>n+' reviews',faqH:'Questions',
+  noRv:'No reviews for this product yet.',homecare:'Care at home after this treatment',
+  bag:'Your bag',empty:'Your bag is empty.',sub:'Total',how:'How you get it',pickup:'Collect at the spa',post:'Post to me',postNote:'Postage is confirmed on WhatsApp.',
+  addr:'Delivery address',note:'Note (optional)',send:'Send order',sent:r=>'Order '+r+' received',sentP:'Our team will WhatsApp you to confirm and share how to pay.',
+  waConf:'Confirm on WhatsApp',eAddr:'Enter the delivery address.',eBag:'Your bag is empty.',added:'Added to your bag',remove:'Remove',keep:'Keep shopping',
+  consent:b=>'I agree to '+b+' contacting me on WhatsApp about this order (Personal Data Protection Act 2010).',
+  abEy:'About us',abH:'Meet Luuna',waOrder:(r,l,t)=>'Hi! I just placed order '+r+':\n'+l+'\nTotal: '+t,waAsk:n=>"Hi! I'd like to ask about "+n+'.'}};
+const TS=(k,...a)=>{const v=(SKT[LANG]||SKT.ms)[k];return typeof v==='function'?v(...a):v;};
+Object.assign(IC,{bag:'M5.5 8h13l-1.2 11.5a1.5 1.5 0 01-1.5 1.3H8.2a1.5 1.5 0 01-1.5-1.3L5.5 8zM9 8V6.5a3 3 0 016 0V8',menu:'M4 7h16M4 12h16M4 17h16',sun:'M12 4v2M12 18v2M4 12h2M18 12h2M6.3 6.3l1.4 1.4M16.3 16.3l1.4 1.4M6.3 17.7l1.4-1.4M16.3 7.7l1.4-1.4M12 16a4 4 0 100-8 4 4 0 000 8z',moon:'M19 14.5A7.5 7.5 0 019.5 5a7.5 7.5 0 109.5 9.5z',minus:'M6 12h12',drop:'M12 3.5s6 6.6 6 10.5a6 6 0 01-12 0c0-3.9 6-10.5 6-10.5z'});
+const SK_SKIN={Normal:['Normal','Normal'],Oily:['Berminyak','Oily'],Dry:['Kering','Dry'],Combination:['Kombinasi','Combination'],Sensitive:['Sensitif','Sensitive'],'Acne-prone':['Mudah berjerawat','Acne-prone'],Mature:['Matang','Mature']};
+const skinL=k=>SK_SKIN[k]?pick(SK_SKIN[k][0],SK_SKIN[k][1]):sLabel(k);
+const kLab=id=>{for(const p of SKP()){const x=(p.kl||[]).find(y=>y.id===id);if(x)return pick(x.ms,x.en);}return cLabel(id);};
+const SKP=()=>(P&&P.skin&&P.skin.on?P.skin.products||[]:[]);
+const prodBy=slug=>SKP().find(p=>p.slug===slug);
+const prodId=id=>SKP().find(p=>p.id===id);
+const pv=()=>PREVIEW?'&preview=1':'';
+const purl=p=>'?produk='+encodeURIComponent(p.slug)+pv();
+function route(){const q=new URLSearchParams(location.search);if(q.get('produk')&&prodBy(q.get('produk')))return {k:'prod',p:prodBy(q.get('produk'))};if(q.has('skincare')&&SKP().length)return {k:'shop'};return {k:'home'};}
+function navTo(url,anchor){try{history.pushState({},'',url);}catch(e){}render();if(anchor){const el=document.getElementById(anchor);if(el){setTimeout(()=>el.scrollIntoView(),30);return;}}scrollTo(0,0);}
+const homeUrl=()=>location.pathname+(PREVIEW?'?preview=1':'');
+addEventListener('popstate',()=>{if(P)render();});
+
+/* ---------- the bag ---------- */
+let CART=[];try{CART=JSON.parse(localStorage.getItem('luunaCart')||'[]').filter(x=>x&&x.id&&x.q>0);}catch(e){CART=[];}
+const cartSave=()=>{try{localStorage.setItem('luunaCart',JSON.stringify(CART));}catch(e){}const n=CART.reduce((a,x)=>a+x.q,0);document.querySelectorAll('.cartb i').forEach(i=>{i.textContent=n;i.hidden=!n;});};
+const cartLines=()=>CART.map(x=>({...x,p:prodId(x.id)})).filter(x=>x.p);
+function cartAdd(id,q){const p=prodId(id);if(!p)return;const x=CART.find(c=>c.id===id);if(x)x.q=Math.min(20,x.q+(q||1));else CART.push({id,q:q||1});cartSave();hit('cart');track('cart',{content_ids:[id],content_name:p.n,value:p.p*(q||1),currency:'MYR',content_type:'product'});}
+function cartSheet(msg){
+ const L=cartLines(),tot=L.reduce((a,x)=>a+x.p.p*x.q,0),b=P.biz||{};
+ sheet('<h3>'+ic('bag',20)+' '+TS('bag')+'</h3>'+(msg?'<p class="lead okl">'+ic('check',14)+' '+esc(msg)+'</p>':'')+
+  (L.length?'<div class="cartl">'+L.map(x=>{const im=(x.p.ph[0]||{}).img;return '<div class="cartr"><div class="cartim"'+(im?' data-img="'+esc(im)+'"':'')+'></div><div class="cartn"><b>'+esc(x.p.n)+'</b><small>'+rm(x.p.p)+(x.p.sz?' · '+esc(x.p.sz):'')+'</small></div>'+
+    '<div class="qty"><button type="button" data-cq="'+esc(x.id)+'" data-d="-1" aria-label="-">'+ic('minus',14)+'</button><span>'+x.q+'</span><button type="button" data-cq="'+esc(x.id)+'" data-d="1" aria-label="+">'+ic('plus',14)+'</button></div></div>';}).join('')+'</div>'+
+   '<div class="carttot"><span>'+TS('sub')+'</span><b>'+rm(tot)+'</b></div>'+
+   '<form class="form" id="ofm" novalidate><label>'+T('name')+'</label><input class="f" id="o-n" maxlength="80" autocomplete="name"><label>'+T('phone')+'</label><input class="f" id="o-p" type="tel" maxlength="20" autocomplete="tel" placeholder="012-345 6789">'+
+    '<label>'+TS('how')+'</label><div class="howr"><label><input type="radio" name="o-h" value="pickup" checked> '+TS('pickup')+'</label><label><input type="radio" name="o-h" value="post"> '+TS('post')+'</label></div>'+
+    '<div id="o-ab" hidden><label>'+TS('addr')+'</label><textarea class="f" id="o-a" rows="2" maxlength="300"></textarea><p class="tiny">'+TS('postNote')+'</p></div>'+
+    '<label>'+TS('note')+'</label><input class="f" id="o-x" maxlength="200">'+
+    '<label class="consent"><input type="checkbox" id="o-ok"> <span>'+esc(TS('consent',b.name||'Luuna'))+'</span></label><div class="err" id="o-e"></div>'+
+    '<button class="btn pri" id="o-go" type="submit">'+ic('bag',18)+TS('send')+' · '+rm(tot)+'</button></form>'+
+   '<button class="skip" data-x="1">'+TS('keep')+'</button>'
+  :'<p class="lead">'+TS('empty')+'</p><button class="btn light" data-nav="shop" style="width:100%">'+TS('skin')+'</button>'));
+ watchImgs();const f=document.getElementById('ofm');if(!f)return;
+ f.querySelectorAll('[name="o-h"]').forEach(r=>r.onchange=()=>{document.getElementById('o-ab').hidden=f.querySelector('[name="o-h"]:checked').value!=='post';});
+ f.onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('o-e'),n=document.getElementById('o-n').value.trim(),ph=document.getElementById('o-p').value.trim(),how=f.querySelector('[name="o-h"]:checked').value,ad=document.getElementById('o-a').value.trim();
+  const L2=cartLines();if(!L2.length){e.textContent=TS('eBag');return;}if(n.length<2){e.textContent=T('eName');return;}if(digits(ph).length<9||digits(ph).length>15){e.textContent=T('ePhone');return;}
+  if(how==='post'&&ad.length<10){e.textContent=TS('eAddr');return;}if(!document.getElementById('o-ok').checked){e.textContent=T('eOk');return;}
+  e.textContent='';const go=document.getElementById('o-go');go.disabled=true;const x=touch(),ref='W'+Date.now().toString(36).slice(-5).toUpperCase();
+  const total=Math.round(L2.reduce((a,y)=>a+y.p.p*y.q,0)*100)/100;
+  const d={ref,items:L2.slice(0,10).map(y=>({id:String(y.id).slice(0,40),n:String(y.p.n).slice(0,80),q:Math.min(20,y.q),p:y.p.p})),total,name:n.slice(0,80),phone:ph.slice(0,20),how,addr:how==='post'?ad.slice(0,300):'',note:document.getElementById('o-x').value.trim().slice(0,200),
+   branchId:((P.branches||[])[0]||{}).id||'',createdAt:new Date().toISOString(),status:'new',consent:true,src:String(x.s||'').slice(0,20),med:String(x.m||'').slice(0,12),camp:String(x.c||'').slice(0,24),ad:String(x.a||'').slice(0,60),lang:LANG};
+  if(PREVIEW){e.textContent=T('pvNo');go.disabled=false;return;}
+  try{await add('webOrders',d);hit('order');track('order',{value:total,currency:'MYR',num_items:d.items.length,content_ids:d.items.map(y=>y.id)});
+   const msg=TS('waOrder',ref,d.items.map(y=>'• '+y.q+'× '+y.n).join('\n'),rm(total));CART=[];cartSave();
+   sheet('<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+esc(TS('sent',ref))+'</h3><p>'+TS('sentP')+'</p><button class="btn pri" data-waorder="1">'+ic('wa',18)+TS('waConf')+'</button></div>');
+   SHEET.querySelector('[data-waorder]').onclick=()=>openWa(msg,n);}
+  catch(err){console.warn(err);e.textContent=T('eSend');go.disabled=false;}};
+}
+
+/* ---------- pieces ---------- */
+function pcard(p,i){const im=(p.ph[0]||{}).img,K=(p.k||[]).map(kLab);
+ return '<article class="skc rv0" style="--d:'+((i||0)%4)*0.08+'s"><a class="skci" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'">'+(im?'<div class="skimg" data-img="'+esc(im)+'"></div>':'<div class="skimg blank">'+ic('drop',30)+'</div>')+
+  (p.best?'<span class="skbest">'+TS('best')+'</span>':'')+'</a><div class="skcb"><a href="'+purl(p)+'" data-prod="'+esc(p.slug)+'"><h3>'+esc(p.n)+'</h3></a>'+
+  (p.tag?'<p>'+esc(p.tag)+'</p>':K.length?'<p>'+esc(TS('for')+': '+K.slice(0,2).join(', '))+'</p>':'')+
+  '<div class="skpr"><b>'+rm(p.p)+'</b>'+(p.sz?'<small>'+esc(p.sz)+'</small>':'')+'</div>'+
+  '<div class="skacts"><button class="btn pri sm" data-add="'+esc(p.id)+'">'+ic('bag',15)+TS('buy')+'</button><a class="btn light sm" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'">'+TS('view')+'</a></div></div></article>';}
+function bundleHTML(){const B=P.skin&&P.skin.bundle;if(!B)return '';
+ return '<div class="skbundle rv0"><div class="skbi">'+ic('gift',26)+'</div><div class="skbt"><span class="eyebrow">'+TS('bundleEy')+'</span><h3>'+esc(B.t)+'</h3>'+(B.d?'<p>'+esc(B.d)+'</p>':'')+'</div>'+
+  '<button class="btn" data-bundle="1">'+(B.pid?TS('claim'):TS('bundleGo'))+ic('arrow',16)+'</button></div>';}
+function skinHomeHTML(){
+ const S=SKP();if(!S.length)return '';const K=P.skin,show=[...S.filter(p=>p.best),...S.filter(p=>!p.best)].slice(0,4);
+ return '<section class="sec skin" id="skincare"><div class="wrap"><div class="skhead rv0"><div><span class="eyebrow">'+TS('skEy')+'</span><h2>'+esc(K.t||TS('skH'))+'</h2>'+
+   '<p>'+esc(K.s||TS('skP'))+'</p>'+(K.same?'<p class="sksame">'+ic('check',14)+esc(TS('same'))+'</p>':'')+'</div>'+
+   '<ol class="skflow">'+TS('flow').map((x,i)=>'<li><span>'+(i+1)+'</span>'+esc(x)+'</li>').join('')+'</ol></div>'+
+  '<div class="skgrid n'+show.length+'">'+show.map(pcard).join('')+'</div>'+
+  '<div class="skmore"><a class="btn light" href="?skincare'+pv()+'" data-nav="shop">'+TS('all',S.length)+ic('arrow',16)+'</a></div>'+bundleHTML()+'</div></section>';
+}
+function aboutHTML(){const A=P.about||{};if(!A.x)return '';
+ return '<section class="sec about" id="tentang"><div class="wrap"><div class="abg'+(A.img?'':' noimg')+'">'+(A.img?'<div class="abimg rv0" data-img="'+esc(A.img)+'"></div>':'')+
+  '<div class="rv0"><span class="eyebrow">'+TS('abEy')+'</span><h2>'+esc(A.t||TS('abH'))+'</h2><p class="abtx">'+esc(A.x)+'</p>'+
+  ((A.pts||[]).length?'<ul class="ticks" style="flex-direction:column;gap:10px;margin-top:18px">'+A.pts.map(x=>'<li><span class="tk">'+ic('check',12)+'</span>'+esc(x)+'</li>').join('')+'</ul>':'')+'</div></div></div></section>';}
+function navHTML(){const v=route().k,L=livePromos(),A=P.about||{};
+ const it=[['rawatan',TS('treat')],...(SKP().length?[['shop',TS('skin')]]:[]),...(L.length?[['promo',TS('promo')]]:[]),...(A.x?[['tentang',TS('about')]]:[])];
+ return it.map(([k,l])=>'<a href="'+(k==='shop'?'?skincare'+pv():'#'+k)+'" data-nav="'+k+'"'+((k==='shop'&&v!=='home')?' class="on"':'')+'>'+esc(l)+'</a>').join('');}
+function headHTML(){const b=P.biz||{},logo=b.logo?'<img src="'+esc(b.logo)+'" alt="">':'<span class="mk">'+ic('spark',20)+'</span>',n=CART.reduce((a,x)=>a+x.q,0);
+ return '<header class="top" id="top"><div class="wrap"><a class="brand" href="'+homeUrl()+'" data-nav="home">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
+  '<nav class="nav">'+navHTML()+'</nav>'+
+  '<div class="lang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div>'+
+  (SKP().length?'<button type="button" class="cartb" data-cart="1" aria-label="'+TS('bag')+'">'+ic('bag',20)+'<i'+(n?'':' hidden')+'>'+n+'</i></button>':'')+
+  '<button type="button" class="mnavb" data-mnav="1" aria-label="'+TS('menu')+'">'+ic('menu',20)+'</button>'+
+  '<button class="btn pri sm" data-go="book">'+ic('cal',16)+'<span class="bkl">'+TS('bookNow')+'</span><span class="bks">'+T('book')+'</span></button></div></header>';}
+function mnavSheet(){sheet('<h3>'+TS('menu')+'</h3><div class="lang mlang" role="group"><button type="button" class="'+(LANG==='ms'?'on':'')+'" data-lang="ms">BM</button><button type="button" class="'+(LANG==='en'?'on':'')+'" data-lang="en">EN</button></div><nav class="mnav">'+navHTML()+'<a href="#lokasi" data-nav="lokasi">'+T('loc')+'</a><a href="#soalan" data-nav="soalan">'+T('faq')+'</a></nav>'+
+ '<button class="btn pri" data-go="book" style="width:100%;margin-top:14px">'+ic('cal',18)+TS('bookNow')+'</button>');}
+function footHTML(){const b=P.biz||{};
+ return '<footer><div class="wrap"><div class="fcol"><b class="fbrand">'+esc(b.name||'Luuna')+'</b><nav class="fnav">'+navHTML()+'<a href="#lokasi" data-nav="lokasi">'+T('loc')+'</a><a href="#soalan" data-nav="soalan">'+T('faq')+'</a></nav>'+
+  '<span>© '+new Date().getFullYear()+' '+esc(b.name||'')+'</span></div><div class="soc">'+
+  (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
+  (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
+  (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
+  (b.fb?'<a target="_blank" rel="noopener" aria-label="Facebook" href="'+esc(/^https?:/.test(b.fb)?b.fb:'https://facebook.com/'+b.fb)+'">'+ic('fb',18)+'</a>':'')+
+  (b.wa?'<a href="#" data-go="wa" aria-label="WhatsApp">'+ic('wa',18)+'</a>':'')+'</div></div></footer>';}
+function homecareFor(sid){return SKP().filter(p=>(p.svc||[]).includes(sid));}
+
+/* ---------- the shop and the product pages ---------- */
+let SKF='',PHI=0,PQTY=1;
+function setMeta(title,desc,ld){document.title=title;let m=document.querySelector('meta[name="description"]');if(m&&desc)m.setAttribute('content',desc);
+ let s=document.getElementById('ld');if(!s){s=document.createElement('script');s.type='application/ld+json';s.id='ld';document.head.appendChild(s);}s.textContent=ld?JSON.stringify(ld):'';}
+function shopHTML(){const S=SKP(),ks=[...new Set(S.flatMap(p=>p.k||[]))],show=S.filter(p=>!SKF||(p.k||[]).includes(SKF));
+ return '<section class="sec shop"><div class="wrap"><nav class="crumb"><a href="'+homeUrl()+'" data-nav="home">'+TS('home')+'</a><span>/</span><b>'+TS('skin')+'</b></nav>'+
+  '<div class="skhead rv0"><div><span class="eyebrow">'+TS('skEy')+'</span><h1 class="shoph">'+TS('skin')+'</h1><p>'+TS('shopP')+'</p>'+(P.skin.same?'<p class="sksame">'+ic('check',14)+esc(TS('same'))+'</p>':'')+'</div>'+
+   '<ol class="skflow">'+TS('flow').map((x,i)=>'<li><span>'+(i+1)+'</span>'+esc(x)+'</li>').join('')+'</ol></div>'+
+  (ks.length>1?'<div class="cats"><button class="'+(SKF?'':'on')+'" data-skf="">'+TS('allK')+'</button>'+ks.map(k=>'<button class="'+(SKF===k?'on':'')+'" data-skf="'+esc(k)+'">'+esc(kLab(k))+'</button>').join('')+'</div>':'')+
+  '<div class="skgrid all">'+show.map(pcard).join('')+'</div>'+bundleHTML()+'</div></section>';}
+function prodHTML(p){
+ const K=(p.k||[]).map(kLab),rv=p.rv||[],avg=rv.length?rv.reduce((a,r)=>a+r.s,0)/rv.length:0,u=p.use||{},ph=p.ph||[],cur=ph[Math.min(PHI,ph.length-1)]||null;
+ const pairs=(p.svc||[]).map(svcOf).filter(Boolean),rt=((p.rt||[]).map(prodId).filter(Boolean).length?(p.rt||[]).map(prodId).filter(Boolean):SKP().filter(x=>x.id!==p.id&&(x.k||[]).some(k=>(p.k||[]).includes(k)))).filter(x=>x.id!==p.id).slice(0,4);
+ return '<section class="sec prod"><div class="wrap"><nav class="crumb"><a href="'+homeUrl()+'" data-nav="home">'+TS('home')+'</a><span>/</span><a href="?skincare'+pv()+'" data-nav="shop">'+TS('skin')+'</a><span>/</span><b>'+esc(p.n)+'</b></nav>'+
+  '<div class="pgrid"><div class="pgal">'+(cur?'<div class="pmain" data-img="'+esc(cur.img)+'"><span class="plab">'+esc(cur.l)+'</span></div>':'<div class="pmain blank">'+ic('drop',46)+'</div>')+
+   (ph.length>1?'<div class="pthumbs">'+ph.map((x,i)=>'<button type="button" class="'+(x===cur?'on':'')+'" data-ph="'+i+'"><span data-img="'+esc(x.img)+'"></span><small>'+esc(x.l)+'</small></button>').join('')+'</div>':'')+'</div>'+
+  '<div class="pinfo"><span class="eyebrow">'+TS('skin')+'</span><h1>'+esc(p.n)+'</h1>'+(p.tag?'<p class="ptagl">'+esc(p.tag)+'</p>':'')+
+   (rv.length?'<a class="prate" href="#pulasan"><span class="st">'+STARS(avg)+'</span><b>'+avg.toFixed(1)+'</b><span>'+TS('rvN',rv.length)+'</span></a>':'')+
+   '<div class="pprice"><b>'+rm(p.p)+'</b><span>'+[p.sz,p.wk?TS('lasts',p.wk):''].filter(Boolean).map(esc).join(' · ')+'</span></div>'+
+   (K.length?'<div class="pk"><span>'+TS('for')+'</span>'+K.map(k=>'<em>'+esc(k)+'</em>').join('')+'</div>':'')+
+   ((p.sk||[]).length?'<div class="pk"><span>'+TS('skins')+'</span>'+p.sk.map(k=>'<em>'+esc(skinL(k))+'</em>').join('')+'</div>':'')+
+   '<div class="pbuy"><div class="qty big"><button type="button" data-pq="-1" aria-label="-">'+ic('minus',16)+'</button><span id="pq">'+PQTY+'</span><button type="button" data-pq="1" aria-label="+">'+ic('plus',16)+'</button></div>'+
+    '<button class="btn pri" data-addq="'+esc(p.id)+'">'+ic('bag',18)+TS('add')+'</button></div>'+
+   '<button class="btn light pask" data-pask="'+esc(p.id)+'">'+ic('wa',17)+TS('addWa')+'</button>'+
+   (p.same?'<div class="pbadge">'+ic('spark',15)+esc(TS('sameB'))+'</div>':'')+
+   (p.notif?'<div class="pnot">'+ic('shield',17)+'<span>'+TS('notif')+': <b>'+esc(p.notif)+'</b><small>'+TS('notifP')+'</small></span></div>':'')+
+   (p.d?'<p class="pdesc">'+esc(p.d)+'</p>':'')+'</div></div>'+
+  ((p.act||[]).length?'<div class="psec rv0"><div class="sec-h"><div><h2>'+TS('actH')+'</h2><p>'+TS('actP')+'</p></div></div><div class="pacts">'+p.act.map(a=>'<div class="pact"><span>'+ic('drop',18)+'</span><b>'+esc(a.n)+'</b><p>'+esc(a.w)+'</p></div>').join('')+'</div></div>':'')+
+  (u.t||u.step||u.am||u.pm?'<div class="psec rv0"><div class="sec-h"><div><h2>'+TS('useH')+'</h2></div></div><div class="puse"><div class="pwhen">'+(u.am?'<span>'+ic('sun',16)+TS('am')+'</span>':'')+(u.pm?'<span>'+ic('moon',16)+TS('pm')+'</span>':'')+'</div>'+
+   (u.step?'<p class="pstep">'+esc(TS('stepN',u.step,TS('steps')[u.step]))+'</p><ol class="proutine">'+TS('steps').slice(1).map((s,i)=>'<li class="'+(i+1===u.step?'on':'')+'"><span>'+(i+1)+'</span>'+esc(s)+'</li>').join('')+'</ol>':'')+
+   (u.t?'<p class="ptxt">'+esc(u.t)+'</p>':'')+'</div></div>':'')+
+  (pairs.length?'<div class="psec rv0"><div class="sec-h"><div><h2>'+TS('pairH')+'</h2><p>'+TS('pairP')+'</p></div></div><div class="catl ppair">'+pairs.map(s=>svcRow(s)).join('')+'</div></div>':'')+
+  (rt.length?'<div class="psec"><div class="sec-h"><div><h2>'+TS('rtH')+'</h2></div></div><div class="skgrid n'+rt.length+'">'+rt.map(pcard).join('')+'</div></div>':'')+
+  '<div class="psec rv0" id="pulasan"><div class="sec-h"><div><h2>'+TS('rvH')+'</h2>'+(rv.length?'<p><span class="st">'+STARS(avg)+'</span> '+avg.toFixed(1)+' · '+TS('rvN',rv.length)+'</p>':'')+'</div></div>'+
+   (rv.length?'<div class="revs">'+rv.map(r=>'<figure class="rv">'+(r.img?'<div class="rvimg" data-img="'+esc(r.img)+'"></div>':'')+'<div class="rvh"><span class="st">'+STARS(r.s)+'</span>'+(r.src?'<span class="rsrc">'+esc(r.src)+'</span>':'')+'</div><blockquote>'+esc(r.t)+'</blockquote>'+
+    '<figcaption><span class="av">'+(r.n?esc(r.n.charAt(0).toUpperCase()):ic('check',14))+'</span><span><b>'+esc(r.n||T('verified'))+'</b>'+(r.d?'<small>'+dshort(r.d)+'</small>':'')+'</span></figcaption></figure>').join('')+'</div>':'<p class="muted">'+TS('noRv')+'</p>')+'</div>'+
+  ((p.faq||[]).length?'<div class="psec rv0"><div class="sec-h"><div><h2>'+TS('faqH')+'</h2></div></div><div class="faq">'+p.faq.map((f,i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(f.q)+'</summary><p>'+esc(f.a)+'</p></details>').join('')+'</div></div>':'')+
+  '</div></section>';
+}
+function prodLd(p){const b=P.biz||{},rv=p.rv||[],o={'@context':'https://schema.org','@type':'Product',name:p.n,description:p.d||p.tag||'',brand:{'@type':'Brand',name:'LUUNA Skincare'},sku:p.id,
+ offers:{'@type':'Offer',priceCurrency:'MYR',price:String(p.p),availability:'https://schema.org/InStock',url:location.href,seller:{'@type':'Organization',name:b.name||'Luuna'}}};
+ if(rv.length)o.aggregateRating={'@type':'AggregateRating',ratingValue:(rv.reduce((a,r)=>a+r.s,0)/rv.length).toFixed(1),reviewCount:rv.length};return o;}
+function renderPage(v){
+ const b=P.biz||{};document.documentElement.lang=LANG;
+ let h=PREVIEW?'<div class="pv">'+T('pv')+'</div>':'';if(PREVIEW)document.body.classList.add('pvm');
+ h+='<div class="sprog" id="sprog"></div>'+headHTML()+'<main class="page">'+(v.k==='prod'?prodHTML(v.p):shopHTML())+'</main>'+footHTML()+
+  (v.k==='prod'?'<div class="bar on" id="bar"><button class="btn wa" data-pask="'+esc(v.p.id)+'">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-addq="'+esc(v.p.id)+'">'+ic('bag',18)+TS('add')+' · '+rm(v.p.p)+'</button></div>':'<div class="bar on" id="bar"><button class="btn light" data-cart="1">'+ic('bag',18)+TS('bag')+'</button><button class="btn pri" data-go="book">'+ic('cal',18)+TS('bookNow')+'</button></div>');
+ $('#app').innerHTML=h;
+ if(v.k==='prod'){setMeta(v.p.n+' · LUUNA Skincare · '+(b.name||'Luuna'),(v.p.tag||v.p.d||'').slice(0,160),prodLd(v.p));hit('prod');track('view',{content_ids:[v.p.id],content_name:v.p.n,content_type:'product',value:v.p.p,currency:'MYR'});}
+ else setMeta('LUUNA Skincare · '+(b.name||'Luuna'),TS('shopP'),null);
+ watchImgs();reveal();const t=$('#top');if(t)t.classList.toggle('sc',scrollY>8);
+}
+{const _home=render;render=function(){if(!P)return;const v=route();if(v.k==='home'){setMeta(document.title,DESC0,null);_home();cartSave();return;}PHI=0;renderPage(v);cartSave();};}
+/* the homecare for a treatment, in its sheet */
+function hcHTML(sid){const L=homecareFor(sid);if(!L.length)return '';
+ return '<div class="hc"><span class="eyebrow">'+TS('homecare')+'</span>'+L.map(p=>{const im=(p.ph[0]||{}).img;return '<div class="cartr"><a class="cartim" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'"'+(im?' data-img="'+esc(im)+'"':'')+'></a>'+
+  '<a class="cartn" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'"><b>'+esc(p.n)+'</b><small>'+rm(p.p)+(p.sz?' · '+esc(p.sz):'')+'</small></a><button class="btn light sm" data-add="'+esc(p.id)+'">'+ic('bag',14)+TS('buy')+'</button></div>';}).join('')+'</div>';}
+const DESC0=(document.querySelector('meta[name="description"]')||{}).content||'';
+document.addEventListener('click',e=>{
+ const t=e.target.closest('[data-nav],[data-prod],[data-add],[data-addq],[data-pq],[data-cq],[data-cart],[data-bundle],[data-ph],[data-skf],[data-mnav],[data-pask]');if(!t||!P)return;
+ e.preventDefault();const d=t.dataset;
+ if(d.nav!==undefined){closeSheet();const k=d.nav;if(k==='shop'){SKF='';navTo('?skincare'+pv());return;}if(k==='home'){navTo(homeUrl());return;}
+  if(route().k==='home'){const el=document.getElementById(k);if(el)el.scrollIntoView({behavior:'smooth'});}else navTo(homeUrl(),k);}
+ else if(d.prod!==undefined){closeSheet();PQTY=1;navTo('?produk='+encodeURIComponent(d.prod)+pv());}
+ else if(d.add!==undefined){cartAdd(d.add,1);cartSheet(TS('added'));}
+ else if(d.addq!==undefined){cartAdd(d.addq,PQTY);cartSheet(TS('added'));}
+ else if(d.pq!==undefined){PQTY=Math.max(1,Math.min(20,PQTY+(+d.pq)));const q=document.getElementById('pq');if(q)q.textContent=PQTY;}
+ else if(d.cq!==undefined){const x=CART.find(c=>c.id===d.cq);if(x){x.q+=(+d.d);if(x.q<=0)CART=CART.filter(c=>c!==x);cartSave();cartSheet();}}
+ else if(d.cart!==undefined)cartSheet();
+ else if(d.bundle!==undefined){const B=P.skin&&P.skin.bundle;if(!B)return;if(B.pid)claim(B.pid);else waSheet(B.t,B.t);}
+ else if(d.ph!==undefined){PHI=+d.ph;const v=route();if(v.k==='prod'){const y=scrollY;renderPage(v);scrollTo(0,y);}}
+ else if(d.skf!==undefined){SKF=d.skf;const y=scrollY;renderPage(route());scrollTo(0,y);}
+ else if(d.mnav!==undefined)mnavSheet();
+ else if(d.pask!==undefined){const p=prodId(d.pask);if(p)openWa(TS('waAsk',p.n));}
+});
 
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};

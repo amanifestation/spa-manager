@@ -2234,6 +2234,17 @@ html.pubbrand .fbbiz{font-family:var(--serif);font-weight:600;font-size:30px;let
 html.pubbrand .fbbr{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#836E4A}
 html.pubbrand .fbmark,html.pubbrand .fbhead img{border-radius:50%}
 html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
+/* ===== LUUNA Skincare (app) ===== */
+.skcard{border-top:3px solid #B2996E}
+.skstat{display:flex;align-items:center;gap:6px;background:var(--brass-soft);border-radius:10px;padding:8px 11px;font-size:13px;margin-bottom:8px}
+.skbun{border:1px dashed var(--line);border-radius:12px;padding:10px 12px;margin-top:6px}
+.skprog{height:5px;border-radius:99px;background:var(--line-2);overflow:hidden;margin:8px 0 4px;max-width:260px}.skprog i{display:block;height:100%;background:#B2996E;border-radius:99px}
+.skedit h4{margin:16px 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+.skphs{display:flex;gap:10px;flex-wrap:wrap}.skph{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;color:var(--ink-2)}
+.skrv{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line-2)}.skrvi{width:44px;height:44px;border-radius:8px;overflow:hidden;background:var(--surface-2);flex:none}.skrvi img{width:100%;height:100%;object-fit:cover}
+.skrvnew{background:var(--surface-2);border-radius:12px;padding:10px;margin-top:8px}
+.skord{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface)}
+.skpos{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--brass-soft);border-radius:12px;padding:8px 10px;margin:6px 0 8px;font-size:12.5px}.skpos>span{font-weight:600}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2493,7 +2504,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29f';
+const BUILD='2026-09-29g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -25113,5 +25124,231 @@ function pubBrand(){
    l.href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700&display=swap';document.head.appendChild(l);}
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#FAF9F6');}catch(e){}
 }
+
+
+/* ============ LUUNA Skincare: treatment at the spa, homecare at home ============ */
+/* Every retail product can have its own page on the website: photos (flat lay, in the hand,
+   texture), the skin concerns and skin types it is for, key actives in plain words, how to use it
+   and where it sits in the routine, size, price and how long it lasts, client reviews with photos,
+   the treatment it pairs with (with a Book button), the rest of the routine, the three questions
+   everyone asks, and the cosmetic notification number.
+   Each treatment knows its homecare, so the page suggests it, and so does the checkout.
+   Orders from the website land here (no card payment on the page: the team confirms by
+   WhatsApp, takes payment the usual way and rings it up in Checkout). */
+const SK_STEPS=['','Cleanser','Toner / essence','Serum','Moisturiser','Sunscreen','Mask / treatment'];
+const SK_STEPS_MS=['','Pencuci','Toner / esens','Serum','Pelembap','Pelindung matahari','Masker / rawatan'];
+const SK_PH=[['flat','Flat lay'],['hand','In the hand'],['tex','Texture'],['more','Another']];
+Object.assign(LP_DEF,{skin:{on:true,t:'',s:'',same:false,bundle:{on:false,t:'',d:'',pid:''}},about:{t:'',x:'',pts:['','',''],ih:''}});
+const skRetail=()=>D.products.filter(p=>p.active!==false&&p.type!=='consumable'&&p.type!=='internal'&&p.id);
+const skW=p=>({on:false,best:false,k:[],sk:[],act:[],use:{am:true,pm:true,step:0,t:''},svc:[],rt:[],faq:{},xfaq:[],ph:{},rv:[],...(p.web||{})});
+const skSlug=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'produk';
+const SK_NOT=/^NOT\d{9,11}[A-Z]$/;
+/* ---------- what the website may show about the products ---------- */
+function skOut(L){
+ const S=L.skin&&L.skin.on===false?[]:skRetail().filter(p=>skW(p).on);const used=new Set();
+ return S.map(p=>{const w=skW(p);let sl=w.slug||skSlug(p.name);while(used.has(sl))sl+='-2';used.add(sl);
+  const ph=SK_PH.filter(([k])=>w.ph[k]).map(([k,l])=>({k,l,img:'prod_'+p.id+'_'+k,ih:w.ph[k]}));
+  const svcOk=new Set(D.services.filter(s=>s.active!==false).map(s=>s.id));
+  return {id:p.id,slug:sl,n:String(p.name||'').slice(0,80),p:+p.price||0,sz:String(w.sz||'').slice(0,20),wk:Math.max(0,Math.round(+w.wk||0)),best:!!w.best,
+   tag:String(w.tag||'').slice(0,100),d:String(w.d||'').slice(0,700),k:(w.k||[]).filter(k=>CONCERNS.some(c=>c.id===k)).slice(0,6),kl:(w.k||[]).filter(k=>CONCERNS.some(c=>c.id===k)).slice(0,6).map(k=>({id:k,ms:LP_CONCERN_MS[k]||concernLabel(k),en:concernLabel(k)})),sk:(w.sk||[]).filter(k=>SKINS.includes(k)),
+   act:(w.act||[]).filter(a=>a&&a.n).slice(0,6).map(a=>({n:String(a.n).slice(0,40),w:String(a.w||'').slice(0,160)})),
+   use:{am:!!(w.use||{}).am,pm:!!(w.use||{}).pm,step:Math.max(0,Math.min(6,+(w.use||{}).step||0)),t:String((w.use||{}).t||'').slice(0,400)},
+   notif:String(w.notif||'').toUpperCase().replace(/\s/g,'').slice(0,20),same:!!w.same,svc:(w.svc||[]).filter(id=>svcOk.has(id)).slice(0,4),rt:(w.rt||[]).slice(0,4),
+   faq:[['sens','Sesuai untuk kulit sensitif?'],['preg','Selamat untuk ibu mengandung / menyusu?'],['mix','Boleh guna bersama produk lain?']].filter(([k])=>String((w.faq||{})[k]||'').trim()).map(([k,q])=>({k,q,a:String(w.faq[k]).slice(0,400)}))
+    .concat((w.xfaq||[]).filter(f=>f&&f.q&&f.a).slice(0,4).map(f=>({q:String(f.q).slice(0,120),a:String(f.a).slice(0,400)}))),
+   ph,rv:(w.rv||[]).filter(r=>r&&r.t&&r.on!==false).slice(0,12).map(r=>({n:String(r.n||'').slice(0,30),s:Math.min(5,Math.max(1,+r.s||5)),t:String(r.t).slice(0,400),d:String(r.d||'').slice(0,10),src:String(r.src||'').slice(0,20),...(r.ih?{img:'prv_'+p.id+'_'+r.id,ih:r.ih}:{})}))};});
+}
+{const _b=lpBuild;lpBuild=function(img){
+ const d=_b(img),L=lpSet(),K={...LP_DEF.skin,...(L.skin||{})},B={...LP_DEF.skin.bundle,...(K.bundle||{})},A={...LP_DEF.about,...(L.about||{})};
+ const prods=skOut(L);
+ d.skin={on:K.on!==false&&prods.length>0,t:String(K.t||'').slice(0,100),s:String(K.s||'').slice(0,200),same:!!K.same,products:prods,
+  bundle:B.on&&String(B.t||'').trim()?{t:String(B.t).slice(0,80),d:String(B.d||'').slice(0,200),pid:B.pid&&(d.promos||[]).some(p=>p.id===B.pid)?B.pid:''}:null};
+ d.about={t:String(A.t||'').slice(0,80),x:String(A.x||'').slice(0,900),pts:(A.pts||[]).map(x=>String(x||'').trim().slice(0,60)).filter(Boolean).slice(0,3),...(A.ih?{img:'about',ih:A.ih}:{})};
+ /* every product's photos stay stored, shown or not, so switching a product back on keeps them */
+ const keep=skRetail().flatMap(p=>{const w=skW(p);return [...Object.keys(w.ph||{}).map(k=>'prod_'+p.id+'_'+k),...(w.rv||[]).filter(r=>r.ih).map(r=>'prv_'+p.id+'_'+r.id)];});
+ d.imgs=[...new Set([...(d.imgs||[]),...keep,...(A.ih?['about']:[])])];
+ return d;};}
+
+/* ---------- the owner's screen: one card for the products ---------- */
+function skAttach(){
+ const since=ymd(addDays(new Date(),-30)),B=(SALES||[]).filter(s=>!s.voided&&String(s.date)>=since&&(!s.branchId||s.branchId===ME.branchId)&&(s.items||[]).some(i=>i.kind==='service'||i.kind==='redeem'));
+ const w=B.filter(s=>(s.items||[]).some(i=>retailKind(i.kind)));return {n:B.length,w:w.length};
+}
+function lpSkinCard(L){
+ const K={...LP_DEF.skin,...(L.skin||{})},B={...LP_DEF.skin.bundle,...(K.bundle||{})},P=skRetail(),on=P.filter(p=>skW(p).on),A=skAttach(),td=today();
+ const PR=(PROMOS||[]).filter(p=>p.active!==false&&(!p.end||p.end>=td));
+ const done=p=>{const w=skW(p),c=[Object.keys(w.ph||{}).length>=3,(w.k||[]).length>0,(w.act||[]).length>0,!!(w.use||{}).t,!!w.sz,SK_NOT.test(String(w.notif||'').toUpperCase().replace(/\s/g,'')),(w.svc||[]).length>0];return [c.filter(Boolean).length,c.length];};
+ return '<div class="card skcard"><div class="sec-h"><h3 style="margin:0">'+ic('package',15)+' LUUNA Skincare on the website</h3><span class="pill '+(on.length?'g':'a')+'">'+on.length+' of '+P.length+' products shown</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 10px">Treatment at the spa, homecare at home. The products section sits after the treatments and reviews on the homepage, each product gets its own page, and each treatment suggests its homecare — on the website and at checkout.</p>'+
+  (A.n?'<div class="skstat">'+ic('chart',14)+' <b>'+Math.round(A.w/A.n*100)+'%</b> of treatment bills in the last 30 days took homecare home ('+A.w+' of '+A.n+')</div>':'')+
+  '<div class="grid g2"><div><label>Section title</label><input class="f" maxlength="100" value="'+esc(K.t||'')+'" placeholder="Rawatan di Luuna, jaga di rumah dengan LUUNA Skincare" oninput="skF(\'t\',this.value)"></div>'+
+  '<div><label>Line under it</label><input class="f" maxlength="200" value="'+esc(K.s||'')+'" placeholder="Rutin ringkas yang sambung hasil rawatan anda" oninput="skF(\'s\',this.value)"></div></div>'+
+  '<label class="row lptog" style="margin-top:8px"><input type="checkbox" '+(K.same?'checked':'')+' onchange="skF(\'same\',this.checked)"> Show "Formula yang sama kami guna di spa, kini untuk rutin anda di rumah"</label>'+
+  '<p class="tiny" style="color:var(--amber);margin:2px 0 8px">'+ic('alert',12)+' Tick only if the products used in treatments really are these same formulas.</p>'+
+  '<div class="skbun"><label class="row lptog"><input type="checkbox" '+(B.on?'checked':'')+' onchange="skB(\'on\',this.checked)"> <b>Bundle banner</b> — package + homecare</label>'+
+   '<div class="grid g2"><div><label>Headline</label><input class="f" maxlength="80" value="'+esc(B.t||'')+'" placeholder="Beli pakej rawatan, dapat homecare percuma" oninput="skB(\'t\',this.value)"></div>'+
+   '<div><label>Details</label><input class="f" maxlength="200" value="'+esc(B.d||'')+'" placeholder="Pakej 6 sesi facial + Cleanser & Serum (bernilai RM150)" oninput="skB(\'d\',this.value)"></div></div>'+
+   '<label>Button opens</label><select class="f" onchange="skB(\'pid\',this.value)"><option value="">WhatsApp enquiry</option>'+PR.map(p=>'<option value="'+p.id+'"'+(B.pid===p.id?' selected':'')+'>Promotion: '+esc(p.name)+'</option>').join('')+'</select></div>'+
+  '<h4 style="margin:14px 0 4px">Products</h4>'+
+  (P.length?P.map(p=>{const w=skW(p),[a,b]=done(p),im=w.ph&&w.ph.flat?lpThumb('prod_'+p.id+'_flat'):(p.image||'');
+   return '<div class="lpsv'+(w.on?'':' offp')+'"><button type="button" class="lpsvimg'+(im?'':' none')+'" onclick="skEdit(\''+p.id+'\')">'+(im?'<img src="'+im+'" alt="">':ic('image',18)+'<small>Photos</small>')+'</button>'+
+    '<div class="lpsvb"><div class="spread"><b>'+esc(p.name)+'</b><span class="tiny muted">'+rm(p.price)+(w.sz?' · '+esc(w.sz):'')+'</span></div>'+
+    '<div class="lpsw"><label class="lpswi"><input type="checkbox" '+(w.on?'checked':'')+' onchange="skOn(\''+p.id+'\',\'on\',this.checked)"><i></i><span>On the website</span></label>'+
+     '<label class="lpswi"><input type="checkbox" '+(w.best?'checked':'')+' onchange="skOn(\''+p.id+'\',\'best\',this.checked)"><i></i><span>Best seller (homepage)</span></label></div>'+
+    '<div class="skprog"><i style="width:'+Math.round(a/b*100)+'%"></i></div><div class="tiny muted">Product page '+a+' of '+b+' filled'+((w.svc||[]).length?' · pairs with '+esc(w.svc.map(id=>(svc(id)||{}).name).filter(Boolean).join(', ')):'')+'</div>'+
+    '<button class="btn sm ghost" style="margin-top:6px" onclick="skEdit(\''+p.id+'\')">'+ic('edit',13)+'Edit product page</button></div></div>';}).join('')
+   :'<div class="empty">No retail products yet. Add them in Catalogue → Products (type Retail), then set up their pages here.</div>')+
+  skOrdersHTML()+'</div>'+lpAboutCard(L);
+}
+window.skF=(k,v)=>{LPD.skin={...LP_DEF.skin,...(LPD.skin||{}),[k]:v};};
+window.skB=(k,v)=>{const K={...LP_DEF.skin,...(LPD.skin||{})};K.bundle={...LP_DEF.skin.bundle,...(K.bundle||{}),[k]:v};LPD.skin=K;};
+async function skPut(id,web,msg){
+ const p=prod(id);if(!p.id)return;
+ try{await updateDoc(doc(db,'products',id),{web});p.web=web;if((D.meta||{}).landing)lpPublish(false).catch(()=>{});if(msg)toast(msg);}catch(e){toast(friendly(e));}
+}
+window.skOn=async(id,k,v)=>{const p=prod(id),w=skW(p);w[k]=!!v;if(k==='on'&&v&&!w.slug)w.slug=skSlug(p.name);await skPut(id,w,k==='on'?(v?'On the website':'Taken off the website'):(v?'Best seller':'Not a best seller'));render();};
+
+/* ---------- one product's page ---------- */
+let SKE=null;
+window.skEdit=id=>{
+ const p=prod(id);if(!p.id)return;SKE={id,w:JSON.parse(JSON.stringify(skW(p)))};if(!SKE.w.slug)SKE.w.slug=skSlug(p.name);skPaint();
+};
+function skPaint(){
+ const p=prod(SKE.id),w=SKE.w,u=w.use||{},S=D.services.filter(s=>s.active!==false),O=skRetail().filter(x=>x.id!==p.id);
+ const chips=(cls,list,sel,lab)=>'<div class="cr3chips">'+list.map(x=>'<label><input type="checkbox" class="'+cls+'" value="'+esc(x[0])+'"'+(sel.includes(x[0])?' checked':'')+'>'+esc(x[1])+'</label>').join('')+'</div>';
+ const nt=String(w.notif||'').toUpperCase().replace(/\s/g,'');
+ modal('Product page · '+p.name,'<div class="card skedit">'+
+  '<p class="tiny muted" style="margin-top:0">Name, price and stock come from the catalogue ('+rm(p.price)+'). Everything here is for the website.</p>'+
+  '<h4>Photos</h4><div class="skphs">'+SK_PH.map(([k,l])=>{const im=w.ph[k]?lpThumb('prod_'+p.id+'_'+k):'';
+   return '<div class="skph"><button type="button" class="lpslide'+(im||w.ph[k]?'':' add')+'" onclick="skPhoto(\''+k+'\')">'+(im?'<img src="'+im+'" alt="">':w.ph[k]?ic('image',18):ic('plus',18)+'<small>Add</small>')+'</button><span>'+l+'</span>'+
+    (w.ph[k]?'<button type="button" class="lpx" onclick="skNoPhoto(\''+k+'\')">Remove</button>':'')+'</div>';}).join('')+'</div>'+
+  '<p class="tiny muted" style="margin:4px 0 0">Flat lay on a clean surface, the bottle in a hand (for size), and a swatch of the texture. Soft daylight, no flash.</p>'+
+  '<h4>What it is</h4><label>One line</label><input class="f" id="sk-tag" maxlength="100" value="'+esc(w.tag||'')+'" placeholder="Pencuci lembut untuk kulit berjerawat & berminyak">'+
+  '<label>Description</label><textarea class="f" id="sk-d" rows="3" maxlength="700" placeholder="Apa yang produk ini buat, untuk siapa, dan rasa apabila digunakan.">'+esc(w.d||'')+'</textarea>'+
+  '<p class="tiny" style="color:var(--amber);margin:2px 0 0">'+ic('alert',12)+' Cosmetics may not claim to treat or cure (e.g. "merawat jerawat"). Write "membantu mengurangkan rupa jerawat", "membersihkan liang pori".</p>'+
+  '<div class="grid g3"><div><label>Size</label><input class="f" id="sk-sz" maxlength="20" value="'+esc(w.sz||'')+'" placeholder="100ml"></div><div><label>Lasts about (weeks)</label><input class="f" id="sk-wk" type="number" min="0" max="52" value="'+(+w.wk||'')+'" placeholder="8"></div>'+
+   '<div><label>Web address</label><input class="f" id="sk-slug" maxlength="60" value="'+esc(w.slug||'')+'"></div></div>'+
+  '<label>Skin concerns it helps with</label>'+chips('sk-k',CONCERNS.map(c=>[c.id,LP_CONCERN_MS[c.id]||c.label]),w.k||[])+
+  '<label>Skin types</label>'+chips('sk-sk',SKINS.map(k=>[k,k]),w.sk||[])+
+  '<h4>Key actives — in plain words</h4><div id="sk-act">'+[0,1,2,3,4,5].map(i=>{const a=(w.act||[])[i]||{};return '<div class="grid g2 lprow"><input class="f sk-an" maxlength="40" value="'+esc(a.n||'')+'" placeholder="'+(['Salicylic acid 2%','Niacinamide 5%','Centella asiatica','','',''][i])+'">'+
+   '<input class="f sk-aw" maxlength="160" value="'+esc(a.w||'')+'" placeholder="'+(['Masuk ke dalam liang pori, bantu buang minyak & sel mati','Bantu seimbangkan minyak & ratakan tona kulit','Menenangkan kemerahan','','',''][i])+'"></div>';}).join('')+'</div>'+
+  '<h4>How to use</h4><div class="row" style="gap:16px;flex-wrap:wrap"><label class="row lptog"><input type="checkbox" id="sk-am" '+(u.am?'checked':'')+'> Morning</label><label class="row lptog"><input type="checkbox" id="sk-pm" '+(u.pm?'checked':'')+'> Night</label>'+
+   '<select class="f" id="sk-step" style="width:auto;margin:0">'+SK_STEPS.map((s,i)=>'<option value="'+i+'"'+(+u.step===i?' selected':'')+'>'+(i?'Step '+i+' — '+s:'Step in the routine…')+'</option>').join('')+'</select></div>'+
+  '<textarea class="f" id="sk-use" rows="2" maxlength="400" placeholder="Basahkan muka, urut 2 pam selama 30 saat, bilas.">'+esc(u.t||'')+'</textarea>'+
+  '<h4>Treatment + homecare</h4><label>Best with these treatments</label>'+chips('sk-svc',S.map(s=>[s.id,s.name]),w.svc||[])+
+  '<label>Complete the routine with</label>'+(O.length?chips('sk-rt',O.map(x=>[x.id,x.name]),w.rt||[]):'<p class="tiny muted">No other products yet.</p>')+
+  '<h4>Questions everyone asks</h4>'+[['sens','Sesuai untuk kulit sensitif?'],['preg','Selamat untuk ibu mengandung / menyusu?'],['mix','Boleh guna bersama produk lain?']].map(([k,q])=>
+   '<label>'+q+'</label><textarea class="f sk-fq" data-k="'+k+'" rows="2" maxlength="400" placeholder="Leave blank to leave it off">'+esc((w.faq||{})[k]||'')+'</textarea>').join('')+
+  [0,1].map(i=>{const f=(w.xfaq||[])[i]||{};return '<div class="grid g2 lprow"><input class="f sk-xq" maxlength="120" value="'+esc(f.q||'')+'" placeholder="Another question"><input class="f sk-xa" maxlength="400" value="'+esc(f.a||'')+'" placeholder="Answer"></div>';}).join('')+
+  '<h4>Trust</h4><div class="grid g2"><div><label>Cosmetic notification no. (NPRA)</label><input class="f" id="sk-not" maxlength="20" value="'+esc(w.notif||'')+'" placeholder="NOT230912345K">'+
+   (nt&&!SK_NOT.test(nt)?'<div class="tiny" style="color:var(--amber)">Usually NOT + 9–11 digits + a letter — check it against the notification letter.</div>':'')+'</div>'+
+   '<div><label class="row lptog" style="margin-top:26px"><input type="checkbox" id="sk-same" '+(w.same?'checked':'')+'> Same formula we use in treatments</label></div></div>'+
+  '<h4>Client reviews</h4><p class="tiny muted" style="margin:0 0 6px">Real reviews only, with the client\'s permission to show their name and photo.</p><div id="sk-rv">'+(w.rv||[]).map((r,i)=>{const im=r.ih?lpThumb('prv_'+p.id+'_'+r.id):'';
+   return '<div class="skrv"><div class="skrvi">'+(im?'<img src="'+im+'" alt="">':'')+'</div><div style="flex:1;min-width:0"><b>'+esc(r.n||'Pelanggan')+'</b> <span class="tiny muted">'+'★'.repeat(+r.s||5)+(r.src?' · '+esc(r.src):'')+'</span><div class="tiny">'+esc(r.t)+'</div></div><button class="btn sm ghost" onclick="skRvDel('+i+')">'+ic('trash',13)+'</button></div>';}).join('')+'</div>'+
+  '<div class="skrvnew"><div class="grid g3"><input class="f" id="skr-n" maxlength="30" placeholder="First name"><select class="f" id="skr-s">'+[5,4,3].map(s=>'<option value="'+s+'">'+'★'.repeat(s)+'</option>').join('')+'</select><select class="f" id="skr-src">'+['Di spa','WhatsApp','Instagram','TikTok','Google'].map(x=>'<option>'+x+'</option>').join('')+'</select></div>'+
+   '<textarea class="f" id="skr-t" rows="2" maxlength="400" placeholder="What they said"></textarea><div class="row" style="gap:6px"><button class="btn sm ghost" onclick="skRvPhoto()">'+ic('image',13)+'<span id="skr-ph">Photo (optional)</span></button><button class="btn sm" onclick="skRvAdd()">'+ic('plus',13)+'Add review</button></div></div>'+
+  '<div id="sk-e" class="tiny" style="color:var(--rose);margin:8px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="skSave()">'+ic('check',15)+'Save product page</button></div>');
+}
+function skRead(){
+ const g=id=>document.getElementById(id),w=SKE.w,vals=c=>[...document.querySelectorAll('.'+c+':checked')].map(x=>x.value);
+ w.tag=g('sk-tag').value.trim();w.d=g('sk-d').value.trim();w.sz=g('sk-sz').value.trim();w.wk=Math.max(0,Math.min(52,Math.round(+g('sk-wk').value||0)));w.slug=skSlug(g('sk-slug').value||prod(SKE.id).name);
+ w.k=vals('sk-k');w.sk=vals('sk-sk');w.svc=vals('sk-svc');w.rt=vals('sk-rt');
+ const an=[...document.querySelectorAll('.sk-an')],aw=[...document.querySelectorAll('.sk-aw')];w.act=an.map((x,i)=>({n:x.value.trim(),w:aw[i].value.trim()})).filter(a=>a.n);
+ w.use={am:g('sk-am').checked,pm:g('sk-pm').checked,step:+g('sk-step').value||0,t:g('sk-use').value.trim()};
+ w.faq={};document.querySelectorAll('.sk-fq').forEach(t=>{if(t.value.trim())w.faq[t.dataset.k]=t.value.trim();});
+ const xq=[...document.querySelectorAll('.sk-xq')],xa=[...document.querySelectorAll('.sk-xa')];w.xfaq=xq.map((x,i)=>({q:x.value.trim(),a:xa[i].value.trim()})).filter(f=>f.q&&f.a);
+ w.notif=g('sk-not').value.toUpperCase().replace(/\s/g,'');w.same=g('sk-same').checked;
+}
+window.skSave=async()=>{
+ skRead();const w=SKE.w,e=document.getElementById('sk-e');
+ const clash=skRetail().find(x=>x.id!==SKE.id&&skW(x).slug===w.slug);if(clash){e.textContent='Another product already uses the address '+w.slug+'.';return;}
+ await skPut(SKE.id,w,'Product page saved');await audit('Product page saved',prod(SKE.id).name);window.closeModal();render();
+};
+window.skPhoto=k=>{skRead();const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{const img=await lpShrink(f),id='prod_'+SKE.id+'_'+k;await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});
+  LPTH[id]=img;LPUP.add(id);SKE.w.ph={...(SKE.w.ph||{}),[k]:wbHash(img)};skPaint();toast('Photo added — save the page to keep it');}catch(err){toast(friendly(err));}};i.click();};
+window.skPhotoSet=async(k,img)=>{const id='prod_'+SKE.id+'_'+k;await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH[id]=img;LPUP.add(id);SKE.w.ph={...(SKE.w.ph||{}),[k]:wbHash(img)};};
+window.skNoPhoto=k=>{skRead();const m={...(SKE.w.ph||{})};delete m[k];SKE.w.ph=m;skPaint();};
+let SKRVIMG='';
+window.skRvPhoto=()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{SKRVIMG=await lpShrink(f);const s=document.getElementById('skr-ph');if(s)s.textContent='Photo ready';}catch(e){toast('Could not read that photo');}};i.click();};
+window.skRvAdd=async()=>{
+ const t=document.getElementById('skr-t').value.trim();if(t.length<8){toast('Write what the client said');return;}
+ skRead();const r={id:'r'+Date.now().toString(36),n:document.getElementById('skr-n').value.trim(),s:+document.getElementById('skr-s').value||5,t,src:document.getElementById('skr-src').value,d:today(),on:true};
+ if(SKRVIMG){try{const id='prv_'+SKE.id+'_'+r.id;await setDoc(doc(db,'lpImg',id),{img:SKRVIMG,h:wbHash(SKRVIMG),at:new Date().toISOString()});LPTH[id]=SKRVIMG;LPUP.add(id);r.ih=wbHash(SKRVIMG);}catch(e){toast(friendly(e));}}
+ SKRVIMG='';SKE.w.rv=[...(SKE.w.rv||[]),r];skPaint();};
+window.skRvImg=img=>{SKRVIMG=img;};
+window.skRvDel=i=>{skRead();SKE.w.rv=(SKE.w.rv||[]).filter((_,k)=>k!==i);skPaint();};
+
+/* ---------- Tentang Kami ---------- */
+function lpAboutCard(L){
+ const A={...LP_DEF.about,...(L.about||{})},im=A.ih?lpThumb('about'):'';
+ return '<div class="card"><h3 style="margin:0 0 4px">'+ic('users',15)+' About us <span class="muted" style="font-weight:400">— "Tentang Kami" on the menu</span></h3>'+
+  '<div class="row" style="gap:12px;align-items:flex-start;margin-top:8px"><button type="button" class="lpsvimg'+(im||A.ih?'':' none')+'" style="flex-basis:120px;height:90px" onclick="skAboutPhoto()">'+(im?'<img src="'+im+'" alt="">':ic('image',18)+'<small>Photo</small>')+'</button>'+
+  '<div style="flex:1"><label style="margin-top:0">Title</label><input class="f" maxlength="80" value="'+esc(A.t||'')+'" placeholder="Spa kulit yang bermula dengan konsultasi" oninput="skA(\'t\',this.value)"></div></div>'+
+  '<label>Your story</label><textarea class="f" rows="4" maxlength="900" placeholder="Siapa kami, kenapa Luuna dibuka, cara kami bekerja, siapa therapist kami." oninput="skA(\'x\',this.value)">'+esc(A.x||'')+'</textarea>'+
+  '<label>Three points</label><div class="grid g3">'+[0,1,2].map(i=>'<input class="f" maxlength="60" value="'+esc((A.pts||[])[i]||'')+'" placeholder="'+['Premis disanitasi setiap sesi','Therapist bertauliah','Produk bernotifikasi KKM'][i]+'" oninput="skAP('+i+',this.value)">').join('')+'</div>'+
+  '<p class="tiny muted" style="margin:4px 0 0">Real photo of the spa or the team. Save & publish at the bottom to put it live.</p></div>';
+}
+window.skA=(k,v)=>{LPD.about={...LP_DEF.about,...(LPD.about||{}),[k]:v};};
+window.skAP=(i,v)=>{const A={...LP_DEF.about,...(LPD.about||{})};A.pts=[...(A.pts||['','',''])];A.pts[i]=v;LPD.about=A;};
+window.skAboutPhoto=()=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{await window.skAboutSet(await lpShrink(f));}catch(e){toast(friendly(e));}};i.click();};
+window.skAboutSet=async img=>{await setDoc(doc(db,'lpImg','about'),{img,h:wbHash(img),at:new Date().toISOString()});LPTH.about=img;LPUP.add('about');LPD.about={...LP_DEF.about,...(LPD.about||{}),ih:wbHash(img)};render();};
+{const _pc=lpPromoCard;lpPromoCard=function(L){return _pc(L)+lpSkinCard(L);};}
+
+/* ---------- orders from the website ---------- */
+let SKORD=[],SKOSUB=null,SKOSEEN=null;
+function skWatch(){
+ if(SKOSUB||!ME||!(can('pos')||boss()))return;
+ try{SKOSUB=onSnapshot(query(collection(db,'webOrders'),orderBy('createdAt','desc'),limit(100)),s=>{
+  const L=s.docs.map(d=>({id:d.id,...d.data()})).filter(o=>!o.branchId||o.branchId===ME.branchId);
+  if(SKOSEEN)L.filter(o=>!SKOSEEN.has(o.id)&&o.status==='new').forEach(o=>{toast('New website order: '+o.name+' · '+rm(o.total));try{if(typeof chime==='function')chime();}catch(e){}});
+  SKOSEEN=new Set(L.map(o=>o.id));SKORD=L;if(TAB==='lp'||TAB==='home')render();},e=>console.warn('webOrders',e));unsub.push(SKOSUB);}catch(e){}
+}
+const SK_OST={new:['New','a'],conf:['Confirmed','b'],paid:['Paid','g'],done:['Collected / sent','g'],cancel:['Cancelled','']};
+function skOrdersHTML(){
+ const L=SKORD.slice(0,12);
+ return '<h4 style="margin:16px 0 4px">Orders from the website</h4>'+(L.length?L.map(o=>{const st=SK_OST[o.status]||SK_OST.new;
+  return '<div class="skord"><div class="spread"><b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b><span class="pill '+st[1]+'">'+st[0]+'</span></div>'+
+   '<div class="tiny">'+(o.items||[]).map(i=>esc(i.q+'× '+i.n)).join(', ')+' · <b>'+rm(o.total)+'</b></div>'+
+   '<div class="tiny muted">'+esc(o.phone)+' · '+(o.how==='post'?'Post to: '+esc(o.addr||''):'Collect at the spa')+(o.note?' · '+esc(o.note):'')+' · '+dshort(o.createdAt)+' '+tstr(o.createdAt)+(o.src?' · from '+esc(o.src)+(o.camp?' / '+esc(o.camp):''):'')+'</div>'+
+   '<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><a class="btn sm" target="_blank" href="https://wa.me/'+waNum(o.phone)+'?text='+encodeURIComponent(skOrdMsg(o))+'" onclick="skOrdSt(\''+o.id+'\',\'conf\',true)">'+ic('msg',13)+'WhatsApp</a>'+
+    (o.status!=='paid'&&o.status!=='done'&&o.status!=='cancel'?'<button class="btn sm ghost" onclick="skOrdPos(\''+o.id+'\')">'+ic('card',13)+'Ring up in Checkout</button>':'')+
+    (o.status==='paid'?'<button class="btn sm ghost" onclick="skOrdSt(\''+o.id+'\',\'done\')">'+ic('check',13)+(o.how==='post'?'Sent':'Collected')+'</button>':'')+
+    (o.status==='new'||o.status==='conf'?'<button class="btn sm ghost" onclick="skOrdSt(\''+o.id+'\',\'cancel\')">Cancel</button>':'')+'</div></div>';}).join('')
+  :'<div class="tiny muted">No orders yet. Visitors add products to a bag on the website and send the order; it shows up here and on Home.</div>');
+}
+function skOrdMsg(o){const b=D.meta.biz||{};
+ return 'Hi '+String(o.name).split(' ')[0]+', terima kasih atas tempahan '+(o.ref||'')+' di '+(b.name||'Luuna')+':\n'+(o.items||[]).map(i=>'• '+i.q+'× '+i.n+' — RM'+(i.p*i.q).toFixed(2)).join('\n')+
+  '\nJumlah: RM'+(+o.total).toFixed(2)+(o.how==='post'?' (+ caj pos)':'')+'\n'+(o.how==='post'?'Kami akan pos ke alamat yang diberi — caj pos akan dimaklumkan.':'Boleh ambil di spa.')+' Maklumat bayaran akan kami kongsi di sini.';}
+window.skOrdSt=async(id,st,soft)=>{const o=SKORD.find(x=>x.id===id);if(!o||(soft&&o.status!=='new'))return;
+ try{await updateDoc(doc(db,'webOrders',id),{status:st,[st+'At']:new Date().toISOString(),by:UID});o.status=st;if(!soft)render();}catch(e){toast(friendly(e));}};
+window.skOrdPos=async id=>{
+ const o=SKORD.find(x=>x.id===id);if(!o)return;
+ let c=CUSTS.find(x=>x.active!==false&&!x.mergedInto&&typeof phKey==='function'&&phKey(x.phone)===phKey(o.phone));
+ if(!c){try{const data={name:o.name,nameLower:String(o.name).toLowerCase(),phone:o.phone,phoneDigits:digits(o.phone),keywords:kwFor(o.name,o.phone),source:o.src?srcToClient(o.src):'Other',branchId:ME.branchId,pdpa:true,marketing:false,tags:['Online order'],notes:'',active:true,wantNo:true,createdAt:new Date().toISOString(),createdBy:UID};
+  const r=await addDoc(collection(db,'customers'),data);c={id:r.id,...data};CUSTS.unshift(c);newClientNo(r.id);}catch(e){toast(friendly(e));return;}}
+ window.go('pos');await new Promise(r=>setTimeout(r,60));
+ try{window.cpPick('pos-c',c.id);}catch(e){}
+ for(const i of o.items||[])for(let k=0;k<(+i.q||1);k++)window.pickAdd('product',i.id);
+ cart.webOrder=o.id;window.closeModal&&window.closeModal();render();toast('Order '+(o.ref||'')+' is in Checkout — take the payment as usual');
+};
+/* the order is paid when its bill is */
+{const _co=window.checkout;if(_co)window.checkout=async function(){const wo=cart.webOrder;const r=await _co.apply(this,arguments);
+ if(wo&&!cart.items.length){try{await updateDoc(doc(db,'webOrders',wo),{status:'paid',paidAt:new Date().toISOString(),by:UID});const o=SKORD.find(x=>x.id===wo);if(o)o.status='paid';}catch(e){}}return r;};}
+{const _al=crmAlerts;crmAlerts=function(al){_al(al);const n=SKORD.filter(o=>o.status==='new').length;
+ if(n&&(can('pos')||boss()))al.push({i:'package',t:n+' website order'+(n>1?'s':'')+' to confirm',d:SKORD.filter(o=>o.status==='new').slice(0,3).map(o=>o.name.split(' ')[0]+' '+rm(o.total)).join(', '),go:"go('lp')"});};}
+
+/* ---------- at checkout: the homecare that goes with today's treatment ---------- */
+function skSuggest(){
+ const sv=new Set(cart.items.filter(i=>i.kind==='service'||i.kind==='redeem').map(i=>i.id));if(!sv.size)return [];
+ const inCart=new Set(cart.items.filter(i=>retailKind(i.kind)).map(i=>i.id));
+ return skRetail().filter(p=>!inCart.has(p.id)&&(skW(p).svc||[]).some(id=>sv.has(id))&&(!stockOf(p.id)||stockOf(p.id).qty>0)).slice(0,4);
+}
+{const _q=quoteBar;quoteBar=function(){const h=_q(),S=skSuggest();if(!S.length)return h;
+ return h+'<div class="skpos">'+ic('package',13)+'<span>Homecare for today\'s treatment:</span>'+S.map(p=>'<button class="btn sm ghost" onclick="pickAdd(\'product\',\''+esc(p.id)+'\')">'+ic('plus',12)+esc(p.name)+' · '+rm(p.price)+'</button>').join('')+'</div>';};}
+
+let SKBOOT=false;
+{const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!SKBOOT&&(can('pos')||boss())){SKBOOT=true;skWatch();}}catch(e){}};window.render=render;}
+window.skState=()=>({SKORD,sug:skSuggest().map(p=>p.id)});
 
 </script>
