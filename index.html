@@ -2245,6 +2245,12 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .skrvnew{background:var(--surface-2);border-radius:12px;padding:10px;margin-top:8px}
 .skord{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:var(--surface)}
 .skpos{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:var(--brass-soft);border-radius:12px;padding:8px 10px;margin:6px 0 8px;font-size:12.5px}.skpos>span{font-weight:600}
+/* ===== treatment pages & offers (app) ===== */
+.ofcard{border-top:3px solid #B2996E}.ofcard h4,.skedit h4{margin:16px 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+.tpbas{display:flex;gap:10px;flex-wrap:wrap}.tpba{display:flex;flex-direction:column;gap:4px;width:220px}
+.tpbai{display:grid;grid-template-columns:1fr 1fr;gap:4px}.tpbai button{height:90px;border:1px dashed var(--line);border-radius:10px;background:var(--surface-2);overflow:hidden;padding:0;cursor:pointer;color:var(--ink-3)}
+.tpbai img{width:100%;height:100%;object-fit:cover}
+.gcbig{font:700 26px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;background:var(--brass-soft);border-radius:12px;padding:14px;margin:6px 0 10px;user-select:all}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2504,7 +2510,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29g';
+const BUILD='2026-09-29h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -9423,7 +9429,7 @@ window.checkout=async()=>{
    });
    const local=HELD.find(h=>h.id===cpId);if(local)local.balances=after;
   }
-  await walSpend(cart,pays,invoiceNo);
+  await walSpend(cart,pays,invoiceNo);await gcSpend(cart,pays,invoiceNo);
   if(cart.voucher)await spendVoucher(cart.voucher,invoiceNo,cart.customerId);
   for(const i of items.filter(x=>x.discCode)){const lv=findVoucher(i.discCode);if(lv)await spendVoucher(lv,invoiceNo,cart.customerId);}
   const ref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:cart.customerId||'',
@@ -15085,7 +15091,7 @@ const EXP_ACCTS=()=>[...coa().filter(a=>a[2]==='expense'&&!['5000','5100','5110'
 const PAYSRC=[['1010','Bank transfer / company card'],['1030','Petty cash (outside the drawer)'],['3000','Owner paid personally']];
 const DRAWER_MAP={'Supplies':'6040','Petty cash':'6190','Staff meal':'5140','Transport':'6100','Repairs':'6050','Utilities':'6010','Refund':'4000','Other':'6190'};
 const CLAIM_MAP={'Transport / parking':'6100','Supplies':'6040','Staff meal':'5140','Training / course':'6130','Phone / internet':'6020','Medical':'5140','Other':'6190'};
-const payAcct=m=>/client credit/i.test(m)?'2150':/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfer|bank|fpx|duitnow|cheque/i.test(m)?'1010':'1020';
+const payAcct=m=>/client credit|gift card/i.test(m)?'2150':/cash|tunai/i.test(m)?'1000':/deposit/i.test(m)?'2200':/transfer|bank|fpx|duitnow|cheque/i.test(m)?'1010':'1020';
 
 async function finLoad(force){
  if(!boss()&&!isAcct())return;
@@ -15330,7 +15336,7 @@ async function finJournalOf(m,br){
   /* packages and treatments paid now for later are held as Unredeemed packages until used */
   const cat={'4000':0,'4010':0,'4020':0,'4030':0,'2100':0},hold=pkgDefer()&&s.date>=pkgFrom();
   (s.items||[]).forEach(i=>{const a=lineAmt(i);if(i.kind==='addon')cat['4030']+=a;else if(retailKind(i.kind))cat['4010']+=a;
-   else if(i.kind==='package')cat[hold?'2100':'4020']+=a;else if(i.kind==='service'&&i.later)cat[hold?'2100':'4000']+=a;else if(i.kind==='wallet')cat['2150']=(cat['2150']||0)+a;else if(i.kind==='membership')cat['4050']=(cat['4050']||0)+a;else if(i.kind!=='redeem')cat['4000']+=a;});
+   else if(i.kind==='package')cat[hold?'2100':'4020']+=a;else if(i.kind==='service'&&i.later)cat[hold?'2100':'4000']+=a;else if(i.kind==='wallet'||i.kind==='gift')cat['2150']=(cat['2150']||0)+a;else if(i.kind==='membership')cat['4050']=(cat['4050']||0)+a;else if(i.kind!=='redeem')cat['4000']+=a;});
   const gross=Object.values(cat).reduce((t,v)=>t+v,0),sst=+s.sst||0,net=r2((+s.total||0)-sst);
   const k=gross?net/gross:0,lines=[['1100',+s.total||0,0]];let left=net;
   const keys=Object.keys(cat).filter(c=>cat[c]>0);keys.forEach((c,i)=>{const v=i===keys.length-1?r2(left):r2(cat[c]*k);left=r2(left-v);lines.push([c,0,v]);});
@@ -22122,7 +22128,8 @@ function lpSvcCard(){
     '<label class="lpswi"><input type="checkbox" '+(onBook(x)?'checked':'')+' onchange="lpSvcBook(\''+x.id+'\',this.checked)"><i></i><span>Online booking</span></label></div>'+
    '<details class="lpcon"><summary>'+ic('target',12)+' Skin concerns: '+(K.length?esc(K.map(k=>LP_CONCERN_MS[k]||k).join(', ')):'<span class="muted">none yet</span>')+'</summary><div class="lpconc">'+
     CONCERNS.map(c=>'<label class="lpck"><input type="checkbox" '+(K.includes(c.id)?'checked':'')+' onchange="lpSvcCon(\''+x.id+'\',\''+c.id+'\',this.checked)"> '+esc(LP_CONCERN_MS[c.id]||c.label)+'</label>').join('')+'</div></details>'+
-   '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea></div></div>';}).join('')+'</div>';
+   '<textarea class="f" rows="2" maxlength="400" placeholder="What it does and who it is for — shown on the landing and booking page" onchange="lpSvcDesc(\''+x.id+'\',this.value)">'+esc(x.desc||'')+'</textarea>'+
+   (typeof tpW==='function'?'<div class="row" style="gap:8px;margin-top:6px;align-items:center"><button class="btn sm ghost" onclick="tpEdit(\''+x.id+'\')">'+ic('edit',13)+'Treatment page</button><span class="tiny muted">'+(tpW(x).on?'Own page on · '+(tpW(x).ba||[]).filter(b=>b.hb&&b.ha).length+' before/after':'No page yet')+'</span></div>':'')+'</div></div>';}).join('')+'</div>';
 }
 /* a whole settings field replaced at once (a merge would keep keys that were taken out) */
 async function lpMetaPut(k,v){try{await updateDoc(doc(db,'meta','settings'),{[k]:v});}catch(e){await setDoc(doc(db,'meta','settings'),{[k]:v},{merge:true});}D.meta[k]=v;}
@@ -25350,5 +25357,187 @@ function skSuggest(){
 let SKBOOT=false;
 {const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!SKBOOT&&(can('pos')||boss())){SKBOOT=true;skWatch();}}catch(e){}};window.render=render;}
 window.skState=()=>({SKORD,sug:skSuggest().map(p=>p.id)});
+
+
+/* ============ Treatment pages, prices & offers on the website ============ */
+/* Each main treatment gets its own page (for search and for ads): problem → solution → how it
+   works → results → price → book, who it suits and who it does not, time, downtime, sessions,
+   when results show, its own before/after, its own questions, and related treatments.
+   Prices are shown openly ("from RMxx" where it varies), with the first-visit offer, session
+   packages compared against paying per visit, an honest countdown to a promotion's real end,
+   membership and points, e-vouchers bought online as gifts, and instalments at the counter. */
+const TP_FAQ=[['pain','Sakit tak?'],['safe','Selamat tak?'],['side','Ada kesan sampingan?']];
+const tpW=s=>({on:false,how:[],fit:[],nofit:[],ba:[],faq:{},xfaq:[],rel:[],...(s.web||{})});
+Object.assign(LP_DEF,{offers:{inst:{on:false,prov:['Atome','Grab PayLater','ShopBack PayLater'],min:300,n:3},pkgs:null,mem:true,loy:true,gv:{on:false,amts:[50,100,200,300],months:12,min:50,max:1000},cd:true}});
+const ofR=L=>{const O={...LP_DEF.offers,...((L||lpSet()).offers||{})};O.inst={...LP_DEF.offers.inst,...(O.inst||{})};O.gv={...LP_DEF.offers.gv,...(O.gv||{})};return O;};
+function tpOut(s){const w=tpW(s);if(!w.on)return null;const t=(x,n)=>String(x||'').slice(0,n);
+ return {slug:w.slug||lpSlug(s.name),hl:t(w.hl,90),prob:t(w.prob,600),sol:t(w.sol,600),how:(w.how||[]).filter(x=>x&&x.t).slice(0,5).map(x=>({t:t(x.t,60),d:t(x.d,240)})),res:t(w.res,600),
+  fit:(w.fit||[]).map(x=>t(x,90)).filter(Boolean).slice(0,6),nofit:(w.nofit||[]).map(x=>t(x,90)).filter(Boolean).slice(0,6),down:t(w.down,80),sess:t(w.sess,80),see:t(w.see,120),
+  ba:(w.ba||[]).filter(b=>b&&b.hb&&b.ha).slice(0,4).map(b=>({b:'ba_'+s.id+'_'+b.id+'_b',a:'ba_'+s.id+'_'+b.id+'_a',hb:b.hb,ha:b.ha,c:t(b.c,80)})),
+  faq:[...TP_FAQ.filter(([k])=>String((w.faq||{})[k]||'').trim()).map(([k,q])=>({q,a:t(w.faq[k],500)})),...(w.xfaq||[]).filter(f=>f&&f.q&&f.a).slice(0,4).map(f=>({q:t(f.q,120),a:t(f.a,500)}))],
+  rel:(w.rel||[]).filter(id=>D.services.some(x=>x.id===id&&x.active!==false)).slice(0,4)};}
+{const _b=lpBuild;lpBuild=function(img){
+ const d=_b(img),L=lpSet(),O=ofR(L);
+ (d.services||[]).forEach(x=>{const s=svc(x.id);if(!s||!s.id)return;const w=tpW(s);if(w.from)x.from=true;const pg=tpOut(s);if(pg)x.pg=pg;});
+ const used=new Set();(d.services||[]).filter(x=>x.pg).forEach(x=>{while(used.has(x.pg.slug))x.pg.slug+='-2';used.add(x.pg.slug);});
+ const keep=D.services.flatMap(s=>(tpW(s).ba||[]).filter(b=>b.hb&&b.ha).flatMap(b=>['ba_'+s.id+'_'+b.id+'_b','ba_'+s.id+'_'+b.id+'_a']));
+ d.imgs=[...new Set([...(d.imgs||[]),...keep])];
+ const svcOn=new Set((d.services||[]).map(x=>x.id)),sp=id=>+(svc(id)||{}).price||0;
+ d.pkgs=D.packages.filter(p=>p.active!==false&&(!O.pkgs||O.pkgs.includes(p.id))&&(p.items||[]).length&&(p.items||[]).every(i=>svcOn.has(i.serviceId))).slice(0,12).map(p=>{
+  const it=(p.items||[]).map(i=>({s:i.serviceId,n:+i.n||0})),worth=it.reduce((a,i)=>a+sp(i.s)*i.n,0),one=it.length===1?it[0]:null;
+  const free=one&&sp(one.s)>0&&Math.abs(+p.price-(one.n-1)*sp(one.s))<0.01&&one.n>1;
+  return {id:p.id,n:String(p.name||'').slice(0,60),p:+p.price||0,it,worth:Math.round(worth*100)/100,days:+p.days||0,...(free?{free:(one.n-1)+'+1'}:{})};}).filter(p=>p.worth>0);
+ d.mem=O.mem&&typeof memPlans==='function'?memPlans().filter(p=>p.active!==false).slice(0,4).map(p=>({id:p.id,n:String(p.name||'').slice(0,40),p:+p.price||0,per:p.period==='year'?'year':'month',ds:+p.discSvc||0,dp:+p.discPrd||0,
+  ss:(p.sessions||[]).filter(x=>x&&x.serviceId&&+x.n).map(x=>({n:+x.n,sn:(svc(x.serviceId)||{}).name||''})).filter(x=>x.sn),perks:String(p.perks||'').slice(0,200)})):[];
+ const Y=typeof loy==='function'?loy():{on:false};d.loy=O.loy&&Y.on?{earnPer:+Y.earnPer||10,pts:+Y.pointsPer||1,rpp:+Y.ringgitPerPoint||0.1,min:+Y.minRedeem||0}:null;
+ d.inst=O.inst.on&&(O.inst.prov||[]).length?{prov:O.inst.prov.slice(0,4),min:+O.inst.min||0,n:Math.max(2,Math.min(6,+O.inst.n||3))}:null;
+ d.gv=O.gv.on?{amts:(O.gv.amts||[]).map(Number).filter(x=>x>0).slice(0,6),months:+O.gv.months||12,min:+O.gv.min||0,max:+O.gv.max||0}:null;
+ d.cd=O.cd!==false;
+ return d;};}
+
+/* ---------- a treatment's page: the editor ---------- */
+let TPE=null;
+window.tpEdit=id=>{const s=svc(id);if(!s||!s.id)return;TPE={id,w:JSON.parse(JSON.stringify(tpW(s)))};if(!TPE.w.slug)TPE.w.slug=lpSlug(s.name);tpPaint();};
+function tpPaint(){
+ const s=svc(TPE.id),w=TPE.w,S=D.services.filter(x=>x.active!==false&&x.id!==s.id);
+ const li=(cls,arr,n,ph)=>[...Array(n)].map((_,i)=>'<input class="f '+cls+'" maxlength="90" value="'+esc((arr||[])[i]||'')+'" placeholder="'+esc(ph[i]||'')+'">').join('');
+ modal('Treatment page · '+s.name,'<div class="card skedit">'+
+  '<p class="tiny muted" style="margin-top:0">Name, price and minutes come from the catalogue ('+rm(s.price)+' · '+(s.dur||60)+' min). The page reads top to bottom: problem → solution → how it works → results → price → book.</p>'+
+  '<label class="row lptog"><input type="checkbox" id="tp-on" '+(w.on?'checked':'')+'> <b>Give this treatment its own page</b></label>'+
+  '<div class="grid g2"><div><label>Web address</label><input class="f" id="tp-slug" maxlength="60" value="'+esc(w.slug||'')+'"></div>'+
+   '<div><label class="row lptog" style="margin-top:26px"><input type="checkbox" id="tp-from" '+(w.from?'checked':'')+'> Price shown as "Bermula dari '+rm(s.price)+'"</label></div></div>'+
+  '<label>Headline — the result</label><input class="f" id="tp-hl" maxlength="90" value="'+esc(w.hl||'')+'" placeholder="Jerawat reda, kulit tenang semula">'+
+  '<h4>1 · The problem</h4><textarea class="f" id="tp-prob" rows="3" maxlength="600" placeholder="Jerawat yang datang balik, kesan gelap, minyak berlebihan… apa yang pelanggan rasa.">'+esc(w.prob||'')+'</textarea>'+
+  '<h4>2 · The solution</h4><textarea class="f" id="tp-sol" rows="3" maxlength="600" placeholder="Apa rawatan ini dan kenapa ia sesuai untuk masalah itu.">'+esc(w.sol||'')+'</textarea>'+
+  '<h4>3 · How it works</h4>'+[0,1,2,3,4].map(i=>{const x=(w.how||[])[i]||{};return '<div class="grid g2 lprow"><input class="f tp-ht" maxlength="60" value="'+esc(x.t||'')+'" placeholder="'+(['Konsultasi & analisis kulit','Pembersihan mendalam','Rawatan utama','Masker menenangkan',''][i])+'"><input class="f tp-hd" maxlength="240" value="'+esc(x.d||'')+'" placeholder="What happens, in a line"></div>';}).join('')+
+  '<h4>4 · Results</h4><textarea class="f" id="tp-res" rows="2" maxlength="600" placeholder="Apa yang pelanggan boleh jangka — jujur, tanpa janji berlebihan.">'+esc(w.res||'')+'</textarea>'+
+  '<div class="grid g3"><div><label>Downtime</label><input class="f" id="tp-down" maxlength="80" value="'+esc(w.down||'')+'" placeholder="Tiada — boleh terus bekerja"></div>'+
+   '<div><label>Sessions suggested</label><input class="f" id="tp-sess" maxlength="80" value="'+esc(w.sess||'')+'" placeholder="4–6 sesi, 2 minggu sekali"></div>'+
+   '<div><label>When results show</label><input class="f" id="tp-see" maxlength="120" value="'+esc(w.see||'')+'" placeholder="Lebih bersih selepas sesi 1; ketara selepas 3"></div></div>'+
+  '<div class="grid g2"><div><label>Suits you if…</label>'+li('tp-fit',w.fit,5,['Kulit berminyak & mudah berjerawat','Jerawat ringan–sederhana','','',''])+'</div>'+
+   '<div><label>Not for you if… <span class="muted">— builds trust</span></label>'+li('tp-nofit',w.nofit,5,['Hamil atau menyusu','Sedang ambil ubat jerawat oral (isotretinoin)','Kulit luka atau terbakar matahari','',''])+'</div></div>'+
+  '<h4>Before & after — this treatment only</h4><p class="tiny muted" style="margin:0 0 6px">Real clients with written consent (the Clinical records keep consent for marketing). Same light, same angle.</p><div class="tpbas">'+
+   (w.ba||[]).map((b,i)=>{const B=b.hb?lpThumb('ba_'+s.id+'_'+b.id+'_b'):'',A=b.ha?lpThumb('ba_'+s.id+'_'+b.id+'_a'):'';
+    return '<div class="tpba"><div class="tpbai"><button type="button" onclick="tpBaPhoto('+i+',\'b\')">'+(B?'<img src="'+B+'" alt="">':'<small>Before</small>')+'</button><button type="button" onclick="tpBaPhoto('+i+',\'a\')">'+(A?'<img src="'+A+'" alt="">':'<small>After</small>')+'</button></div>'+
+     '<input class="f tp-bac" maxlength="80" value="'+esc(b.c||'')+'" placeholder="Selepas 4 sesi · 8 minggu"><button type="button" class="lpx" onclick="tpBaDel('+i+')">Remove</button></div>';}).join('')+
+   ((w.ba||[]).length<4?'<button type="button" class="lpslide add" onclick="tpBaAdd()">'+ic('plus',18)+'<small>Add a pair</small></button>':'')+'</div>'+
+  '<h4>Questions for this treatment</h4>'+TP_FAQ.map(([k,q])=>'<label>'+q+'</label><textarea class="f tp-fq" data-k="'+k+'" rows="2" maxlength="500" placeholder="Leave blank to leave it off">'+esc((w.faq||{})[k]||'')+'</textarea>').join('')+
+  [0,1,2].map(i=>{const f=(w.xfaq||[])[i]||{};return '<div class="grid g2 lprow"><input class="f tp-xq" maxlength="120" value="'+esc(f.q||'')+'" placeholder="Another question"><input class="f tp-xa" maxlength="500" value="'+esc(f.a||'')+'" placeholder="Answer"></div>';}).join('')+
+  '<h4>Related treatments</h4><div class="cr3chips">'+S.map(x=>'<label><input type="checkbox" class="tp-rel" value="'+x.id+'"'+((w.rel||[]).includes(x.id)?' checked':'')+'>'+esc(x.name)+'</label>').join('')+'</div>'+
+  '<p class="tiny muted">Price, the first-visit offer, packages, the countdown and the homecare products fill in by themselves from the catalogue, promotions and LUUNA Skincare.</p>'+
+  '<div id="tp-e" class="tiny" style="color:var(--rose);margin:8px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="tpSave()">'+ic('check',15)+'Save treatment page</button></div>');
+}
+function tpRead(){const g=id=>document.getElementById(id),w=TPE.w,vals=c=>[...document.querySelectorAll('.'+c)].map(x=>x.value.trim());
+ w.on=g('tp-on').checked;w.from=g('tp-from').checked;w.slug=lpSlug(g('tp-slug').value||svc(TPE.id).name);['hl','prob','sol','res','down','sess','see'].forEach(k=>w[k]=g('tp-'+k).value.trim());
+ const ht=vals('tp-ht'),hd=vals('tp-hd');w.how=ht.map((t,i)=>({t,d:hd[i]})).filter(x=>x.t);w.fit=vals('tp-fit').filter(Boolean);w.nofit=vals('tp-nofit').filter(Boolean);
+ const bc=vals('tp-bac');(w.ba||[]).forEach((b,i)=>b.c=bc[i]||'');
+ w.faq={};document.querySelectorAll('.tp-fq').forEach(t=>{if(t.value.trim())w.faq[t.dataset.k]=t.value.trim();});
+ const xq=vals('tp-xq'),xa=vals('tp-xa');w.xfaq=xq.map((q,i)=>({q,a:xa[i]})).filter(f=>f.q&&f.a);
+ w.rel=[...document.querySelectorAll('.tp-rel:checked')].map(x=>x.value);}
+window.tpSave=async()=>{
+ tpRead();const w=TPE.w,e=document.getElementById('tp-e');
+ if(D.services.some(x=>x.id!==TPE.id&&tpW(x).on&&tpW(x).slug===w.slug)){e.textContent='Another treatment page already uses '+w.slug+'.';return;}
+ try{await setDoc(doc(db,'services',TPE.id),{web:w},{merge:true});const s=svc(TPE.id);if(s)s.web=w;if((D.meta||{}).landing)lpPublish(false).catch(()=>{});
+  await audit('Treatment page saved',(s||{}).name||'');window.closeModal();render();toast('Treatment page saved');}catch(err){e.textContent=friendly(err);}
+};
+window.tpBaAdd=()=>{tpRead();TPE.w.ba=[...(TPE.w.ba||[]),{id:'b'+Date.now().toString(36),c:''}];tpPaint();};
+window.tpBaDel=i=>{tpRead();TPE.w.ba=(TPE.w.ba||[]).filter((_,k)=>k!==i);tpPaint();};
+window.tpBaPhoto=(i,side)=>{tpRead();const f=document.createElement('input');f.type='file';f.accept='image/*';
+ f.onchange=async()=>{const x=f.files&&f.files[0];if(!x)return;try{await window.tpBaSet(i,side,await lpShrink(x));tpPaint();}catch(err){toast(friendly(err));}};f.click();};
+window.tpBaSet=async(i,side,img)=>{const b=TPE.w.ba[i];if(!b)return;const id='ba_'+TPE.id+'_'+b.id+'_'+side;await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH[id]=img;LPUP.add(id);b['h'+side]=wbHash(img);};
+
+/* ---------- prices & offers card ---------- */
+function lpOffersCard(L){
+ const O=ofR(L),I=O.inst,G=O.gv,P=D.packages.filter(p=>p.active!==false),M=typeof memPlans==='function'?memPlans().filter(p=>p.active!==false):[],Y=typeof loy==='function'?loy():{};
+ const pm=new Set(payMethods().map(m=>String(m.name).toLowerCase())),miss=(I.prov||[]).filter(x=>!pm.has(x.toLowerCase()));
+ return '<div class="card ofcard"><h3 style="margin:0 0 4px">'+ic('tag',15)+' Prices & offers on the website</h3>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Open prices convert better than "PM for price". Treatments show their price (or "Bermula dari" — set on each treatment page); promotions, packages and membership come from the app.</p>'+
+  '<h4>Session packages</h4>'+(P.length?'<div class="cr3chips">'+P.map(p=>'<label><input type="checkbox" '+(!O.pkgs||O.pkgs.includes(p.id)?'checked':'')+' onchange="ofPkg(\''+p.id+'\',this.checked)">'+esc(p.name)+' · '+rm(p.price)+'</label>').join('')+'</div><p class="tiny muted" style="margin:0">Each is compared with paying per visit. A package priced at 5 sessions for 6 shows as "5+1 PERCUMA" by itself.</p>':'<p class="tiny muted">No packages in the catalogue yet.</p>')+
+  '<h4>Membership & points</h4><label class="row lptog"><input type="checkbox" '+(O.mem?'checked':'')+' onchange="ofF(\'mem\',this.checked)"> Show membership plans ('+M.length+')</label>'+
+  '<label class="row lptog"><input type="checkbox" '+(O.loy?'checked':'')+' onchange="ofF(\'loy\',this.checked)"> Show the points programme'+(Y.on?'':' <span class="muted">(points are off in Loyalty)</span>')+'</label>'+
+  '<h4>Countdown</h4><label class="row lptog"><input type="checkbox" '+(O.cd!==false?'checked':'')+' onchange="ofF(\'cd\',this.checked)"> Live countdown in the last 3 days of a promotion — to its real end date, never reset</label>'+
+  '<h4>Instalments at the counter</h4><label class="row lptog"><input type="checkbox" '+(I.on?'checked':'')+' onchange="ofI(\'on\',this.checked)"> Show "pay in instalments" on packages from</label>'+
+  '<div class="grid g3"><div><label>From (RM)</label><input class="f" type="number" min="0" value="'+(+I.min||0)+'" onchange="ofI(\'min\',+this.value)"></div><div><label>Payments</label><input class="f" type="number" min="2" max="6" value="'+(+I.n||3)+'" onchange="ofI(\'n\',+this.value)"></div></div>'+
+  '<div class="cr3chips">'+['Atome','Grab PayLater','ShopBack PayLater'].map(x=>'<label><input type="checkbox" '+((I.prov||[]).includes(x)?'checked':'')+' onchange="ofProv(\''+x+'\',this.checked)">'+x+'</label>').join('')+'</div>'+
+  '<p class="tiny muted" style="margin:0">Only tick the ones you have a merchant account for. The website says "subject to the provider\'s approval".'+(I.on&&miss.length?' <button class="lpx" onclick="ofPayAdd()">Add '+esc(miss.join(', '))+' to Checkout payment methods</button>':'')+'</p>'+
+  '<h4>E-vouchers as gifts</h4><label class="row lptog"><input type="checkbox" '+(G.on?'checked':'')+' onchange="ofG(\'on\',this.checked)"> Sell e-vouchers on the website</label>'+
+  '<div class="grid g3"><div><label>Amounts (RM, comma between)</label><input class="f" value="'+esc((G.amts||[]).join(', '))+'" onchange="ofG(\'amts\',this.value.split(/[,\\s]+/).map(Number).filter(x=>x>0))"></div>'+
+   '<div><label>Own amount from–to</label><div class="row" style="gap:6px"><input class="f" type="number" value="'+(+G.min||0)+'" onchange="ofG(\'min\',+this.value)"><input class="f" type="number" value="'+(+G.max||0)+'" onchange="ofG(\'max\',+this.value)"></div></div>'+
+   '<div><label>Valid for (months)</label><input class="f" type="number" min="1" max="36" value="'+(+G.months||12)+'" onchange="ofG(\'months\',+this.value)"></div></div>'+
+  gcListHTML()+'</div>';
+}
+const ofSet=f=>{LPD.offers=ofR(LPD);f(LPD.offers);};
+window.ofF=(k,v)=>ofSet(O=>O[k]=v);
+window.ofI=(k,v)=>ofSet(O=>O.inst[k]=v);
+window.ofG=(k,v)=>ofSet(O=>O.gv[k]=v);
+window.ofProv=(x,on)=>ofSet(O=>{O.inst.prov=(O.inst.prov||[]).filter(y=>y!==x);if(on)O.inst.prov.push(x);});
+window.ofPkg=(id,on)=>ofSet(O=>{const all=D.packages.filter(p=>p.active!==false).map(p=>p.id);let L=(O.pkgs||all).filter(x=>x!==id);if(on)L.push(id);O.pkgs=all.every(x=>L.includes(x))?null:L;});
+window.ofPayAdd=async()=>{const O=ofR(LPD),cur=payMethods().map(m=>({...m})),have=new Set(cur.map(m=>String(m.name).toLowerCase()));
+ (O.inst.prov||[]).filter(x=>!have.has(x.toLowerCase())).forEach(x=>cur.push({id:lpSlug(x),name:x,cash:false,active:true,bnpl:true}));
+ try{await lpMetaPut('payMethods',cur);toast('Added to Checkout');render();}catch(e){toast(friendly(e));}};
+{const _pc=lpPromoCard;lpPromoCard=function(L){return _pc(L)+lpOffersCard(L);};}
+
+/* ---------- e-vouchers: sold, sent, spent ---------- */
+let GC=null;
+async function gcLoad(){try{const s=await getDocs(query(collection(db,'giftCards'),orderBy('issuedAt','desc'),limit(100)));GC=s.docs.map(d=>({id:d.id,...d.data()}));}catch(e){GC=[];}if(TAB==='lp')render();}
+function gcListHTML(){if(GC===null){GC=[];gcLoad();}
+ const live=GC.filter(g=>g.status==='active'&&+g.balance>0),owed=live.reduce((a,g)=>a+(+g.balance||0),0);
+ return '<div class="row" style="gap:8px;flex-wrap:wrap;margin:10px 0 4px"><button class="btn sm" onclick="gcSell()">'+ic('gift',13)+'Sell an e-voucher</button>'+(live.length?'<span class="tiny muted">'+live.length+' unused · '+rm(owed)+' still owed to holders</span>':'')+'</div>'+
+  GC.slice(0,8).map(g=>'<div class="skord"><div class="spread"><b>'+esc(g.code)+' · '+rm(g.amount)+'</b><span class="pill '+(g.status==='active'&&+g.balance>0?'g':'')+'">'+(+g.balance>0?'Balance '+rm(g.balance):'Used')+'</span></div>'+
+   '<div class="tiny muted">For '+esc(g.toName||'—')+' · from '+esc(g.fromName||g.buyerName||'—')+' · until '+dshort(g.expiry)+'</div></div>').join('');}
+const gcCode=()=>'LV'+[...crypto.getRandomValues(new Uint8Array(4))].map(b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('')+[...crypto.getRandomValues(new Uint8Array(2))].map(b=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[b%32]).join('');
+window.gcSell=(pre)=>{pre=pre||{};const G=ofR().gv,m=activePay();
+ modal('Sell an e-voucher','<div class="card"><div class="grid g2"><div><label>Amount (RM)</label><input class="f" type="number" id="gc-a" min="1" value="'+(+pre.amount||(G.amts||[])[1]||100)+'"></div>'+
+  '<div><label>Paid by</label><select class="f" id="gc-m">'+m.map(x=>'<option'+(pre.method===x.name?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></div></div>'+
+  '<div class="grid g2"><div><label>Buyer</label><input class="f" id="gc-bn" value="'+esc(pre.buyerName||'')+'"></div><div><label>Buyer WhatsApp</label><input class="f" id="gc-bp" type="tel" value="'+esc(pre.buyerPhone||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>For (name on the voucher)</label><input class="f" id="gc-tn" value="'+esc(pre.toName||'')+'"></div><div><label>From</label><input class="f" id="gc-fn" value="'+esc(pre.fromName||pre.buyerName||'')+'"></div></div>'+
+  '<label>Message</label><input class="f" id="gc-msg" maxlength="160" value="'+esc(pre.msg||'')+'" placeholder="Selamat hari jadi! Rehat & manjakan diri ya.">'+
+  '<div id="gc-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" id="gc-go" onclick="gcSellSave(\''+esc(pre.orderId||'')+'\')">'+ic('check',15)+'Take payment & make the voucher</button></div>');};
+window.gcSellSave=async orderId=>{
+ const g=id=>document.getElementById(id),amt=r2(+g('gc-a').value||0),e=g('gc-e');if(amt<=0){e.textContent='Enter the amount.';return;}
+ const bn=g('gc-bn').value.trim(),bp=g('gc-bp').value.trim(),tn=g('gc-tn').value.trim(),fn=g('gc-fn').value.trim(),msg=g('gc-msg').value.trim(),m=g('gc-m').value;
+ if(!bn||digits(bp).length<9){e.textContent='Buyer name and WhatsApp number, please.';return;}
+ g('gc-go').disabled=true;
+ try{const G=ofR().gv,code=gcCode(),at=new Date().toISOString(),invoiceNo=(DEMO?'DEMO-':'INV-')+Date.now().toString().slice(-8),expiry=ymd(addDays(new Date(),Math.round((+G.months||12)*30.4)));
+  const sref=await addDoc(collection(db,'sales'),{branchId:ME.branchId,customerId:'',customerName:bn,invoiceNo,staffId:UID,staffName:ME.name,
+   items:[{kind:'gift',id:code,name:'E-voucher '+code+' ('+rm(amt)+')',price:amt,qty:1,staffId:UID}],discount:0,sst:0,total:amt,date:today(),at,voided:false,
+   payments:[{method:m,amount:amt,at,date:today(),by:UID,byName:ME.name}],createdBy:UID,paid:amt,balance:0,status:'paid',lastPaidDate:today(),lastPaidAt:at,giftCode:code});
+  const card={code,amount:amt,balance:amt,buyerName:bn,buyerPhone:bp,toName:tn,fromName:fn,msg,status:'active',saleId:sref.id,invoiceNo,orderId:orderId||'',issuedAt:at,issuedBy:UID,expiry,branchId:ME.branchId,uses:[]};
+  await setDoc(doc(db,'giftCards',code),card);(GC=GC||[]).unshift({id:code,...card});
+  if(orderId){try{await updateDoc(doc(db,'webOrders',orderId),{status:'done',doneAt:at,giftCode:code,by:UID});const o=SKORD.find(x=>x.id===orderId);if(o)o.status='done';}catch(err){}}
+  await audit('E-voucher sold',code+' · '+rm(amt)+' · '+bn);
+  const b=D.meta.biz||{},txt='🎁 E-Voucher '+(b.name||'Luuna')+'\n'+(tn?'Untuk: '+tn+'\n':'')+(fn?'Daripada: '+fn+'\n':'')+(msg?'"'+msg+'"\n':'')+'\nNilai: '+rm(amt)+'\nKod: *'+code+'*\nSah sehingga: '+dstr(expiry)+'\n\nTunjukkan kod ini semasa bayaran di '+(b.name||'spa')+'. Baki boleh digunakan untuk lawatan seterusnya.';
+  modal('E-voucher ready','<div class="card" style="text-align:center"><div class="gcbig">'+esc(code)+'</div><p>'+rm(amt)+(tn?' for '+esc(tn):'')+' · valid until '+dstr(expiry)+'</p>'+
+   '<a class="btn" style="width:100%;justify-content:center" target="_blank" href="https://wa.me/'+waNum(bp)+'?text='+encodeURIComponent(txt)+'">'+ic('msg',15)+'Send on WhatsApp</a></div>');
+  if(typeof loadRecentSales==='function')loadRecentSales().catch(()=>{});
+ }catch(err){e.textContent=friendly(err);g('gc-go').disabled=false;}
+};
+/* paying with an e-voucher at checkout; the balance goes down when the bill is saved */
+window.gcPay=async()=>{
+ const code=String(prompt('E-voucher code')||'').toUpperCase().replace(/[^A-Z0-9]/g,'');if(!code)return;
+ let g=null;try{const s=await getDoc(doc(db,'giftCards',code));g=s.exists()?s.data():null;}catch(e){}
+ if(!g){toast('No e-voucher with that code');return;}if(g.status!=='active'||!(+g.balance>0)){toast('This e-voucher has been used up');return;}
+ if(g.expiry&&g.expiry<today()){toast('This e-voucher expired on '+dstr(g.expiry));return;}
+ const t=cartTotals(),used=cart.payments.filter(p=>p.method==='Gift card'&&p.ref===code).reduce((a,p)=>a+(+p.amount||0),0),left=r2(t.total-t.paid),amt=r2(Math.min(+g.balance-used,left));
+ if(amt<=0){toast('Nothing left to pay');return;}
+ cart.payments.push({method:'Gift card',amount:amt,ref:code});render();toast(rm(amt)+' paid by e-voucher '+code+(+g.balance-used-amt>0?' · '+rm(+g.balance-used-amt)+' stays on it':''));
+};
+async function gcSpend(cart,pays,invoiceNo){
+ const by={};pays.filter(p=>p.method==='Gift card').forEach(p=>{by[p.ref]=(by[p.ref]||0)+(+p.amount||0);});
+ for(const [code,amt] of Object.entries(by)){
+  await runTransaction(db,async tx=>{const ref=doc(db,'giftCards',code),s=await tx.get(ref);if(!s.exists())throw new Error('E-voucher '+code+' not found.');
+   const g=s.data();if(g.status!=='active'||+g.balance<amt-0.001)throw new Error('E-voucher '+code+' has only '+rm(g.balance)+' left.');
+   const bal=r2(+g.balance-amt);tx.update(ref,{balance:bal,status:bal>0?'active':'used',uses:[...(g.uses||[]),{at:new Date().toISOString(),amt:r2(amt),invoiceNo,by:UID}].slice(-30)});});
+  const x=(GC||[]).find(g=>g.code===code);if(x)x.balance=r2(+x.balance-amt);
+ }
+}
+window.gcSpend=gcSpend;
+{const _q=quoteBar;quoteBar=function(){const h=_q();if(!cart.items.length)return h;return h+'<div class="row" style="gap:6px;margin:4px 0 6px"><button class="btn sm ghost" onclick="gcPay()">'+ic('gift',13)+'Pay with e-voucher</button></div>';};}
+/* a website order for an e-voucher is issued from here, not rung up as products */
+{const _oh=skOrdersHTML;skOrdersHTML=function(){let h=_oh();SKORD.filter(o=>o.gift&&o.status!=='done'&&o.status!=='cancel').forEach(o=>{
+ h=h.replace('onclick="skOrdPos(\''+o.id+'\')">'+ic('card',13)+'Ring up in Checkout</button>','onclick="gcFromOrder(\''+o.id+'\')">'+ic('gift',13)+'Take payment & issue</button>');
+ h=h.replace('<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b>','<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b> <span class="pill b">E-voucher for '+esc(o.gift.to||'')+'</span>');});return h;};}
+window.gcFromOrder=id=>{const o=SKORD.find(x=>x.id===id);if(!o)return;window.gcSell({orderId:o.id,amount:o.total,buyerName:o.name,buyerPhone:o.phone,toName:(o.gift||{}).to||'',fromName:(o.gift||{}).from||o.name,msg:(o.gift||{}).msg||''});};
+window.gcState=()=>({GC});
 
 </script>

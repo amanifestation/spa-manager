@@ -613,6 +613,66 @@ footer .wrap{align-items:flex-start}.fcol{display:flex;flex-direction:column;gap
 .carttot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line-2);padding-top:10px;margin-bottom:6px}.carttot b{font-family:var(--serif);font-size:26px}
 .howr{display:flex;gap:16px;flex-wrap:wrap;font-size:14px}.howr label{display:flex;align-items:center;gap:6px;font-weight:500!important;margin:0!important}
 .hc{margin:14px 0 4px;padding-top:12px;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:10px}
+
+/* ===== treatment pages, prices & offers ===== */
+.fromp{font-size:11px;color:var(--ink-3);margin-right:4px;letter-spacing:.04em}
+.cdl{font-variant-numeric:tabular-nums;font-weight:600}
+.thero{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,64px);align-items:center}
+.thero h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,5.6vw,66px);line-height:1.02;margin:12px 0 8px;letter-spacing:-.015em}
+.tname{margin:0 0 8px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:600}
+.tlead{color:var(--ink-2);line-height:1.8;margin:0 0 14px;max-width:560px}
+.tfacts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0}
+.tfacts div{display:grid;grid-template-columns:auto 1fr;column-gap:10px;align-items:center;background:var(--surface);border:var(--hair);border-radius:16px;padding:12px 14px}
+.tfacts .ico{grid-row:span 2;color:var(--gbrush)}.tfacts span{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);font-weight:600}.tfacts b{font-size:13.5px;font-weight:600;line-height:1.35}
+.tacts{display:flex;gap:10px;flex-wrap:wrap}
+.timg{position:relative;aspect-ratio:4/5;border-radius:28px;background:var(--surface-2) center/cover no-repeat;box-shadow:var(--lift);filter:saturate(.9) brightness(1.03)}
+.timg.blank{background:radial-gradient(circle at 30% 25%,rgba(215,197,170,.5),transparent 55%),linear-gradient(150deg,#26231F,#0D0D0D)}
+.tpill{position:absolute;left:16px;bottom:16px;background:rgba(255,255,255,.92);border-radius:99px;padding:8px 14px;font-family:var(--serif);font-size:22px;font-weight:600}
+.tsec{margin-top:clamp(56px,7vw,96px);max-width:900px}
+.tsh{display:flex;align-items:center;gap:12px;margin-bottom:16px}.tsh h2{font-size:clamp(28px,4vw,42px)}
+.tpage{counter-reset:ts}.tsn::before{counter-increment:ts;content:counter(ts);width:34px;height:34px;border-radius:50%;border:1px solid var(--gbrush);display:grid;place-items:center;font-family:var(--serif);font-size:18px;color:var(--brass)}
+.ttx{white-space:pre-line;color:var(--ink-2);line-height:1.85;font-size:15.5px;margin:0}
+.thow{list-style:none;padding:0;margin:0;display:grid;gap:10px;counter-reset:h}
+.thow li{position:relative;background:var(--surface);border:var(--hair);border-radius:18px;padding:16px 18px 16px 62px;box-shadow:var(--lift)}
+.thow li::before{counter-increment:h;content:counter(h);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--jet);color:var(--champagne);display:grid;place-items:center;font-family:var(--serif);font-size:17px}
+.thow b{display:block;font-size:15px}.thow span{display:block;font-size:14px;color:var(--ink-2);margin-top:2px}
+.bas{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:18px}
+.ba{margin:0}.baw{position:relative;aspect-ratio:1;border-radius:22px;overflow:hidden;border:var(--hair);background:var(--surface-2)}
+.bai{position:absolute;inset:0;background:var(--surface-2) center/cover no-repeat}.bai.bb{clip-path:inset(0 50% 0 0);border-right:2px solid #fff}
+.bal{position:absolute;top:12px;z-index:2;background:rgba(13,13,13,.55);color:#fff;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;border-radius:99px;padding:4px 10px}.bal.l{left:12px}.bal.r{right:12px}
+.barng{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;z-index:3;margin:0}
+.ba figcaption{font-size:12.5px;color:var(--ink-3);margin-top:8px;text-align:center}
+.banote{font-size:12px;color:var(--ink-3);margin:10px 0 0}
+.tfit{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fit{background:var(--surface);border:var(--hair);border-radius:22px;padding:20px 22px;box-shadow:var(--lift)}.fit h3{display:flex;align-items:center;gap:8px;font-size:15px;margin-bottom:10px}
+.fit.y h3 .ico{color:var(--gbrush)}.fit.n h3 .ico{color:var(--mushroom)}.fit ul{margin:0;padding-left:18px;color:var(--ink-2);line-height:1.8;font-size:14px}.fit.n{background:var(--surface-2)}
+.tprice{display:grid;grid-template-columns:1fr 1.2fr;gap:14px}
+.tpone{background:var(--surface);border:var(--hair);border-radius:22px;padding:20px 22px;box-shadow:var(--lift)}
+.tpone span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);font-weight:600}.tpone b{display:block;font-family:var(--serif);font-size:44px;font-weight:600;line-height:1.1;margin:6px 0 2px}
+.tpone b small{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink-3)}.tpone em{font-style:normal;color:var(--ink-3);font-size:13px}
+.tpromo{background:var(--jet);color:var(--porcelain);border-radius:22px;padding:20px 22px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.tpromo .eyebrow{color:var(--champagne)}.tpromo .eyebrow::before{background:var(--champagne)}.tpromo p{margin:0;color:#C9C1B6;font-size:13.5px}
+.tpp{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.tpp b{font-family:var(--serif);font-size:40px;color:var(--champagne);font-weight:600;line-height:1.1}.tpp s{color:var(--mushroom)}.tpp em{font-style:normal;font-size:11.5px;font-weight:700;border:1px solid rgba(215,197,170,.55);color:var(--champagne);border-radius:99px;padding:2px 9px}
+.tcd{font-size:13px;color:var(--champagne)}.tpromo .btn.pri{background:var(--champagne);color:var(--jet);margin-top:4px}
+.inst{display:flex;gap:6px;align-items:flex-start;font-size:12px;color:var(--ink-3);margin:8px 0 0;line-height:1.5}.inst .ico{color:var(--gbrush);margin-top:2px}
+.tpk{margin:26px 0 12px;font-size:15px}
+.pkg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.pkc{position:relative;background:var(--surface);border:var(--hair);border-radius:22px;padding:20px;box-shadow:var(--lift);display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.pkfree{align-self:flex-start;background:var(--jet);color:var(--champagne);font-size:10.5px;font-weight:700;letter-spacing:.14em;border-radius:99px;padding:5px 10px}
+.pkn{font-size:15.5px}.pki{margin:0;font-size:12.5px;color:var(--ink-3)}
+.pkp{display:flex;align-items:baseline;gap:10px}.pkp b{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1.1}.pkp s{color:var(--ink-3);font-size:14px}.pkp small{color:var(--ink-3);font-size:13px}
+.pkper{margin:0;font-size:13px;color:var(--ink-2);font-weight:500}.pksave{font-size:11.5px;font-weight:700;background:var(--brass-soft);color:var(--brass);border-radius:99px;padding:3px 10px}
+.pkc .btn{margin-top:auto}
+.tbook{margin-top:clamp(56px,7vw,96px);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--jet);color:var(--porcelain);border-radius:28px;padding:clamp(22px,4vw,40px)}
+.tbook h2{color:#fff}.tbook p{margin:6px 0 0;color:#C9C1B6}.tbook .btn.pri{background:var(--champagne);color:var(--jet)}.tbook .btn.light{background:transparent;color:var(--porcelain);border-color:rgba(255,255,255,.3)}
+.offg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:16px}
+.memc,.gvc,.loyc{background:var(--surface);border:var(--hair);border-radius:22px;padding:22px;box-shadow:var(--lift);display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.memc h3{font-family:var(--serif);font-weight:500;font-size:26px}.memc ul{list-style:none;padding:0;margin:4px 0 8px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:var(--ink-2)}.memc li{display:flex;gap:8px}.memc li .ico{color:var(--gbrush);margin-top:3px}
+.gvc{background:var(--jet);color:var(--porcelain)}.gvc h3{font-family:var(--serif);font-weight:500;font-size:26px;color:#fff}.gvc p{margin:0;color:#C9C1B6;font-size:13.5px}
+.gvi{width:52px;height:52px;border-radius:50%;border:1px solid rgba(215,197,170,.45);display:grid;place-items:center;color:var(--champagne)}
+.gva{display:flex;flex-wrap:wrap;gap:6px}.gva span{border:1px solid rgba(215,197,170,.4);color:var(--champagne);border-radius:99px;padding:4px 10px;font-size:12.5px}.gvc .btn{background:var(--champagne);color:var(--jet)}
+.loyc p{margin:0;font-size:14px;color:var(--ink-2);line-height:1.7}
+@media(max-width:860px){.thero,.tprice,.tfit{grid-template-columns:1fr}.timg{aspect-ratio:16/10;order:-1}.tfacts{grid-template-columns:1fr 1fr}.tfacts div{padding:10px}.tacts .btn{flex:1}}
 </style>
 </head>
 <body>
@@ -908,6 +968,7 @@ function render(){
     '<div class="meta"><span>'+(p.limit>0?T('leftOf')(p.left,p.limit):'')+'</span><span data-end="'+esc(p.end||'')+'">'+(p.end?T('endsIn')(left(p.end)):'')+'</span></div>'+
     '<div class="acts"><button class="btn pri sm" data-claim="'+esc(p.id)+'">'+ic('gift',16)+T('claim')+'</button>'+
      (P.bookOn&&p.svc&&p.svc.length===1&&svcOf(p.svc[0])&&svcOf(p.svc[0]).b!==false?'<button class="btn light sm" data-book="'+esc(p.svc[0])+'">'+T('bookDirect')+'</button>':'')+'</div></div></article>';}).join('')+'</div></div></section>';
+ h+=offersHomeHTML();
  /* find by skin concern */
  if((P.concerns||[]).length)h+='<section class="sec finder" id="cari"><div class="wrap"><div class="fbox rv0"><div class="sec-h" style="margin-bottom:16px"><div><span class="eyebrow">'+T('fEy2')+'</span><h2>'+T('fH2')+'</h2><p>'+T('fP2')+'</p></div></div><div id="finder"></div></div></div></section>';
  /* treatments */
@@ -1294,8 +1355,8 @@ function aboutHTML(){const A=P.about||{};if(!A.x)return '';
   '<div class="rv0"><span class="eyebrow">'+TS('abEy')+'</span><h2>'+esc(A.t||TS('abH'))+'</h2><p class="abtx">'+esc(A.x)+'</p>'+
   ((A.pts||[]).length?'<ul class="ticks" style="flex-direction:column;gap:10px;margin-top:18px">'+A.pts.map(x=>'<li><span class="tk">'+ic('check',12)+'</span>'+esc(x)+'</li>').join('')+'</ul>':'')+'</div></div></div></section>';}
 function navHTML(){const v=route().k,L=livePromos(),A=P.about||{};
- const it=[['rawatan',TS('treat')],...(SKP().length?[['shop',TS('skin')]]:[]),...(L.length?[['promo',TS('promo')]]:[]),...(A.x?[['tentang',TS('about')]]:[])];
- return it.map(([k,l])=>'<a href="'+(k==='shop'?'?skincare'+pv():'#'+k)+'" data-nav="'+k+'"'+((k==='shop'&&v!=='home')?' class="on"':'')+'>'+esc(l)+'</a>').join('');}
+ const it=[['rawatan',TS('treat')],...(SKP().length?[['shop',TS('skin')]]:[]),...(L.length||(P.pkgs||[]).length||(P.mem||[]).length||P.gv?[[L.length?'promo':'pakej',TS('promo')]]:[]),...(A.x?[['tentang',TS('about')]]:[])];
+ return it.map(([k,l])=>'<a href="'+(k==='shop'?'?skincare'+pv():'#'+k)+'" data-nav="'+k+'"'+(((k==='shop'&&(v==='shop'||v==='prod'))||(k==='rawatan'&&v==='svc'))?' class="on"':'')+'>'+esc(l)+'</a>').join('');}
 function headHTML(){const b=P.biz||{},logo=b.logo?'<img src="'+esc(b.logo)+'" alt="">':'<span class="mk">'+ic('spark',20)+'</span>',n=CART.reduce((a,x)=>a+x.q,0);
  return '<header class="top" id="top"><div class="wrap"><a class="brand" href="'+homeUrl()+'" data-nav="home">'+logo+'<b>'+esc(b.name||'Luuna')+'</b></a>'+
   '<nav class="nav">'+navHTML()+'</nav>'+
@@ -1390,6 +1451,129 @@ document.addEventListener('click',e=>{
  else if(d.mnav!==undefined)mnavSheet();
  else if(d.pask!==undefined){const p=prodId(d.pask);if(p)openWa(TS('waAsk',p.n));}
 });
+
+
+/* ================= treatment pages, prices & offers ================= */
+const OT={ms:{from:'dari',fromL:'Bermula dari',perSess:'/sesi',min:'minit',dur:'Tempoh',down:'Downtime',sess:'Sesi dicadangkan',see:'Bila nampak hasil',
+  probH:'Masalahnya',solH:'Penyelesaian',howH:'Cara ia berfungsi',resH:'Hasil yang boleh dijangka',fitH:'Sesuai untuk',nofitH:'Tidak sesuai untuk',priceH:'Harga',baH:'Sebelum & selepas',
+  before:'Sebelum',after:'Selepas',baNote:'Gambar pelanggan sebenar dengan kebenaran. Hasil berbeza mengikut individu.',faqH:'Soalan tentang rawatan ini',relH:'Rawatan berkaitan',hcH:'Jaga hasilnya di rumah',
+  single:'Satu sesi',pkgs:'Pakej sesi',save:v=>'Jimat '+v,worth:v=>'Nilai '+v,sessions:n=>n+' sesi',valid:d=>'sah '+Math.round(d/30)+' bulan',free:x=>x+' PERCUMA',askPkg:'Tanya pakej',
+  inst:(n,v,p)=>'atau '+n+'× '+v+' dengan '+p+' — di kaunter, tertakluk kelulusan penyedia',first:'Tawaran pertama kali',promoNow:'Tawaran semasa',endsIn:'Tamat dalam',ended:'Tamat',
+  bookNow:'Book rawatan ini',ask:'Tanya dahulu',bookBand:'Sedia untuk mula?',bookBandP:'Pilih tarikh dan masa — rawatan ini sudah dipilih untuk anda.',
+  offH:'Pakej, keahlian & e-voucher',offP:'Jimat lebih untuk rawatan berkala, dan hadiah yang semua orang suka.',memH:'Keahlian',perMonth:'/bulan',perYear:'/tahun',
+  memDs:v=>'Diskaun '+v+'% setiap rawatan',memDp:v=>'Diskaun '+v+'% produk',memSs:(n,s)=>n+'× '+s+' setiap bulan',join:'Sertai',loy:(e,p,r,m)=>'Setiap RM'+e+' = '+p+' mata · 1 mata = RM'+r.toFixed(2)+(m?' · tebus dari '+m+' mata':''),loyH:'Mata ganjaran',
+  gvH:'E-voucher hadiah',gvP:'Hadiah rawatan untuk orang tersayang — dihantar melalui WhatsApp, baki boleh guna lawatan seterusnya.',gvBuy:'Beli e-voucher',gvAmt:'Nilai',gvOwn:'Nilai lain (RM)',
+  gvTo:'Untuk (nama penerima)',gvFrom:'Daripada',gvMsg:'Mesej (pilihan)',gvSend:'Hantar pesanan',gvDone:'Pesanan e-voucher diterima',gvDoneP:'Team kami akan WhatsApp anda untuk bayaran. E-voucher dihantar sebaik sahaja dibayar.',
+  gvRange:(a,b)=>'Nilai antara RM'+a+' – RM'+b+'.',gvValid:m=>'Sah '+m+' bulan dari tarikh beli.',rawatan:'Rawatan'},
+ en:{from:'from',fromL:'From',perSess:'/session',min:'min',dur:'Duration',down:'Downtime',sess:'Sessions suggested',see:'When you see results',
+  probH:'The problem',solH:'The solution',howH:'How it works',resH:'Results you can expect',fitH:'Suits you if',nofitH:'Not for you if',priceH:'Price',baH:'Before & after',
+  before:'Before',after:'After',baNote:'Real clients, shown with permission. Results vary between people.',faqH:'Questions about this treatment',relH:'Related treatments',hcH:'Keep the results at home',
+  single:'One session',pkgs:'Session packages',save:v=>'Save '+v,worth:v=>'Worth '+v,sessions:n=>n+' sessions',valid:d=>'valid '+Math.round(d/30)+' months',free:x=>x+' FREE',askPkg:'Ask about this package',
+  inst:(n,v,p)=>'or '+n+'× '+v+' with '+p+' — at the counter, subject to approval',first:'First-visit offer',promoNow:'Current offer',endsIn:'Ends in',ended:'Ended',
+  bookNow:'Book this treatment',ask:'Ask first',bookBand:'Ready to start?',bookBandP:'Pick a date and time — this treatment is already chosen for you.',
+  offH:'Packages, membership & e-vouchers',offP:'Save more on regular care, and a gift everyone loves.',memH:'Membership',perMonth:'/month',perYear:'/year',
+  memDs:v=>v+'% off every treatment',memDp:v=>v+'% off products',memSs:(n,s)=>n+'× '+s+' every month',join:'Join',loy:(e,p,r,m)=>'Every RM'+e+' = '+p+' point'+(p>1?'s':'')+' · 1 point = RM'+r.toFixed(2)+(m?' · redeem from '+m+' points':''),loyH:'Reward points',
+  gvH:'Gift e-voucher',gvP:'A treatment as a gift — sent on WhatsApp, and any balance carries over to the next visit.',gvBuy:'Buy an e-voucher',gvAmt:'Amount',gvOwn:'Other amount (RM)',
+  gvTo:'For (their name)',gvFrom:'From',gvMsg:'Message (optional)',gvSend:'Send order',gvDone:'E-voucher order received',gvDoneP:'Our team will WhatsApp you to take payment. The e-voucher is sent as soon as it is paid.',
+  gvRange:(a,b)=>'Amount between RM'+a+' and RM'+b+'.',gvValid:m=>'Valid '+m+' months from purchase.',rawatan:'Treatments'}};
+const TO=(k,...a)=>{const v=(OT[LANG]||OT.ms)[k];return typeof v==='function'?v(...a):v;};
+Object.assign(IC,{time:'M12 21a9 9 0 100-18 9 9 0 000 18zM12 7.5V12l3 2',leafx:'M5 19c8 0 14-6 14-14-8 0-14 6-14 14zM5 19l7-7',x2:'M6 6l12 12M18 6L6 18'});
+const svcBySlug=sl=>(P.services||[]).find(s=>s.pg&&s.pg.slug===sl);
+const turl=s=>'?rawatan='+encodeURIComponent(s.pg.slug)+pv();
+{const _r=route;route=function(){const q=new URLSearchParams(location.search);if(q.get('rawatan')&&P&&svcBySlug(q.get('rawatan')))return {k:'svc',s:svcBySlug(q.get('rawatan'))};return _r();};}
+/* a treatment with its own page opens the page, not the quick sheet */
+{const _ss=svcSheet;svcSheet=function(id){const s=svcOf(id);if(s&&s.pg){closeSheet();navTo(turl(s));return;}_ss(id);};}
+/* "from RMxx" where the price varies */
+{const _sr=svcRow;svcRow=function(s,extra){let h=_sr(s,extra);if(s.from&&P.showPrices!==false)h=h.replace('<div class="svp">','<div class="svp"><small class="fromp">'+TO('from')+'</small>');return h;};}
+/* ---------- the honest countdown: to the promotion's real end, never reset ---------- */
+function cdText(end){const ms=Date.parse(end+'T23:59:59+08:00')-Date.now();if(ms<=0)return TO('ended');const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60,p=n=>String(n).padStart(2,'0');
+ return TO('endsIn')+' '+(d?d+(LANG==='en'?'d ':' hari '):'')+p(h)+':'+p(m)+':'+p(x);}
+function cdTick(){if(P&&P.cd===false)return;document.querySelectorAll('[data-end]').forEach(e=>{const en=e.dataset.end;if(!en)return;const ms=Date.parse(en+'T23:59:59+08:00')-Date.now();if(ms>0&&ms<72*36e5){e.dataset.cd=en;e.removeAttribute('data-end');}});
+ document.querySelectorAll('[data-cd]').forEach(e=>{e.textContent=cdText(e.dataset.cd);e.classList.add('cdl');});}
+if(!window.__cdT)window.__cdT=setInterval(cdTick,1000);
+/* ---------- prices ---------- */
+const instLine=p=>{const I=P.inst;if(!I||!(p>=I.min)||!p)return '';return '<p class="inst">'+ic('spark',13)+esc(TO('inst',I.n,rm(Math.ceil(p/I.n*100)/100),I.prov.join(' · ')))+'</p>';};
+function pkgCard(k,sid){const one=k.it.length===1?k.it[0]:null,s1=one?svcOf(one.s):null,per=one&&one.n?k.p/one.n:0,save=k.worth-k.p;
+ return '<div class="pkc rv0">'+(k.free?'<span class="pkfree">'+esc(TO('free',k.free))+'</span>':'')+'<b class="pkn">'+esc(k.n)+'</b>'+
+  '<p class="pki">'+k.it.map(i=>{const s=svcOf(i.s);return esc(TO('sessions',i.n)+(s&&(!sid||k.it.length>1)?' '+s.n:''));}).join(' + ')+(k.days?' · '+esc(TO('valid',k.days)):'')+'</p>'+
+  '<div class="pkp"><b>'+rm(k.p)+'</b>'+(save>0.5?'<s>'+rm(k.worth)+'</s>':'')+'</div>'+
+  (per&&s1?'<p class="pkper">'+rm(Math.round(per*100)/100)+TO('perSess')+(s1.p>per?' · '+esc(TO('save',rm(Math.round((s1.p-per)*100)/100)))+TO('perSess'):'')+'</p>':'')+
+  (save>0.5?'<span class="pksave">'+esc(TO('save',rm(Math.round(save*100)/100)))+'</span>':'')+instLine(k.p)+
+  '<button class="btn light sm" data-askpkg="'+esc(k.id)+'">'+ic('wa',14)+TO('askPkg')+'</button></div>';}
+function priceBlock(s){
+ if(P.showPrices===false)return '';const bp=bestPromo(s),K=(P.pkgs||[]).filter(k=>k.it.some(i=>i.s===s.id));
+ const promo=bp?'<div class="tpromo"><span class="eyebrow">'+(bp.p.newOnly?TO('first'):TO('promoNow'))+'</span><div class="tpp"><b>'+rm(bp.v)+'</b><s>'+rm(s.p)+'</s>'+(bp.p.type==='price'?'':'<em>'+esc(pBadge(bp.p))+'</em>')+'</div><p>'+esc(bp.p.t)+'</p>'+
+   (bp.p.end?'<span class="tcd" data-end="'+esc(bp.p.end)+'">'+esc(T('endsIn')(left(bp.p.end)).replace(/<\/?b>/g,''))+'</span>':'')+'<button class="btn pri sm" data-claim="'+esc(bp.p.id)+'">'+ic('gift',14)+T('claim')+'</button></div>':'';
+ return '<div class="tprice"><div class="tpone"><span>'+TO('single')+'</span><b>'+(s.from?'<small>'+TO('fromL')+'</small> ':'')+rm(s.p)+'</b><em>'+(s.d||60)+' '+TO('min')+'</em>'+instLine(s.p)+'</div>'+promo+'</div>'+
+  (K.length?'<h3 class="tpk">'+TO('pkgs')+'</h3><div class="pkg">'+K.map(k=>pkgCard(k,s.id)).join('')+'</div>':'');}
+/* ---------- the treatment page ---------- */
+function tpHTML(s){
+ const g=s.pg,C=catOf(s.c),K=(s.k||[]).map(cLabel),hc=homecareFor(s.id),rel=((g.rel||[]).map(svcOf).filter(Boolean).length?(g.rel||[]).map(svcOf).filter(Boolean):(P.services||[]).filter(x=>x.id!==s.id&&(x.k||[]).some(k=>(s.k||[]).includes(k)))).filter(x=>x.id!==s.id).slice(0,4);
+ const facts=[['time',TO('dur'),(s.d||60)+' '+TO('min')],g.down?['leafx',TO('down'),g.down]:null,g.sess?['cal',TO('sess'),g.sess]:null,g.see?['spark',TO('see'),g.see]:null].filter(Boolean);
+ const book=P.bookOn&&s.b!==false?'<button class="btn pri" data-book="'+esc(s.id)+'">'+ic('cal',18)+TO('bookNow')+'</button>':'';
+ const sec=(id,h,body)=>body?'<div class="tsec rv0" id="'+id+'"><div class="tsh"><span class="tsn"></span><h2>'+h+'</h2></div>'+body+'</div>':'';
+ return '<section class="sec tpage"><div class="wrap"><nav class="crumb"><a href="'+homeUrl()+'" data-nav="home">'+TS('home')+'</a><span>/</span><a href="#rawatan" data-nav="rawatan">'+TO('rawatan')+'</a><span>/</span><b>'+esc(s.n)+'</b></nav>'+
+  '<div class="thero"><div><span class="eyebrow">'+esc(s.c||T('other'))+'</span><h1>'+esc(g.hl||s.n)+'</h1>'+(g.hl?'<p class="tname">'+esc(s.n)+'</p>':'')+(s.x?'<p class="tlead">'+esc(pick(s.x,s.xEn))+'</p>':'')+
+   (K.length?'<div class="pk"><span>'+TS('for')+'</span>'+K.map(k=>'<em>'+esc(k)+'</em>').join('')+'</div>':'')+
+   '<div class="tfacts">'+facts.map(f=>'<div>'+ic(f[0],18)+'<span>'+esc(f[1])+'</span><b>'+esc(f[2])+'</b></div>').join('')+'</div>'+
+   '<div class="tacts">'+book+'<button class="btn light" data-ask="'+esc(s.id)+'">'+ic('wa',18)+TO('ask')+'</button></div></div>'+
+   '<div class="timg'+(C.img?'':' blank')+'"'+(C.img?' data-img="'+esc(C.img)+'"':'')+'>'+(P.showPrices===false?'':'<div class="tpill">'+(s.from?TO('fromL')+' ':'')+rm(s.p)+'</div>')+'</div></div>'+
+  sec('masalah',TO('probH'),g.prob?'<p class="ttx">'+esc(g.prob)+'</p>':'')+
+  sec('solusi',TO('solH'),g.sol?'<p class="ttx">'+esc(g.sol)+'</p>':'')+
+  sec('cara',TO('howH'),(g.how||[]).length?'<ol class="thow">'+g.how.map(x=>'<li><b>'+esc(x.t)+'</b>'+(x.d?'<span>'+esc(x.d)+'</span>':'')+'</li>').join('')+'</ol>':'')+
+  sec('hasil',TO('resH'),(g.res?'<p class="ttx">'+esc(g.res)+'</p>':'')+((g.ba||[]).length?'<div class="bas">'+g.ba.map((b,i)=>'<figure class="ba"><div class="baw"><div class="bai" data-img="'+esc(b.a)+'"></div><div class="bai bb" data-img="'+esc(b.b)+'"></div>'+
+   '<span class="bal l">'+TO('before')+'</span><span class="bal r">'+TO('after')+'</span><input type="range" class="barng" min="0" max="100" value="50" aria-label="'+TO('baH')+'"></div>'+(b.c?'<figcaption>'+esc(b.c)+'</figcaption>':'')+'</figure>').join('')+'</div><p class="banote">'+TO('baNote')+'</p>':''))+
+  ((g.fit||[]).length||(g.nofit||[]).length?'<div class="tsec rv0"><div class="tfit">'+((g.fit||[]).length?'<div class="fit y"><h3>'+ic('check',16)+TO('fitH')+'</h3><ul>'+g.fit.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'')+
+   ((g.nofit||[]).length?'<div class="fit n"><h3>'+ic('x2',16)+TO('nofitH')+'</h3><ul>'+g.nofit.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></div>':'')+'</div></div>':'')+
+  sec('harga',TO('priceH'),priceBlock(s))+
+  '<div class="tbook rv0"><div><h2>'+TO('bookBand')+'</h2><p>'+TO('bookBandP')+'</p></div><div class="tacts">'+book+'<button class="btn light" data-ask="'+esc(s.id)+'">'+ic('wa',18)+TO('ask')+'</button></div></div>'+
+  ((g.faq||[]).length?'<div class="tsec rv0"><div class="tsh"><h2>'+TO('faqH')+'</h2></div><div class="faq">'+g.faq.map((f,i)=>'<details'+(i===0?' open':'')+'><summary>'+esc(f.q)+'</summary><p>'+esc(f.a)+'</p></details>').join('')+'</div></div>':'')+
+  (hc.length?'<div class="tsec"><div class="tsh"><h2>'+TO('hcH')+'</h2></div><div class="skgrid n'+Math.min(4,hc.length)+'">'+hc.slice(0,4).map(pcard).join('')+'</div></div>':'')+
+  (rel.length?'<div class="tsec"><div class="tsh"><h2>'+TO('relH')+'</h2></div><div class="catl ppair">'+rel.map(x=>svcRow(x)).join('')+'</div></div>':'')+
+  '</div></section>';}
+function tpLd(s){const g=s.pg,b=P.biz||{},br=(P.branches||[])[0]||{};
+ const o=[{'@context':'https://schema.org','@type':'Service',name:s.n,serviceType:s.c||'Skin treatment',description:g.sol||s.x||'',provider:{'@type':'BeautySalon',name:b.name||'Luuna',address:br.addr||'',telephone:b.phone||''},areaServed:br.city||'',
+  offers:P.showPrices===false?undefined:{'@type':'Offer',priceCurrency:'MYR',price:String(s.p)}}];
+ if((g.faq||[]).length)o.push({'@context':'https://schema.org','@type':'FAQPage',mainEntity:g.faq.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))});return o;}
+{const _rp=renderPage;renderPage=function(v){if(v.k!=='svc')return _rp(v);const s=v.s,b=P.biz||{},br=(P.branches||[])[0]||{};document.documentElement.lang=LANG;
+ let h=PREVIEW?'<div class="pv">'+T('pv')+'</div>':'';if(PREVIEW)document.body.classList.add('pvm');
+ h+='<div class="sprog" id="sprog"></div>'+headHTML()+'<main class="page">'+tpHTML(s)+'</main>'+footHTML()+
+  '<div class="bar on" id="bar"><button class="btn wa" data-ask="'+esc(s.id)+'">'+ic('wa',18)+'WhatsApp</button><button class="btn pri" data-book="'+esc(s.id)+'">'+ic('cal',18)+TS('bookNow')+'</button></div>';
+ $('#app').innerHTML=h;setMeta((s.pg.hl||s.n)+' · '+s.n+' · '+(b.name||'Luuna')+(br.city?' '+br.city:''),(s.pg.sol||s.x||'').slice(0,160),tpLd(s));
+ hit('svc');watchImgs();reveal();cdTick();const t=$('#top');if(t)t.classList.toggle('sc',scrollY>8);};}
+document.addEventListener('input',e=>{const r=e.target.closest&&e.target.closest('.barng');if(!r)return;const bb=r.parentNode.querySelector('.bb');if(bb)bb.style.clipPath='inset(0 '+(100-r.value)+'% 0 0)';});
+/* ---------- the homepage: packages, membership, e-vouchers ---------- */
+function offersHomeHTML(){
+ const K=P.pkgs||[],M=P.mem||[],Y=P.loy,G=P.gv;if(!K.length&&!M.length&&!G&&!Y)return '';
+ return '<section class="sec offs" id="pakej"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+TS('promo')+'</span><h2>'+TO('offH')+'</h2><p>'+TO('offP')+'</p></div></div>'+
+  (K.length?'<div class="pkg">'+K.map(k=>pkgCard(k)).join('')+'</div>':'')+
+  (M.length||Y||G?'<div class="offg">'+M.map(m=>'<div class="memc rv0"><span class="eyebrow">'+TO('memH')+'</span><h3>'+esc(m.n)+'</h3><div class="pkp"><b>'+rm(m.p)+'</b><small>'+(m.per==='year'?TO('perYear'):TO('perMonth'))+'</small></div>'+
+    '<ul>'+[m.ds?TO('memDs',m.ds):'',m.dp?TO('memDp',m.dp):'',...m.ss.map(x=>TO('memSs',x.n,x.sn)),m.perks].filter(Boolean).map(x=>'<li>'+ic('check',13)+esc(x)+'</li>').join('')+'</ul>'+
+    '<button class="btn pri sm" data-join="'+esc(m.id)+'">'+TO('join')+'</button></div>').join('')+
+   (G?'<div class="gvc rv0"><span class="gvi">'+ic('gift',26)+'</span><h3>'+TO('gvH')+'</h3><p>'+TO('gvP')+'</p><div class="gva">'+G.amts.map(a=>'<span>'+rm(a)+'</span>').join('')+'</div><button class="btn" data-gv="1">'+ic('gift',16)+TO('gvBuy')+'</button></div>':'')+
+   (Y?'<div class="loyc rv0"><span class="eyebrow">'+TO('loyH')+'</span><p>'+esc(TO('loy',Y.earnPer,Y.pts,Y.rpp,Y.min))+'</p></div>':'')+'</div>':'')+'</div></section>';}
+function gvSheet(){const G=P.gv;if(!G)return;const b=P.biz||{};let AMT=G.amts[1]||G.amts[0]||G.min||100;
+ sheet('<h3>'+ic('gift',20)+' '+TO('gvH')+'</h3><p class="lead">'+TO('gvP')+' '+TO('gvValid',G.months)+'</p><form class="form" id="gvf" novalidate><label>'+TO('gvAmt')+'</label><div class="chips" id="gv-am">'+G.amts.map(a=>'<button type="button" data-amt="'+a+'" class="'+(a===AMT?'on':'')+'">'+rm(a)+'</button>').join('')+'</div>'+
+  (G.max>0?'<label>'+TO('gvOwn')+'</label><input class="f" id="gv-own" type="number" min="'+G.min+'" max="'+G.max+'" placeholder="'+G.min+' – '+G.max+'">':'')+
+  '<label>'+TO('gvTo')+'</label><input class="f" id="gv-to" maxlength="60"><label>'+TO('gvFrom')+'</label><input class="f" id="gv-fr" maxlength="60"><label>'+TO('gvMsg')+'</label><input class="f" id="gv-m" maxlength="160">'+
+  '<label>'+T('name')+'</label><input class="f" id="gv-n" maxlength="80" autocomplete="name"><label>'+T('wa')+'</label><input class="f" id="gv-p" type="tel" maxlength="20" placeholder="012-345 6789">'+
+  '<label class="consent"><input type="checkbox" id="gv-ok"> <span>'+esc(TS('consent',b.name||'Luuna'))+'</span></label><div class="err" id="gv-e"></div><button class="btn pri" id="gv-go" type="submit">'+ic('gift',18)+TO('gvSend')+'</button></form>');
+ const f=document.getElementById('gvf');f.querySelectorAll('[data-amt]').forEach(x=>x.onclick=()=>{AMT=+x.dataset.amt;f.querySelectorAll('[data-amt]').forEach(y=>y.classList.toggle('on',y===x));const o=document.getElementById('gv-own');if(o)o.value='';});
+ f.onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('gv-e'),g=id=>document.getElementById(id),own=g('gv-own')&&+g('gv-own').value;
+  const amt=own||AMT;if(own&&(own<G.min||own>G.max)){e.textContent=TO('gvRange',G.min,G.max);return;}
+  const n=g('gv-n').value.trim(),ph=g('gv-p').value.trim();if(n.length<2){e.textContent=T('eName');return;}if(digits(ph).length<9||digits(ph).length>15){e.textContent=T('ePhone');return;}if(!g('gv-ok').checked){e.textContent=T('eOk');return;}
+  const x=touch(),ref='G'+Date.now().toString(36).slice(-5).toUpperCase();
+  const d={ref,items:[{id:'gift',n:'E-Voucher '+rm(amt),q:1,p:amt}],total:amt,name:n.slice(0,80),phone:ph.slice(0,20),how:'pickup',note:'',branchId:((P.branches||[])[0]||{}).id||'',createdAt:new Date().toISOString(),status:'new',consent:true,
+   src:String(x.s||'').slice(0,20),med:String(x.m||'').slice(0,12),camp:String(x.c||'').slice(0,24),ad:String(x.a||'').slice(0,60),lang:LANG,gift:{to:g('gv-to').value.trim().slice(0,60),from:g('gv-fr').value.trim().slice(0,60),msg:g('gv-m').value.trim().slice(0,160)}};
+  if(PREVIEW){e.textContent=T('pvNo');return;}g('gv-go').disabled=true;
+  try{await add('webOrders',d);hit('order');track('order',{value:amt,currency:'MYR',content_name:'e-voucher'});
+   sheet('<div class="done"><div class="ok">'+ic('gift',30)+'</div><h3>'+TO('gvDone')+'</h3><p>'+TO('gvDoneP')+'</p><button class="btn pri" data-gvwa="1">'+ic('wa',18)+TS('waConf')+'</button></div>');
+   SHEET.querySelector('[data-gvwa]').onclick=()=>openWa((LANG==='en'?'Hi! I just ordered an e-voucher ':'Hi! Saya baru pesan e-voucher ')+rm(amt)+' ('+ref+').',n);}
+  catch(err){console.warn(err);e.textContent=T('eSend');g('gv-go').disabled=false;}};}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-askpkg],[data-join],[data-gv]');if(!t||!P)return;e.preventDefault();
+ if(t.dataset.askpkg!==undefined){const k=(P.pkgs||[]).find(x=>x.id===t.dataset.askpkg);if(k)waSheet(k.n,k.n);}
+ else if(t.dataset.join!==undefined){const m=(P.mem||[]).find(x=>x.id===t.dataset.join);if(m)waSheet(TO('memH')+' '+m.n,TO('memH')+' '+m.n);}
+ else if(t.dataset.gv!==undefined)gvSheet();});
 
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
