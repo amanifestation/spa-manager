@@ -2176,6 +2176,38 @@ body.clk-on{overflow:hidden}
 .membar span{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.membar .btn{padding:4px 10px}
 .pvpk{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:var(--surface)}
 .pvl{display:flex;justify-content:space-between;margin-top:8px;font-size:14px}.pvl small{color:var(--ink-3);font-weight:400}
+/* ===== CRM part 3 ===== */
+.kcol.k-attended{border-top-color:#7A5CA8}.kcol.k-trial{border-top-color:#C0714A}
+.ldstages .st-attended.on{background:#7A5CA8;border-color:#7A5CA8;color:#fff}.ldstages .st-trial.on{background:#C0714A;border-color:#C0714A;color:#fff}
+.slab{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:99px;background:var(--amber-soft);color:#7A5A12;margin-bottom:5px}
+.slab.late{background:var(--rose-soft);color:var(--rose);animation:slapulse 1.6s ease-in-out infinite}
+@keyframes slapulse{50%{opacity:.55}}
+.slabar{border-left:4px solid var(--jade);padding:12px 14px}.slabar.bad{border-left-color:var(--rose)}
+.slabar b{display:inline-flex;align-items:center;gap:6px;font-size:13.5px}
+.slarows{display:flex;flex-direction:column;gap:5px;margin-top:9px}
+.slarow{display:grid;grid-template-columns:1.2fr 1.4fr 1fr auto;gap:8px;align-items:center;text-align:left;font:inherit;font-size:12.5px;padding:8px 10px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface-2);cursor:pointer;color:var(--ink)}
+.slarow span{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slarow em{font-style:normal;font-weight:700;color:#7A5A12}
+.slarow.late{border-color:#E7B8B8;background:var(--rose-soft)}.slarow.late em{color:var(--rose)}
+@media(max-width:640px){.slarow{grid-template-columns:1fr auto}.slarow span{display:none}}
+.cr3steps{padding-left:18px;font-size:13px;line-height:1.5}.cr3steps li{margin:8px 0}
+.cr3code{font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;margin:6px 0;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow:auto}
+.cr3chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}.cr3chips.scroll{max-height:180px;overflow:auto;padding:2px}
+.cr3chips label{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:6px 10px;border:1px solid var(--line-2);border-radius:99px;background:var(--surface);margin:0;cursor:pointer}
+.cr3chips label small{color:var(--ink-3)}
+.cr3f{display:grid;grid-template-columns:112px 1fr 34px 98px;grid-template-areas:"l b n p" ". e e e";column-gap:8px;align-items:center;font-size:12.5px;margin:7px 0}
+.cr3f .cr3fl{grid-area:l;font-weight:600}.cr3f .bar{grid-area:b;height:14px;border-radius:7px;background:var(--line-2);overflow:hidden}.cr3f .bar i{display:block;height:100%;background:var(--brass);border-radius:7px}
+.cr3f b{grid-area:n;text-align:right}.cr3f small{grid-area:p;color:var(--ink-3);font-size:11px}.cr3f em{grid-area:e;font-style:normal;font-size:11px;color:var(--rose)}
+.cr3f[data-k=attended] .bar i{background:#7A5CA8}.cr3f[data-k=trial] .bar i{background:#C0714A}.cr3f[data-k=won] .bar i{background:var(--jade)}
+.cr3leak{margin-top:10px;background:var(--rose-soft);color:#7B2E2E;border-radius:10px;padding:8px 10px;font-size:12.5px;display:flex;gap:6px;align-items:flex-start}
+.cr3t td small{display:block;font-size:10.5px;color:var(--ink-3)}.cr3t.mini{font-size:12px;margin-top:6px}
+.cr3fu{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line-2);font-size:13px}.cr3fu>div{flex:1;min-width:0}.cr3fu small{display:block;color:var(--ink-3);font-size:11.5px}
+.cr3more{margin-top:10px;font-size:13px}.cr3more summary{cursor:pointer;color:var(--ink-2)}
+.cr3link{padding:10px 0;border-top:1px solid var(--line-2)}.cr3link:first-of-type{border-top:0}.cr3link small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:2px}
+.cr3attr{background:var(--brass-soft);border-radius:8px;padding:6px 9px}
+.cr3sla{color:#7A5A12;font-weight:600}.cr3sla.late{color:var(--rose)}
+.cr3tl{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 2px}.cr3tl span{font-size:11px;padding:3px 8px;border-radius:99px;background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line-2)}
+.cr3tl span.on{background:var(--jade-soft);color:#1F4D3A;border-color:#C9DDD1}.cr3tl small{margin-left:4px;opacity:.75}
+.cr3lnk{border:0;background:none;padding:2px 4px;font:inherit;font-size:12px;font-weight:600;color:var(--brass);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2435,7 +2467,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29c';
+const BUILD='2026-09-29d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -13123,11 +13155,11 @@ function crmPipe(){
   if(s[0]==='won')xs=xs.filter(l=>hrsAgo(l.wonAt||l.updatedAt||l.createdAt)<=720);
   xs.sort((a,b)=>String(a.nextAt||'9').localeCompare(String(b.nextAt||'9'))||String(b.createdAt).localeCompare(String(a.createdAt)));
   return '<div class="kcol k-'+s[0]+'"><div class="kcolh">'+ic(s[2],14)+'<b>'+s[1]+'</b><span>'+xs.length+'</span></div>'+
-   (xs.length?xs.map(card).join(''):'<div class="kempty">'+({new:'New enquiries land here',contacted:'Leads you have spoken to',booked:'Leads with a booking',won:'Became clients (30 days)'}[s[0]])+'</div>')+'</div>';});
+   (xs.length?xs.map(card).join(''):'<div class="kempty">'+({new:'New enquiries land here',contacted:'Leads you have spoken to',booked:'Consultation booked',attended:'Came in for the consultation',trial:'Paid for a first treatment',won:'Bought a package (30 days)'}[s[0]])+'</div>')+'</div>';});
  const lost=L.filter(l=>l.stage==='lost'&&hrsAgo(l.updatedAt||l.createdAt)<=720);
  return '<div class="crmkpis">'+kpi('New today',all.filter(l=>String(l.createdAt).slice(0,10)===today()).length,'','spark')+
    kpi('Open leads',all.filter(openLead).length,due?due+' to follow up today':'none due','target')+
-   kpi('Became clients',won30,'last 30 days · '+(d30.length?Math.round(won30/d30.length*100):0)+'% of '+d30.length+' leads','check')+'</div>'+
+   kpi('Bought a package',won30,'last 30 days · '+(d30.length?Math.round(won30/d30.length*100):0)+'% of '+d30.length+' leads','check')+'</div>'+
   '<div class="card"><div class="crmbar"><div class="seg" style="margin:0">'+
    '<button class="'+(LEADF.who==='mine'?'on':'')+'" onclick="leadWho(\'mine\')">Mine</button>'+
    '<button class="'+(LEADF.who==='all'?'on':'')+'" onclick="leadWho(\'all\')">Everyone</button></div>'+
@@ -13255,7 +13287,7 @@ window.leadConvert=async(id,book)=>{
    await newClientNo(cid);
    await audit('Client registered',l.name+' (from lead)');
   }
-  await leadPatch(id,{customerId:cid,convertedAt:l.convertedAt||new Date().toISOString(),...(book&&openLead(l)?{stage:'booked'}:{})},'stage',book?'Booking made':'Client record created',true);
+  await leadPatch(id,{customerId:cid,convertedAt:l.convertedAt||new Date().toISOString(),...(book&&openLead(l)&&cr3Rank(l)<2?{stage:'booked',bookedAt:l.bookedAt||new Date().toISOString(),maxRank:Math.max(+l.maxRank||0,2)}:{})},'stage',book?'Booking made':'Client record created',true);
   window.closeModal();
   if(book)window.newAppt({customerId:cid,visitType:'new'});else{toast(l.name+' is now a client');render();}
  }catch(e){toast(friendly(e));}
@@ -22019,7 +22051,7 @@ function lpDetect(){
  if(!s&&ref)s=/threads\.(net|com)/.test(ref)?'Threads':/instagram/.test(ref)?'Instagram':/facebook|fb\./.test(ref)?'Facebook':/tiktok/.test(ref)?'TikTok':/google\./.test(ref)?'Google':'Other';
  if(!s&&src)s='Other';
  if(!s)return null;
- return {s,m:/cpc|paid|ads?$/.test(um)||q.get('gclid')||q.get('ttclid')?'Paid':'Organic',c:(q.get('utm_campaign')||q.get('c')||'').slice(0,24),d:(src?'src='+src:ref||'in-app').slice(0,80),at:new Date().toISOString()};
+ return {s,m:/cpc|paid|ads?$/.test(um)||q.get('gclid')||q.get('ttclid')?'Paid':'Organic',c:(q.get('utm_campaign')||q.get('c')||'').slice(0,24),a:(q.get('utm_content')||q.get('ad')||'').trim().slice(0,60),d:(src?'src='+src:ref||'in-app').slice(0,80),at:new Date().toISOString()};
 }
 /* a direct link to the booking page (from a bio or an ad) is tagged the same way */
 function lpCapture(){try{const t=lpDetect();if(!t)return;const a=lpAttr();a.last=t;if(!a.first||Date.now()-new Date(a.first.at)>30*864e5)a.first=t;localStorage.setItem('luunaAttr',JSON.stringify(a));}catch(e){}}
@@ -22035,7 +22067,7 @@ async function lpAfterBook(id,a){
   const when=new Date(a.start).toLocaleString('en-MY',{timeZone:'Asia/Kuala_Lumpur',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
   const d={name:a.customerName,phone:a.phone,source:x.s,medium:x.m,campaign:String(x.c||'').slice(0,24),branchId:a.branchId,stage:'booked',createdAt:new Date().toISOString(),
    createdBy:'landing',web:true,consent:true,interest:String(a.serviceName||'').slice(0,200),note:('Book online · '+a.webRef+' · '+when).slice(0,500),apptId:id,
-   lp:{ctx:'book',d:String(x.d||'').slice(0,80),dev:/iPhone|iPad/.test(navigator.userAgent)?'iOS':/Android/.test(navigator.userAgent)?'Android':'desktop'}};
+   lp:{ctx:'book',d:String(x.d||'').slice(0,80),ad:String(x.a||'').slice(0,60),dev:/iPhone|iPad/.test(navigator.userAgent)?'iOS':/Android/.test(navigator.userAgent)?'Android':'desktop'}};
   await addDoc(collection(db,'leads'),d);try{localStorage.setItem('luunaLead',JSON.stringify({id:'book',at:d.createdAt}));}catch(e){}
  }catch(e){console.warn('landing lead',e);}
 }
@@ -24517,5 +24549,411 @@ async function pkzTick(){
 }
 {const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!PKZBOOT){PKZBOOT=true;setInterval(()=>pkzTick().catch(()=>{}),20000);setTimeout(()=>pkzTick().catch(()=>{}),3000);}}catch(e){}};window.render=render;}
 window.pkzTickNow=()=>pkzTick();
+
+
+/* ============ CRM, part 3: ad leads, the full pipeline, SLA, stage conversion, trial to package ============ */
+/* For a new brand living on ads, the question is not "how many leads" but "which ad brings clients
+   who buy packages, and what did each one cost". So:
+   · Leads arrive by themselves from Facebook/Instagram Lead Ads and TikTok Lead Gen (through a
+     Zapier or Make webhook straight into Firestore, checked against a secret key), from the website
+     and landing page, and from WhatsApp (paste the chat; the campaign code in the message is read).
+     Meta/TikTok CSV exports can be imported too.
+   · Each lead keeps its source, campaign and ad. The client it becomes, and everything they pay,
+     stays linked — so cost per client (CAC) and ROAS are real, per campaign and per ad.
+   · Pipeline: New → Contacted → Consultation booked → Attended → Bought trial → Bought package.
+     The last three move by themselves from the calendar and the bills.
+   · New leads are shared out to the team, and anyone not contacted within the SLA (15 minutes by
+     default) turns red and chimes.
+   · Marketing shows where people drop off, and how many trial buyers (e.g. the RM49 promo) go on
+     to buy a package. */
+
+const CR3_DEF={sla:15,auto:true,pool:[],trialSvcs:[],trialDays:60};
+const cr3R=()=>({...CR3_DEF,...((D.meta&&D.meta.crmRules)||{})});
+const cr3Now=()=>new Date().toISOString();
+/* the fuller pipeline */
+STAGES.splice(STAGES.findIndex(s=>s[0]==='booked')+1,0,['attended','Attended','user'],['trial','Bought trial','tag']);
+STAGES.find(s=>s[0]==='booked')[1]='Consult booked';STAGES.find(s=>s[0]==='won')[1]='Bought package';
+const CR3_ORDER=['new','contacted','booked','attended','trial','won'];
+const cr3Rank=l=>CR3_ORDER.indexOf(l.stage);
+/* how far a lead got, even if it was lost later */
+function cr3Reached(l,k){
+ const i=CR3_ORDER.indexOf(k);if(cr3Rank(l)>=i)return true;
+ const T={contacted:l.firstContactAt,booked:l.bookedAt||l.convertedAt,attended:l.attendedAt,trial:l.trialAt,won:l.wonAt};
+ if(CR3_ORDER.slice(i).some(x=>T[x]))return true;return (+l.maxRank||0)>=i;
+}
+/* stages 3–5 move by themselves: the booking done, a first bill, a package or membership bill */
+autoWin=function(){};
+let CR3ADV=0;
+async function cr3Advance(){
+ if(!ME||!can('customer'))return;
+ const L=LEADS.filter(l=>l.customerId&&l.stage!=='lost'&&cr3Rank(l)<5&&myBranch(l));if(!L.length)return;
+ const ids=[...new Set(L.map(l=>l.customerId))],sales={},appts={};
+ for(let i=0;i<ids.length;i+=10){const ch=ids.slice(i,i+10);
+  try{(await getDocs(query(collection(db,'sales'),where('customerId','in',ch),limit(500)))).docs.forEach(d=>{const x=d.data();if(!x.voided)(sales[x.customerId]=sales[x.customerId]||[]).push(x);});}catch(e){}
+  try{(await getDocs(query(collection(db,'appointments'),where('customerId','in',ch),limit(500)))).docs.forEach(d=>{const x=d.data();(appts[x.customerId]=appts[x.customerId]||[]).push(x);});}catch(e){}}
+ for(const l of L){
+  const since=String(l.convertedAt||l.createdAt||''),S=(sales[l.customerId]||[]).filter(s=>String(s.at)>=since).sort((a,b)=>String(a.at).localeCompare(String(b.at)));
+  const A=(appts[l.customerId]||[]).filter(a=>String(a.start)>=since.slice(0,10)&&(a.status==='done'||a.status==='in'||a.arrivedAt)).sort((a,b)=>String(a.start).localeCompare(String(b.start)));
+  const pk=S.find(s=>(s.items||[]).some(i=>i.kind==='package'||i.kind==='membership')),tr=S.find(s=>!(s.items||[]).length||(s.items||[]).some(i=>!['package','membership','wallet'].includes(i.kind)));
+  const up={};let to=l.stage,why='';
+  if(A.length&&!l.attendedAt)up.attendedAt=A[0].arrivedAt||A[0].start;
+  if(tr&&!l.trialAt)up.trialAt=tr.at;
+  if(pk&&!l.wonAt){up.wonAt=pk.at;to='won';why='Bought a package — '+rm(pk.total);}
+  else if(tr&&cr3Rank(l)<4){to='trial';why='First bill paid — '+rm(tr.total);}
+  else if(A.length&&cr3Rank(l)<3){to='attended';why='Came in for '+(A[0].serviceName||'the visit');}
+  if(to!==l.stage){up.stage=to;up.maxRank=Math.max(+l.maxRank||0,CR3_ORDER.indexOf(to));}
+  if(Object.keys(up).length)await leadPatch(l.id,up,to!==l.stage?'stage':null,why,true);
+ }
+ if(TAB==='crm')render();
+}
+{const _ls=window.leadStage;window.leadStage=(id,st)=>{const l=LEADS.find(x=>x.id===id);
+ if(l&&st!=='lost'&&CR3_ORDER.includes(st)){const r=CR3_ORDER.indexOf(st),up={maxRank:Math.max(+l.maxRank||0,r)};
+  if(st==='booked'&&!l.bookedAt)up.bookedAt=cr3Now();if(st==='attended'&&!l.attendedAt)up.attendedAt=cr3Now();if(st==='trial'&&!l.trialAt)up.trialAt=cr3Now();
+  if(st!=='new'&&st!=='contacted'||!l.firstContactAt){if(st==='contacted'&&!l.firstContactAt)up.firstContactAt=cr3Now();}
+  updateDoc(doc(db,'leads',id),up).then(()=>{Object.assign(l,up);if(l.customerId&&r>=2&&r<5)setTimeout(()=>cr3Advance().catch(()=>{}),300);}).catch(()=>{});}
+ return _ls(id,st);};}
+
+/* ---------- assignment and the SLA ---------- */
+const cr3Pool=()=>{const P=cr3R().pool||[];const S=D.staff.filter(s=>s.active!==false&&(!s.branchId||s.branchId===ME.branchId)&&!['branch','accountant'].includes(s.role));
+ return P.length?S.filter(s=>P.includes(s.id)):S.filter(s=>['owner','manager'].includes(s.role)||(s.perms||[]).includes('customer'));};
+const cr3Age=l=>(Date.now()-Date.parse(l.createdAt))/6e4;
+const cr3Waiting=l=>l.stage==='new'&&!l.firstContactAt&&myBranch(l)&&cr3Age(l)<48*60;
+const cr3Late=l=>cr3Waiting(l)&&cr3Age(l)>+cr3R().sla;
+async function cr3Assign(){
+ const R=cr3R();if(!R.auto||!ME)return;
+ const pool=cr3Pool();if(!pool.length)return;
+ for(const l of LEADS.filter(l=>!l.assignedTo&&l.stage==='new'&&myBranch(l)&&cr3Age(l)<24*60)){
+  const load=id=>LEADS.filter(x=>x.assignedTo===id&&x.assignedAt&&Date.now()-Date.parse(x.assignedAt)<864e5).length;
+  const to=pool.slice().sort((a,b)=>load(a.id)-load(b.id)||String(a.name).localeCompare(String(b.name)))[0];
+  try{let done=false;
+   await runTransaction(db,async tx=>{const ref=doc(db,'leads',l.id),s=await tx.get(ref);if(!s.exists()||s.data().assignedTo)return;
+    tx.update(ref,{assignedTo:to.id,assignedAt:cr3Now(),assignedBy:'auto'});done=true;});
+   if(done){l.assignedTo=to.id;l.assignedAt=cr3Now();}}catch(e){}
+ }
+}
+const CR3SEEN=new Set();
+function cr3Alerts(){
+ const R=cr3R();
+ LEADS.filter(l=>myBranch(l)&&l.stage==='new'&&['hook','landing'].includes(l.createdBy)&&!l.imported&&cr3Age(l)<10&&(boss()||!l.assignedTo)&&!CR3SEEN.has('n'+l.id)).forEach(l=>{CR3SEEN.add('n'+l.id);
+  toast('New lead: '+l.name+' · '+(l.source||'')+(l.createdBy==='hook'?' ad form':' landing page'));});
+ LEADS.filter(l=>l.assignedTo===UID&&l.stage==='new'&&!l.firstContactAt&&!CR3SEEN.has('a'+l.id)).forEach(l=>{CR3SEEN.add('a'+l.id);
+  toast('New lead for you: '+l.name+' · reply within '+R.sla+' min');try{if(typeof chime==='function')chime();}catch(e){}});
+ LEADS.filter(l=>cr3Late(l)&&(l.assignedTo===UID||boss())&&!CR3SEEN.has('s'+l.id)).forEach(l=>{CR3SEEN.add('s'+l.id);
+  toast(l.name+' has waited '+Math.round(cr3Age(l))+' min — past the '+R.sla+'-minute SLA'+(l.assignedTo&&l.assignedTo!==UID?' ('+(stf(l.assignedTo).name||'')+')':''));try{if(typeof chime==='function')chime();}catch(e){}});
+}
+{const _cp=crmPipe;crmPipe=function(){
+ let h=_cp.apply(this,arguments);const R=cr3R();
+ const W=LEADS.filter(cr3Waiting).sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+ W.forEach(l=>{const m=Math.round(cr3Age(l)),late=m>+R.sla;
+  h=h.replace('onclick="leadOpen(\''+l.id+'\')">','onclick="leadOpen(\''+l.id+'\')"><span class="slab'+(late?' late':'')+'">'+ic('clock',10)+(late?m+' min — SLA '+R.sla:(R.sla-m)+' min left')+'</span>');});
+ const late=W.filter(l=>cr3Age(l)>+R.sla);
+ const bar='<div class="card slabar'+(late.length?' bad':'')+'"><div class="spread"><b>'+ic('clock',14)+' Reply within '+R.sla+' minutes</b><span class="tiny muted">'+(R.auto?'new leads shared out automatically':'assign leads by hand')+(boss()?' · <button class="cr3lnk" onclick="cr3RulesOpen()">rules</button>':'')+'</span></div>'+
+  (W.length?'<div class="slarows">'+W.map(l=>{const m=Math.round(cr3Age(l));return '<button class="slarow'+(m>+R.sla?' late':'')+'" onclick="leadOpen(\''+l.id+'\')"><b>'+esc(l.name)+'</b><span>'+esc(l.source||'')+(l.campaign?' · '+esc(l.campaign):'')+'</span><span>'+(l.assignedTo?esc(stf(l.assignedTo).name||''):'<i>unassigned</i>')+'</span><em>'+m+' min</em></button>';}).join('')+'</div>'
+   :'<div class="tiny muted">Everyone new has been contacted.</div>')+'</div>';
+ return bar+h;};}
+
+/* ---------- lead capture: ad forms by webhook, CSV, WhatsApp ---------- */
+let CR3HOOK=undefined;
+async function cr3HookLoad(){if(CR3HOOK!==undefined)return CR3HOOK;try{const s=await getDoc(doc(db,'leadHooks',ME.branchId));CR3HOOK=s.exists()?s.data():null;}catch(e){CR3HOOK=null;}return CR3HOOK;}
+const CR3_PID='spa-manager-c586b',CR3_KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM';
+function cr3HookBody(src,key){
+ const f=(k,v)=>'    "'+k+'": {"stringValue": "'+v+'"}';
+ return '{\n  "fields": {\n'+[f('name','{{full_name}}'),f('phone','{{phone_number}}'),f('email','{{email}}'),f('source',src),f('medium','Paid'),f('campaignName','{{campaign_name}}'),
+  f('adset','{{adset_name}}'),f('ad','{{ad_name}}'),f('form','{{form_name}}'),f('interest','{{jawapan_soalan}}'),f('branchId',ME.branchId),f('stage','new'),f('createdBy','hook'),f('createdAt','{{created_time}}'),f('hookKey',key)].join(',\n')+'\n  }\n}';
+}
+window.cr3Capture=async()=>{
+ if(!boss())return;const H=await cr3HookLoad();const url='https://firestore.googleapis.com/v1/projects/'+CR3_PID+'/databases/(default)/documents/leads?key='+CR3_KEY;
+ modal('Capture leads automatically','<div class="card"><p class="tiny muted" style="margin-top:0">Facebook & Instagram Lead Ads and TikTok Lead Gen send each new form straight into CRM → Leads, with the campaign and ad. It runs through Zapier or Make (they have ready triggers for both); nothing else to install.</p>'+
+  (H&&H.key?'<div class="okbox">'+ic('check',13)+' Secret key set up · '+(H.n||0)+' lead'+(H.n===1?'':'s')+' received so far</div>':'<div class="warnbox">'+ic('alert',13)+' Make a secret key first — it stops strangers adding leads.</div>')+
+  '<button class="btn sm'+(H&&H.key?' ghost':'')+'" onclick="cr3KeyNew()">'+ic('refresh',13)+(H&&H.key?'Make a new key (old one stops working)':'Make the secret key')+'</button>'+
+  (H&&H.key?'<ol class="cr3steps"><li>In <b>Zapier</b> (or Make), trigger: <i>Facebook Lead Ads → New Lead</i>, or <i>TikTok Lead Generation → New Lead</i>.</li><li>Action: <i>Webhooks → Custom Request</i>, method <b>POST</b>, data as JSON, to this address:<div class="cr3code" id="cr3u">'+esc(url)+'</div><button class="btn sm ghost" onclick="cr3Copy(\'cr3u\')">Copy address</button></li>'+
+   '<li>Body — map the {{fields}} to the form\'s answers:<div class="seg" style="margin:8px 0"><button class="on" onclick="cr3Body(this,\'Facebook\')">Facebook</button><button onclick="cr3Body(this,\'Instagram\')">Instagram</button><button onclick="cr3Body(this,\'TikTok\')">TikTok</button></div><pre class="cr3code" id="cr3b">'+esc(cr3HookBody('Facebook',H.key))+'</pre><button class="btn sm ghost" onclick="cr3Copy(\'cr3b\')">Copy body</button></li>'+
+   '<li>Test it in Zapier: the lead shows up here within seconds, marked with the ad it came from.</li></ol>':'')+
+  '<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px"><button class="btn sm ghost" onclick="cr3Import()">'+ic('upload',13)+'Import a CSV from Meta / TikTok</button><button class="btn sm ghost" onclick="cr3WaAdd()">'+ic('msg',13)+'Add from a WhatsApp chat</button></div></div>');
+};
+window.cr3Body=(b,src)=>{b.parentNode.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));document.getElementById('cr3b').textContent=cr3HookBody(src,CR3HOOK.key);};
+window.cr3Copy=id=>{const t=document.getElementById(id).textContent;window.__cr3copy=t;try{navigator.clipboard.writeText(t);}catch(e){}toast('Copied');};
+window.cr3KeyNew=async()=>{
+ const key=[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');
+ try{await setDoc(doc(db,'leadHooks',ME.branchId),{key,at:cr3Now(),by:UID,n:(CR3HOOK&&CR3HOOK.n)||0});CR3HOOK={key,n:(CR3HOOK&&CR3HOOK.n)||0};await audit('Lead webhook key made','');window.cr3Capture();}catch(e){toast(friendly(e));}
+};
+/* a lead from an ad form: tidy the phone, match or open the campaign, count it */
+const CR3NORM=new Set();
+async function cr3Normalise(){
+ for(const l of LEADS.filter(l=>l.createdBy==='hook'&&!l.hookDone&&myBranch(l))){
+  if(CR3NORM.has(l.id))continue;CR3NORM.add(l.id);
+  const up={hookDone:true,hookKey:''};const d=digits(l.phone);if(d.startsWith('60'))up.phone='0'+d.slice(2);
+  const nm=String(l.campaignName||'').trim();
+  if(nm&&!l.campaign){let c=CAMPAIGNS.find(x=>String(x.name).toLowerCase()===nm.toLowerCase()||x.code===slug(nm));
+   if(!c&&boss()){const code=slug(nm);try{const r=await addDoc(collection(db,'campaigns'),{name:nm.slice(0,80),code,channel:l.source==='TikTok'?'TikTok ads':'Facebook / Instagram ads',cost:0,start:today(),end:'',active:true,branchId:ME.branchId,createdAt:cr3Now(),auto:true});
+    c={id:r.id,name:nm,code};CAMPAIGNS.push(c);}catch(e){}}
+   if(c)up.campaign=c.code;}
+  if(!['Facebook','Instagram','TikTok'].includes(l.source))up.source=/tik/i.test(l.source||'')?'TikTok':/ig|insta/i.test(l.source||'')?'Instagram':'Facebook';
+  {const t=Date.parse(String(l.createdAt||'').replace(/([+-]\d\d)(\d\d)$/,'$1:$2'));const iso=isNaN(t)||t>Date.now()+6e4?cr3Now():new Date(t).toISOString();if(iso!==l.createdAt)up.createdAt=iso;}
+  try{await updateDoc(doc(db,'leads',l.id),up);Object.assign(l,up);if(boss())await updateDoc(doc(db,'leadHooks',l.branchId||ME.branchId),{n:increment(1)}).catch(()=>{});}catch(e){}
+ }
+}
+/* CSV from Meta Leads Center or TikTok */
+window.cr3Import=()=>{modal('Import leads (CSV)','<div class="card"><p class="tiny muted" style="margin-top:0">Download the leads from Meta Leads Center or TikTok Ads Manager as CSV and choose the file. Phone numbers already in the CRM are skipped.</p>'+
+ '<label class="btn"><input type="file" accept=".csv,text/csv" hidden onchange="cr3CsvPick(this)">'+ic('upload',15)+'Choose CSV</label><div id="cr3csv" style="margin-top:10px"></div></div>');};
+function cr3Csv(txt){
+ const rows=[];let row=[],cell='',q=false;txt=String(txt).replace(/^\ufeff/,'');const sep=(txt.split('\n')[0].match(/\t/g)||[]).length>(txt.split('\n')[0].match(/,/g)||[]).length?'\t':',';
+ for(let i=0;i<txt.length;i++){const ch=txt[i];if(q){if(ch==='"'&&txt[i+1]==='"'){cell+='"';i++;}else if(ch==='"')q=false;else cell+=ch;}
+  else if(ch==='"')q=true;else if(ch===sep){row.push(cell);cell='';}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&txt[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}else cell+=ch;}
+ if(cell||row.length){row.push(cell);rows.push(row);}return rows.filter(r=>r.some(x=>String(x).trim()));
+}
+let CR3IMP=[];
+window.cr3CsvPick=inp=>{const f=inp.files&&inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{
+ const R=cr3Csv(r.result);if(R.length<2){document.getElementById('cr3csv').textContent='Nothing found in that file.';return;}
+ const H=R[0].map(h=>String(h).toLowerCase().trim()),col=(...k)=>{for(const x of k){const i=H.indexOf(x);if(i>=0)return i;}return H.findIndex(h=>k.some(x=>h.includes(x))&&!/(^|_)(id|ad_name|adset_name|campaign_name|form_name|platform)$/.test(h)||k.some(x=>h===x));};
+ const ci={name:col('full_name','full name','name'),phone:col('phone_number','phone','telefon'),email:col('email'),camp:col('campaign_name','campaign'),ad:col('ad_name','ad name'),adset:col('adset_name','ad set','adgroup'),form:col('form_name','form'),plat:col('platform'),time:col('created_time','created time','date')};
+ const have=new Set(LEADS.map(l=>phKey(l.phone)));
+ CR3IMP=R.slice(1).map(r=>({name:String(r[ci.name]||'').trim(),phone:String(r[ci.phone]||'').replace(/^p:/,'').trim(),email:ci.email>=0?String(r[ci.email]||'').trim():'',campaignName:ci.camp>=0?String(r[ci.camp]||'').trim():'',
+  ad:ci.ad>=0?String(r[ci.ad]||'').trim():'',adset:ci.adset>=0?String(r[ci.adset]||'').trim():'',form:ci.form>=0?String(r[ci.form]||'').trim():'',plat:ci.plat>=0?String(r[ci.plat]||'').toLowerCase():'',time:ci.time>=0?String(r[ci.time]||''):''}))
+  .filter(x=>x.name&&digits(x.phone).length>=9).map(x=>({...x,dup:have.has(phKey(x.phone))}));
+ const n=CR3IMP.filter(x=>!x.dup).length;
+ document.getElementById('cr3csv').innerHTML='<p class="tiny"><b>'+n+'</b> new lead'+(n===1?'':'s')+' · '+(CR3IMP.length-n)+' already in the CRM</p>'+CR3IMP.slice(0,8).map(x=>'<div class="tiny'+(x.dup?' muted':'')+'">'+esc(x.name)+' · '+esc(x.phone)+(x.campaignName?' · '+esc(x.campaignName):'')+(x.ad?' · '+esc(x.ad):'')+(x.dup?' (skip)':'')+'</div>').join('')+
+  (n?'<button class="btn" style="width:100%;justify-content:center;margin-top:10px" id="cr3go" onclick="cr3ImportSave()">'+ic('check',15)+'Import '+n+'</button>':'');};r.readAsText(f);};
+window.cr3ImportSave=async()=>{
+ const b=document.getElementById('cr3go');if(b)b.disabled=true;let n=0;
+ for(const x of CR3IMP.filter(x=>!x.dup)){
+  const src=/tik/.test(x.plat)?'TikTok':/ig|insta/.test(x.plat)?'Instagram':x.plat?'Facebook':(/tiktok/i.test(x.campaignName)?'TikTok':'Facebook');
+  const t=Date.parse(x.time);const d={name:x.name.slice(0,80),phone:x.phone.slice(0,20),email:x.email.slice(0,100),source:src,medium:'Paid',campaignName:x.campaignName.slice(0,80),ad:x.ad.slice(0,80),adset:x.adset.slice(0,80),form:x.form.slice(0,80),
+   branchId:ME.branchId,stage:'new',createdAt:isNaN(t)?cr3Now():new Date(t).toISOString(),createdBy:'hook',imported:true,by:UID};
+  try{await addDoc(collection(db,'leads'),d);n++;}catch(e){}
+ }
+ await audit('Leads imported',n+' from CSV');window.closeModal();toast(n+' leads imported');
+};
+/* WhatsApp: paste the chat; the number and the campaign code in the prefilled message are read */
+window.cr3WaAdd=()=>{modal('Lead from WhatsApp','<div class="card"><label>Paste the first message (and the number)</label><textarea class="f" rows="4" id="wa-t" placeholder="+60 12-345 6789: Hi Luuna! Saya nak tahu pasal promo facial RM49 [RAYA26]" oninput="cr3WaParse()"></textarea>'+
+ '<div class="grid g2"><div><label>Name</label><input class="f" id="wa-n"></div><div><label>Phone</label><input class="f" id="wa-p" type="tel"></div></div>'+
+ '<label>Campaign</label><select class="f" id="wa-c"><option value="">— none —</option>'+CAMPAIGNS.filter(c=>c.active!==false).map(c=>'<option value="'+esc(c.code)+'">'+esc(c.name)+' ('+esc(c.code)+')</option>').join('')+'</select>'+
+ '<label>Interested in</label><input class="f" id="wa-i"><div id="wa-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="cr3WaSave()">'+ic('check',15)+'Add lead</button></div>');};
+window.cr3WaParse=()=>{const t=$('#wa-t').value;
+ const ph=((t.match(/\+?\d[\d\s-]{7,16}\d/g)||[]).find(x=>{const n=digits(x).length;return n>=9&&n<=13;})||'');if(ph&&!$('#wa-p').value)$('#wa-p').value=ph.replace(/\s/g,'');
+ const code=((t.match(/[\[#(]([A-Z0-9-]{3,24})[\])]?/i)||[])[1]||'').toUpperCase();const c=CAMPAIGNS.find(x=>x.code===code);if(c)$('#wa-c').value=c.code;
+ const msg=t.replace(/^[^:]*\d[^:]*:\s*/,'').replace(/[\[#(][A-Z0-9-]{3,24}[\])]?/i,'').trim();if(msg&&!$('#wa-i').value)$('#wa-i').value=msg.slice(0,120);};
+window.cr3WaSave=async()=>{
+ const n=$('#wa-n').value.trim()||'WhatsApp '+digits($('#wa-p').value).slice(-4),p=$('#wa-p').value.trim(),e=$('#wa-e');if(digits(p).length<9){e.textContent='Enter the phone number.';return;}
+ if(LEADS.some(l=>phKey(l.phone)===phKey(p)&&openLead(l))){e.textContent='This number is already an open lead.';return;}
+ const code=$('#wa-c').value,c=CAMPAIGNS.find(x=>x.code===code);
+ const d={name:n.slice(0,80),phone:p.slice(0,20),source:'WhatsApp',medium:c&&/ads|influencer/i.test(c.channel||'')?'Paid':'Messaging',campaign:code,interest:$('#wa-i').value.trim().slice(0,200),branchId:ME.branchId,stage:'new',createdAt:cr3Now(),createdBy:UID,
+  note:$('#wa-t').value.trim().slice(0,500)};
+ try{const r=await addDoc(collection(db,'leads'),d);LEADS.unshift({id:r.id,...d});await audit('Lead added from WhatsApp',n);window.closeModal();render();toast('Lead added');}catch(err){e.textContent=friendly(err);}
+};
+
+/* ---------- rules: SLA, who gets leads, what counts as a trial ---------- */
+window.cr3RulesOpen=()=>{
+ if(!boss())return;const R=cr3R();
+ const S=D.staff.filter(s=>s.active!==false&&s.role!=='branch'&&s.role!=='accountant'&&(!s.branchId||s.branchId===ME.branchId));
+ const svcs=D.services.filter(s=>s.active!==false).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+ modal('Lead rules','<div class="card">'+
+  '<div class="grid g2"><div><label>Reply to a new lead within (minutes)</label><input class="f" type="number" min="1" max="1440" id="cr-sla" value="'+(+R.sla||15)+'"></div>'+
+  '<div><label>Trial counts as bought a package within (days)</label><input class="f" type="number" min="7" max="365" id="cr-td" value="'+(+R.trialDays||60)+'"></div></div>'+
+  '<label class="row" style="gap:8px;margin-top:6px"><input type="checkbox" id="cr-auto"'+(R.auto?' checked':'')+'> Share new leads out automatically (whoever has had the fewest today)</label>'+
+  '<label>Who gets leads <span class="muted">— none ticked means everyone at the front</span></label><div class="cr3chips">'+
+   S.map(s=>'<label><input type="checkbox" class="cr-pool" value="'+s.id+'"'+((R.pool||[]).includes(s.id)?' checked':'')+'>'+esc(s.name)+'</label>').join('')+'</div>'+
+  '<label>Trial / promo treatments <span class="muted">— e.g. the RM49 first-visit facial</span></label><div class="cr3chips scroll">'+
+   svcs.map(s=>'<label><input type="checkbox" class="cr-tr" value="'+s.id+'"'+((R.trialSvcs||[]).includes(s.id)?' checked':'')+'>'+esc(s.name)+' <small>'+rm(s.price)+'</small></label>').join('')+'</div>'+
+  '<p class="tiny muted">If none is ticked, a trial is a client\'s first treatment bill with no package on it.</p>'+
+  '<div id="cr-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="cr3RulesSave()">'+ic('check',15)+'Save lead rules</button></div>');
+};
+window.cr3RulesSave=async()=>{
+ const g=k=>document.getElementById(k),n=(k,a,b,d)=>{const v=Math.round(+g(k).value);return v>=a&&v<=b?v:d;};
+ const R={sla:n('cr-sla',1,1440,15),trialDays:n('cr-td',7,365,60),auto:g('cr-auto').checked,
+  pool:[...document.querySelectorAll('.cr-pool:checked')].map(x=>x.value).slice(0,30),trialSvcs:[...document.querySelectorAll('.cr-tr:checked')].map(x=>x.value).slice(0,40)};
+ try{await lpMetaPut('crmRules',R);CR3TP=null;await audit('Lead rules saved','SLA '+R.sla+' min · '+(R.auto?'auto-assign':'manual'));window.closeModal();render();toast('Lead rules saved');}catch(e){g('cr-e').textContent=friendly(e);}
+};
+function cr3RulesPanel(){
+ if(!boss())return '';const R=cr3R();
+ return '<div class="card"><div class="spread"><h2 style="margin:0">'+ic('flag',16)+' Leads (CRM)</h2><button class="btn sm ghost" onclick="cr3RulesOpen()">'+ic('edit',13)+'Change</button></div>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Reply within <b>'+R.sla+' min</b> · '+(R.auto?'shared out automatically':'assigned by hand')+(R.pool&&R.pool.length?' to '+R.pool.length+' staff':'')+
+  ' · trial → package counted within <b>'+R.trialDays+' days</b>'+(R.trialSvcs&&R.trialSvcs.length?' · '+R.trialSvcs.length+' trial treatment'+(R.trialSvcs.length>1?'s':''):'')+'</p>'+
+  '<button class="btn sm ghost" style="margin-top:8px" onclick="cr3Capture()">'+ic('upload',13)+'Capture leads from ads</button></div>';
+}
+{const _p=wbSetPanel;wbSetPanel=function(){return _p()+cr3RulesPanel();};}
+
+/* ---------- the numbers behind Marketing: one pull of the bills ---------- */
+const cr3Ad=l=>String(l.ad||(l.lp&&l.lp.ad)||'').trim();
+const cr3Paid=l=>cr3Reached(l,'trial')||cr3Reached(l,'won');
+let CR3TP=null,CR3TPL=false;
+async function cr3SalesLoad(force){
+ if(CR3TPL||(!force&&CR3TP&&Date.now()-CR3TP.t<5*6e4))return;CR3TPL=true;
+ const R=cr3R(),from=ymd(addDays(new Date(),-(400+(+R.trialDays||60))));
+ try{const s=await getDocs(query(collection(db,'sales'),where('date','>=',from),orderBy('date','desc'),limit(5000)));
+  const by={};s.docs.forEach(d=>{const x={id:d.id,...d.data()};if(x.voided||!x.customerId||(x.branchId&&x.branchId!==ME.branchId))return;(by[x.customerId]=by[x.customerId]||[]).push(x);});
+  Object.values(by).forEach(a=>a.sort((p,q)=>String(p.at||p.date).localeCompare(String(q.at||q.date))));
+  CR3TP={t:Date.now(),by,from,n:s.size};}
+ catch(e){console.warn('crm sales',e);CR3TP={t:Date.now(),by:{},from,n:0,err:friendly(e)};}
+ CR3TPL=false;if(TAB==='crm'&&CRMV==='mkt')render();
+}
+mktRevenue=async function(){return cr3SalesLoad(false);};
+/* what a lead has paid since it became a client */
+mktRev=function(l){if(!CR3TP)return null;if(!l.customerId)return 0;
+ const since=String(l.convertedAt||l.createdAt||'');return (CR3TP.by[l.customerId]||[]).filter(s=>String(s.at||(s.date+'T23'))>=since).reduce((a,s)=>a+(+s.total||0),0);};
+const cr3IsPkg=s=>(s.items||[]).some(i=>i.kind==='package'||i.kind==='membership');
+function cr3TrialOf(bills){
+ const R=cr3R(),T=R.trialSvcs||[];
+ return bills.find(s=>T.length?(s.items||[]).some(i=>i.kind==='service'&&T.includes(i.id)):(!cr3IsPkg(s)&&(s.items||[]).some(i=>i.kind==='service'&&(+i.price||0)>0)));
+}
+/* trial → package, for every client (not only the ones from ads) */
+function cr3Trials(){
+ if(!CR3TP)return null;const R=cr3R(),win=+R.trialDays||60,T=R.trialSvcs||[],from365=ymd(addDays(new Date(),-365));
+ const out=[];
+ Object.entries(CR3TP.by).forEach(([cid,bills])=>{
+  let pool=bills;
+  if(!T.length){if(String(bills[0].date||bills[0].at).slice(0,10)<ymd(addDays(new Date(CR3TP.from),30)))return;pool=[bills[0]];}
+  const tr=cr3TrialOf(pool);if(!tr)return;const td=String(tr.date||tr.at).slice(0,10);if(td<from365)return;
+  if(T.length&&bills.some(s=>s!==tr&&String(s.at||s.date)<String(tr.at||tr.date)&&cr3IsPkg(s)))return; /* already a package client */
+  const pk=bills.find(s=>cr3IsPkg(s)&&String(s.at||s.date)>=String(tr.at||tr.date)&&daysBetween(td,String(s.date||s.at).slice(0,10))<=win);
+  const lead=LEADS.find(l=>l.customerId===cid);
+  out.push({cid,name:tr.customerName||(cust(cid)||{}).name||'Client',phone:tr.phone||tr.customerPhone||(cust(cid)||{}).phone||'',date:td,amt:+tr.total||0,
+   pk,pkAmt:pk?+pk.total||0:0,days:pk?daysBetween(td,String(pk.date||pk.at).slice(0,10)):null,open:!pk&&daysBetween(td,today())<=win,
+   svc:((tr.items||[]).find(i=>i.kind==='service'&&(!T.length||T.includes(i.id)))||{}).name||'',src:lead?(lead.source||'Other'):'Not from a lead',camp:lead&&lead.campaign||''});
+ });
+ return out.sort((a,b)=>b.date.localeCompare(a.date));
+}
+/* spend inside the period, spread evenly over the days the campaign ran */
+function cr3Spend(c,from,to){
+ const cost=+c.cost||0;if(!cost)return 0;const s=c.start||String(c.createdAt||'').slice(0,10)||from,e=c.end&&c.end<today()?c.end:today();
+ if(e<s)return s>=from&&s<=to?cost:0;
+ const a=s>from?s:from,b=e<to?e:to;if(b<a)return 0;return cost*(daysBetween(a,b)+1)/(daysBetween(s,e)+1);
+}
+const cr3Mins=m=>m===null||isNaN(m)?'—':m<60?Math.round(m)+' min':m<1440?(m/60).toFixed(1)+' h':(m/1440).toFixed(1)+' d';
+const cr3Pct=(a,b)=>b?Math.round(a/b*100)+'%':'—';
+const cr3Adsy=l=>l.medium==='Paid'||!!l.campaign||l.createdBy==='hook';
+function cr3Stat(xs){const r={n:xs.length};CR3_ORDER.forEach(k=>r[k]=xs.filter(l=>cr3Reached(l,k)).length);
+ r.paid=xs.filter(cr3Paid).length;r.lost=xs.filter(l=>l.stage==='lost').length;r.rev=xs.reduce((a,l)=>a+(mktRev(l)||0),0);return r;}
+const CR3_STEP={contacted:'reaching them',booked:'the call / chat',attended:'showing up',trial:'first purchase',won:'closing the package'};
+crmMarketing=function(){
+ if(!CR3TP&&!CR3TPL)setTimeout(()=>cr3SalesLoad(false),0);
+ const R=cr3R(),since=ymd(addDays(new Date(),-MKTDAYS)),to=today(),loading=!CR3TP;
+ const ALL=LEADS.filter(myBranch),L=ALL.filter(l=>String(l.createdAt).slice(0,10)>=since),T=cr3Stat(L),A=L.filter(cr3Adsy),TA=cr3Stat(A);
+ const CAMPS=CAMPAIGNS.filter(c=>!c.branchId||c.branchId===ME.branchId);
+ const spend=CAMPS.reduce((a,c)=>a+cr3Spend(c,since,to),0);
+ const resp=L.filter(l=>l.firstContactAt).map(l=>(Date.parse(l.firstContactAt)-Date.parse(l.createdAt))/6e4).filter(m=>m>=0);
+ const inSla=resp.filter(m=>m<=+R.sla).length;
+ const lab=k=>stageOf(k)[1];
+ /* where people drop off */
+ let worst=null;
+ const rows=CR3_ORDER.map((k,i)=>{const n=T[k],prev=i?T[CR3_ORDER[i-1]]:T.n,drop=prev-n,conv=prev?n/prev:0;
+  if(i&&prev>=3&&(!worst||conv<worst.conv))worst={k,conv,drop};
+  return '<div class="cr3f'+(i?'':' first')+'" data-k="'+k+'"><span class="cr3fl">'+esc(lab(k))+'</span><div class="bar"><i style="width:'+(T.n?Math.round(n/T.n*100):0)+'%"></i></div><b>'+n+'</b>'+
+   '<small>'+(i?cr3Pct(n,prev)+' of '+esc(lab(CR3_ORDER[i-1]).toLowerCase()):'100%')+'</small>'+(i&&drop>0?'<em>−'+drop+' at '+CR3_STEP[k]+'</em>':'<em></em>')+'</div>';}).join('');
+ const lostBy={};L.filter(l=>l.stage==='lost').forEach(l=>{lostBy[l.lostReason||'Other']=(lostBy[l.lostReason||'Other']||0)+1;});
+ const funnel='<div class="card"><h3 style="margin:0 0 4px">'+ic('chart',15)+' Where leads drop off</h3><p class="tiny muted" style="margin:0 0 10px">'+T.n+' leads in the last '+MKTDAYS+' days, by the furthest step each one reached.</p>'+rows+
+  (worst?'<div class="cr3leak">'+ic('alert',13)+' Biggest leak: <b>'+esc(lab(CR3_ORDER[CR3_ORDER.indexOf(worst.k)-1]))+' → '+esc(lab(worst.k))+'</b> — only '+Math.round(worst.conv*100)+'% get through ('+worst.drop+' lost at '+CR3_STEP[worst.k]+').</div>':'')+
+  (T.lost?'<div class="tiny muted" style="margin-top:8px">Marked lost '+T.lost+': '+Object.entries(lostBy).sort((a,b)=>b[1]-a[1]).map(([r,n])=>esc(r)+' '+n).join(' · ')+'</div>':'')+'</div>';
+ /* by source, each stage */
+ const srcs=[...new Set(L.map(l=>l.source||'Other'))].map(s=>[s,cr3Stat(L.filter(l=>(l.source||'Other')===s))]).sort((a,b)=>b[1].n-a[1].n);
+ const bySrc='<div class="card"><h3 style="margin:0 0 10px">'+ic('flag',15)+' Each stage, by source</h3><div class="scroll"><table class="cr3t"><tr><th>Source</th><th class="num">Leads</th><th class="num">Contacted</th><th class="num">Booked</th><th class="num">Attended</th><th class="num">Trial</th><th class="num">Package</th><th class="num">Lead → package</th><th class="num">Sales</th></tr>'+
+  (srcs.length?srcs.map(([s,x])=>'<tr><td>'+esc(s)+'</td><td class="num">'+x.n+'</td>'+['contacted','booked','attended','trial','won'].map((k,i)=>'<td class="num">'+x[k]+'<small>'+cr3Pct(x[k],i?x[['contacted','booked','attended','trial'][i-1]]:x.n)+'</small></td>').join('')+
+   '<td class="num"><b>'+cr3Pct(x.won,x.n)+'</b></td><td class="num">'+(loading?'…':rm(x.rev))+'</td></tr>').join(''):'<tr><td colspan="9" class="muted">No leads in this period.</td></tr>')+'</table></div>'+
+  '<p class="tiny muted" style="margin-top:6px">Small figures are the share that moved on from the step before.</p></div>';
+ /* campaigns, over their whole life */
+ const cst=CAMPS.map(c=>[c,cr3Stat(ALL.filter(l=>l.campaign===c.code))]).sort((a,b)=>(b[0].active!==false)-(a[0].active!==false)||String(b[0].start||'').localeCompare(String(a[0].start||'')));
+ const roas=(r,c)=>c?'<b class="'+(r/c>=1?'roasok':'roaslow')+'">'+(r/c).toFixed(1)+'×</b>':'—';
+ const camps='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('mega',15)+' Campaigns — real cost per client</h3><button class="btn sm" onclick="campForm()">'+ic('plus',13)+'Campaign</button></div><div class="scroll"><table class="cr3t"><tr><th>Campaign</th><th class="num">Spent</th><th class="num">Leads</th><th class="num">Cost / lead</th>'+
+  '<th class="num">Paying clients</th><th class="num">CAC</th><th class="num">Bought package</th><th class="num">Cost / package client</th><th class="num">Sales</th><th class="num">ROAS</th><th></th></tr>'+
+  (cst.length?cst.map(([c,x])=>{const k=+c.cost||0;return '<tr><td onclick="campForm(\''+c.id+'\')" style="cursor:pointer"><b>'+esc(c.name)+'</b>'+(c.active===false?' <span class="pill">ended</span>':'')+(c.auto?' <span class="pill a">from ads</span>':'')+
+   '<div class="tiny muted">'+esc(c.code)+' · '+esc(c.channel||'')+(c.start?' · '+dshort(c.start):'')+(c.end?' – '+dshort(c.end):'')+'</div></td><td class="num">'+rm(k)+'</td><td class="num">'+x.n+'</td><td class="num">'+(x.n&&k?rm(k/x.n):'—')+'</td>'+
+   '<td class="num">'+x.paid+'</td><td class="num"><b>'+(x.paid&&k?rm(k/x.paid):'—')+'</b></td><td class="num">'+x.won+'</td><td class="num">'+(x.won&&k?rm(k/x.won):'—')+'</td>'+
+   '<td class="num">'+(loading?'…':rm(x.rev))+'</td><td class="num">'+(loading?'…':roas(x.rev,k))+'</td><td><button class="cr3lnk" title="Tracked links" onclick="cr3Links(\''+c.id+'\')">'+ic('list',14)+'</button></td></tr>';}).join('')
+   :'<tr><td colspan="11" class="muted">No campaigns yet. Add one with what it cost; leads from ad forms open their campaign by themselves.</td></tr>')+'</table></div>'+
+  '<p class="tiny muted" style="margin-top:6px">Each campaign counts all its leads since it started. CAC = spent ÷ leads who paid for anything; ROAS = everything those clients have paid since ÷ spent.</p></div>';
+ /* per ad */
+ const AD={};ALL.forEach(l=>{const a=cr3Ad(l);if(!a)return;const k=(l.campaign||'')+'|'+a;(AD[k]=AD[k]||[]).push(l);});
+ const adRows=Object.entries(AD).map(([k,xs])=>{const [code,a]=k.split('|'),c=CAMPS.find(x=>x.code===code),x=cr3Stat(xs),cost=c&&c.adCosts?+c.adCosts[a]||0:0;return {a,c,x,cost};}).sort((p,q)=>q.x.won-p.x.won||q.x.paid-p.x.paid||q.x.n-p.x.n);
+ const ads='<div class="card"><h3 style="margin:0 0 10px">'+ic('image',15)+' By ad</h3>'+(adRows.length?'<div class="scroll"><table class="cr3t"><tr><th>Ad</th><th class="num">Leads</th><th class="num">Paying</th><th class="num">Package</th><th class="num">Spent</th><th class="num">Cost / lead</th><th class="num">CAC</th><th class="num">Sales</th><th class="num">ROAS</th></tr>'+
+  adRows.slice(0,40).map(({a,c,x,cost})=>'<tr><td><b>'+esc(a)+'</b><div class="tiny muted">'+(c?esc(c.name):'no campaign')+'</div></td><td class="num">'+x.n+'</td><td class="num">'+x.paid+'</td><td class="num">'+x.won+'</td><td class="num">'+(cost?rm(cost):'—')+'</td>'+
+   '<td class="num">'+(cost&&x.n?rm(cost/x.n):'—')+'</td><td class="num"><b>'+(cost&&x.paid?rm(cost/x.paid):'—')+'</b></td><td class="num">'+(loading?'…':rm(x.rev))+'</td><td class="num">'+(loading?'…':roas(x.rev,cost))+'</td></tr>').join('')+'</table></div>'+
+  '<p class="tiny muted" style="margin-top:6px">The ad name comes with every lead from an ad form, and from the landing page when the ad link carries utm_content. Put each ad\'s spend on its campaign to see cost per client per ad.</p>'
+  :'<p class="tiny muted" style="margin:0">No ad names yet. They arrive with leads from Lead Ads (Capture leads) and from ad links that carry utm_content — see the <b>links</b> button on each campaign.</p>')+'</div>';
+ /* trial → package */
+ const TR=cr3Trials(),tw=+R.trialDays||60;let trial='';
+ if(!TR)trial='<div class="card"><h3 style="margin:0">'+ic('tag',15)+' Trial → package</h3><p class="tiny muted">'+ic('refresh',12)+' adding up the bills…</p></div>';
+ else{const conv=TR.filter(x=>x.pk),open=TR.filter(x=>x.open),closed=TR.filter(x=>!x.pk&&!x.open),dec=conv.length+closed.length;
+  const avg=conv.length?conv.reduce((a,x)=>a+x.days,0)/conv.length:null,pkRev=conv.reduce((a,x)=>a+x.pkAmt,0);
+  const grp=f=>{const G={};TR.forEach(x=>{const k=f(x)||'—';(G[k]=G[k]||[]).push(x);});return Object.entries(G).map(([k,xs])=>{const c=xs.filter(x=>x.pk).length,d=c+xs.filter(x=>!x.pk&&!x.open).length;return [k,xs.length,c,d];}).sort((a,b)=>b[1]-a[1]);};
+  const gt=(h,G)=>G.length>1||(G[0]&&G[0][0]!=='—')?'<table class="cr3t mini"><tr><th>'+h+'</th><th class="num">Trials</th><th class="num">Bought</th><th class="num">Rate</th></tr>'+G.slice(0,8).map(([k,n,c,d])=>'<tr><td>'+esc(k)+'</td><td class="num">'+n+'</td><td class="num">'+c+'</td><td class="num"><b>'+cr3Pct(c,d)+'</b></td></tr>').join('')+'</table>':'';
+  const biz=(D.meta.biz||{}).name||'us';
+  const fu=open.slice().sort((a,b)=>a.date.localeCompare(b.date)).slice(0,12);
+  trial='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('tag',15)+' Trial → package</h3>'+(boss()?'<button class="cr3lnk" onclick="cr3RulesOpen()">'+((R.trialSvcs||[]).length?(R.trialSvcs.length+' trial treatment'+(R.trialSvcs.length>1?'s':'')):'choose trial treatments')+'</button>':'')+'</div>'+
+   '<div class="crmkpis" style="margin:0 0 10px">'+kpi('Trial clients',TR.length,'last 12 months','tag')+kpi('Bought a package',conv.length,cr3Pct(conv.length,dec)+' within '+tw+' days','package')+
+    kpi('Days to buy',avg===null?'—':Math.round(avg),'on average','clock')+kpi('Package sales',rm(pkRev),'from trial clients','wallet')+'</div>'+
+   ((R.trialSvcs||[]).length?'':'<div class="tiny muted" style="margin-bottom:8px">No trial treatments chosen, so a trial here is a new client\'s first treatment bill without a package. Choose your promo treatments (e.g. the RM49 facial) for an exact count.</div>')+
+   '<div class="grid g2" style="align-items:start">'+gt('Trial',grp(x=>x.svc))+gt('Came from',grp(x=>x.src))+'</div>'+
+   (fu.length?'<h4 style="margin:12px 0 6px">Still deciding — '+open.length+' within '+tw+' days</h4>'+fu.map(x=>{const left=tw-daysBetween(x.date,today());
+    const msg='Hi '+String(x.name).split(' ')[0]+', terima kasih cuba '+(x.svc||'rawatan')+' di '+biz+'! Macam mana kulit sekarang? Kalau nak teruskan, ada pakej yang lebih jimat — boleh saya kongsikan?';
+    return '<div class="cr3fu"><div><b>'+esc(x.name)+'</b><small>'+esc(x.svc||'Trial')+' · '+dshort(x.date)+' · '+esc(x.src)+'</small></div><span class="pill'+(left<=7?' a':'')+'">'+left+' d left</span>'+
+     (x.phone?'<a class="btn sm ghost" target="_blank" href="https://wa.me/'+waNum(x.phone)+'?text='+encodeURIComponent(msg)+'">'+ic('msg',13)+'WhatsApp</a>':'')+'</div>';}).join(''):'')+
+   (closed.length?'<details class="cr3more"><summary>Did not buy within '+tw+' days ('+closed.length+')</summary>'+closed.slice(0,30).map(x=>'<div class="cr3fu"><div><b>'+esc(x.name)+'</b><small>'+esc(x.svc||'Trial')+' · '+dshort(x.date)+' · '+esc(x.src)+'</small></div>'+(x.phone?'<a class="btn sm ghost" target="_blank" href="https://wa.me/'+waNum(x.phone)+'">'+ic('msg',13)+'</a>':'')+'</div>').join('')+'</details>':'')+
+   '</div>';}
+ /* SLA by person */
+ const who={};L.filter(l=>l.assignedTo).forEach(l=>{(who[l.assignedTo]=who[l.assignedTo]||[]).push(l);});
+ const sla='<div class="card"><h3 style="margin:0 0 10px">'+ic('clock',15)+' Reply speed — SLA '+R.sla+' min</h3>'+(Object.keys(who).length?'<div class="scroll"><table class="cr3t"><tr><th>Staff</th><th class="num">Leads</th><th class="num">Contacted</th><th class="num">Within '+R.sla+' min</th><th class="num">Average reply</th><th class="num">Waiting now</th><th class="num">Bought package</th></tr>'+
+  Object.entries(who).map(([id,xs])=>{const r=xs.filter(l=>l.firstContactAt).map(l=>(Date.parse(l.firstContactAt)-Date.parse(l.createdAt))/6e4).filter(m=>m>=0),ok=r.filter(m=>m<=+R.sla).length,w=xs.filter(cr3Waiting).length;
+   return [xs.length,'<tr><td>'+esc(stf(id).name||'—')+'</td><td class="num">'+xs.length+'</td><td class="num">'+r.length+'</td><td class="num"><b class="'+(r.length&&ok/r.length>=.8?'roasok':'roaslow')+'">'+cr3Pct(ok,r.length)+'</b></td><td class="num">'+cr3Mins(r.length?r.reduce((a,b)=>a+b,0)/r.length:null)+'</td><td class="num">'+(w?'<b class="roaslow">'+w+'</b>':'0')+'</td><td class="num">'+xs.filter(l=>cr3Reached(l,'won')).length+'</td></tr>'];}).sort((a,b)=>b[0]-a[0]).map(x=>x[1]).join('')+'</table></div>'
+  :'<p class="tiny muted" style="margin:0">No leads assigned in this period. Turn on sharing out in the lead rules.</p>')+'</div>';
+ return '<div class="card"><div class="crmbar"><div class="seg" style="margin:0">'+[30,90,365].map(d=>'<button class="'+(MKTDAYS===d?'on':'')+'" onclick="mktDays('+d+')">'+(d===365?'1 year':d+' days')+'</button>').join('')+'</div>'+
+   (loading?'<span class="tiny muted">'+ic('refresh',12)+' adding up sales…</span>':'')+
+   '<button class="btn sm" style="margin-left:auto" onclick="cr3Capture()">'+ic('upload',14)+'Capture leads</button><button class="btn sm ghost" onclick="campForm()">'+ic('plus',14)+'Campaign</button>'+
+   '<button class="btn sm ghost" onclick="webFormSheet()">'+ic('qr',14)+'Web form</button><button class="btn sm ghost" onclick="cr3RulesOpen()">'+ic('gear',14)+'Rules</button></div>'+
+  '<div class="crmkpis" style="margin:10px 0 0">'+kpi('Leads',T.n,A.length+' from ads · cost/lead '+(A.length&&spend?rm(spend/A.length):'—'),'target')+
+   kpi('Paying clients',T.paid,cr3Pct(T.paid,T.n)+' of leads · '+T.won+' bought a package','check')+
+   kpi('CAC (ads)',TA.paid&&spend?rm(spend/TA.paid):'—',rm(spend)+' spent · '+TA.paid+' paying from ads','money')+
+   kpi('ROAS (ads)',loading?'…':spend?(TA.rev/spend).toFixed(1)+'×':'—',loading?'':rm(TA.rev)+' paid by ad clients','wallet')+
+   kpi('Replied in '+R.sla+' min',cr3Pct(inSla,resp.length),'average '+cr3Mins(resp.length?resp.reduce((a,b)=>a+b,0)/resp.length:null),'clock')+'</div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Spend is each campaign\'s cost spread over the days it ran, counted inside this period.</p></div>'+
+  '<div class="grid g2" style="align-items:start">'+funnel+trial+'</div>'+bySrc+camps+ads+sla;
+};
+window.mktDays=d=>{MKTDAYS=d;render();cr3SalesLoad(false);};
+
+/* ---------- tracked links for a campaign ---------- */
+window.cr3Links=id=>{
+ const c=CAMPAIGNS.find(x=>x.id===id);if(!c)return;const b=D.meta.biz||{},wa=waNum(b.whatsapp||b.phone||''),lp=typeof lpBase==='function'?lpBase():'';
+ const L=[['Facebook / Instagram ads','Ads Manager → Ad → Tracking → URL parameters. Meta fills in the platform and the ad name.',lp+'?utm_source={{site_source_name}}&utm_medium=paid&utm_campaign='+c.code+'&utm_content={{ad.name}}'],
+  ['TikTok ads','TikTok Ads Manager → Ad → Destination URL. TikTok fills in the ad name.',lp+'?utm_source=tiktok&utm_medium=paid&utm_campaign='+c.code+'&utm_content=__CID_NAME__'],
+  ['Instagram / TikTok bio or post','For organic posts — the source is picked up, the campaign too.',lp+'?src=ig&c='+c.code],
+  ['Click-to-WhatsApp ad','Use as the ad\'s pre-filled message. The code in brackets tells the CRM which campaign it was — paste the chat with "Add from a WhatsApp chat".',wa?'https://wa.me/'+wa+'?text='+encodeURIComponent('Hi '+(b.name||'Luuna')+'! Saya nak tahu lebih lanjut ['+c.code+']'):'Set the WhatsApp number in Settings first']];
+ modal('Links for '+c.name,'<div class="card"><p class="tiny muted" style="margin-top:0">Every lead that comes through these links carries the campaign <b>'+esc(c.code)+'</b> and, for ads, the ad name — so sales and CAC show per campaign and per ad.</p>'+
+  L.map((x,i)=>'<div class="cr3link"><b>'+esc(x[0])+'</b><small>'+esc(x[1])+'</small><div class="cr3code" id="cr3l'+i+'">'+esc(x[2])+'</div><button class="btn sm ghost" onclick="cr3Copy(\'cr3l'+i+'\')">'+ic('copy',13)+'Copy</button></div>').join('')+'</div>');
+};
+/* the campaign form: spend per ad, and the links */
+{const _cf=window.campForm;window.campForm=id=>{_cf(id);const e=document.getElementById('cm-er');if(!e)return;const c=id?CAMPAIGNS.find(x=>x.id===id):null;
+ e.insertAdjacentHTML('beforebegin','<label>Spend per ad <span class="muted">— optional, one per line: ad name = RM</span></label><textarea class="f" id="cm-ad" rows="3" placeholder="Video testimoni = 450&#10;Carousel promo RM49 = 300">'+esc(c&&c.adCosts?Object.entries(c.adCosts).map(([a,v])=>a+' = '+v).join('\n'):'')+'</textarea>'+
+  (c?'<button class="btn sm ghost" style="margin-bottom:6px" onclick="cr3Links(\''+c.id+'\')">'+ic('list',13)+'Tracked links for this campaign</button>':''));};}
+{const _cs=window.campSave;window.campSave=async id=>{
+ const t=document.getElementById('cm-ad'),nm=(document.getElementById('cm-n')||{}).value||'';const ad={};
+ if(t)t.value.split('\n').forEach(l=>{const m=l.match(/^(.+?)\s*[=:]\s*(?:RM)?\s*([\d.,]+)\s*$/i);if(m){const v=+m[2].replace(/,/g,'');if(v>=0)ad[m[1].trim().slice(0,80)]=r2(v);}});
+ const before=CAMPAIGNS.length;await _cs(id);
+ const c=id?CAMPAIGNS.find(x=>x.id===id):(CAMPAIGNS.length>before?CAMPAIGNS[CAMPAIGNS.length-1]:null);
+ if(t&&c&&(Object.keys(ad).length||c.adCosts)){try{await updateDoc(doc(db,'campaigns',c.id),{adCosts:ad});c.adCosts=ad;render();}catch(e){}}
+};}
+
+/* ---------- the lead card: where it came from, and how far it got ---------- */
+{const _lo=window.leadOpen;window.leadOpen=id=>{_lo(id);const l=LEADS.find(x=>x.id===id),h=document.querySelector('#ld-box .ldhead');if(!l||!h)return;
+ const c=l.campaign?CAMPAIGNS.find(x=>x.code===l.campaign):null,ad=cr3Ad(l);
+ const bits=[l.medium?(l.medium==='Paid'?'Paid ad':l.medium):'',c?'Campaign: '+c.name:l.campaignName?'Campaign: '+l.campaignName:'',l.adset?'Ad set: '+l.adset:'',ad?'Ad: '+ad:'',l.form?'Form: '+l.form:'',l.createdBy==='hook'?(l.imported?'imported CSV':'from the ad form'):''].filter(Boolean);
+ const R=cr3R(),w=cr3Waiting(l),m=Math.round(cr3Age(l));
+ const tl=CR3_ORDER.map(k=>{const T={new:l.createdAt,contacted:l.firstContactAt,booked:l.bookedAt||l.convertedAt,attended:l.attendedAt,trial:l.trialAt,won:l.wonAt}[k];const on=cr3Reached(l,k);
+  return '<span class="'+(on?'on':'')+'">'+esc(stageOf(k)[1])+(T&&on?'<small>'+dshort(T)+'</small>':'')+'</span>';}).join('');
+ h.insertAdjacentHTML('afterend',(bits.length?'<div class="ldline cr3attr">'+ic('mega',13)+' '+bits.map(esc).join(' · ')+'</div>':'')+
+  (w?'<div class="ldline cr3sla'+(m>+R.sla?' late':'')+'">'+ic('clock',13)+' Waiting '+m+' min'+(m>+R.sla?' — past the '+R.sla+'-minute SLA':' · reply within '+(R.sla-m)+' min')+(l.assignedTo?' · '+esc(stf(l.assignedTo).name||''):'')+'</div>':'')+
+  '<div class="cr3tl">'+tl+'</div>');};}
+
+/* ---------- keep it moving ---------- */
+let CR3BOOT=false,CR3N=0;
+async function cr3Tick(){
+ if(!ME||!LEADSUB)return;CR3N++;
+ try{await cr3Normalise();}catch(e){}
+ try{await cr3Assign();}catch(e){}
+ try{cr3Alerts();}catch(e){}
+ if(CR3N%4===1){try{await cr3Advance();}catch(e){}}
+ const ae=document.activeElement;if(TAB==='crm'&&CRMV==='pipe'&&!document.querySelector('#modal .sheet')&&!(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName)))render();
+}
+{const _r=render;render=function(){_r.apply(this,arguments);try{if(ME&&!CR3BOOT&&can('customer')){CR3BOOT=true;setInterval(()=>cr3Tick().catch(()=>{}),25000);setTimeout(()=>cr3Tick().catch(()=>{}),4000);}}catch(e){}};window.render=render;}
+window.cr3TickNow=()=>cr3Tick();
+window.cr3State=()=>({R:cr3R(),TP:CR3TP,trials:cr3Trials(),leads:LEADS.map(l=>({id:l.id,name:l.name,stage:l.stage,assignedTo:l.assignedTo,maxRank:l.maxRank,trialAt:l.trialAt,attendedAt:l.attendedAt,wonAt:l.wonAt,campaign:l.campaign,source:l.source,hookDone:l.hookDone,phone:l.phone}))});
 
 </script>

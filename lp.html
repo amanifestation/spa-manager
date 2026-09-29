@@ -517,7 +517,8 @@ function detect(o){
  if(!m)m=!s?'Direct':paidTag||q.get('gclid')||q.get('ttclid')?'Paid':s==='Referral'?'Referral':s==='WhatsApp'?'Messaging':'Organic';
  if(!s){s='Website';d='direct';}
  if(host&&d!==host)d+=' · '+host;
- return {s,m,c:camp,d:d.slice(0,80),l:(location.pathname.split('/').pop()+location.search).slice(0,120),at:new Date().toISOString()};
+ const ad=(q.get('utm_content')||q.get('ad')||q.get('ad_name')||'').trim().slice(0,60);
+ return {s,m,c:camp,a:ad,d:d.slice(0,80),l:(location.pathname.split('/').pop()+location.search).slice(0,120),at:new Date().toISOString()};
 }
 const AKEY='luunaAttr',DAY30=30*864e5;
 function attrLoad(){try{return JSON.parse(localStorage.getItem(AKEY)||'null')||{};}catch(e){return {};}}
@@ -836,7 +837,7 @@ function bindForm(k,o){
   const interest=(it&&it.value)||o.promo||o.interest||'';
   const d={name:n.slice(0,80),phone:p.slice(0,20),source:x.s,medium:x.m,campaign:(x.c||'').slice(0,24),branchId:br,stage:'new',createdAt:new Date().toISOString(),
    createdBy:'landing',web:true,consent:true,
-   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':o.quiz?'quiz':'form',d:x.d||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
+   lp:{ctx:o.mode==='wa'?'wa':o.promo?'promo':o.quiz?'quiz':'form',d:x.d||'',ad:x.a||'',land:x.l||'',dev:dev(),lang:LANG,first:a.first&&a.first!==a.last?(a.first.s+' · '+a.first.m+(a.first.c?' · '+a.first.c:'')+' · '+String(a.first.at).slice(0,10)):''}};
   if(interest)d.interest=interest.slice(0,200);
   /* the note is for the spa team, so it stays in Malay whichever language the page was in */
   const nt=[o.quiz||'',q&&q.value.trim(),TS.size?'Masa sesuai: '+[...TS].join(', '):'',o.mode==='wa'?'Klik WhatsApp dari laman web':'',LANG==='en'?'(borang dalam English)':''].filter(Boolean).join(' · ');if(nt)d.note=nt.slice(0,500);
