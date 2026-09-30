@@ -2310,6 +2310,42 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .cptbl td:last-child{min-width:150px;white-space:normal}.cptbl th,.cptbl td{padding-left:6px;padding-right:6px}
 .cno.pro{background:transparent;border:1px dashed var(--line,#d9d2c7);color:var(--ink-3,#8a8177);font-weight:600}
 .pfile.prospect .pfno.none{color:var(--ink-2,#5f5a54)}
+/* HR employee profiles (29o) */
+.hpstats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.hpstats span{display:flex;align-items:baseline;gap:5px;padding:5px 10px;border-radius:99px;background:var(--line-2);font-size:12px;color:var(--ink-2)}
+.hpstats b{font-size:14px;color:var(--ink)}
+.hphead h2{font-size:20px;line-height:1.2}
+.avatar.big{width:56px;height:56px;border-radius:16px;font-size:18px;flex:none;display:flex;align-items:center;justify-content:center}
+.hpdates{margin-top:10px;border-top:1px solid var(--line-2)}
+.hpdate{width:100%;background:none;border:0;border-bottom:1px solid var(--line-2);font:inherit;color:var(--ink);cursor:pointer}
+.hpdate:last-child{border-bottom:0}
+.hpdot{width:9px;height:9px;border-radius:50%;flex:none;background:var(--brass)}
+.hpdot.r{background:var(--rose)}
+.hpseg{overflow-x:auto;scrollbar-width:none;margin:0 0 12px}
+.hpseg button{white-space:nowrap;display:flex;align-items:center;gap:5px}
+.hpseg i{font-style:normal;font-size:10.5px;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--brass);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.hpdl{display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:6px 12px;margin:0;font-size:13.5px}
+.hpdl dt{color:var(--ink-3);font-size:12.5px}
+.hpdl dd{margin:0;word-break:break-word;white-space:pre-line}
+.hpmiss{color:var(--ink-3);opacity:.7}
+.hpcat .sec-h h3 .tiny{font-weight:400;margin-left:4px}
+.hpft{flex:none;font-size:9.5px;font-weight:700;letter-spacing:.06em;padding:4px 5px;border-radius:6px;background:var(--line-2);color:var(--ink-2)}
+.hpimg{display:block;max-width:100%;max-height:70vh;margin:0 auto;border-radius:10px;border:1px solid var(--line)}
+.hptl{position:relative;margin-left:4px}
+.hptl-i{display:flex;gap:10px;padding:0 0 14px;position:relative}
+.hptl-i:before{content:'';position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line-2)}
+.hptl-i:last-child:before{display:none}
+.hptl-d{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--line-2);color:var(--ink-2)}
+.hptl-i.k-promotion .hptl-d{background:var(--brass);color:#fff}
+.hptl-i.k-transfer .hptl-d,.hptl-i.k-join .hptl-d{background:var(--ink);color:var(--cream)}
+.hptl-i.k-salary .hptl-d{background:#3f7d5a;color:#fff}
+.hptl-i.k-discipline .hptl-d{background:var(--rose);color:#fff}
+.hptl-i b{font-size:13.5px}
+.hpchg{font-size:13px;margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.hpchg s{color:var(--ink-3)}
+.hpreq{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(184,146,74,.1);font-size:13px}
+.hpcmp td,.hpcmp th{padding:6px 8px;text-align:left;vertical-align:top}
+@media (max-width:560px){.hpdl{grid-template-columns:1fr;gap:0}.hpdl dt{margin-top:7px}.hphead .row{flex-wrap:wrap}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2571,7 +2607,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-30n';
+const BUILD='2026-09-30o';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -26456,5 +26492,455 @@ window.cnRevokeDo=async()=>{
  catch(e){if(b)b.disabled=false;toast(friendly(e)+(n?' ('+n+' done)':''));}
 };
 window.cnState=()=>({paid:[...CNPAID]});
+
+
+/* ============ HR: the employee database (staff profiles) ============ */
+/* One profile per person: personal and official details, the job (position, grade, branch, status),
+   every document in one place, the important dates, the employment history, and the requests staff
+   send to change their own address, bank account and emergency contact. The owner is HR: only the
+   owner sees the file. Staff see their own details on file, the documents shared with them, and ask
+   for changes, which the owner approves. Documents are kept in Firestore itself (no Storage on the
+   free plan): photos are shrunk, PDFs are split into pieces of about 0.7 MB. */
+HRF.push(['grade','Grade','text'],['nationality','Nationality','text'],['passport','Passport no.','text'],['passportExp','Passport expiry','date'],
+ ['permitNo','Work permit (PLKS) no.','text'],['permitExp','Work permit expiry','date']);
+const HP_ST=[['Probation','Probation','Percubaan','a'],['Full-time','Permanent','Tetap','g'],['Contract','Contract','Kontrak',''],['Part-time','Part-time','Sambilan',''],['Intern','Intern','Pelatih','']];
+const hpSt=v=>{const x=HP_ST.find(s=>s[0]===v);return x?x[1]:(v||'');};
+const hpStPill=v=>{const x=HP_ST.find(s=>s[0]===v);return v?'<span class="pill '+(x?x[3]:'')+'">'+esc(hpSt(v))+'</span>':'<span class="pill">No status</span>';};
+/* document shelves: key, name, Malay name, icon, must have, staff see it by default */
+const HP_CAT=[['offer','Offer letter','Surat tawaran','mail',1,1],['contract','Contract & agreements','Kontrak & perjanjian','signature',0,1],['ic','IC / passport copy','Salinan IC / pasport','idcard',1,1],
+ ['academic','Academic certificates','Sijil akademik','award',0,1],['skill','Skill & training certificates','Sijil kemahiran','star',0,1],['confirm','Confirmation letter','Surat pengesahan jawatan','check',0,1],
+ ['permit','Work permit & visa','Permit kerja & pas','shield',0,1],['hr','Other HR letters','Surat HR lain','note',0,0]];
+const HP_DOCMAP={offer:'offer',confirm:'confirm',nda:'contract',rules:'contract',verify:'hr'};
+const HP_HK={promotion:['Promotion / new position','award'],transfer:['Branch transfer','transfer'],salary:['Salary change','wallet'],status:['Status change','check'],
+ discipline:['Disciplinary action','flag'],other:['Other','note']};
+const HP_LVL=['Verbal warning','Written warning','Final written warning','Show-cause letter','Suspension','Domestic inquiry','Dismissal','Other'];
+const HP_SELF=['address','bank','bankAcc','emgName','emgRel','emgPhone'];
+const HP_SELFL={address:'Home address',bank:'Bank',bankAcc:'Bank account no.',emgName:'Emergency contact — name',emgRel:'Emergency contact — relationship',emgPhone:'Emergency contact — phone'};
+const HP_CH=700000;
+let HPF=null,HPH=null,HPR=null,HPS=null,HPLOAD=0,HPUNS=0,HP=null,HPT='info',HPBR='';
+let MYSELF,MYREQ=null,MYFILES=null;
+const hpBr=id=>(D.branches.find(b=>b.id===id)||{}).name||'';
+const hpAll=()=>D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role));
+const hpF=sid=>(HRSTAFF||{})[sid]||{};
+const hpIsFW=f=>f.citizen==='Foreign worker';
+function hpTenure(d){if(!d||d>today())return '';const a=new Date(d+'T00:00:00'),b=new Date(today()+'T00:00:00');let m=(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth();if(b.getDate()<a.getDate())m--;
+ const y=Math.floor(m/12);m%=12;return (y?y+' yr'+(y>1?'s':'')+' ':'')+(m||!y?m+' mth'+(m!==1?'s':''):'').trim();}
+
+/* ---------- loading (owner) ---------- */
+async function hpLoad(force){
+ if(!isOwnerMe()||(HPF&&!force)||HPLOAD)return;HPLOAD=1;
+ try{const [F,H,S]=await Promise.all([getDocs(collection(db,'hrFiles')),getDocs(collection(db,'hrHist')),getDocs(collection(db,'hrSelf'))]);
+  HPF=F.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));
+  HPH=H.docs.map(d=>({id:d.id,...d.data()}));HPS={};S.docs.forEach(d=>{HPS[d.id]=d.data();});}
+ catch(e){HPF=HPF||[];HPH=HPH||[];HPS=HPS||{};console.warn('hr profile',e);}
+ HPLOAD=0;
+ if(!HPUNS){HPUNS=1;try{unsub.push(onSnapshot(collection(db,'hrReq'),s=>{HPR=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));if(['hr','home'].includes(TAB))render();},e=>{HPR=[];console.warn('hrReq',e);}));}catch(e){HPR=[];}}
+ hpSelfSyncAll();
+ if(['hr','home'].includes(TAB))render();
+}
+{const _l=loadHrStaff;loadHrStaff=async function(force){await _l.apply(this,arguments);await hpLoad(force);};}
+/* what a staff member may see of their own file: kept in hrSelf, written only by the owner */
+const hpSelfOf=(sid)=>{const f=hpF(sid),o={};[...HP_SELF,'fullName','position','grade','empType','joinDate','confirmDate','contractEnd','passportExp','permitExp','citizen'].forEach(k=>{o[k]=f[k]==null?'':f[k];});o.branch=hpBr(stf(sid).branchId);return o;};
+async function hpSelfSync(sid){
+ if(!isOwnerMe()||!HRSTAFF||!HRSTAFF[sid])return;const o=hpSelfOf(sid);
+ try{await setDoc(doc(db,'hrSelf',sid),{...o,updatedAt:new Date().toISOString()});HPS=HPS||{};HPS[sid]=o;}catch(e){console.warn('hrSelf',e);}
+}
+function hpSelfSyncAll(){
+ if(!isOwnerMe()||!HRSTAFF||!HPS)return;
+ Object.keys(HRSTAFF).forEach(sid=>{const s=stf(sid);if(!s.id||s.role==='owner')return;const o=hpSelfOf(sid),h=HPS[sid]||{};
+  if(Object.keys(o).some(k=>String(o[k]??'')!==String(h[k]??'')))hpSelfSync(sid);});
+}
+
+/* ---------- important dates ---------- */
+function hpDates(only){
+ const td=today(),out=[],dd=d=>daysBetween(td,d);
+ const add=(s,kind,label,date,win,past)=>{const n=dd(date);if(n>win||n<-(past||3650))return;out.push({sid:s.id,name:hpF(s.id).fullName||s.name,kind,label,date,n,sev:n<0?'r':n<=14?'r':'a'});};
+ hpAll().filter(s=>!only||s.id===only).forEach(s=>{const f=hpF(s.id);
+  if(f.empType==='Probation'&&f.confirmDate)add(s,'prob','Probation ends',f.confirmDate,30);
+  if(f.contractEnd&&(f.empType==='Contract'||!f.empType||f.contractEnd>=td))add(s,'contract','Contract ends',f.contractEnd,60,60);
+  if(hpIsFW(f)&&f.permitExp)add(s,'permit','Work permit expires',f.permitExp,90);
+  if(f.passport&&f.passportExp)add(s,'passport','Passport expires',f.passportExp,180);
+  (CERTS||[]).filter(c=>c.staffId===s.id&&c.expiry).forEach(c=>{if(CERTS.some(o=>o.id!==c.id&&o.staffId===c.staffId&&o.name===c.name&&(!o.expiry||o.expiry>c.expiry)))return;add(s,'cert','Certificate: '+c.name,c.expiry,30,365);});
+  (HPF||[]).filter(x=>x.staffId===s.id&&x.expiry).forEach(x=>add(s,'doc','Document: '+x.title,x.expiry,30,365));});
+ return out.sort((a,b)=>a.n-b.n);
+}
+const hpWhen=n=>n<0?(-n)+' day'+(n!==-1?'s':'')+' ago':n===0?'today':'in '+n+' day'+(n!==1?'s':'');
+function hpDateRow(x,withName){
+ return '<button class="hrrow hpdate" onclick="hpOpen(\''+x.sid+'\',\''+(x.kind==='doc'?'docs':'info')+'\')"><span class="hpdot '+x.sev+'"></span><div style="flex:1;min-width:0;text-align:left"><b>'+(withName?esc(x.name)+' · ':'')+esc(x.label)+'</b><small>'+dstr(x.date)+
+  (x.kind==='prob'?' · confirm, extend or end — issue the letter under Documents':x.kind==='permit'?' · renewal usually takes 1–2 months':x.kind==='contract'&&x.n<0?' · renew or record the end':'')+'</small></div><span class="pill '+x.sev+'">'+hpWhen(x.n)+'</span></button>';
+}
+/* home: one line for each kind of date, pending change requests; replaces the older contract / probation lines */
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(!isOwnerMe())return;
+ if(HRSTAFF&&!HPF&&!HPLOAD)setTimeout(()=>hpLoad(),0);
+ if(!HRSTAFF)return;
+ for(let i=al.length-1;i>=0;i--)if(/contracts? ending within 30 days|^Probation ending/.test(al[i].t||''))al.splice(i,1);
+ const L=hpDates(),g=(k,t1,tn)=>{const x=L.filter(z=>z.kind===k);if(x.length)al.push({i:k==='permit'||k==='passport'?'shield':k==='prob'?'check':'idcard',t:x.length===1?t1:x.length+' '+tn,
+  d:x.slice(0,3).map(z=>String(z.name).split(' ')[0]+' '+(z.n<0?'(passed '+dshort(z.date)+')':dshort(z.date))).join(', '),go:"hrGo('staff')"});};
+ g('prob','Probation ending — confirm or extend','probation periods ending');g('contract','Contract ending','contracts ending');
+ g('permit','Work permit expiring','work permits expiring');g('passport','Passport expiring','passports expiring');g('doc','A staff document is expiring','staff documents expiring');
+ const pr=(HPR||[]).filter(r=>r.status==='pending');
+ if(pr.length)al.push({i:'user',t:pr.length+' staff detail change'+(pr.length>1?'s':'')+' to approve',d:pr.map(r=>(r.name||stf(r.staffId).name||'').split(' ')[0]+' · '+Object.keys(r.changes||{}).map(k=>HP_SELFL[k].split(' — ').pop().toLowerCase()).join(', ')).slice(0,3).join('; '),go:"hrGo('staff')"});};}
+
+/* ---------- the HR tab gets a badge; tabs close an open profile ---------- */
+{const _v=vHR;vHR=function(){let h=_v.apply(this,arguments);if(!isOwnerMe())return h;
+ const n=(HPR||[]).filter(r=>r.status==='pending').length+(HRSTAFF?hpDates().filter(x=>x.sev==='r'&&x.kind!=='cert').length:0);
+ return n?h.replace('<span>Staff files</span></button>','<span>Staff files</span><i>'+n+'</i></button>'):h;};}
+{const _t=window.hrTab;window.hrTab=v=>{HP=null;_t(v);};}
+{const _g=window.hrGo;window.hrGo=v=>{HP=null;_g(v);};}
+window.hpOpen=(sid,t)=>{HP=sid;HPT=t||'info';if(TAB!=='hr'||HRV!=='staff'){HRV='staff';window.go('hr');}else render();window.scrollTo&&window.scrollTo(0,0);};
+window.hpBack=()=>{HP=null;render();};
+window.hpTab=t=>{HPT=t;render();};
+window.hpBrF=b=>{HPBR=b;render();};
+
+/* ---------- the list ---------- */
+function hpMissing(sid){const f=hpF(sid),fl=(HPF||[]).filter(x=>x.staffId===sid);
+ const m=[['ic','IC no.'],['address','address'],['emgPhone','emergency contact'],['bankAcc','bank account'],['epf','KWSP no.'],['socso','PERKESO no.'],['joinDate','start date'],['empType','status']].filter(([k])=>!f[k]).map(x=>x[1]);
+ if(hpIsFW(f)){if(!f.passport)m.push('passport');if(!f.permitExp)m.push('permit expiry');}
+ if(!fl.some(x=>x.cat==='ic'))m.push('IC copy');
+ if(!fl.some(x=>x.cat==='offer')&&!(HRDOCS||[]).some(x=>x.staffId===sid&&x.type==='offer'))m.push('offer letter');
+ return m;}
+hrStaffView=function(){
+ if(!isOwnerMe())return '';
+ if(HRSTAFF===null||HPF===null){if(HRSTAFF&&!HPF)setTimeout(()=>hpLoad(),0);return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ if(HRDOCS===null)setTimeout(()=>loadHrDocs(),0);
+ if(HP&&stf(HP).id)return hpProfile(HP);
+ const L=hpDates(),pr=(HPR||[]).filter(r=>r.status==='pending');
+ const brs=D.branches.length>1?D.branches:[];
+ const P=hpAll().filter(s=>!HPBR||s.branchId===HPBR).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+ const cnt=k=>P.filter(s=>(hpF(s.id).empType||'')===k).length,fw=P.filter(s=>hpIsFW(hpF(s.id))).length;
+ return (pr.length?'<div class="card hpreqs"><div class="sec-h"><h3 style="margin:0">'+ic('user',15)+' Detail changes sent by staff</h3><span class="pill a">'+pr.length+' to approve</span></div>'+
+   pr.map(r=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(r.name||stf(r.staffId).name||'')+'</b><small>'+Object.keys(r.changes||{}).map(k=>HP_SELFL[k]).join(', ')+' · sent '+dstr(r.at)+'</small></div>'+
+    '<button class="btn sm" onclick="hpReqReview(\''+r.id+'\')">Review</button></div>').join('')+'</div>':'')+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('calendar',15)+' Important dates</h3><span class="tiny muted">probation 30 d · contract 60 d · permit 90 d · passport 180 d · certificates 30 d</span></div>'+
+   (L.length?L.slice(0,12).map(x=>hpDateRow(x,1)).join('')+(L.length>12?'<p class="tiny muted" style="margin:6px 0 0">+ '+(L.length-12)+' more</p>':''):'<p class="tiny muted" style="margin:0">Nothing coming up. Probation ends, contract ends, work permits, passports and certificates show here before they fall due.</p>')+'</div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('idcard',15)+' Employees</h3><div class="row" style="gap:6px"><span class="pill">owner only</span><button class="btn sm ghost" onclick="hpCSV()">'+ic('download',13)+'Staff register</button></div></div>'+
+   '<div class="hpstats">'+HP_ST.map(x=>'<span><b>'+cnt(x[0])+'</b>'+x[1]+'</span>').join('')+(fw?'<span><b>'+fw+'</b>Foreign</span>':'')+'<span><b>'+P.length+'</b>Total</span></div>'+
+   (brs.length?'<div class="chips" style="margin:0 0 8px"><button class="chip'+(!HPBR?' on':'')+'" onclick="hpBrF(\'\')">All branches</button>'+brs.map(b=>'<button class="chip'+(HPBR===b.id?' on':'')+'" onclick="hpBrF(\''+b.id+'\')">'+esc(b.name)+'</button>').join('')+'</div>':'')+
+   P.map(s=>{const f=hpF(s.id),miss=hpMissing(s.id),dl=L.filter(x=>x.sid===s.id&&x.kind!=='cert');
+    return '<button class="hrfile" data-hp="'+s.id+'" onclick="hpOpen(\''+s.id+'\')"><span class="avatar">'+esc(initials(s.name))+'</span><div style="flex:1;min-width:0"><b>'+esc(f.fullName||s.name)+'</b>'+
+     '<small>'+[f.position||s.position||ROLE[s.role]||'',f.grade,brs.length?hpBr(s.branchId):'',f.joinDate?'since '+dstr(f.joinDate):''].filter(Boolean).map(esc).join(' · ')+'</small></div>'+
+     (dl.length?'<span class="pill '+dl[0].sev+'">'+esc(dl[0].label.split(':')[0].replace(' expires','').replace(' ends',''))+' '+hpWhen(dl[0].n)+'</span>':'')+hpStPill(f.empType)+
+     (miss.length?'<span class="pill" title="'+esc(miss.join(', '))+'">'+miss.length+' missing</span>':'<span class="pill g">'+ic('check',11)+'complete</span>')+'</button>';}).join('')+
+   '<p class="tiny muted" style="margin:8px 0 0">IC, bank, KWSP, PERKESO, salary and documents are seen by the owner only. Each person sees their own details on file and the documents you share with them, in My HR.</p></div>';
+};
+
+/* ---------- one person's profile ---------- */
+function hpProfile(sid){
+ const s=stf(sid),f=hpF(sid),miss=hpMissing(sid),D2=hpDates(sid),files=(HPF||[]).filter(x=>x.staffId===sid);
+ const hist=(HPH||[]).filter(x=>x.staffId===sid),reqs=(HPR||[]).filter(x=>x.staffId===sid);
+ const tabs=[['info','Details','user',miss.length||''],['docs','Documents','folder',files.length||''],['hist','History','history',hist.length||''],['req','Change requests','edit',reqs.filter(r=>r.status==='pending').length||'']];
+ const head='<div class="card hphead"><button class="btn sm ghost" onclick="hpBack()">'+ic('left',14)+'All staff</button>'+
+  '<div class="row" style="gap:12px;margin-top:10px;align-items:center"><span class="avatar big">'+esc(initials(f.fullName||s.name))+'</span><div style="flex:1;min-width:0">'+
+   '<h2 style="margin:0">'+esc(f.fullName||s.name)+'</h2><div class="muted" style="font-size:13.5px">'+[f.position||s.position||ROLE[s.role]||'',f.grade?'Grade '+f.grade:'',hpBr(s.branchId)].filter(Boolean).map(esc).join(' · ')+'</div>'+
+   '<div class="row wrap2" style="gap:6px;margin-top:6px">'+hpStPill(f.empType)+(hpIsFW(f)?'<span class="pill">Foreign worker</span>':'')+(f.joinDate?'<span class="pill">'+ic('calendar',11)+'Joined '+dstr(f.joinDate)+(hpTenure(f.joinDate)?' · '+hpTenure(f.joinDate):'')+'</span>':'')+'</div></div>'+
+   '<button class="btn sm" onclick="hrFile(\''+sid+'\')">'+ic('edit',14)+'Edit</button></div>'+
+  (D2.length?'<div class="hpdates">'+D2.map(x=>hpDateRow(x,0)).join('')+'</div>':'')+'</div>';
+ const seg='<div class="seg hpseg">'+tabs.map(t=>'<button class="'+(HPT===t[0]?'on':'')+'" onclick="hpTab(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+(t[3]?' <i>'+t[3]+'</i>':'')+'</button>').join('')+'</div>';
+ const body=HPT==='docs'?hpDocsTab(sid):HPT==='hist'?hpHistTab(sid):HPT==='req'?hpReqTab(sid):hpInfoTab(sid);
+ return head+seg+body;
+}
+function hpInfoTab(sid){
+ const f=hpF(sid),s=stf(sid),miss=hpMissing(sid);
+ const v=(k,fmt)=>{const x=f[k];if(x===''||x==null)return '<span class="hpmiss">—</span>';return fmt?fmt(x):esc(x);};
+ const dl=(t,rows)=>'<div class="card"><h3 style="margin:0 0 8px">'+t+'</h3><dl class="hpdl">'+rows.map(r=>'<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>').join('')+'</dl></div>';
+ const q=lvQuota({...s,leaveAL:f.leaveAL,leaveMC:f.leaveMC,joinDate:f.joinDate});
+ return (miss.length?'<div class="warnbox">'+ic('alert',13)+' Still missing: <b>'+esc(miss.join(', '))+'</b>. Staff can send their own details from My HR, or you fill them in with Edit.</div>':'')+
+  '<div class="grid g2" style="align-items:start">'+
+  dl(ic('user',15)+' Personal & official',[['Full name',v('fullName')],['MyKad no.',v('ic')],['Citizenship',v('citizen')],['Nationality',v('nationality')],['Date of birth',v('dob',dstr)],['Gender',v('gender')],['Phone',v('phone')],['Email',v('email')],['Home address',v('address')],['Marital status',v('marital')+(f.children?' · '+esc(f.children)+' children':'')]])+
+  dl(ic('work',15)+' Employment',[['Position',v('position')],['Grade',v('grade')],['Branch',esc(hpBr(s.branchId))||'<span class="hpmiss">—</span>'],['Status',f.empType?hpStPill(f.empType):v('empType')],['Start date',v('joinDate',dstr)],
+   [f.empType==='Probation'?'Probation ends':'Confirmed on',v('confirmDate',dstr)],['Contract ends',v('contractEnd',dstr)],['Basic salary',v('basic',x=>rm(+x)+' / month')],['Fixed allowances',v('allowance',x=>rm(+x)+' / month')],['Leave',q.AL+' days annual · '+q.MC+' days medical']])+
+  dl(ic('phone',15)+' Emergency contact',[['Name',v('emgName')],['Relationship',v('emgRel')],['Phone',v('emgPhone')]])+
+  dl(ic('wallet',15)+' Bank & statutory',[['Bank',v('bank')],['Account no.',v('bankAcc')],['KWSP no.',v('epf')],['PERKESO no.',v('socso')],['Income tax no.',v('tax')],['PCB / month',v('pcb',x=>rm(+x))]])+
+  (hpIsFW(f)||f.passport?dl(ic('shield',15)+' Passport & work permit',[['Passport no.',v('passport')],['Passport expiry',v('passportExp',dstr)],['Work permit (PLKS) no.',v('permitNo')],['Permit expiry',v('permitExp',dstr)]]):'')+
+  (f.notes?dl(ic('note',15)+' Notes',[['',esc(f.notes)]]):'')+'</div>'+
+  (f.updatedAt?'<p class="tiny muted">Last updated '+dstr(f.updatedAt)+'</p>':'');
+}
+
+/* ---------- the editor (replaces the older staff-file form) ---------- */
+window.hrFile=sid=>{
+ if(!isOwnerMe())return;
+ const s=stf(sid),f={...hpF(sid)};
+ if(!f.fullName)f.fullName=s.name;if(!f.position&&s.position)f.position=s.position;if(!f.joinDate&&s.joinDate)f.joinDate=s.joinDate;
+ const q=lvQuota({...s,leaveAL:'',leaveMC:'',joinDate:f.joinDate}),L=k=>(HRF.find(x=>x[0]===k)||[k,k,'text']);
+ const lab={ic:'MyKad no. (IC)',citizen:'Citizenship',confirmDate:(f.empType==='Probation'||!f.empType)?'Probation ends (confirm on)':'Confirmed on',empType:'Status'};
+ const inp=k=>{const [,l0,t]=L(k),l=lab[k]||l0,v=f[k]==null?'':f[k];
+  if(k==='empType')return '<label>'+l+'</label><select class="f" id="hf-empType"><option value="">—</option>'+HP_ST.map(x=>'<option value="'+x[0]+'"'+(v===x[0]?' selected':'')+'>'+x[1]+' ('+x[2]+')</option>').join('')+'</select>';
+  if(t==='area')return '<label>'+l+'</label><textarea class="f" rows="2" id="hf-'+k+'">'+esc(v)+'</textarea>';
+  if(t.startsWith('sel:'))return '<label>'+l+'</label><select class="f" id="hf-'+k+'"'+(k==='citizen'?' onchange="hpFW(this.value)"':'')+'><option value="">—</option>'+t.slice(4).split(',').map(o=>'<option'+(v===o?' selected':'')+'>'+o+'</option>').join('')+'</select>';
+  return '<label>'+l+'</label><input class="f" id="hf-'+k+'" type="'+(t==='num'?'number" step="0.01':t)+'" value="'+esc(v)+'"'+(k==='grade'?' list="hp-grades"':'')+
+   (k==='leaveAL'?' placeholder="Default '+q.AL+'"':k==='leaveMC'?' placeholder="Default '+q.MC+'"':'')+'>';};
+ const grp=(t,ks,extra,attr)=>'<div class="hrgrp"'+(attr||'')+'><h4>'+t+'</h4><div class="grid g2">'+ks.map(k=>'<div>'+inp(k)+'</div>').join('')+(extra||'')+'</div></div>';
+ const grades=[...new Set(Object.values(HRSTAFF||{}).map(x=>x.grade).filter(Boolean))];
+ const brSel=s.role==='owner'?'':'<div><label>Branch</label><select class="f" id="hf-branch">'+D.branches.map(b=>'<option value="'+b.id+'"'+(s.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div>';
+ modal('Staff file · '+s.name,'<div class="card"><datalist id="hp-grades">'+grades.map(g=>'<option value="'+esc(g)+'">').join('')+'</datalist>'+
+  grp('Personal & official',['fullName','ic','dob','gender','citizen','nationality','phone','email'])+inp('address')+
+  grp('Passport & work permit',['passport','passportExp','permitNo','permitExp'],'',' id="hf-fw"'+(hpIsFW(f)||f.passport?'':' style="display:none"'))+
+  grp('Emergency contact',['emgName','emgRel','emgPhone'])+
+  grp('Family (for PCB)',['marital','spouseWorks','children'])+
+  grp('Employment',['position','grade'],brSel+['empType','joinDate','confirmDate','contractEnd','basic','allowance'].map(k=>'<div>'+inp(k)+'</div>').join('')+
+   '<div><label>Changes here take effect on</label><input class="f" id="hf-eff" type="date" value="'+today()+'"></div>')+
+  '<p class="tiny muted" style="margin:-4px 0 10px">A new position or grade, branch, salary or status is written into the employment history on that date.</p>'+
+  grp('Bank & statutory',['bank','bankAcc','epf','socso','tax','pcb'])+
+  grp('Leave entitlement',['leaveAL','leaveMC'])+
+  '<p class="tiny muted" style="margin:-4px 0 10px">Leave blank to follow the Employment Act minimum for their years of service.</p>'+
+  inp('notes')+
+  '<div id="hf-e" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
+  '<button class="btn" id="hf-go" style="width:100%;justify-content:center" onclick="hrFileSave(\''+sid+'\')">'+ic('check',16)+'Save staff file</button></div>');
+};
+window.hpFW=v=>{const g=document.getElementById('hf-fw');if(g)g.style.display=v==='Foreign worker'||($('#hf-passport')||{}).value?'':'none';};
+{const _s=window.hrFileSave;window.hrFileSave=async sid=>{
+ const old={...hpF(sid)},ob=stf(sid).branchId||'',nb=($('#hf-branch')||{}).value||ob,eff=($('#hf-eff')||{}).value||today(),stamp=old.updatedAt;
+ await _s(sid);
+ const now=hpF(sid);if(!now.updatedAt||now.updatedAt===stamp)return;
+ const E=[],pg=x=>[x.position,x.grade].filter(Boolean).join(' · ');
+ if(old.position&&(old.position!==now.position||(old.grade||'')!==(now.grade||'')))E.push({kind:'promotion',from:pg(old),to:pg(now)});
+ else if(old.grade&&old.grade!==(now.grade||''))E.push({kind:'promotion',from:pg(old),to:pg(now)});
+ if(+old.basic&&+old.basic!==+now.basic)E.push({kind:'salary',from:rm(+old.basic),to:rm(+now.basic),amount:+now.basic});
+ if(old.empType&&old.empType!==now.empType)E.push({kind:'status',from:hpSt(old.empType),to:hpSt(now.empType)});
+ if(nb&&nb!==ob){try{await updateDoc(doc(db,'users',sid),{branchId:nb});stf(sid).branchId=nb;E.push({kind:'transfer',from:hpBr(ob),to:hpBr(nb)});}catch(e){toast(friendly(e));}}
+ for(const e of E)await hpHistPut({...e,staffId:sid,date:eff,auto:true});
+ await hpSelfSync(sid);
+ if(E.length){toast('Saved · '+E.length+' change'+(E.length>1?'s':'')+' added to the history');render();}
+};}
+
+/* ---------- documents ---------- */
+const hpDataURL=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f);});
+async function hpPrep(f){
+ const isPdf=f.type==='application/pdf'||/\.pdf$/i.test(f.name||'');
+ if(isPdf){if(f.size>4.5e6)throw new Error('This PDF is over 4.5 MB. Scan it again at a lower quality, or save it as smaller pages.');
+  let d=await hpDataURL(f);if(!/^data:application\/pdf/.test(d))d='data:application/pdf;base64,'+d.split(',')[1];return {data:d,mime:'application/pdf',size:f.size};}
+ if(/^image\//.test(f.type||'')){const url=await hpDataURL(f);
+  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('This photo cannot be read here — take it again as a JPG or save it as a PDF.'));i.src=url;});
+  let W=img.naturalWidth||img.width,H=img.naturalHeight||img.height;const k=Math.min(1,1800/Math.max(W,H));W=Math.max(1,Math.round(W*k));H=Math.max(1,Math.round(H*k));
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,W,H);g.drawImage(img,0,0,W,H);
+  let d=c.toDataURL('image/jpeg',.8);if(d.length>1.6e6)d=c.toDataURL('image/jpeg',.6);
+  return {data:d,mime:'image/jpeg',size:Math.round(d.length*.75)};}
+ throw new Error('Choose a PDF or a photo (JPG / PNG).');
+}
+function hpDocsTab(sid){
+ const f=hpF(sid),files=(HPF||[]).filter(x=>x.staffId===sid),issued=(HRDOCS||[]).filter(x=>x.staffId===sid),certs=(CERTS||[]).filter(c=>c.staffId===sid);
+ const td=today();
+ return '<div class="card"><p class="tiny muted" style="margin:0">Scans and PDFs are kept inside the app (photos are shrunk; PDFs up to 4.5 MB). Letters issued from Documents appear on their shelf by themselves. <b>Shared</b> ones can be downloaded by the staff member in My HR.</p></div>'+
+  HP_CAT.filter(c=>c[0]!=='permit'||hpIsFW(f)||files.some(x=>x.cat==='permit')).map(([k,en,bm,icn,need])=>{
+   const F=files.filter(x=>x.cat===k),I=issued.filter(x=>HP_DOCMAP[x.type]===k),C=k==='skill'?certs:[];
+   const has=F.length||I.some(x=>x.status==='signed'||x.paperSigned||!(DOCT[x.type]||{}).sign)||C.length;
+   const want=need||(k==='confirm'&&f.empType==='Full-time'&&f.joinDate&&daysBetween(f.joinDate,td)>200);
+   return '<div class="card hpcat" data-cat="'+k+'"><div class="sec-h" style="margin-bottom:'+(F.length||I.length||C.length?8:0)+'px"><h3 style="margin:0">'+ic(icn,15)+' '+en+' <span class="muted tiny">'+bm+'</span></h3>'+
+    '<div class="row" style="gap:6px">'+(want&&!has?'<span class="pill a">missing</span>':has?'<span class="pill g">'+ic('check',11)+'on file</span>':'')+'<button class="btn sm ghost" onclick="hpUp(\''+sid+'\',\''+k+'\')">'+ic('upload',13)+'Upload</button></div></div>'+
+    F.map(x=>{const ex=x.expiry?(x.expiry<td?['expired '+dshort(x.expiry),'r']:daysBetween(td,x.expiry)<=30?['expires '+dshort(x.expiry),'a']:['to '+dshort(x.expiry),'g']):null;
+     return '<div class="hrrow hpfile" data-f="'+x.id+'"><span class="hpft">'+(x.mime==='application/pdf'?'PDF':'IMG')+'</span><div style="flex:1;min-width:0"><b>'+esc(x.title)+'</b><small>'+[dstr(x.at),hpKB(x.size),x.note||'',x.shared?'shared with staff':'owner only'].filter(Boolean).map(esc).join(' · ')+'</small></div>'+
+      (ex?'<span class="pill '+ex[1]+'">'+ex[0]+'</span>':'')+'<button class="iconbtn" style="padding:4px" title="Open" onclick="hpGet(\''+x.id+'\')">'+ic('download',14)+'</button><button class="iconbtn" style="padding:4px" title="Delete" onclick="hpDel(\''+x.id+'\')">'+ic('trash',14)+'</button></div>';}).join('')+
+    I.map(x=>docRow(x)).join('')+
+    C.map(c=>{const st=certSt(c);return '<div class="hrrow"><span class="hpft">CERT</span><div style="flex:1;min-width:0"><b>'+esc(c.name)+'</b><small>'+[c.issuer,c.no?'No. '+c.no:'','from Skills'].filter(Boolean).map(esc).join(' · ')+'</small></div><span class="pill '+st[1]+'">'+st[0]+'</span></div>';}).join('')+'</div>';}).join('');
+}
+const hpKB=n=>!n?'':n>1e6?(n/1e6).toFixed(1)+' MB':Math.max(1,Math.round(n/1e3))+' KB';
+window.hpUp=(sid,cat)=>{
+ const c=HP_CAT.find(x=>x[0]===cat),s=stf(sid);
+ modal(c[1]+' · '+(hpF(sid).fullName||s.name),'<div class="card"><label>File — PDF or photo</label><input class="f" id="hpu-f" type="file" accept="application/pdf,image/*" onchange="hpUpName()">'+
+  '<label>Title</label><input class="f" id="hpu-t" value="'+esc(c[1])+'" maxlength="80">'+
+  '<div class="grid g2"><div><label>Expires <span class="muted">(if it does)</span></label><input class="f" id="hpu-x" type="date"></div><div><label>Note</label><input class="f" id="hpu-n" maxlength="120" placeholder="e.g. Diploma in Beauty Therapy"></div></div>'+
+  '<label class="row" style="gap:8px;margin:8px 0"><input type="checkbox" id="hpu-s"'+(c[5]?' checked':'')+'> The staff member can download it in My HR</label>'+
+  '<div id="hpu-e" class="tiny" style="color:var(--rose);margin:4px 0"></div>'+
+  '<button class="btn" id="hpu-go" style="width:100%;justify-content:center" onclick="hpUpSave(\''+sid+'\',\''+cat+'\')">'+ic('upload',15)+'Upload</button></div>');
+};
+window.hpUpName=()=>{const i=$('#hpu-f'),t=$('#hpu-t'),c=HP_CAT.find(x=>x[1]===t.value);if(i.files[0]&&c&&c[0]!=='offer'&&c[0]!=='confirm')t.value=String(i.files[0].name).replace(/\.[a-z0-9]+$/i,'').replace(/[_-]+/g,' ').slice(0,80);};
+window.hpUpSave=async(sid,cat)=>{
+ if(!isOwnerMe())return;const e=$('#hpu-e'),fl=$('#hpu-f').files[0];if(!fl){e.textContent='Choose a file first.';return;}
+ const b=$('#hpu-go');b.disabled=true;e.textContent='';b.innerHTML=ic('upload',15)+'Uploading…';
+ try{const P=await hpPrep(fl),id='f'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),n=Math.ceil(P.data.length/HP_CH),shared=$('#hpu-s').checked;
+  for(let i=0;i<n;i++)await setDoc(doc(db,'hrFileParts',id+'_'+i),{fileId:id,staffId:sid,shared,i,data:P.data.slice(i*HP_CH,(i+1)*HP_CH)});
+  const m={staffId:sid,cat,title:($('#hpu-t').value||'').trim().slice(0,80)||fl.name,name:String(fl.name||'file').slice(0,120),mime:P.mime,size:P.size,parts:n,shared,
+   expiry:$('#hpu-x').value||'',note:($('#hpu-n').value||'').trim().slice(0,120),at:new Date().toISOString(),by:UID,byName:ME.name||''};
+  await setDoc(doc(db,'hrFiles',id),m);HPF=[{id,...m},...(HPF||[])];
+  await audit('Staff document uploaded',(stf(sid).name||'')+' · '+m.title);window.closeModal();render();toast('Saved in '+(stf(sid).name||'').split(' ')[0]+'\'s file');}
+ catch(err){e.textContent=err&&err.message&&!err.code?err.message:friendly(err);b.disabled=false;b.innerHTML=ic('upload',15)+'Upload';}
+};
+async function hpFetch(x){
+ const parts=[];for(let i=0;i<(x.parts||1);i++){const d=await getDoc(doc(db,'hrFileParts',x.id+'_'+i));if(!d.exists())throw new Error('Part of this file is missing.');parts.push(d.data().data||'');}
+ return parts.join('');
+}
+function hpSave(x,data){
+ const ext=x.mime==='application/pdf'?'.pdf':'.jpg',name=(String(x.title||'document').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'')||'document')+ext;
+ window.__lastFile={name,data,mime:x.mime};
+ try{const bin=atob(data.split(',')[1]),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  const url=URL.createObjectURL(new Blob([u],{type:x.mime})),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+ catch(e){console.warn(e);}
+}
+window.hpGet=async(id,mine)=>{
+ const x=(mine?MYFILES:HPF||[]).find(f=>f.id===id);if(!x)return;toast('Opening…');
+ try{const data=await hpFetch(x);
+  if(x.mime!=='application/pdf')modal(esc(x.title),'<div class="card"><img class="hpimg" src="'+data+'" alt=""><button class="btn sm" style="margin-top:8px" onclick="hpSaveOpen()">'+ic('download',13)+'Download</button></div>');
+  window.__hpOpenF={x,data};if(x.mime==='application/pdf')hpSave(x,data);}
+ catch(e){toast(e.message||friendly(e));}
+};
+window.hpSaveOpen=()=>{const o=window.__hpOpenF;if(o)hpSave(o.x,o.data);};
+window.hpDel=async id=>{
+ const x=(HPF||[]).find(f=>f.id===id);if(!x||!confirm('Delete "'+x.title+'" from '+(stf(x.staffId).name||'')+'\'s file? This cannot be undone.'))return;
+ try{await deleteDoc(doc(db,'hrFiles',id));for(let i=0;i<(x.parts||1);i++)await deleteDoc(doc(db,'hrFileParts',id+'_'+i));
+  HPF=HPF.filter(f=>f.id!==id);await audit('Staff document deleted',(stf(x.staffId).name||'')+' · '+x.title);render();toast('Deleted');}
+ catch(e){toast(friendly(e));}
+};
+/* onboarding ticks the IC copy and the offer letter from the files too */
+{const _o=onbState;onbState=function(sid){const r=_o(sid),F=(HPF||[]).filter(x=>x.staffId===sid);
+ return r.map(z=>(z.k==='ic'&&F.some(x=>x.cat==='ic'))||(z.k==='offer'&&F.some(x=>x.cat==='offer'))?{...z,done:true}:z);};}
+
+/* ---------- employment history ---------- */
+async function hpHistPut(e){
+ const rec={staffId:e.staffId,date:e.date||today(),kind:e.kind,from:e.from||'',to:e.to||'',level:e.level||'',detail:e.detail||'',ref:e.ref||'',amount:e.amount||'',auto:!!e.auto,
+  at:new Date().toISOString(),by:UID,byName:ME.name||''};
+ try{const r=await addDoc(collection(db,'hrHist'),rec);HPH=[...(HPH||[]),{id:r.id,...rec}];
+  await audit('Employment history · '+HP_HK[rec.kind][0],(stf(rec.staffId).name||'')+(rec.to?' · '+rec.to:rec.level?' · '+rec.level:''));}catch(err){console.warn('hrHist',err);toast(friendly(err));}
+}
+function hpHistTab(sid){
+ const f=hpF(sid),H=(HPH||[]).filter(x=>x.staffId===sid).sort((a,b)=>String(b.date).localeCompare(String(a.date))||String(b.at).localeCompare(String(a.at)));
+ const items=H.map(x=>'<div class="hptl-i k-'+x.kind+'" data-h="'+x.id+'"><span class="hptl-d">'+ic(HP_HK[x.kind][1],13)+'</span><div style="flex:1;min-width:0"><div class="spread"><b>'+HP_HK[x.kind][0]+(x.level?' · '+esc(x.level):'')+'</b><span class="tiny muted">'+dstr(x.date)+'</span></div>'+
+   (x.from||x.to?'<div class="hpchg">'+(x.from?'<s>'+esc(x.from)+'</s> '+ic('right',11)+' ':'')+'<b>'+esc(x.to)+'</b></div>':'')+
+   (x.detail?'<div class="tiny" style="margin-top:3px">'+esc(x.detail)+'</div>':'')+
+   '<div class="tiny muted" style="margin-top:3px">'+[x.ref?'Ref. '+x.ref:'',x.auto?'from the staff file':'',x.byName?'by '+x.byName:''].filter(Boolean).map(esc).join(' · ')+'</div></div>'+
+   '<button class="iconbtn" style="padding:4px;align-self:flex-start" title="Delete" onclick="hpHistDel(\''+x.id+'\')">'+ic('trash',13)+'</button></div>').join('');
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('history',15)+' Employment history</h3><button class="btn sm" onclick="hpHistForm(\''+sid+'\')">'+ic('plus',13)+'Record</button></div>'+
+  '<div class="hptl">'+items+(f.joinDate?'<div class="hptl-i k-join"><span class="hptl-d">'+ic('user',13)+'</span><div style="flex:1"><div class="spread"><b>Joined</b><span class="tiny muted">'+dstr(f.joinDate)+'</span></div>'+
+   '<div class="tiny muted">'+esc([f.position,hpBr(stf(sid).branchId)].filter(Boolean).join(' · '))+'</div></div></div>':'')+'</div>'+
+  (!H.length&&!f.joinDate?'<p class="tiny muted" style="margin:0">Promotions, branch transfers, salary changes, status changes and disciplinary action are kept here by date. Changes you make in the staff file are added by themselves.</p>':'')+'</div>';
+}
+window.hpHistForm=sid=>{
+ const f=hpF(sid),s=stf(sid);
+ const blk=(k,h)=>'<div class="hphk" data-k="'+k+'"'+(k==='promotion'?'':' style="display:none"')+'>'+h+'</div>';
+ modal('Employment history · '+(f.fullName||s.name),'<div class="card"><div class="grid g2"><div><label>What happened</label><select class="f" id="hh-k" onchange="hpHK(this.value)">'+Object.entries(HP_HK).map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join('')+'</select></div>'+
+  '<div><label>Effective date</label><input class="f" id="hh-date" type="date" value="'+today()+'"></div></div>'+
+  blk('promotion','<div class="grid g2"><div><label>New position</label><input class="f" id="hh-pos" value="'+esc(f.position||'')+'"></div><div><label>New grade</label><input class="f" id="hh-grade" value="'+esc(f.grade||'')+'"></div></div>')+
+  blk('transfer','<label>To branch</label><select class="f" id="hh-br">'+D.branches.map(b=>'<option value="'+b.id+'"'+(b.id===s.branchId?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>')+
+  blk('salary','<label>New basic salary (RM / month)</label><input class="f" id="hh-amt" type="number" step="0.01" value="'+esc(f.basic||'')+'">')+
+  blk('status','<label>New status</label><select class="f" id="hh-st">'+HP_ST.map(x=>'<option value="'+x[0]+'"'+(x[0]===f.empType?' selected':'')+'>'+x[1]+' ('+x[2]+')</option>').join('')+'</select>')+
+  blk('discipline','<label>Action</label><select class="f" id="hh-lvl">'+HP_LVL.map(x=>'<option>'+x+'</option>').join('')+'</select>')+
+  '<label>Details <span class="muted" id="hh-dl">(optional)</span></label><textarea class="f" id="hh-d" rows="3" maxlength="600" placeholder="Reason, what was agreed, who was present"></textarea>'+
+  '<label>Letter reference <span class="muted">(if any)</span></label><input class="f" id="hh-ref" maxlength="60">'+
+  '<label class="row hpapply" style="gap:8px;margin:8px 0"><input type="checkbox" id="hh-ap" checked> Also update the staff file</label>'+
+  '<div id="hh-e" class="tiny" style="color:var(--rose);margin:4px 0"></div>'+
+  '<button class="btn" id="hh-go" style="width:100%;justify-content:center" onclick="hpHistSave(\''+sid+'\')">'+ic('check',15)+'Save record</button></div>');
+};
+window.hpHK=k=>{document.querySelectorAll('.hphk').forEach(x=>x.style.display=x.dataset.k===k?'':'none');
+ const ap=document.querySelector('.hpapply');if(ap)ap.style.display=['promotion','transfer','salary','status'].includes(k)?'':'none';
+ const dl=$('#hh-dl');if(dl)dl.textContent=k==='discipline'||k==='other'?'(needed)':'(optional)';};
+window.hpHistSave=async sid=>{
+ const k=$('#hh-k').value,date=$('#hh-date').value,e=$('#hh-e'),f=hpF(sid),s=stf(sid),det=$('#hh-d').value.trim(),ap=$('#hh-ap').checked&&date<=today();
+ if(!date){e.textContent='Choose the date.';return;}
+ if((k==='discipline'||k==='other')&&det.length<4){e.textContent='Write what happened.';return;}
+ const R={staffId:sid,kind:k,date,detail:det,ref:$('#hh-ref').value.trim()},P={},pg=x=>[x.position,x.grade].filter(Boolean).join(' · ');
+ if(k==='promotion'){const np=$('#hh-pos').value.trim(),ng=$('#hh-grade').value.trim();if(!np&&!ng){e.textContent='Enter the new position or grade.';return;}
+  R.from=pg(f);R.to=pg({position:np,grade:ng});P.position=np;P.grade=ng;}
+ if(k==='salary'){const a=+$('#hh-amt').value;if(!(a>0)){e.textContent='Enter the new basic salary.';return;}R.from=f.basic?rm(+f.basic):'';R.to=rm(a);R.amount=a;P.basic=r2(a);}
+ if(k==='status'){const v=$('#hh-st').value;R.from=hpSt(f.empType);R.to=hpSt(v);P.empType=v;if(f.empType==='Probation'&&v!=='Probation'&&!f.confirmDate)P.confirmDate=date;}
+ if(k==='transfer'){const b=$('#hh-br').value;if(b===s.branchId&&ap){e.textContent='They are already at '+hpBr(b)+'.';return;}R.from=hpBr(s.branchId);R.to=hpBr(b);R.br=b;}
+ if(k==='discipline')R.level=$('#hh-lvl').value;
+ $('#hh-go').disabled=true;
+ try{if(ap&&Object.keys(P).length){await setDoc(doc(db,'hrStaff',sid),{...P,updatedAt:new Date().toISOString(),updatedBy:UID},{merge:true});HRSTAFF[sid]={...f,...P};
+   const pub={};['position','empType'].forEach(x=>{if(x in P)pub[x]=P[x];});if(Object.keys(pub).length){await updateDoc(doc(db,'users',sid),pub);Object.assign(s,pub);}}
+  if(ap&&k==='transfer'){await updateDoc(doc(db,'users',sid),{branchId:R.br});s.branchId=R.br;}
+  delete R.br;await hpHistPut(R);if(ap)await hpSelfSync(sid);
+  window.closeModal();render();toast('Recorded'+(ap&&(Object.keys(P).length||k==='transfer')?' · staff file updated':''));}
+ catch(err){e.textContent=friendly(err);$('#hh-go').disabled=false;}
+};
+window.hpHistDel=async id=>{const x=(HPH||[]).find(h=>h.id===id);if(!x||!confirm('Delete this history record? The staff file is not changed.'))return;
+ try{await deleteDoc(doc(db,'hrHist',id));HPH=HPH.filter(h=>h.id!==id);await audit('Employment history record deleted',(stf(x.staffId).name||'')+' · '+HP_HK[x.kind][0]+' '+x.date);render();}catch(e){toast(friendly(e));}};
+/* a confirmation letter issued from Documents goes into the history too */
+{const _d=window.docIssue;window.docIssue=async()=>{const n=(HRDOCS||[]).length,dr=window.DOCDRAFT||{},was=hpF(dr.sid).empType;await _d();
+ const r=(HRDOCS||[])[0];if((HRDOCS||[]).length>n&&r&&r.staffId&&r.type==='confirm'&&isOwnerMe()){const now=hpF(r.staffId);
+  await hpHistPut({staffId:r.staffId,kind:'status',date:(r.data||{}).confirmDate||today(),from:hpSt(was||'Probation'),to:hpSt(now.empType||'Full-time'),ref:r.ref,detail:'Confirmation letter issued',auto:true});await hpSelfSync(r.staffId);}};}
+
+/* ---------- change requests: review (owner) ---------- */
+function hpReqTab(sid){
+ const R=(HPR||[]).filter(x=>x.staffId===sid);
+ return '<div class="card"><h3 style="margin:0 0 8px">'+ic('edit',15)+' Change requests</h3>'+
+  (R.length?R.map(r=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+Object.keys(r.changes||{}).map(k=>HP_SELFL[k]).join(', ')+'</b><small>Sent '+dstr(r.at)+(r.decidedAt?' · '+r.status+' '+dstr(r.decidedAt):'')+(r.reason?' · '+esc(r.reason):'')+'</small></div>'+
+   hpReqPill(r)+(r.status==='pending'?'<button class="btn sm" onclick="hpReqReview(\''+r.id+'\')">Review</button>':'')+'</div>').join('')
+   :'<p class="tiny muted" style="margin:0">Staff can ask to change their address, bank account and emergency contact from My HR. Nothing changes until you approve.</p>')+'</div>';
+}
+const hpReqPill=r=>'<span class="pill '+({pending:'a',approved:'g',rejected:'r'}[r.status]||'')+'">'+esc(r.status)+'</span>';
+window.hpReqReview=id=>{
+ const r=(HPR||[]).find(x=>x.id===id);if(!r)return;const f=hpF(r.staffId),bankCh=('bank' in r.changes)||('bankAcc' in r.changes);
+ modal('Change request · '+(r.name||stf(r.staffId).name||''),'<div class="card"><div class="scroll"><table class="mjt hpcmp"><tr><th></th><th>In the file now</th><th>Asked for</th></tr>'+
+  Object.entries(r.changes||{}).map(([k,v])=>'<tr><td class="muted">'+HP_SELFL[k]+'</td><td>'+esc(f[k]||'—')+'</td><td><b>'+esc(v.to)+'</b></td></tr>').join('')+'</table></div>'+
+  (r.note?'<p style="margin:8px 0 0;font-size:13.5px">"'+esc(r.note)+'"</p>':'')+
+  (r.proof?'<p class="tiny muted" style="margin:10px 0 4px">Proof attached</p><img class="hpimg" src="'+r.proof+'" alt="">':'')+
+  (bankCh?'<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' <b>Bank account change.</b> Before approving, confirm it with '+esc((r.name||'').split(' ')[0]||'them')+' in person or by a call to the number you already have — a fake request to redirect salary is a common fraud. The next payroll pays into the new account.</div>':'')+
+  '<div class="row wrap2" style="margin-top:12px"><button class="btn" id="hr-ok" onclick="hpReqDo(\''+id+'\',1)">'+ic('check',15)+'Approve & update the file</button><button class="btn ghost" onclick="hpReqDo(\''+id+'\',0)">'+ic('close',15)+'Reject</button></div></div>');
+};
+window.hpReqDo=async(id,yes)=>{
+ const r=(HPR||[]).find(x=>x.id===id);if(!r||!isOwnerMe())return;let reason='';
+ if(!yes){reason=prompt('Reason (the staff member sees it):','');if(reason===null)return;reason=String(reason).trim().slice(0,200);}
+ const now=new Date().toISOString(),p={status:yes?'approved':'rejected',decidedAt:now,decidedBy:UID,decidedByName:ME.name||'',reason};
+ try{if(yes){const P={};Object.entries(r.changes||{}).forEach(([k,v])=>{if(HP_SELF.includes(k))P[k]=String(v.to||'').slice(0,300);});
+   await setDoc(doc(db,'hrStaff',r.staffId),{...P,updatedAt:now,updatedBy:UID},{merge:true});HRSTAFF[r.staffId]={...hpF(r.staffId),...P,updatedAt:now};await hpSelfSync(r.staffId);}
+  await updateDoc(doc(db,'hrReq',id),p);Object.assign(r,p);
+  await audit(yes?'Staff detail change approved':'Staff detail change rejected',(r.name||'')+' · '+Object.keys(r.changes||{}).map(k=>HP_SELFL[k]).join(', '));
+  window.closeModal();render();toast(yes?'Approved — staff file updated':'Rejected');}
+ catch(e){toast(friendly(e));}
+};
+
+/* ---------- self-service in My HR ---------- */
+async function hpMyLoad(){
+ if(isBranch()||isOwnerMe()){MYSELF=null;MYREQ=[];MYFILES=[];return;}
+ MYSELF=null;
+ try{const s=await getDoc(doc(db,'hrSelf',UID));MYSELF=s.exists()?s.data():null;}catch(e){MYSELF=null;}
+ try{MYREQ=(await getDocs(query(collection(db,'hrReq'),where('staffId','==',UID)))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}catch(e){MYREQ=[];}
+ try{MYFILES=(await getDocs(query(collection(db,'hrFiles'),where('staffId','==',UID),where('shared','==',true)))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));}catch(e){MYFILES=[];}
+ if(TAB==='hr')render();
+}
+{const _m=myDetailsCard;myDetailsCard=function(sid){
+ if(isBranch()||sid!==UID||isOwnerMe())return '';
+ if(MYSELF===undefined){MYSELF=null;setTimeout(hpMyLoad,0);return _m(sid);}
+ if(!MYSELF)return _m(sid);
+ const m=MYSELF,pend=(MYREQ||[]).find(r=>r.status==='pending'),last=(MYREQ||[]).find(r=>r.status!=='pending'&&r.status!=='cancelled');
+ const row=(l,v)=>'<dt>'+l+'</dt><dd>'+(v?esc(v):'<span class="hpmiss">—</span>')+'</dd>';
+ return '<div class="card hpmine"><div class="sec-h"><h3 style="margin:0">'+ic('idcard',15)+' My details on file</h3>'+(pend?'<span class="pill a">change waiting for HR</span>':'')+'</div>'+
+  '<dl class="hpdl">'+row('Position',[m.position,m.grade?'Grade '+m.grade:''].filter(Boolean).join(' · '))+row('Branch',m.branch)+row('Status',hpSt(m.empType))+row('Started',m.joinDate?dstr(m.joinDate):'')+
+   (m.empType==='Probation'&&m.confirmDate?row('Probation ends',dstr(m.confirmDate)):'')+(m.contractEnd?row('Contract ends',dstr(m.contractEnd)):'')+
+   (m.permitExp?row('Work permit expires',dstr(m.permitExp)):'')+(m.passportExp?row('Passport expires',dstr(m.passportExp)):'')+
+   row('Home address',m.address)+row('Bank',[m.bank,m.bankAcc].filter(Boolean).join(' · '))+row('Emergency contact',[m.emgName,m.emgRel?'('+m.emgRel+')':'',m.emgPhone].filter(Boolean).join(' '))+'</dl>'+
+  (pend?'<div class="hpreq"><b>You asked to change:</b> '+Object.keys(pend.changes||{}).map(k=>HP_SELFL[k]).join(', ')+' <span class="tiny muted">· sent '+dstr(pend.at)+'</span><div class="row wrap2" style="margin-top:6px"><button class="btn sm ghost" onclick="hpMyCancel(\''+pend.id+'\')">'+ic('close',13)+'Cancel request</button></div></div>'
+   :'<button class="btn sm" style="margin-top:10px" onclick="hpMyForm()">'+ic('edit',14)+'Update address, bank or emergency contact</button>')+
+  (last&&!pend&&daysBetween(String(last.decidedAt||last.at).slice(0,10),today())<=30?'<p class="tiny" style="margin:8px 0 0">Your last request was <b>'+esc(last.status)+'</b>'+(last.decidedAt?' on '+dstr(last.decidedAt):'')+(last.reason?' — '+esc(last.reason):'')+'.</p>':'')+
+  '<p class="tiny muted" style="margin:8px 0 0">Changes go to HR first. Your salary is paid to the account on file until HR approves a new one.</p></div>'+
+  ((MYFILES||[]).length?'<div class="card"><h3 style="margin:0 0 8px">'+ic('folder',15)+' My documents on file</h3>'+MYFILES.map(x=>'<div class="hrrow"><span class="hpft">'+(x.mime==='application/pdf'?'PDF':'IMG')+'</span><div style="flex:1;min-width:0"><b>'+esc(x.title)+'</b><small>'+esc((HP_CAT.find(c=>c[0]===x.cat)||[])[1]||'')+(x.expiry?' · expires '+dstr(x.expiry):'')+'</small></div>'+
+   '<button class="btn sm ghost" onclick="hpGet(\''+x.id+'\',1)">'+ic('download',13)+'Open</button></div>').join('')+'</div>':'');
+};}
+let HPPROOF='';
+window.hpMyForm=()=>{
+ const m=MYSELF||{};HPPROOF='';
+ const inp=(k,t)=>'<div'+(k==='address'?' style="grid-column:1/-1"':'')+'><label>'+HP_SELFL[k]+'</label>'+(t==='area'?'<textarea class="f" rows="2" id="hq-'+k+'">'+esc(m[k]||'')+'</textarea>':'<input class="f" id="hq-'+k+'" type="'+(t||'text')+'" value="'+esc(m[k]||'')+'">')+'</div>';
+ modal('Update my details','<div class="card"><p class="tiny muted" style="margin:0 0 8px">Change only what is different. HR checks and approves it before it is used.</p><div class="grid g2">'+
+  inp('address','area')+inp('bank')+inp('bankAcc')+inp('emgName')+inp('emgRel')+inp('emgPhone','tel')+'</div>'+
+  '<label>Proof for a new bank account <span class="muted">(photo of the bank statement header or the bank app page showing your name and account no.)</span></label><input class="f" id="hq-pf" type="file" accept="image/*" onchange="hpProof(this)"><div id="hq-pv"></div>'+
+  '<label>Note to HR <span class="muted">(optional)</span></label><input class="f" id="hq-note" maxlength="200">'+
+  '<div id="hq-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="hq-go" style="width:100%;justify-content:center" onclick="hpMySend()">'+ic('check',15)+'Send to HR</button></div>');
+};
+window.hpProof=async el=>{const f=el.files&&el.files[0];if(!f)return;try{const P=await hpPrep(f);if(P.mime==='application/pdf')throw new Error('Use a photo here.');
+ const img=new Image();img.src=P.data;await new Promise(r=>{img.onload=r;img.onerror=r;});const c=document.createElement('canvas'),k=Math.min(1,1100/Math.max(img.width||1,img.height||1));
+ c.width=Math.round((img.width||1)*k);c.height=Math.round((img.height||1)*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);HPPROOF=c.toDataURL('image/jpeg',.6);
+ $('#hq-pv').innerHTML='<img class="clthumb" src="'+HPPROOF+'" alt="">';}catch(e){HPPROOF='';$('#hq-e').textContent=e.message||'Could not read that photo.';}};
+window.hpMySend=async()=>{
+ const m=MYSELF||{},e=$('#hq-e'),ch={};
+ HP_SELF.forEach(k=>{const v=String(($('#hq-'+k)||{}).value||'').trim().slice(0,300);if(v!==String(m[k]||''))ch[k]={from:String(m[k]||''),to:v};});
+ if(!Object.keys(ch).length){e.textContent='Nothing has changed.';return;}
+ if(ch.bankAcc&&!/^[0-9\- ]{6,24}$/.test(ch.bankAcc.to)){e.textContent='Check the bank account number (numbers only).';return;}
+ if(ch.emgPhone&&ch.emgPhone.to&&!/^[0-9+\- ]{8,16}$/.test(ch.emgPhone.to)){e.textContent='Check the emergency contact phone number.';return;}
+ if(Object.values(ch).some(v=>!v.to)&&!confirm('Some details will be left empty. Send anyway?'))return;
+ const r={staffId:UID,name:ME.name||'',changes:ch,note:($('#hq-note').value||'').trim().slice(0,200),status:'pending',at:new Date().toISOString(),...(HPPROOF?{proof:HPPROOF}:{})};
+ $('#hq-go').disabled=true;
+ try{const x=await addDoc(collection(db,'hrReq'),r);MYREQ=[{id:x.id,...r},...(MYREQ||[])];await audit('Staff asked to change their details',ME.name+' · '+Object.keys(ch).map(k=>HP_SELFL[k]).join(', '));
+  window.closeModal();render();toast('Sent to HR for approval');}
+ catch(err){e.textContent=friendly(err);$('#hq-go').disabled=false;}
+};
+window.hpMyCancel=async id=>{const r=(MYREQ||[]).find(x=>x.id===id);if(!r||!confirm('Cancel this change request?'))return;
+ try{const at=new Date().toISOString();await updateDoc(doc(db,'hrReq',id),{status:'cancelled',cancelledAt:at});r.status='cancelled';r.cancelledAt=at;render();toast('Request cancelled');}catch(e){toast(friendly(e));}};
+
+/* ---------- the staff register (CSV, owner) ---------- */
+window.hpCSV=()=>{if(!isOwnerMe())return;
+ const H=['Name','MyKad no.','Passport no.','Nationality','Citizenship','Position','Grade','Branch','Status','Start date','Probation ends / confirmed','Contract ends','Work permit no.','Permit expiry','Passport expiry','Phone','Email','Address','Emergency contact','Emergency phone','Bank','Account no.','KWSP no.','PERKESO no.','Income tax no.'];
+ csvDownload('staff-register-'+today()+'.csv',[H,...hpAll().map(s=>{const f=hpF(s.id);return [f.fullName||s.name,f.ic,f.passport,f.nationality,f.citizen,f.position||s.position||'',f.grade,hpBr(s.branchId),hpSt(f.empType),f.joinDate,f.confirmDate,f.contractEnd,f.permitNo,f.permitExp,f.passportExp,f.phone,f.email,f.address,[f.emgName,f.emgRel?'('+f.emgRel+')':''].filter(Boolean).join(' '),f.emgPhone,f.bank,f.bankAcc,f.epf,f.socso,f.tax].map(v=>v==null?'':String(v));})]);
+ audit('Staff register downloaded','');};
+window.__hp=()=>({HPF,HPH,HPR,HPS,MYSELF,MYREQ,MYFILES,dates:hpDates()});
 
 </script>
