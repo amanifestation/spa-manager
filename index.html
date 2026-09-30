@@ -2308,6 +2308,8 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .myrs small{display:block;font-size:10.5px;color:var(--ink-3)}.myrs b{font-size:12px}
 @media(max-width:600px){.myrs{grid-template-columns:repeat(4,1fr)}}
 .cptbl td:last-child{min-width:150px;white-space:normal}.cptbl th,.cptbl td{padding-left:6px;padding-right:6px}
+.cno.pro{background:transparent;border:1px dashed var(--line,#d9d2c7);color:var(--ink-3,#8a8177);font-weight:600}
+.pfile.prospect .pfno.none{color:var(--ink-2,#5f5a54)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2324,7 +2326,7 @@ import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut}
 import {getFirestore,collection as fsCollection,doc as fsDoc,getDoc as fsGetDoc,getDocs as fsGetDocs,
   setDoc as fsSetDoc,addDoc as fsAddDoc,updateDoc as fsUpdateDoc,deleteDoc as fsDeleteDoc,
   query as fsQuery,where as fsWhere,orderBy as fsOrderBy,limit as fsLimit,onSnapshot as fsOnSnapshot,
-  writeBatch as fsWriteBatch,runTransaction as fsRunTransaction,increment as fsIncrement,serverTimestamp as fsServerTimestamp,
+  writeBatch as fsWriteBatch,runTransaction as fsRunTransaction,increment as fsIncrement,deleteField as fsDeleteField,serverTimestamp as fsServerTimestamp,
   initializeFirestore,persistentLocalCache,persistentMultipleTabManager}
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 /* ============ Training mode: a private, in-memory copy of the database ============ */
@@ -2343,6 +2345,7 @@ function dApply(old,data){
  const o={...(old||{})};
  for(const k in data){const v=data[k];
   if(v&&typeof v==='object'&&v.__dinc!==undefined)o[k]=(+o[k]||0)+v.__dinc;
+  else if(v&&typeof v==='object'&&v.__ddel)delete o[k];
   else if(v&&typeof v==='object'&&v.__dts)o[k]=new Date().toISOString();
   else o[k]=dClone(v);}
  return o;
@@ -2388,6 +2391,7 @@ function where(f,o,v){return DEMO?{t:'w',f,o,v}:fsWhere(f,o,v);}
 function orderBy(f,d){return DEMO?{t:'o',f,d}:fsOrderBy(f,d);}
 function limit(n){return DEMO?{t:'l',n}:fsLimit(n);}
 function increment(n){return DEMO?{__dinc:n}:fsIncrement(n);}
+function deleteField(){return DEMO?{__ddel:1}:fsDeleteField();}
 function serverTimestamp(){return DEMO?{__dts:1}:fsServerTimestamp();}
 async function getDoc(r){return DEMO?dSnapDoc(r,dClone(dCol(r.col)[r.id])):fsGetDoc(r);}
 async function getDocs(q){return DEMO?dRun(q):fsGetDocs(q);}
@@ -2567,7 +2571,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-30m';
+const BUILD='2026-09-30n';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -7895,7 +7899,7 @@ function boxOf(no){
  return {b,label:(isMem(no)?'Box M':'Box ')+b,range:pre+lo+' – '+pre+hi,short:pre+lo+'–'+hi,mem:isMem(no)};
 }
 const cnoTag=c=>c&&c.memberNo?'<span class="cno mem" title="Member">'+esc(c.memberNo)+'</span>'
- :c&&c.clientNo?'<span class="cno">'+esc(c.clientNo)+'</span>':'';
+ :c&&c.clientNo?'<span class="cno">'+esc(c.clientNo)+'</span>':c&&c.id&&c.name&&!c.mergedInto?'<span class="cno pro" title="No paid bill yet">Prospect</span>':'';
 
 /* ---- handing out a number ---- */
 async function assignClientNo(cid){
@@ -8195,7 +8199,8 @@ function paperPanel(){
   '<textarea class="f" id="pp-pol" rows="9">'+esc(pkgPolicy().join('\n'))+'</textarea>'+
   '<p class="tiny muted" style="margin:-4px 0 10px">Have your lawyer read this once. Changes apply to forms printed from now on.</p>'+
   '<div class="row wrap2"><button class="btn sm" onclick="savePaper()">'+ic('check',14)+'Save</button>'+
-  '<button class="btn sm ghost" onclick="backfillNos()">'+ic('idcard',14)+'Number older clients</button>'+
+  '<button class="btn sm ghost" onclick="backfillNos()">'+ic('idcard',14)+'Number older paying clients</button>'+
+  '<button class="btn sm ghost" onclick="cnRevokeOpen()">'+ic('close',14)+'Numbered but never paid</button>'+
   '<button class="btn sm ghost" onclick="paperPDF(\'register\')">'+ic('list',14)+'Print client register</button>'+
   '<button class="btn sm ghost" onclick="paperPDF(\'form\')">'+ic('print',14)+'Blank consultation form</button></div></div>';
 }
@@ -8220,7 +8225,8 @@ window.backfillNos=async()=>{
   cps=(await getDocs(query(collection(db,'customerPackages'),limit(5000)))).docs.map(d=>d.data());}
  catch(e){toast(friendly(e));return;}
  const live=all.filter(c=>c.active!==false);
- const todo=live.filter(c=>!c.clientNo)
+ const paidIds=await cnPaidIds();
+ const todo=live.filter(c=>!c.clientNo&&paidIds.has(c.id))
   .sort((a,b)=>String(a.createdAt||'9').localeCompare(String(b.createdAt||'9'))||String(a.name).localeCompare(String(b.name)));
  /* whoever has ever bought a real package is a member, numbered in the order they first bought one */
  const first={};
@@ -26362,5 +26368,93 @@ window.certDel=async id=>{if(!confirm('Delete this certificate?'))return;try{awa
  return h+out.join('');};}
 window.stState=()=>({rost:ROST,certs:CERTS,plan:cplan(),on:rosterOn()});
 window.__st={commPlanCalc,dutyOf,dutyBlock,stUtil,skCertOk,rebookOf,payAutoM:async m=>{await kpiLoad(m);return payAuto(m,kpiSales(m));},kpiRow:(m,sid)=>kpiRow(m,sid)};
+
+
+/* ============ Client numbers are for paying clients ============ */
+/* Anyone can be registered — from the counter, a lead, the booking page, the waitlist or a
+   skincare order — but they stay a Prospect, known by name and phone, until their first bill
+   is paid. The number is then given by itself on whichever device sees the paid bill first
+   (the numbering runs in a transaction, so two devices never give two numbers). The owner can
+   take numbers back from people who never paid; the old number stays on their record. */
+const CNPAID=new Set(),CNBUSY=new Set(),CNFAIL={};
+const cnBillPaid=s=>!!s&&!s.voided&&!!s.customerId&&((+s.paid||0)>0||(s.payments||[]).reduce((t,p)=>t+(+p.amount||0),0)>0);
+function cnScan(){(SALES||[]).forEach(s=>{if(cnBillPaid(s))CNPAID.add(s.customerId);});}
+async function cnPaid(cid){
+ if(!cid)return false;cnScan();if(CNPAID.has(cid))return true;const c=cust(cid);if(c&&c.memberNo)return true;
+ try{const q=await getDocs(query(collection(db,'sales'),where('customerId','==',cid),limit(80)));
+  if(q.docs.some(d=>cnBillPaid({id:d.id,...d.data()}))){CNPAID.add(cid);return true;}}catch(e){}
+ return false;
+}
+/* every paid bill this device sees: its client gets a number if they have none */
+let CNLAST=0;
+function cnSweep(){
+ if(!ME||!can('pos')&&!boss())return;CNLAST=Date.now();cnScan();
+ CNPAID.forEach(cid=>{const c=cust(cid);if(!c||c.clientNo||c.memberNo||c.active===false||c.mergedInto||CNBUSY.has(cid)||(CNFAIL[cid]&&Date.now()-CNFAIL[cid]<60000))return;
+  CNBUSY.add(cid);
+  Promise.race([assignClientNo(cid),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),8000))]).then(no=>{if(!no)return;audit('Client number given',no+' · '+(c.name||'')+' · first paid bill');toast((c.name||'Client')+' · client no. '+no);rerenderClient(cid);})
+   .catch(e=>{CNFAIL[cid]=Date.now();console.warn('client no',e);}).finally(()=>CNBUSY.delete(cid));});
+}
+{const _lr=liveRender;liveRender=function(){const r=_lr.apply(this,arguments);try{cnSweep();}catch(e){console.warn(e);}return r;};}
+{const _r=render;render=function(){_r.apply(this,arguments);if(ME&&Date.now()-CNLAST>30000){CNLAST=Date.now();setTimeout(()=>{try{cnSweep();}catch(e){}},0);}};window.render=render;}
+/* registering no longer hands out a number */
+{const _n=newClientNo;newClientNo=async function(cid){return (await cnPaid(cid))?_n(cid):'';};}
+{const _t=retryClientNo;retryClientNo=function(c){if(c&&!c.clientNo&&!c.memberNo&&CNPAID.has(c.id))_t({...c,wantNo:true});};}
+{const _g=window.giveClientNo;window.giveClientNo=async cid=>{
+ if(await cnPaid(cid))return _g(cid);
+ if(!isOwnerMe())return toast('The client number is given with the first paid bill');
+ if(!confirm('This client has no paid bill yet. Give a client number anyway? (For example an old client who paid before the app was used.)'))return;
+ return _g(cid);};}
+/* the paper-file card and the "registered" sheet for someone with no number */
+{const _pc=paperCard;paperCard=function(c){
+ if(!c||idOf(c))return _pc(c);
+ cnPaid(c.id).then(p=>{if(p)retryClientNo(c);});
+ const paid=CNPAID.has(c.id);
+ return '<div class="card pfile prospect" data-cid="'+c.id+'"><div class="pfhead"><span class="pfqr empty">'+ic('user',26)+'</span><div style="flex:1;min-width:0">'+
+  '<div class="pfno none">'+(paid?'Number coming':'Prospect')+'</div><div class="tiny muted">'+(paid?'Paid — the client number is given as soon as this device is online.':'No paid bill yet. The client number is given by itself with the first paid bill.')+
+  (c.clientNoOld?'<br>Old number <b>'+esc(c.clientNoOld)+'</b> removed'+(c.clientNoRevokedAt?' on '+dshort(c.clientNoRevokedAt):'')+' — no payment was ever made.':'')+'</div></div>'+
+  '<div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-end"><button class="btn sm ghost" onclick="paperPDF(\'form\',\''+c.id+'\')">'+ic('print',13)+'Form to sign</button>'+
+  (isOwnerMe()&&!paid?'<button class="btn sm ghost" onclick="giveClientNo(\''+c.id+'\')">'+ic('idcard',13)+'Give number anyway</button>':'')+'</div></div></div>';};}
+{const _ns=newClientSheet;newClientSheet=function(cid){const c=cust(cid);if(!c||c.clientNo||c.memberNo)return _ns(cid);
+ modal('Prospect registered','<div class="card pfile prospect" data-cid="'+cid+'" style="text-align:center"><div class="pfno none big">Prospect</div>'+
+  '<p class="tiny muted" style="margin:6px auto 0;max-width:340px">'+esc(c.name||'')+' is saved and can be booked. The client number is given by itself with the first paid bill — write it on the form then.</p>'+
+  '<div class="row wrap2" style="justify-content:center;margin-top:12px"><button class="btn sm" onclick="closeModal();newAppt({customerId:\''+cid+'\',visitType:\'new\'})">'+ic('calendar',14)+'Book</button>'+
+  '<button class="btn sm ghost" onclick="paperPDF(\'form\',\''+cid+'\')">'+ic('print',14)+'Form to sign</button>'+
+  '<button class="btn sm ghost" onclick="closeModal();openCust(\''+cid+'\')">'+ic('user',14)+'Open client</button></div></div>');};}
+
+/* ---------- who has ever paid: bills, packages, members ---------- */
+async function cnPaidIds(){
+ const [S,P]=await Promise.all([getDocs(query(collection(db,'sales'),limit(30000))),getDocs(query(collection(db,'customerPackages'),limit(8000)))]);
+ const out=new Set();S.docs.forEach(d=>{const s={id:d.id,...d.data()};if(cnBillPaid(s))out.add(s.customerId);});
+ P.docs.forEach(d=>{const p=d.data();if(p.customerId&&(+p.price||0)>0)out.add(p.customerId);});
+ out.forEach(id=>CNPAID.add(id));return out;
+}
+/* ---------- taking numbers back from people who never paid ---------- */
+let CNREV=[];
+window.cnRevokeOpen=async()=>{
+ if(!isOwnerMe())return toast('For the owner');
+ modal('Clients with a number who never paid','<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Checking every client against every bill…</p></div></div>');
+ let all=[],paid;
+ try{all=(await getDocs(query(collection(db,'customers'),limit(8000)))).docs.map(d=>({id:d.id,...d.data()}));paid=await cnPaidIds();}catch(e){closeModal();return toast(friendly(e));}
+ CNREV=all.filter(c=>c.clientNo&&!c.memberNo&&!c.mergedInto&&!paid.has(c.id)).sort((a,b)=>String(a.clientNo).localeCompare(String(b.clientNo)));
+ const numbered=all.filter(c=>c.clientNo&&!c.mergedInto).length;
+ modal('Clients with a number who never paid','<div class="card">'+
+  (CNREV.length?'<p style="margin:0 0 8px"><b>'+CNREV.length+'</b> of '+numbered+' numbered clients have never had a paid bill, a package or a membership.</p>'+
+   '<div class="scroll" style="max-height:340px"><table class="mjt"><tr><th>No.</th><th>Name</th><th>Phone</th><th>Registered</th></tr>'+CNREV.slice(0,400).map(c=>'<tr><td><b>'+esc(c.clientNo)+'</b></td><td>'+esc(c.name||'')+'</td><td>'+esc(c.phone||'')+'</td><td>'+(c.createdAt?dshort(String(c.createdAt).slice(0,10)):'')+'</td></tr>').join('')+'</table></div>'+
+   '<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' Removing a number cannot be undone by the app. The numbers are <b>not given out again</b> — the next paying client gets the next new number, so the list will have gaps. Each record keeps its old number, and paper folders labelled with these numbers should be relabelled "Prospect" or moved out of the number boxes. Download the list first.</div>'+
+   '<div class="row wrap2" style="margin-top:10px"><button class="btn sm ghost" onclick="cnRevokeCSV()">'+ic('download',13)+'Download the list</button><button class="btn sm danger" id="cr-go" onclick="cnRevokeDo()">'+ic('close',13)+'Remove '+CNREV.length+' number'+(CNREV.length>1?'s':'')+'</button></div>'
+  :'<div class="empty">'+ic('check',20)+'<div>Every numbered client has paid at least once.</div></div>')+'</div>');
+};
+window.cnRevokeCSV=()=>csvDownload('client-numbers-never-paid-'+today()+'.csv',[['Client no.','Name','Phone','Registered','Branch'],...CNREV.map(c=>[c.clientNo,c.name||'',c.phone||'',String(c.createdAt||'').slice(0,10),brCode(c.branchId||ME.branchId)])]);
+window.cnRevokeDo=async()=>{
+ if(!isOwnerMe()||!CNREV.length)return;
+ if(!confirm('Remove the client number from '+CNREV.length+' people who never paid? They become Prospects again and get a new number when they first pay.'))return;
+ const b=document.getElementById('cr-go');if(b)b.disabled=true;const now=new Date().toISOString();let n=0;
+ try{for(const c of CNREV){await updateDoc(doc(db,'customers',c.id),{clientNo:deleteField(),clientNoOld:c.clientNo,clientNoRevokedAt:now,clientNoRevokedBy:ME.name||'',wantNo:false});
+   const l=cust(c.id);if(l){delete l.clientNo;l.clientNoOld=c.clientNo;l.clientNoRevokedAt=now;}n++;}
+  await audit('Client numbers removed',n+' clients who never paid · '+CNREV.slice(0,20).map(c=>c.clientNo).join(', ')+(CNREV.length>20?' …':''));
+  CNREV=[];closeModal();render();toast(n+' number'+(n!==1?'s':'')+' removed — now Prospects');}
+ catch(e){if(b)b.disabled=false;toast(friendly(e)+(n?' ('+n+' done)':''));}
+};
+window.cnState=()=>({paid:[...CNPAID]});
 
 </script>
