@@ -2252,6 +2252,35 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .tpbai img{width:100%;height:100%;object-fit:cover}
 .gcbig{font:700 26px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.14em;background:var(--brass-soft);border-radius:12px;padding:14px;margin:6px 0 10px;user-select:all}
 .lccard{border-top:3px solid #B2996E}.lccard h4{margin:16px 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--brass)}
+/* ===== KPI board ===== */
+.kpihead{padding:14px 16px}
+.kpil{display:flex;gap:8px;align-items:flex-start;margin:0 0 10px;font-size:15px;font-weight:600;line-height:1.45}.kpil .ico{color:var(--brass,#A67C3D);margin-top:3px}
+.kpid{position:relative;display:grid;align-items:end;gap:2px;height:64px;border-bottom:1px solid var(--line,#e7e1d8)}
+.kpid i{display:block;background:#D7C5AA;border-radius:3px 3px 0 0;min-height:0}.kpid i.hit{background:#B2996E}.kpid i.f{background:transparent}
+.kpitl{position:absolute;left:0;right:0;border-top:1px dashed #9B9289;pointer-events:none}
+.kpidl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3,#8a8177);margin-top:3px}
+.kpib{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0 0 10px}
+.kpit{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;font:inherit;color:inherit;background:var(--card,#fff);border:1px solid var(--line,#e7e1d8);border-left:4px solid var(--line,#e7e1d8);border-radius:14px;padding:12px 14px;cursor:pointer;min-width:0;transition:transform .15s,box-shadow .15s}
+.kpit:hover{transform:translateY(-1px);box-shadow:0 10px 24px -18px rgba(13,13,13,.5)}
+.kpit.g{border-left-color:var(--jade,#2F8F5B)}.kpit.a{border-left-color:var(--amber,#C9962B)}.kpit.r{border-left-color:var(--rose,#C2453A)}
+.kpq{display:flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--ink-3,#8a8177)}
+.kpv{font-size:22px;font-weight:700;line-height:1.15;word-break:break-word}.kpv small{font-size:12px;font-weight:600;color:var(--ink-3,#8a8177)}
+.kps{font-size:12px;color:var(--ink-2,#5f5a54);line-height:1.4}
+.kpinote{margin:-2px 0 10px}
+.kpilu .mjt td:first-child{width:auto}
+.kpiexp{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kpisegs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.kpirt tr.z td{color:var(--ink-3,#8a8177)}.kpirt tr.kpitot td{border-top:2px solid var(--line,#e7e1d8)}
+.kspark{display:flex;align-items:flex-end;gap:1px;height:26px;min-width:120px}.kspark i{flex:1;background:#B2996E;border-radius:1px;min-height:1px;opacity:.85}
+.kpicls{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 16px;margin:10px 0 4px}
+.kpicl{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line,#eee)}.kpicl span{font-size:13px}.kpicl small{display:block;font-size:11px;color:var(--ink-3,#8a8177)}
+.kpiu{display:grid;grid-template-columns:minmax(0,1.3fr) 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line,#eee)}
+.kpiu span b{display:block;font-size:14px}.kpiu span small{display:block;font-size:11.5px;color:var(--ink-3,#8a8177)}
+.kpiu .bar{height:8px}.kpiu .bar i.g{background:#2F8F5B}.kpiu .bar i.a{background:#C9962B}.kpiu .bar i.r{background:#C2453A}
+@media(max-width:600px){.kpib{grid-template-columns:1fr 1fr;gap:8px}.kpit{padding:10px 11px}.kpv{font-size:18px}.kps{font-size:11.5px}.kpiu{grid-template-columns:1fr auto}.kpiu .bar{grid-column:1/-1;grid-row:2}}
+.kpid i{border:0!important;padding:0!important;margin:0!important;box-shadow:none!important;width:auto!important;font-style:normal}
+.kpid i.f{visibility:hidden}
+@media(max-width:600px){.kpid{gap:1px}.kpiexp{flex:1 1 100%;order:3}.kpiexp .btn{flex:1;justify-content:center}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2511,7 +2540,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-29i';
+const BUILD='2026-09-30l';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -25609,5 +25638,354 @@ window.lcCsv=()=>{const q=v=>'"'+String(v||'').replace(/"/g,'""')+'"';const csv=
 /* the Marketing tab gets the list too */
 {const _m=crmMarketing;crmMarketing=function(){return _m.apply(this,arguments).replace('<button class="btn sm ghost" onclick="cr3RulesOpen()">','<button class="btn sm ghost" onclick="lcList()">'+ic('users',14)+'Broadcast list</button><button class="btn sm ghost" onclick="cr3RulesOpen()">');};}
 window.lcState=()=>({stats:lcStats()});
+
+
+/* ============ KPI board: the business in ten seconds ============ */
+/* The Sales screen gains a first tab that answers the owner's questions at a glance — each tile is
+   one question with its answer, its change and a colour — plus Revenue (by day or month, by
+   category, branch or item, cash against earned), Utilisation (rooms, machines, therapists) and
+   "best seller against most profitable". The board report goes out as Excel or PDF for investors
+   and the board. Everything is worked out from what the Sales screen has already read. */
+SDF.tab='kpi';SDF.gran='day';SDF.dim='cat';
+const kpiTxt=s=>String(s==null?'':s).replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/\s+/g,' ').trim();
+const kpiBrName=id=>((D.branches||[]).find(b=>b.id===id)||{}).name||'';
+function kpiOpenDays(from,to){const W=(typeof wbSet==='function'?wbSet().days:null)||[0,1,2,3,4,5,6];let n=0;for(let d=from;d<=to;d=sdAdd(d,1))if(W.includes(new Date(d+'T00:00:00').getDay()))n++;return Math.max(1,n);}
+const kpiDate=x=>x.s?x.s.date:(x.r||{}).date;
+const kpiBr=x=>x.s?(x.s.branchId||ME.branchId):((x.r||{}).branchId||ME.branchId);
+
+/* ---------- the extra figures, worked out once per screen ---------- */
+function kpiX(){
+ if(!SDL)return null;
+ if(!SDX){const R=sdRange(),[cf,ct]=sdCmp(R),cur=sdAgg(R.from,R.to),prev=sdAgg(cf,ct),yoy=sdAgg(R.yFrom,R.yTo);
+  SDX={R,cur,prev,yoy,cl:sdClients(R),fun:sdFunnel(R),staff:sdStaff(R,sdBr()),pkgIdle:sdPkgIdle()};SDX.alerts=sdAlerts(R,SDX);}
+ const X=SDX;
+ if(!X.k){const R=X.R,[cf,ct]=sdCmp(R);
+  X.k={t:sdTarget(R.from,R.end,sdBr(),SDF.staff),tSoFar:sdTarget(R.from,R.to,sdBr(),SDF.staff),cash:sdCash(R.from,R.to),rec:sdRecog(R.from,R.to),
+   pcash:sdCash(cf,ct),prec:sdRecog(cf,ct),util:kpiUtil(R),mkt:kpiMkt(X),items:kpiItems(X.cur),owed:kpiOwed(),pfun:kpiFunPrev(R)};}
+ return X;
+}
+function kpiFunPrev(R){const [cf,ct]=sdCmp(R),AP=SDL.appts.filter(a=>a.date>=cf&&a.date<=ct&&a.date<=today()&&sdBrOk(a.branchId)&&(!SDF.staff||a.staffId===SDF.staff));
+ return {n:AP.length,no:AP.filter(a=>a.status==='no').length,cancel:AP.filter(a=>a.status==='cancel').length};}
+function kpiOwed(){const td=today(),act=SDL.cps.filter(x=>sdBrOk(x.branchId)&&String(x.expiry||'9')>=td&&cpLeft(x)>0);
+ return {n:act.reduce((t,x)=>t+cpLeft(x),0),clients:new Set(act.map(x=>x.customerId)).size,v:r2(act.reduce((t,x)=>t+(+x.price||0)*cpLeft(x)/(cpTot(x)||1),0))};}
+/* rooms, machines and therapists: booked treatment time against the time they were there to be used */
+function kpiUtil(R){
+ const H=Math.max(1,(D.meta.close||20)-(D.meta.open||9)),days=kpiOpenDays(R.from,R.to),cap=H*60*days;
+ const AP=SDL.appts.filter(a=>a.date>=R.from&&a.date<=R.to&&a.date<=today()&&!['cancel','no'].includes(a.status)&&sdBrOk(a.branchId));
+ const mins=f=>AP.filter(f).reduce((t,a)=>t+(+a.duration||0),0);
+ const rooms=(D.rooms||[]).filter(r=>sdBrOk(r.branchId)).map(r=>{const m=mins(a=>a.roomId===r.id);return {id:r.id,name:r.name||r.id,br:r.branchId,type:r.type||'',mins:m,pct:Math.round(m/cap*100)};}).sort((a,b)=>b.pct-a.pct);
+ const machines=(typeof MACH!=='undefined'?MACH:[]).filter(m=>m.active!==false&&sdBrOk(m.branchId)).map(m=>{const x=mins(a=>a.machineId===m.id);return {id:m.id,name:m.name||m.id,br:m.branchId,type:m.group||'',mins:x,pct:Math.round(x/cap*100)};}).sort((a,b)=>b.pct-a.pct);
+ const people=D.staff.filter(s=>s.active!==false&&s.takes&&!['branch','accountant'].includes(s.role)&&sdBrOk(s.branchId));
+ const thera=people.map(p=>{const b=mins(a=>a.staffId===p.id);
+  const w=SDL.att.filter(x=>x.staffId===p.id&&x.date>=R.from&&x.date<=R.to&&x.clockIn).reduce((t,x)=>{const o=x.clockOut?new Date(x.clockOut):null;return t+(o&&o>new Date(x.clockIn)?(o-new Date(x.clockIn))/6e4:0);},0);
+  return {id:p.id,name:p.name,br:p.branchId,mins:b,worked:Math.round(w),by:w?'clock':'open',pct:Math.round(b/(w||cap)*100)};}).sort((a,b)=>b.pct-a.pct);
+ const all=(L,den)=>L.length?Math.round(L.reduce((t,x)=>t+x.mins,0)/(den||L.length*cap)*100):null;
+ return {cap,days,H,rooms,machines,thera,room:all(rooms),machine:all(machines),therapist:thera.length?Math.round(thera.reduce((t,x)=>t+x.mins,0)/thera.reduce((t,x)=>t+(x.worked||cap),0)*100):null};
+}
+/* channels: spend, leads, new clients, what they spent; CAC and ROAS */
+function kpiMkt(X){
+ const R=X.R,ch={},get=k=>ch[k]=ch[k]||{k,spend:0,leads:0,booked:0,nw:0,rev:0};
+ SDL.camps.filter(c=>sdBrOk(c.branchId)).forEach(c=>{const s=c.start||String(c.createdAt||'').slice(0,10),e=c.end||s;if(!s||e<R.from||s>R.to)return;
+  const ov=sdDays(s>R.from?s:R.from,e<R.to?e:R.to),all=Math.max(1,sdDays(s,e<s?s:e));get(sdChan(c.channel||c.name)).spend+=(+c.cost||0)*Math.min(1,ov/all);});
+ SDL.exps.filter(e=>e.date>=R.from&&e.date<=R.to&&sdBrOk(e.branchId)).forEach(e=>expLines(e).filter(l=>l.account==='6030').forEach(l=>{get(sdChan(e.supplier+' '+(e.desc||'')+' '+(l.desc||''))).spend+=+l.amount||0;}));
+ SDL.leads.filter(l=>String(l.createdAt).slice(0,10)>=R.from&&String(l.createdAt).slice(0,10)<=R.to&&sdBrOk(l.branchId)).forEach(l=>{const x=get(sdChan(l.source));x.leads++;if(['booked','won'].includes(l.stage)||(l.customerId&&SDL.appts.some(a=>a.customerId===l.customerId)))x.booked++;});
+ X.cl.nw.forEach(cid=>{const x=get(sdChan((SDL.C[cid]||{}).source));x.nw++;x.rev+=X.cl.cur.L.filter(l=>l.s&&l.s.customerId===cid).reduce((t,l)=>t+l.v,0);});
+ const rows=Object.values(ch).filter(v=>v.spend||v.leads||v.nw).map(v=>({...v,spend:r2(v.spend),rev:r2(v.rev),cac:v.nw&&v.spend?r2(v.spend/v.nw):null,roas:v.spend?Math.round(v.rev/v.spend*10)/10:null})).sort((a,b)=>b.spend-a.spend||b.nw-a.nw);
+ const paid=rows.filter(r=>r.spend>0),spend=r2(paid.reduce((t,r)=>t+r.spend,0)),nw=paid.reduce((t,r)=>t+r.nw,0),rev=r2(paid.reduce((t,r)=>t+r.rev,0));
+ const best=paid.filter(r=>r.roas!=null&&r.nw).sort((a,b)=>b.roas-a.roas)[0]||null;
+ return {rows,spend,nw,rev,cac:nw&&spend?r2(spend/nw):null,roas:spend?Math.round(rev/spend*10)/10:null,best};
+}
+/* each treatment, product and package: how many, how much, and what is left after product cost and commission */
+function kpiItems(A){
+ const by={};A.L.forEach(x=>{const k=x.key,o=by[k]=by[k]||{key:k,name:x.name,c:x.c,kind:x.i?x.i.kind:'redeem',id:x.i?x.i.id:(x.r||{}).serviceId,q:0,v:0,cost:0,comm:0,mins:0};
+  const q=+((x.i||{}).qty)||1;o.q+=q;o.v+=x.v;o.cost+=x.cost;o.comm+=x.comm;
+  if(o.kind==='service'||o.kind==='redeem'){const s=svc(o.id)||{};o.mins+=(+s.dur||0)*q;}});
+ const L=Object.values(by).map(o=>{const p=r2(o.v-o.cost-o.comm);return {...o,v:r2(o.v),cost:r2(o.cost),comm:r2(o.comm),q:r2(o.q),profit:p,mPct:o.v?Math.round(p/o.v*100):null,perHr:o.mins?r2(p/(o.mins/60)):null};});
+ const laris=[...L].sort((a,b)=>b.q-a.q||b.v-a.v),untung=[...L].sort((a,b)=>b.profit-a.profit);
+ const tq=L.reduce((t,o)=>t+o.q,0);
+ return {L,laris,untung,tq,trap:laris.slice(0,5).filter(o=>o.mPct!=null&&o.mPct<40&&o.v>0)};
+}
+
+/* ---------- 1 · the board ---------- */
+function kpiHeadline(X){
+ const c=X.cur,p=X.prev,k=X.k,ach=k.t?Math.round(c.v/k.t*100):null,pace=k.tSoFar?Math.round(c.v/k.tSoFar*100):null,ch=sdPct(c.v,p.v);
+ const L0=X.R.label,lab=SDF.per==='today'?'today':'in '+(/^(This|Year)/.test(L0)?L0.charAt(0).toLowerCase()+L0.slice(1):L0);let s='Sales '+rm(c.v)+' '+lab;
+ if(k.t)s+=' — '+ach+'% of the '+rm(k.t)+' target'+(X.R.days<X.R.total&&pace!=null?', '+(pace>=100?'ahead of':'behind')+' pace ('+pace+'%)':'');
+ if(ch!=null)s+='; '+(ch>=0?'up ':'down ')+Math.abs(ch)+'% on '+sdCmp(X.R)[2]+'.';else s+='.';
+ return s;
+}
+function kpiTile(q,val,sub,go,rag,icn,id){
+ return '<button type="button" class="kpit '+(rag||'')+'" onclick="sdTab(\''+go+'\')"'+(id?' data-k="'+id+'"':'')+'><span class="kpq">'+ic(icn,13)+q+'</span><b class="kpv">'+val+'</b><span class="kps">'+sub+'</span></button>';
+}
+function kpiBoard(X,bod){
+ const c=X.cur,p=X.prev,k=X.k,C=X.cl,F=X.fun,U=k.util,M=k.mkt,I=k.items,R=X.R;
+ const pace=k.tSoFar?Math.round(c.v/k.tSoFar*100):null,gap=r2(k.cash-k.rec);
+ const nrate=F.appts?Math.round(F.no/F.appts*100):null,crate=F.appts?Math.round(F.cancel/F.appts*100):null,pn=k.pfun.n?Math.round(k.pfun.no/k.pfun.n*100):null;
+ const gp=r2(c.v-c.cost-c.comm),gpp=c.v?Math.round(gp/c.v*100):null,pgp=p.v?Math.round((p.v-p.cost-p.comm)/p.v*100):null;
+ const top=X.staff[0],L1=I.laris[0],U1=I.untung[0];
+ const worst=(a,b)=>{const o=['r','a','g',''];return o.indexOf(a)<o.indexOf(b)?a:b;};
+ const pct=v=>v==null?'—':v+'%';
+ const tiles=[
+  kpiTile('Are we on target?',rm(c.v),(k.t?Math.round(c.v/k.t*100)+'% of '+rm(k.t)+' · ':'no target · ')+sdChg(c.v,p.v),'sum',sdRag(pace,100,85),'chart','rev'),
+  kpiTile('Cash in vs earned',rm(k.cash)+'<small> / '+rm(k.rec)+'</small>',gap>=0?rm(gap)+' more cash than work done — owed as sessions':rm(-gap)+' of prepaid sessions used up','rev','','wallet','cash'),
+  kpiTile('New vs returning',C.nw.length+'<small> new · </small>'+C.rep.length+'<small> returning</small>',(C.cur.v?Math.round(C.nwRev/C.cur.v*100):0)+'% of sales from new clients','cli','','users','nvr'),
+  kpiTile('Do they come back?',pct(C.retention)+'<small> retention · </small>'+pct(C.rebook)+'<small> rebook</small>',C.kept+' of '+C.prevN+' came back · '+C.rb+' of '+C.done+' rebooked','cli',worst(sdRag(C.retention,60,40),sdRag(C.rebook,50,30)),'refresh','ret'),
+  kpiTile('Average bill · client value',rm(c.atv)+'<small> · CLV </small>'+rm(C.clv),'bill '+sdChg(c.atv,p.atv)+' · 12-month value per client','cli','','receipt','atv'),
+  kpiTile('Is advertising paying?',(M.cac!=null?rm(M.cac):'—')+'<small> CAC · </small>'+(M.roas!=null?M.roas+'×':'—')+'<small> ROAS</small>',M.spend?rm(M.spend)+' spent · '+M.nw+' new clients'+(M.best?' · best '+esc(M.best.k):''):'no ad spend recorded','mkt',M.roas==null?'':sdRag(Math.round(M.roas*100),300,100),'mega','mkt'),
+  kpiTile('No-shows · cancellations',pct(nrate)+'<small> · </small>'+pct(crate),F.no+' no-show · '+F.cancel+' cancelled of '+F.appts+(pn!=null?' · was '+pn+'%':''),'fun',nrate==null?'':nrate<=5?'g':nrate<=10?'a':'r','alert','ns'),
+  kpiTile('Are we busy enough?',pct(U.room)+'<small> rooms · </small>'+pct(U.therapist)+'<small> staff</small>'+(U.machines.length?'<small> · </small>'+pct(U.machine)+'<small> machines</small>':''),'booked time ÷ time available · '+U.days+' open day'+(U.days>1?'s':''),'use',sdRag(U.room,60,40),'clock','use'),
+  kpiTile('Best seller vs most profitable',L1?esc(L1.name)+'<small> × '+L1.q+'</small>':'—',U1?'most profit: <b>'+esc(U1.name)+'</b> '+rm(U1.profit)+(L1&&U1&&L1.key!==U1.key?' — not the same':''):'no sales yet','sales',I.trap.length?'a':'','award','items'),
+  kpiTile('Profit after cost & commission',gpp==null?'—':gpp+'%',rm(gp)+' · product cost '+rm(c.cost)+' · commission '+rm(c.comm)+(pgp!=null?' · was '+pgp+'%':''),'sales',sdRag(gpp,55,40),'spark','gp'),
+  kpiTile('Staff & commission',top&&top.v?esc(top.p.name)+'<small> '+rm(top.v)+'</small>':'—',rm(c.comm)+' commission'+(c.v?' · '+Math.round(c.comm/c.v*100)+'% of sales':'')+(X.staff.length?' · '+X.staff.length+' staff':''),'staff','','users','staff'),
+  kpiTile('Sessions still owed',rm(k.owed.v),k.owed.n+' sessions · '+k.owed.clients+' clients · '+X.pkgIdle.length+' not seen 60+ days','sales',X.pkgIdle.length?'a':'','package','owed')];
+ return '<div class="card kpihead"><p class="kpil">'+ic('flag',14)+' '+esc(kpiHeadline(X))+'</p>'+kpiDays(X)+'</div><div class="kpib">'+tiles.join('')+'</div>'+
+  (bod?'':'<p class="tiny muted kpinote">Tap any tile for the detail. Green = on track, amber = watch, red = act now.</p>');
+}
+/* sales day by day for the period (or month by month for a long one) */
+function kpiDays(X){
+ const R=X.R,long=sdDays(R.from,R.end)>62,by={};
+ sdLines(R.from,R.to,{cat:''}).forEach(x=>{const d=kpiDate(x),k=long?d.slice(0,7):d;by[k]=(by[k]||0)+x.v;});
+ const keys=[];if(long){for(let m=R.from.slice(0,7);m<=R.end.slice(0,7);m=mShift(m,1))keys.push(m);}else for(let d=R.from;d<=R.end;d=sdAdd(d,1))keys.push(d);
+ if(keys.length<2)return '';
+ const td=today(),mx=Math.max(1,...keys.map(k2=>by[k2]||0)),tpd=X.k.t?X.k.t/keys.length:0;
+ return '<div class="kpid" style="grid-template-columns:repeat('+keys.length+',1fr)">'+keys.map(k2=>{const v=by[k2]||0,fut=long?k2>td.slice(0,7):k2>td;
+  return '<i class="'+(fut?'f':'')+(tpd&&v>=tpd?' hit':'')+'" style="height:'+Math.max(fut?0:3,Math.round(v/Math.max(mx,tpd)*100))+'%" title="'+(long?mLabel(k2):dshort(k2))+' · '+rm(r2(v))+'"></i>';}).join('')+
+  (tpd?'<span class="kpitl" style="bottom:'+Math.round(tpd/Math.max(mx,tpd)*100)+'%"></span>':'')+'</div><div class="kpidl"><span>'+(long?mLabel(keys[0]):dshort(keys[0]))+'</span><span>'+(long?mLabel(keys[keys.length-1]):dshort(keys[keys.length-1]))+'</span></div>';
+}
+/* best seller against most profitable */
+function kpiLarisCard(X,n){
+ const I=X.k.items;n=n||5;
+ const row=(o,i,mode)=>'<tr><td>'+(i+1)+'. '+esc(o.name)+'<br><span class="tiny muted">'+o.c+'</span></td><td class="num">'+(mode==='q'?'<b>'+o.q+'</b><br><span class="tiny muted">'+rm(o.v)+'</span>':'<b>'+rm(o.profit)+'</b><br><span class="tiny muted">'+(o.mPct==null?'':o.mPct+'% margin')+(o.perHr!=null?' · '+rm(o.perHr)+'/hr':'')+'</span>')+'</td></tr>';
+ return '<div class="card" id="kpi-items"><h3 class="sdh">'+ic('award',15)+' Best seller vs most profitable</h3>'+
+  (I.L.length?'<div class="sdtwo kpilu"><div><h4 class="sdh4">Sells the most <span class="tiny muted">— how many</span></h4><table class="mjt">'+I.laris.slice(0,n).map((o,i)=>row(o,i,'q')).join('')+'</table></div>'+
+   '<div><h4 class="sdh4">Earns the most <span class="tiny muted">— after product cost & commission</span></h4><table class="mjt">'+I.untung.slice(0,n).map((o,i)=>row(o,i,'p')).join('')+'</table></div></div>'+
+   (I.trap.length?'<p class="tiny sdnote">'+ic('alert',12)+' Popular but thin: '+I.trap.map(o=>'<b>'+esc(o.name)+'</b> ('+o.mPct+'% margin)').join(', ')+' — review the price, the products used or the commission.</p>':'')+
+   '<p class="tiny muted">Profit = sales − products used (from each treatment\'s recipe) − commission. Per hour = profit per hour of treatment time, the fairest way to compare a 30-minute and a 90-minute treatment.</p>'
+  :'<div class="empty">No sales in this period.</div>')+'</div>';
+}
+
+/* ---------- 2 · revenue ---------- */
+window.kpiRevSet=(k,v)=>{SDF[k]=v;render();};
+function kpiRevData(R,gran,dim){
+ let keys=[],from,to;
+ if(gran==='month'){const e=R.to.slice(0,7);let s=R.from.slice(0,7);if(s>mShift(e,-11)||s===e)s=mShift(e,-11);for(let m=s;m<=e;m=mShift(m,1))keys.push(m);from=keys[0]+'-01';to=R.to;}
+ else{from=R.from;to=R.to;for(let d=from;d<=to;d=sdAdd(d,1))keys.push(d);}
+ const L=sdLines(from,to,{cat:dim==='cat'?'':undefined}),kOf=d=>gran==='month'?d.slice(0,7):d;
+ const cols=dim==='br'?(D.branches||[]).filter(b=>!sdBr()||b.id===sdBr()).map(b=>({id:b.id,name:b.name})):[...SD_CATS,...(L.some(x=>!SD_CATS.includes(x.c))?['Other']:[])].filter(c=>c==='Treatments'||L.some(x=>(SD_CATS.includes(x.c)?x.c:'Other')===c)).map(c=>({id:c,name:c}));
+ const M={};keys.forEach(k=>{M[k]={t:0};cols.forEach(c=>{M[k][c.id]=0;});});
+ L.forEach(x=>{const k=kOf(kpiDate(x));if(!M[k])return;const col=dim==='br'?kpiBr(x):(SD_CATS.includes(x.c)?x.c:'Other');if(M[k][col]===undefined)return;M[k][col]+=x.v;M[k].t+=x.v;});
+ keys.forEach(k=>{const a=gran==='month'?k+'-01':k,b=gran==='month'?(k===to.slice(0,7)?to:mEnd(k)):k;M[k].cash=sdCash(a,b);M[k].rec=sdRecog(a,b);});
+ const items={};L.forEach(x=>{const o=items[x.key]=items[x.key]||{name:x.name,c:x.c,q:0,v:0,by:{}};o.q+=+((x.i||{}).qty)||1;o.v+=x.v;const k=kOf(kpiDate(x));o.by[k]=(o.by[k]||0)+x.v;});
+ return {keys,cols,M,items:Object.values(items).sort((a,b)=>b.v-a.v),from,to};
+}
+function kpiRevTab(X){
+ const R=X.R,gran=SDF.gran==='month'?'month':'day',dim=['cat','br','item'].includes(SDF.dim)?SDF.dim:'cat',Q=kpiRevData(R,gran,dim);
+ const lab=k=>gran==='month'?mLabel(k):dshort(k)+' '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(k+'T00:00:00').getDay()];
+ const seg=(k,list)=>'<div class="seg">'+list.map(([v,t])=>'<button type="button" class="'+(SDF[k]===v||(k==='dim'&&v==='cat'&&!['br','item'].includes(SDF.dim))||(k==='gran'&&v==='day'&&SDF.gran!=='month')?'on':'')+'" onclick="kpiRevSet(\''+k+'\',\''+v+'\')">'+t+'</button>').join('')+'</div>';
+ const bar=seg('gran',[['day','Daily'],['month','Monthly']])+seg('dim',[['cat','By category'],['br','By branch'],['item','By treatment / product']]);
+ const tot={t:0,cash:0,rec:0};Q.cols.forEach(c=>{tot[c.id]=0;});Q.keys.forEach(k=>{Object.keys(tot).forEach(z=>{tot[z]+=Q.M[k][z]||0;});});
+ let body;
+ if(dim==='item'){const mx=Math.max(1,...Q.items.map(o=>Math.max(0,...Object.values(o.by))));
+  body='<div class="scroll"><table class="pltbl sdtbl kpirt"><tr><th>Treatment / product</th><th class="num">Qty</th><th class="num">Sales</th><th class="num">Share</th><th>'+(gran==='month'?'Month by month':'Day by day')+'</th></tr>'+
+   (Q.items.length?Q.items.slice(0,40).map(o=>'<tr><td><b>'+esc(o.name)+'</b><br><span class="tiny muted">'+o.c+'</span></td><td class="num">'+r2(o.q)+'</td><td class="num">'+rm(r2(o.v))+'</td><td class="num">'+(tot.t?Math.round(o.v/tot.t*100):0)+'%</td>'+
+    '<td><span class="kspark">'+Q.keys.map(k=>'<i style="height:'+Math.round((o.by[k]||0)/mx*100)+'%" title="'+lab(k)+' · '+rm(r2(o.by[k]||0))+'"></i>').join('')+'</span></td></tr>').join(''):'<tr><td colspan="5" class="muted">No sales.</td></tr>')+'</table></div>';}
+ else body='<div class="scroll"><table class="pltbl sdtbl kpirt"><tr><th>'+(gran==='month'?'Month':'Day')+'</th>'+Q.cols.map(c=>'<th class="num">'+esc(c.name)+'</th>').join('')+'<th class="num">Total</th><th class="num">Cash in</th><th class="num">Earned</th></tr>'+
+  [...Q.keys].reverse().map(k=>{const r=Q.M[k];return '<tr class="'+(r.t?'':'z')+'"><td>'+lab(k)+'</td>'+Q.cols.map(c=>'<td class="num">'+(r[c.id]?rm(r2(r[c.id])):'<span class="muted">—</span>')+'</td>').join('')+'<td class="num"><b>'+rm(r2(r.t))+'</b></td><td class="num">'+rm(r2(r.cash))+'</td><td class="num">'+rm(r2(r.rec))+'</td></tr>';}).join('')+
+  '<tr class="kpitot"><td><b>Total</b></td>'+Q.cols.map(c=>'<td class="num"><b>'+rm(r2(tot[c.id]))+'</b></td>').join('')+'<td class="num"><b>'+rm(r2(tot.t))+'</b></td><td class="num"><b>'+rm(r2(tot.cash))+'</b></td><td class="num"><b>'+rm(r2(tot.rec))+'</b></td></tr></table></div>';
+ return '<div class="card"><div class="sec-h" style="margin-bottom:8px"><h3 class="sdh" style="margin:0">'+ic('chart',15)+' Revenue '+(gran==='month'?'month by month':'day by day')+'</h3><button class="btn sm ghost" onclick="kpiRevCSV()">'+ic('download',13)+'CSV</button></div><div class="kpisegs">'+bar+'</div>'+body+
+  '<p class="tiny muted">'+(gran==='month'?'The last 12 months to '+dshort(Q.to)+'.':'Each day of '+R.label+'.')+' Packages are counted '+(sdDef().pkg==='used'?'when their sessions are used':'when sold')+' (change in Definitions).</p></div>'+kpiCashCard(X);
+}
+window.kpiRevCSV=()=>{const X=kpiX(),gran=SDF.gran==='month'?'month':'day',dim=['cat','br','item'].includes(SDF.dim)?SDF.dim:'cat',Q=kpiRevData(X.R,gran,dim);
+ if(dim==='item')return csvDownload('revenue-items-'+X.R.from+'.csv',[['Item','Category','Qty','Sales',...Q.keys],...Q.items.map(o=>[o.name,o.c,r2(o.q),r2(o.v),...Q.keys.map(k=>r2(o.by[k]||0))])]);
+ csvDownload('revenue-'+gran+'-'+X.R.from+'.csv',[[gran==='month'?'Month':'Date',...Q.cols.map(c=>c.name),'Total','Cash in','Earned'],...Q.keys.map(k=>[k,...Q.cols.map(c=>r2(Q.M[k][c.id])),r2(Q.M[k].t),r2(Q.M[k].cash),r2(Q.M[k].rec)])]);};
+/* cash against earned: what the bank sees against what was actually delivered */
+function kpiCashParts(R){
+ let pkg=0,later=0,wallet=0,gift=0,member=0;
+ SDL.sales.forEach(s=>{if(s.date<R.from||s.date>R.to||!sdBrOk(s.branchId))return;const items=(s.items||[]).filter(i=>i.kind!=='redeem'),sum=items.reduce((t,i)=>t+lineAmt(i),0),k=sum>0?((+s.total||0)-(sdDef().sst?0:(+s.sst||0)))/sum:0;
+  items.forEach(i=>{const v=lineAmt(i)*k;if(i.kind==='package')pkg+=v;else if(i.kind==='service'&&i.later)later+=v;else if(i.kind==='wallet')wallet+=v;else if(i.kind==='gift')gift+=v;else if(i.kind==='membership')member+=v;});});
+ const used=r2(sdReds(R.from,R.to,sdBr()).reduce((t,r)=>t+r.value,0));
+ return {pkg:r2(pkg),later:r2(later),wallet:r2(wallet),gift:r2(gift),member:r2(member),used};
+}
+function kpiCashCard(X){
+ const R=X.R,k=X.k,P=kpiCashParts(R),gap=r2(k.cash-k.rec);
+ const li=(t,v,s)=>'<div class="kpicl"><span>'+t+(s?'<small>'+s+'</small>':'')+'</span><b>'+rm(v)+'</b></div>';
+ return '<div class="card" id="kpi-cash"><h3 class="sdh">'+ic('wallet',15)+' Cash in vs revenue earned <span class="tiny muted">— '+esc(R.label)+'</span></h3>'+
+  '<div class="sdgrid"><div class="kpi sdk"><div class="lab">Cash in</div><div class="big">'+rm(k.cash)+'</div><div class="sub">every payment received · '+sdChg(k.cash,k.pcash)+'</div></div>'+
+  '<div class="kpi sdk"><div class="lab">Earned</div><div class="big">'+rm(k.rec)+'</div><div class="sub">treatments done, products sold, package sessions used · '+sdChg(k.rec,k.prec)+'</div></div>'+
+  '<div class="kpi sdk '+(gap>0?'a':'')+'"><div class="lab">'+(gap>=0?'Cash ahead of work':'Work ahead of cash')+'</div><div class="big">'+rm(Math.abs(gap))+'</div><div class="sub">'+(gap>=0?'paid for but not yet delivered — you owe it in sessions':'prepaid sessions used up this period')+'</div></div></div>'+
+  '<div class="kpicls">'+li('Packages sold',P.pkg,'cash now, earned as each session is used')+li('Package sessions used',P.used,'earned now, paid for earlier')+
+   (P.later?li('Treatments paid now, done later',P.later):'')+(P.wallet?li('Client credit top-ups',P.wallet,'owed until spent'):'')+(P.gift?li('E-vouchers sold',P.gift,'owed until spent'):'')+(P.member?li('Membership fees',P.member):'')+
+   li('Sessions still owed today',k.owed.v,k.owed.n+' sessions')+'</div>'+
+  '<p class="tiny muted">A month full of package sales looks rich in the bank but the work is still to come. Plan staff and cash for the sessions owed.</p></div>';
+}
+
+/* ---------- 3 · utilisation ---------- */
+function kpiUseTab(X){
+ const U=X.k.util,bar=(x,g,a)=>'<div class="kpiu"><span><b>'+esc(x.name)+'</b><small>'+(x.type?esc(x.type)+' · ':'')+(kpiBrName(x.br)&&(D.branches||[]).length>1?esc(kpiBrName(x.br))+' · ':'')+Math.round(x.mins/60*10)/10+' h booked'+(x.by==='open'?' · no clock-ins, against opening hours':x.worked?' of '+Math.round(x.worked/60*10)/10+' h clocked':'')+'</small></span><div class="bar"><i class="'+sdRag(x.pct,g,a)+'" style="width:'+Math.min(100,x.pct)+'%"></i></div><b class="pill '+sdRag(x.pct,g,a)+'">'+x.pct+'%</b></div>';
+ const sec=(t,icn,L,tot,g,a,empty)=>'<div class="card"><h3 class="sdh">'+ic(icn,15)+' '+t+(tot!=null?' <span class="pill '+sdRag(tot,g,a)+'">'+tot+'%</span>':'')+'</h3>'+(L.length?L.map(x=>bar(x,g,a)).join(''):'<div class="tiny muted">'+empty+'</div>')+'</div>';
+ return '<div class="sdgrid">'+
+  '<div class="kpi sdk '+sdRag(U.room,60,40)+'"><div class="lab">Rooms</div><div class="big">'+(U.room==null?'—':U.room+'%')+'</div><div class="sub">'+U.rooms.length+' room'+(U.rooms.length!==1?'s':'')+'</div></div>'+
+  '<div class="kpi sdk '+sdRag(U.therapist,70,50)+'"><div class="lab">Therapists</div><div class="big">'+(U.therapist==null?'—':U.therapist+'%')+'</div><div class="sub">'+U.thera.length+' taking bookings</div></div>'+
+  '<div class="kpi sdk '+sdRag(U.machine,50,25)+'"><div class="lab">Machines</div><div class="big">'+(U.machine==null?'—':U.machine+'%')+'</div><div class="sub">'+U.machines.length+' machine'+(U.machines.length!==1?'s':'')+'</div></div></div>'+
+  sec('Rooms','room',U.rooms,U.room,60,40,'No rooms set up (Settings → Rooms).')+
+  sec('Therapists','users',U.thera,U.therapist,70,50,'No staff taking bookings.')+
+  sec('Machines','tool',U.machines,U.machine,50,25,'No machines set up. Add them under Booking → Machines to see how much each one earns its keep.')+
+  '<p class="tiny muted">Booked treatment time ÷ time available: '+U.H+' opening hours × '+U.days+' open day'+(U.days>1?'s':'')+' for rooms and machines; for therapists, time clocked in (or opening hours when they did not clock in). No-shows and cancellations do not count. Below 40% the space or person is costing more than it earns — fill with off-peak offers; above 85% it is time to add a room, a machine or a person.</p>';
+}
+
+/* ---------- the screen, with the new tabs ---------- */
+{const _f=sdFilters;sdFilters=function(){return _f.apply(this,arguments).replace('<button class="btn sm ghost" onclick="sdDefs()">',
+ '<span class="kpiexp"><span class="tiny muted">Board report</span><button class="btn sm" onclick="kpiXLSX()">'+ic('download',13)+'Excel</button><button class="btn sm" onclick="kpiPDF()">'+ic('print',13)+'PDF</button></span><button class="btn sm ghost" onclick="sdDefs()">');};}
+vSales=function(){
+ if(!can('report'))return '<div class="card"><div class="empty">Sales figures are for the owner and managers.</div></div>';
+ if(!SDL){sdLoad();return sdFilters()+'<div class="card"><div class="center"><div class="spin"></div><p class="tiny muted">Reading bills, bookings, packages and leads…</p></div></div>';}
+ if(SDBUSY)return sdFilters()+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const X=kpiX(),[cf,ct,cl]=sdCmp(X.R),def=sdDef();
+ const defLine='<p class="tiny muted sddef">'+ic('note',11)+' Sales '+(def.sst?'include':'exclude')+' SST · packages counted '+(def.pkg==='used'?'when sessions are used':'when sold')+' · compared with '+cl+' ('+dshort(cf)+' – '+dshort(ct)+')'+(SDF.staff?' · '+esc(stf(SDF.staff).name||''):'')+(SDF.cat?' · '+SDF.cat:'')+'</p>';
+ if(SDF.view==='bod')return sdFilters()+defLine+kpiBoard(X,true)+sdTrend(12)+sdBranchCard(X,true)+kpiLarisCard(X)+sdForecastCard(X,true);
+ const tabs=[['kpi','KPI'],['sum','Summary'],['rev','Revenue'],['sales','Sales'],['cli','Clients'],['fun','Funnel'],['br','Branches'],['use','Utilisation'],['staff','Staff'],['mkt','Marketing'],['fc','Forecast']];
+ const body={kpi:()=>kpiBoard(X,false)+kpiLarisCard(X),sum:()=>sdSummary(X,cl,false),rev:()=>kpiRevTab(X),sales:()=>kpiLarisCard(X,10)+sdSalesTab(X),cli:()=>sdCliTab(X),fun:()=>sdFunTab(X),br:()=>sdBranchCard(X,false),
+  use:()=>kpiUseTab(X),staff:()=>sdStaffTab(X),mkt:()=>sdMktTab(X),fc:()=>sdForecastCard(X,false)}[SDF.tab]||(()=>kpiBoard(X,false));
+ return sdFilters()+'<div class="crmtop"><div class="crmseg">'+tabs.map(([k,t])=>'<button class="'+(SDF.tab===k?'on':'')+'" onclick="sdTab(\''+k+'\')">'+t+(k==='sum'&&X.alerts.length?'<i>'+X.alerts.length+'</i>':'')+'</button>').join('')+'</div></div>'+defLine+body();
+};
+
+/* ---------- the board report: Excel and PDF ---------- */
+function kpiWhy(X){
+ const c=X.cur,p=X.prev,out=[];const bc=sdPct(c.bills,p.bills),ac=sdPct(c.atv,p.atv);
+ if(bc!=null)out.push((bc>=0?'More':'Fewer')+' bills: '+c.bills+' vs '+p.bills+' ('+(bc>=0?'+':'')+bc+'%).');
+ if(ac!=null&&Math.abs(ac)>=3)out.push('Average bill '+(ac>=0?'up':'down')+' '+Math.abs(ac)+'% to '+rm(c.atv)+'.');
+ const mv=SD_CATS.map(k=>({k,d:((c.byCat[k]||{}).v||0)-((p.byCat[k]||{}).v||0)})).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];
+ if(mv&&Math.abs(mv.d)>=1)out.push(mv.k+' '+(mv.d>=0?'added':'lost')+' '+rm(Math.abs(r2(mv.d)))+' — the biggest change.');
+ out.push(X.cl.nw.length+' new client'+(X.cl.nw.length!==1?'s':'')+(X.cl.retention!=null?'; '+X.cl.retention+'% of the period before came back':'')+'.');
+ if(c.g&&c.disc/c.g>0.1)out.push('Discounts took '+Math.round(c.disc/c.g*100)+'% off list prices ('+rm(c.disc)+').');
+ return out;
+}
+function kpiRows(X){ /* the board summary as label / this period / compared / change / note */
+ const c=X.cur,p=X.prev,k=X.k,C=X.cl,F=X.fun,U=k.util,M=k.mkt,I=k.items,[cf,ct,cl]=sdCmp(X.R),ch=(a,b)=>{const v=sdPct(a,b);return v==null?'':(v>=0?'+':'')+v+'%';};
+ const nr=F.appts?Math.round(F.no/F.appts*100):null,cr=F.appts?Math.round(F.cancel/F.appts*100):null,pn=k.pfun.n?Math.round(k.pfun.no/k.pfun.n*100):null,pc=k.pfun.n?Math.round(k.pfun.cancel/k.pfun.n*100):null;
+ const gp=r2(c.v-c.cost-c.comm),pgp=r2(p.v-p.cost-p.comm);
+ return [
+  ['Sales',c.v,p.v,ch(c.v,p.v),k.t?Math.round(c.v/k.t*100)+'% of target '+rm(k.t):'No target set'],
+  ['Sales same period last year','',X.yoy.v,ch(c.v,X.yoy.v),''],
+  ['Cash received',k.cash,k.pcash,ch(k.cash,k.pcash),'All payments in the period'],
+  ['Revenue earned',k.rec,k.prec,ch(k.rec,k.prec),'Treatments done, retail, package sessions used'],
+  ['Sessions still owed (value)',k.owed.v,'','',k.owed.n+' sessions, '+k.owed.clients+' clients'],
+  ['Bills',c.bills,p.bills,ch(c.bills,p.bills),''],
+  ['Average bill (ATV)',c.atv,p.atv,ch(c.atv,p.atv),''],
+  ['New clients',C.nw.length,'','',rm(C.nwRev)+' of sales'],
+  ['Returning clients',C.rep.length,'','',''],
+  ['Retention %',C.retention==null?'':C.retention,'','',C.kept+' of '+C.prevN+' came back'],
+  ['Rebooking %',C.rebook==null?'':C.rebook,'','',C.rb+' of '+C.done+' visits'],
+  ['Client value, 12 months (CLV)',C.clv,'','',C.active+' active clients'],
+  ['Marketing spend',M.spend,'','',''],
+  ['CAC (cost per new client)',M.cac==null?'':M.cac,'','',M.nw+' new clients from paid channels'],
+  ['ROAS',M.roas==null?'':M.roas,'','',M.best?'Best: '+M.best.k:''],
+  ['No-show %',nr==null?'':nr,pn==null?'':pn,'',F.no+' of '+F.appts+' bookings'],
+  ['Cancellation %',cr==null?'':cr,pc==null?'':pc,'',F.cancel+' of '+F.appts+' bookings'],
+  ['Room utilisation %',U.room==null?'':U.room,'','',U.rooms.length+' rooms'],
+  ['Therapist utilisation %',U.therapist==null?'':U.therapist,'','',U.thera.length+' therapists'],
+  ['Machine utilisation %',U.machine==null?'':U.machine,'','',U.machines.length+' machines'],
+  ['Gross margin after product cost & commission %',c.v?Math.round(gp/c.v*100):'',p.v?Math.round(pgp/p.v*100):'','',rm(gp)],
+  ['Commission',c.comm,p.comm,ch(c.comm,p.comm),c.v?Math.round(c.comm/c.v*100)+'% of sales':''],
+  ['Best seller','','','',I.laris[0]?I.laris[0].name+' × '+I.laris[0].q:''],
+  ['Most profitable','','','',I.untung[0]?I.untung[0].name+' · '+rm(I.untung[0].profit):'']];
+}
+const kpiFile=ext=>{const b=bizC(),R=SDX.R;return String(b.name||'spa').replace(/[^A-Za-z0-9]+/g,'-')+'-board-report-'+R.from+'-to-'+R.to+(SDF.br?'-'+String(kpiBrName(SDF.br)).replace(/[^A-Za-z0-9]+/g,'-'):'')+'.'+ext;};
+window.kpiXLSX=()=>{
+ const X=kpiX();if(!X)return toast('Still reading the figures…');
+ const R=X.R,b=bizC(),[cf,ct,cl]=sdCmp(R),U=X.k.util,I=X.k.items,M=X.k.mkt;
+ const mQ=kpiRevData(R,'month','cat'),dQ=kpiRevData(R,'day','cat'),bQ=kpiRevData(R,'month','br');
+ const sheets=[
+  {name:'Summary',rows:[['Board report',''],['Business',b.legalName||b.name||''],['Branch',SDF.br?kpiBrName(SDF.br):sdBr()?kpiBrName(sdBr()):'All branches'],['Period',R.label+' ('+R.from+' to '+R.to+')'],['Compared with',cl+' ('+cf+' to '+ct+')'],
+   ['Sales count',(sdDef().sst?'including':'excluding')+' SST; packages '+(sdDef().pkg==='used'?'when sessions are used':'when sold')],['Prepared',new Date().toLocaleString('en-MY')+' by '+(ME.name||'')],['',''],['Headline',kpiTxt(kpiHeadline(X))],
+   ['',''],['KPI','This period','Compared','Change','Note'],...kpiRows(X),['',''],['What moved',''],...kpiWhy(X).map(t=>['',kpiTxt(t)]),['',''],['To act on',''],...X.alerts.map(a=>[kpiTxt(a.t),kpiTxt(a.d)])]},
+  {name:'Revenue by month',rows:[['Month',...mQ.cols.map(c=>c.name),'Total','Cash in','Earned'],...mQ.keys.map(k=>[mLabel(k),...mQ.cols.map(c=>r2(mQ.M[k][c.id])),r2(mQ.M[k].t),r2(mQ.M[k].cash),r2(mQ.M[k].rec)])]},
+  {name:'Revenue by day',rows:[['Date',...dQ.cols.map(c=>c.name),'Total','Cash in','Earned'],...dQ.keys.map(k=>[k,...dQ.cols.map(c=>r2(dQ.M[k][c.id])),r2(dQ.M[k].t),r2(dQ.M[k].cash),r2(dQ.M[k].rec)])]},
+  {name:'Revenue by branch',rows:[['Month',...bQ.cols.map(c=>c.name),'Total'],...bQ.keys.map(k=>[mLabel(k),...bQ.cols.map(c=>r2(bQ.M[k][c.id])),r2(bQ.M[k].t)])]},
+  {name:'Treatments & products',rows:[['Item','Category','Qty','Sales','Product cost','Commission','Profit','Margin %','Profit per hour'],...I.untung.map(o=>[o.name,o.c,o.q,o.v,o.cost,o.comm,o.profit,o.mPct==null?'':o.mPct,o.perHr==null?'':o.perHr])]},
+  {name:'Clients',rows:[['Measure','Value'],['New clients',X.cl.nw.length],['Returning clients',X.cl.rep.length],['Sales from new clients',X.cl.nwRev],['Retention %',X.cl.retention??''],['Rebooking %',X.cl.rebook??''],['Visits a year per active client',X.cl.freq],['Client value, 12 months (CLV)',X.cl.clv],['Active clients, 12 months',X.cl.active],['Dormant 60-89 days',X.cl.dorm[60].length],['Dormant 90-179 days',X.cl.dorm[90].length],['Dormant 180+ days',X.cl.dorm[180].length]]},
+  {name:'Marketing',rows:[['Channel','Spend','Leads','Booked','New clients','Their sales','CAC','ROAS'],...M.rows.map(r=>[r.k,r.spend,r.leads,r.booked,r.nw,r.rev,r.cac??'',r.roas??'']),['Total (paid channels)',M.spend,'','',M.nw,M.rev,M.cac??'',M.roas??'']]},
+  {name:'Bookings',rows:[['Measure','Value'],['Bookings in period',X.fun.appts],['Came',X.fun.done],['No-shows',X.fun.no],['No-show %',X.fun.appts?Math.round(X.fun.no/X.fun.appts*100):''],['Cancelled',X.fun.cancel],['Cancellation %',X.fun.appts?Math.round(X.fun.cancel/X.fun.appts*100):''],['Leads',X.fun.leads],['Leads booked',X.fun.booked],['Leads came',X.fun.came],['Leads bought a package',X.fun.pkg]]},
+  {name:'Utilisation',rows:[['Type','Name','Booked hours','Available hours','Utilisation %'],...U.rooms.map(x=>['Room',x.name,Math.round(x.mins/6)/10,Math.round(U.cap/6)/10,x.pct]),...U.machines.map(x=>['Machine',x.name,Math.round(x.mins/6)/10,Math.round(U.cap/6)/10,x.pct]),...U.thera.map(x=>['Therapist',x.name,Math.round(x.mins/6)/10,Math.round((x.worked||U.cap)/6)/10,x.pct])]},
+  {name:'Staff',rows:[['Staff','Sales','Target','% of target','Bills','ATV','Consultations','Became packages','Retail attach %','Rebooking %','Utilisation %','Rating','Commission'],...X.staff.map(s=>[s.p.name,s.v,s.t,s.pct??'',s.bills,s.atv,s.consults,s.cPkg,s.attach??'',s.rebook??'',s.util??'',s.rating??'',s.comm])]},
+  {name:'Branches',rows:[['Branch','Sales','Target','% of target','Compared','Change %','Bills','ATV'],...(D.branches||[]).filter(bb=>!sdBr()||bb.id===sdBr()).map(bb=>{const a=sdAgg(R.from,R.to,{br:bb.id,staff:'',cat:''}),pp=sdAgg(cf,ct,{br:bb.id,staff:'',cat:''}),t=sdTarget(R.from,R.to,bb.id);return [bb.name,a.v,t,t?Math.round(a.v/t*100):'',pp.v,sdPct(a.v,pp.v)??'',a.bills,a.atv];})]}];
+ const Z=xlsxBuild(sheets),name=kpiFile('xlsx');
+ window.__lastXLSX={name,size:Z.size,sheets:sheets.map(s=>({name:s.name,rows:s.rows.length,head:s.rows[0]})),data:sheets};
+ try{const url=URL.createObjectURL(new Blob(Z.parts,{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+  const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}catch(e){console.warn(e);}
+ audit('Board report','Excel · '+R.label);toast('Board report ready · '+sheets.length+' sheets');
+};
+window.kpiPDF=async()=>{
+ const X=kpiX();if(!X)return toast('Still reading the figures…');
+ toast('Preparing the board report…');
+ let jsPDF;try{jsPDF=await loadJsPDF();}catch(e){return toast(friendly(e));}
+ const R=X.R,b=bizC(),[cf,ct,cl]=sdCmp(R),k=X.k,c=X.cur,C=X.cl,F=X.fun,U=k.util,M=k.mkt,I=k.items;
+ const d=new jsPDF({unit:'mm',format:'a4'}),W=210,G=14;let y=0,pg=1;
+ const T=(s,x,yy,o)=>d.text(pdfText(s),x,yy,o||{}),RM=v=>pdfRM(v).replace('.00','');
+ const top=()=>{d.setFillColor(13,13,13);d.rect(0,0,W,24,'F');d.setTextColor(250,249,246);d.setFont('helvetica','bold');d.setFontSize(13);T(b.name||'',G,11);
+  d.setFont('helvetica','normal');d.setFontSize(8.5);d.setTextColor(215,197,170);T((SDF.br?kpiBrName(SDF.br):sdBr()?kpiBrName(sdBr()):'All branches')+' · '+R.label+' ('+dshort(R.from)+' - '+dshort(R.to)+')',G,18);
+  d.setTextColor(250,249,246);d.setFont('helvetica','bold');d.setFontSize(11);T('BOARD REPORT',W-G,11,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(8);T('vs '+cl,W-G,18,{align:'right'});
+  d.setTextColor(13,13,13);y=33;};
+ const foot=()=>{d.setFontSize(7);d.setTextColor(155,146,137);T('Sales '+(sdDef().sst?'include':'exclude')+' SST · packages counted '+(sdDef().pkg==='used'?'when used':'when sold')+' · prepared '+new Date().toLocaleString('en-MY')+' by '+(ME.name||''),G,290);T('Page '+pg,W-G,290,{align:'right'});d.setTextColor(13,13,13);};
+ const need=h=>{if(y+h>282){foot();d.addPage();pg++;top();}};
+ const h2=t=>{need(14);y+=1;d.setFont('helvetica','bold');d.setFontSize(10.5);T(t,G,y);y+=2;d.setDrawColor(178,153,110);d.setLineWidth(0.3);d.line(G,y,W-G,y);y+=5.5;};
+ const para=(t,o)=>{d.setFont('helvetica',o&&o.b?'bold':'normal');d.setFontSize(o&&o.s||8.8);d.splitTextToSize(pdfText(t),W-2*G-(o&&o.ind||0)).forEach(l=>{need(5);T(l,G+(o&&o.ind||0),y);y+=4.3;});};
+ const table=(head,rows,wid,al)=>{const x0=G;let xs=[x0];wid.forEach((w,i)=>xs.push(xs[i]+w));
+  const line=(r,o)=>{need(6);d.setFont('helvetica',o&&o.b?'bold':'normal');d.setFontSize(o&&o.s||8.2);if(o&&o.fill){d.setFillColor(243,236,224);d.rect(G,y-4,W-2*G,5.8,'F');}
+   r.forEach((v,i)=>{const s=pdfText(v==null?'':v),a=(al||[])[i]==='r';const cut=d.splitTextToSize(s,wid[i]-2)[0]||'';T(cut,a?xs[i+1]-1:xs[i]+1,y,a?{align:'right'}:{});});y+=5.6;};
+  line(head,{b:1,fill:1,s:7.6});rows.forEach(r=>line(r));};
+ top();
+ /* headline */
+ d.setFont('helvetica','bold');d.setFontSize(11.5);d.splitTextToSize(pdfText(kpiTxt(kpiHeadline(X))),W-2*G).forEach(l=>{T(l,G,y);y+=5.4;});y+=2;
+ /* KPI tiles, 3 across */
+ const pct=v=>v==null?'-':v+'%',gp=r2(c.v-c.cost-c.comm);
+ const tiles=[['SALES',RM(c.v),(k.t?Math.round(c.v/k.t*100)+'% of target · ':'')+(sdPct(c.v,X.prev.v)==null?'':(sdPct(c.v,X.prev.v)>=0?'+':'')+sdPct(c.v,X.prev.v)+'% vs before')],
+  ['CASH IN / EARNED',RM(k.cash)+' / '+RM(k.rec),'sessions owed '+RM(k.owed.v)],
+  ['NEW / RETURNING',C.nw.length+' / '+C.rep.length,(c.v?Math.round(C.nwRev/c.v*100):0)+'% of sales from new'],
+  ['RETENTION / REBOOK',pct(C.retention)+' / '+pct(C.rebook),C.kept+' of '+C.prevN+' came back'],
+  ['ATV / CLV',RM(c.atv)+' / '+RM(C.clv),c.bills+' bills'],
+  ['CAC / ROAS',(M.cac!=null?RM(M.cac):'-')+' / '+(M.roas!=null?M.roas+'x':'-'),M.spend?RM(M.spend)+' spent · '+M.nw+' new':'no ad spend'],
+  ['NO-SHOW / CANCEL',pct(F.appts?Math.round(F.no/F.appts*100):null)+' / '+pct(F.appts?Math.round(F.cancel/F.appts*100):null),F.appts+' bookings'],
+  ['UTILISATION','Rooms '+pct(U.room)+' · Staff '+pct(U.therapist),U.machines.length?'Machines '+pct(U.machine):'no machines set up'],
+  ['PROFIT AFTER COST & COMM.',c.v?Math.round(gp/c.v*100)+'%':'-',RM(gp)+' · commission '+RM(c.comm)]];
+ const tw=(W-2*G-8)/3,th=19;tiles.forEach((t,i)=>{const col=i%3,row=Math.floor(i/3),x=G+col*(tw+4),yy=y+row*(th+3);
+  d.setFillColor(250,249,246);d.setDrawColor(215,197,170);d.roundedRect(x,yy,tw,th,2,2,'FD');
+  d.setFont('helvetica','bold');d.setFontSize(6.6);d.setTextColor(131,110,74);T(t[0],x+3,yy+5);d.setTextColor(13,13,13);d.setFontSize(10.5);T(d.splitTextToSize(pdfText(t[1]),tw-6)[0],x+3,yy+11);
+  d.setFont('helvetica','normal');d.setFontSize(6.8);d.setTextColor(95,90,84);T(d.splitTextToSize(pdfText(t[2]),tw-6)[0],x+3,yy+16);d.setTextColor(13,13,13);});
+ y+=3*(th+3)+4;
+ /* 12 months */
+ h2('Sales, last 12 months');
+ const e=R.to.slice(0,7),ms=[];for(let i=11;i>=0;i--)ms.push(mShift(e,-i));
+ const mv=ms.map(m=>({m,v:sdAgg(m+'-01',m===today().slice(0,7)?today():mEnd(m)).v})),mx=Math.max(1,...mv.map(x=>x.v)),cw=(W-2*G)/12,chH=34;need(chH+10);
+ mv.forEach((x,i)=>{const h=x.v/mx*chH,xx=G+i*cw+cw*0.18;d.setFillColor(i===11?178:215,i===11?153:197,i===11?110:170);d.rect(xx,y+chH-h,cw*0.64,h,'F');
+  d.setFontSize(6.2);d.setTextColor(95,90,84);T(mLabel(x.m).slice(0,3),xx+cw*0.32,y+chH+4,{align:'center'});if(x.v)T((x.v>=1000?Math.round(x.v/100)/10+'k':Math.round(x.v)),xx+cw*0.32,y+chH-h-1.2,{align:'center'});});
+ d.setTextColor(13,13,13);y+=chH+12;
+ /* what moved, what next */
+ h2('What moved');kpiWhy(X).forEach(t=>para('•  '+kpiTxt(t),{ind:1}));y+=1;
+ if(X.alerts.length){h2('To act on');X.alerts.slice(0,6).forEach(a=>{para('•  '+kpiTxt(a.t),{b:1,ind:1});para(kpiTxt(a.d),{ind:5,s:8});});}
+ /* branches */
+ const brs=(D.branches||[]).filter(bb=>!sdBr()||bb.id===sdBr());
+ if(brs.length>1||SDF.br===''){h2('Branches');table(['Branch','Sales','Target','vs before','Bills','ATV'],brs.map(bb=>{const a=sdAgg(R.from,R.to,{br:bb.id,staff:'',cat:''}),pp=sdAgg(cf,ct,{br:bb.id,staff:'',cat:''}),t=sdTarget(R.from,R.to,bb.id),ch=sdPct(a.v,pp.v);
+  return [bb.name,RM(a.v),t?Math.round(a.v/t*100)+'% of '+RM(t):'-',ch==null?'-':(ch>=0?'+':'')+ch+'%',a.bills,RM(a.atv)];}),[52,30,36,24,20,20],['','r','r','r','r','r']);y+=2;}
+ /* best seller vs most profitable */
+ h2('Best seller vs most profitable');
+ const n=Math.min(5,I.L.length);
+ table(['Sells the most','Qty','','Earns the most','Profit','Margin'],[...Array(n)].map((_,i)=>{const a=I.laris[i],u=I.untung[i];return [a?(i+1)+'. '+a.name:'',a?a.q:'','',u?(i+1)+'. '+u.name:'',u?RM(u.profit):'',u&&u.mPct!=null?u.mPct+'%':''];}),[54,14,10,54,26,24],['','r','','','r','r']);
+ if(I.trap.length)para('Popular but thin: '+I.trap.map(o=>o.name+' ('+o.mPct+'% margin)').join(', ')+'.',{s:8});y+=2;
+ /* marketing */
+ if(M.rows.length){h2('Marketing by channel');table(['Channel','Spend','Leads','New clients','CAC','ROAS'],M.rows.slice(0,8).map(r=>[r.k,RM(r.spend),r.leads,r.nw,r.cac==null?'-':RM(r.cac),r.roas==null?'-':r.roas+'x']),[52,28,22,28,26,26],['','r','r','r','r','r']);y+=2;}
+ /* utilisation */
+ h2('Utilisation');
+ table(['','Booked hours','Available hours','Utilisation'],[...U.rooms.map(x=>['Room · '+x.name,Math.round(x.mins/6)/10,Math.round(U.cap/6)/10,x.pct+'%']),...U.machines.map(x=>['Machine · '+x.name,Math.round(x.mins/6)/10,Math.round(U.cap/6)/10,x.pct+'%']),
+  ...U.thera.map(x=>['Therapist · '+x.name,Math.round(x.mins/6)/10,Math.round((x.worked||U.cap)/6)/10,x.pct+'%'])].slice(0,18),[80,34,34,34],['','r','r','r']);y+=2;
+ /* staff */
+ if(X.staff.length){h2('Staff performance & commission');table(['Staff','Sales','Target','ATV','Rebook','Util.','Rating','Commission'],X.staff.slice(0,12).map(s=>[s.p.name,RM(s.v),s.pct==null?'-':s.pct+'%',RM(s.atv),s.rebook==null?'-':s.rebook+'%',s.util==null?'-':s.util+'%',s.rating?s.rating+'':'-',RM(s.comm)]),[40,24,18,20,18,16,16,30],['','r','r','r','r','r','r','r']);}
+ foot();
+ const name=kpiFile('pdf');window.__lastPDF={kind:'board',name,doc:d,pages:pg};
+ try{d.save(name);}catch(e2){console.warn(e2);}
+ audit('Board report','PDF · '+R.label);toast('Board report ready');
+};
+window.kpiState=()=>{const X=kpiX();return X?{R:X.R,k:{...X.k,items:{laris:X.k.items.laris.map(o=>({name:o.name,q:o.q,v:o.v,profit:o.profit,perHr:o.perHr,mPct:o.mPct})),untung:X.k.items.untung.map(o=>({name:o.name,q:o.q,profit:o.profit})),trap:X.k.items.trap.map(o=>o.name)}},
+ cur:{v:X.cur.v,bills:X.cur.bills,atv:X.cur.atv,cost:X.cur.cost,comm:X.cur.comm},cl:{nw:X.cl.nw.length,rep:X.cl.rep.length,retention:X.cl.retention,rebook:X.cl.rebook,clv:X.cl.clv},fun:{appts:X.fun.appts,no:X.fun.no,cancel:X.fun.cancel}}:null;};
 
 </script>
