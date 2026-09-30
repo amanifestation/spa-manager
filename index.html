@@ -2346,6 +2346,75 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .hpreq{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(184,146,74,.1);font-size:13px}
 .hpcmp td,.hpcmp th{padding:6px 8px;text-align:left;vertical-align:top}
 @media (max-width:560px){.hpdl{grid-template-columns:1fr;gap:0}.hpdl dt{margin-top:7px}.hphead .row{flex-wrap:wrap}}
+/* recruitment (29p) */
+.rcseg{overflow-x:auto;scrollbar-width:none;margin:0 0 12px}
+.rcseg button{white-space:nowrap;display:flex;align-items:center;gap:5px}
+.rcseg i{font-style:normal;font-size:10.5px;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--brass);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.rcfunnel{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:12px}
+.rcfunnel button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:9px 4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font:inherit;color:var(--ink);cursor:pointer;position:relative}
+.rcfunnel button:not(.out):not(:nth-child(6)):after{content:'';position:absolute;right:-5px;top:50%;width:4px;height:1px;background:var(--line)}
+.rcfunnel b{font-size:19px;line-height:1.1}
+.rcfunnel span{font-size:11.5px;font-weight:600}
+.rcfunnel small{font-size:10px;color:var(--ink-3)}
+.rcfunnel button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.rcfunnel button.on small{color:inherit;opacity:.7}
+.rcfunnel button.out{background:var(--line-2)}
+.rcfunnel button.out.on{background:var(--ink)}
+@media (max-width:720px){.rcfunnel{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.rcaprow b{display:flex;align-items:center;gap:6px}
+.rcnew{width:8px;height:8px;border-radius:50%;background:var(--rose);flex:none}
+.rcchips{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.rcsc-p{font-size:10.5px;padding:2px 7px;border-radius:99px;background:var(--line-2);color:var(--ink-2);display:inline-flex;align-items:center;gap:3px}
+.rcsc-p.y{background:rgba(63,125,90,.13);color:#2f6b4a}
+.rcsc-p.n{background:rgba(208,133,133,.18);color:var(--rose)}
+.rcsc-p.a{background:rgba(184,146,74,.14);color:#8a6a2c}
+.rcfit{font-size:10.5px;padding:2px 7px;border-radius:99px;display:inline-flex;align-items:center;gap:3px}
+.rcfit.y{background:rgba(63,125,90,.13);color:#2f6b4a}
+.rcfit.n{background:rgba(208,133,133,.18);color:var(--rose)}
+.rcsteps{display:flex;gap:3px;margin:12px 0 4px}
+.rcsteps span{flex:1;text-align:center;font-size:10.5px;padding:6px 2px;border-radius:7px;background:var(--line-2);color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcsteps span.done{background:rgba(184,146,74,.22);color:#6d5323}
+.rcsteps span.on{background:var(--ink);color:var(--cream);font-weight:600}
+.rcwa{margin-left:6px;font-size:12px}
+.rcev{border:1px solid var(--line);border-radius:12px;padding:9px 10px;margin:6px 0}
+.rcev.wait{border-style:dashed}
+.rcev b{font-size:13px}
+.rcbars{display:grid;gap:3px;margin-top:6px}
+.rcbars span{display:grid;grid-template-columns:minmax(90px,40%) 1fr 16px;gap:6px;align-items:center;font-size:11.5px}
+.rcbars small{color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rcbars i{height:6px;border-radius:3px;background:var(--line-2);overflow:hidden;display:block}
+.rcbars u{display:block;height:100%;background:var(--brass);text-decoration:none}
+.rclog{font-size:13px;padding:6px 0;border-bottom:1px solid var(--line-2)}
+.rclog small{display:block;font-size:11px;color:var(--ink-3)}
+.rccrit{padding:9px 0;border-bottom:1px solid var(--line-2)}
+.rccrit small{display:block;font-size:11px;color:var(--ink-3);margin-top:4px;line-height:1.4}
+.rcsc{display:flex;gap:4px}
+.rcsc button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font:inherit;font-weight:600;color:var(--ink);cursor:pointer}
+.rcsc button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}
+.rcmini{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.rcmini span{font-size:11px;padding:3px 8px;border-radius:99px;background:var(--line-2);color:var(--ink-2)}
+.rcmini b{margin-right:4px;color:var(--ink)}
+.rcshare{display:grid;grid-template-columns:90px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+.rcshare code,.rclinkbox{font-size:11px;word-break:break-all;background:var(--line-2);padding:5px 7px;border-radius:7px;display:block}
+.rcqr{display:flex;gap:14px;align-items:center;margin-top:12px}
+.rcmore{margin:8px 0}
+.rcmore summary{cursor:pointer;font-size:13px;font-weight:600;padding:6px 0}
+.rcpub .fbbox h1{font-size:26px;margin:4px 0 8px;line-height:1.15}
+.rcpub .fbbox h3{font-size:14px;margin:14px 0 4px}
+.rcpub .fbbox ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6}
+.rceye{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);font-weight:600}
+.rcmeta{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.rcmeta span{font-size:12px;padding:4px 10px;border-radius:99px;background:var(--line-2)}
+.rcjd{margin-bottom:12px}
+.rcckg{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 6px}
+.rcck{display:inline-flex;cursor:pointer}
+.rcck input{position:absolute;opacity:0;pointer-events:none}
+.rcck span{font-size:13px;padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:#fff}
+.rcck input:checked+span{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rcpjob{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:12px 0;border-bottom:1px solid var(--line-2);text-decoration:none;color:inherit}
+.rcpjob small{grid-column:1;color:var(--ink-3);font-size:12px}
+.rcpjob span{grid-row:1/3;grid-column:2;align-self:center;font-size:13px;font-weight:600;color:var(--brass);display:flex;align-items:center;gap:3px}
+.rcdim{opacity:.55}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2607,7 +2676,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-30o';
+const BUILD='2026-10-01p';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -12161,7 +12230,7 @@ window.render=render;
   app=initializeApp(cfg);auth=getAuth(app);
   /* the staff app keeps a copy of its records on the device, so a dropped line does not
      stop the counter; the client's feedback page has nothing to keep, so it stays plain */
-  const pub=['fb','lead','book'].some(k=>new URLSearchParams(location.search).has(k));
+  const pub=['fb','lead','book','job','jobs','offer'].some(k=>new URLSearchParams(location.search).has(k));
   if(pub)db=getFirestore(app);
   else{
    try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
@@ -12171,7 +12240,7 @@ window.render=render;
  }
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
  pwaInit();
- {const q=new URLSearchParams(location.search);if(['fb','lead','pk','appt','book'].some(k=>q.has(k)))pubBrand();}
+ {const q=new URLSearchParams(location.search);if(['fb','lead','pk','appt','book','job','jobs','offer'].some(k=>q.has(k)))pubBrand();}
  /* a client opening their feedback link sees only the rating page, never the login */
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
@@ -12179,6 +12248,9 @@ window.render=render;
  if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
  if(lq.has('pk')){pkViewPage(String(lq.get('pk')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('appt')){apptLinkPage(String(lq.get('appt')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
+ if(lq.has('job')){jobPage(String(lq.get('job')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40),String(lq.get('s')||'').replace(/[^a-z]/g,'').slice(0,8));return;}
+ if(lq.has('jobs')){jobsPage();return;}
+ if(lq.has('offer')){offerPage(String(lq.get('offer')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('book')){bookingPage(String(lq.get('book')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),String(lq.get('m')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  onAuthStateChanged(auth,async user=>{
   if(!user){ME=null;UID=null;unsub.forEach(u=>{try{u();}catch(e){}});unsub=[];APPTSUB=null;
@@ -26230,10 +26302,10 @@ vHR=function(){
  const td=today(),soon=ymd(addDays(new Date(),30)),certN=CERTS.filter(c=>c.expiry&&c.expiry<=soon&&(stf(c.staffId).branchId||ME.branchId)===ME.branchId).length;
  const tabs=[['me','My HR','user','']];
  if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
- if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',''],['roster','Roster','calendar',''],['skills','Skills','award',certN||'']);
+ if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',''],['roster','Roster','calendar',''],['skills','Skills','award',certN||''],['hire','Hiring','users',rcBadge()||'']);
  if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard',''],['docs','Documents','note',(HRINFO||[]).filter(i=>i.status==='submitted').length||'']);
  if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
- const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills};
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills,hire:hrHire};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
 };
@@ -26538,7 +26610,7 @@ async function hpLoad(force){
  hpSelfSyncAll();
  if(['hr','home'].includes(TAB))render();
 }
-{const _l=loadHrStaff;loadHrStaff=async function(force){await _l.apply(this,arguments);await hpLoad(force);};}
+{const _l=loadHrStaff;loadHrStaff=async function(force){await _l.apply(this,arguments);hpLoad(force);};}
 /* what a staff member may see of their own file: kept in hrSelf, written only by the owner */
 const hpSelfOf=(sid)=>{const f=hpF(sid),o={};[...HP_SELF,'fullName','position','grade','empType','joinDate','confirmDate','contractEnd','passportExp','permitExp','citizen'].forEach(k=>{o[k]=f[k]==null?'':f[k];});o.branch=hpBr(stf(sid).branchId);return o;};
 async function hpSelfSync(sid){
@@ -26942,5 +27014,616 @@ window.hpCSV=()=>{if(!isOwnerMe())return;
  csvDownload('staff-register-'+today()+'.csv',[H,...hpAll().map(s=>{const f=hpF(s.id);return [f.fullName||s.name,f.ic,f.passport,f.nationality,f.citizen,f.position||s.position||'',f.grade,hpBr(s.branchId),hpSt(f.empType),f.joinDate,f.confirmDate,f.contractEnd,f.permitNo,f.permitExp,f.passportExp,f.phone,f.email,f.address,[f.emgName,f.emgRel?'('+f.emgRel+')':''].filter(Boolean).join(' '),f.emgPhone,f.bank,f.bankAcc,f.epf,f.socso,f.tax].map(v=>v==null?'':String(v));})]);
  audit('Staff register downloaded','');};
 window.__hp=()=>({HPF,HPH,HPR,HPS,MYSELF,MYREQ,MYFILES,dates:hpDates()});
+
+
+/* ============ HR: recruitment ============ */
+/* Job posts with a public application page (a link for Facebook, TikTok, Instagram, JobStreet or
+   Maukerja, a QR poster for the shop window), a pipeline from application to hire, structured
+   interview scorecards, practical tests scored by a senior therapist on their own phone, an offer
+   letter made from the company template and signed online by the candidate, and a talent bank of
+   good people who were not hired this time. The owner and managers run hiring; offers are the
+   owner's (salary, and the owner's signature on the letter). */
+const RC_ST=[['applied','Applied','Permohonan diterima'],['screen','Screening','Tapisan'],['interview','Interview','Temu duga'],['practical','Practical test','Ujian praktikal'],['offer','Offer','Tawaran'],['hired','Hired','Diterima']];
+const RC_OUT={rejected:'Not selected',withdrawn:'Withdrew'};
+const rcStI=k=>RC_ST.findIndex(s=>s[0]===k);
+const rcStName=k=>(RC_ST.find(s=>s[0]===k)||[k,RC_OUT[k]||k])[1];
+const RC_SKILLS=['Facial','Urutan / massage','Body scrub & wrap','Waxing','Bulu mata / kening','Mesin (HIFU, laser, RF)','Kaunter & jualan','Media sosial'];
+const RC_SRC=[['fb','Facebook'],['tt','TikTok'],['ig','Instagram'],['js','JobStreet'],['mk','Maukerja'],['wa','WhatsApp'],['walk','Poster / walk-in'],['ref','Staff referral'],['pool','Talent bank'],['other','Other']];
+const rcSrcName=k=>(RC_SRC.find(s=>s[0]===k)||[k,k||'—'])[1];
+const RC_EXP=[['0','Tiada pengalaman','No experience'],['0.5','Kurang 1 tahun','Under 1 year'],['1.5','1 – 2 tahun','1–2 years'],['4','3 – 5 tahun','3–5 years'],['6','Lebih 5 tahun','Over 5 years']];
+const rcExpName=v=>(RC_EXP.find(x=>+x[0]===+v)||['','—','—'])[2];
+const RC_INT=[['attitude','Attitude','Sikap',['Negative, blames others, not keen','Polite and willing, nothing stands out','Positive, eager to learn, owns mistakes, service-minded']],
+ ['appear','Appearance & grooming','Penampilan',['Untidy, late or unprepared','Neat and on time','Well groomed, presentable to clients, came prepared']],
+ ['comm','Communication','Komunikasi',['Hard to follow, one-word answers','Clear enough, answers the question','Clear, warm, listens, explains simply — would reassure a nervous client']],
+ ['exp','Experience','Pengalaman',['No related experience or training','Some training or a short stint','Solid experience in treatments we offer, can give real examples']]];
+const RC_PRAC=[['tech','Technique & steps','Teknik & langkah',['Wrong steps or unsafe pressure','Correct steps, needs polishing','Smooth, correct, confident']],
+ ['hyg','Hygiene & preparation','Kebersihan & persediaan',['Skipped hygiene or set-up','Clean, basic set-up','Spotless, tools and linen ready before the client lies down']],
+ ['client','Client comfort & talk','Keselesaan klien',['Did not check on the client','Checked once or twice','Checked pressure and comfort, explained each step']],
+ ['know','Skin & product knowledge','Pengetahuan kulit & produk',['Could not explain the products','Knows the basics','Picked products for the skin and said why']],
+ ['time','Time','Pengurusan masa',['Far over or under time','Roughly on time','On time without rushing']]];
+const RC_REC=[['strong','Strong hire'],['hire','Hire'],['maybe','Maybe'],['no','Do not hire']];
+const RC_TESTS=['Facial demo','Urutan badan (body massage)','Urutan kaki / refleksologi','Waxing','Rawatan mesin','Lain-lain'];
+const RC_REJ=['Not enough experience','Did not pass the practical','Salary expectation too high','Location / transport','No show','Position filled','Other'];
+let RCJ=null,RCA=null,RCE=null,RCBOOT=0,RCV='pipe',RCJOB='',RCSTG='',RCPOOL='',RCOPEN=null,MYEVAL=null,RCSYNC=0,RCEF=null;
+const rcBase=()=>{let u='';try{u=location.origin+location.pathname;}catch(e){}return u;};
+const rcLink=(id,s)=>rcBase()+'?job='+id+(s?'&s='+s:'');
+const rcMineJ=j=>isOwnerMe()||!j.branchId||j.branchId===ME.branchId;
+const rcJobs=()=>(RCJ||[]).filter(rcMineJ).sort((a,b)=>(b.open?1:0)-(a.open?1:0)||String(b.createdAt).localeCompare(String(a.createdAt)));
+const rcJob=id=>(RCJ||[]).find(j=>j.id===id)||{};
+const rcApps=()=>{const ids=new Set(rcJobs().map(j=>j.id));return (RCA||[]).filter(a=>ids.has(a.jobId)).sort((a,b)=>String(b.at).localeCompare(String(a.at)));};
+const rcApp=id=>(RCA||[]).find(a=>a.id===id);
+const rcEv=id=>(RCE||[]).filter(e=>e.appId===id);
+const rcFirst=n=>String(n||'').trim().split(/\s+/)[0]||'';
+const rcWhenTxt=v=>v?dstr(v)+' '+String(v).slice(11,16):'';
+const rcBiz=()=>{const b=D.meta.biz||{};return {name:b.name||'',whatsapp:b.whatsapp||b.phone||'',address:b.address||''};};
+
+/* ---------- data ---------- */
+function rcBoot(){
+ if(RCBOOT||!ME||!boss())return;RCBOOT=1;
+ const on=(c,set)=>{try{unsub.push(onSnapshot(collection(db,c),s=>{set(s.docs.map(d=>({id:d.id,...d.data()})));
+   if(TAB==='hr'||TAB==='home')rcRender();},e=>{console.warn(c,e);set([]);}));}catch(e){set([]);}};
+ on('recJobs',x=>{RCJ=x;});on('recApps',x=>{RCA=x;setTimeout(rcSync,0);});on('recEval',x=>{RCE=x;});
+}
+function rcRender(){
+ const a=document.activeElement,m=document.querySelector('#modal .rcm');
+ if(m&&a&&m.contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
+ render();if(m&&RCOPEN)rcOpen(RCOPEN,1);
+}
+async function rcMyLoad(){
+ if(!ME||isBranch()){MYEVAL=[];return;}
+ try{MYEVAL=(await getDocs(query(collection(db,'recEval'),where('assessorId','==',UID)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){MYEVAL=[];}
+ if(['hr','home'].includes(TAB))render();
+}
+const rcMyEvals=()=>(boss()&&RCE?RCE.filter(e=>e.assessorId===UID):(MYEVAL||[])).filter(e=>e.status==='assigned');
+function rcBadge(){if(!boss())return '';rcBoot();return rcApps().filter(a=>a.stage==='applied'&&!a.seenAt).length;}
+/* an offer signed (or turned down) on the candidate's phone comes back into the app */
+async function rcSync(){
+ if(!isOwnerMe()||!RCA||Date.now()-RCSYNC<15000)return;RCSYNC=Date.now();
+ for(const a of RCA.filter(a=>a.offer&&a.offer.tok&&a.offer.status==='sent')){
+  let L=null;try{const s=await getDoc(doc(db,'offerLinks',a.offer.tok));if(s.exists())L=s.data();}catch(e){}
+  if(!L||!['signed','declined'].includes(L.status))continue;
+  const yes=L.status==='signed',now=new Date().toISOString();
+  try{if(yes&&a.offer.docId){const p={status:'signed',sig:L.sig||'',signedAt:L.signedAt||now,signedName:L.signedName||a.name};
+    await updateDoc(doc(db,'hrDocs',a.offer.docId),p);const h=(HRDOCS||[]).find(x=>x.id===a.offer.docId);if(h)Object.assign(h,p);}
+   const off={...a.offer,status:L.status,doneAt:L.signedAt||L.declinedAt||now,reason:L.declineReason||''};
+   await updateDoc(doc(db,'recApps',a.id),{offer:off,...(yes?{stage:'hired',stageAt:now,hiredAt:now}:{}),
+    log:[...(a.log||[]),{at:now,by:'',t:yes?'Accepted the offer and signed it online':'Declined the offer'+(L.declineReason?': '+L.declineReason:'')}]});
+   Object.assign(a,{offer:off},yes?{stage:'hired'}:{});
+   await audit(yes?'Offer accepted':'Offer declined',a.name+' · '+(a.jobTitle||''));toast(a.name+(yes?' accepted the offer':' declined the offer'));
+  }catch(e){console.warn('offer sync',e);}
+ }
+}
+async function rcLog(a,t,extra){
+ const now=new Date().toISOString(),log=[...(a.log||[]),{at:now,by:ME.name||'',t}];
+ await updateDoc(doc(db,'recApps',a.id),{...(extra||{}),log});Object.assign(a,extra||{},{log});
+}
+
+/* ---------- the Hiring tab ---------- */
+function hrHire(){
+ if(!boss())return '';rcBoot();
+ if(RCJ===null||RCA===null||RCE===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ if(isOwnerMe())setTimeout(rcSync,0);
+ const pool=rcApps().filter(a=>a.pool).length,nw=rcBadge();
+ const seg='<div class="seg rcseg">'+[['pipe','Candidates','users',nw],['jobs','Job posts','mega',rcJobs().filter(j=>j.open).length],['pool','Talent bank','star',pool]].map(t=>
+  '<button class="'+(RCV===t[0]?'on':'')+'" onclick="rcView(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+(t[3]?' <i>'+t[3]+'</i>':'')+'</button>').join('')+'</div>';
+ return seg+(RCV==='jobs'?rcJobsView():RCV==='pool'?rcPoolView():rcPipeView());
+}
+window.rcView=v=>{RCV=v;render();};
+window.rcJobF=v=>{RCJOB=v;render();};
+window.rcStg=v=>{RCSTG=RCSTG===v?'':v;render();};
+function rcScore(id){
+ const E=rcEv(id).filter(e=>e.status==='done'),I=E.filter(e=>e.kind==='interview'),P=E.filter(e=>e.kind==='practical');
+ const avg=L=>L.length?Math.round(L.reduce((t,e)=>t+(+e.total||0)/(+e.max||1),0)/L.length*100):null;
+ return {i:avg(I),iN:I.length,p:avg(P),pN:P.length,pass:P.length?P.every(e=>e.result==='pass'):null,wait:rcEv(id).filter(e=>e.status==='assigned').length};
+}
+function rcFit(a,j){
+ const out=[];if(!j||!j.id)return out;
+ if(+j.minExp>0)out.push({ok:+a.exp>=+j.minExp,t:'Experience '+rcExpName(a.exp)});
+ (j.skillsReq||[]).forEach(s=>out.push({ok:(a.skills||[]).includes(s),t:s}));
+ if(j.transportReq)out.push({ok:a.transport==='Ya',t:'Own transport'});
+ if(+j.salaryMax>0&&+a.salary>0)out.push({ok:+a.salary<=+j.salaryMax,t:'Expects '+rm(+a.salary)});
+ return out;
+}
+const rcFitChips=(a,j)=>rcFit(a,j).map(f=>'<span class="rcfit '+(f.ok?'y':'n')+'">'+ic(f.ok?'check':'close',10)+esc(f.t)+'</span>').join('');
+function rcDup(a){return (RCA||[]).filter(x=>x.id!==a.id&&digits(x.phone).slice(-9)===digits(a.phone).slice(-9));}
+function rcAppRow(a){
+ const j=rcJob(a.jobId),s=rcScore(a.id),when=a.stage==='interview'?a.interviewAt:a.stage==='practical'?a.practicalAt:'';
+ return '<button class="hrfile rcaprow" data-app="'+a.id+'" onclick="rcOpen(\''+a.id+'\')"><span class="avatar">'+esc(initials(a.name))+'</span><div style="flex:1;min-width:0">'+
+  '<b>'+(a.stage==='applied'&&!a.seenAt?'<span class="rcnew"></span>':'')+esc(a.name)+'</b><small>'+[a.jobTitle||j.title||'',rcSrcName(a.src),agoTxt(a.at),a.town||''].filter(Boolean).map(esc).join(' · ')+'</small>'+
+  '<div class="rcchips">'+(s.i!=null?'<span class="rcsc-p">Interview '+s.i+'%</span>':'')+(s.p!=null?'<span class="rcsc-p '+(s.pass?'y':'n')+'">Practical '+(s.pass?'pass':'fail')+'</span>':'')+
+   (s.wait?'<span class="rcsc-p a">'+s.wait+' score'+(s.wait>1?'s':'')+' waiting</span>':'')+(when?'<span class="rcsc-p a">'+ic('calendar',10)+rcWhenTxt(when)+'</span>':'')+
+   (a.pool?'<span class="rcsc-p">'+ic('star',10)+'talent bank</span>':'')+(rcDup(a).length?'<span class="rcsc-p">applied before</span>':'')+'</div></div>'+
+  '<span class="pill '+(a.stage==='hired'?'g':RC_OUT[a.stage]?'':'a')+'">'+esc(rcStName(a.stage))+'</span></button>';
+}
+function rcPipeView(){
+ const J=rcJobs(),all=rcApps().filter(a=>!RCJOB||a.jobId===RCJOB);
+ const cnt=k=>all.filter(a=>a.stage===k).length,out=all.filter(a=>RC_OUT[a.stage]).length;
+ const L=RCSTG==='out'?all.filter(a=>RC_OUT[a.stage]):RCSTG?all.filter(a=>a.stage===RCSTG):all.filter(a=>!RC_OUT[a.stage]&&a.stage!=='hired');
+ const td=today(),wk=ymd(addDays(new Date(),7));
+ const up=all.flatMap(a=>[['Interview',a.interviewAt,a.stage==='interview'],['Practical',a.practicalAt,a.stage==='practical']].filter(x=>x[1]&&x[2]&&x[1].slice(0,10)>=td&&x[1].slice(0,10)<=wk).map(x=>({a,k:x[0],w:x[1]}))).sort((x,y)=>x.w.localeCompare(y.w));
+ const src={};all.forEach(a=>{const s=src[a.src||'other']=src[a.src||'other']||{n:0,i:0,h:0};s.n++;if(rcStI(a.stage)>=2||a.interviewAt)s.i++;if(a.stage==='hired')s.h++;});
+ if(!J.length)return '<div class="card"><div class="empty">'+ic('mega',26)+'<div><b>No job posts yet.</b><br>Create a post, share its link on Facebook, TikTok, JobStreet or Maukerja, and applications land here.</div>'+
+  '<button class="btn" style="margin-top:10px" onclick="rcJobEdit()">'+ic('plus',15)+'New job post</button></div></div>';
+ return '<div class="card"><div class="row wrap2" style="gap:8px;justify-content:space-between"><select class="f" style="max-width:340px;margin:0" onchange="rcJobF(this.value)"><option value="">All job posts</option>'+
+   J.map(j=>'<option value="'+j.id+'"'+(RCJOB===j.id?' selected':'')+'>'+esc(j.title)+(j.open?'':' (closed)')+'</option>').join('')+'</select>'+
+   '<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="rcCSV()">'+ic('download',13)+'CSV</button><button class="btn sm" onclick="rcAddOpen()">'+ic('plus',13)+'Add a candidate</button></div></div>'+
+  '<div class="rcfunnel">'+RC_ST.map(([k,en,bm],i)=>'<button class="'+(RCSTG===k?'on':'')+'" onclick="rcStg(\''+k+'\')"><b>'+cnt(k)+'</b><span>'+en+'</span><small>'+bm+'</small></button>').join('')+
+   '<button class="out'+(RCSTG==='out'?' on':'')+'" onclick="rcStg(\'out\')"><b>'+out+'</b><span>Not selected</span><small>Tidak berjaya</small></button></div></div>'+
+  (up.length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('calendar',15)+' Coming up (7 days)</h3>'+up.map(x=>'<div class="hrrow" style="cursor:pointer" onclick="rcOpen(\''+x.a.id+'\')"><div style="flex:1"><b>'+esc(x.a.name)+'</b><small>'+x.k+' · '+esc(x.a.jobTitle||'')+'</small></div><span class="pill '+(x.w.slice(0,10)===td?'r':'a')+'">'+(x.w.slice(0,10)===td?'today '+x.w.slice(11,16):rcWhenTxt(x.w))+'</span></div>').join('')+'</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 8px">'+(RCSTG==='out'?'Not selected / withdrew':RCSTG?rcStName(RCSTG):'In progress')+' <span class="muted tiny">'+L.length+'</span></h3>'+
+   (L.length?L.map(rcAppRow).join(''):'<p class="tiny muted" style="margin:0">Nobody here.</p>')+'</div>'+
+  (Object.keys(src).length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('chart',15)+' Where applicants come from</h3><div class="scroll"><table class="mjt rcsrc"><tr><th>Source</th><th class="num">Applied</th><th class="num">Reached interview</th><th class="num">Hired</th></tr>'+
+   Object.entries(src).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>'<tr><td>'+esc(rcSrcName(k))+'</td><td class="num">'+v.n+'</td><td class="num">'+v.i+(v.n?' <span class="muted">('+Math.round(v.i/v.n*100)+'%)</span>':'')+'</td><td class="num">'+v.h+'</td></tr>').join('')+'</table></div>'+
+   '<p class="tiny muted" style="margin:6px 0 0">Each share link carries its source, so you can see which platform brings people who actually get to interview — not just the most clicks.</p></div>':'');
+}
+
+/* ---------- one candidate ---------- */
+window.rcOpen=(id,keep)=>{
+ const a=rcApp(id);if(!a)return;RCOPEN=id;const j=rcJob(a.jobId),own=isOwnerMe();
+ if(!a.seenAt&&boss()){const now=new Date().toISOString();a.seenAt=now;updateDoc(doc(db,'recApps',id),{seenAt:now}).catch(()=>{});}
+ const si=rcStI(a.stage),E=rcEv(id),S=rcScore(id),out=!!RC_OUT[a.stage],dup=rcDup(a);
+ const nxt=!out&&si>=0&&si<RC_ST.length-1?RC_ST[si+1]:null;
+ const ph=waNum(a.phone);
+ const ans=[['Phone',esc(a.phone)+(ph?' <a class="rcwa" target="_blank" href="https://wa.me/'+ph+'">'+ic('msg',12)+'WhatsApp</a>':'')],['Email',esc(a.email||'')],['Lives in',esc(a.town||'')],
+  ['Experience',esc(rcExpName(a.exp))],['Last job',esc(a.lastJob||'')],['Skills',(a.skills||[]).map(esc).join(', ')],['Certificates / courses',esc(a.certs||'')],
+  ['Can start',a.start?dstr(a.start):''],['Expected salary',+a.salary?rm(+a.salary):''],['Own transport',esc(a.transport||'')],['Languages',(a.langs||[]).map(esc).join(', ')],['Why us',esc(a.why||'')]];
+ const evRow=e=>{const cr=e.kind==='interview'?RC_INT:RC_PRAC;
+  return '<div class="rcev'+(e.status==='assigned'?' wait':'')+'"><div class="spread"><b>'+(e.kind==='interview'?'Interview':'Practical · '+esc(e.test||''))+' — '+esc(e.assessorName||'')+'</b>'+
+   (e.status==='assigned'?'<span class="pill a">waiting'+(e.when?' · '+rcWhenTxt(e.when):'')+'</span>':'<span class="pill '+(e.kind==='practical'?(e.result==='pass'?'g':'r'):(['strong','hire'].includes(e.rec)?'g':e.rec==='maybe'?'a':'r'))+'">'+
+    (e.kind==='practical'?(e.result==='pass'?'Pass':'Fail'):esc((RC_REC.find(r=>r[0]===e.rec)||['',''])[1]))+' · '+e.total+'/'+e.max+'</span>')+'</div>'+
+   (e.status==='done'?'<div class="rcbars">'+cr.map(c=>'<span title="'+esc(c[1])+'"><small>'+esc(c[1])+'</small><i><u style="width:'+((+(e.scores||{})[c[0]]||0)*20)+'%"></u></i><b>'+((e.scores||{})[c[0]]||'–')+'</b></span>').join('')+'</div>'+(e.notes?'<div class="tiny" style="margin-top:4px">"'+esc(e.notes)+'"</div>':''):
+    '<button class="btn sm ghost" style="margin-top:6px" onclick="rcEvalForm(\''+id+'\',\''+e.kind+'\',\''+e.id+'\')">'+ic('edit',13)+'Score it now</button>')+'</div>';};
+ const off=a.offer||{};
+ const offerBox=!own?(off.status?'<p class="tiny">Offer '+esc(off.status)+(off.ref?' · '+esc(off.ref):'')+'</p>':'<p class="tiny muted" style="margin:0">The owner prepares the offer letter.</p>'):
+  off.status==='sent'?'<p style="margin:0 0 6px">Sent '+dstr(off.sentAt)+' · <b>waiting for '+esc(rcFirst(a.name))+' to sign</b>'+(off.acceptBy?' (by '+dstr(off.acceptBy)+')':'')+'</p><div class="row wrap2"><button class="btn sm" onclick="rcOfferShare(\''+id+'\')">'+ic('msg',13)+'Send the link again</button><button class="btn sm ghost" onclick="rcOfferPDF(\''+id+'\')">'+ic('download',13)+'PDF</button></div>':
+  off.status==='signed'?'<p style="margin:0 0 6px"><span class="pill g">'+ic('check',11)+'signed '+dstr(off.doneAt)+'</span> '+esc(off.ref||'')+'</p><div class="row wrap2"><button class="btn sm ghost" onclick="rcOfferPDF(\''+id+'\')">'+ic('download',13)+'Signed offer (PDF)</button>'+
+   (a.staffId?'<span class="pill">'+ic('idcard',11)+'in staff file: '+esc(stf(a.staffId).name||'')+'</span>':'<button class="btn sm" onclick="rcToStaff(\''+id+'\')">'+ic('idcard',13)+'Copy into a staff file</button>')+'</div>':
+  off.status==='declined'?'<p style="margin:0 0 6px"><span class="pill r">declined</span>'+(off.reason?' "'+esc(off.reason)+'"':'')+'</p><button class="btn sm ghost" onclick="rcOfferForm(\''+id+'\')">'+ic('note',13)+'Make a new offer</button>':
+  '<button class="btn sm" onclick="rcOfferForm(\''+id+'\')"'+(out?' disabled':'')+'>'+ic('note',13)+'Prepare the offer letter</button><p class="tiny muted" style="margin:6px 0 0">Made from your offer letter template, with your signature. '+esc(rcFirst(a.name))+' reads it and signs on their phone.</p>';
+ const html='<div class="rcm"><div class="card"><div class="row" style="gap:12px;align-items:center"><span class="avatar big">'+esc(initials(a.name))+'</span><div style="flex:1;min-width:0">'+
+   '<h2 style="margin:0">'+esc(a.name)+'</h2><div class="muted" style="font-size:13px">'+esc(a.jobTitle||j.title||'')+' · '+esc(rcSrcName(a.src))+' · applied '+dstr(a.at)+'</div>'+
+   '<div class="rcchips" style="margin-top:6px">'+rcFitChips(a,j)+'</div></div></div>'+
+  '<div class="rcsteps">'+RC_ST.map(([k,en],i)=>'<span class="'+(out?'':i<si?'done':i===si?'on':'')+'">'+en+'</span>').join('')+'</div>'+
+  (out?'<div class="warnbox">'+esc(rcStName(a.stage))+(a.rejectReason?' — '+esc(a.rejectReason):'')+(a.pool?' · kept in the talent bank':'')+'</div>':'')+
+  (dup.length?'<p class="tiny" style="margin:6px 0 0">'+ic('history',12)+' Applied before: '+dup.map(d=>esc(d.jobTitle||'')+' ('+esc(rcStName(d.stage))+', '+dshort(d.at)+')').join('; ')+'</p>':'')+
+  '<div class="row wrap2" style="margin-top:10px">'+
+   (nxt?'<button class="btn" onclick="rcMove(\''+id+'\',\''+nxt[0]+'\')">'+ic('right',14)+'Move to '+nxt[1]+'</button>':'')+
+   (!out&&a.stage!=='hired'?'<button class="btn ghost" onclick="rcReject(\''+id+'\')">'+ic('close',14)+'Not selected</button>':'')+
+   (out?'<button class="btn ghost" onclick="rcMove(\''+id+'\',\'screen\')">'+ic('refresh',14)+'Back into the pipeline</button>':'')+
+   '<button class="btn ghost" onclick="rcPoolSet(\''+id+'\','+(a.pool?0:1)+')">'+ic('star',14)+(a.pool?'Remove from talent bank':'Talent bank')+'</button>'+
+   (ph?'<a class="btn ghost" style="text-decoration:none" target="_blank" href="'+rcWA(a)+'">'+ic('msg',14)+'WhatsApp</a>':'')+'</div></div>'+
+  '<div class="grid g2" style="align-items:start"><div>'+
+   '<div class="card"><h3 style="margin:0 0 8px">'+ic('user',15)+' Application</h3><dl class="hpdl">'+ans.filter(x=>x[1]).map(x=>'<dt>'+x[0]+'</dt><dd>'+x[1]+'</dd>').join('')+'</dl>'+
+    (a.hasFile?'<button class="btn sm ghost" style="margin-top:8px" onclick="rcFile(\''+id+'\')">'+ic('download',13)+'Resume / attachment</button>':'')+'</div>'+
+   '<div class="card"><h3 style="margin:0 0 6px">'+ic('note',15)+' Notes</h3>'+((a.log||[]).slice().reverse().map(l=>'<div class="rclog"><small>'+dshort(l.at)+' '+tstr(l.at)+(l.by?' · '+esc(l.by):'')+'</small>'+esc(l.t)+'</div>').join('')||'<p class="tiny muted" style="margin:0">Nothing yet.</p>')+
+    '<textarea class="f" id="rc-note" rows="2" maxlength="500" placeholder="Phone screening notes, references checked…" style="margin-top:8px"></textarea><button class="btn sm ghost" onclick="rcNote(\''+id+'\')">'+ic('plus',13)+'Add note</button></div></div><div>'+
+   '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('users',15)+' Interview</h3>'+(S.i!=null?'<span class="pill">'+S.i+'% · '+S.iN+' scorecard'+(S.iN>1?'s':'')+'</span>':'')+'</div>'+
+    '<p class="tiny" style="margin:0 0 6px">'+(a.interviewAt?ic('calendar',12)+' '+rcWhenTxt(a.interviewAt)+' ':'')+'<a href="javascript:void 0" onclick="rcWhen(\''+id+'\',\'interview\')">'+(a.interviewAt?'change':'Set the date & time')+'</a></p>'+
+    E.filter(e=>e.kind==='interview').map(evRow).join('')+
+    '<div class="row wrap2" style="margin-top:6px"><button class="btn sm" onclick="rcEvalForm(\''+id+'\',\'interview\')">'+ic('edit',13)+'Scorecard</button><button class="btn sm ghost" onclick="rcAssign(\''+id+'\',\'interview\')">'+ic('user',13)+'Ask a colleague to score</button></div></div>'+
+   '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('award',15)+' Practical test</h3>'+(S.pass!=null?'<span class="pill '+(S.pass?'g':'r')+'">'+(S.pass?'pass':'fail')+' · '+S.p+'%</span>':'')+'</div>'+
+    '<p class="tiny" style="margin:0 0 6px">'+(a.practicalAt?ic('calendar',12)+' '+rcWhenTxt(a.practicalAt)+' ':'')+'<a href="javascript:void 0" onclick="rcWhen(\''+id+'\',\'practical\')">'+(a.practicalAt?'change':'Set the date & time')+'</a></p>'+
+    E.filter(e=>e.kind==='practical').map(evRow).join('')+
+    '<div class="row wrap2" style="margin-top:6px"><button class="btn sm" onclick="rcAssign(\''+id+'\',\'practical\')">'+ic('user',13)+'Assign a senior therapist</button><button class="btn sm ghost" onclick="rcEvalForm(\''+id+'\',\'practical\')">'+ic('edit',13)+'Score it here</button></div></div>'+
+   '<div class="card"><h3 style="margin:0 0 8px">'+ic('mail',15)+' Offer</h3>'+offerBox+'</div></div></div></div>';
+ modal(a.name,html);
+};
+function rcWA(a){
+ const j=rcJob(a.jobId),b=rcBiz(),f=rcFirst(a.name),t=j.title||a.jobTitle||'';
+ const m=a.stage==='interview'?'Hai '+f+', terima kasih kerana memohon jawatan '+t+' di '+b.name+'. Kami ingin menjemput anda untuk temu duga'+(a.interviewAt?' pada '+rcWhenTxt(a.interviewAt):'')+(b.address?' di '+b.address:'')+'. Sila balas untuk sahkan kehadiran. 🌿':
+  a.stage==='practical'?'Hai '+f+', tahniah — anda dijemput ke ujian praktikal untuk jawatan '+t+(a.practicalAt?' pada '+rcWhenTxt(a.practicalAt):'')+(b.address?' di '+b.address:'')+'. Sila datang 15 minit awal dengan pakaian kemas. Sila balas untuk sahkan. 🌿':
+  RC_OUT[a.stage]?'Hai '+f+', terima kasih atas masa anda untuk jawatan '+t+' di '+b.name+'. Kali ini kami memilih calon lain.'+(a.pool?' Kami akan simpan maklumat anda dan hubungi anda bila ada kekosongan yang sesuai.':'')+' Semoga berjaya! 🌿':
+  a.stage==='hired'?'Hai '+f+', selamat datang ke pasukan '+b.name+'! 🎉 Kami akan hubungi anda tentang hari pertama anda.':
+  'Hai '+f+', terima kasih kerana memohon jawatan '+t+' di '+b.name+'. Kami dah terima permohonan anda dan akan hubungi anda tidak lama lagi. 🌿';
+ return 'https://wa.me/'+waNum(a.phone)+'?text='+encodeURIComponent(m);
+}
+window.rcMove=async(id,st)=>{const a=rcApp(id);if(!a)return;const now=new Date().toISOString();
+ try{await rcLog(a,'Moved to '+rcStName(st),{stage:st,stageAt:now,...(RC_OUT[a.stage]?{rejectReason:''}:{})});rcOpen(id);render();
+  if(st==='interview'&&!a.interviewAt)rcWhen(id,'interview');else if(st==='practical'&&!a.practicalAt)rcWhen(id,'practical');else if(st==='offer'&&isOwnerMe()&&!(a.offer||{}).status)rcOfferForm(id);}
+ catch(e){toast(friendly(e));}};
+window.rcReject=id=>{const a=rcApp(id);if(!a)return;
+ modal('Not selected · '+a.name,'<div class="card"><label>Reason</label><select class="f" id="rj-r">'+RC_REJ.map(r=>'<option>'+r+'</option>').join('')+'</select>'+
+  '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="rj-w"> They withdrew themselves</label>'+
+  '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="rj-p"'+(rcScore(id).i>=60||rcScore(id).pass?' checked':'')+'> Keep in the talent bank for future openings</label>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="rcRejectDo(\''+id+'\')">'+ic('check',15)+'Save</button></div>');};
+window.rcRejectDo=async id=>{const a=rcApp(id),r=$('#rj-r').value,w=$('#rj-w').checked,p=$('#rj-p').checked,now=new Date().toISOString();
+ try{await rcLog(a,(w?'Withdrew':'Not selected')+' — '+r+(p?' · kept in the talent bank':''),{stage:w?'withdrawn':'rejected',stageAt:now,rejectReason:r,pool:p||!!a.pool,...(p&&!a.pool?{poolAt:now}:{})});
+  rcOpen(id);render();toast(p?'Saved · in the talent bank':'Saved');}catch(e){toast(friendly(e));}};
+window.rcPoolSet=async(id,on)=>{const a=rcApp(id);if(!a)return;let note=a.poolNote||'';
+ if(on){note=prompt('A note for later (what they are good at, when they are free):',note||'');if(note===null)return;}
+ try{await rcLog(a,on?'Added to the talent bank':'Removed from the talent bank',{pool:!!on,poolNote:String(note||'').slice(0,200),...(on?{poolAt:new Date().toISOString()}:{})});rcOpen(id);render();}catch(e){toast(friendly(e));}};
+window.rcNote=async id=>{const a=rcApp(id),t=($('#rc-note').value||'').trim();if(!a||!t)return;try{await rcLog(a,t.slice(0,500));rcOpen(id);}catch(e){toast(friendly(e));}};
+window.rcWhen=(id,k)=>{const a=rcApp(id),v=a[k+'At']||'';
+ modal((k==='interview'?'Interview':'Practical test')+' · '+a.name,'<div class="card"><label>Date & time</label><input class="f" type="datetime-local" id="rw-t" value="'+esc(String(v).slice(0,16))+'">'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:8px" onclick="rcWhenSave(\''+id+'\',\''+k+'\')">'+ic('check',15)+'Save</button>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Then send the invitation by WhatsApp from their page.</p></div>');};
+window.rcWhenSave=async(id,k)=>{const a=rcApp(id),v=$('#rw-t').value;if(!v)return toast('Choose the date and time');
+ const p={[k+'At']:v};if(rcStI(a.stage)<rcStI(k))Object.assign(p,{stage:k,stageAt:new Date().toISOString()});
+ try{await rcLog(a,(k==='interview'?'Interview':'Practical test')+' set for '+rcWhenTxt(v),p);rcOpen(id);render();}catch(e){toast(friendly(e));}};
+window.rcFile=async id=>{try{const s=await getDoc(doc(db,'recFiles',id));if(!s.exists())return toast('No attachment');const f=s.data();
+ if(/^data:image/.test(f.data))modal('Attachment','<div class="card"><img class="hpimg" src="'+f.data+'" alt=""></div>');
+ hpSave({title:'Resume '+(rcApp(id)||{}).name,mime:/^data:application\/pdf/.test(f.data)?'application/pdf':'image/jpeg'},f.data);}catch(e){toast(friendly(e));}};
+
+/* ---------- scorecards: interview and practical ---------- */
+function rcPeople(){return D.staff.filter(s=>s.active!==false&&!['branch','accountant'].includes(s.role));}
+window.rcAssign=(id,kind)=>{const a=rcApp(id);
+ modal((kind==='interview'?'Interview scorecard':'Practical test')+' · '+a.name,'<div class="card"><label>Who scores it</label><select class="f" id="ra-s">'+rcPeople().map(s=>'<option value="'+s.id+'">'+esc(s.name)+' · '+esc(s.position||ROLE[s.role]||'')+'</option>').join('')+'</select>'+
+  (kind==='practical'?'<label>Test</label><select class="f" id="ra-t">'+RC_TESTS.map(t=>'<option>'+t+'</option>').join('')+'</select>':'')+
+  '<label>When</label><input class="f" type="datetime-local" id="ra-w" value="'+esc(String(a[kind+'At']||'').slice(0,16))+'">'+
+  '<p class="tiny muted">It appears in their My HR — they score on their own phone after the '+(kind==='interview'?'interview':'demo')+'. They see the candidate\'s name and the job only.</p>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="rcAssignDo(\''+id+'\',\''+kind+'\')">'+ic('check',15)+'Assign</button></div>');};
+window.rcAssignDo=async(id,kind)=>{const a=rcApp(id),sid=$('#ra-s').value,w=$('#ra-w').value;
+ const e={appId:id,candName:a.name,jobTitle:a.jobTitle||'',kind,test:kind==='practical'?$('#ra-t').value:'',assessorId:sid,assessorName:stf(sid).name||'',status:'assigned',when:w||'',
+  scores:{},total:0,max:(kind==='interview'?RC_INT:RC_PRAC).length*5,rec:'',result:'',notes:'',createdAt:new Date().toISOString(),createdBy:UID,branchId:rcJob(a.jobId).branchId||ME.branchId};
+ try{await addDoc(collection(db,'recEval'),e);const p={};if(w&&!a[kind+'At'])p[kind+'At']=w;if(rcStI(a.stage)<rcStI(kind))Object.assign(p,{stage:kind,stageAt:new Date().toISOString()});
+  await rcLog(a,(kind==='interview'?'Interview scorecard':'Practical test ('+e.test+')')+' assigned to '+e.assessorName,p);rcOpen(id);render();toast('Assigned to '+rcFirst(e.assessorName));}catch(err){toast(friendly(err));}};
+window.rcEvalForm=(id,kind,evId)=>{
+ const ev=evId?((RCE||[]).find(e=>e.id===evId)||(MYEVAL||[]).find(e=>e.id===evId)):null,a=rcApp(id)||{name:ev&&ev.candName,jobTitle:ev&&ev.jobTitle};
+ const C=kind==='interview'?RC_INT:RC_PRAC;RCEF={id,kind,evId:evId||'',scores:{...((ev||{}).scores||{})}};
+ modal((kind==='interview'?'Interview scorecard':'Practical test')+' · '+(a.name||''),'<div class="card rcef"><p class="tiny muted" style="margin:0 0 8px">'+esc(a.jobTitle||'')+' · score each one from 1 (poor) to 5 (excellent). The guide under each line keeps everyone scoring the same way.</p>'+
+  (kind==='practical'?'<label>Test</label><select class="f" id="re-t">'+RC_TESTS.map(t=>'<option'+(ev&&ev.test===t?' selected':'')+'>'+t+'</option>').join('')+'</select>':'')+
+  C.map(([k,en,bm,g])=>'<div class="rccrit"><div class="spread"><b>'+en+' <span class="muted tiny">'+bm+'</span></b><div class="rcsc" data-k="'+k+'">'+[1,2,3,4,5].map(v=>'<button type="button" data-v="'+v+'" class="'+(RCEF.scores[k]===v?'on':'')+'" onclick="rcSc(\''+k+'\','+v+')">'+v+'</button>').join('')+'</div></div>'+
+   '<small>1 · '+esc(g[0])+'&nbsp;&nbsp; 3 · '+esc(g[1])+'&nbsp;&nbsp; 5 · '+esc(g[2])+'</small></div>').join('')+
+  (kind==='interview'?'<label>Recommendation</label><div class="seg" id="re-rec">'+RC_REC.map(r=>'<button type="button" data-v="'+r[0]+'" class="'+(ev&&ev.rec===r[0]?'on':'')+'" onclick="rcRec(\''+r[0]+'\')">'+r[1]+'</button>').join('')+'</div>':
+   '<label>Result</label><div class="seg" id="re-res">'+[['pass','Pass'],['fail','Fail']].map(r=>'<button type="button" data-v="'+r[0]+'" onclick="rcRes(\''+r[0]+'\')">'+r[1]+'</button>').join('')+'</div><p class="tiny muted" id="re-sug" style="margin:4px 0 0"></p>')+
+  (!ev&&boss()?'<label>Scored by</label><select class="f" id="re-by">'+rcPeople().map(s=>'<option value="'+s.id+'"'+(s.id===UID?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>':'')+
+  '<label>Notes</label><textarea class="f" id="re-n" rows="3" maxlength="600" placeholder="What stood out — good and not so good">'+esc((ev||{}).notes||'')+'</textarea>'+
+  '<div id="re-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="re-go" style="width:100%;justify-content:center" onclick="rcEvalSave()">'+ic('check',15)+'Save scores</button></div>');
+ if(ev&&ev.rec)RCEF.rec=ev.rec;
+};
+window.rcSc=(k,v)=>{RCEF.scores[k]=v;document.querySelectorAll('.rcsc[data-k="'+k+'"] button').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
+ if(RCEF.kind==='practical'){const C=RC_PRAC,sc=C.map(c=>RCEF.scores[c[0]]).filter(Boolean);if(sc.length===C.length){const av=sc.reduce((t,x)=>t+x,0)/sc.length,ok=av>=3.5&&Math.min(...sc)>=2;
+  const el=$('#re-sug');if(el)el.textContent='Average '+av.toFixed(1)+' — suggested: '+(ok?'Pass':'Fail')+' (pass = average 3.5 or more, nothing below 2)';if(!RCEF.result)rcRes(ok?'pass':'fail');}}};
+window.rcRec=v=>{RCEF.rec=v;document.querySelectorAll('#re-rec button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));};
+window.rcRes=v=>{RCEF.result=v;document.querySelectorAll('#re-res button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));};
+window.rcEvalSave=async()=>{
+ const F=RCEF,C=F.kind==='interview'?RC_INT:RC_PRAC,e=$('#re-e');
+ if(C.some(c=>!F.scores[c[0]])){e.textContent='Score every line first.';return;}
+ if(F.kind==='interview'&&!F.rec){e.textContent='Choose a recommendation.';return;}
+ if(F.kind==='practical'&&!F.result){e.textContent='Choose pass or fail.';return;}
+ const total=C.reduce((t,c)=>t+F.scores[c[0]],0),now=new Date().toISOString();
+ const p={scores:F.scores,total,max:C.length*5,rec:F.rec||'',result:F.result||'',notes:($('#re-n').value||'').trim().slice(0,600),status:'done',doneAt:now,test:F.kind==='practical'?$('#re-t').value:''};
+ $('#re-go').disabled=true;
+ try{if(F.evId){await updateDoc(doc(db,'recEval',F.evId),p);const x=(RCE||[]).find(z=>z.id===F.evId)||(MYEVAL||[]).find(z=>z.id===F.evId);if(x)Object.assign(x,p);}
+  else{const by=($('#re-by')||{}).value||UID,a=rcApp(F.id);await addDoc(collection(db,'recEval'),{...p,appId:F.id,candName:a.name,jobTitle:a.jobTitle||'',kind:F.kind,assessorId:by,assessorName:stf(by).name||ME.name||'',
+    when:a[F.kind+'At']||'',createdAt:now,createdBy:UID,branchId:rcJob(a.jobId).branchId||ME.branchId});
+   if(rcStI(a.stage)<rcStI(F.kind))await rcLog(a,'Moved to '+rcStName(F.kind),{stage:F.kind,stageAt:now});}
+  await audit(F.kind==='interview'?'Interview scored':'Practical test scored',(rcApp(F.id)||{}).name||'');
+  window.closeModal();if(boss()&&rcApp(F.id))rcOpen(F.id);render();toast('Scores saved');}
+ catch(err){e.textContent=friendly(err);$('#re-go').disabled=false;}
+};
+/* My HR: candidates I was asked to score */
+function rcMyCard(){
+ if(!ME||isBranch())return '';if(!boss()&&MYEVAL===null){MYEVAL=[];setTimeout(rcMyLoad,0);return '';}
+ const L=rcMyEvals();if(!L.length)return '';
+ return '<div class="card rcmine"><h3 style="margin:0 0 8px">'+ic('award',15)+' Candidates for you to score</h3>'+L.map(e=>'<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(e.candName)+'</b><small>'+
+  (e.kind==='interview'?'Interview':'Practical · '+esc(e.test||''))+' · '+esc(e.jobTitle||'')+(e.when?' · '+rcWhenTxt(e.when):'')+'</small></div><button class="btn sm" onclick="rcEvalForm(\''+e.appId+'\',\''+e.kind+'\',\''+e.id+'\')">'+ic('edit',13)+'Score</button></div>').join('')+'</div>';
+}
+{const _h=hrMe;hrMe=function(){const h=_h.apply(this,arguments);return rcMyCard()+h;};}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(!ME)return;
+ if(boss()){rcBoot();const td=today(),A=rcApps(),nw=A.filter(a=>a.stage==='applied'&&!a.seenAt);
+  if(nw.length)al.push({i:'users',t:nw.length+' new job application'+(nw.length>1?'s':''),d:nw.slice(0,3).map(a=>rcFirst(a.name)+' · '+(a.jobTitle||'')).join(', '),go:"rcGo('pipe')"});
+  const tdy=A.flatMap(a=>[['interview',a.interviewAt],['practical',a.practicalAt]].filter(x=>x[1]&&x[1].slice(0,10)===td&&a.stage===x[0]).map(x=>rcFirst(a.name)+' '+x[1].slice(11,16)+' ('+x[0]+')'));
+  if(tdy.length)al.push({i:'calendar',t:tdy.length+' interview'+(tdy.length>1?'s / tests':' / test')+' today',d:tdy.slice(0,3).join(', '),go:"rcGo('pipe')"});}
+ else if(!isBranch()&&MYEVAL===null){MYEVAL=[];setTimeout(rcMyLoad,0);}
+ const me=rcMyEvals();if(me.length)al.push({i:'award',t:me.length+' candidate'+(me.length>1?'s':'')+' for you to score',d:me.slice(0,3).map(e=>rcFirst(e.candName)+' · '+(e.kind==='interview'?'interview':e.test)).join(', '),go:"hrGo('me')"});};}
+window.rcGo=v=>{RCV=v;HRV='hire';window.go('hr');};
+
+/* ---------- job posts ---------- */
+function rcJobsView(){
+ const J=rcJobs(),td=today(),careers=rcBase()+'?jobs=1';
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('mega',15)+' Job posts</h3><button class="btn sm" onclick="rcJobEdit()">'+ic('plus',13)+'New job post</button></div>'+
+  '<p class="tiny muted" style="margin:0">All open positions: <a href="'+esc(careers)+'" target="_blank">'+esc(careers)+'</a> <button class="lpx" onclick="rcCopy(\''+esc(careers)+'\')">copy</button></p></div>'+
+  (J.length?J.map(j=>{const A=(RCA||[]).filter(a=>a.jobId===j.id),closed=!j.open||(j.closeAt&&j.closeAt<td),pm=rcPoolMatch(j).length;
+   return '<div class="card rcjob" data-job="'+j.id+'"><div class="spread"><div><b style="font-size:15px">'+esc(j.title)+'</b><div class="tiny muted">'+[j.branchName,hpSt(j.empType),j.showSalary&&+j.salaryMin?rm(+j.salaryMin)+(+j.salaryMax?' – '+rm(+j.salaryMax):'+'):'',j.closeAt?'closes '+dstr(j.closeAt):''].filter(Boolean).map(esc).join(' · ')+'</div></div>'+
+    '<span class="pill '+(closed?'':'g')+'">'+(closed?'closed':'open')+'</span></div>'+
+    '<div class="rcmini">'+RC_ST.map(([k,en])=>'<span><b>'+A.filter(a=>a.stage===k).length+'</b>'+en+'</span>').join('')+'</div>'+
+    (pm&&!closed?'<p class="tiny" style="margin:6px 0 0">'+ic('star',12)+' <a href="javascript:void 0" onclick="rcPoolFor(\''+j.id+'\')">'+pm+' in the talent bank match this job</a></p>':'')+
+    '<div class="row wrap2" style="margin-top:8px">'+(closed?'':'<button class="btn sm" onclick="rcShare(\''+j.id+'\')">'+ic('mega',13)+'Share</button><button class="btn sm ghost" onclick="rcPoster(\''+j.id+'\')">'+ic('print',13)+'Poster</button>')+
+    '<button class="btn sm ghost" onclick="rcJobEdit(\''+j.id+'\')">'+ic('edit',13)+'Edit</button><button class="btn sm ghost" onclick="rcJobOpen(\''+j.id+'\','+(closed?1:0)+')">'+(closed?'Reopen':'Close')+'</button>'+
+    '<button class="btn sm ghost" onclick="rcPipeFor(\''+j.id+'\')">'+ic('users',13)+A.length+' applicant'+(A.length!==1?'s':'')+'</button></div></div>';}).join(''):'<div class="card"><div class="empty">'+ic('mega',24)+'<div>No job posts yet.</div></div></div>');
+}
+window.rcPipeFor=v=>{RCJOB=v;RCSTG='';RCV='pipe';render();};
+window.rcJobEdit=id=>{
+ const j=id?rcJob(id):{title:'',branchId:ME.branchId,empType:'Full-time',open:true,showSalary:true,minExp:'0',skillsReq:[],transportReq:false,
+  about:'Sertai pasukan kami yang mesra di spa yang sedang berkembang. Kami sediakan latihan, sokongan dan ruang untuk anda maju.',
+  duties:'Melakukan rawatan muka dan badan mengikut SOP\nMemberi nasihat penjagaan kulit kepada klien\nMenjaga kebersihan bilik rawatan\nMencadangkan pakej dan produk yang sesuai',
+  reqs:'Warganegara Malaysia\nBerpengalaman atau berminat dalam bidang kecantikan\nMesra, kemas dan boleh bekerja dalam pasukan\nBoleh bekerja hujung minggu mengikut jadual giliran',
+  benefits:'Gaji asas + komisen\nKWSP, PERKESO & EIS\nLatihan dan sijil dalaman\nRawatan staf pada harga istimewa',closeAt:ymd(addDays(new Date(),30))};
+ const sk=new Set(j.skillsReq||[]);
+ modal(id?'Edit job post':'New job post','<div class="card"><label>Position</label><input class="f" id="rj-title" value="'+esc(j.title)+'" maxlength="60" placeholder="e.g. Beauty Therapist">'+
+  '<div class="grid g2"><div><label>Branch</label><select class="f" id="rj-br">'+D.branches.map(b=>'<option value="'+b.id+'"'+(b.id===j.branchId?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div>'+
+  '<div><label>Type</label><select class="f" id="rj-type">'+HP_ST.filter(x=>x[0]!=='Probation').map(x=>'<option value="'+x[0]+'"'+(x[0]===j.empType?' selected':'')+'>'+(x[0]==='Full-time'?'Full-time (tetap)':x[1]+' ('+x[2]+')')+'</option>').join('')+'</select></div>'+
+  '<div><label>Salary from (RM)</label><input class="f" id="rj-smin" type="number" value="'+esc(j.salaryMin||'')+'"></div><div><label>to (RM)</label><input class="f" id="rj-smax" type="number" value="'+esc(j.salaryMax||'')+'"></div></div>'+
+  '<label class="row" style="gap:8px;margin:6px 0"><input type="checkbox" id="rj-ss"'+(j.showSalary?' checked':'')+'> Show the salary range on the page (posts with a salary get more applicants)</label>'+
+  '<label>About the role</label><textarea class="f" id="rj-about" rows="2" maxlength="600">'+esc(j.about||'')+'</textarea>'+
+  '<label>What you will do <span class="muted">(one per line)</span></label><textarea class="f" id="rj-duties" rows="4" maxlength="1200">'+esc(j.duties||'')+'</textarea>'+
+  '<label>What we look for <span class="muted">(one per line)</span></label><textarea class="f" id="rj-reqs" rows="4" maxlength="1200">'+esc(j.reqs||'')+'</textarea>'+
+  '<label>What we offer <span class="muted">(one per line)</span></label><textarea class="f" id="rj-ben" rows="4" maxlength="1200">'+esc(j.benefits||'')+'</textarea>'+
+  '<div class="hrgrp"><h4>Screening — shown as ticks on each application</h4><div class="grid g2"><div><label>Minimum experience</label><select class="f" id="rj-exp">'+RC_EXP.map(x=>'<option value="'+x[0]+'"'+(+x[0]===+j.minExp?' selected':'')+'>'+(x[0]==='0'?'Not needed':x[2])+'</option>').join('')+'</select></div>'+
+  '<div><label>Closing date</label><input class="f" type="date" id="rj-close" value="'+esc(j.closeAt||'')+'"></div></div>'+
+  '<label>Skills needed</label><div class="chips">'+RC_SKILLS.map(s=>'<label class="chip'+(sk.has(s)?' on':'')+'"><input type="checkbox" class="rj-sk" value="'+esc(s)+'"'+(sk.has(s)?' checked':'')+' onchange="this.parentNode.classList.toggle(\'on\',this.checked)" hidden>'+esc(s)+'</label>').join('')+'</div>'+
+  '<label class="row" style="gap:8px;margin:6px 0"><input type="checkbox" id="rj-tr"'+(j.transportReq?' checked':'')+'> Own transport needed</label></div>'+
+  '<label class="row" style="gap:8px;margin:10px 0"><input type="checkbox" id="rj-open"'+(j.open!==false?' checked':'')+'> Open — people can apply</label>'+
+  '<div id="rj-e" class="tiny" style="color:var(--rose);margin:4px 0"></div>'+
+  '<button class="btn" id="rj-go" style="width:100%;justify-content:center" onclick="rcJobSave(\''+(id||'')+'\')">'+ic('check',15)+'Save job post</button></div>');
+};
+window.rcJobSave=async id=>{
+ const g=k=>($('#rj-'+k)||{}).value||'',t=g('title').trim(),e=$('#rj-e');if(t.length<3){e.textContent='Name the position.';return;}
+ const br=g('br'),b=rcBiz(),now=new Date().toISOString();
+ const j={title:t.slice(0,60),branchId:br,branchName:hpBr(br),empType:g('type'),salaryMin:+g('smin')||0,salaryMax:+g('smax')||0,showSalary:$('#rj-ss').checked,
+  about:g('about').trim().slice(0,600),duties:g('duties').trim().slice(0,1200),reqs:g('reqs').trim().slice(0,1200),benefits:g('ben').trim().slice(0,1200),
+  minExp:g('exp'),closeAt:g('close'),skillsReq:[...document.querySelectorAll('.rj-sk:checked')].map(x=>x.value),transportReq:$('#rj-tr').checked,open:$('#rj-open').checked,
+  bizName:b.name,bizWa:b.whatsapp,bizAddress:b.address,updatedAt:now,updatedBy:UID};
+ if(j.salaryMax&&j.salaryMin>j.salaryMax){e.textContent='The salary range is the wrong way round.';return;}
+ $('#rj-go').disabled=true;
+ try{if(id)await setDoc(doc(db,'recJobs',id),j,{merge:true});else{const r=await addDoc(collection(db,'recJobs'),{...j,createdAt:now,createdBy:UID});id=r.id;}
+  await audit(id?'Job post saved':'Job post created',t);window.closeModal();RCV='jobs';render();toast('Saved');const pm=rcPoolMatch({...j,id}).length;if(pm)setTimeout(()=>toast(pm+' in the talent bank match this job'),900);}
+ catch(err){e.textContent=friendly(err);$('#rj-go').disabled=false;}
+};
+window.rcJobOpen=async(id,open)=>{const j=rcJob(id);const p={open:!!open};if(open&&j.closeAt&&j.closeAt<today())p.closeAt=ymd(addDays(new Date(),30));
+ try{await updateDoc(doc(db,'recJobs',id),p);Object.assign(j,p);render();toast(open?'Reopened':'Closed — the page now says the position is closed');}catch(e){toast(friendly(e));}};
+window.rcCopy=t=>{try{navigator.clipboard.writeText(t).then(()=>toast('Copied'),()=>prompt('Copy:',t));}catch(e){prompt('Copy:',t);}};
+function rcCaption(j,link){
+ const L=s=>String(s||'').split('\n').map(x=>x.trim()).filter(Boolean);
+ return '📢 KAMI MENGAMBIL PEKERJA — '+j.title.toUpperCase()+'\n📍 '+(j.bizName||'')+(j.branchName?' '+j.branchName:'')+'\n'+(j.showSalary&&+j.salaryMin?'💰 Gaji RM'+(+j.salaryMin)+(+j.salaryMax?' – RM'+(+j.salaryMax):'')+(/komisen/i.test(j.benefits||'')?' + komisen':'')+'\n':'')+
+  '\n'+(j.about||'')+'\n\n✅ Kelayakan:\n'+L(j.reqs).map(x=>'• '+x).join('\n')+'\n\n🎁 Kelebihan:\n'+L(j.benefits).map(x=>'• '+x).join('\n')+'\n\n👉 Mohon dalam 2 minit: '+link+(j.closeAt?'\n⏳ Tutup '+dstr(j.closeAt):'')+'\n\n#kerjakosong #kerjajohor #beautytherapist #spa';
+}
+window.rcShare=id=>{const j=rcJob(id);
+ modal('Share · '+j.title,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Each link counts where applicants came from.</p>'+
+  RC_SRC.filter(s=>!['pool','ref','other'].includes(s[0])).map(([k,l])=>'<div class="rcshare"><b>'+l+'</b><code>'+esc(rcLink(id,k))+'</code><button class="btn sm ghost" onclick="rcCopy(\''+esc(rcLink(id,k))+'\')">Copy</button></div>').join('')+
+  '<label style="margin-top:10px">Caption for Facebook / TikTok / Instagram</label><textarea class="f" id="rs-cap" rows="9">'+esc(rcCaption(j,rcLink(id,'fb')))+'</textarea>'+
+  '<button class="btn sm" onclick="rcCopy(document.getElementById(\'rs-cap\').value)">'+ic('note',13)+'Copy caption</button>'+
+  '<div class="rcqr"><div data-qr="'+esc(rcLink(id,'walk'))+'" data-px="130"></div><div class="tiny"><b>QR for the shop window</b><br>Scans count as "Poster / walk-in".<br><button class="btn sm ghost" style="margin-top:6px" onclick="rcPoster(\''+id+'\')">'+ic('print',13)+'Poster (PDF)</button></div></div>'+
+  '<div class="warnbox" style="margin-top:10px">'+ic('alert',13)+' <b>JobStreet & Maukerja</b> are paid job boards — the app cannot post there by itself. Create the ad on their site and put the JobStreet / Maukerja link above in the description if they allow it; otherwise the applications stay on their site. TikTok: put the link in your bio and say "link di bio".</div></div>');
+ setTimeout(paintQRs,30);
+};
+window.rcPoster=async id=>{const j=rcJob(id);
+ try{await loadQR();const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'}),W=210,link=rcLink(id,'walk');
+  const L=s=>String(s||'').split('\n').map(x=>x.trim()).filter(Boolean);const P=s=>pdfText(s);
+  d.setFillColor(20,18,15);d.rect(0,0,W,78,'F');d.setTextColor(214,178,110);d.setFont('helvetica','bold');d.setFontSize(13);d.text(P((j.bizName||'').toUpperCase()),W/2,22,{align:'center'});
+  d.setTextColor(255,255,255);d.setFontSize(34);d.text(P('KAMI MENGAMBIL'),W/2,42,{align:'center'});d.text(P('PEKERJA'),W/2,56,{align:'center'});
+  d.setFontSize(11);d.setFont('helvetica','normal');d.text(P("WE'RE HIRING"),W/2,68,{align:'center'});
+  d.setTextColor(20,18,15);d.setFont('helvetica','bold');d.setFontSize(26);d.text(P(j.title),W/2,98,{align:'center'});
+  d.setFont('helvetica','normal');d.setFontSize(12);d.setTextColor(111,106,96);d.text(P([j.branchName,hpSt(j.empType),j.showSalary&&+j.salaryMin?'RM'+(+j.salaryMin)+(+j.salaryMax?' - RM'+(+j.salaryMax):''):''].filter(Boolean).join('  ·  ')),W/2,108,{align:'center'});
+  let y=124;d.setTextColor(20,18,15);
+  [['Kelayakan',L(j.reqs).slice(0,4)],['Kelebihan',L(j.benefits).slice(0,4)]].forEach(([h,xs])=>{if(!xs.length)return;d.setFont('helvetica','bold');d.setFontSize(13);d.text(P(h),28,y);y+=7;d.setFont('helvetica','normal');d.setFontSize(11.5);
+   xs.forEach(x=>{d.splitTextToSize(P('•  '+x),150).forEach(l=>{d.text(l,30,y);y+=6;});});y+=4;});
+  const q=62,qx=(W-q)/2,qy=Math.max(y+4,190);pdfQR(d,link,qx,qy,q);
+  d.setFont('helvetica','bold');d.setFontSize(14);d.text(P('Imbas untuk mohon · Scan to apply'),W/2,qy+q+10,{align:'center'});
+  d.setFont('helvetica','normal');d.setFontSize(9);d.setTextColor(111,106,96);d.text(P(link),W/2,qy+q+17,{align:'center'});
+  if(j.bizWa)d.text(P('WhatsApp '+j.bizWa+(j.bizAddress?'  ·  '+j.bizAddress:'')),W/2,287,{align:'center'});
+  const name=('Poster-'+j.title).replace(/[^A-Za-z0-9]+/g,'-')+'.pdf';window.__lastPDF={kind:'poster',name,doc:d};d.save(name);}
+ catch(e){console.warn(e);toast(friendly(e));}
+};
+
+/* ---------- talent bank ---------- */
+function rcPoolMatch(j){const need=j.skillsReq||[];return rcApps().filter(a=>a.pool&&a.jobId!==j.id&&!(RCA||[]).some(x=>x.jobId===j.id&&digits(x.phone).slice(-9)===digits(a.phone).slice(-9))&&
+ (!need.length||need.some(s=>(a.skills||[]).includes(s)))&&(+a.exp||0)>=(+j.minExp||0));}
+window.rcPoolFor=id=>{RCPOOL='job:'+id;RCV='pool';render();};
+window.rcPoolF=v=>{RCPOOL=RCPOOL===v?'':v;render();};
+function rcPoolView(){
+ const job=RCPOOL.startsWith('job:')?rcJob(RCPOOL.slice(4)):null;
+ let L=job?rcPoolMatch(job):rcApps().filter(a=>a.pool);
+ if(RCPOOL&&!job)L=L.filter(a=>(a.skills||[]).includes(RCPOOL));
+ const seen=new Set();L=L.filter(a=>{const k=digits(a.phone).slice(-9);if(seen.has(k))return false;seen.add(k);return true;});
+ const openJ=rcJobs().filter(j=>j.open&&!(j.closeAt&&j.closeAt<today()));
+ return '<div class="card"><h3 style="margin:0 0 6px">'+ic('star',15)+' Talent bank'+(job?' · matches for '+esc(job.title):'')+'</h3>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Good people who were not hired this time. When a job opens, invite them before you pay for ads.</p>'+
+  '<div class="chips">'+(job?'<button class="chip on" onclick="rcPoolF(\'\')">'+esc(job.title)+' ✕</button>':RC_SKILLS.map(s=>'<button class="chip'+(RCPOOL===s?' on':'')+'" onclick="rcPoolF(\''+esc(s)+'\')">'+esc(s)+'</button>').join(''))+'</div>'+
+  (L.length?L.map(a=>{const s=rcScore(a.id);return '<div class="hrrow rcpool" data-app="'+a.id+'"><span class="avatar">'+esc(initials(a.name))+'</span><div style="flex:1;min-width:0;cursor:pointer" onclick="rcOpen(\''+a.id+'\')"><b>'+esc(a.name)+'</b>'+
+   '<small>'+[a.jobTitle,rcExpName(a.exp),a.town,s.i!=null?'interview '+s.i+'%':'',s.pass?'practical pass':''].filter(Boolean).map(esc).join(' · ')+'</small>'+
+   '<div class="rcchips">'+(a.skills||[]).map(x=>'<span class="rcsc-p">'+esc(x)+'</span>').join('')+'</div>'+(a.poolNote?'<div class="tiny" style="margin-top:3px">"'+esc(a.poolNote)+'"</div>':'')+'</div>'+
+   (openJ.length?'<button class="btn sm" onclick="rcInvite(\''+a.id+'\''+(job?',\''+job.id+'\'':'')+')">'+ic('msg',13)+'Invite</button>':'')+'</div>';}).join(''):'<p class="tiny muted" style="margin:0">Nobody here yet. Tick "Keep in the talent bank" when you turn someone down.</p>')+'</div>';
+}
+window.rcInvite=(id,jid)=>{const a=rcApp(id),J=rcJobs().filter(j=>j.open&&!(j.closeAt&&j.closeAt<today()));
+ modal('Invite '+a.name,'<div class="card"><label>For the job</label><select class="f" id="ri-j">'+J.map(j=>'<option value="'+j.id+'"'+(j.id===jid?' selected':'')+'>'+esc(j.title)+'</option>').join('')+'</select>'+
+  '<div class="row wrap2" style="margin-top:10px"><button class="btn" onclick="rcInviteDo(\''+id+'\',1)">'+ic('msg',15)+'WhatsApp the job link</button><button class="btn ghost" onclick="rcInviteDo(\''+id+'\',0)">'+ic('plus',15)+'Add straight to this job</button></div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">"Add straight" puts them at Screening for that job with their old answers — use it after you have spoken to them.</p></div>');};
+window.rcInviteDo=async(id,wa)=>{const a=rcApp(id),j=rcJob($('#ri-j').value),b=rcBiz();
+ if(wa){const m='Hai '+rcFirst(a.name)+', ni dari '+b.name+'. Kami ada kekosongan '+j.title+(j.branchName?' di '+j.branchName:'')+' dan teringat pada anda 😊 Kalau berminat, mohon di sini: '+rcLink(j.id,'pool');
+  try{await rcLog(a,'Invited to apply for '+j.title);}catch(e){}window.open('https://wa.me/'+waNum(a.phone)+'?text='+encodeURIComponent(m),'_blank');window.closeModal();return;}
+ const keep=['name','phone','email','town','exp','lastJob','skills','certs','start','salary','transport','langs','why','hasFile','consent'],n={};keep.forEach(k=>{if(a[k]!==undefined)n[k]=a[k];});
+ const now=new Date().toISOString();
+ try{const r=await addDoc(collection(db,'recApps'),{...n,jobId:j.id,jobTitle:j.title,branchId:j.branchId,src:'pool',fromApp:id,stage:'screen',stageAt:now,at:now,seenAt:now,log:[{at:now,by:ME.name||'',t:'Added from the talent bank'}]});
+  if(a.hasFile){try{const f=await getDoc(doc(db,'recFiles',id));if(f.exists())await setDoc(doc(db,'recFiles',r.id),f.data());}catch(e){}}
+  await rcLog(a,'Moved into '+j.title+' from the talent bank');window.closeModal();render();toast(rcFirst(a.name)+' added to '+j.title);}catch(e){toast(friendly(e));}};
+window.rcAddOpen=()=>{const J=rcJobs().filter(j=>j.open);if(!J.length)return toast('Open a job post first');
+ modal('Add a candidate','<div class="card"><p class="tiny muted" style="margin:0 0 8px">For walk-ins, referrals or CVs sent by WhatsApp.</p><label>Job</label><select class="f" id="rn-j">'+J.map(j=>'<option value="'+j.id+'"'+(j.id===RCJOB?' selected':'')+'>'+esc(j.title)+'</option>').join('')+'</select>'+
+  '<label>Name</label><input class="f" id="rn-n"><label>Phone</label><input class="f" id="rn-p" type="tel"><label>Came from</label><select class="f" id="rn-s">'+RC_SRC.map(s=>'<option value="'+s[0]+'"'+(s[0]==='walk'?' selected':'')+'>'+s[1]+'</option>').join('')+'</select>'+
+  '<label>Experience</label><select class="f" id="rn-x">'+RC_EXP.map(x=>'<option value="'+x[0]+'">'+x[2]+'</option>').join('')+'</select>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="rcAddDo()">'+ic('check',15)+'Add</button></div>');};
+window.rcAddDo=async()=>{const j=rcJob($('#rn-j').value),n=$('#rn-n').value.trim(),p=$('#rn-p').value.trim();if(n.length<2||digits(p).length<9)return toast('Name and phone, please');
+ const now=new Date().toISOString();
+ try{const r=await addDoc(collection(db,'recApps'),{jobId:j.id,jobTitle:j.title,branchId:j.branchId,name:n.slice(0,80),phone:p.slice(0,20),src:$('#rn-s').value,exp:$('#rn-x').value,skills:[],langs:[],stage:'applied',at:now,seenAt:now,consent:false,log:[{at:now,by:ME.name||'',t:'Added by hand'}]});
+  window.closeModal();render();rcOpen(r.id);}catch(e){toast(friendly(e));}};
+window.rcCSV=()=>{csvDownload('applicants-'+today()+'.csv',[['Applied','Job','Name','Phone','Email','Town','Experience','Skills','Expected salary','Source','Stage','Interview %','Practical','Talent bank'],
+ ...rcApps().filter(a=>!RCJOB||a.jobId===RCJOB).map(a=>{const s=rcScore(a.id);return [String(a.at).slice(0,10),a.jobTitle||'',a.name,a.phone,a.email||'',a.town||'',rcExpName(a.exp),(a.skills||[]).join('; '),a.salary||'',rcSrcName(a.src),rcStName(a.stage),s.i??'',s.pass==null?'':s.pass?'pass':'fail',a.pool?'yes':''];})]);};
+
+/* ---------- the offer letter, signed online ---------- */
+let RCOF=null;
+window.rcOfferForm=(id,lang)=>{
+ if(!isOwnerMe())return toast('Offers are prepared by the owner');
+ if(HRSTAFF===null||HRDOCS===null){Promise.all([loadHrStaff(),loadHrDocs()]).then(()=>rcOfferForm(id,lang));return;}
+ const a=rcApp(id),j=rcJob(a.jobId);lang=lang||(RCOF&&RCOF.id===id?RCOF.lang:'bm');
+ const x={...docDefaults('offer','',lang),name:a.name,position:j.title||a.jobTitle||'',branch:j.branchName||branch().name||'',empType:['Full-time','Part-time','Contract','Intern'].includes(j.empType)?j.empType:'Full-time',
+  basic:+j.salaryMin||+a.salary||'',start:a.start&&a.start>today()?a.start:ymd(addDays(new Date(),14)),prob:['Part-time','Intern'].includes(j.empType)?0:3};
+ RCOF={id,lang,base:x};const sig=((HRSTAFF||{})[UID]||{}).sig;
+ const inp=([k,l,kind])=>{const v=x[k]==null?'':x[k];
+  if(kind==='area')return '<label>'+l+'</label><textarea class="f" rows="'+(k==='address'?2:3)+'" id="ro-'+k+'">'+esc(v)+'</textarea>';
+  if(kind.startsWith('sel:'))return '<label>'+l+'</label><select class="f" id="ro-'+k+'">'+kind.slice(4).split(',').map(o=>'<option value="'+o+'"'+(String(v)===o?' selected':'')+'>'+o+'</option>').join('')+'</select>';
+  return '<label>'+l+'</label><input class="f" id="ro-'+k+'" type="'+(kind==='num'?'number" step="0.01':kind)+'" value="'+esc(v)+'">';};
+ const F=DOCF.offer,main=['name','ic','address','position','branch','start','empType','prob','basic','allowance','acceptBy'];
+ modal('Offer letter · '+a.name,'<div class="card"><div class="seg">'+[['bm','Bahasa Malaysia'],['en','English']].map(o=>'<button class="'+(lang===o[0]?'on':'')+'" onclick="rcOfferForm(\''+id+'\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  (sig?'':'<div class="warnbox">'+ic('alert',13)+' You have not drawn your signature yet — the letter will print with a blank line. <a href="javascript:void 0" onclick="sigOpen(\'owner\')">Draw it now</a></div>')+
+  '<div class="grid g2">'+F.filter(f=>main.includes(f[0])).map(f=>'<div'+(f[2]==='area'?' style="grid-column:1/-1"':'')+'>'+inp(f)+'</div>').join('')+'</div>'+
+  '<details class="rcmore"><summary>Hours, leave, commission, notice and the rest of the template</summary><div class="grid g2">'+F.filter(f=>!main.includes(f[0])).map(f=>'<div'+(f[2]==='area'?' style="grid-column:1/-1"':'')+'>'+inp(f)+'</div>').join('')+'</div></details>'+
+  '<div id="ro-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<div class="row wrap2"><button class="btn ghost" onclick="rcOfferPreview()">'+ic('download',15)+'Preview PDF</button><button class="btn" id="ro-go" onclick="rcOfferIssue()">'+ic('check',15)+'Issue & get the signing link</button></div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">The letter is saved under HR → Documents. '+esc(rcFirst(a.name))+' gets a private link to read it and sign on their phone; you see it here when they do.</p></div>');
+};
+function rcOfferRead(){const x={...RCOF.base};DOCF.offer.forEach(([k,,kind])=>{const el=$('#ro-'+k);if(!el)return;const v=String(el.value||'').trim();x[k]=kind==='num'?(v===''?'':+v):v;});return x;}
+window.rcOfferPreview=()=>{const x=rcOfferRead();docDownload({type:'offer',lang:RCOF.lang,data:x,ref:LX(RCOF.lang,'(draf)','(draft)'),issuerSig:((HRSTAFF||{})[UID]||{}).sig||''});};
+const rcTok=()=>{const c='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';let t='';const r=new Uint8Array(24);try{crypto.getRandomValues(r);}catch(e){for(let i=0;i<24;i++)r[i]=Math.random()*256;}r.forEach(v=>{t+=c[v%c.length];});return t;};
+window.rcOfferIssue=async()=>{
+ const x=rcOfferRead(),e=$('#ro-e'),a=rcApp(RCOF.id),lang=RCOF.lang;
+ if(!x.name||x.name.length<3){e.textContent='Enter the full name.';return;}if(!x.position){e.textContent='Enter the position.';return;}if(!(+x.basic>0)){e.textContent='Enter the basic salary.';return;}
+ $('#ro-go').disabled=true;const now=new Date().toISOString();
+ try{const rec={type:'offer',lang,ref:docRef('offer'),staffId:'',candId:a.id,branchId:rcJob(a.jobId).branchId||ME.branchId,data:x,status:'issued',issuedAt:now,issuedBy:UID,issuedByName:ME.name,issuerSig:((HRSTAFF||{})[UID]||{}).sig||''};
+  const d=await docPDF(rec),uri=d.output('datauristring'),pdf='data:application/pdf;base64,'+String(uri).split('base64,')[1];
+  if(pdf.length>950000)throw new Error('The letter is too large to send online (the logo may be very big). Make the logo smaller in Settings, or print it to sign.');
+  const r=await addDoc(collection(db,'hrDocs'),rec);if(HRDOCS)HRDOCS.unshift({id:r.id,...rec});
+  const tok=rcTok(),b=rcBiz();
+  await setDoc(doc(db,'offerLinks',tok),{pdf,ref:rec.ref,name:x.name,first:rcFirst(x.name),position:x.position,branch:x.branch,start:x.start,acceptBy:x.acceptBy||'',lang,bizName:b.name,bizWa:b.whatsapp,status:'sent',docId:r.id,candId:a.id,at:now});
+  const off={docId:r.id,tok,ref:rec.ref,status:'sent',sentAt:now,acceptBy:x.acceptBy||''};
+  await rcLog(a,'Offer letter issued ('+rec.ref+') — '+rm(+x.basic)+' basic',{offer:off,...(rcStI(a.stage)<rcStI('offer')?{stage:'offer',stageAt:now}:{})});
+  await audit('Offer letter issued',x.name+' · '+rec.ref);window.closeModal();render();rcOfferShare(a.id);}
+ catch(err){e.textContent=err&&err.message&&!err.code?err.message:friendly(err);$('#ro-go').disabled=false;}
+};
+window.rcOfferShare=id=>{const a=rcApp(id),o=a.offer||{},link=rcBase()+'?offer='+o.tok,b=rcBiz();
+ const m='Hai '+rcFirst(a.name)+', tahniah! 🎉 '+b.name+' ingin menawarkan anda jawatan '+(a.jobTitle||'')+'. Sila baca surat tawaran dan tandatangan di sini'+(o.acceptBy?' sebelum '+dstr(o.acceptBy):'')+': '+link;
+ window.__rcOfferLink=link;
+ modal('Offer ready · '+a.name,'<div class="card" style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div><p>Send '+esc(rcFirst(a.name))+' this private link. They read the letter and sign on their phone.</p>'+
+  '<code class="rclinkbox">'+esc(link)+'</code><div class="row wrap2" style="justify-content:center;margin-top:10px">'+
+  (waNum(a.phone)?'<a class="btn" style="text-decoration:none" target="_blank" href="https://wa.me/'+waNum(a.phone)+'?text='+encodeURIComponent(m)+'">'+ic('msg',15)+'WhatsApp '+esc(rcFirst(a.name))+'</a>':'')+
+  '<button class="btn ghost" onclick="rcCopy(window.__rcOfferLink)">Copy link</button></div><p class="tiny muted">Anyone with this link can read the letter, so send it only to them.</p></div>');};
+window.rcOfferPDF=id=>{const a=rcApp(id),o=(a||{}).offer||{};const r=(HRDOCS||[]).find(x=>x.id===o.docId);if(r)return docDownload(r);
+ getDoc(doc(db,'hrDocs',o.docId)).then(s=>{if(s.exists())docDownload({id:s.id,...s.data()});}).catch(e=>toast(friendly(e)));};
+window.rcToStaff=id=>{const a=rcApp(id),P=rcPeople().filter(s=>s.role!=='owner');
+ modal('Copy into a staff file · '+a.name,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Add their login first (Manage → Team), then pick them here. Their name, contact, position, start date, salary and probation come from the signed offer, and the offer appears in their profile.</p>'+
+  '<label>Staff member</label><select class="f" id="rt-s">'+P.map(s=>'<option value="'+s.id+'">'+esc(s.name)+(hpF(s.id).fullName?' (has a file)':'')+'</option>').join('')+'</select>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="rcToStaffDo(\''+id+'\')">'+ic('check',15)+'Copy</button></div>');};
+window.rcToStaffDo=async id=>{const a=rcApp(id),sid=$('#rt-s').value,o=a.offer||{};
+ let r=(HRDOCS||[]).find(x=>x.id===o.docId);if(!r){try{const s=await getDoc(doc(db,'hrDocs',o.docId));if(s.exists())r={id:s.id,...s.data()};}catch(e){}}
+ const x=(r||{}).data||{},f=hpF(sid),p={},set=(k,v)=>{if(v!==undefined&&v!==''&&v!==null&&!f[k])p[k]=v;};
+ set('fullName',x.name||a.name);set('ic',x.ic);set('address',x.address);set('phone',a.phone);set('email',a.email);set('position',x.position);set('joinDate',x.start);set('basic',+x.basic||'');set('allowance',+x.allowance||'');
+ set('empType',+x.prob>0?'Probation':x.empType);if(+x.prob>0&&x.start)set('confirmDate',ymd(addDays(new Date(x.start+'T00:00:00'),Math.round(+x.prob*30.4))));
+ const now=new Date().toISOString();
+ try{await setDoc(doc(db,'hrStaff',sid),{...p,updatedAt:now,updatedBy:UID},{merge:true});HRSTAFF[sid]={...f,...p};
+  const pub={};['position','joinDate','empType'].forEach(k=>{if(p[k])pub[k]=p[k];});if(Object.keys(pub).length){await updateDoc(doc(db,'users',sid),pub);Object.assign(stf(sid),pub);}
+  if(r){await updateDoc(doc(db,'hrDocs',r.id),{staffId:sid});r.staffId=sid;}
+  await rcLog(a,'Copied into the staff file of '+(stf(sid).name||''),{staffId:sid});if(typeof hpSelfSync==='function')await hpSelfSync(sid);
+  await audit('New hire copied to staff file',a.name+' → '+(stf(sid).name||''));window.closeModal();rcOpen(id);toast('Staff file started — '+Object.keys(p).length+' details filled');}
+ catch(e){toast(friendly(e));}};
+
+/* ================= public pages: careers, apply, sign the offer ================= */
+let RCP=null;
+async function rcPubBiz(){let c=null;try{const s=await getDoc(doc(db,'public','booking'));if(s.exists())c=s.data();}catch(e){}return (c&&c.biz)||{};}
+function rcPubHead(b,sub){return '<div class="fbhead">'+(b.logo?'<img src="'+b.logo+'" alt="">':'<div class="fbmark">'+ic('spark',22)+'</div>')+'<div class="fbbiz">'+esc(b.name||'')+'</div>'+(sub?'<div class="fbbr">'+esc(sub)+'</div>':'')+'</div>';}
+function rcPubFoot(b){return '<div class="wbfoot">'+(b.address?'<div>'+ic('pin',12)+' '+esc(b.address)+'</div>':'')+(b.whatsapp?'<a href="https://wa.me/'+waNum(b.whatsapp)+'" target="_blank" rel="noopener">'+ic('msg',12)+' WhatsApp '+esc(b.whatsapp)+'</a>':'')+'</div>';}
+const rcLines=s=>String(s||'').split('\n').map(x=>x.trim()).filter(Boolean);
+const rcToday=()=>{const d=new Date(Date.now()+8*3600e3);return d.toISOString().slice(0,10);};
+async function jobsPage(){
+ document.title='Kerjaya';const root=document.getElementById('root');root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
+ const b=await rcPubBiz();let J=[];
+ try{J=(await getDocs(query(collection(db,'recJobs'),where('open','==',true)))).docs.map(d=>({id:d.id,...d.data()})).filter(j=>!j.closeAt||j.closeAt>=rcToday());}catch(e){}
+ const bz={...b,name:b.name||(J[0]||{}).bizName||''};
+ root.innerHTML='<div class="fbpage rcpub">'+rcPubHead(bz,'Kerjaya · Careers')+'<div class="fbbox"><h2 style="margin-top:0">Jawatan kosong</h2>'+
+  (J.length?J.map(j=>'<a class="rcpjob" href="?job='+j.id+'"><b>'+esc(j.title)+'</b><small>'+[j.branchName,hpSt(j.empType),j.showSalary&&+j.salaryMin?'RM'+(+j.salaryMin)+(+j.salaryMax?' – RM'+(+j.salaryMax):''):''].filter(Boolean).map(esc).join(' · ')+'</small><span>Mohon '+ic('right',13)+'</span></a>').join(''):
+   '<p>Tiada jawatan kosong buat masa ini. Terima kasih kerana berminat!</p>')+'</div>'+rcPubFoot(bz)+'</div>';
+}
+window.jobsPage=jobsPage;
+async function jobPage(id,src){
+ document.title='Mohon jawatan';const root=document.getElementById('root');root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
+ let j=null;try{const s=await getDoc(doc(db,'recJobs',id));if(s.exists())j={id:s.id,...s.data()};}catch(e){}
+ const b0=await rcPubBiz(),b={...b0,name:b0.name||(j||{}).bizName||'',whatsapp:b0.whatsapp||(j||{}).bizWa||'',address:b0.address||(j||{}).bizAddress||''};
+ if(!j||!j.open||(j.closeAt&&j.closeAt<rcToday())){root.innerHTML='<div class="fbpage rcpub">'+rcPubHead(b,'')+'<div class="fbbox" style="text-align:center"><p>Maaf, jawatan ini telah ditutup.</p><a class="btn ghost" style="text-decoration:none" href="?jobs=1">Lihat jawatan lain</a></div>'+rcPubFoot(b)+'</div>';return;}
+ RCP={j,b,src:RC_SRC.some(s=>s[0]===src)?src:'',file:null};
+ const ul=(h,s)=>{const L=rcLines(s);return L.length?'<h3>'+h+'</h3><ul>'+L.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'';};
+ const chk=(n,v)=>'<label class="rcck"><input type="checkbox" name="'+n+'" value="'+esc(v)+'"><span>'+esc(v)+'</span></label>';
+ root.innerHTML='<div class="fbpage rcpub">'+rcPubHead(b,j.branchName||'')+
+  '<div class="fbbox rcjd"><div class="rceye">Jawatan kosong · We\'re hiring</div><h1>'+esc(j.title)+'</h1><div class="rcmeta">'+[j.branchName,hpSt(j.empType)==='Permanent'?'Tetap sepenuh masa':hpSt(j.empType),j.showSalary&&+j.salaryMin?'RM'+(+j.salaryMin)+(+j.salaryMax?' – RM'+(+j.salaryMax):'')+' sebulan':'',j.closeAt?'Tutup '+dstr(j.closeAt):''].filter(Boolean).map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>'+
+  (j.about?'<p>'+esc(j.about)+'</p>':'')+ul('Tugas anda',j.duties)+ul('Kami mencari',j.reqs)+ul('Apa kami tawarkan',j.benefits)+'</div>'+
+  '<div class="fbbox rcform" id="rcform"><h2 style="margin-top:0">Mohon sekarang</h2><p class="tiny muted" style="margin-top:-6px">Ambil masa 2 minit. Kami akan hubungi anda melalui WhatsApp.</p>'+
+  '<label>Nama penuh *</label><input class="f" id="ap-n" autocomplete="name" maxlength="80">'+
+  '<label>No. telefon (WhatsApp) *</label><input class="f" id="ap-p" type="tel" autocomplete="tel" placeholder="012-3456789" maxlength="20">'+
+  '<label>E-mel</label><input class="f" id="ap-e" type="email" autocomplete="email" maxlength="80">'+
+  '<label>Tinggal di (bandar) *</label><input class="f" id="ap-t" maxlength="60" placeholder="cth. Kulai, Senai, Skudai">'+
+  '<label>Pengalaman dalam bidang spa / kecantikan *</label><select class="f" id="ap-x"><option value="">— pilih —</option>'+RC_EXP.map(x=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('')+'</select>'+
+  '<label>Tempat kerja terakhir & jawatan</label><input class="f" id="ap-l" maxlength="120">'+
+  '<label>Kemahiran anda</label><div class="rcckg">'+RC_SKILLS.map(s=>chk('sk',s)).join('')+'</div>'+
+  '<label>Sijil / kursus yang ada</label><input class="f" id="ap-c" maxlength="200" placeholder="cth. SKM Tahap 3 Kecantikan, CIDESCO">'+
+  '<div class="grid g2"><div><label>Boleh mula bekerja</label><input class="f" id="ap-s" type="date"></div><div><label>Gaji dijangka (RM)</label><input class="f" id="ap-g" type="number" inputmode="numeric"></div></div>'+
+  '<label>Ada pengangkutan sendiri?</label><div class="rcckg">'+['Ya','Tidak'].map(v=>'<label class="rcck"><input type="radio" name="tr" value="'+v+'"><span>'+v+'</span></label>').join('')+'</div>'+
+  '<label>Bahasa</label><div class="rcckg">'+['Bahasa Melayu','English','Mandarin','Tamil'].map(v=>chk('lg',v)).join('')+'</div>'+
+  '<label>Kenapa anda nak sertai kami?</label><textarea class="f" id="ap-w" rows="3" maxlength="500"></textarea>'+
+  (RCP.src?'':'<label>Di mana anda lihat iklan ini?</label><select class="f" id="ap-src">'+RC_SRC.filter(s=>s[0]!=='pool').map(s=>'<option value="'+s[0]+'">'+s[1]+'</option>').join('')+'</select>')+
+  '<label>Resume atau gambar sijil <span class="muted">(pilihan · PDF bawah 500KB atau gambar)</span></label><input class="f" id="ap-f" type="file" accept="application/pdf,image/*" onchange="apFile(this)"><div id="ap-fv" class="tiny muted"></div>'+
+  '<input id="ap-hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">'+
+  '<label class="row" style="gap:9px;align-items:flex-start;margin-top:10px"><input type="checkbox" id="ap-ok"> <span class="tiny">Saya mengesahkan maklumat ini benar dan bersetuju '+esc(b.name||'syarikat')+' menyimpan dan menggunakannya untuk proses pengambilan pekerja (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+  '<div id="ap-er" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" id="ap-go" onclick="apSend()">Hantar permohonan</button></div>'+rcPubFoot(b)+'</div>';
+}
+window.jobPage=jobPage;
+window.apFile=async el=>{const f=el.files&&el.files[0],v=$('#ap-fv');RCP.file=null;v.textContent='';if(!f)return;
+ try{let d;if(/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)){if(f.size>520000)throw new Error('PDF terlalu besar (maks 500KB). Hantar gambar resume, atau WhatsApp kami.');d=await hpDataURL(f);if(!/^data:application\/pdf/.test(d))d='data:application/pdf;base64,'+d.split(',')[1];}
+  else{const url=await hpDataURL(f),img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('Gambar ini tidak dapat dibaca. Cuba JPG.'));i.src=url;});
+   const k=Math.min(1,1400/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);
+   d=c.toDataURL('image/jpeg',.72);if(d.length>700000)d=c.toDataURL('image/jpeg',.5);if(d.length>700000)throw new Error('Gambar terlalu besar.');}
+  RCP.file=d;v.textContent='✓ '+f.name;}catch(e){el.value='';v.textContent=e.message||'Fail tidak dapat dibaca.';}};
+window.apSend=async()=>{
+ const j=RCP.j,g=k=>String(($('#ap-'+k)||{}).value||'').trim(),e=$('#ap-er');
+ if(g('hp'))return;
+ const n=g('n'),p=g('p');
+ if(n.length<3){e.textContent='Sila isi nama penuh.';return;}if(digits(p).length<9){e.textContent='Sila isi nombor telefon yang betul.';return;}
+ if(g('t').length<2){e.textContent='Sila isi tempat tinggal.';return;}if(g('x')===''){e.textContent='Sila pilih pengalaman anda.';return;}
+ if(!$('#ap-ok').checked){e.textContent='Sila tandakan persetujuan.';return;}
+ const vals=nm=>[...document.querySelectorAll('input[name="'+nm+'"]:checked')].map(x=>x.value);
+ const d={jobId:j.id,jobTitle:String(j.title||'').slice(0,60),branchId:j.branchId||'',name:n.slice(0,80),phone:p.slice(0,20),email:g('e').slice(0,80),town:g('t').slice(0,60),exp:g('x'),
+  lastJob:g('l').slice(0,120),skills:vals('sk').slice(0,12),certs:g('c').slice(0,200),start:g('s').slice(0,10),salary:+g('g')||0,transport:(vals('tr')[0]||''),langs:vals('lg').slice(0,6),
+  why:g('w').slice(0,500),src:RCP.src||g('src')||'other',hasFile:!!RCP.file,consent:true,stage:'applied',at:new Date().toISOString()};
+ $('#ap-go').disabled=true;e.textContent='';
+ try{const r=await addDoc(collection(db,'recApps'),d);
+  if(RCP.file){try{await setDoc(doc(db,'recFiles',r.id),{data:RCP.file,at:d.at});}catch(err){console.warn('file',err);}}
+  document.getElementById('rcform').innerHTML='<div style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div><h2>Terima kasih, '+esc(rcFirst(n))+'!</h2><p>Permohonan anda untuk jawatan <b>'+esc(j.title)+'</b> telah diterima. Kami akan WhatsApp anda jika anda disenarai pendek.</p></div>';
+  window.scrollTo&&window.scrollTo(0,0);}
+ catch(err){e.textContent='Maaf, tidak dapat dihantar. Cuba lagi sebentar atau WhatsApp kami.';$('#ap-go').disabled=false;}
+};
+let RCOL=null;
+async function offerPage(tok){
+ document.title='Surat tawaran';const root=document.getElementById('root');root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
+ let L=null;try{const s=await getDoc(doc(db,'offerLinks',tok));if(s.exists())L={id:s.id,...s.data()};}catch(e){}
+ const b0=await rcPubBiz(),b={...b0,name:b0.name||(L||{}).bizName||'',whatsapp:b0.whatsapp||(L||{}).bizWa||''};RCOL={L,b};opPaint();
+}
+window.offerPage=offerPage;
+function opPaint(){
+ const {L,b}=RCOL,root=document.getElementById('root'),en=L&&L.lang==='en',X=(bm,e)=>en?e:bm;
+ const box=h=>{root.innerHTML='<div class="fbpage rcpub">'+rcPubHead(b,'')+'<div class="fbbox">'+h+'</div>'+rcPubFoot(b)+'</div>';};
+ if(!L)return box('<p style="text-align:center">Pautan ini tidak sah. Sila hubungi kami.</p>');
+ if(L.status==='signed')return box('<div style="text-align:center"><div class="fbicon ok">'+ic('check',26)+'</div><h2>'+X('Selamat datang ke pasukan','Welcome to the team')+', '+esc(L.first)+'! 🎉</h2><p>'+X('Anda telah menerima tawaran ini pada ','You accepted this offer on ')+dstr(L.signedAt)+'.</p><button class="btn ghost" onclick="opPDF()">'+ic('download',15)+X('Salinan surat tawaran','Copy of the offer')+'</button></div>');
+ if(L.status==='declined')return box('<p style="text-align:center">'+X('Anda telah menolak tawaran ini. Terima kasih atas maklum balas anda.','You declined this offer. Thank you for letting us know.')+'</p>');
+ const late=L.acceptBy&&L.acceptBy<rcToday();
+ box('<div class="rceye">'+X('Surat Tawaran Pekerjaan','Letter of Offer')+'</div><h2 style="margin:4px 0 6px">'+X('Tahniah','Congratulations')+', '+esc(L.first)+'!</h2>'+
+  '<div class="wbsum"><div><small>'+X('Jawatan','Position')+'</small><b>'+esc(L.position)+'</b></div>'+(L.branch?'<div><small>'+X('Cawangan','Branch')+'</small><b>'+esc(L.branch)+'</b></div>':'')+
+   (L.start?'<div><small>'+X('Tarikh mula','Start date')+'</small><b>'+dstr(L.start)+'</b></div>':'')+(L.acceptBy?'<div><small>'+X('Terima sebelum','Accept by')+'</small><b>'+dstr(L.acceptBy)+'</b></div>':'')+'</div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin:12px 0" onclick="opPDF()">'+ic('download',16)+X('Baca surat tawaran (PDF)','Read the offer letter (PDF)')+'</button>'+
+  (late?'<div class="warnbox">'+X('Tarikh akhir untuk menerima telah berlalu. Sila WhatsApp kami jika anda masih berminat.','The date to accept has passed. Please WhatsApp us if you are still interested.')+'</div>':'')+
+  '<div id="op-sign"'+(RCOL.read?'':' class="rcdim"')+'><label>'+X('Nama penuh (seperti dalam IC)','Full name (as in your IC)')+'</label><input class="f" id="op-n" value="'+esc(L.name||'')+'">'+
+  '<p class="tiny muted" style="margin:8px 0 6px">'+X('Tandatangan dengan jari anda di dalam kotak:','Sign with your finger in the box:')+'</p><canvas id="sigpad" class="sigpad" width="600" height="200"></canvas>'+
+  '<div class="spread" style="margin:6px 0 10px"><button class="btn sm ghost" onclick="sigClear()">'+ic('refresh',13)+X('Padam','Clear')+'</button></div>'+
+  '<label class="row" style="gap:8px;align-items:flex-start;font-size:13px"><input type="checkbox" id="op-ok" style="margin-top:3px"> '+X('Saya telah membaca dan memahami surat tawaran ini, dan saya menerima tawaran ini mengikut terma yang dinyatakan.','I have read and understood this offer letter, and I accept the offer on the terms set out in it.')+'</label>'+
+  '<div id="op-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="op-go" style="width:100%;justify-content:center" onclick="opSign()">'+ic('check',16)+X('Terima & tandatangan','Accept & sign')+'</button>'+
+  '<button class="btn ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="opDecline()">'+X('Tolak tawaran','Decline the offer')+'</button></div>');
+ setTimeout(sigInit,30);
+}
+window.opPDF=()=>{const L=RCOL.L;RCOL.read=true;const el=document.getElementById('op-sign');if(el)el.classList.remove('rcdim');const er=document.getElementById('op-e');if(er)er.textContent='';
+ hpSave({title:(L.lang==='en'?'Offer letter ':'Surat tawaran ')+L.name,mime:'application/pdf'},L.pdf);};
+window.opSign=async()=>{
+ const L=RCOL.L,e=$('#op-e'),en=L.lang==='en',n=($('#op-n').value||'').trim();
+ if(!RCOL.read){e.textContent=en?'Please open and read the letter first.':'Sila buka dan baca surat tawaran dahulu.';return;}
+ if(n.length<3){e.textContent=en?'Type your full name.':'Sila taip nama penuh anda.';return;}
+ if(!SIGCTX||SIGCTX.ink<8){e.textContent=en?'Please sign in the box.':'Sila tandatangan di dalam kotak.';return;}
+ if(!$('#op-ok').checked){e.textContent=en?'Tick the box to accept.':'Sila tandakan kotak penerimaan.';return;}
+ const p={status:'signed',sig:SIGCTX.cv.toDataURL('image/png'),signedAt:new Date().toISOString(),signedName:n.slice(0,80)};
+ $('#op-go').disabled=true;
+ try{await updateDoc(doc(db,'offerLinks',L.id),p);Object.assign(L,p);opPaint();}
+ catch(err){e.textContent=en?'Could not send. Please try again or WhatsApp us.':'Tidak dapat dihantar. Cuba lagi atau WhatsApp kami.';$('#op-go').disabled=false;}
+};
+window.opDecline=async()=>{const L=RCOL.L,en=L.lang==='en';const r=prompt(en?'Could you tell us why? (optional)':'Boleh kongsi sebabnya? (pilihan)','');if(r===null)return;
+ try{const p={status:'declined',declineReason:String(r).trim().slice(0,200),declinedAt:new Date().toISOString()};await updateDoc(doc(db,'offerLinks',L.id),p);Object.assign(L,p);opPaint();}
+ catch(e){toast(en?'Could not send.':'Tidak dapat dihantar.');}};
+window.__rc=()=>({RCJ,RCA,RCE,MYEVAL,RCOF});
 
 </script>
