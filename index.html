@@ -2281,6 +2281,33 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .kpid i{border:0!important;padding:0!important;margin:0!important;box-shadow:none!important;width:auto!important;font-style:normal}
 .kpid i.f{visibility:hidden}
 @media(max-width:600px){.kpid{gap:1px}.kpiexp{flex:1 1 100%;order:3}.kpiexp .btn{flex:1;justify-content:center}}
+/* ===== staff & commission ===== */
+.cpplan .mjt td,.cpplan .mjt th{padding:6px 8px}
+.cptbl td{vertical-align:top}
+.cptiers input.cpin{width:82px;margin:0;padding:6px 8px}
+.rstbl{width:100%;border-collapse:separate;border-spacing:3px;min-width:760px}
+.rstbl th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);font-weight:700;padding:6px 4px;text-align:center}.rstbl th small{text-transform:none;letter-spacing:0;font-weight:500}
+.rstbl th.td{color:var(--brass)}
+.rsn{cursor:pointer;min-width:130px;padding:6px 8px;border-radius:10px}.rsn:hover{background:var(--surface-2,#f4efe7)}.rsn b{display:block;font-size:13.5px}.rsn small{display:block;font-size:11px;color:var(--ink-3)}
+.rsc{cursor:pointer;text-align:center;background:var(--surface-2,#f6f2ec);border:1px solid transparent;border-radius:10px;padding:7px 4px;min-width:84px;vertical-align:top;transition:border-color .15s}
+.rsc:hover{border-color:var(--brass,#B2996E)}.rsc.td{box-shadow:inset 0 0 0 2px rgba(178,153,110,.45)}.rsc.off{background:repeating-linear-gradient(135deg,#f3eee7 0 6px,#ece6dd 6px 12px)}
+.rsc b{display:block;font-size:12.5px}.rsc small{display:block;font-size:10.5px;color:var(--ink-3)}.rsoff{color:var(--ink-3)}.rsl{color:#8a5a2b}
+.rsa{display:inline-flex;align-items:center;gap:3px;margin-top:4px;font-size:10.5px;font-weight:700;border-radius:99px;padding:1px 7px}
+.rsa.g{background:#E5F2EA;color:#2F7A4E}.rsa.a{background:#FBF0D9;color:#9A6B12}.rsa.r{background:#F8E3E0;color:#A4372D}.rsa.b{background:#E6EEF8;color:#35598A}
+.rsu{min-width:110px;text-align:right}.rsu b{display:block}.rsu small{display:block;font-size:10.5px;color:var(--ink-3)}.rsu .pill{margin-top:3px}
+.rsrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line-2,#eee)}.rsrow .f{margin:0;max-width:130px}
+.offd{position:absolute;left:0;right:0;z-index:1;pointer-events:none;background:repeating-linear-gradient(135deg,rgba(155,146,137,.14) 0 6px,rgba(155,146,137,.24) 6px 12px);display:flex;align-items:center;justify-content:center}
+.offd span{font-size:11px;font-weight:700;color:var(--ink-3);background:rgba(255,255,255,.8);border-radius:99px;padding:2px 8px}
+.rsh{display:block;font-style:normal;font-size:10.5px;color:var(--brass,#8a6d3b);font-weight:600}.rsh.off{color:var(--rose,#C2453A)}
+.sktbl{border-collapse:collapse;min-width:520px;width:100%}.sktbl th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);padding:6px;border-bottom:1px solid var(--line)}
+.sktbl td{padding:6px;border-bottom:1px solid var(--line-2,#eee)}.sktbl td b{display:block;font-size:13.5px}.sktbl td small{display:block;font-size:10.5px;color:var(--ink-3)}
+.sktbl .ctr{text-align:center}.skcat td{background:var(--surface-2,#f6f2ec);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brass)}
+.skc small.skok{color:#2F7A4E}.skc small.skx{color:#A4372D}.skc.bad{background:#FBEDEB}
+.certrow{width:100%;border:0;background:none;font:inherit;cursor:pointer;text-align:left}
+.myrs{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.myrs div{background:var(--surface-2,#f6f2ec);border-radius:10px;padding:8px 6px;text-align:center}.myrs div.td{box-shadow:inset 0 0 0 2px rgba(178,153,110,.5)}
+.myrs small{display:block;font-size:10.5px;color:var(--ink-3)}.myrs b{font-size:12px}
+@media(max-width:600px){.myrs{grid-template-columns:repeat(4,1fr)}}
+.cptbl td:last-child{min-width:150px;white-space:normal}.cptbl th,.cptbl td{padding-left:6px;padding-right:6px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2540,7 +2567,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-09-30l';
+const BUILD='2026-09-30m';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14879,7 +14906,7 @@ function kpiRow(m,sid){
  const from=m+'-01',to=mEnd(m),tgt=kpiTarget(m,sid),act=kpiActual(sid,kpiSales(m),from,to),sc=kpiScore(act,tgt);
  return {sid,name:stf(sid).name||'',tgt,act,sc};
 }
-const kpiFmt=(k,v)=>k==='sales'||k==='retail'?rm(v):k==='rating'?(v?(+v).toFixed(1)+'★':'—'):String(v);
+const kpiFmt=(k,v)=>k==='rebook'?(v||0)+'%':k==='sales'||k==='retail'?rm(v):k==='rating'?(v?(+v).toFixed(1)+'★':'—'):String(v);
 function kpiBars(r){
  return KPI_METRICS.filter(([k])=>r.tgt[k]>0||r.act[k]).map(([k,l])=>{const t=r.tgt[k],v=r.act[k],pc=t?Math.min(100,v/t*100):0;
   return '<div class="kpibar"><div class="spread tiny"><span>'+l+'</span><span><b>'+kpiFmt(k,v)+'</b>'+(t?' / '+kpiFmt(k,t):'')+'</span></div>'+
@@ -23631,7 +23658,7 @@ function wbMFree(s,br,ov){
  const f=units.filter(id=>!used.has(id));return f.length?f[0]:false;
 }
 /* ---------- who may do a treatment ---------- */
-const skOk=(sid,svid)=>{const s=svc(svid);return !(s.staffOnly||[]).length||s.staffOnly.includes(sid);};
+const skOk=(sid,svid)=>{const s=svc(svid);return (!(s.staffOnly||[]).length||s.staffOnly.includes(sid))&&skCertOk(sid,svid);};
 const skNames=s=>(s.staffOnly||[]).map(id=>bkFirst(stf(id).name)).filter(Boolean).join(', ');
 
 /* ---------- no-shows and late cancellations ---------- */
@@ -25987,5 +26014,353 @@ window.kpiPDF=async()=>{
 };
 window.kpiState=()=>{const X=kpiX();return X?{R:X.R,k:{...X.k,items:{laris:X.k.items.laris.map(o=>({name:o.name,q:o.q,v:o.v,profit:o.profit,perHr:o.perHr,mPct:o.mPct})),untung:X.k.items.untung.map(o=>({name:o.name,q:o.q,profit:o.profit})),trap:X.k.items.trap.map(o=>o.name)}},
  cur:{v:X.cur.v,bills:X.cur.bills,atv:X.cur.atv,cost:X.cur.cost,comm:X.cur.comm},cl:{nw:X.cl.nw.length,rep:X.cl.rep.length,retention:X.cl.retention,rebook:X.cl.rebook,clv:X.cl.clv},fun:{appts:X.fun.appts,no:X.fun.no,cancel:X.fun.cancel}}:null;};
+
+
+/* ============ Staff & commission: tiers, targets, roster, skills, utilisation ============ */
+/* Commission is paid by type — treatments sold, packages sold, products sold and treatments done
+   by hand — at rates that step up with how far each person is towards their sales target. Targets
+   now include rebooking. A weekly roster (with changes for single days) decides when each therapist
+   can be booked, in the app and online, and is checked against clock-ins. A skills matrix says who
+   may do which treatment, and treatments that need a certificate are only open to people whose
+   certificate has not expired. Utilisation is paid treatment time over time at work. */
+
+/* ---------------- 1 · commission plan ---------------- */
+const CP_DEF={on:false,mode:'all',useSvc:false,tiers:[{min:0,svc:8,pkg:3,prod:10,perf:100},{min:80,svc:10,pkg:4,prod:12,perf:100},{min:100,svc:12,pkg:5,prod:15,perf:120}]};
+const cplan=()=>{const p={...CP_DEF,...((D.meta||{}).commPlan||{})};p.tiers=(p.tiers&&p.tiers.length?p.tiers:CP_DEF.tiers).map(t=>({min:+t.min||0,svc:+t.svc||0,pkg:+t.pkg||0,prod:+t.prod||0,perf:t.perf===''||t.perf==null?100:+t.perf})).sort((a,b)=>a.min-b.min);if(p.tiers[0].min>0)p.tiers[0].min=0;return p;};
+const CP_TYPES=[['svc','Treatments sold'],['pkg','Packages sold'],['prod','Products sold']];
+const cpTierName=i=>'Tier '+(i+1);
+/* one person's commission for one month, from that month's bills */
+function commPlanCalc(sid,sales,m,tgt){
+ const P=cplan(),T=P.tiers,target=tgt!=null?+tgt||0:((typeof kpiTarget==='function'?kpiTarget(m,sid).sales:0)||0);
+ const B={svc:0,pkg:0,prod:0,addon:0,other:0,fixedBase:0,manualBase:0};let credited=0,addonC=0,manual=0,fixed=0;
+ sales.forEach(s=>(s.items||[]).forEach(i=>{const who=i.staffId||s.staffId;if(who!==sid||i.kind==='redeem')return;const a=lineAmt(i);credited+=a;
+  if(i.kind==='addon'){B.addon+=a;addonC+=+i.commAmt||0;return;}
+  if(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''){B.manualBase+=a;manual+=+i.commAmt||0;return;}
+  if(i.kind==='service'){const r=+(svc(i.id)||{}).comm||0;if(P.useSvc&&r>0){B.fixedBase+=a;fixed+=a*r/100;return;}B.svc+=a;}
+  else if(i.kind==='package'||i.kind==='membership')B.pkg+=a;
+  else if(retailKind(i.kind))B.prod+=a;else B.other+=a;}));
+ credited=r2(credited);const pct=target?credited/target*100:null;
+ let ti=0;T.forEach((t,k)=>{if((pct||0)>=t.min)ti=k;});if(!target)ti=0;
+ const C={svc:0,pkg:0,prod:0};
+ if(P.mode==='step'&&target&&credited>0){T.forEach((t,k)=>{const lo=target*t.min/100,hi=k+1<T.length?target*T[k+1].min/100:Infinity,part=Math.max(0,Math.min(credited,hi)-lo);
+   if(part>0)CP_TYPES.forEach(([x])=>{C[x]+=part*(B[x]/credited)*t[x]/100;});});}
+ else CP_TYPES.forEach(([x])=>{C[x]=B[x]*T[ti][x]/100;});
+ CP_TYPES.forEach(([x])=>{C[x]=r2(C[x]);});
+ const H=(handsOnTotals(sales)||{})[sid]||{},hoBase=r2(H.comm||0),ho=r2(hoBase*T[ti].perf/100);
+ const sc=r2(C.svc+C.pkg+C.prod+addonC+manual+fixed);
+ const nx=ti+1<T.length?T[ti+1]:null;
+ return {credited,target,pct:pct==null?null:Math.round(pct),ti,tier:T[ti],B,C,addon:r2(addonC),manual:r2(manual),fixed:r2(fixed),sc,hoBase,ho,sessions:H.sessions||0,total:r2(sc+ho),
+  next:nx&&target?{ti:ti+1,min:nx.min,need:r2(Math.max(0,target*nx.min/100-credited)),t:nx}:null,mode:P.mode};
+}
+/* payroll and My HR use the plan when it is on */
+{const _pa=payAuto;payAuto=async function(m,sales){await kpiApLoad(m);const L=await _pa(m,sales);if(!cplan().on)return L;
+ return L.map(l=>{const c=commPlanCalc(l.staffId,sales,m);return {...l,commSales:c.sc,commHands:c.ho,commTier:cpTierName(c.ti)+(c.pct!=null?' · '+c.pct+'% of target':'')};});};}
+{const _hc=hrComm;hrComm=function(sid,from,to){const r=_hc(sid,from,to);const m=from.slice(0,7);if(!cplan().on||from!==m+'-01'||to.slice(0,7)!==m)return r;
+ if(KPIT[m]===undefined){setTimeout(()=>kpiLoad(m),0);}
+ const mine=SALES.filter(s=>!s.voided&&s.branchId===ME.branchId&&s.date>=from&&s.date<=to),c=commPlanCalc(sid,mine,m);
+ return {...r,total:c.total,sc:c.sc,ho:c.ho,plan:c};};}
+/* the Sales screen: each line's commission at the rate its seller reached that month */
+{const _sl=sdLines;sdLines=function(from,to,o){const L=_sl(from,to,o);if(!cplan().on||!SDL)return L;const cache={};
+ const calc=(sid,m)=>{const k=sid+'|'+m;if(cache[k])return cache[k];const br=stf(sid).branchId||ME.branchId,t=SDL.kt[m+'_'+br]||{},d=t.default||{},p=(t.staff||{})[sid]||{};
+  const tg=p.sales!=null&&p.sales!==''?+p.sales:(+d.sales||0);return cache[k]=commPlanCalc(sid,SDL.sales.filter(s=>s.date.slice(0,7)===m),m,tg);};
+ L.forEach(x=>{if(!x.s||!x.i||!x.sid)return;const i=x.i;if(i.kind==='addon'||(i.commAmt!==undefined&&i.commAmt!==null&&i.commAmt!==''))return;
+  const c=calc(x.sid,x.s.date.slice(0,7)),t=i.kind==='service'?'svc':(i.kind==='package'||i.kind==='membership')?'pkg':retailKind(i.kind)?'prod':'';
+  if(i.kind==='service'&&cplan().useSvc&&+(svc(i.id)||{}).comm>0)return;
+  const rate=t&&c.B[t]?c.C[t]/c.B[t]:0;x.comm=r2(lineAmt(i)*rate+(+i.handsOnComm||0)*c.tier.perf/100);});
+ return L;};}
+
+/* ---------------- 2 · targets: rebooking joins the KPI ---------------- */
+KPI_METRICS.push(['rebook','Rebooking','%']);
+const KPIAP={};
+async function kpiApLoad(m){if(KPIAP[m]!==undefined)return;KPIAP[m]=null;
+ try{KPIAP[m]=(await getDocs(query(collection(db,'appointments'),where('date','>=',m+'-01'),limit(4000)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){KPIAP[m]=[];}}
+{const _kl=kpiLoad;kpiLoad=async function(m){if(KPIAP[m]===undefined)await kpiApLoad(m);return _kl(m);};}
+function rebookOf(A,sid,from,to){ /* completed visits that booked the next one the same day */
+ const D0=A.filter(a=>a.staffId===sid&&a.status==='done'&&a.date>=from&&a.date<=to);
+ const rb=D0.filter(a=>A.some(b=>b.id!==a.id&&b.customerId&&b.customerId===a.customerId&&b.date>a.date&&String(b.createdAt||'').slice(0,10)===a.date&&!['cancel'].includes(b.status)));
+ return {done:D0.length,rb:rb.length,pct:D0.length?Math.round(rb.length/D0.length*100):0};}
+{const _ka=kpiActual;kpiActual=function(sid,sales,from,to){const r=_ka(sid,sales,from,to);const A=KPIAP[from.slice(0,7)]||[];const x=rebookOf(A,sid,from,to);r.rebook=x.pct;r.rebookN=x.rb;r.visits=x.done;return r;};}
+
+/* ---------------- 3 · roster ---------------- */
+let ROST={},CERTS=[],RSWK='',RSAP={},STBOOT=false,CPM='';
+const rosterOn=()=>!!(((D.meta||{}).roster)||{}).on;
+const hm=s=>{const [h,m]=String(s||'0:0').split(':');return (+h||0)*60+(+m||0);};
+const m2hm=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+const DOWN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function dutyRaw(sid,date){const R=ROST[sid];if(!R)return null;const d=(R.days||{})[date],w=(R.week||{})[new Date(date+'T00:00:00').getDay()];const x=d||w;
+ if(!x)return {on:false,src:'none'};return {on:!!x.on,s:x.s||m2hm((D.meta.open||9)*60),e:x.e||m2hm((D.meta.close||20)*60),src:d?'day':'week',note:x.note||''};}
+const dutyOf=(sid,date)=>rosterOn()?dutyRaw(sid,date):null;
+function dutyBlock(sid,start,finish){
+ const d=ymd(new Date(start)),x=dutyOf(sid,d);if(!x)return '';const nm=stf(sid).name||'This therapist';
+ if(!x.on)return nm+' is not working on '+dstr(d)+' (roster). Choose another therapist or day, or change the roster in HR → Roster.';
+ const a=new Date(start),b=new Date(finish),sm=a.getHours()*60+a.getMinutes(),em=b.getHours()*60+b.getMinutes()+(ymd(b)>d?1440:0);
+ if(sm<hm(x.s)||em>hm(x.e))return nm+' works '+x.s+'–'+x.e+' on '+dstr(d)+'. Choose a time inside the shift or another therapist.';
+ return '';}
+{const _lb=leaveBlock;leaveBlock=function(sid,start,finish){return _lb(sid,start,finish)||dutyBlock(sid,start,finish);};}
+{const _ln=leaveNote;leaveNote=function(sid,date){const h=_ln(sid,date);if(h||!sid||!date)return h;const x=dutyOf(sid,date);if(!x)return '';
+ return x.on?'<span class="pill">'+ic('clock',11)+esc(stf(sid).name||'')+' works '+x.s+'–'+x.e+'</span>':'<span class="pill r">'+ic('calendar',11)+esc(stf(sid).name||'')+' is off (roster)</span>';};}
+/* online booking: the busy feed carries each therapist's shift */
+wbSync=async function(){
+ const W=wbSet();if(!W.on)return;
+ const dates=[...Array((+W.horizon||30)+1)].map((_,i)=>ymd(addDays(new Date(),i)));
+ for(const br of D.branches)for(const d of dates){
+  const items=WBAPPTS.filter(a=>a.branchId===br.id&&a.date===d&&!['cancel','no'].includes(a.status))
+   .map(a=>({s:+new Date(a.start),e:+new Date(a.finish)+(+a.buffer||0)*6e4,r:a.roomId||'',t:a.staffId||'',m:a.machineId||''})).sort((x,y)=>x.s-y.s||String(x.r).localeCompare(y.r));
+  const leave=[...new Set(LEAVES.filter(l=>l.status==='approved'&&l.from<=d&&l.to>=d).map(l=>l.staffId).filter(id=>(stf(id)||{}).branchId===br.id))].sort();
+  const duty={},off=[];D.staff.filter(s=>s.branchId===br.id&&s.takes&&s.active!==false).forEach(s=>{const x=dutyOf(s.id,d);if(!x)return;if(!x.on)off.push(s.id);else duty[s.id]=[hm(x.s),hm(x.e)];});
+  const h=JSON.stringify([items,leave,duty,off]),id=br.id+'_'+d;
+  if(WBBUSY[id]===h)continue;
+  try{await setDoc(doc(db,'busy',id),{b:br.id,d,items,leave,duty,off,h,at:new Date().toISOString()});WBBUSY[id]=h;}catch(e){console.warn('busy',e);return;}
+ }
+};
+window.wbSyncNow=wbSync;
+wbSlots=function(d){
+ const c=WB.cfg,s=WB.svc,br=WB.br,bz=WB.busy[d];if(!s||!br||!bz)return null;
+ const rooms=(br.rooms||[]).filter(r=>!s.r||r.t===s.r);if(!rooms.length)return [];
+ const off=bz.off||[],duty=bz.duty||{};
+ const staff=(WB.staff?[WB.staff]:(br.staff||[]).map(x=>x.id)).filter(id=>!(bz.leave||[]).includes(id)&&!off.includes(id)).filter(id=>!(s.st||[]).length||s.st.includes(id));if(!staff.length)return [];
+ const items=bz.items||[],earliest=Date.now()+(c.lead||0)*3600e3,out=[];
+ const load={};items.forEach(i=>{load[i.t]=(load[i.t]||0)+(i.e-i.s);});
+ for(let m=c.open*60;m+s.d<=c.close*60;m+=c.step){
+  const st=wbEpoch(d,m),en=st+s.d*6e4,eb=en+s.b*6e4;if(st<earliest)continue;
+  const ov=items.filter(i=>!(eb<=i.s||st>=i.e));
+  const fr=rooms.filter(r=>!ov.some(i=>i.r===r.id)),fs=staff.filter(t=>{const w=duty[t];return !ov.some(i=>i.t===t)&&(!w||(m>=w[0]&&m+s.d<=w[1]));}).sort((a,b)=>(load[a]||0)-(load[b]||0));
+  const fm=wbMFree(s,br,ov);if(fr.length&&fs.length&&fm!==false)out.push({m,st,en,eb,room:fr[0].id,staff:fs[0],mach:fm||''});
+ }
+ return out;
+};
+/* the calendar greys out the hours a therapist is not rostered */
+function rsPaintCal(){
+ if(TAB!=='book'||calBy!=='staff'||!rosterOn())return;const g=document.querySelector('.tlg');if(!g)return;
+ const O=D.meta.open||9,C=D.meta.close||20,px=58/60,heads=[...g.querySelectorAll('.tlh:not(.first)')];
+ [...g.querySelectorAll('.tlcol[data-col]')].forEach((col,ci)=>{const sid=col.dataset.col,x=dutyOf(sid,calDate);if(!x||col.querySelector('.offd'))return;
+  const hd=heads[ci];
+  if(!x.on){col.insertAdjacentHTML('afterbegin','<div class="offd" style="top:0;height:'+((C-O)*60*px)+'px"><span>Off (roster)</span></div>');if(hd)hd.insertAdjacentHTML('beforeend','<em class="rsh off">Off</em>');return;}
+  const a=Math.max(0,hm(x.s)-O*60),b=Math.min((C-O)*60,hm(x.e)-O*60);
+  if(a>0)col.insertAdjacentHTML('afterbegin','<div class="offd" style="top:0;height:'+(a*px)+'px"></div>');
+  if(b<(C-O)*60)col.insertAdjacentHTML('afterbegin','<div class="offd" style="top:'+(b*px)+'px;height:'+(((C-O)*60-b)*px)+'px"></div>');
+  if(hd)hd.insertAdjacentHTML('beforeend','<em class="rsh">'+x.s+'–'+x.e+'</em>');});
+}
+function stBoot(){
+ if(STBOOT||!ME)return;STBOOT=true;
+ try{unsub.push(onSnapshot(collection(db,'rosters'),s=>{ROST={};s.docs.forEach(d=>{ROST[d.id]={id:d.id,...d.data()};});if(['hr','book'].includes(TAB))render();},e=>console.warn('rosters',e)));}catch(e){}
+ try{unsub.push(onSnapshot(collection(db,'certs'),s=>{CERTS=s.docs.map(d=>({id:d.id,...d.data()}));if(TAB==='hr')render();},e=>console.warn('certs',e)));}catch(e){}
+}
+{const _r=render;render=function(){_r.apply(this,arguments);try{stBoot();rsPaintCal();}catch(e){console.warn(e);}};window.render=render;}
+
+/* ---------------- 4 · skills & certificates ---------------- */
+function skCertOk(sid,svid){const s=svc(svid)||{};if(!s.certReq)return true;const td=today();return CERTS.some(c=>c.staffId===sid&&(c.serviceIds||[]).includes(svid)&&(!c.expiry||c.expiry>=td));}
+const certSt=c=>{const td=today(),soon=ymd(addDays(new Date(),30));return !c.expiry?['No expiry','']:c.expiry<td?['Expired','r']:c.expiry<=soon?['Expires '+dshort(c.expiry),'a']:['Valid to '+dshort(c.expiry),'g'];};
+{const _c=wbConfig;wbConfig=function(){const c=_c();c.services.forEach(x=>{const s=svc(x.id)||{};if(!s.certReq)return;
+ const base=(x.st&&x.st.length)?x.st:D.staff.filter(u=>u.takes&&u.active!==false).map(u=>u.id);x.st=base.filter(id=>skCertOk(id,x.id));if(!x.st.length)x.st=['__none'];});return c;};}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(!boss())return;const td=today(),soon=ymd(addDays(new Date(),30));
+ const mine=CERTS.filter(c=>c.expiry&&(stf(c.staffId).branchId||ME.branchId)===ME.branchId);
+ const ex=mine.filter(c=>c.expiry<td&&!mine.some(o=>o.id!==c.id&&o.staffId===c.staffId&&o.name===c.name&&(!o.expiry||o.expiry>=td)));
+ const so=mine.filter(c=>c.expiry>=td&&c.expiry<=soon);
+ if(ex.length)al.push({i:'award',t:ex.length+' certificate'+(ex.length>1?'s':'')+' expired',d:ex.slice(0,3).map(c=>(c.staffName||stf(c.staffId).name||'').split(' ')[0]+' · '+c.name).join(', '),go:"hrGo('skills')"});
+ if(so.length)al.push({i:'award',t:so.length+' certificate'+(so.length>1?'s':'')+' expiring within 30 days',d:so.slice(0,3).map(c=>(c.staffName||stf(c.staffId).name||'').split(' ')[0]+' · '+dshort(c.expiry)).join(', '),go:"hrGo('skills')"});};}
+
+/* ---------------- 5 · utilisation: paid treatment time over time at work ---------------- */
+const apPaid=a=>a.status==='done'&&!!(a.saleId||a.paidAt||a.invoiceNo);
+function stUtil(sid,from,to,A,AT){
+ const O=(D.meta.open||9)*60,C=(D.meta.close||20)*60;let rost=0,rostDays=0,openMin=0;
+ for(let d=from;d<=to;d=ymd(addDays(new Date(d+'T00:00:00'),1))){if(d>today())break;const lv=onLeave(sid,d);const x=dutyRaw(sid,d);
+  if(x&&x.on&&!(lv&&!lv.half)){rost+=Math.max(0,hm(x.e)-hm(x.s))*(lv&&lv.half?0.5:1);rostDays++;}if(!(lv&&!lv.half))openMin+=C-O;}
+ const clock=(AT||[]).filter(x=>x.staffId===sid&&x.date>=from&&x.date<=to&&x.clockIn).reduce((t,x)=>{const o=x.clockOut?new Date(x.clockOut):null;return t+(o&&o>new Date(x.clockIn)?(o-new Date(x.clockIn))/6e4:0);},0);
+ const mine=(A||[]).filter(a=>a.staffId===sid&&a.date>=from&&a.date<=to&&a.date<=today());
+ const sum=L=>L.reduce((t,a)=>t+(+a.duration||0),0);
+ const paid=sum(mine.filter(apPaid)),booked=sum(mine.filter(a=>!['cancel','no'].includes(a.status))),unbilled=sum(mine.filter(a=>a.status==='done'&&!apPaid(a)));
+ const worked=Math.round(clock)||rost||(ROST[sid]?0:openMin),by=clock?'clock':rost?'roster':ROST[sid]?'roster':'open';
+ return {rost,rostDays,clock:Math.round(clock),worked,by,paid,booked,unbilled,pct:worked?Math.round(paid/worked*100):null};
+}
+/* the KPI board and the Sales staff tab use the same measure */
+{const _ku=kpiUtil;kpiUtil=function(R){const U=_ku(R);const AT=SDL.att,A=SDL.appts;
+ U.thera=U.thera.map(t=>{const x=stUtil(t.id,R.from,R.to,A,AT);return {...t,mins:x.paid,worked:x.worked,by:x.by==='clock'?'clock':x.by==='roster'?'roster':'open',pct:x.worked?Math.round(x.paid/x.worked*100):0,unbilled:x.unbilled};}).sort((a,b)=>b.pct-a.pct);
+ const w=U.thera.reduce((t,x)=>t+(x.worked||0),0);U.therapist=U.thera.length&&w?Math.round(U.thera.reduce((t,x)=>t+x.mins,0)/w*100):null;return U;};}
+{const _ss=sdStaff;sdStaff=function(R,br){return _ss(R,br).map(x=>{const u=stUtil(x.p.id,R.from,R.to,SDL.appts,SDL.att);return {...x,util:u.pct};});};}
+
+/* ---------------- the HR screen, with three new tabs ---------------- */
+vHR=function(){
+ if(CLAIMS===null)setTimeout(()=>loadClaims(),0);
+ if(isOwnerMe()&&HRSTAFF===null)setTimeout(()=>loadHrStaff(),0);
+ const pendL=LEAVES.filter(l=>l.status==='pending'&&myBranch(l)).length;
+ const pendC=(CLAIMS||[]).filter(c=>c.status==='pending'&&myBranch(c)).length;
+ const td=today(),soon=ymd(addDays(new Date(),30)),certN=CERTS.filter(c=>c.expiry&&c.expiry<=soon&&(stf(c.staffId).branchId||ME.branchId)===ME.branchId).length;
+ const tabs=[['me','My HR','user','']];
+ if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
+ if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',''],['roster','Roster','calendar',''],['skills','Skills','award',certN||'']);
+ if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard',''],['docs','Documents','note',(HRINFO||[]).filter(i=>i.status==='submitted').length||'']);
+ if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills};
+ return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
+  ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
+};
+
+/* ---- Commission tab ---- */
+window.cpMonth=n=>{CPM=mShift(CPM,n);render();};
+function hrCommTab(){
+ if(!CPM)CPM=today().slice(0,7);
+ if(!kpiReady(CPM)||KPIAP[CPM]===null||KPIAP[CPM]===undefined)setTimeout(()=>kpiLoad(CPM),0);
+ const P=cplan(),nav='<div class="card"><div class="spread"><div class="row" style="gap:8px"><button class="iconbtn" onclick="cpMonth(-1)">'+ic('left',16)+'</button><h2 style="margin:0;min-width:170px;text-align:center">'+mLabel(CPM)+'</h2><button class="iconbtn" onclick="cpMonth(1)">'+ic('right',16)+'</button></div>'+
+  '<div class="row" style="gap:6px"><button class="btn sm ghost" onclick="cpCSV()">'+ic('download',13)+'CSV</button><button class="btn sm" onclick="cpEdit()">'+ic('gear',13)+'Commission plan</button></div></div></div>';
+ const plan=P.on?'<div class="card cpplan"><div class="sec-h" style="margin-bottom:6px"><h3 style="margin:0">'+ic('wallet',15)+' Tiered commission is on</h3><span class="pill g">'+(P.mode==='step'?'Each step pays its own rate':'Whole month at the tier reached')+'</span></div>'+cpTierTable(P)+
+   '<p class="tiny muted" style="margin:6px 0 0">Tiers follow each person\'s <b>sales target</b> (Performance → Set targets). No target = Tier 1. Treatment done = % of the hands-on rate set on each treatment.'+(P.useSvc?' Treatments with their own rate keep it.':'')+' A manager\'s manual commission on a bill line always wins.</p></div>'
+  :'<div class="warnbox">'+ic('alert',13)+' Commission is flat today: each treatment\'s own rate (or the staff rate), and the retail rate for packages and products. <a href="javascript:void 0" onclick="cpEdit()">Set up tiered commission</a> to pay different rates for treatments, packages and products that rise as people reach their targets.</div>';
+ if(!kpiReady(CPM)||!KPIAP[CPM])return nav+plan+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const S=kpiSales(CPM),rows=hrPeople().map(s=>({s,c:P.on?commPlanCalc(s.id,S,CPM):null,f:hrCommOf(s.id,S)}));
+ const tb='<div class="card"><h3 class="sdh">'+ic('users',15)+' '+mLabel(CPM)+' · '+(P.on?'by the plan':'flat rates')+'</h3><div class="scroll"><table class="pltbl sdtbl cptbl"><tr><th>Staff</th><th class="num">Sales credited</th>'+(P.on?'<th class="num">Target</th><th>Tier</th><th class="num">Treatments</th><th class="num">Packages</th><th class="num">Products</th><th class="num">Add-ons · manual</th>':'<th class="num">Sales commission</th>')+'<th class="num">Treatments done</th><th class="num">Total</th>'+(P.on?'<th>Next tier</th>':'')+'</tr>'+
+  rows.map(({s,c,f})=>{if(!P.on){const k=kpiActual(s.id,S,CPM+'-01',mEnd(CPM));return '<tr><td><b>'+esc(s.name)+'</b></td><td class="num">'+rm(k.sales)+'</td><td class="num">'+rm(f.sc)+'</td><td class="num">'+rm(f.ho)+'</td><td class="num"><b>'+rm(r2(f.sc+f.ho))+'</b></td></tr>';}
+   return '<tr data-cp="'+s.id+'"><td><b>'+esc(s.name)+'</b></td><td class="num">'+rm(c.credited)+'</td><td class="num">'+(c.target?rm(c.target)+'<br><span class="tiny muted">'+c.pct+'%</span>':'<span class="muted">none</span>')+'</td>'+
+    '<td><span class="pill '+(c.ti===P.tiers.length-1?'g':c.ti?'a':'')+'">'+cpTierName(c.ti)+'</span></td>'+
+    CP_TYPES.map(([x])=>'<td class="num">'+rm(c.C[x])+'<br><span class="tiny muted">'+(c.B[x]?rm(c.B[x])+(P.mode==='step'?'':' × '+c.tier[x]+'%'):'—')+'</span></td>').join('')+
+    '<td class="num">'+rm(r2(c.addon+c.manual+c.fixed))+'</td><td class="num">'+rm(c.ho)+'<br><span class="tiny muted">'+c.sessions+' session'+(c.sessions!==1?'s':'')+(c.tier.perf!==100?' · '+c.tier.perf+'%':'')+'</span></td><td class="num"><b>'+rm(c.total)+'</b></td>'+
+    '<td class="tiny">'+(c.next?'<b>'+rm(c.next.need)+'</b> more → '+cpTierName(c.next.ti):c.target?'Top tier':'Set a target')+'</td></tr>';}).join('')+'</table></div>'+
+  '<p class="tiny muted">Sales credited = what each person sold (after line discounts, before SST). This is what the payroll picks up when it is prepared'+(P.on?' — with the tier written on each line':'')+'.</p></div>';
+ return nav+plan+tb;
+}
+function cpTierTable(P){
+ return '<div class="scroll"><table class="mjt cptiers"><tr><th>Tier</th><th class="num">From % of target</th>'+CP_TYPES.map(([x,l])=>'<th class="num">'+l+'</th>').join('')+'<th class="num">Treatment done</th></tr>'+
+  P.tiers.map((t,i)=>'<tr><td><b>'+cpTierName(i)+'</b></td><td class="num">'+t.min+'%</td>'+CP_TYPES.map(([x])=>'<td class="num">'+t[x]+'%</td>').join('')+'<td class="num">'+t.perf+'% of rate</td></tr>').join('')+'</table></div>';
+}
+let CPED=null;
+window.cpEdit=()=>{if(!boss())return toast('For the owner and managers');CPED=JSON.parse(JSON.stringify(cplan()));cpPaint();};
+function cpPaint(){const P=CPED,inp=(i,k,v,st)=>'<input class="f cpin" type="number" min="0" step="'+(st||'0.5')+'" value="'+esc(v)+'" oninput="cpSetT('+i+',\''+k+'\',this.value)">';
+ modal('Commission plan','<div class="card"><label class="row lptog"><input type="checkbox" id="cp-on" '+(P.on?'checked':'')+' onchange="cpOpt(\'on\',this.checked)"> Use tiered commission (payroll, My HR and the Sales screen)</label>'+
+  '<label style="margin-top:10px">How a tier pays</label><div class="seg"><button type="button" class="'+(P.mode!=='step'?'on':'')+'" onclick="cpOpt(\'mode\',\'all\',1)">Whole month at the tier reached</button><button type="button" class="'+(P.mode==='step'?'on':'')+'" onclick="cpOpt(\'mode\',\'step\',1)">Each step pays its own rate</button></div>'+
+  '<p class="tiny muted" style="margin:4px 0 10px">'+(P.mode==='step'?'Like tax bands: sales up to the next step earn that step\'s rate, only the sales above it earn more. Smoother, cheaper at the top.':'Reach a tier and all of that month\'s sales earn its rate. The strongest push to reach the target.')+'</p>'+
+  '<div class="scroll"><table class="mjt cptiers"><tr><th>Tier</th><th>From % of target</th>'+CP_TYPES.map(([x,l])=>'<th>'+l+' %</th>').join('')+'<th>Treatment done (% of rate)</th><th></th></tr>'+
+  P.tiers.map((t,i)=>'<tr><td><b>'+cpTierName(i)+'</b></td><td>'+(i?inp(i,'min',t.min,'1'):'<span class="muted">0 (start)</span>')+'</td>'+CP_TYPES.map(([x])=>'<td>'+inp(i,x,t[x])+'</td>').join('')+'<td>'+inp(i,'perf',t.perf,'5')+'</td><td>'+(i?'<button class="lpx" onclick="cpDelT('+i+')">Remove</button>':'')+'</td></tr>').join('')+'</table></div>'+
+  (P.tiers.length<6?'<button class="btn sm ghost" onclick="cpAddT()">'+ic('plus',13)+'Tier</button>':'')+
+  '<label class="row lptog" style="margin-top:10px"><input type="checkbox" '+(P.useSvc?'checked':'')+' onchange="cpOpt(\'useSvc\',this.checked)"> Treatments with their own commission rate (Catalogue) keep that rate instead of the tier</label>'+
+  '<p class="tiny muted">Example: target RM10,000, sold RM9,000 (90%) → Tier 2. Treatment done pays the hands-on amount set on each treatment × the % here (e.g. 120% at the top tier). Wallet top-ups and e-vouchers earn no commission under the plan.</p>'+
+  '<button class="btn" id="cp-go" style="width:100%;justify-content:center;margin-top:8px" onclick="cpSave()">'+ic('check',15)+'Save plan</button></div>');}
+window.cpOpt=(k,v,rp)=>{CPED[k]=v;if(rp)cpPaint();};
+window.cpSetT=(i,k,v)=>{if(CPED.tiers[i])CPED.tiers[i][k]=v===''?'':+v;};
+window.cpAddT=()=>{const L=CPED.tiers[CPED.tiers.length-1];CPED.tiers.push({min:(+L.min||0)+20,svc:L.svc,pkg:L.pkg,prod:L.prod,perf:L.perf});cpPaint();};
+window.cpDelT=i=>{CPED.tiers.splice(i,1);cpPaint();};
+window.cpSave=async()=>{const P=CPED;P.on=!!(document.getElementById('cp-on')||{}).checked;
+ const T=P.tiers.map(t=>({min:+t.min||0,svc:+t.svc||0,pkg:+t.pkg||0,prod:+t.prod||0,perf:t.perf===''?100:+t.perf})).sort((a,b)=>a.min-b.min);
+ if(T.some((t,i)=>i&&t.min===T[i-1].min))return toast('Two tiers start at the same %');
+ if(T.some(t=>[t.svc,t.pkg,t.prod].some(v=>v<0||v>60)))return toast('Rates must be between 0 and 60%');
+ const rec={on:P.on,mode:P.mode==='step'?'step':'all',useSvc:!!P.useSvc,tiers:T,updatedAt:new Date().toISOString(),by:ME.name||''};
+ try{await setDoc(doc(db,'meta','settings'),{commPlan:rec},{merge:true});D.meta.commPlan=rec;await audit('Commission plan',(rec.on?'on':'off')+' · '+T.length+' tiers · '+rec.mode);if(typeof SDX!=='undefined')SDX=null;closeModal();render();toast('Commission plan saved');}catch(e){toast(friendly(e));}};
+window.cpCSV=()=>{const P=cplan(),S=kpiSales(CPM);
+ csvDownload('commission-'+CPM+'.csv',[['Staff','Sales credited','Target','% of target','Tier','Treatments sold','Packages sold','Products sold','Add-ons & manual','Treatments done','Total'],
+  ...hrPeople().map(s=>{if(!P.on){const f=hrCommOf(s.id,S),k=kpiActual(s.id,S,CPM+'-01',mEnd(CPM));return [s.name,k.sales,'','','Flat',f.sc,'','','',f.ho,r2(f.sc+f.ho)];}
+   const c=commPlanCalc(s.id,S,CPM);return [s.name,c.credited,c.target,c.pct??'',cpTierName(c.ti),c.C.svc,c.C.pkg,c.C.prod,r2(c.addon+c.manual+c.fixed),c.ho,c.total];})]);};
+
+/* ---- Roster tab ---- */
+const rsMon=d=>{const x=new Date(d+'T00:00:00');return ymd(addDays(x,-((x.getDay()+6)%7)));};
+window.roWeekNav=n=>{RSWK=ymd(addDays(new Date(RSWK+'T00:00:00'),7*n));render();};
+async function rsApLoad(wk){if(RSAP[wk]!==undefined)return;RSAP[wk]=null;const to=ymd(addDays(new Date(wk+'T00:00:00'),6));
+ try{RSAP[wk]=(await getDocs(query(collection(db,'appointments'),where('date','>=',wk),where('date','<=',to)))).docs.map(d=>({id:d.id,...d.data()}));}catch(e){RSAP[wk]=[];}if(TAB==='hr')render();}
+function rsAtt(sid,d,x){ /* what the clock says against the shift */
+ const a=ATT.find(t=>t.staffId===sid&&t.date===d&&t.clockIn),td=today();if(d>td)return '';
+ if(x&&x.on){if(a){const ci=new Date(a.clockIn),mm=ci.getHours()*60+ci.getMinutes(),late=mm-hm(x.s);
+   return late>10?'<span class="rsa a">Late '+late+'m</span>':'<span class="rsa g">'+ic('check',10)+String(ci.getHours()).padStart(2,'0')+':'+String(ci.getMinutes()).padStart(2,'0')+'</span>';}
+  const now=new Date(),nm=now.getHours()*60+now.getMinutes();if(d<td||nm>hm(x.s)+30)return '<span class="rsa r">No clock-in</span>';return '';}
+ return a?'<span class="rsa b">In on a day off</span>':'';}
+function hrRoster(){
+ if(!RSWK)RSWK=rsMon(today());const wk=RSWK,days=[...Array(7)].map((_,i)=>ymd(addDays(new Date(wk+'T00:00:00'),i))),to=days[6];
+ if(RSAP[wk]===undefined)setTimeout(()=>rsApLoad(wk),0);
+ const ppl=hrPeople().slice().sort((a,b)=>(b.takes?1:0)-(a.takes?1:0)||String(a.name).localeCompare(b.name));
+ const on=rosterOn(),A=RSAP[wk]||[];
+ const head='<div class="card"><div class="spread"><div class="row" style="gap:8px"><button class="iconbtn" onclick="roWeekNav(-1)">'+ic('left',16)+'</button><h2 style="margin:0;min-width:210px;text-align:center">'+dshort(wk)+' – '+dshort(to)+'</h2><button class="iconbtn" onclick="roWeekNav(1)">'+ic('right',16)+'</button></div>'+
+  '<label class="row lptog" style="margin:0"><input type="checkbox" '+(on?'checked':'')+' onchange="roOn(this.checked)"> Bookings follow the roster</label></div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">'+(on?'A therapist can only be booked — at the counter or online — inside their shift. Days off and hours outside the shift are closed.':'The roster is only a plan for now: bookings still use opening hours. Tick the box once every therapist has a weekly pattern.')+' Tap a name for the weekly pattern, a day for a one-off change.</p></div>';
+ const cell=(s,d)=>{const lv=onLeave(s.id,d),x=dutyRaw(s.id,d),td=d===today();
+  let t=lv&&!lv.half?'<b class="rsl">Leave</b><small>'+esc(lvName(lv.type))+'</small>':!x?'<small class="muted">no roster</small>':x.on?'<b>'+x.s+'–'+x.e+'</b>'+(x.src==='day'?'<small>changed</small>':'')+(lv&&lv.half?'<small>½ leave '+lv.half+'</small>':''):'<b class="rsoff">Off</b>'+(x.src==='day'?'<small>changed</small>':'');
+  return '<td class="rsc'+(td?' td':'')+(x&&!x.on&&!lv?' off':'')+'" onclick="roEdit(\''+s.id+'\',\''+d+'\')">'+t+rsAtt(s.id,d,lv&&!lv.half?null:x)+'</td>';};
+ const grid='<div class="card"><div class="scroll"><table class="rstbl"><tr><th>Staff</th>'+days.map(d=>'<th class="'+(d===today()?'td':'')+'">'+DOWN[new Date(d+'T00:00:00').getDay()]+'<br><small>'+dshort(d)+'</small></th>').join('')+'<th class="num">This week</th></tr>'+
+  ppl.map(s=>{const u=stUtil(s.id,wk,to,A,ATT);return '<tr><td class="rsn" onclick="roPattern(\''+s.id+'\')"><b>'+esc(s.name)+'</b><small>'+(s.takes?'takes bookings':'no bookings')+' · '+(ROST[s.id]?'pattern set':'<span style="color:var(--rose)">no pattern</span>')+'</small></td>'+days.map(d=>cell(s,d)).join('')+
+   '<td class="num rsu"><b>'+(u.rost?Math.round(u.rost/6)/10+' h':'—')+'</b><small>rostered</small>'+(RSAP[wk]?'<small>'+Math.round(u.paid/6)/10+' h paid treatments</small>'+(s.takes&&u.pct!=null?'<span class="pill '+sdRag(u.pct,70,50)+'">'+u.pct+'%</span>':''):'')+'</td></tr>';}).join('')+'</table></div>'+
+  '<p class="tiny muted">Clock-ins are checked against the shift: more than 10 minutes after the start shows as late; a rostered day with no clock-in is flagged. Utilisation = paid treatment time ÷ time at work (clocked, or rostered when there are no clock-ins).</p></div>';
+ return head+grid+rsUtilCard(ppl.filter(s=>s.takes),wk,to,A);
+}
+function rsUtilCard(ppl,from,to,A){
+ if(!RSAP[from])return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const rows=ppl.map(s=>({s,u:stUtil(s.id,from,to,A,ATT)}));
+ return '<div class="card"><h3 class="sdh">'+ic('clock',15)+' Therapist utilisation · this week</h3>'+(rows.length?rows.map(({s,u})=>'<div class="kpiu"><span><b>'+esc(s.name)+'</b><small>'+Math.round(u.paid/6)/10+' h paid of '+Math.round(u.worked/6)/10+' h '+(u.by==='clock'?'clocked':u.by==='roster'?'rostered':'opening hours')+
+  (u.unbilled?' · <b style="color:var(--rose)">'+Math.round(u.unbilled/6)/10+' h done without a bill</b>':'')+(u.booked>u.paid+u.unbilled?' · '+Math.round((u.booked-u.paid-u.unbilled)/6)/10+' h still booked':'')+'</small></span><div class="bar"><i class="'+sdRag(u.pct,70,50)+'" style="width:'+Math.min(100,u.pct||0)+'%"></i></div><b class="pill '+sdRag(u.pct,70,50)+'">'+(u.pct==null?'—':u.pct+'%')+'</b></div>').join('')
+  :'<div class="tiny muted">No one takes bookings.</div>')+'<p class="tiny muted">Paid = completed treatments with a bill (or a package session). "Done without a bill" is time given away or not rung up — check it. Healthy: 70%+; under 50% the day has too many gaps.</p></div>';
+}
+window.roOn=async v=>{if(!boss())return;const rec={on:!!v,updatedAt:new Date().toISOString()};
+ if(v){const miss=hrPeople().filter(s=>s.takes&&!ROST[s.id]);if(miss.length&&!confirm(miss.map(s=>s.name).join(', ')+' '+(miss.length>1?'have':'has')+' no roster yet and will stay bookable during opening hours. Turn on anyway?')){render();return;}}
+ try{await setDoc(doc(db,'meta','settings'),{roster:rec},{merge:true});D.meta.roster=rec;await audit('Roster',v?'bookings follow the roster':'roster off');if(typeof wbSync==='function')wbSync();render();toast(v?'Bookings now follow the roster':'Roster off');}catch(e){toast(friendly(e));}};
+async function rsPut(sid,f){const R=ROST[sid]||{staffId:sid,week:{},days:{}},x={staffId:sid,branchId:stf(sid).branchId||ME.branchId,week:{...(R.week||{})},days:{...(R.days||{})}};f(x);
+ const cut=ymd(addDays(new Date(),-70));Object.keys(x.days).forEach(k=>{if(k<cut)delete x.days[k];});x.updatedAt=new Date().toISOString();x.updatedBy=ME.name||'';
+ await setDoc(doc(db,'rosters',sid),x);ROST[sid]={id:sid,...x};if(typeof wbSync==='function'&&wbSet().on)wbSync();}
+window.roEdit=(sid,d)=>{if(!boss())return;const x=dutyRaw(sid,d)||{on:true,s:m2hm((D.meta.open||9)*60),e:m2hm((D.meta.close||20)*60)},dw=new Date(d+'T00:00:00').getDay(),R=ROST[sid]||{};
+ modal((stf(sid).name||'')+' · '+DOWN[dw]+' '+dshort(d),'<div class="card"><div class="seg"><button type="button" id="rs-y" class="'+(x.on?'on':'')+'" onclick="roTog(1)">Working</button><button type="button" id="rs-n" class="'+(!x.on?'on':'')+'" onclick="roTog(0)">Off</button></div>'+
+  '<div class="grid g2" id="rs-t" style="margin-top:10px;'+(x.on?'':'display:none')+'"><div><label>Start</label><input class="f" type="time" step="900" id="rs-s" value="'+esc(x.s)+'"></div><div><label>End</label><input class="f" type="time" step="900" id="rs-e" value="'+esc(x.e)+'"></div></div>'+
+  '<label>Note (optional)</label><input class="f" id="rs-note" maxlength="60" value="'+esc(x.note||'')+'" placeholder="e.g. training, covering Senai">'+
+  '<label class="row lptog" style="margin-top:8px"><input type="checkbox" id="rs-rep"> Make this the usual '+DOWN[dw]+' (weekly pattern)</label>'+
+  '<div class="row wrap2" style="margin-top:10px"><button class="btn" id="rs-go" onclick="roSave(\''+sid+'\',\''+d+'\')">'+ic('check',15)+'Save</button>'+((R.days||{})[d]?'<button class="btn ghost sm" onclick="roClear(\''+sid+'\',\''+d+'\')">Back to the usual '+DOWN[dw]+'</button>':'')+'</div></div>');};
+window.roTog=v=>{document.getElementById('rs-y').classList.toggle('on',!!v);document.getElementById('rs-n').classList.toggle('on',!v);document.getElementById('rs-t').style.display=v?'':'none';};
+window.roSave=async(sid,d)=>{const on=document.getElementById('rs-y').classList.contains('on'),s=document.getElementById('rs-s').value,e=document.getElementById('rs-e').value,note=document.getElementById('rs-note').value.trim().slice(0,60),rep=document.getElementById('rs-rep').checked;
+ if(on&&(!s||!e||hm(e)<=hm(s)))return toast('The shift must end after it starts');const v=on?{on:true,s,e,...(note?{note}:{})}:{on:false,...(note?{note}:{})};
+ try{await rsPut(sid,x=>{if(rep){x.week[new Date(d+'T00:00:00').getDay()]=v;delete x.days[d];}else x.days[d]=v;});await audit('Roster',(stf(sid).name||'')+' · '+d+' · '+(on?s+'–'+e:'off')+(rep?' (weekly)':''));closeModal();render();toast('Roster saved');}catch(e2){toast(friendly(e2));}};
+window.roClear=async(sid,d)=>{try{await rsPut(sid,x=>{delete x.days[d];});closeModal();render();}catch(e){toast(friendly(e));}};
+window.roPattern=sid=>{if(!boss())return;const R=ROST[sid]||{},W=R.week||{},O=m2hm((D.meta.open||9)*60),C=m2hm((D.meta.close||20)*60);
+ modal('Weekly pattern · '+(stf(sid).name||''),'<div class="card"><p class="tiny muted" style="margin:0 0 8px">The usual week. One-off changes are made by tapping a day in the roster.</p>'+
+  [1,2,3,4,5,6,0].map(i=>{const w=W[i]||(ROST[sid]?{on:false}:{on:i!==0,s:O,e:C});return '<div class="rsrow"><label class="row" style="gap:6px;min-width:84px"><input type="checkbox" class="rs-on" data-d="'+i+'" '+(w.on?'checked':'')+'> '+DOWN[i]+'</label>'+
+   '<input class="f rs-s" data-d="'+i+'" type="time" step="900" value="'+esc(w.s||O)+'"><span>–</span><input class="f rs-e" data-d="'+i+'" type="time" step="900" value="'+esc(w.e||C)+'"></div>';}).join('')+
+  '<button class="btn" id="rsp-go" style="width:100%;justify-content:center;margin-top:10px" onclick="roPatSave(\''+sid+'\')">'+ic('check',15)+'Save pattern</button></div>');};
+window.roPatSave=async sid=>{const week={};let bad=false;[0,1,2,3,4,5,6].forEach(i=>{const on=document.querySelector('.rs-on[data-d="'+i+'"]').checked,s=document.querySelector('.rs-s[data-d="'+i+'"]').value,e=document.querySelector('.rs-e[data-d="'+i+'"]').value;
+  if(on&&hm(e)<=hm(s))bad=true;week[i]=on?{on:true,s,e}:{on:false};});if(bad)return toast('Each shift must end after it starts');
+ try{await rsPut(sid,x=>{x.week=week;});await audit('Roster',(stf(sid).name||'')+' · weekly pattern');closeModal();render();toast('Pattern saved');}catch(e){toast(friendly(e));}};
+
+/* ---- Skills tab ---- */
+function hrSkills(){
+ const ppl=hrPeople().filter(s=>s.takes),S=(D.services||[]).filter(s=>s.active!==false).slice().sort((a,b)=>String(a.cat||'').localeCompare(String(b.cat||''))||String(a.name).localeCompare(b.name)),td=today();
+ const certOf=(sid,svid)=>CERTS.filter(c=>c.staffId===sid&&(c.serviceIds||[]).includes(svid));
+ let cat=null;
+ const mx='<div class="card"><div class="sec-h" style="margin-bottom:6px"><h3 style="margin:0">'+ic('award',15)+' Skills matrix</h3><span class="tiny muted">Tick who may do each treatment</span></div>'+
+  (ppl.length&&S.length?'<div class="scroll"><table class="sktbl"><tr><th>Treatment</th><th class="ctr">Needs certificate</th>'+ppl.map(p=>'<th class="ctr">'+esc(String(p.name).split(' ')[0])+'</th>').join('')+'</tr>'+
+  S.map(s=>{const any=!(s.staffOnly||[]).length;let h='';if((s.cat||'')!==cat){cat=s.cat||'';h='<tr class="skcat"><td colspan="'+(ppl.length+2)+'">'+esc(cat||'Other')+'</td></tr>';}
+   return h+'<tr><td><b>'+esc(s.name)+'</b>'+(any?'<small>everyone</small>':'')+'</td><td class="ctr"><input type="checkbox" '+(s.certReq?'checked':'')+' onchange="skReq(\''+s.id+'\',this.checked)"></td>'+
+    ppl.map(p=>{const can=any||(s.staffOnly||[]).includes(p.id),cs=certOf(p.id,s.id),ok=!s.certReq||cs.some(c=>!c.expiry||c.expiry>=td);
+     return '<td class="ctr skc'+(can&&!ok?' bad':'')+'"><input type="checkbox" '+(can?'checked':'')+' onchange="skSet(\''+s.id+'\',\''+p.id+'\',this.checked)">'+(s.certReq?(cs.length?'<small class="'+(ok?'skok':'skx')+'">'+(ok?'cert ✓':'expired')+'</small>':'<small class="skx">no cert</small>'):'')+'</td>';}).join('')+'</tr>';}).join('')+'</table></div>'+
+   '<p class="tiny muted">Only ticked people can be chosen for a treatment — at the counter, in the booking wizard and online. With "Needs certificate" ticked, they also need a certificate for it that has not expired; red cells cannot be booked until it is renewed.</p>'
+  :'<div class="tiny muted">Add treatments and staff who take bookings first.</div>')+'</div>';
+ const L=CERTS.filter(c=>(stf(c.staffId).branchId||ME.branchId)===ME.branchId).slice().sort((a,b)=>String(a.expiry||'9').localeCompare(String(b.expiry||'9')));
+ const cl='<div class="card"><div class="sec-h" style="margin-bottom:6px"><h3 style="margin:0">'+ic('idcard',15)+' Certificates & training</h3><button class="btn sm" onclick="certEdit()">'+ic('plus',13)+'Certificate</button></div>'+
+  (L.length?L.map(c=>{const st=certSt(c);return '<button class="hrrow certrow" onclick="certEdit(\''+c.id+'\')"><div style="flex:1;min-width:0;text-align:left"><b>'+esc(c.staffName||stf(c.staffId).name||'')+' · '+esc(c.name)+'</b><small>'+[c.issuer,c.no?'No. '+c.no:'',c.issued?'issued '+dshort(c.issued):'',(c.serviceIds||[]).map(id=>(svc(id)||{}).name).filter(Boolean).join(', ')].filter(Boolean).map(esc).join(' · ')+'</small></div><span class="pill '+st[1]+'">'+st[0]+'</span></button>';}).join('')
+   :'<div class="tiny muted">No certificates recorded. Add each person\'s training certificates with their expiry date — you will be reminded 30 days before one runs out.</div>')+'</div>';
+ return mx+cl;
+}
+window.skSet=async(svid,sid,v)=>{const s=svc(svid);if(!s||!boss())return;const all=hrPeople().filter(p=>p.takes).map(p=>p.id);
+ let L=(s.staffOnly||[]).length?[...s.staffOnly]:[...all];L=v?[...new Set([...L,sid])]:L.filter(x=>x!==sid);if(!L.length)return toast('At least one person must be able to do '+s.name),render();
+ if(all.every(id=>L.includes(id))&&L.length===all.length&&!(s.staffOnly||[]).length)return;
+ try{await updateDoc(doc(db,'services',svid),{staffOnly:L});s.staffOnly=L;await audit('Skills',s.name+' · '+(stf(sid).name||'')+(v?' can do':' cannot do'));if(typeof wbPublish==='function')wbPublish(false);render();}catch(e){toast(friendly(e));}};
+window.skReq=async(svid,v)=>{const s=svc(svid);if(!s||!boss())return;try{await updateDoc(doc(db,'services',svid),{certReq:!!v});s.certReq=!!v;await audit('Skills',s.name+(v?' needs a certificate':' no certificate needed'));if(typeof wbPublish==='function')wbPublish(false);render();}catch(e){toast(friendly(e));}};
+window.certEdit=id=>{if(!boss())return;const c=CERTS.find(x=>x.id===id)||{serviceIds:[]},ppl=hrPeople();
+ modal(id?'Certificate':'New certificate','<div class="card"><label>Staff</label><select class="f" id="ce-st">'+ppl.map(p=>'<option value="'+p.id+'"'+(c.staffId===p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</select>'+
+  '<label>Certificate / training</label><input class="f" id="ce-n" maxlength="80" value="'+esc(c.name||'')+'" placeholder="e.g. Hydrafacial Level 2, Laser safety">'+
+  '<div class="grid g2"><div><label>Issued by</label><input class="f" id="ce-i" maxlength="60" value="'+esc(c.issuer||'')+'"></div><div><label>Certificate no.</label><input class="f" id="ce-no" maxlength="40" value="'+esc(c.no||'')+'"></div></div>'+
+  '<div class="grid g2"><div><label>Issued on</label><input class="f" type="date" id="ce-d" value="'+esc(c.issued||'')+'"></div><div><label>Expires on</label><input class="f" type="date" id="ce-x" value="'+esc(c.expiry||'')+'"><small class="tiny muted">Leave empty if it never expires</small></div></div>'+
+  '<label>Treatments it covers</label><div class="chips">'+(D.services||[]).filter(s=>s.active!==false).map(s=>'<label class="chip"><input type="checkbox" class="ce-sv" value="'+s.id+'" '+((c.serviceIds||[]).includes(s.id)?'checked':'')+'> '+esc(s.name)+'</label>').join('')+'</div>'+
+  '<label>Note</label><input class="f" id="ce-nt" maxlength="120" value="'+esc(c.note||'')+'">'+
+  '<div class="row wrap2" style="margin-top:10px"><button class="btn" id="ce-go" onclick="certSave(\''+(id||'')+'\')">'+ic('check',15)+'Save</button>'+(id?'<button class="btn ghost sm" onclick="certDel(\''+id+'\')">'+ic('trash',13)+'Delete</button>':'')+'</div></div>');};
+window.certSave=async id=>{const g=k=>document.getElementById(k).value.trim(),sid=g('ce-st'),n=g('ce-n');if(!n)return toast('Name the certificate');
+ const iss=g('ce-d'),ex=g('ce-x');if(iss&&ex&&ex<iss)return toast('It cannot expire before it was issued');
+ const rec={staffId:sid,staffName:stf(sid).name||'',branchId:stf(sid).branchId||ME.branchId,name:n.slice(0,80),issuer:g('ce-i').slice(0,60),no:g('ce-no').slice(0,40),issued:iss,expiry:ex,serviceIds:[...document.querySelectorAll('.ce-sv:checked')].map(x=>x.value),note:g('ce-nt').slice(0,120),updatedAt:new Date().toISOString(),by:ME.name||''};
+ try{if(id){await setDoc(doc(db,'certs',id),rec);const i=CERTS.findIndex(c=>c.id===id);if(i>=0)CERTS[i]={id,...rec};}else{const r=await addDoc(collection(db,'certs'),{...rec,createdAt:rec.updatedAt});CERTS.push({id:r.id,...rec});}
+  await audit('Certificate',rec.staffName+' · '+rec.name+(ex?' · expires '+ex:''));if(typeof wbPublish==='function')wbPublish(false);closeModal();render();toast('Certificate saved');}catch(e){toast(friendly(e));}};
+window.certDel=async id=>{if(!confirm('Delete this certificate?'))return;try{await deleteDoc(doc(db,'certs',id));CERTS=CERTS.filter(c=>c.id!==id);closeModal();render();}catch(e){toast(friendly(e));}};
+
+/* ---- My HR: my shifts, my commission tier, my certificates ---- */
+{const _hm=hrMe;hrMe=function(){const h=_hm();const s=hrWho();if(!s)return h;const td=today(),out=[];
+ const days=[...Array(7)].map((_,i)=>ymd(addDays(new Date(),i)));
+ if(ROST[s.id])out.push('<div class="card"><h3 class="sdh">'+ic('calendar',15)+' My shifts · next 7 days</h3><div class="myrs">'+days.map(d=>{const lv=onLeave(s.id,d),x=dutyRaw(s.id,d);
+  return '<div class="'+(d===td?'td':'')+'"><small>'+DOWN[new Date(d+'T00:00:00').getDay()]+' '+dshort(d)+'</small><b>'+(lv&&!lv.half?'Leave':x&&x.on?x.s+'–'+x.e:'Off')+'</b></div>';}).join('')+'</div></div>');
+ if(cplan().on){const c=hrComm(s.id,td.slice(0,8)+'01',td).plan;if(c)out.push('<div class="card"><h3 class="sdh">'+ic('wallet',15)+' My commission tier · '+mLabel(td.slice(0,7))+'</h3>'+
+  '<div class="spread"><b>'+cpTierName(c.ti)+(c.pct!=null?' · '+c.pct+'% of target':'')+'</b><span class="pill g">'+rm(c.total)+'</span></div>'+
+  (c.target?'<div class="bar" style="margin:8px 0"><i style="width:'+Math.min(100,c.pct||0)+'%"></i></div>':'')+
+  '<p class="tiny muted" style="margin:0">Treatments sold '+c.tier.svc+'% · packages '+c.tier.pkg+'% · products '+c.tier.prod+'% · treatments done '+c.tier.perf+'% of rate.'+(c.next?' <b>'+rm(c.next.need)+'</b> more sales to reach '+cpTierName(c.next.ti)+' ('+c.next.t.svc+'% / '+c.next.t.pkg+'% / '+c.next.t.prod+'%).':c.target?' You are on the top tier.':'')+'</p></div>');}
+ const mc=CERTS.filter(c=>c.staffId===s.id);if(mc.length)out.push('<div class="card"><h3 class="sdh">'+ic('award',15)+' My certificates</h3>'+mc.map(c=>{const st=certSt(c);return '<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line-2)"><span>'+esc(c.name)+'</span><span class="pill '+st[1]+'">'+st[0]+'</span></div>';}).join('')+'</div>');
+ return h+out.join('');};}
+window.stState=()=>({rost:ROST,certs:CERTS,plan:cplan(),on:rosterOn()});
+window.__st={commPlanCalc,dutyOf,dutyBlock,stUtil,skCertOk,rebookOf,payAutoM:async m=>{await kpiLoad(m);return payAuto(m,kpiSales(m));},kpiRow:(m,sid)=>kpiRow(m,sid)};
 
 </script>
