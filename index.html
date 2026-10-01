@@ -2415,6 +2415,39 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .rcpjob small{grid-column:1;color:var(--ink-3);font-size:12px}
 .rcpjob span{grid-row:1/3;grid-column:2;align-self:center;font-size:13px;font-weight:600;color:var(--brass);display:flex;align-items:center;gap:3px}
 .rcdim{opacity:.55}
+/* onboarding (29q) */
+.obphase{display:flex;gap:4px;margin-top:8px}
+.obphase span{flex:1;padding:5px 7px;border-radius:8px;background:var(--line-2);color:var(--ink-3);min-width:0}
+.obphase b{display:block;font-size:11px}
+.obphase small{display:block;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.obphase span.done{background:rgba(184,146,74,.22);color:#6d5323}
+.obphase span.on{background:var(--ink);color:var(--cream)}
+.obring{flex:none;width:64px;height:64px;border-radius:50%;border:4px solid var(--brass);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.obring b{font-size:17px;line-height:1}
+.obring small{font-size:10px;color:var(--ink-3)}
+.obcols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.obcols{grid-template-columns:1fr}}
+.obcol{border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--surface)}
+.obcol.now{border-color:var(--brass);box-shadow:inset 0 3px 0 var(--brass)}
+.obcolh{padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid var(--line-2)}
+.obcolh b{display:block;font-size:13px}
+.obcolh small{font-size:11px;color:var(--ink-3)}
+.obit{display:flex;gap:7px;align-items:flex-start;padding:6px 0;font-size:13px;border-bottom:1px dashed var(--line-2)}
+.obit:last-of-type{border-bottom:0}
+.obit input{margin-top:3px}
+.obit small{display:block;font-size:11px;color:var(--ink-3);margin-top:2px}
+.obit.done>div>span,.obit.done>span{color:var(--ink-3);text-decoration:line-through}
+.obit.late{background:rgba(208,133,133,.08);border-radius:6px}
+.obsv{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(184,146,74,.18);color:#8a6a2c;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+.obit.done .obsv{background:rgba(63,125,90,.16);color:#2f6b4a}
+.obsvpick{display:grid;gap:4px;max-height:260px;overflow:auto;border:1px solid var(--line-2);border-radius:10px;padding:6px 8px}
+.obsvpick>div{display:grid;grid-template-columns:1fr 140px;gap:8px;align-items:center;font-size:13px}
+.obsvpick .f{margin:0;padding:6px 8px}
+.obq{padding:9px 0;border-bottom:1px solid var(--line-2)}
+.obq b{display:block;font-size:13.5px;margin-bottom:4px}
+.obq.bad b{color:var(--rose)}
+.obopt{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:13.5px;cursor:pointer}
+.obak .libbody{font-size:14px;line-height:1.6;max-height:48vh;overflow:auto}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2676,7 +2709,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-01p';
+const BUILD='2026-10-01q';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -23772,8 +23805,8 @@ function wbMFree(s,br,ov){
  const f=units.filter(id=>!used.has(id));return f.length?f[0]:false;
 }
 /* ---------- who may do a treatment ---------- */
-const skOk=(sid,svid)=>{const s=svc(svid);return (!(s.staffOnly||[]).length||s.staffOnly.includes(sid))&&skCertOk(sid,svid);};
-const skNames=s=>(s.staffOnly||[]).map(id=>bkFirst(stf(id).name)).filter(Boolean).join(', ');
+const skOk=(sid,svid)=>{const s=svc(svid);return (!(s.staffOnly||[]).length||s.staffOnly.includes(sid))&&skCertOk(sid,svid)&&obQualOk(sid,svid);};
+const skNames=s=>D.staff.filter(x=>x.active!==false&&x.takes&&x.branchId===ME.branchId&&skOk(x.id,s.id)).map(x=>bkFirst(x.name)).filter(Boolean).join(', ')||'someone who is signed off for it';
 
 /* ---------- no-shows and late cancellations ---------- */
 const NSC={};
@@ -26302,10 +26335,10 @@ vHR=function(){
  const td=today(),soon=ymd(addDays(new Date(),30)),certN=CERTS.filter(c=>c.expiry&&c.expiry<=soon&&(stf(c.staffId).branchId||ME.branchId)===ME.branchId).length;
  const tabs=[['me','My HR','user','']];
  if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
- if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',''],['roster','Roster','calendar',''],['skills','Skills','award',certN||''],['hire','Hiring','users',rcBadge()||'']);
+ if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',''],['roster','Roster','calendar',''],['skills','Skills','award',certN||''],['hire','Hiring','users',rcBadge()||''],['onb','Onboarding','check',obBadge()||'']);
  if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard',''],['docs','Documents','note',(HRINFO||[]).filter(i=>i.status==='submitted').length||'']);
  if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
- const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills,hire:hrHire};
+ const V={me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills,hire:hrHire,onb:hrOnb};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
 };
@@ -27177,7 +27210,7 @@ window.rcOpen=(id,keep)=>{
  const offerBox=!own?(off.status?'<p class="tiny">Offer '+esc(off.status)+(off.ref?' · '+esc(off.ref):'')+'</p>':'<p class="tiny muted" style="margin:0">The owner prepares the offer letter.</p>'):
   off.status==='sent'?'<p style="margin:0 0 6px">Sent '+dstr(off.sentAt)+' · <b>waiting for '+esc(rcFirst(a.name))+' to sign</b>'+(off.acceptBy?' (by '+dstr(off.acceptBy)+')':'')+'</p><div class="row wrap2"><button class="btn sm" onclick="rcOfferShare(\''+id+'\')">'+ic('msg',13)+'Send the link again</button><button class="btn sm ghost" onclick="rcOfferPDF(\''+id+'\')">'+ic('download',13)+'PDF</button></div>':
   off.status==='signed'?'<p style="margin:0 0 6px"><span class="pill g">'+ic('check',11)+'signed '+dstr(off.doneAt)+'</span> '+esc(off.ref||'')+'</p><div class="row wrap2"><button class="btn sm ghost" onclick="rcOfferPDF(\''+id+'\')">'+ic('download',13)+'Signed offer (PDF)</button>'+
-   (a.staffId?'<span class="pill">'+ic('idcard',11)+'in staff file: '+esc(stf(a.staffId).name||'')+'</span>':'<button class="btn sm" onclick="rcToStaff(\''+id+'\')">'+ic('idcard',13)+'Copy into a staff file</button>')+'</div>':
+   (a.staffId?'<span class="pill">'+ic('idcard',11)+'in staff file: '+esc(stf(a.staffId).name||'')+'</span>'+(obHas(a.staffId)?'':'<button class="btn sm" onclick="closeModal();obStart(\''+a.staffId+'\')">'+ic('check',13)+'Start onboarding</button>'):'<button class="btn sm" onclick="rcToStaff(\''+id+'\')">'+ic('idcard',13)+'Copy into a staff file</button>')+'</div>':
   off.status==='declined'?'<p style="margin:0 0 6px"><span class="pill r">declined</span>'+(off.reason?' "'+esc(off.reason)+'"':'')+'</p><button class="btn sm ghost" onclick="rcOfferForm(\''+id+'\')">'+ic('note',13)+'Make a new offer</button>':
   '<button class="btn sm" onclick="rcOfferForm(\''+id+'\')"'+(out?' disabled':'')+'>'+ic('note',13)+'Prepare the offer letter</button><p class="tiny muted" style="margin:6px 0 0">Made from your offer letter template, with your signature. '+esc(rcFirst(a.name))+' reads it and signs on their phone.</p>';
  const html='<div class="rcm"><div class="card"><div class="row" style="gap:12px;align-items:center"><span class="avatar big">'+esc(initials(a.name))+'</span><div style="flex:1;min-width:0">'+
@@ -27625,5 +27658,315 @@ window.opDecline=async()=>{const L=RCOL.L,en=L.lang==='en';const r=prompt(en?'Co
  try{const p={status:'declined',declineReason:String(r).trim().slice(0,200),declinedAt:new Date().toISOString()};await updateDoc(doc(db,'offerLinks',L.id),p);Object.assign(L,p);opPaint();}
  catch(e){toast(en?'Could not send.':'Tidak dapat dihantar.');}};
 window.__rc=()=>({RCJ,RCA,RCE,MYEVAL,RCOF});
+
+
+/* ============ HR: onboarding new staff ============ */
+/* When someone joins, the owner or a manager starts their onboarding: a first-days checklist
+   (uniform, system access, SOP introduction, their buddy), the company policies they read and
+   acknowledge on their own phone (with a few questions to show they understood), a 30/60/90-day
+   training plan, and treatment sign-offs. While onboarding, a new therapist can only be booked for
+   the treatments they have been signed off for — at the counter, in the booking wizard and on the
+   online booking page. The sign-off is scored by a senior therapist on their own phone. */
+const OB_ITEMS=[['uniform','Uniform & name tag','Pakaian seragam & tag nama'],['locker','Locker, keys & staff area','Loker, kunci & ruang staf'],
+ ['access','App login & attendance code','Akses sistem: login & kod kehadiran','access'],['tour','Shop tour, fire exits & first-aid kit','Lawatan premis, pintu kecemasan & peti pertolongan cemas'],
+ ['sop','SOP & policies read and acknowledged','Pengenalan SOP & polisi syarikat','policies'],['buddy','Introduced to their buddy / mentor','Pengenalan kepada mentor / buddy','buddy'],
+ ['team','Introduced to the team','Pengenalan kepada pasukan'],['roster','First month\'s roster given','Jadual kerja bulan pertama','roster'],['menu','Treatment menu, products & prices walkthrough','Pengenalan menu rawatan, produk & harga']];
+const OB_PLANS={
+ therapist:{name:'Therapist',p:{30:['Shadow their buddy on at least 10 treatments','Learn the treatment menu, prices and packages','Hygiene & room set-up practical, checked by the buddy','Consultation form and skin analysis','Booking and checkout in the app'],
+  60:['Practise treatments on staff or models under supervision','Aftercare advice and homecare recommendation script','Complaint handling role-play','First treatments on real clients with the buddy present'],
+  90:['Handle clients independently','Reach the rebooking target for a month','Probation review with the manager']}},
+ frontdesk:{name:'Front desk',p:{30:['Booking, moving and cancelling in the app','Checkout, packages and payments','Phone and WhatsApp greeting script','Opening & closing SOP'],
+  60:['Close the day and cash count alone','Explain packages and memberships to a client','Handle a complaint with the manager watching'],90:['Run the counter alone on a busy day','Probation review with the manager']}}};
+const OB_PH=[[30,'Day 1–30','Learn & observe'],[60,'Day 31–60','Practise with supervision'],[90,'Day 61–90','Work independently']];
+let OBD={},QUALS={},OBCFG=null,OBBOOT=0,OBV=null,OBREADS={},OBACKS={},OBQ=null;
+const obDay=o=>o&&o.start?Math.max(1,daysBetween(o.start,today())+1):0;
+const obHas=sid=>!!OBD[sid];
+const obActive=sid=>{const o=OBD[sid];return !!o&&o.status==='active';};
+const obDue=(o,ph)=>o&&o.start?ymd(addDays(new Date(o.start+'T00:00:00'),ph-1)):'';
+const obPol=()=>((OBCFG||{}).policies||[]).filter(id=>libDoc(id));
+
+/* ---------- data, for everyone signed in (bookings need it) ---------- */
+function obBoot(){
+ if(OBBOOT||!ME||ME.role==='accountant')return;OBBOOT=1;
+ try{unsub.push(onSnapshot(collection(db,'onboard'),s=>{OBD={};s.docs.forEach(d=>{OBD[d.id]={id:d.id,...d.data()};});if(['hr','home','book'].includes(TAB))obRender();},e=>console.warn('onboard',e)));}catch(e){}
+ try{unsub.push(onSnapshot(collection(db,'quals'),s=>{QUALS={};s.docs.forEach(d=>{QUALS[d.id]={id:d.id,...d.data()};});if(['hr','home','book'].includes(TAB))obRender();},e=>console.warn('quals',e)));}catch(e){}
+ getDoc(doc(db,'onbConfig','main')).then(s=>{OBCFG=s.exists()?s.data():{};if(['hr','home'].includes(TAB))render();}).catch(()=>{OBCFG={};});
+}
+function obRender(){const a=document.activeElement,m=document.querySelector('#modal .card');if(m&&a&&m.contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;render();}
+{const _r=render;render=function(){_r.apply(this,arguments);try{obBoot();}catch(e){console.warn(e);}};window.render=render;}
+
+/* ---------- the booking gate ---------- */
+function obQualOk(sid,svid){const o=OBD[sid];if(!o||o.status!=='active'||!o.gate)return true;const q=QUALS[sid+'_'+svid];return !!q&&q.status==='passed';}
+{const _c=wbConfig;wbConfig=function(){const c=_c();const all=D.staff.filter(u=>u.takes&&u.active!==false).map(u=>u.id);
+ if(!Object.values(OBD).some(o=>o.status==='active'&&o.gate))return c;
+ c.services.forEach(x=>{if((x.st||[]).includes('__none'))return;const base=(x.st&&x.st.length)?x.st:all,ok=base.filter(id=>obQualOk(id,x.id));
+  if(ok.length!==base.length)x.st=ok.length?ok:['__none'];});return c;};}
+const obRepublish=()=>{try{if(typeof wbPublish==='function')wbPublish(false);}catch(e){}};
+
+/* ---------- policies: read, answer, acknowledge ---------- */
+function obAckOf(reads,id){const d=libDoc(id),r=(reads||{})[id];return !!(d&&r&&r.ack&&(r.version||0)>=(d.version||1));}
+const obMyPending=()=>obPol().filter(id=>!obAckOf(LIBREADS,id));
+async function obReadsFor(sid,force){
+ if(OBREADS[sid]&&!force)return OBREADS[sid];
+ try{const s=await getDocs(query(collection(db,'libReads'),where('uid','==',sid)));const m={};s.docs.forEach(d=>{const x=d.data();m[x.docId]=x;});OBREADS[sid]=m;}catch(e){OBREADS[sid]={};}
+ return OBREADS[sid];
+}
+function obQuizParse(t){const out=[];let cur=null;String(t||'').split('\n').map(l=>l.trim()).filter(Boolean).forEach(l=>{
+ if(l.startsWith('?')){cur={q:l.slice(1).trim(),o:[],a:-1};out.push(cur);}else if(cur&&/^[*-]/.test(l)){if(l[0]==='*')cur.a=cur.o.length;cur.o.push(l.slice(1).trim());}});
+ return out.filter(q=>q.q&&q.o.length>=2&&q.a>=0).slice(0,5);}
+const obQuizText=Q=>(Q||[]).map(q=>'? '+q.q+'\n'+q.o.map((o,i)=>(i===q.a?'* ':'- ')+o).join('\n')).join('\n\n');
+let OBAK=null;
+window.obAck=id=>{
+ const d=libDoc(id);if(!d)return;if(isBranch())return toast('Open this on your own phone, signed in as yourself');
+ const Q=((OBCFG||{}).quiz||{})[id]||[];OBAK={id,ans:{}};
+ modal(d.title,'<div class="card obak"><div class="libbody">'+libMd(d.body)+'</div></div>'+
+  (Q.length?'<div class="card"><h3 style="margin:0 0 4px">'+ic('check',15)+' Semak kefahaman · Check your understanding</h3><p class="tiny muted" style="margin:0 0 8px">Jawab semua soalan dengan betul untuk mengesahkan.</p>'+
+   Q.map((q,i)=>'<div class="obq" data-q="'+i+'"><b>'+(i+1)+'. '+esc(q.q)+'</b>'+q.o.map((o,j)=>'<label class="obopt"><input type="radio" name="obq'+i+'" value="'+j+'" onchange="obAns('+i+','+j+')"> <span>'+esc(o)+'</span></label>').join('')+'</div>').join('')+'</div>':'')+
+  '<div class="card"><label>Nama penuh · Full name</label><input class="f" id="oa-n" value="'+esc(ME.name||'')+'">'+
+  '<label class="row" style="gap:8px;align-items:flex-start;font-size:13px;margin-top:8px"><input type="checkbox" id="oa-ok" style="margin-top:3px"> Saya telah membaca, memahami dan akan mematuhi "'+esc(d.title)+'" (versi '+(d.version||1)+'). · I have read, understood and will follow it.</label>'+
+  '<div id="oa-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" id="oa-go" style="width:100%;justify-content:center" onclick="obAckSave()">'+ic('signature',15)+'Sahkan · Acknowledge</button></div>');
+};
+window.obAns=(i,j)=>{OBAK.ans[i]=j;const el=document.querySelector('.obq[data-q="'+i+'"]');if(el)el.classList.remove('bad');};
+window.obAckSave=async()=>{
+ const id=OBAK.id,d=libDoc(id),Q=((OBCFG||{}).quiz||{})[id]||[],e=$('#oa-e'),n=($('#oa-n').value||'').trim();
+ const wrong=Q.map((q,i)=>OBAK.ans[i]===q.a?-1:i).filter(i=>i>=0);
+ if(wrong.length){wrong.forEach(i=>{const el=document.querySelector('.obq[data-q="'+i+'"]');if(el)el.classList.add('bad');});e.textContent=(Q.length-wrong.length)+' of '+Q.length+' correct. Read the part again and try the ones marked red.';return;}
+ if(n.length<3){e.textContent='Type your full name.';return;}
+ if(!$('#oa-ok').checked){e.textContent='Tick the box to confirm.';return;}
+ const r={uid:UID,name:ME.name||'',docId:id,version:d.version||1,at:new Date().toISOString(),ack:true,ackName:n.slice(0,80),quiz:Q.length};
+ $('#oa-go').disabled=true;
+ try{await setDoc(doc(db,'libReads',UID+'_'+id),r);LIBREADS[id]=r;if(OBREADS[UID])OBREADS[UID][id]=r;
+  await audit('Policy acknowledged',d.title+' v'+r.version+' · '+ME.name);window.closeModal();render();toast('Terima kasih — acknowledged');}
+ catch(err){e.textContent=friendly(err);$('#oa-go').disabled=false;}
+};
+/* the Library's "I have read it" becomes the acknowledgement for these */
+{const _m=window.libMarkRead;window.libMarkRead=id=>obPol().includes(id)?window.obAck(id):_m(id);}
+
+/* ---------- starter policies (BM), for the owner to adapt ---------- */
+const OB_START=[
+ {key:'handbook',cat:'policy',title:'Buku Panduan Pekerja',body:'## Waktu kerja & kehadiran\n- Datang 15 minit sebelum syif dan punch in dalam app setiap hari\n- Lewat lebih 3 kali sebulan akan diberi amaran lisan\n- Tukar syif hanya dengan kelulusan pengurus\n\n## Cuti\n- Cuti tahunan dimohon dalam app sekurang-kurangnya 3 hari lebih awal\n- MC: maklumkan pengurus sebelum syif bermula dan hantar sijil dalam app dalam masa 24 jam\n\n## Penampilan\n- Pakaian seragam bersih dan bergosok, tag nama dipakai\n- Kuku pendek dan bersih, rambut kemas, tiada bau rokok\n\n## Telefon & media sosial\n- Telefon disimpan di loker — tidak dibawa ke bilik rawatan\n- Tidak boleh ambil gambar atau video klien tanpa kebenaran bertulis\n\n## Gaji & komisen\n- Gaji dibayar sebelum 7hb setiap bulan; komisen dikira dalam app dan boleh disemak dalam My HR\n\n## Tatatertib\n- Langkah biasa: amaran lisan → surat amaran → amaran terakhir → siasatan dalaman\n- Salah laku berat (mencuri, menerima bayaran klien secara peribadi, gangguan) boleh membawa kepada penamatan serta-merta',
+  quiz:[{q:'Bila perlu punch in kehadiran?',o:['Setiap hari dalam app','Seminggu sekali','Bila pengurus minta'],a:0},{q:'Jika ambil MC, bila sijil perlu dihantar?',o:['Hujung bulan','Dalam masa 24 jam','Tidak perlu'],a:1},{q:'Di mana telefon disimpan semasa bekerja?',o:['Dalam poket','Di bilik rawatan','Di loker'],a:2}]},
+ {key:'hygiene',cat:'sop',title:'SOP Kebersihan & Sanitasi',match:/kebersihan/i,body:'## Sebelum setiap klien\n1. Cuci tangan 20 saat dengan sabun, keringkan dengan tisu pakai buang\n2. Tukar cadar, tuala dan penutup muka yang bersih\n3. Lap katil, troli dan peralatan dengan disinfektan\n4. Keluarkan alat steril dari kabinet UV / autoclave\n\n## Semasa rawatan\n- Guna spatula — jangan cedok produk dengan jari\n- Pakai sarung tangan untuk ekstraksi, waxing dan rawatan mesin\n- Alat pakai buang (jarum, lancet) terus ke bekas tajam\n\n## Selepas klien\n- Linen kotor terus ke bakul tertutup\n- Rendam alat dalam larutan disinfektan mengikut masa pada label, kemudian sterilkan\n- Buang sisa klinikal dalam beg kuning\n\n## Jika klien ada luka, jangkitan atau ruam\n- Jangan teruskan rawatan di kawasan itu dan maklumkan pengurus',
+  quiz:[{q:'Berapa lama mencuci tangan sebelum rawatan?',o:['5 saat','20 saat','Tidak perlu jika pakai sarung tangan'],a:1},{q:'Bagaimana mengambil produk dari balang?',o:['Dengan jari yang bersih','Dengan spatula','Terus dari balang ke muka'],a:1},{q:'Klien ada ruam di kawasan rawatan. Apa tindakan anda?',o:['Teruskan perlahan-lahan','Jangan rawat kawasan itu dan maklumkan pengurus','Sapu krim dan teruskan'],a:1}]},
+ {key:'service',cat:'sop',title:'SOP Layanan Pelanggan',body:'## Sambutan\n1. Sambut klien dalam 10 saat dengan senyuman dan nama mereka jika tahu\n2. Tawarkan minuman, semak tempahan dan borang konsultasi\n\n## Semasa rawatan\n- Terangkan setiap langkah secara ringkas\n- Tanya tentang tekanan dan keselesaan sekurang-kurangnya dua kali\n- Hormati privasi: tutup badan klien dengan tuala, ketuk pintu sebelum masuk\n\n## Selepas rawatan\n- Beri nasihat aftercare dan cadangkan produk yang sesuai — tanpa paksaan\n- Cadangkan tarikh sesi seterusnya dan buat tempahan jika klien setuju\n\n## Aduan: dengar, mohon maaf, selesaikan, terima kasih\n1. Dengar tanpa mencelah\n2. Mohon maaf atas pengalaman mereka\n3. Tawarkan penyelesaian atau panggil pengurus\n4. Ucap terima kasih dan rekod aduan dalam app',
+  quiz:[{q:'Dalam berapa lama klien perlu disambut?',o:['10 saat','5 minit','Bila selesai kerja lain'],a:0},{q:'Klien tidak mahu beli produk yang dicadangkan. Apa anda buat?',o:['Pujuk sehingga beli','Hormati keputusan dan teruskan aftercare','Beritahu pengurus'],a:1},{q:'Langkah pertama bila klien membuat aduan?',o:['Terangkan kenapa klien salah','Dengar tanpa mencelah','Beri diskaun terus'],a:1}]},
+ {key:'pdpa',cat:'policy',title:'Polisi Kerahsiaan Data Pelanggan',body:'## Maklumat klien adalah sulit\nNama, telefon, alamat, sejarah rawatan, keadaan kulit dan kesihatan, gambar sebelum/selepas — semuanya dilindungi Akta Perlindungan Data Peribadi 2010.\n\n## Anda mesti\n- Guna maklumat klien hanya untuk kerja anda di sini\n- Log keluar dari app bila meninggalkan kaunter\n- Ambil gambar sebelum/selepas hanya dengan app syarikat dan selepas klien bersetuju\n\n## Anda tidak boleh\n- Simpan nombor atau gambar klien dalam telefon peribadi\n- Kongsi maklumat atau gambar klien di media sosial atau dengan orang luar\n- Hubungi klien untuk urusan peribadi atau perniagaan lain\n- Bawa senarai klien apabila berhenti kerja\n\n## Jika berlaku kebocoran\n- Laporkan kepada pengurus atau pemilik dengan segera, walaupun tidak pasti\n\nMelanggar polisi ini adalah salah laku berat.',
+  quiz:[{q:'Bolehkah anda simpan nombor klien dalam telefon peribadi?',o:['Boleh jika klien tetap','Tidak boleh','Boleh selepas waktu kerja'],a:1},{q:'Bila boleh ambil gambar sebelum/selepas?',o:['Bila-bila masa','Dengan app syarikat selepas klien bersetuju','Untuk posting peribadi'],a:1},{q:'Anda tersilap hantar gambar klien kepada orang lain. Apa perlu dibuat?',o:['Diam sahaja','Padam dan lupakan','Laporkan kepada pengurus dengan segera'],a:2}]}];
+window.obStarter=async()=>{
+ if(!boss())return;const now=new Date().toISOString(),pol=[...((OBCFG||{}).policies||[])],quiz={...((OBCFG||{}).quiz||{})};let made=0;
+ try{for(const a of OB_START){let d=LIB.find(x=>x.kind==='article'&&(x.title===a.title||(a.match&&a.match.test(x.title||''))));
+   if(!d){const id='kb_onb_'+a.key,data={kind:'article',cat:a.cat,title:a.title,body:a.body.replace(/\{biz\}/g,(D.meta.biz||{}).name||'kami'),tags:['onboarding'],mustRead:true,version:1,createdAt:now,updatedAt:now,updatedBy:UID,updatedByName:ME.name||''};
+    await setDoc(doc(db,'library',id),data);LIB.push({id,...data});d={id,...data};made++;}
+   if(!pol.includes(d.id))pol.push(d.id);if(!quiz[d.id])quiz[d.id]=a.quiz;}
+  await obCfgSave({policies:pol,quiz});await audit('Onboarding policies set up',made+' new articles');render();toast(made?made+' policies added to the Library — adapt them to your spa':'Policies linked');}
+ catch(e){toast(friendly(e));}
+};
+async function obCfgSave(p){const c={...(OBCFG||{}),...p,updatedAt:new Date().toISOString(),updatedBy:UID};await setDoc(doc(db,'onbConfig','main'),c);OBCFG=c;}
+
+/* ---------- a person's onboarding ---------- */
+function obState(sid){
+ const o=OBD[sid],s=stf(sid);if(!o)return null;const reads=sid===UID?LIBREADS:OBREADS[sid];
+ const pol=obPol(),polDone=reads?pol.filter(id=>obAckOf(reads,id)).length:null;
+ const items=OB_ITEMS.map(([k,en,bm,auto])=>{const m=(o.items||{})[k];let a=false;
+  if(auto==='access')a=!!s.attCode;else if(auto==='policies')a=pol.length>0&&polDone===pol.length;else if(auto==='buddy')a=!!o.buddyId&&!!m;else if(auto==='roster')a=!!(typeof ROST!=='undefined'&&ROST[sid]);
+  return {k,en,bm,auto:!!auto&&auto!=='buddy',done:(auto==='buddy'?a:(a||!!m)),at:m&&m.at,by:m&&m.by};});
+ const plan=(o.plan||[]).map(p=>p.svc?{...p,done:(QUALS[sid+'_'+p.svc]||{}).status==='passed'}:p);
+ const sv=plan.filter(p=>p.svc),td=today(),late=plan.filter(p=>!p.done&&obDue(o,p.ph)<td);
+ return {o,items,iDone:items.filter(x=>x.done).length,plan,pDone:plan.filter(p=>p.done).length,pol,polDone,sv,svDone:sv.filter(p=>p.done).length,late,day:obDay(o)};
+}
+const obPct=st=>{const t=st.items.length+st.plan.length+st.pol.length,d=st.iDone+st.pDone+(st.polDone||0);return t?Math.round(d/t*100):0;};
+function obBadge(){if(!boss())return '';return Object.values(OBD).filter(o=>o.status==='active'&&(stf(o.staffId).branchId||ME.branchId)===ME.branchId).filter(o=>{const st=obState(o.staffId);return st&&st.late.length;}).length;}
+function hrOnb(){
+ if(!boss())return '';obBoot();
+ if(OBCFG===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ if(OBV&&stf(OBV).id&&OBD[OBV])return obPage(OBV);
+ const A=Object.values(OBD).filter(o=>o.status==='active'&&(isOwnerMe()||(stf(o.staffId).branchId||ME.branchId)===ME.branchId)).sort((a,b)=>String(b.start).localeCompare(String(a.start)));
+ const D2=Object.values(OBD).filter(o=>o.status==='done').sort((a,b)=>String(b.doneAt).localeCompare(String(a.doneAt))).slice(0,8);
+ A.forEach(o=>{if(!OBREADS[o.staffId])obReadsFor(o.staffId).then(()=>{if(TAB==='hr'&&HRV==='onb')render();});});
+ const pol=obPol(),wait=Object.values(QUALS).filter(q=>q.status==='assigned');
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('check',15)+' New staff onboarding</h3><button class="btn sm" onclick="obStart()">'+ic('plus',13)+'Start onboarding</button></div>'+
+   (A.length?A.map(o=>{const st=obState(o.staffId),s=stf(o.staffId),ph=st.day<=30?0:st.day<=60?1:2;
+    return '<button class="hrfile obrow" data-ob="'+o.staffId+'" onclick="obOpen(\''+o.staffId+'\')"><span class="avatar">'+esc(initials(s.name))+'</span><div style="flex:1;min-width:0"><b>'+esc(s.name)+'</b>'+
+     '<small>Day '+st.day+' of 90 · '+OB_PH[ph][1]+(o.buddyName?' · buddy '+esc(o.buddyName):'')+(o.gate?' · '+st.svDone+'/'+st.sv.length+' treatments signed off':'')+'</small>'+
+     '<div class="bar" style="margin-top:5px"><i class="brass" style="width:'+obPct(st)+'%"></i></div></div>'+
+     (st.late.length?'<span class="pill r">'+st.late.length+' overdue</span>':'')+(st.polDone!==null&&st.polDone<pol.length?'<span class="pill a">'+(pol.length-st.polDone)+' polic'+(pol.length-st.polDone>1?'ies':'y')+' to read</span>':'')+
+     '<span class="pill">'+obPct(st)+'%</span></button>';}).join(''):'<p class="tiny muted" style="margin:0">Nobody is onboarding. Start it on someone\'s first day — or from their hire in Hiring.</p>')+
+   (D2.length?'<details style="margin-top:8px"><summary class="tiny">Completed ('+D2.length+')</summary>'+D2.map(o=>'<div class="hrrow" style="cursor:pointer" onclick="obOpen(\''+o.staffId+'\')"><div style="flex:1"><b>'+esc(stf(o.staffId).name||o.name||'')+'</b><small>Started '+dstr(o.start)+' · completed '+dstr(o.doneAt)+'</small></div></div>').join('')+'</details>':'')+'</div>'+
+  (wait.length?'<div class="card"><h3 style="margin:0 0 6px">'+ic('award',15)+' Sign-offs waiting for an assessor</h3>'+wait.map(q=>'<div class="hrrow"><div style="flex:1"><b>'+esc(q.staffName)+' · '+esc(q.serviceName)+'</b><small>Assessor: '+esc(q.assessorName||'')+(q.when?' · '+rcWhenTxt(q.when):'')+'</small></div><span class="pill a">waiting</span></div>').join('')+'</div>':'')+
+  obPolCard();
+}
+window.obOpen=sid=>{OBV=sid;OBQ=null;if(TAB!=='hr'||HRV!=='onb'){HRV='onb';window.go('hr');}else render();obReadsFor(sid,true).then(()=>{if(OBV===sid)render();});};
+window.obBack=()=>{OBV=null;render();};
+{const _t=window.hrTab;window.hrTab=v=>{OBV=null;_t(v);};}
+window.obStart=sid=>{
+ if(!boss())return;const P=hrPeople().filter(s=>s.role!=='owner'&&!obActive(s.id)),takes=s=>!!stf(s).takes;
+ if(!P.length)return toast('Everyone already has onboarding');const first=sid&&P.some(p=>p.id===sid)?sid:P[0].id;
+ modal('Start onboarding','<div class="card"><label>New staff member</label><select class="f" id="os-s" onchange="obStartSvc()">'+P.map(s=>'<option value="'+s.id+'"'+(s.id===first?' selected':'')+'>'+esc(s.name)+' · '+esc(s.position||ROLE[s.role]||'')+'</option>').join('')+'</select>'+
+  '<div class="grid g2"><div><label>First day</label><input class="f" type="date" id="os-d" value="'+esc(stf(first).joinDate||today())+'"></div>'+
+  '<div><label>Buddy / mentor</label><select class="f" id="os-b"><option value="">—</option>'+hrPeople().filter(s=>s.id!==first).map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select></div></div>'+
+  '<label>Training plan</label><select class="f" id="os-p">'+Object.entries(OB_PLANS).map(([k,v])=>'<option value="'+k+'"'+(k===(takes(first)?'therapist':'frontdesk')?' selected':'')+'>'+v.name+'</option>').join('')+'</select>'+
+  '<label class="row" style="gap:8px;margin:10px 0;align-items:flex-start"><input type="checkbox" id="os-g"'+(takes(first)?' checked':'')+' onchange="obStartSvc()" style="margin-top:3px"> <span>Treatments need a sign-off before they can be booked alone<br><small class="muted">Until they pass, the calendar, the booking wizard and the online booking page will not offer them for that treatment.</small></span></label>'+
+  '<div id="os-sv"></div><button class="btn" style="width:100%;justify-content:center;margin-top:10px" id="os-go" onclick="obStartDo()">'+ic('check',15)+'Start</button></div>');
+ setTimeout(obStartSvc,0);
+};
+window.obStartSvc=()=>{const box=$('#os-sv');if(!box)return;if(!$('#os-g').checked){box.innerHTML='';return;}
+ const S=(D.services||[]).filter(s=>s.active!==false&&s.bookable!==false);
+ box.innerHTML='<label>Treatments to sign off, and by when</label><div class="obsvpick">'+S.map(s=>'<div><span>'+esc(s.name)+'</span><select class="f os-sv" data-s="'+s.id+'"><option value="">not needed yet</option>'+OB_PH.map(p=>'<option value="'+p[0]+'"'+(p[0]===60?' selected':'')+'>by day '+p[0]+'</option>').join('')+'</select></div>').join('')+'</div>'+
+  '<p class="tiny muted">"Not needed yet" means they cannot be booked for it until you add a sign-off later.</p>';};
+window.obStartDo=async()=>{
+ const sid=$('#os-s').value,s=stf(sid),bid=$('#os-b').value,pk=$('#os-p').value,gate=$('#os-g').checked,start=$('#os-d').value||today(),now=new Date().toISOString();
+ const plan=[];let n=0;const id=()=>'p'+(n++).toString(36)+Date.now().toString(36).slice(-4);
+ OB_PH.forEach(([ph])=>(OB_PLANS[pk].p[ph]||[]).forEach(t=>plan.push({id:id(),ph,t})));
+ if(gate)document.querySelectorAll('.os-sv').forEach(el=>{if(el.value)plan.push({id:id(),ph:+el.value,t:'Signed off: '+(svc(el.dataset.s).name||''),svc:el.dataset.s});});
+ const o={staffId:sid,name:s.name||'',branchId:s.branchId||ME.branchId,start,buddyId:bid,buddyName:bid?stf(bid).name||'':'',gate,plan,planKind:pk,items:{},status:'active',createdAt:now,createdBy:UID,updatedAt:now};
+ $('#os-go').disabled=true;
+ try{await setDoc(doc(db,'onboard',sid),o);OBD[sid]={id:sid,...o};await audit('Onboarding started',s.name+(bid?' · buddy '+o.buddyName:'')+(gate?' · sign-offs needed':''));
+  obRepublish();window.closeModal();obOpen(sid);toast('Onboarding started'+(gate?' — '+rcFirst(s.name)+' is bookable only for signed-off treatments':''));}
+ catch(e){toast(friendly(e));$('#os-go').disabled=false;}
+};
+function obPage(sid){
+ const st=obState(sid),o=st.o,s=stf(sid),td=today(),pol=st.pol,reads=OBREADS[sid]||{};
+ const head='<div class="card"><button class="btn sm ghost" onclick="obBack()">'+ic('left',14)+'All onboarding</button>'+
+  '<div class="row" style="gap:12px;margin-top:10px;align-items:center"><span class="avatar big">'+esc(initials(s.name))+'</span><div style="flex:1;min-width:0"><h2 style="margin:0">'+esc(s.name)+'</h2>'+
+   '<div class="muted" style="font-size:13px">'+(o.status==='done'?'Completed '+dstr(o.doneAt):'Day '+st.day+' of 90')+' · started '+dstr(o.start)+(o.buddyName?' · buddy '+esc(o.buddyName):'')+'</div>'+
+   '<div class="obphase">'+OB_PH.map(([ph,l,d],i)=>'<span class="'+(st.day>ph||o.status==='done'?'done':st.day>(i?OB_PH[i-1][0]:0)?'on':'')+'"><b>'+l+'</b><small>'+d+'</small></span>').join('')+'</div></div>'+
+   '<div class="obring"><b>'+obPct(st)+'%</b><small>done</small></div></div>'+
+  (o.gate&&o.status==='active'?'<div class="warnbox" style="margin-top:10px">'+ic('shield',13)+' Bookable only for signed-off treatments: <b>'+(st.plan.filter(p=>p.svc&&p.done).map(p=>esc(svc(p.svc).name||'')).join(', ')||'none yet')+'</b></div>':'')+
+  '<div class="row wrap2" style="margin-top:10px">'+(o.status==='active'?'<button class="btn sm ghost" onclick="obBuddy(\''+sid+'\')">'+ic('users',13)+(o.buddyId?'Change buddy':'Assign a buddy')+'</button><button class="btn sm ghost" onclick="obGate(\''+sid+'\','+(o.gate?0:1)+')">'+ic('shield',13)+(o.gate?'Stop limiting bookings':'Limit bookings to sign-offs')+'</button><button class="btn sm" onclick="obDone(\''+sid+'\')">'+ic('check',13)+'Complete onboarding</button>':
+   '<button class="btn sm ghost" onclick="obReopen(\''+sid+'\')">'+ic('refresh',13)+'Reopen</button>')+'</div></div>';
+ const items='<div class="card"><h3 style="margin:0 0 6px">'+ic('check',15)+' First days checklist <span class="muted tiny">'+st.iDone+'/'+st.items.length+'</span></h3>'+
+  st.items.map(x=>'<label class="onbrow'+(x.done?' done':'')+'" data-it="'+x.k+'"><input type="checkbox" '+(x.done?'checked ':'')+(x.auto||(x.k==='buddy'&&!o.buddyId)?'disabled ':'')+'onchange="obItem(\''+sid+'\',\''+x.k+'\',this.checked)"><span>'+esc(x.en)+' <span class="muted">· '+esc(x.bm)+'</span>'+
+   (x.auto?'<small>'+(x.done?'from the records':x.k==='access'?'set an attendance code under Team':x.k==='sop'?'ticks itself when every policy is acknowledged':'add them to the roster')+'</small>':x.at?'<small>ticked '+dshort(x.at)+(x.by?' by '+esc(x.by):'')+'</small>':x.k==='buddy'&&!o.buddyId?'<small>assign a buddy first</small>':'')+'</span></label>').join('')+'</div>';
+ const polc='<div class="card"><h3 style="margin:0 0 6px">'+ic('note',15)+' Policies & SOP <span class="muted tiny">'+(st.polDone??'…')+'/'+pol.length+'</span></h3>'+
+  (pol.length?pol.map(id=>{const d=libDoc(id),r=reads[id],ok=obAckOf(reads,id);return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(d.title)+'</b><small>'+(ok?'Acknowledged '+dstr(r.at)+' as "'+esc(r.ackName||r.name)+'"'+(r.quiz?' · '+r.quiz+'/'+r.quiz+' questions right':''):r&&r.ack?'Acknowledged an older version — needs to read v'+(d.version||1):'Not yet')+'</small></div>'+
+   '<span class="pill '+(ok?'g':'a')+'">'+(ok?ic('check',11)+'done':'to read')+'</span></div>';}).join('')+(st.polDone<pol.length&&waNum(s.phone)?'<a class="btn sm ghost" style="text-decoration:none;margin-top:8px" target="_blank" href="https://wa.me/'+waNum(s.phone)+'?text='+encodeURIComponent('Hai '+rcFirst(s.name)+', sila buka app → HR → My HR dan baca serta sahkan polisi syarikat yang belum selesai. Terima kasih! 🌿')+'">'+ic('msg',13)+'Remind by WhatsApp</a>':'')
+   :'<p class="tiny muted" style="margin:0">No policies chosen yet — set them up below.</p>')+'</div>';
+ const phase=([ph,l,d])=>{const L=st.plan.filter(p=>p.ph===ph),due=obDue(o,ph);
+  return '<div class="obcol"><div class="obcolh"><b>'+l+'</b><small>'+d+' · due '+dshort(due)+'</small></div>'+L.map(p=>{const q=p.svc?QUALS[sid+'_'+p.svc]:null,late=!p.done&&due<td;
+   return '<div class="obit'+(p.done?' done':'')+(late?' late':'')+'" data-p="'+p.id+'">'+(p.svc?'<span class="obsv">'+ic(p.done?'check':'award',12)+'</span>':'<input type="checkbox" '+(p.done?'checked ':'')+'onchange="obPlanTick(\''+sid+'\',\''+p.id+'\',this.checked)">')+
+    '<div style="flex:1;min-width:0"><span>'+esc(p.t)+'</span>'+(p.svc?'<small>'+(q?q.status==='passed'?'Passed '+dshort(q.doneAt||q.at)+' · '+esc(q.assessorName||'')+' · '+q.total+'/'+q.max:q.status==='assigned'?'Waiting for '+esc(q.assessorName||''):q.status==='failed'?'Not yet — try again ('+dshort(q.doneAt||q.at)+')':'':'Not assessed yet')+'</small>'+
+     (o.status==='active'&&!p.done?'<div class="row" style="gap:5px;margin-top:4px"><button class="btn sm" onclick="obAssess(\''+sid+'\',\''+p.svc+'\')">Assess now</button>'+(q&&q.status==='assigned'?'':'<button class="btn sm ghost" onclick="obAssign(\''+sid+'\',\''+p.svc+'\')">Ask a senior</button>')+'</div>':''):p.at&&p.done?'<small>'+dshort(p.at)+(p.by?' · '+esc(p.by):'')+'</small>':'')+'</div>'+
+    (o.status==='active'&&!p.svc?'<button class="lpx" onclick="obPlanDel(\''+sid+'\',\''+p.id+'\')">✕</button>':'')+'</div>';}).join('')+
+   (o.status==='active'?'<button class="lpx" onclick="obPlanAdd(\''+sid+'\','+ph+')">+ add</button>':'')+'</div>';};
+ const plan='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('calendar',15)+' 30 / 60 / 90-day plan <span class="muted tiny">'+st.pDone+'/'+st.plan.length+'</span></h3>'+(o.status==='active'?'<button class="btn sm ghost" onclick="obSvcAdd(\''+sid+'\')">'+ic('award',13)+'Add a treatment sign-off</button>':'')+'</div><div class="obcols">'+OB_PH.map(phase).join('')+'</div></div>';
+ return head+'<div class="grid g2" style="align-items:start">'+items+polc+'</div>'+plan;
+}
+window.obItem=async(sid,k,on)=>{const o=OBD[sid],it={...(o.items||{})};if(on)it[k]={at:new Date().toISOString(),by:ME.name||''};else delete it[k];
+ try{await updateDoc(doc(db,'onboard',sid),{items:it,updatedAt:new Date().toISOString(),updatedBy:UID});o.items=it;render();}catch(e){toast(friendly(e));render();}};
+window.obPlanTick=async(sid,pid,on)=>{const o=OBD[sid],plan=(o.plan||[]).map(p=>p.id===pid?{...p,done:!!on,at:on?new Date().toISOString():'',by:on?ME.name||'':''}:p);
+ try{await updateDoc(doc(db,'onboard',sid),{plan,updatedAt:new Date().toISOString(),updatedBy:UID});o.plan=plan;render();}catch(e){toast(friendly(e));render();}};
+window.obPlanAdd=async(sid,ph)=>{const t=prompt('What should they learn or do by day '+ph+'?','');if(!t||!t.trim())return;const o=OBD[sid],plan=[...(o.plan||[]),{id:'p'+Date.now().toString(36),ph,t:t.trim().slice(0,120)}];
+ try{await updateDoc(doc(db,'onboard',sid),{plan,updatedAt:new Date().toISOString()});o.plan=plan;render();}catch(e){toast(friendly(e));}};
+window.obPlanDel=async(sid,pid)=>{const o=OBD[sid],plan=(o.plan||[]).filter(p=>p.id!==pid);try{await updateDoc(doc(db,'onboard',sid),{plan});o.plan=plan;render();}catch(e){toast(friendly(e));}};
+window.obSvcAdd=sid=>{const o=OBD[sid],have=new Set((o.plan||[]).filter(p=>p.svc).map(p=>p.svc)),S=(D.services||[]).filter(s=>s.active!==false&&!have.has(s.id));
+ if(!S.length)return toast('Every treatment is already on the plan');
+ modal('Add a treatment sign-off','<div class="card"><label>Treatment</label><select class="f" id="oa-sv">'+S.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select><label>By</label><select class="f" id="oa-ph">'+OB_PH.map(p=>'<option value="'+p[0]+'">day '+p[0]+'</option>').join('')+'</select>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="obSvcAddDo(\''+sid+'\')">'+ic('check',15)+'Add</button></div>');};
+window.obSvcAddDo=async sid=>{const o=OBD[sid],v=$('#oa-sv').value,plan=[...(o.plan||[]),{id:'p'+Date.now().toString(36),ph:+$('#oa-ph').value,t:'Signed off: '+(svc(v).name||''),svc:v}];
+ try{await updateDoc(doc(db,'onboard',sid),{plan});o.plan=plan;window.closeModal();render();}catch(e){toast(friendly(e));}};
+window.obBuddy=sid=>{const o=OBD[sid];modal('Buddy for '+(stf(sid).name||''),'<div class="card"><select class="f" id="ob-b"><option value="">—</option>'+hrPeople().filter(s=>s.id!==sid).map(s=>'<option value="'+s.id+'"'+(s.id===o.buddyId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+ '<p class="tiny muted">Their buddy sees the plan in My HR and can tick items off.</p><button class="btn" style="width:100%;justify-content:center" onclick="obBuddyDo(\''+sid+'\')">'+ic('check',15)+'Save</button></div>');};
+window.obBuddyDo=async sid=>{const b=$('#ob-b').value,p={buddyId:b,buddyName:b?stf(b).name||'':''};try{await updateDoc(doc(db,'onboard',sid),p);Object.assign(OBD[sid],p);window.closeModal();render();}catch(e){toast(friendly(e));}};
+window.obGate=async(sid,on)=>{if(!on&&!confirm('Let '+(stf(sid).name||'')+' be booked for any treatment they are ticked for in Skills, without sign-offs?'))return;
+ try{await updateDoc(doc(db,'onboard',sid),{gate:!!on});OBD[sid].gate=!!on;await audit('Onboarding booking limit '+(on?'on':'off'),stf(sid).name||'');obRepublish();render();}catch(e){toast(friendly(e));}};
+window.obDone=async sid=>{const st=obState(sid),left=st.items.length-st.iDone+st.plan.length-st.pDone+(st.pol.length-(st.polDone||0));
+ if(!confirm((left?left+' item'+(left>1?'s are':' is')+' still open. ':'')+'Complete onboarding for '+(stf(sid).name||'')+'? Booking limits are lifted — the Skills matrix and certificates still apply.'))return;
+ const now=new Date().toISOString();try{await updateDoc(doc(db,'onboard',sid),{status:'done',doneAt:now,doneBy:ME.name||'',openAtEnd:left});Object.assign(OBD[sid],{status:'done',doneAt:now});
+  await audit('Onboarding completed',(stf(sid).name||'')+(left?' · '+left+' items open':''));obRepublish();render();toast('Onboarding completed');}catch(e){toast(friendly(e));}};
+window.obReopen=async sid=>{try{await updateDoc(doc(db,'onboard',sid),{status:'active'});OBD[sid].status='active';obRepublish();render();}catch(e){toast(friendly(e));}};
+
+/* ---------- treatment sign-off ---------- */
+const OB_SIGN=RC_PRAC;
+let OBSF=null;
+window.obAssign=(sid,svid)=>{
+ modal('Sign-off · '+(svc(svid).name||''),'<div class="card"><p class="tiny muted" style="margin:0 0 8px">'+esc(stf(sid).name||'')+' performs '+esc(svc(svid).name||'')+' on a model or staff member while a senior therapist watches and scores it on their own phone.</p>'+
+  '<label>Assessor</label><select class="f" id="og-a">'+hrPeople().filter(s=>s.id!==sid).map(s=>'<option value="'+s.id+'"'+(s.id===(OBD[sid]||{}).buddyId?' selected':'')+'>'+esc(s.name)+' · '+esc(s.position||ROLE[s.role]||'')+'</option>').join('')+'</select>'+
+  '<label>When</label><input class="f" type="datetime-local" id="og-w">'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="obAssignDo(\''+sid+'\',\''+svid+'\')">'+ic('check',15)+'Assign</button></div>');};
+window.obAssignDo=async(sid,svid)=>{const a=$('#og-a').value,id=sid+'_'+svid,old=QUALS[id]||{},now=new Date().toISOString();
+ const q={staffId:sid,staffName:stf(sid).name||'',serviceId:svid,serviceName:svc(svid).name||'',status:'assigned',assessorId:a,assessorName:stf(a).name||'',when:$('#og-w').value||'',
+  scores:{},total:0,max:OB_SIGN.length*5,result:'',notes:'',practice:0,at:now,createdBy:UID,history:old.history||[]};
+ try{await setDoc(doc(db,'quals',id),q);QUALS[id]={id,...q};await audit('Sign-off assigned',q.staffName+' · '+q.serviceName+' → '+q.assessorName);window.closeModal();render();toast('Assigned to '+rcFirst(q.assessorName));}catch(e){toast(friendly(e));}};
+window.obAssess=(sid,svid)=>{
+ const q=QUALS[sid+'_'+svid];OBSF={sid,svid,scores:{},result:''};
+ modal('Sign-off · '+esc(stf(sid).name||(q||{}).staffName||'')+' · '+esc(svc(svid).name||(q||{}).serviceName||''),'<div class="card rcef"><p class="tiny muted" style="margin:0 0 8px">Score what you saw, 1 (poor) to 5 (excellent). To pass: average 3.5 or more and nothing below 3 — a client will be in their hands.</p>'+
+  OB_SIGN.map(([k,en,bm,g])=>'<div class="rccrit"><div class="spread"><b>'+en+' <span class="muted tiny">'+bm+'</span></b><div class="rcsc obsc" data-k="'+k+'">'+[1,2,3,4,5].map(v=>'<button type="button" data-v="'+v+'" onclick="obSc(\''+k+'\','+v+')">'+v+'</button>').join('')+'</div></div><small>1 · '+esc(g[0])+'&nbsp;&nbsp; 3 · '+esc(g[1])+'&nbsp;&nbsp; 5 · '+esc(g[2])+'</small></div>').join('')+
+  '<div class="grid g2"><div><label>Times practised on models</label><input class="f" type="number" min="0" id="oq-p" value="'+((q||{}).practice||'')+'"></div><div><label>Result</label><div class="seg" id="oq-r">'+[['passed','Pass'],['failed','Not yet']].map(r=>'<button type="button" data-v="'+r[0]+'" onclick="obRes(\''+r[0]+'\')">'+r[1]+'</button>').join('')+'</div></div></div>'+
+  '<p class="tiny muted" id="oq-sug" style="margin:4px 0 0"></p><label>Notes</label><textarea class="f" id="oq-n" rows="2" maxlength="400" placeholder="What to practise next, or what was excellent"></textarea>'+
+  '<div id="oq-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" id="oq-go" style="width:100%;justify-content:center" onclick="obAssessSave()">'+ic('check',15)+'Save sign-off</button></div>');};
+window.obSc=(k,v)=>{OBSF.scores[k]=v;document.querySelectorAll('.obsc[data-k="'+k+'"] button').forEach(b=>b.classList.toggle('on',+b.dataset.v===v));
+ const sc=OB_SIGN.map(c=>OBSF.scores[c[0]]).filter(Boolean);if(sc.length===OB_SIGN.length){const av=sc.reduce((t,x)=>t+x,0)/sc.length,ok=av>=3.5&&Math.min(...sc)>=3;
+  $('#oq-sug').textContent='Average '+av.toFixed(1)+' — suggested: '+(ok?'Pass':'Not yet');if(!OBSF.result)obRes(ok?'passed':'failed');}};
+window.obRes=v=>{OBSF.result=v;document.querySelectorAll('#oq-r button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));};
+window.obAssessSave=async()=>{
+ const F=OBSF,e=$('#oq-e');if(OB_SIGN.some(c=>!F.scores[c[0]])){e.textContent='Score every line first.';return;}if(!F.result){e.textContent='Choose pass or not yet.';return;}
+ const id=F.sid+'_'+F.svid,old=QUALS[id],now=new Date().toISOString(),total=OB_SIGN.reduce((t,c)=>t+F.scores[c[0]],0);
+ const p={status:F.result,scores:F.scores,total,max:OB_SIGN.length*5,result:F.result,notes:($('#oq-n').value||'').trim().slice(0,400),practice:+$('#oq-p').value||0,doneAt:now,
+  history:[...((old||{}).history||[]),...(old&&old.status&&old.status!=='assigned'?[{status:old.status,total:old.total,at:old.doneAt||old.at,by:old.assessorName||''}]:[])].slice(-10)};
+ $('#oq-go').disabled=true;
+ try{if(old&&old.status==='assigned'&&old.assessorId===UID&&!boss()){await updateDoc(doc(db,'quals',id),p);}
+  else await setDoc(doc(db,'quals',id),{...p,staffId:F.sid,staffName:stf(F.sid).name||(old||{}).staffName||'',serviceId:F.svid,serviceName:svc(F.svid).name||(old||{}).serviceName||'',assessorId:UID,assessorName:ME.name||'',at:now,createdBy:UID});
+  QUALS[id]={...(old||{}),id,...p};await audit(F.result==='passed'?'Treatment signed off':'Sign-off not yet passed',(stf(F.sid).name||'')+' · '+(svc(F.svid).name||'')+' · '+total+'/'+p.max);
+  if(F.result==='passed'){const s=svc(F.svid);if((s.staffOnly||[]).length&&!s.staffOnly.includes(F.sid)&&boss()){try{const L=[...s.staffOnly,F.sid];await updateDoc(doc(db,'services',F.svid),{staffOnly:L});s.staffOnly=L;}catch(err){console.warn(err);}}obRepublish();}
+  window.closeModal();render();toast(F.result==='passed'?rcFirst(stf(F.sid).name||'')+' can now be booked for '+(svc(F.svid).name||''):'Saved — not yet');}
+ catch(err){e.textContent=friendly(err);$('#oq-go').disabled=false;}
+};
+
+/* ---------- policies set-up card (owner / manager) ---------- */
+function obPolCard(){
+ const pol=obPol(),arts=LIB.filter(x=>x.kind==='article'&&['sop','policy'].includes(x.cat));
+ if(!OBACKS.__t||Date.now()-OBACKS.__t>60000){OBACKS.__t=Date.now();Promise.all(pol.map(id=>getDocs(query(collection(db,'libReads'),where('docId','==',id))).then(s=>{OBACKS[id]=s.docs.map(d=>d.data());}).catch(()=>{OBACKS[id]=[];}))).then(()=>{if(TAB==='hr'&&HRV==='onb'&&!OBV)render();});}
+ const team=hrPeople().filter(s=>s.role!=='owner');
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('note',15)+' Policies everyone acknowledges</h3><button class="btn sm ghost" onclick="obPolEdit()">'+ic('edit',13)+'Choose</button></div>'+
+  (pol.length?pol.map(id=>{const d=libDoc(id),A=(OBACKS[id]||[]).filter(r=>r.ack&&(r.version||0)>=(d.version||1)),ok=new Set(A.map(r=>r.uid)),miss=team.filter(s=>!ok.has(s.id));
+   return '<div class="hrrow" data-pol="'+id+'"><div style="flex:1;min-width:0"><b>'+esc(d.title)+' <span class="muted tiny">v'+(d.version||1)+' · '+((((OBCFG||{}).quiz||{})[id]||[]).length)+' questions</span></b><small>'+(miss.length?'Not yet: '+miss.slice(0,6).map(s=>rcFirst(s.name)).join(', ')+(miss.length>6?' +'+(miss.length-6):''):'Everyone has acknowledged')+'</small></div>'+
+    '<span class="pill '+(miss.length?'a':'g')+'">'+ok.size+'/'+team.length+'</span><button class="iconbtn" style="padding:4px" title="Questions" onclick="obQuizEdit(\''+id+'\')">'+ic('edit',13)+'</button></div>';}).join('')+
+   '<p class="tiny muted" style="margin:8px 0 0">Editing an article in the Library gives it a new version — everyone is asked to read and acknowledge it again.</p>'
+  :'<p class="tiny muted" style="margin:0 0 8px">Choose the handbook, SOPs and policies every new person must read and acknowledge. Start with four ready-made ones in Bahasa Malaysia (with questions), then adapt them.</p>'+
+   '<button class="btn sm" onclick="obStarter()">'+ic('plus',13)+'Add the 4 starter policies</button>')+'</div>';
+}
+window.obPolEdit=()=>{const pol=new Set(obPol()),A=LIB.filter(x=>x.kind==='article');
+ modal('Policies for everyone','<div class="card"><p class="tiny muted" style="margin:0 0 8px">Ticked articles must be read and acknowledged by every staff member, in My HR.</p>'+
+  A.map(a=>'<label class="row" style="gap:8px;padding:6px 0;border-bottom:1px solid var(--line-2)"><input type="checkbox" class="op-a" value="'+a.id+'"'+(pol.has(a.id)?' checked':'')+'> <span>'+esc(a.title)+' <span class="muted tiny">'+esc(libCat(a.cat)[1])+'</span></span></label>').join('')+
+  (OB_START.some(s=>!A.some(a=>a.title===s.title||(s.match&&s.match.test(a.title||''))))?'<button class="btn sm ghost" style="margin-top:8px" onclick="obStarter()">'+ic('plus',13)+'Add the starter policies</button>':'')+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="obPolSave()">'+ic('check',15)+'Save</button></div>');};
+window.obPolSave=async()=>{try{await obCfgSave({policies:[...document.querySelectorAll('.op-a:checked')].map(x=>x.value)});window.closeModal();OBACKS.__t=0;render();}catch(e){toast(friendly(e));}};
+window.obQuizEdit=id=>{const d=libDoc(id),Q=((OBCFG||{}).quiz||{})[id]||[];
+ modal('Questions · '+d.title,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Up to 5 questions. Start a question with <b>?</b>, the right answer with <b>*</b> and the others with <b>-</b>.</p>'+
+  '<textarea class="f" id="oq-t" rows="14" placeholder="? Berapa lama mencuci tangan?\n* 20 saat\n- 5 saat">'+esc(obQuizText(Q))+'</textarea><div id="oq-x" class="tiny" style="color:var(--rose)"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:8px" onclick="obQuizSave(\''+id+'\')">'+ic('check',15)+'Save</button></div>');};
+window.obQuizSave=async id=>{const t=$('#oq-t').value,Q=obQuizParse(t);if(t.trim()&&!Q.length){$('#oq-x').textContent='No complete question found — each needs "?", one "*" and at least one "-".';return;}
+ try{await obCfgSave({quiz:{...((OBCFG||{}).quiz||{}),[id]:Q}});window.closeModal();render();toast(Q.length+' question'+(Q.length!==1?'s':'')+' saved');}catch(e){toast(friendly(e));}};
+
+/* ---------- My HR: my onboarding, policies to acknowledge, people I help ---------- */
+function obMyCard(){
+ if(!ME||isBranch())return '';obBoot();const out=[],o=OBD[UID];
+ const pend=isOwnerMe()?[]:obMyPending();
+ if(pend.length)out.push('<div class="card obmine"><h3 style="margin:0 0 6px">'+ic('note',15)+' Polisi untuk dibaca & disahkan <span class="muted tiny">Policies to acknowledge</span></h3>'+
+  pend.map(id=>{const d=libDoc(id),r=LIBREADS[id];return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(d.title)+'</b><small>'+(r&&r.ack?'Updated — please read the new version':'Read it, answer '+((((OBCFG||{}).quiz||{})[id]||[]).length||'no')+' short questions, and confirm')+'</small></div><button class="btn sm" onclick="obAck(\''+id+'\')">'+ic('signature',13)+'Baca & sahkan</button></div>';}).join('')+'</div>');
+ if(o&&o.status==='active'){const st=obState(UID),ph=st.day<=30?0:st.day<=60?1:2;
+  out.push('<div class="card obmine"><div class="sec-h"><h3 style="margin:0">'+ic('check',15)+' My onboarding · day '+st.day+' of 90</h3><span class="pill">'+obPct(st)+'%</span></div>'+
+   (o.buddyName?'<p class="tiny" style="margin:0 0 6px">Your buddy: <b>'+esc(o.buddyName)+'</b> — ask them anything.</p>':'')+
+   '<div class="obcols">'+OB_PH.map(([p,l,d],i)=>'<div class="obcol'+(i===ph?' now':'')+'"><div class="obcolh"><b>'+l+'</b><small>'+d+'</small></div>'+st.plan.filter(x=>x.ph===p).map(x=>'<div class="obit'+(x.done?' done':'')+'">'+ic(x.done?'check':x.svc?'award':'clock',12)+'<span>'+esc(x.t)+'</span></div>').join('')+'</div>').join('')+'</div>'+
+   (o.gate?'<p class="tiny muted" style="margin:8px 0 0">You are booked only for treatments you have been signed off for: <b>'+(st.plan.filter(x=>x.svc&&x.done).map(x=>esc(svc(x.svc).name||'')).join(', ')||'none yet')+'</b>.</p>':'')+'</div>');}
+ const bud=Object.values(OBD).filter(x=>x.status==='active'&&x.buddyId===UID);
+ bud.forEach(b=>{const st=obState(b.staffId);out.push('<div class="card obmine"><h3 style="margin:0 0 6px">'+ic('users',15)+' You are '+esc(rcFirst(b.name))+'\'s buddy · day '+st.day+'</h3>'+
+  st.plan.filter(x=>!x.svc&&!x.done&&x.ph<=Math.max(30,Math.ceil(st.day/30)*30)).slice(0,6).map(x=>'<label class="onbrow"><input type="checkbox" onchange="obPlanTick(\''+b.staffId+'\',\''+x.id+'\',this.checked)"><span>'+esc(x.t)+'<small>by day '+x.ph+'</small></span></label>').join('')+
+  '<p class="tiny muted" style="margin:6px 0 0">Tick what '+esc(rcFirst(b.name))+' can now do on their own.</p></div>');});
+ const q=Object.values(QUALS).filter(x=>x.status==='assigned'&&x.assessorId===UID);
+ if(q.length)out.push('<div class="card obmine"><h3 style="margin:0 0 6px">'+ic('award',15)+' Treatment sign-offs for you to assess</h3>'+q.map(x=>'<div class="hrrow"><div style="flex:1"><b>'+esc(x.staffName)+' · '+esc(x.serviceName)+'</b><small>'+(x.when?rcWhenTxt(x.when):'when you are both free')+'</small></div><button class="btn sm" onclick="obAssess(\''+x.staffId+'\',\''+x.serviceId+'\')">'+ic('edit',13)+'Assess</button></div>').join('')+'</div>');
+ return out.join('');
+}
+{const _h=hrMe;hrMe=function(){const h=_h.apply(this,arguments);return obMyCard()+h;};}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(!ME||isBranch())return;obBoot();
+ const pend=OBCFG&&!isOwnerMe()?obMyPending():[];if(pend.length)al.push({i:'note',t:pend.length+' polic'+(pend.length>1?'ies':'y')+' to read & acknowledge',d:pend.slice(0,3).map(id=>libDoc(id).title).join(', '),go:"hrGo('me')"});
+ const q=Object.values(QUALS).filter(x=>x.status==='assigned'&&x.assessorId===UID);if(q.length)al.push({i:'award',t:q.length+' treatment sign-off'+(q.length>1?'s':'')+' for you to assess',d:q.slice(0,3).map(x=>rcFirst(x.staffName)+' · '+x.serviceName).join(', '),go:"hrGo('me')"});
+ if(boss()){const late=Object.values(OBD).filter(o=>o.status==='active'&&(stf(o.staffId).branchId||ME.branchId)===ME.branchId).map(o=>({o,st:obState(o.staffId)})).filter(x=>x.st&&x.st.late.length);
+  if(late.length)al.push({i:'check',t:'Onboarding behind plan',d:late.slice(0,3).map(x=>rcFirst(x.o.name)+' · '+x.st.late.length+' overdue').join(', '),go:"obGoTab()"});
+  const rev=Object.values(OBD).filter(o=>o.status==='active'&&obDay(o)>=85);if(rev.length)al.push({i:'star',t:'Day 90 — complete onboarding',d:rev.map(o=>rcFirst(o.name)+' day '+obDay(o)).join(', '),go:"obGoTab()"});}};}
+window.obGoTab=()=>{OBV=null;HRV='onb';window.go('hr');};
+/* the paperwork checklist in Documents ticks "training plan and buddy" by itself */
+{const _o=onbState;onbState=function(sid){return _o(sid).map(z=>z.k==='train'&&OBD[sid]&&OBD[sid].buddyId?{...z,done:true}:z);};}
+window.__ob=()=>({OBD,QUALS,OBCFG,OBREADS,gate:(sid,svid)=>obQualOk(sid,svid),sk:(sid,svid)=>skOk(sid,svid),names:svid=>skNames(svc(svid)),wb:()=>wbConfig()});
 
 </script>
