@@ -2448,6 +2448,17 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .obq.bad b{color:var(--rose)}
 .obopt{display:flex;gap:8px;align-items:center;padding:4px 0;font-size:13.5px;cursor:pointer}
 .obak .libbody{font-size:14px;line-height:1.6;max-height:48vh;overflow:auto}
+/* payroll & statutory (29r) */
+.prseg{overflow-x:auto;scrollbar-width:none;margin:0 0 12px}
+.prseg button{white-space:nowrap;display:flex;align-items:center;gap:5px}
+.prwarn{margin:0 0 8px}
+.prwarn.r{background:rgba(208,133,133,.14);border-color:rgba(208,133,133,.5)}
+.prdue{width:100%}
+.prdue td{padding:8px 4px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.prdue td:first-child{font-weight:600;font-size:13px}
+.prdue td:last-child{text-align:right;white-space:nowrap}
+.prset td{vertical-align:top}
+.prrates td{padding:6px 4px;border-bottom:1px solid var(--line-2)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2709,7 +2720,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-01q';
+const BUILD='2026-10-01r';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -27968,5 +27979,446 @@ window.obGoTab=()=>{OBV=null;HRV='onb';window.go('hr');};
 /* the paperwork checklist in Documents ticks "training plan and buddy" by itself */
 {const _o=onbState;onbState=function(sid){return _o(sid).map(z=>z.k==='train'&&OBD[sid]&&OBD[sid].buddyId?{...z,done:true}:z);};}
 window.__ob=()=>({OBD,QUALS,OBCFG,OBREADS,gate:(sid,svid)=>obQualOk(sid,svid),sk:(sid,svid)=>skOk(sid,svid),names:svid=>skNames(svc(svid)),wb:()=>wbConfig()});
+
+
+/* ============ HR: payroll and statutory contributions (2026) ============ */
+/* Rates live in dated versions, so a month is always worked out with the rates in force that
+   month, and the owner can add a new version the day the government changes one (without
+   waiting for an app update). Checked against official sources on 1 October 2026:
+   - KWSP: 11% employee; employer 13% (wages to RM5,000) / 12% above; 60+: employer 4%;
+     foreign workers 2% + 2% from October 2025 wages (Third Schedule Part F, rounded up to RM1).
+   - PERKESO: wage ceiling RM6,000; Category 1 employer 1.75% + employee 0.5%; Category 2 (60+)
+     and foreign workers: employer 1.25%. SIP 0.2% + 0.2% (not for foreign workers or 60+).
+     LINDUNG 24 Jam (SKBBK) 0.75% employee from June 2026 — voluntary for Malaysians from
+     8 July 2026 (opt-out), still compulsory for foreign workers; 60+ included.
+     Amounts follow the PERKESO band tables (RM100 bands, mid-point of the band).
+   - PCB: LHDN computerised calculation (2026 specification): reliefs D 9,000, S 4,000,
+     Q 2,000 a child, EPF relief up to 4,000; rounded up to 5 sen; under RM10 not deducted;
+     non-residents 30% flat.
+   - Minimum wage RM1,700 a month (RM8.72 an hour), all employers since 1 August 2025.
+   - HRD Corp: 1% of basic + fixed allowances of Malaysian staff when there are 10 or more
+     Malaysian employees (0.5% optional for 5–9). */
+const PR_BASE={from:'2000-01',epfEE:.11,epfER_lo:.13,epfER_hi:.12,epfER60:.04,epfFor:0,
+ socsoCap:6000,socsoEE:.005,socsoER:.0175,socsoEI:.0125,eis:.002,lin:0,
+ minWage:1700,minWageHr:8.72,otCap:4000,hrdMin:10,hrdRate:.01,hrdOptMin:5,hrdOptRate:.005,
+ D:9000,S:4000,Q:2000,epfRelief:4000,nonRes:.30,
+ tax:[[5000,.01,-400,-800],[20000,.03,-250,-650],[35000,.06,600,600],[50000,.11,1500,1500],[70000,.19,3700,3700],[100000,.25,9400,9400],[400000,.26,84400,84400],[600000,.28,136400,136400],[2000000,.30,528400,528400]]};
+const PR_BUILT=[{from:'2025-10',epfFor:.02,note:'KWSP: foreign workers 2% employee + 2% employer from October 2025 wages',src:'kwsp.gov.my'},
+ {from:'2026-06',lin:.0075,note:'PERKESO LINDUNG 24 Jam: 0.75% employee from June 2026 (voluntary for Malaysians from 8 July 2026)',src:'perkeso.gov.my'}];
+const PR_FIELDS=[['minWage','Minimum wage (RM / month)',1],['minWageHr','Minimum wage (RM / hour)',1],['epfFor','KWSP foreign worker rate (each side)',100],['lin','LINDUNG 24 Jam (employee)',100],
+ ['socsoCap','PERKESO / SIP wage ceiling (RM)',1],['socsoEE','PERKESO employee',100],['socsoER','PERKESO employer',100],['socsoEI','PERKESO employer — foreign / 60+',100],['eis','SIP each side',100],
+ ['epfEE','KWSP employee',100],['epfER_lo','KWSP employer, wages to RM5,000',100],['epfER_hi','KWSP employer, above RM5,000',100],['hrdRate','HRD Corp levy',100],['otCap','Overtime required up to basic of (RM)',1]];
+let PRC=null,PRTAB='run',YTDM={},PREA=null;
+function rateFor(m){let r={...PR_BASE};[...PR_BUILT,...(((PRC||{}).rates)||[])].filter(v=>v.from<=m).sort((a,b)=>a.from.localeCompare(b.from)).forEach(v=>{const{from,note,src,by,at,...x}=v;Object.assign(r,x);});return r;}
+async function prcLoad(){if(PRC||!isOwnerMe())return;try{const s=await getDoc(doc(db,'payrollConfig','main'));PRC=s.exists()?s.data():{};}catch(e){PRC={};}if(TAB==='hr')render();}
+async function prcSave(p){PRC={...(PRC||{}),...p,updatedAt:new Date().toISOString(),updatedBy:UID};await setDoc(doc(db,'payrollConfig','main'),PRC);}
+const prUp5=x=>Math.ceil(Math.round(x*100)/5-1e-9)*5/100;
+const prRnd=(x,step,tieUp)=>{const c=Math.round(x*10000)/100,k=c/step,f=Math.floor(k),d=k-f;return (d>.5+1e-9||(Math.abs(d-.5)<1e-9&&tieUp)?f+1:f)*step/100;};
+
+/* ---------- KWSP ---------- */
+epfOf=function(wage,f,m){
+ const R=rateFor(m||PAYM||today().slice(0,7));if(!(wage>10))return {ee:0,er:0};
+ const foreign=f.citizen==='Foreign worker',old=ageAt(f.dob,m)>=60;
+ if(foreign)return R.epfFor?{ee:Math.ceil(wage*R.epfFor-1e-9),er:Math.ceil(wage*R.epfFor-1e-9)}:{ee:0,er:0};
+ const band=wage<=5000?Math.ceil(wage/20)*20:wage<=20000?Math.ceil(wage/100)*100:wage;
+ const eeR=old?0:R.epfEE,erR=old?R.epfER60:(wage<=5000?R.epfER_lo:R.epfER_hi);
+ return {ee:Math.ceil(band*eeR-1e-9),er:Math.ceil(band*erR-1e-9)};
+};
+/* ---------- PERKESO, SIP, LINDUNG 24 Jam — the band tables ---------- */
+function prBandMid(w,cap){if(w<=0)return 0;if(w>cap)w=cap;const B=[[30,20],[50,40],[70,60],[100,85],[140,120],[200,170],[300,250]];for(const [hi,mid] of B)if(w<=hi)return mid;const hi=Math.ceil(w/100-1e-9)*100;return hi-50;}
+socsoOf=function(wage,f,m){
+ const R=rateFor(m||PAYM||today().slice(0,7)),mid=prBandMid(Math.max(0,wage),R.socsoCap);
+ const foreign=f.citizen==='Foreign worker',old=ageAt(f.dob,m)>=60;
+ const lin=R.lin&&(foreign||!f.lindungOut)&&mid?prRnd(mid*R.lin,5,true):0;
+ if(!mid)return {ee:0,er:0,eisEE:0,eisER:0,lin:0};
+ if(foreign||old)return {ee:0,er:prRnd(mid*R.socsoEI,10,true),eisEE:0,eisER:0,lin};
+ const ee=prRnd(mid*R.socsoEE,5,false),tot=prRnd(mid*(R.socsoEE+R.socsoER),10,true),eis=prRnd(mid*R.eis,5,true);
+ return {ee,er:r2(tot-ee),eisEE:eis,eisER:eis,lin};
+};
+/* ---------- PCB / MTD (LHDN computerised calculation) ---------- */
+function prCat(L){const mar=L.marital||'Single';if(mar==='Married'&&L.spouseWorks==='No')return 2;if(mar==='Married'||mar==='Divorced'||mar==='Widowed')return 3;return (+L.children||0)>0?3:1;}
+function prTax(P,R,cat){if(P<=R.tax[0][0])return 0;let row=R.tax[0];for(const t of R.tax)if(P>t[0])row=t;return (P-row[0])*row[1]+(cat===2?row[3]:row[2]);}
+function mtdOf(L,m,c){
+ const R=rateFor(m);if(L.taxRes==='Non-resident')return prUp5(c.gross*R.nonRes);
+ const mo=+m.slice(5,7),n=12-mo,cat=prCat(L),kids=cat===1?0:(+L.children||0);
+ const Yt=Math.max(0,(+L.bonus||0)+(+L.kpiBonus||0)),Y1=Math.max(0,c.gross-Yt);
+ const epfN=Math.min(c.epfEE,epfOf(Math.max(0,c.epfWage-Yt),L,m).ee),epfT=Math.max(0,c.epfEE-epfN);
+ const K=Math.min(+L.ytdK||0,R.epfRelief),K1=Math.min(epfN,R.epfRelief-K),Kt=Math.min(epfT,Math.max(0,R.epfRelief-K-K1));
+ const K2=n>0?Math.min(K1,Math.max(0,(R.epfRelief-(K+K1+Kt))/n)):0;
+ const rel=R.D+(cat===2?R.S:0)+kids*R.Q,Y=+L.ytdY||0,X=+L.ytdX||0;
+ const P0=(Y-K)+(Y1-K1)+(Y1-K2)*n-rel;
+ let m1=(prTax(P0,R,cat)-X)/(n+1);m1=m1>0?prUp5(m1):0;if(m1<10)m1=0;
+ let add=0;if(Yt>0){const T1=prTax(P0+(Yt-Kt),R,cat);add=T1-(X+m1*(n+1));add=add>0?prUp5(add):0;if(add<10)add=0;}
+ return r2(m1+add);
+}
+/* ---------- one person, one month ---------- */
+payCalc=function(L,m){
+ const R=rateFor(m),day=L.basic/PAYRATE.days,hour=day/PAYRATE.hrs;
+ const otHours=L.otHours!=null&&L.otHours!==''?+L.otHours:0,otRest=+L.otRest||0,otPH=+L.otPH||0;
+ const otPay=r2(otHours*hour*1.5+otRest*hour*2+otPH*hour*3);
+ const unpaid=r2(day*(+L.unpaidDays||0));
+ const comm=r2((+L.commSales||0)+(+L.commHands||0));
+ const gross=r2(L.basic+L.allowance+comm+otPay+(+L.bonus||0)+(+L.kpiBonus||0)+(+L.otherAdd||0)-unpaid);
+ const f={citizen:L.citizen,dob:L.dob,lindungOut:L.lindungOut};
+ const epfWage=r2(gross-otPay),socWage=r2(gross-(+L.bonus||0));
+ const e=epfOf(epfWage,f,m),so=socsoOf(socWage,f,m);
+ const pick=(k,v)=>L[k]!=null&&L[k]!==''?r2(+L[k]):v;
+ const epfEE=pick('epfEE',e.ee),epfER=pick('epfER',e.er),socsoEE=pick('socsoEE',so.ee),socsoER=pick('socsoER',so.er),
+  eisEE=pick('eisEE',so.eisEE),eisER=pick('eisER',so.eisER),linEE=pick('linEE',so.lin);
+ const pcbAuto=L.pcbMode==='fixed'?(+L.pcbDefault||0):mtdOf(L,m,{gross,epfEE,epfWage});
+ const pcb=pick('pcb',pcbAuto);
+ const malay=L.citizen!=='Foreign worker',hrd=PRC&&PRC.hrdOn&&malay?r2((+L.basic+(+L.allowance||0))*(PRC.hrdRate||R.hrdRate)):0;
+ const ded=r2(epfEE+socsoEE+eisEE+linEE+pcb+(+L.advance||0)+(+L.otherDed||0));
+ const net=r2(gross-ded+(+L.claims||0));
+ const flags=[];if(['Full-time','Probation','Contract',''].includes(L.empType||'')&&L.basic>0&&L.basic<R.minWage)flags.push('minwage');
+ if(L.basic>R.otCap&&(otHours||otRest||otPH))flags.push('otcap');
+ return {otHours,otRest,otPH,otPay,unpaid,comm,gross,epfWage,socWage,epfEE,epfER,socsoEE,socsoER,eisEE,eisER,linEE,pcb,pcbAuto,hrd,ded,net,
+  cost:r2(gross+epfER+socsoER+eisER+hrd),flags,est:{epf:e,so,pcb:pcbAuto}};
+};
+payTotals=function(d){
+ const t={gross:0,net:0,epfEE:0,epfER:0,socsoEE:0,socsoER:0,eisEE:0,eisER:0,linEE:0,pcb:0,hrd:0,cost:0,claims:0};
+ Object.values(d.lines||{}).forEach(L=>{const c=payCalc(L,d.month);Object.keys(t).forEach(k=>{if(k!=='claims')t[k]=r2(t[k]+(c[k]||0));});t.claims=r2(t.claims+(+L.claims||0));});
+ return t;
+};
+MAN.push('otRest','otPH','linEE');
+/* what the staff file says for tax and contributions, and this year so far */
+{const _pa=payAuto;payAuto=async function(m,sales){const L=await _pa(m,sales),F=HRSTAFF||{};
+ return L.map(x=>{const f=F[x.staffId]||{},y=YTDM[x.staffId]||{};
+  return {...x,empType:f.empType||'',marital:f.marital||'',spouseWorks:f.spouseWorks||'',children:+f.children||0,taxRes:f.taxRes||'Resident',
+   pcbMode:f.pcbMode||((f.pcb!==undefined&&f.pcb!=='')?'fixed':'auto'),lindungOut:!!f.lindungOut,passport:f.passport||'',nationality:f.nationality||'',country:f.country||'',
+   ytdY:r2(y.Y||0),ytdK:r2(y.K||0),ytdX:r2(y.X||0),ytdN:y.n||0,ytdGap:y.gap||''};});};}
+async function prYTD(m){
+ const y=m.slice(0,4),out={};
+ let S=[];if(m>y+'-01'){try{S=(await getDocs(query(collection(db,'payrolls'),where('month','>=',y+'-01'),where('month','<',m)))).docs.map(d=>d.data());}catch(e){console.warn('ytd',e);}}
+ const months=new Set();
+ S.forEach(P=>{months.add(P.month);if(P.status!=='final')return;Object.values(P.lines||{}).forEach(L=>{const f=(HRSTAFF||{})[L.staffId]||{};if(f.ytdYear===y&&f.ytdUpTo&&P.month<=f.ytdUpTo)return;
+  const c=payCalc(L,P.month),o=out[L.staffId]=out[L.staffId]||{Y:0,K:0,X:0,n:0};o.Y+=c.gross;o.K+=c.epfEE;o.X+=c.pcb;o.n++;});});
+ Object.entries(HRSTAFF||{}).forEach(([sid,f])=>{if(f.ytdYear===y&&f.ytdUpTo&&f.ytdUpTo<m){const o=out[sid]=out[sid]||{Y:0,K:0,X:0,n:0};o.Y+=+f.ytdGross||0;o.K+=+f.ytdEPF||0;o.X+=+f.ytdPCB||0;}});
+ const draft=S.filter(P=>P.status!=='final').map(P=>P.month);if(draft.length)Object.values(out).forEach(o=>{o.gap=draft.join(', ');});
+ out.__draft=draft;return out;
+}
+{const _p=window.payPrepare;window.payPrepare=async()=>{if(!isOwnerMe())return;await loadHrStaff(true);await prcLoad();YTDM=await prYTD(PAYM);
+ if((YTDM.__draft||[]).length)toast('Not locked yet: '+YTDM.__draft.map(mLabel).join(', ')+' — PCB counts only locked months');return _p();};}
+
+/* ---------- the Payroll tab ---------- */
+window.prView=v=>{PRTAB=v;render();};
+const prDue=m=>{const n=mShift(m,1);return dstr(n+'-15');};
+hrPayroll=function(){
+ if(!isOwnerMe())return '';if(PRC===null)setTimeout(prcLoad,0);
+ if(!PAYM){const td=today();PAYM=+td.slice(8)<=10?mShift(td.slice(0,7),-1):td.slice(0,7);}
+ if(PAYDOC===null&&!PAYM_LOADED[PAYM]){PAYM_LOADED[PAYM]=1;setTimeout(()=>payLoad(PAYM),0);}
+ if(HRSTAFF===null)setTimeout(()=>loadHrStaff(),0);
+ const seg='<div class="seg prseg">'+[['run','Monthly payroll','wallet'],['setup','Staff & company','idcard'],['rates','Statutory rates','shield'],['year','Year end · EA & E','note']].map(t=>'<button class="'+(PRTAB===t[0]?'on':'')+'" onclick="prView(\''+t[0]+'\')">'+ic(t[2],14)+t[1]+'</button>').join('')+'</div>';
+ if(PRTAB==='setup')return seg+prSetupView();if(PRTAB==='rates')return seg+prRatesView();if(PRTAB==='year')return seg+prYearView();
+ const nav='<div class="card"><div class="spread"><div class="row" style="gap:8px"><button class="iconbtn" onclick="payMonth(-1)">'+ic('left',16)+'</button>'+
+  '<h2 style="margin:0;min-width:170px;text-align:center">'+mLabel(PAYM)+'</h2><button class="iconbtn" onclick="payMonth(1)">'+ic('right',16)+'</button></div>'+
+  (PAYDOC?'<span class="pill '+(PAYDOC.status==='final'?'g':'a')+'">'+(PAYDOC.status==='final'?ic('check',11)+'Locked · payslips issued':'Draft')+'</span>':'')+'</div>';
+ if(PAYDOC===undefined)return seg+nav+'<div class="center" style="padding:20px"><div class="spin"></div></div></div>';
+ if(!PAYDOC)return seg+nav+'<div class="empty">'+ic('wallet',26)+'<div>No payroll for '+mLabel(PAYM)+' yet.</div></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="payPrepare()">'+ic('spark',16)+'Prepare payroll from the records</button>'+
+  '<p class="tiny muted" style="margin:10px 0 0">Basic and allowances from Staff files, commission from '+mLabel(PAYM)+'\'s bills, overtime from attendance, unpaid leave, approved claims — then KWSP, PERKESO, SIP, LINDUNG 24 Jam and PCB at the rates in force for '+mLabel(PAYM)+'.</p></div>';
+ const final=PAYDOC.status==='final',L=Object.values(PAYDOC.lines||{}),t=payTotals(PAYDOC),R=rateFor(PAYM);
+ const C=L.map(x=>({x,c:payCalc(x,PAYM)}));
+ const warn=[];
+ const mw=C.filter(z=>z.c.flags.includes('minwage'));if(mw.length)warn.push(['r','<b>Below the minimum wage ('+rm(R.minWage)+'):</b> '+mw.map(z=>esc(z.x.name)+' '+rm(z.x.basic)).join(', ')+'. Raise the basic in Staff files — paying less is an offence under the Minimum Wages Order.']);
+ const nf=L.filter(x=>x.noFile||!x.basic);if(nf.length&&!final)warn.push(['a',nf.map(x=>esc(x.name)).join(', ')+' — no basic salary in Staff files yet. <a href="javascript:void 0" onclick="hrTab(\'staff\')">Open Staff files</a>, then Recalculate.']);
+ const noNo=L.filter(x=>!x.epfNo&&!(x.citizen==='Foreign worker'&&!R.epfFor)||!x.socsoNo);if(noNo.length)warn.push(['a','Missing KWSP or PERKESO number: '+noNo.map(x=>esc(x.name)).join(', ')+' — needed for the upload files.']);
+ const noTin=C.filter(z=>z.c.pcb>0&&!z.x.taxNo);if(noTin.length)warn.push(['a','PCB deducted but no income tax number (TIN): '+noTin.map(z=>esc(z.x.name)).join(', ')+'. Register them on MyTax (e-Daftar) — e-PCB Plus rejects unverified TINs.']);
+ const ot=C.filter(z=>z.c.flags.includes('otcap'));if(ot.length)warn.push(['','Overtime paid to '+ot.map(z=>esc(z.x.name)).join(', ')+' — basic above '+rm(R.otCap)+', so the Employment Act does not require it. Fine to pay; just a note.']);
+ const mal=hrPeople().filter(s=>((HRSTAFF||{})[s.id]||{}).citizen!=='Foreign worker'&&s.role!=='owner').length;
+ if(!(PRC||{}).hrdOn&&mal>=R.hrdMin)warn.push(['r','<b>HRD Corp:</b> '+mal+' Malaysian employees — registration and the 1% levy are compulsory at '+R.hrdMin+' or more. Turn it on under Staff & company once registered.']);
+ if((YTDM.__draft||[]).length&&!final)warn.push(['a','PCB uses locked months only — not locked yet: '+YTDM.__draft.map(mLabel).join(', ')+'.']);
+ const due=prDue(PAYM);
+ return seg+nav+'</div>'+
+  '<div class="crmkpis">'+kpi('Net pay',rm(t.net),L.length+' staff · incl. claims '+rm(t.claims),'wallet')+
+   kpi('Gross salary',rm(t.gross),'before deductions','chart')+
+   kpi('To pay by '+dshort(mShift(PAYM,1)+'-15'),rm(r2(t.epfEE+t.epfER+t.socsoEE+t.socsoER+t.eisEE+t.eisER+t.linEE+t.pcb+t.hrd)),'KWSP · PERKESO · SIP · PCB'+(t.hrd?' · HRD':''),'shield')+
+   kpi('Cost to the business',rm(t.cost),'gross + employer contributions'+(t.hrd?' + levy':''),'money')+'</div>'+
+  warn.map(w=>'<div class="warnbox prwarn '+w[0]+'">'+ic('alert',13)+' '+w[1]+'</div>').join('')+
+  '<div class="card"><div class="scroll"><table class="paytbl"><tr><th>Staff</th><th class="num">Basic + allow.</th><th class="num">Commission</th><th class="num">OT</th>'+
+   '<th class="num">Other +</th><th class="num">Unpaid −</th><th class="num">Gross</th><th class="num">KWSP</th><th class="num">PERKESO · SIP · LINDUNG</th><th class="num">PCB</th>'+
+   '<th class="num">Other −</th><th class="num">Claims</th><th class="num">Net pay</th><th></th></tr>'+
+   C.map(({x,c})=>'<tr data-pay="'+x.staffId+'"'+(final?'':' class="prrow" onclick="prEdit(\''+x.staffId+'\')"')+'><td><b>'+esc(x.name)+'</b><div class="tiny muted">'+esc(x.position||'')+(x.citizen==='Foreign worker'?' · foreign':'')+(c.flags.includes('minwage')?' <span class="pill r">below min. wage</span>':'')+'</div></td>'+
+    '<td class="num">'+rm(x.basic+x.allowance)+'</td><td class="num">'+rm(c.comm)+'</td><td class="num">'+(c.otPay?rm(c.otPay)+'<div class="tiny muted">'+r2(c.otHours+c.otRest+c.otPH)+' h</div>':(x.otSuggest&&!final?'<span class="tiny" style="color:var(--amber)">'+x.otSuggest+' h?</span>':'—'))+'</td>'+
+    '<td class="num">'+rm((+x.bonus||0)+(+x.kpiBonus||0)+(+x.otherAdd||0))+(x.kpiBonus?'<div class="tiny" style="color:var(--jade)">KPI '+rm(x.kpiBonus)+'</div>':'')+'</td><td class="num">'+(c.unpaid?'−'+rm(c.unpaid)+'<div class="tiny muted">'+x.unpaidDays+' d</div>':'—')+'</td>'+
+    '<td class="num"><b>'+rm(c.gross)+'</b></td><td class="num">'+rm(c.epfEE)+'</td><td class="num">'+rm(r2(c.socsoEE+c.eisEE+c.linEE))+(c.linEE?'<div class="tiny muted">incl. LINDUNG '+rm(c.linEE)+'</div>':'')+'</td>'+
+    '<td class="num">'+rm(c.pcb)+'<div class="tiny muted">'+(x.taxRes==='Non-resident'?'30% non-resident':x.pcbMode==='fixed'?'fixed':'LHDN formula')+'</div></td>'+
+    '<td class="num">'+rm((+x.advance||0)+(+x.otherDed||0))+'</td><td class="num">'+rm(+x.claims||0)+'</td><td class="num"><b>'+rm(c.net)+'</b></td>'+
+    '<td>'+(final?'<button class="btn sm ghost" onclick="event.stopPropagation();payslipPDF(\''+x.staffId+'\')">'+ic('download',13)+'Slip</button>':ic('edit',14))+'</td></tr>').join('')+
+   '<tr class="paytot"><td>Total</td><td></td><td></td><td></td><td></td><td></td><td class="num">'+rm(t.gross)+'</td><td class="num">'+rm(t.epfEE)+'</td><td class="num">'+rm(r2(t.socsoEE+t.eisEE+t.linEE))+'</td><td class="num">'+rm(t.pcb)+'</td><td></td><td class="num">'+rm(t.claims)+'</td><td class="num">'+rm(t.net)+'</td><td></td></tr>'+
+  '</table></div>'+(final?'':'<p class="tiny muted" style="margin:8px 0 0">Tap a row to add OT, bonus, advances or correct any figure.</p>')+'</div>'+
+  '<div class="card"><h3 style="margin:0 0 8px">'+ic('shield',15)+' To pay by '+due+'</h3><table class="prdue">'+
+   '<tr><td>KWSP · i-Akaun Majikan</td><td class="tiny muted">employee '+rm(t.epfEE)+' + employer '+rm(t.epfER)+'</td><td class="num"><b>'+rm(r2(t.epfEE+t.epfER))+'</b></td><td><button class="btn sm ghost" onclick="prFile(\'epf\')">'+ic('download',13)+'KWSP file</button></td></tr>'+
+   '<tr><td>PERKESO · ASSIST (Akta 4 + SIP + LINDUNG)</td><td class="tiny muted">PERKESO '+rm(r2(t.socsoEE+t.socsoER))+' · SIP '+rm(r2(t.eisEE+t.eisER))+' · LINDUNG '+rm(t.linEE)+'</td><td class="num"><b>'+rm(r2(t.socsoEE+t.socsoER+t.eisEE+t.eisER+t.linEE))+'</b></td><td><button class="btn sm ghost" onclick="prFile(\'socso\')">'+ic('download',13)+'PERKESO file</button></td></tr>'+
+   '<tr><td>PCB · e-PCB Plus (MyTax)</td><td class="tiny muted">'+C.filter(z=>z.c.pcb>0).length+' employees</td><td class="num"><b>'+rm(t.pcb)+'</b></td><td><button class="btn sm ghost" onclick="prFile(\'cp39\')">'+ic('download',13)+'CP39 file</button></td></tr>'+
+   ((PRC||{}).hrdOn?'<tr><td>HRD Corp levy</td><td class="tiny muted">'+((PRC.hrdRate||R.hrdRate)*100)+'% of basic + fixed allowances, Malaysian staff</td><td class="num"><b>'+rm(t.hrd)+'</b></td><td><button class="btn sm ghost" onclick="prFile(\'hrd\')">'+ic('download',13)+'Levy list</button></td></tr>':'')+
+   '<tr><td>Salaries · bank</td><td class="tiny muted">net pay incl. claims</td><td class="num"><b>'+rm(t.net)+'</b></td><td><button class="btn sm ghost" onclick="prFile(\'bank\')">'+ic('download',13)+'Bank file</button></td></tr></table>'+
+   '<p class="tiny muted" style="margin:8px 0 0">Files follow the formats published by PERKESO (ASSIST combined text file, compulsory from 1 Oct 2026) and LHDN (CP39). KWSP publishes only a CSV layout — check the first upload in i-Akaun. Banks give their own template once you have the corporate account; the bank file has the columns they ask for.</p></div>'+
+  '<div class="card"><div class="row wrap2">'+
+   (final?'<button class="btn" onclick="payslipsAll()">'+ic('download',15)+'All payslips (PDF)</button><button class="btn ghost" onclick="prSend()">'+ic('msg',15)+'Send payslips</button>'+
+     '<button class="btn ghost" onclick="payCSV()">'+ic('download',15)+'Payroll report (CSV)</button><button class="btn ghost sm" onclick="payUnlock()">'+ic('refresh',14)+'Unlock to correct</button>'
+    :'<button class="btn" onclick="payLock()">'+ic('check',15)+'Lock & issue payslips</button><button class="btn ghost" onclick="payPrepare()">'+ic('refresh',15)+'Recalculate from records</button><button class="btn ghost" onclick="payCSV()">'+ic('download',15)+'Draft CSV</button>')+'</div>'+
+  (final?'<p class="tiny muted" style="margin:8px 0 0">Locked '+dstr(PAYDOC.finalizedAt)+' '+tstr(PAYDOC.finalizedAt)+'. Each person sees their payslip in My HR on their own phone.</p>':'')+'</div>';
+};
+/* the row editor, with rest-day and public-holiday overtime and LINDUNG */
+window.prEdit=sid=>{
+ const x=(PAYDOC.lines||{})[sid];if(!x)return;const c=payCalc(x,PAYM);
+ const f=(k,l,ph,note)=>'<div><label>'+l+'</label><input class="f" type="number" step="0.01" id="pe-'+k+'" value="'+(x[k]==null?'':esc(x[k]))+'" placeholder="'+esc(ph)+'" oninput="prPrev(\''+sid+'\')">'+(note?'<div class="tiny muted" style="margin:-6px 0 8px">'+note+'</div>':'')+'</div>';
+ modal('Payroll · '+x.name,'<div class="card">'+
+  '<table><tr><td>Basic</td><td class="num">'+rm(x.basic)+'</td></tr><tr><td>Fixed allowances</td><td class="num">'+rm(x.allowance)+'</td></tr>'+
+  '<tr><td>Sales commission</td><td class="num">'+rm(x.commSales)+'</td></tr><tr><td>Hands-on commission</td><td class="num">'+rm(x.commHands)+'</td></tr>'+
+  '<tr><td>Days worked · unpaid leave</td><td class="num">'+x.days+' · '+(x.unpaidDays||0)+'</td></tr><tr><td>Approved claims paid with salary</td><td class="num">'+rm(x.claims||0)+'</td></tr>'+
+  '<tr><td>This year before '+mLabel(PAYM)+'</td><td class="num">gross '+rm(x.ytdY||0)+' · PCB '+rm(x.ytdX||0)+'</td></tr></table>'+
+  '<h4 class="payh">Overtime (hourly rate = basic ÷ 26 ÷ 8 = '+rm(r2(x.basic/26/8))+')</h4><div class="grid g2">'+
+   f('otHours','Normal day — hours × 1.5','0',x.otSuggest?'Attendance shows about '+x.otSuggest+' h over '+PAYRATE.stdDay+' h days':'')+f('otRest','Rest day, beyond normal hours — × 2','0')+f('otPH','Public holiday, beyond normal hours — × 3','0')+'</div>'+
+  '<h4 class="payh">Additions</h4><div class="grid g2">'+
+   f('kpiBonus','KPI bonus / incentive (RM)','0',x.kpiScore!=null?'KPI score '+x.kpiScore+'%':'')+f('bonus','Bonus (RM)','0','Additional pay for PCB; no PERKESO on an annual bonus')+f('otherAdd','Other addition (RM)','0')+
+   '<div><label>What for</label><input class="f" id="pe-otherAddNote" value="'+esc(x.otherAddNote||'')+'"></div></div>'+
+  '<h4 class="payh">Deductions</h4><div class="grid g2">'+f('advance','Salary advance (RM)','0')+f('otherDed','Other deduction (RM)','0')+
+   '<div><label>What for</label><input class="f" id="pe-otherDedNote" value="'+esc(x.otherDedNote||'')+'"></div>'+
+   f('pcb','PCB (RM)',String(c.pcbAuto),x.pcbMode==='fixed'?'Fixed amount from the staff\'s payroll set-up':'LHDN formula: '+rm(c.pcbAuto)+' — leave blank to use it')+'</div>'+
+  '<h4 class="payh">Statutory — leave blank to use the worked-out figure</h4><div class="grid g2">'+
+   f('epfEE','KWSP employee',String(c.est.epf.ee))+f('epfER','KWSP employer',String(c.est.epf.er))+
+   f('socsoEE','PERKESO employee',String(c.est.so.ee))+f('socsoER','PERKESO employer',String(c.est.so.er))+
+   f('eisEE','SIP employee',String(c.est.so.eisEE))+f('eisER','SIP employer',String(c.est.so.eisER))+f('linEE','LINDUNG 24 Jam (employee)',String(c.est.so.lin),x.lindungOut?'Opted out':'')+'</div>'+
+  '<label>Note on the payslip</label><input class="f" id="pe-note" value="'+esc(x.note||'')+'">'+
+  '<div class="fieldset" id="pe-pv" style="margin:8px 0 10px"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center" onclick="prSave(\''+sid+'\')">'+ic('check',16)+'Save</button></div>',()=>window.prPrev(sid));
+};
+peDraft=function(sid){
+ const x={...PAYDOC.lines[sid]};
+ ['otHours','otRest','otPH','kpiBonus','bonus','otherAdd','advance','otherDed','pcb','epfEE','epfER','socsoEE','socsoER','eisEE','eisER','linEE'].forEach(k=>{const e=$('#pe-'+k);if(e){const v=String(e.value).trim();x[k]=v===''?'':r2(+v);}});
+ ['otherAddNote','otherDedNote','note'].forEach(k=>{const e=$('#pe-'+k);if(e)x[k]=String(e.value).trim().slice(0,120);});
+ return x;
+};
+/* ---------- payslips: LINDUNG and overtime lines ---------- */
+{const _d=drawPayslip;drawPayslip=function(d,P,first){
+ const c={...P.calc},x={...P.line};
+ /* the older layout knows one OT line and one PERKESO line: fold the new ones in */
+ if(c.linEE){x.otherDed=r2((+x.otherDed||0)+c.linEE);x.otherDedNote=(x.otherDed>c.linEE?(x.otherDedNote||'Lain-lain')+' + ':'')+'PERKESO LINDUNG 24 Jam';}
+ if(c.otRest||c.otPH)c.otHours=r2((c.otHours||0)+(c.otRest||0)+(c.otPH||0));
+ return _d(d,{...P,calc:c,line:x},first);};}
+/* sending payslips: in the app always; by WhatsApp or e-mail from the owner's phone */
+window.prSend=()=>{const L=Object.values(PAYDOC.lines||{}),b=(D.meta.biz||{}).name||'';
+ modal('Send payslips · '+mLabel(PAYM),'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Every payslip is already in each person\'s My HR (on their own login). Let them know, or share the PDF from this phone.</p>'+
+  L.map(x=>{const st=stf(x.staffId),ph=waNum(st.phone||((HRSTAFF||{})[x.staffId]||{}).phone||''),em=((HRSTAFF||{})[x.staffId]||{}).email||st.email||'';
+   const msg='Hai '+rcFirst(x.name)+', slip gaji '+mLabel(PAYM)+' anda sudah ada dalam app '+b+' (HR → My HR → My payslips). Terima kasih atas kerja keras anda! 🌿';
+   return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+esc(x.name)+'</b><small>Net '+rm(payCalc(x,PAYM).net)+'</small></div>'+
+    (ph?'<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://wa.me/'+ph+'?text='+encodeURIComponent(msg)+'">'+ic('msg',13)+'WhatsApp</a>':'')+
+    '<button class="btn sm ghost" onclick="prShare(\''+x.staffId+'\',\''+esc(em)+'\')">'+ic('mail',13)+'PDF</button></div>';}).join('')+
+  '<p class="tiny muted" style="margin:8px 0 0">"PDF" opens your phone\'s share sheet (Gmail, WhatsApp…) with the payslip attached; on a computer it downloads the PDF and opens an e-mail to attach it to. Sending e-mails automatically needs a paid mail service (e.g. through Zapier or Make) — the app runs without a server.</p></div>');};
+window.prShare=async(sid,email)=>{const x=PAYDOC.lines[sid];if(!x)return;
+ try{const d=await payslipDoc([{month:PAYM,line:x,calc:payCalc(x,PAYM)}]),name='Payslip-'+PAYM+'-'+x.name.replace(/[^A-Za-z0-9]+/g,'-')+'.pdf';
+  window.__lastPDF={kind:'payslip',name,doc:d};const blob=d.output('blob'),file=new File([blob],name,{type:'application/pdf'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'Slip gaji '+mLabel(PAYM),text:'Slip gaji '+mLabel(PAYM)});return;}
+  d.save(name);if(email)location.href='mailto:'+email+'?subject='+encodeURIComponent('Slip gaji '+mLabel(PAYM))+'&body='+encodeURIComponent('Hai '+rcFirst(x.name)+',\n\nSlip gaji '+mLabel(PAYM)+' dilampirkan.\n\nTerima kasih.');}
+ catch(e){if(e&&e.name!=='AbortError')toast(friendly(e));}};
+
+/* ---------- statutory files ---------- */
+const prPad=(s,n)=>String(s==null?'':s).slice(0,n).padEnd(n,' ');
+const prNum=(v,n)=>String(Math.round((+v||0)*100)).padStart(n,'0').slice(-n);
+const prDig=s=>String(s||'').replace(/\D/g,'');
+function prDownload(name,text,type){window.__lastFile={name,text};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type||'text/plain'}));a.download=name;document.body.appendChild(a);a.click();a.remove();}
+window.prFile=k=>{
+ const L=Object.values(PAYDOC.lines||{}).map(x=>({x,c:payCalc(x,PAYM)})),P=PRC||{},mm=PAYM.slice(5,7),yy=PAYM.slice(0,4),miss=[];
+ if(k==='epf'){
+  const R=L.filter(z=>z.c.epfEE||z.c.epfER).map(z=>{if(!z.x.epfNo)miss.push(z.x.name);const id=z.x.citizen==='Foreign worker'?(z.x.passport||''):String(z.x.ic||'');
+   return [z.x.epfNo||'',id,String(z.x.name||'').toUpperCase(),z.c.epfWage.toFixed(2),Math.round(z.c.epfER),Math.round(z.c.epfEE)].map(v=>{const s=String(v);return /[",]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;}).join(',');});
+  prDownload('EPF_iAkaun_'+yy+mm+'.csv',R.join('\r\n')+'\r\n','text/csv');}
+ else if(k==='socso'){
+  if(!P.socsoCode)return toast('Add your PERKESO employer code under Staff & company first');
+  const R=L.filter(z=>z.c.socsoER||z.c.socsoEE||z.c.eisEE||z.c.linEE).map(z=>{const id=z.x.citizen==='Foreign worker'?(z.x.socsoNo||z.x.passport||''):prDig(z.x.ic);if(!id)miss.push(z.x.name);
+   return prPad(P.socsoCode,12)+prPad(P.ssm||(D.meta.biz||{}).ssm||'',20)+prPad(id,12)+prPad(String(z.x.name||'').toUpperCase(),150)+mm+yy+
+    prNum(z.c.socWage,14)+prNum(z.c.socsoER,6)+prNum(z.c.socsoEE,6)+prNum(z.c.eisER,6)+prNum(z.c.eisEE,6)+prNum(z.c.linEE,6)+prPad('',14)+prPad('',20);});
+  prDownload('PERKESO_'+prDig(P.socsoCode)+'_'+mm+yy+'.txt',R.join('\r\n')+'\r\n');}
+ else if(k==='cp39'){
+  const e=prDig(P.eNo);if(!e)return toast('Add your LHDN employer number (E no.) under Staff & company first');
+  const D2=L.filter(z=>z.c.pcb>0);const tot=D2.reduce((t,z)=>t+z.c.pcb,0);
+  const H='H'+e.padStart(10,'0').slice(-10)+e.padStart(10,'0').slice(-10)+yy+mm+prNum(tot,10)+String(D2.length).padStart(5,'0')+prNum(0,10)+'00000';
+  const R=D2.map((z,i)=>{const tin=prDig(z.x.taxNo);if(!tin)miss.push(z.x.name);const f=z.x.citizen==='Foreign worker';
+   return 'D'+tin.padStart(11,'0').slice(-11)+prPad(String(z.x.name||'').toUpperCase(),60)+prPad('',12)+prPad(f?'':prDig(z.x.ic),12)+prPad(f?z.x.passport:'',12)+prPad(f?(z.x.country||''):'',2)+prNum(z.c.pcb,8)+prNum(0,8)+prPad(String(i+1),10);});
+  prDownload(e.padStart(10,'0').slice(-10)+mm+'_'+yy+'.txt',[H,...R].join('\r\n')+'\r\n');}
+ else if(k==='hrd'){
+  const R=L.filter(z=>z.c.hrd).map(z=>[z.x.name,z.x.ic,r2(+z.x.basic+(+z.x.allowance||0)),z.c.hrd]);
+  csvDownload('HRD-levy-'+PAYM+'.csv',[['Name','IC','Basic + fixed allowances','Levy'],...R,['Total','',r2(R.reduce((t,r)=>t+r[2],0)),r2(R.reduce((t,r)=>t+r[3],0))]]);}
+ else if(k==='bank'){
+  const R=L.filter(z=>z.c.net>0).map(z=>{if(!z.x.bankAcc)miss.push(z.x.name);const f=z.x.citizen==='Foreign worker';
+   return [String(z.x.name||'').toUpperCase(),z.x.bank||'',prDig(z.x.bankAcc),f?'Passport':'NRIC',f?(z.x.passport||''):prDig(z.x.ic),z.c.net.toFixed(2),'GAJI '+mLabel(PAYM).toUpperCase(),(P.payRef||'SALARY')+' '+PAYM];});
+  csvDownload('Bank-salary-'+PAYM+'.csv',[['Beneficiary name','Bank','Account no.','ID type','ID no.','Amount','Payment reference','Description'],...R]);}
+ audit('Payroll file downloaded',k+' · '+mLabel(PAYM));
+ if(miss.length)setTimeout(()=>toast('Check: missing numbers for '+[...new Set(miss)].join(', ')),400);
+};
+
+/* ---------- Staff & company set-up ---------- */
+function prSetupView(){
+ if(PRC===null||HRSTAFF===null)return '<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const P=PRC,b=D.meta.biz||{},mal=hrPeople().filter(s=>((HRSTAFF||{})[s.id]||{}).citizen!=='Foreign worker'&&s.role!=='owner').length,R=rateFor(today().slice(0,7));
+ const v=k=>esc(P[k]||'');
+ return '<div class="card"><h3 style="margin:0 0 8px">'+ic('idcard',15)+' Company numbers for the statutory files</h3><div class="grid g2">'+
+  '<div><label>KWSP employer no.</label><input class="f" id="pc-epf" value="'+v('epfNo')+'"></div><div><label>PERKESO employer code</label><input class="f" id="pc-socso" value="'+v('socsoCode')+'"></div>'+
+  '<div><label>LHDN employer no. (E no.)</label><input class="f" id="pc-e" value="'+v('eNo')+'" placeholder="E 1234567890"></div><div><label>SSM no.</label><input class="f" id="pc-ssm" value="'+esc(P.ssm||b.ssm||'')+'"></div>'+
+  '<div><label>Name on EA forms (officer)</label><input class="f" id="pc-sn" value="'+v('signName')+'"></div><div><label>Their position</label><input class="f" id="pc-sp" value="'+esc(P.signPos||'Pemilik')+'"></div>'+
+  '<div><label>Bank payment reference</label><input class="f" id="pc-ref" value="'+esc(P.payRef||'SALARY')+'"></div><div><label>Mileage claim rate (RM / km)</label><input class="f" type="number" step="0.01" id="pc-km" value="'+esc(P.kmRate||'0.60')+'"></div></div>'+
+  '<div class="hrgrp"><h4>HRD Corp levy</h4><p class="tiny" style="margin:0 0 6px">You have <b>'+mal+'</b> Malaysian employee'+(mal!==1?'s':'')+'. Registration is compulsory at '+R.hrdMin+' or more (levy 1% of basic + fixed allowances); 5–9 may register voluntarily (0.5%). Personal services and cosmetics are in scope since March 2021 — confirm your sub-sector with HRD Corp (1300-88-4800).</p>'+
+  '<label class="row" style="gap:8px"><input type="checkbox" id="pc-hrd"'+(P.hrdOn?' checked':'')+'> We are registered with HRD Corp</label><div class="grid g2"><div><label>Levy rate</label><select class="f" id="pc-hrdr"><option value="0.01"'+(+P.hrdRate!==.005?' selected':'')+'>1%</option><option value="0.005"'+(+P.hrdRate===.005?' selected':'')+'>0.5% (5–9 employees)</option></select></div><div><label>HRD Corp no.</label><input class="f" id="pc-hrdn" value="'+v('hrdNo')+'"></div></div></div>'+
+  '<button class="btn" style="margin-top:10px" onclick="prCoSave()">'+ic('check',15)+'Save</button></div>'+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('users',15)+' Each person: tax and contributions</h3><p class="tiny muted" style="margin:0 0 8px">Category comes from the staff file (marital status, spouse working, children). Set the rest here.</p>'+
+  '<div class="scroll"><table class="paytbl prset"><tr><th>Staff</th><th>Citizenship</th><th>PCB category</th><th>PCB</th><th>LINDUNG 24 Jam</th><th>This year before the app</th><th></th></tr>'+
+  hrPeople().map(s=>{const f=(HRSTAFF||{})[s.id]||{},cat=prCat(f),fw=f.citizen==='Foreign worker',mode=f.pcbMode||((f.pcb!==undefined&&f.pcb!=='')?'fixed':'auto');
+   return '<tr data-ps="'+s.id+'"><td><b>'+esc(f.fullName||s.name)+'</b><div class="tiny muted">'+(f.tax?'TIN '+esc(f.tax):'<span style="color:var(--rose)">no TIN</span>')+'</div></td><td>'+esc(f.citizen||'Malaysian / PR')+(f.taxRes==='Non-resident'?'<div class="tiny">non-resident for tax</div>':'')+'</td>'+
+    '<td>'+cat+' <span class="tiny muted">'+['','single','spouse not working','spouse working / other'][cat]+(+f.children?' · '+f.children+' child'+(f.children>1?'ren':''):'')+'</span></td>'+
+    '<td>'+(mode==='fixed'?'fixed '+rm(+f.pcb||0):'LHDN formula')+'</td><td>'+(fw?'compulsory':f.lindungOut?'<span class="pill">opted out</span>':'contributing')+'</td>'+
+    '<td class="tiny">'+(f.ytdYear?f.ytdYear+' to '+mLabel(f.ytdUpTo)+': '+rm(+f.ytdGross||0)+' · PCB '+rm(+f.ytdPCB||0):'—')+'</td><td><button class="btn sm ghost" onclick="prPerson(\''+s.id+'\')">'+ic('edit',13)+'</button></td></tr>';}).join('')+'</table></div></div>';
+}
+window.prCoSave=async()=>{const g=k=>(($('#pc-'+k)||{}).value||'').trim();
+ try{await prcSave({epfNo:g('epf'),socsoCode:g('socso'),eNo:g('e'),ssm:g('ssm'),signName:g('sn'),signPos:g('sp'),payRef:g('ref').slice(0,20)||'SALARY',kmRate:+g('km')||0.6,hrdOn:$('#pc-hrd').checked,hrdRate:+g('hrdr')||.01,hrdNo:g('hrdn')});
+  await audit('Payroll set-up saved','');render();toast('Saved');}catch(e){toast(friendly(e));}};
+window.prPerson=sid=>{const f=(HRSTAFF||{})[sid]||{},s=stf(sid),mode=f.pcbMode||((f.pcb!==undefined&&f.pcb!=='')?'fixed':'auto'),y=today().slice(0,4);
+ modal('Tax & contributions · '+(f.fullName||s.name),'<div class="card"><div class="grid g2">'+
+  '<div><label>PCB</label><select class="f" id="pp-m"><option value="auto"'+(mode==='auto'?' selected':'')+'>Work it out (LHDN formula)</option><option value="fixed"'+(mode==='fixed'?' selected':'')+'>Fixed amount every month</option></select></div>'+
+  '<div><label>Fixed PCB (RM / month)</label><input class="f" type="number" step="0.05" id="pp-p" value="'+esc(f.pcb??'')+'"></div>'+
+  '<div><label>Tax residence</label><select class="f" id="pp-r"><option'+(f.taxRes!=='Non-resident'?' selected':'')+'>Resident</option><option'+(f.taxRes==='Non-resident'?' selected':'')+'>Non-resident</option></select><div class="tiny muted">Non-resident (under 182 days in Malaysia this year): PCB is 30% flat.</div></div>'+
+  '<div><label>Income tax no. (TIN)</label><input class="f" id="pp-t" value="'+esc(f.tax||'')+'" placeholder="IG12345678090"></div>'+
+  (f.citizen==='Foreign worker'?'<div><label>Country code (2 letters, for CP39)</label><input class="f" id="pp-c" maxlength="2" value="'+esc(f.country||'')+'" placeholder="ID"></div>':
+   '<div><label class="row" style="gap:8px;margin-top:22px"><input type="checkbox" id="pp-l"'+(f.lindungOut?' checked':'')+'> Opted out of LINDUNG 24 Jam</label><div class="tiny muted">Only with the "Notis Pelepasan Liabiliti" from PERKESO. Keep a copy in their Documents.</div></div>')+'</div>'+
+  '<div class="hrgrp"><h4>Joined mid-year, or started using the app mid-year?</h4><p class="tiny muted" style="margin:0 0 6px">Earnings this year before the first month paid in the app (from the previous employer\'s TP3, or your old payroll) — PCB needs them to spread the year\'s tax correctly.</p><div class="grid g2">'+
+  '<div><label>Year</label><input class="f" id="pp-yy" value="'+esc(f.ytdYear||y)+'"></div><div><label>Up to and including month</label><input class="f" type="month" id="pp-yu" value="'+esc(f.ytdUpTo||'')+'"></div>'+
+  '<div><label>Gross pay (RM)</label><input class="f" type="number" step="0.01" id="pp-yg" value="'+esc(f.ytdGross||'')+'"></div><div><label>KWSP employee (RM)</label><input class="f" type="number" step="0.01" id="pp-ye" value="'+esc(f.ytdEPF||'')+'"></div>'+
+  '<div><label>PCB deducted (RM)</label><input class="f" type="number" step="0.01" id="pp-yp" value="'+esc(f.ytdPCB||'')+'"></div>'+
+  '<div><label class="row" style="gap:8px;margin-top:22px"><input type="checkbox" id="pp-yo"'+(f.ytdOurs===false?'':' checked')+'> Paid by us (include in the EA form)</label><div class="tiny muted">Untick for a previous employer\'s pay (TP3) — it counts for PCB only.</div></div></div></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="prPersonSave(\''+sid+'\')">'+ic('check',15)+'Save</button></div>');};
+window.prPersonSave=async sid=>{const g=k=>(($('#pp-'+k)||{}).value||'').trim(),p={pcbMode:g('m'),taxRes:g('r'),tax:g('t'),ytdYear:g('yy'),ytdUpTo:g('yu'),ytdGross:+g('yg')||'',ytdEPF:+g('ye')||'',ytdPCB:+g('yp')||''};
+ const pv=g('p');p.pcb=pv===''?'':r2(+pv);p.ytdOurs=$('#pp-yo').checked;if($('#pp-l'))p.lindungOut=$('#pp-l').checked;if($('#pp-c'))p.country=g('c').toUpperCase().slice(0,2);
+ if(p.pcbMode==='fixed'&&p.pcb==='')return toast('Enter the fixed PCB amount');
+ try{await setDoc(doc(db,'hrStaff',sid),p,{merge:true});HRSTAFF[sid]={...(HRSTAFF[sid]||{}),...p};await audit('Payroll set-up · '+(stf(sid).name||''),[p.pcbMode,p.taxRes,p.lindungOut?'LINDUNG opted out':''].filter(Boolean).join(' · '));
+  window.closeModal();render();toast('Saved — recalculate the payroll to apply');}catch(e){toast(friendly(e));}};
+
+/* ---------- statutory rates ---------- */
+function prRatesView(){
+ const m=PAYM||today().slice(0,7),R=rateFor(m),own=((PRC||{}).rates)||[];
+ const pc=v=>(v*100).toFixed(2).replace(/\.?0+$/,'')+'%';
+ const fmt=(k,mul)=>mul===100?pc(R[k]):rm(R[k]);
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('shield',15)+' Rates used for '+mLabel(m)+'</h3><span class="tiny muted">checked against official sources 1 Oct 2026</span></div>'+
+  '<div class="scroll"><table class="mjt prrates">'+PR_FIELDS.map(([k,l,mul])=>'<tr><td>'+l+'</td><td class="num"><b>'+fmt(k,mul)+'</b></td></tr>').join('')+
+  '<tr><td>PCB reliefs: individual · spouse · per child · KWSP</td><td class="num"><b>'+rm(R.D)+' · '+rm(R.S)+' · '+rm(R.Q)+' · '+rm(R.epfRelief)+'</b></td></tr>'+
+  '<tr><td>PCB tax bands</td><td class="num tiny">'+R.tax.map(t=>'>'+(t[0]/1000)+'k '+pc(t[1])).join(' · ')+'</td></tr></table></div>'+
+  '<div class="tiny" style="margin-top:8px"><b>Sources:</b> <a href="https://www.kwsp.gov.my/en/employer/responsibilities/non-malaysian-citizen-employees" target="_blank">KWSP</a> · <a href="https://www.perkeso.gov.my/images/borang/lindung24jam/28072026-formatteksfail.pdf" target="_blank">PERKESO text file v2.1</a> · <a href="https://www.hasil.gov.my/wp-content/uploads/spesifikasi-kaedah-pengiraan-berkomputer-pcb-2026.pdf" target="_blank">LHDN PCB 2026</a> · <a href="https://gajiminimum.mohr.gov.my/wp-content/uploads/PUA%20376.pdf" target="_blank">Minimum Wages Order 2024</a> · <a href="https://hrdcorp.gov.my/faq" target="_blank">HRD Corp</a></div></div>'+
+  '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('history',15)+' Rate changes</h3><button class="btn sm" onclick="prRateAdd()">'+ic('plus',13)+'Add a change</button></div>'+
+  '<div class="warnbox">'+ic('alert',13)+' <b>Coming:</b> the Prime Minister said on 26 Sep 2026 the minimum wage will be raised — details in Budget 2027 (9 Oct 2026). When the order is gazetted, add it here with the month it starts; earlier months keep the old rate.</div>'+
+  [...PR_BUILT.map(v=>({...v,built:1})),...own].sort((a,b)=>b.from.localeCompare(a.from)).map((v,i)=>{const{from,note,src,by,at,built,...x}=v;
+   return '<div class="hrrow"><div style="flex:1;min-width:0"><b>From '+mLabel(from)+'</b><small>'+esc(note||Object.entries(x).map(([k,val])=>((PR_FIELDS.find(f=>f[0]===k)||[k,k])[1])+' '+val).join(', '))+(built?' · built in':' · added by you')+'</small></div>'+
+    (built?'':'<button class="iconbtn" style="padding:4px" onclick="prRateDel(\''+from+'\',\''+esc(Object.keys(x).join(','))+'\')">'+ic('trash',13)+'</button>')+'</div>';}).join('')+'</div>';
+}
+window.prRateAdd=()=>modal('Add a rate change','<div class="card"><label>From the wages of</label><input class="f" type="month" id="pr-f" value="'+mShift(today().slice(0,7),1)+'">'+
+ '<label>Which rate</label><select class="f" id="pr-k">'+PR_FIELDS.map(f=>'<option value="'+f[0]+'">'+f[1]+'</option>').join('')+'</select>'+
+ '<label>New value</label><input class="f" type="number" step="0.0001" id="pr-v" placeholder="RM, or % for percentages (e.g. 1 for 1%)">'+
+ '<label>Source / note</label><input class="f" id="pr-n" maxlength="160" placeholder="e.g. Minimum Wages Order 2027, P.U.(A) …">'+
+ '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="prRateSave()">'+ic('check',15)+'Save</button></div>');
+window.prRateSave=async()=>{const f=$('#pr-f').value,k=$('#pr-k').value,v=+$('#pr-v').value,F=PR_FIELDS.find(x=>x[0]===k);if(!f||!(v>=0)||$('#pr-v').value==='')return toast('Month and value, please');
+ const val=F[2]===100?v/100:v,note=$('#pr-n').value.trim()||F[1]+' → '+(F[2]===100?v+'%':rm(v));
+ try{await prcSave({rates:[...(((PRC||{}).rates)||[]),{from:f,[k]:val,note,by:ME.name||'',at:new Date().toISOString()}]});await audit('Statutory rate added',note+' from '+f);window.closeModal();render();toast('Saved — used from '+mLabel(f));}catch(e){toast(friendly(e));}};
+window.prRateDel=async(from,keys)=>{if(!confirm('Remove this rate change?'))return;const ks=keys.split(',');
+ try{await prcSave({rates:(PRC.rates||[]).filter(v=>!(v.from===from&&ks.every(k=>k in v)))});render();}catch(e){toast(friendly(e));}};
+
+/* ---------- year end: EA for each person, Borang E and C.P.8D ---------- */
+let PRY=String(+today().slice(0,4)-(+today().slice(5,7)<=3?1:0));
+window.prYear=v=>{PRY=String(v);PREA=null;render();};
+async function prYearLoad(y){
+ try{const s=await getDocs(query(collection(db,'payrolls'),where('month','>=',y+'-01'),where('month','<=',y+'-12')));
+  const P={},months=new Set(),draft=new Set();
+  s.docs.forEach(d=>{const R=d.data();months.add(R.month);if(R.status!=='final'){draft.add(R.month);return;}
+   Object.values(R.lines||{}).forEach(L=>{const c=payCalc(L,R.month),o=P[L.staffId]=P[L.staffId]||{sid:L.staffId,L,months:[],gross:0,b1a:0,b1b:0,b1c:0,pcb:0,epf:0,socso:0};
+    o.L=L;o.months.push(R.month);o.gross+=c.gross;o.b1a+=r2(+L.basic+c.otPay-c.unpaid);o.b1b+=r2(c.comm+(+L.bonus||0)+(+L.kpiBonus||0));o.b1c+=r2((+L.allowance||0)+(+L.otherAdd||0));
+    o.pcb+=c.pcb;o.epf+=c.epfEE;o.socso+=r2(c.socsoEE+c.eisEE+c.linEE);});});
+  Object.entries(HRSTAFF||{}).forEach(([sid,f])=>{if(f.ytdYear!==y||f.ytdOurs===false||!(+f.ytdGross))return;const o=P[sid];if(!o)return;
+   o.gross+=+f.ytdGross;o.b1a+=+f.ytdGross;o.pcb+=+f.ytdPCB||0;o.epf+=+f.ytdEPF||0;o.opening=+f.ytdGross;});
+  PREA={y,P,months:[...months].sort(),draft:[...draft].sort()};}
+ catch(e){PREA={y,P:{},months:[],draft:[],err:friendly(e)};}
+ if(TAB==='hr')render();
+}
+function prYearView(){
+ if(!PREA||PREA.y!==PRY){if(!PREA||PREA.y!==PRY){PREA={y:PRY,loading:1};setTimeout(()=>prYearLoad(PRY),0);}return prYearHead()+'<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ if(PREA.loading)return prYearHead()+'<div class="card"><div class="center"><div class="spin"></div></div></div>';
+ const L=Object.values(PREA.P);
+ return prYearHead()+(PREA.draft.length?'<div class="warnbox">'+ic('alert',13)+' Not locked: '+PREA.draft.map(mLabel).join(', ')+' — only locked months are counted.</div>':'')+
+  '<div class="card"><h3 style="margin:0 0 6px">'+ic('note',15)+' '+PRY+' · '+L.length+' employee'+(L.length!==1?'s':'')+' · '+PREA.months.length+' month'+(PREA.months.length!==1?'s':'')+'</h3>'+
+  (L.length?'<div class="scroll"><table class="paytbl"><tr><th>Staff</th><th class="num">Months</th><th class="num">Gross</th><th class="num">KWSP</th><th class="num">PERKESO · SIP</th><th class="num">PCB</th><th></th></tr>'+
+   L.map(o=>'<tr><td><b>'+esc(o.L.name)+'</b></td><td class="num">'+o.months.length+'</td><td class="num">'+rm(r2(o.gross))+'</td><td class="num">'+rm(r2(o.epf))+'</td><td class="num">'+rm(r2(o.socso))+'</td><td class="num">'+rm(r2(o.pcb))+'</td>'+
+    '<td><button class="btn sm ghost" onclick="prEA(\''+o.sid+'\')">'+ic('download',13)+'EA</button></td></tr>').join('')+'</table></div>'+
+   '<div class="row wrap2" style="margin-top:10px"><button class="btn" onclick="prEA()">'+ic('download',15)+'All EA forms (PDF)</button><button class="btn ghost" onclick="prFormE()">'+ic('download',15)+'Borang E worksheet (PDF)</button><button class="btn ghost" onclick="prCP8D()">'+ic('download',15)+'C.P.8D file</button></div>':'<p class="tiny muted" style="margin:0">No locked payroll in '+PRY+'.</p>')+
+  '<div class="warnbox" style="margin-top:10px">'+ic('calendar',13)+' <b>Deadlines:</b> EA to every employee by <b>28 Feb '+(+PRY+1)+'</b>. Borang E with C.P.8D by <b>31 Mar '+(+PRY+1)+'</b> through e-Filing (e-E) on MyTax — compulsory for companies; sole proprietors with no employees are exempt from C.P.8D. The EA here follows the LHDN C.P.8A (Pin. 2023) sections — compare the first one with the official form.</div></div>';
+}
+function prYearHead(){const y=+today().slice(0,4);return '<div class="card"><div class="row" style="gap:8px"><button class="iconbtn" onclick="prYear('+(+PRY-1)+')">'+ic('left',16)+'</button><h2 style="margin:0;min-width:120px;text-align:center">'+PRY+'</h2><button class="iconbtn" onclick="prYear('+(+PRY+1)+')"'+(+PRY>=y?' disabled':'')+'>'+ic('right',16)+'</button></div></div>';}
+window.prEA=async sid=>{
+ const L=Object.values(PREA.P).filter(o=>!sid||o.sid===sid);if(!L.length)return;const P=PRC||{},b=D.meta.biz||{},y=PREA.y;
+ try{const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'});const T=(s,x,yy,o)=>d.text(pdfText(String(s==null?'':s)),x,yy,o||{});
+  L.forEach((o,i)=>{if(i)d.addPage();const f=(HRSTAFF||{})[o.sid]||{},x=o.L,W=210,M=14;let Y=14;
+   d.setFont('helvetica','bold');d.setFontSize(9);T('(C.P.8A - Pin. 2023)',M,Y);T('Malaysia',W-M,Y,{align:'right'});Y+=6;
+   d.setFontSize(14);T('PENYATA SARAAN DARIPADA PENGGAJIAN',W/2,Y,{align:'center'});Y+=6;d.setFontSize(10);T('BAGI TAHUN BERAKHIR 31 DISEMBER '+y,W/2,Y,{align:'center'});Y+=5;
+   d.setFont('helvetica','normal');d.setFontSize(8);T('BORANG EA — DIKEHENDAKI DISEDIAKAN OLEH MAJIKAN DAN DIBERIKAN KEPADA PEKERJA',W/2,Y,{align:'center'});Y+=7;
+   T('No. Majikan E: '+(P.eNo||'—'),M,Y);T('No. Cukai Pendapatan Pekerja: '+(f.tax||x.taxNo||'—'),W-M,Y,{align:'right'});Y+=8;
+   const sec=t=>{d.setFillColor(243,233,216);d.rect(M,Y-4.5,W-2*M,6.5,'F');d.setFont('helvetica','bold');d.setFontSize(9);T(t,M+2,Y);Y+=7;d.setFont('helvetica','normal');d.setFontSize(8.6);};
+   const row=(k,l,v)=>{T(k,M+2,Y);T(l,M+12,Y);if(v!==undefined)T(typeof v==='number'?v.toFixed(2):v,W-M-2,Y,{align:'right'});Y+=5.6;};
+   sec('A  BUTIRAN PEKERJA');
+   row('1.','Nama penuh pekerja/pesara (En./Cik/Puan)',String(f.fullName||x.name).toUpperCase());row('2.','Jawatan',f.position||x.position||'');row('3.','No. kakitangan / No. gaji',x.staffId.slice(0,10));
+   row('4.','No. K.P. Baru',f.ic||x.ic||'');row('5.','No. pasport',f.passport||'');row('6.','No. KWSP',f.epf||x.epfNo||'');row('7.','No. PERKESO',f.socso||x.socsoNo||'');
+   row('8.','Bilangan anak yang layak untuk pelepasan cukai',String(+f.children||0));
+   const jd=f.joinDate&&f.joinDate.slice(0,4)===y?dstr(f.joinDate):'';row('9.','Jika bekerja tidak genap setahun: tarikh mula / tarikh berhenti',[jd,''].filter(Boolean).join(' / ')||'—');
+   sec('B  PENDAPATAN PENGGAJIAN, MANFAAT DAN TEMPAT KEDIAMAN (tidak termasuk elaun/perkuisit/pemberian/manfaat yang dikecualikan cukai)');
+   row('1.(a)','Gaji kasar, upah atau gaji cuti (termasuk gaji lebih masa)',r2(o.b1a));row('(b)','Fi (termasuk fi pengarah), komisen atau bonus',r2(o.b1b));
+   row('(c)','Tip kasar, perkuisit, penerimaan sagu hati atau elaun-elaun lain',r2(o.b1c));row('(d)','Cukai pendapatan yang dibayar oleh majikan bagi pihak pekerja',0);
+   row('(e)','Manfaat Skim Opsyen Saham Pekerja (ESOS)',0);row('(f)','Ganjaran',0);row('2.','Butiran bayaran tunggakan dan lain-lain bagi tahun-tahun terdahulu',0);
+   row('3.','Manfaat berupa barangan',0);row('4.','Nilai tempat kediaman yang disediakan oleh majikan',0);row('5.','Bayaran balik daripada Kumpulan Wang Simpanan/Pencen yang tidak diluluskan',0);row('6.','Pampasan kerana kehilangan pekerjaan',0);
+   d.setFont('helvetica','bold');row('','JUMLAH',r2(o.gross));
+   sec('C  PENCEN DAN LAIN-LAIN');row('1.','Pencen',0);row('2.','Anuiti atau bayaran berkala yang lain',0);
+   sec('D  JUMLAH POTONGAN');row('1.','Potongan Cukai Bulanan (PCB) yang dibayar kepada LHDNM',r2(o.pcb));row('2.','Arahan Potongan CP 38',0);row('3.','Zakat yang dibayar melalui potongan gaji',0);
+   row('4.','Jumlah tuntutan potongan oleh pekerja melalui Borang TP1',0);row('5.','Jumlah pelepasan bagi anak yang layak',(+f.children||0)*rateFor(y+'-12').Q);
+   sec('E  CARUMAN YANG DIBAYAR OLEH PEKERJA KEPADA KUMPULAN WANG SIMPANAN / PENCEN YANG DILULUSKAN DAN PERKESO');
+   row('1.','Nama Kumpulan Wang: KUMPULAN WANG SIMPANAN PEKERJA — amaun caruman yang wajib dibayar (bahagian pekerja)',r2(o.epf));
+   row('2.','PERKESO: amaun caruman yang wajib dibayar (bahagian pekerja, termasuk SIP)',r2(o.socso));
+   sec('F  JUMLAH ELAUN / PERKUISIT / PEMBERIAN / MANFAAT YANG DIKECUALIKAN CUKAI');row('','',0);
+   Y+=6;T('Nama pegawai: '+(P.signName||''),M,Y);T('Nama majikan: '+(b.name||''),M+95,Y);Y+=5.5;T('Jawatan: '+(P.signPos||''),M,Y);T('Alamat: '+String(b.address||'').slice(0,60),M+95,Y);Y+=5.5;
+   T('Tarikh: '+dstr(today()),M,Y);T('No. telefon majikan: '+(b.phone||''),M+95,Y);Y+=10;
+   d.setFontSize(7);d.setTextColor(140,133,119);T('Dijana oleh '+(b.name||'')+' dari rekod gaji yang dikunci untuk '+o.months.length+' bulan. Bandingkan susun atur dengan borang EA rasmi LHDN sebelum diberi kepada pekerja.',M,288);d.setTextColor(20,18,15);});
+  const name=(sid?'EA-'+y+'-'+String(L[0].L.name).replace(/[^A-Za-z0-9]+/g,'-'):'EA-'+y+'-all')+'.pdf';window.__lastPDF={kind:'ea',name,doc:d};d.save(name);await audit('EA forms generated',y+' · '+L.length);}
+ catch(e){toast(friendly(e));}
+};
+window.prFormE=async()=>{
+ const L=Object.values(PREA.P),P=PRC||{},b=D.meta.biz||{},y=PREA.y;
+ const now=hrPeople().filter(s=>s.role!=='owner'),joined=L.filter(o=>{const f=(HRSTAFF||{})[o.sid]||{};return f.joinDate&&f.joinDate.slice(0,4)===y;}).length;
+ try{const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'}),T=(s,x,yy,o)=>d.text(pdfText(String(s==null?'':s)),x,yy,o||{}),M=16;let Y=18;
+  d.setFont('helvetica','bold');d.setFontSize(14);T('BORANG E '+y+' — LEMBARAN KERJA',M,Y);Y+=6;d.setFont('helvetica','normal');d.setFontSize(9);
+  T('Untuk diisi dalam e-Filing (e-E) di MyTax sebelum 31 Mac '+(+y+1)+'. Bukan borang rasmi.',M,Y);Y+=10;
+  const kv=(k,v)=>{T(k,M,Y);d.setFont('helvetica','bold');T(String(v),120,Y);d.setFont('helvetica','normal');Y+=6.5;};
+  kv('Nama majikan',b.name||'');kv('No. Majikan E',P.eNo||'—');kv('No. pendaftaran (SSM)',P.ssm||b.ssm||'—');kv('Alamat',String(b.address||'').slice(0,60));Y+=4;
+  d.setFont('helvetica','bold');T('BAHAGIAN A — Maklumat pekerja',M,Y);Y+=7;d.setFont('helvetica','normal');
+  kv('Jumlah pekerja pada 31 Disember '+y,now.length);kv('Pekerja yang dikenakan PCB',L.filter(o=>o.pcb>0).length);kv('Pekerja baru dalam tahun '+y,joined);
+  kv('Pekerja yang berhenti dalam tahun '+y,Math.max(0,L.length-now.filter(s=>L.some(o=>o.sid===s.id)).length));Y+=4;
+  d.setFont('helvetica','bold');T('Jumlah untuk semakan',M,Y);Y+=7;d.setFont('helvetica','normal');
+  kv('Jumlah saraan kasar',rm(r2(L.reduce((t,o)=>t+o.gross,0))));kv('Jumlah PCB',rm(r2(L.reduce((t,o)=>t+o.pcb,0))));kv('Jumlah KWSP (pekerja)',rm(r2(L.reduce((t,o)=>t+o.epf,0))));kv('Jumlah PERKESO (pekerja)',rm(r2(L.reduce((t,o)=>t+o.socso,0))));
+  Y+=6;d.setFontSize(8.5);d.splitTextToSize(pdfText('Hantar C.P.8D bersama Borang E (fail teks dari app: P'+prDig(P.eNo)+'_'+y+'.txt) — melalui e-Data Praisi hingga 25 Februari, atau e-CP8D selepas itu. Borang E tidak lengkap tanpa C.P.8D.'),178).forEach(l=>{T(l,M,Y);Y+=5;});
+  const name='Borang-E-'+y+'-worksheet.pdf';window.__lastPDF={kind:'formE',name,doc:d};d.save(name);}
+ catch(e){toast(friendly(e));}
+};
+window.prCP8D=()=>{
+ const L=Object.values(PREA.P),P=PRC||{},y=PREA.y,e=prDig(P.eNo);if(!e)return toast('Add your LHDN employer number (E no.) under Staff & company first');
+ const st={'Full-time':2,'Probation':2,'Contract':3,'Part-time':4,'Intern':5};
+ const R=L.map(o=>{const f=(HRSTAFF||{})[o.sid]||{},x=o.L,kids=+f.children||0,ret=f.contractEnd||(f.dob?ymd(new Date(+f.dob.slice(0,4)+60,+f.dob.slice(5,7)-1,+f.dob.slice(8,10))):'');
+  const dmy=ret?ret.slice(8,10)+'-'+ret.slice(5,7)+'-'+ret.slice(0,4):'';
+  return [String(f.fullName||x.name).toUpperCase().slice(0,60),prDig(f.tax||x.taxNo).slice(-11),f.citizen==='Foreign worker'?(f.passport||''):prDig(f.ic||x.ic),prCat(f),st[f.empType]||6,dmy,2,kids,kids*rateFor(y+'-12').Q,
+   Math.round(o.gross),0,0,0,0,0,'0.00',Math.round(o.epf),'0.00',r2(o.pcb).toFixed(2),'0.00',0,Math.round(o.socso)].join('|');});
+ prDownload('P'+e.padStart(10,'0').slice(-10)+'_'+y+'.txt',R.join('\r\n')+'\r\n');audit('C.P.8D file generated',y+' · '+L.length);
+};
+
+/* ---------- claims: mileage for course travel ---------- */
+CLAIM_CATS.push('Mileage (own vehicle)');
+{const _f=window.claimForm;window.claimForm=sid=>{_f(sid);const c=$('#cl-c');if(!c)return;
+ c.insertAdjacentHTML('afterend','<div id="cl-km" style="display:none"><div class="grid g2"><div><label>Kilometres (return trip)</label><input class="f" type="number" min="0" step="0.1" id="cl-k" oninput="clKm()"></div><div><label>Rate</label><input class="f" id="cl-r" disabled value="RM '+(+((PRC||{}).kmRate)||0.6).toFixed(2)+' / km"></div></div><div class="tiny muted" style="margin:-4px 0 8px">Amount is worked out from the distance. Add the parking or toll as a separate claim with its receipt.</div></div>');
+ c.addEventListener('change',()=>{const on=c.value==='Mileage (own vehicle)';$('#cl-km').style.display=on?'':'none';$('#cl-a').readOnly=on;if(on)clKm();});};}
+window.clKm=()=>{const k=+($('#cl-k')||{}).value||0;$('#cl-a').value=k?r2(k*(+((PRC||{}).kmRate)||0.6)).toFixed(2):'';};
+{const _s=window.claimSave;window.claimSave=async sid=>{const c=$('#cl-c');if(c&&c.value==='Mileage (own vehicle)'){const k=+($('#cl-k')||{}).value||0;if(!(k>0)){$('#cl-e').textContent='Enter the kilometres.';return;}
+  const n=$('#cl-n');if(n&&!/km/i.test(n.value))n.value=(n.value?n.value+' · ':'')+k+' km × RM'+(+((PRC||{}).kmRate)||0.6).toFixed(2);}
+ return _s(sid);};}
+window.__pr=()=>({rateFor,mtd:(L,m,c)=>mtdOf(L,m,c),epf:(w,f,m)=>epfOf(w,f,m),socso:(w,f,m)=>socsoOf(w,f,m),calc:(L,m)=>payCalc(L,m),PRC,YTDM,PREA});
 
 </script>
