@@ -2459,6 +2459,17 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .prdue td:last-child{text-align:right;white-space:nowrap}
 .prset td{vertical-align:top}
 .prrates td{padding:6px 4px;border-bottom:1px solid var(--line-2)}
+/* client number onto the filled consultation form */
+.ovlcard{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px}
+.ovlcard.on{border-color:var(--brass);box-shadow:inset 3px 0 0 var(--brass)}
+.ovlcard small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.ovlpv{position:relative;flex:none;width:58px;height:82px;background:#fff;border:1px solid var(--line);border-radius:3px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.ovlpv span{position:absolute;right:5px;top:3px;width:13px;height:13px;background:repeating-linear-gradient(90deg,#14120f 0 2px,#fff 2px 3px),#14120f;opacity:.85}
+.ovlpv b{position:absolute;right:2px;top:18px;font-size:4.5px;letter-spacing:-.02em;color:#14120f}
+.ovlpv i{position:absolute;left:6px;right:6px;top:30px;height:44px;background:repeating-linear-gradient(180deg,transparent 0 5px,#d9d3c7 5px 6px)}
+.ovltip{font-size:12px;line-height:1.45;padding:8px 10px;border-radius:10px;background:rgba(184,146,74,.1);margin-top:4px}
+.ovlor{text-align:center;font-size:11px;color:var(--ink-3);margin:10px 0;text-transform:uppercase;letter-spacing:.1em}
+.ovlrow{padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2720,7 +2731,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-01r';
+const BUILD='2026-10-03s';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -28420,5 +28431,63 @@ window.clKm=()=>{const k=+($('#cl-k')||{}).value||0;$('#cl-a').value=k?r2(k*(+((
   const n=$('#cl-n');if(n&&!/km/i.test(n.value))n.value=(n.value?n.value+' · ':'')+k+' km × RM'+(+((PRC||{}).kmRate)||0.6).toFixed(2);}
  return _s(sid);};}
 window.__pr=()=>({rateFor,mtd:(L,m,c)=>mtdOf(L,m,c),epf:(w,f,m)=>epfOf(w,f,m),socso:(w,f,m)=>socsoOf(w,f,m),calc:(L,m)=>payCalc(L,m),PRC,YTDM,PREA});
+
+
+/* ============ The client number onto the filled consultation form ============ */
+/* A clean A4 page with only the QR code and the client number at the top right, in the same
+   spot the pre-printed form leaves for it. The counter puts the form the client has already
+   filled back into the printer and prints this page over it. Optionally the number also goes on
+   the "No. Pelanggan" line. Each printer feeds a little differently, so the position can be
+   nudged in millimetres; the nudge is remembered on this device. */
+const OVL_KEY='spOvl';
+const ovlGet=()=>{let o={};try{o=JSON.parse(localStorage.getItem(OVL_KEY)||'{}')||{};}catch(e){}return {dx:+o.dx||0,dy:+o.dy||0,field:o.field!==false};};
+const ovlSet=o=>{try{localStorage.setItem(OVL_KEY,JSON.stringify(o));}catch(e){}};
+/* the pre-printed form: QR 19 mm square at 176,5.5 mm, number centred under it at 185.5 mm;
+   the "No. Pelanggan" line comes from the form's own layout */
+const OVL_POS=(()=>{const k=25.4/72,f=(CONSULT.p1f||{})['No. Pelanggan:']||[401.32,717.89];return {qx:176,qy:5.5,qs:19,nx:185.5,ny:27.6,fx:(f[0]+2)*k,fy:(841.89-(f[1]+2.4))*k};})();
+function drawOverlay(doc,c,o){
+ const no=idOf(c),p=OVL_POS,dx=+o.dx||0,dy=+o.dy||0;
+ pdfQR(doc,no,p.qx+dx,p.qy+dy,p.qs);
+ doc.setFont('helvetica','bold');doc.setFontSize(8.5);doc.setTextColor(20,18,15);doc.text(pdfText(no),p.nx+dx,p.ny+dy,{align:'center'});
+ if(o.field){doc.setFontSize(9);doc.text(pdfText(no),p.fx+dx,p.fy+dy);}
+}
+async function ovlPDF(list,o){
+ const L=list.filter(c=>c&&idOf(c));if(!L.length){toast('No client number yet — the number comes with the first paid bill');return;}
+ toast('Preparing the PDF…');
+ try{const [jsPDF]=await Promise.all([loadJsPDF(),loadQR()]);const doc=new jsPDF({unit:'mm',format:'a4'});
+  L.forEach((c,i)=>{if(i)doc.addPage();drawOverlay(doc,c,o);});
+  const name='Form-number-'+(L.length===1?String(idOf(L[0])).replace(/[^A-Za-z0-9-]+/g,'-'):L.length+'-clients-'+today())+'.pdf';
+  window.__lastPDF={kind:'overlay',name,doc,count:L.length};doc.save(name);
+  await audit('Printed',(L.length===1?'Number onto consultation form · '+idOf(L[0])+' '+L[0].name:'Numbers onto '+L.length+' consultation forms'));}
+ catch(e){console.error(e);toast(friendly(e));}
+}
+function ovlOpts(){const o=ovlGet();
+ return '<div class="ovlopt"><label class="row" style="gap:8px;margin:0 0 8px"><input type="checkbox" id="ov-f"'+(o.field?' checked':'')+'> Also write the number on the "No. Pelanggan" line</label>'+
+  '<div class="grid g2"><div><label>Move right (mm)</label><input class="f" type="number" step="0.5" id="ov-dx" value="'+o.dx+'"><div class="tiny muted">minus = left</div></div>'+
+  '<div><label>Move down (mm)</label><input class="f" type="number" step="0.5" id="ov-dy" value="'+o.dy+'"><div class="tiny muted">minus = up</div></div></div>'+
+  '<div class="ovltip">'+ic('alert',13)+' Print at <b>100% / Actual size</b>, not "Fit to page". Try it once on plain paper and hold it against a form to the light; if it lands off, nudge it here — this device remembers.</div></div>';}
+function ovlRead(){const o={field:!!($('#ov-f')||{}).checked,dx:r2(+($('#ov-dx')||{}).value||0),dy:r2(+($('#ov-dy')||{}).value||0)};
+ o.dx=Math.max(-20,Math.min(20,o.dx));o.dy=Math.max(-20,Math.min(20,o.dy));ovlSet(o);return o;}
+/* the "Folder label" button now offers both */
+{const _p=window.paperPDF;window.paperPDF=async(kind,cid,how)=>{
+ if(kind==='overlay')return ovlPDF([cust(cid)],how&&typeof how==='object'?how:ovlGet());
+ if(kind==='label'&&!how){const c=cust(cid);if(!c)return;if(!idOf(c))return toast('This client has no number yet');
+  return modal('Label · '+idOf(c),'<div class="card"><div class="ovlpick">'+
+   '<div class="ovlcard on"><div class="ovlpv"><span></span><i></i><b>'+esc(idOf(c))+'</b></div><div style="flex:1;min-width:0"><b>Onto the filled consultation form</b><small>A4 · only the QR and the number, top right — feed the filled form back into the printer and print over it.</small></div></div>'+
+   ovlOpts()+'<button class="btn" id="ov-go" style="width:100%;justify-content:center;margin-top:8px" onclick="ovlGo(\''+cid+'\')">'+ic('print',15)+'Print onto the form (A4)</button>'+
+   '<div class="ovlor">or</div><button class="btn ghost" style="width:100%;justify-content:center" onclick="closeModal();paperPDF(\'label\',\''+cid+'\',\'cut\')">'+ic('tag',15)+'Folder label to cut out (front + spine)</button></div></div>');}
+ return _p(kind,cid,how);};}
+window.ovlGo=cid=>{const o=ovlRead();window.closeModal();ovlPDF([cust(cid)],o);};
+/* several new clients at once, in the order their forms are stacked */
+{const _t=window.paperTodo;window.paperTodo=()=>{_t();const box=document.getElementById('pt-list');if(!box)return;
+ const xs=newPaperTodo().filter(c=>idOf(c));if(!xs.length)return;
+ box.insertAdjacentHTML('beforeend','<button class="btn sm ghost" style="margin-top:10px" onclick="ovlBatch()">'+ic('print',14)+'Print their numbers onto the filled forms ('+xs.length+')</button>');};}
+window.ovlBatch=()=>{const xs=newPaperTodo().filter(c=>idOf(c)).sort((a,b)=>String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
+ modal('Numbers onto filled forms','<div class="card"><p class="tiny muted" style="margin:0 0 8px">One page per client, oldest first. Stack the filled forms in the same order, face as your printer needs it.</p>'+
+  xs.map(c=>'<label class="row ovlrow" style="gap:8px"><input type="checkbox" class="ov-c" value="'+c.id+'" checked> <b>'+esc(idOf(c))+'</b> '+esc(c.name||'')+' <span class="muted tiny">'+(c.createdAt?dshort(c.createdAt):'')+'</span></label>').join('')+
+  ovlOpts()+'<button class="btn" style="width:100%;justify-content:center;margin-top:8px" onclick="ovlBatchGo()">'+ic('print',15)+'Print (A4)</button></div>');};
+window.ovlBatchGo=()=>{const ids=[...document.querySelectorAll('.ov-c:checked')].map(x=>x.value),o=ovlRead();if(!ids.length)return toast('Tick at least one client');
+ const xs=newPaperTodo().filter(c=>ids.includes(c.id)).sort((a,b)=>String(a.createdAt||'').localeCompare(String(b.createdAt||'')));window.closeModal();ovlPDF(xs,o);};
+window.__ovl=()=>({OVL_POS,get:ovlGet});
 
 </script>
