@@ -2470,6 +2470,10 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .ovltip{font-size:12px;line-height:1.45;padding:8px 10px;border-radius:10px;background:rgba(184,146,74,.1);margin-top:4px}
 .ovlor{text-align:center;font-size:11px;color:var(--ink-3);margin:10px 0;text-transform:uppercase;letter-spacing:.1em}
 .ovlrow{padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+/* company & brand */
+.cofoot{width:100%;text-align:center;font-size:11px;color:var(--ink-3);margin-top:6px;letter-spacing:.02em}
+.coprev{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--line-2);font-size:13px}
+.coprev small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:4px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2731,7 +2735,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-03s';
+const BUILD='2026-10-04t';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -8448,7 +8452,7 @@ function paperDoc(jsPDF){
   else{doc.setDrawColor(...LINE);doc.line(x+3,y+16,x+53,y+16);font(6.8,'italic',MUTED);T('Diisi oleh kaunter / office use',x+3,y+21);}
  };
  const foot=(no,page)=>{font(7,'normal',MUTED);doc.setDrawColor(...LINE);doc.setLineWidth(0.2);doc.line(16,286,194,286);
-  T((b.name||'')+(no===null?'':' · '+(no||'No. klien: ____________')),16,290.5);T(page,194,290.5,{align:'right'});};
+  T(coFull()+(no===null?'':' · '+(no||'No. klien: ____________')),16,290.5);T(page,194,290.5,{align:'right'});};
  /* a labelled field: pre-filled value, or a line to write on */
  const field=(label,val,x,y,w)=>{font(6.8,'normal',MUTED);T(label,x,y);
   doc.setDrawColor(...LINE);doc.setLineWidth(0.25);doc.line(x,y+6.2,x+w,y+6.2);
@@ -8499,7 +8503,7 @@ function drawForm(P,c){
  y=section('D. PERSETUJUAN · CONSENT',y);
  font(7.6);
  const pd='Saya mengesahkan maklumat di atas adalah benar dan akan memaklumkan sebarang perubahan kesihatan sebelum rawatan. '+
-  'Saya bersetuju '+(D.meta.biz&&D.meta.biz.name||'pihak spa')+' menyimpan dan menggunakan maklumat ini untuk rawatan dan rekod saya, '+
+  'Saya bersetuju '+(coTA('bm')||'pihak spa')+' menyimpan dan menggunakan maklumat ini untuk rawatan dan rekod saya, '+
   'selaras dengan Akta Perlindungan Data Peribadi 2010.  /  I confirm the details above are true and will tell the therapist of any change '+
   'in my health before a treatment. I agree to my details being kept and used for my treatments and records under the Personal Data Protection Act 2010.';
  const lines=doc.splitTextToSize(pdfText(pd),178);doc.text(lines,16,y+1);y+=lines.length*3.4+4;
@@ -8771,9 +8775,9 @@ function drawPkgConf(P,c,s,cps){
  /* E. acknowledgement and signatures */
  need(62);
  y=section('E. PENGAKUAN DAN PERSETUJUAN · ACKNOWLEDGEMENT',y);
- const ack='Saya, '+(c.name||'__________________')+(c.idNo?' (No. K/P '+c.idNo+')':'')+', mengesahkan bahawa saya telah membeli pakej di atas, '+
+ const ack='Saya, '+(c.name||'__________________')+(c.idNo?' (No. K/P '+c.idNo+')':'')+', mengesahkan bahawa saya telah membeli pakej di atas daripada '+coTA('bm')+', '+
   'telah membaca, memahami dan bersetuju dengan semua polisi pembelian pakej yang dinyatakan dalam borang ini, dan maklumat saya adalah benar.  /  '+
-  'I confirm that I have bought the package above, and have read, understood and agree to every clause of the package policy in this form.';
+  'I confirm that I have bought the package above from '+coTA('en')+', and have read, understood and agree to every clause of the package policy in this form.';
  const al=doc.splitTextToSize(pdfText(ack),178);font(8);doc.text(al,16,y+1);y+=al.length*3.6+12;
  doc.setDrawColor(...INK);doc.setLineWidth(0.3);
  doc.line(16,y,90,y);doc.line(110,y,194,y);
@@ -9340,7 +9344,7 @@ function buildReceiptPDF(s,jsPDF){
     ' · continued',M,10);}
   doc.setDrawColor(...LINE);doc.setLineWidth(0.3);doc.line(M,H-16,W-M,H-16);
   font(7,'normal',MUTED);
-  T((b.name||'')+(b.ssm?'  |  SSM '+b.ssm:'')+(b.tin?'  |  TIN '+b.tin:''),M,H-11);
+  T(coLine()+(b.tin?'  |  TIN '+b.tin:''),M,H-11);
   T('Page '+p+' of '+pages,W-M,H-11,{align:'right'});
   T('Computer-generated '+title.toLowerCase()+' - no signature required. Issued by Spatify on '+
    dstr(new Date())+' '+tstr(new Date())+'.',M,H-7.5);
@@ -9362,7 +9366,7 @@ window.receiptPDF=async(id,how)=>{
  try{
   const jsPDF=await loadJsPDF();
   const d=buildReceiptPDF(s,jsPDF);
-  const name=pdfName(s);
+  const name=pdfName(s);window.__lastPDF={kind:'receipt',name,doc:d};
   if(how==='share'&&navigator.canShare){
    const file=new File([d.output('blob')],name,{type:'application/pdf'});
    if(navigator.canShare({files:[file]})){
@@ -9809,7 +9813,7 @@ function bizPanel(){
  return '<div class="card"><h2 style="margin-bottom:11px">'+ic('home',16)+' Business details</h2>'+
   '<div class="fieldset"><h3>'+ic('image',13)+'Brand</h3>'+
   imageField('bz-logo',b.logo||'','logo','Logo')+
-  '<label>Business name</label><input class="f" id="bz-n" value="'+esc(b.name||'')+'">'+
+  '<label>Brand name <span class="muted">— what clients see: signage, website, messages, top of receipts</span></label><input class="f" id="bz-n" value="'+esc(b.name||'')+'">'+'<label>Registered company (SSM) <span class="muted">— the legal name on receipts, contracts, payslips and EA forms</span></label><input class="f" id="bz-ln" value="'+esc(b.legalName||'')+'" placeholder="e.g. RS Beauty Solution">'+
   '<label>Tagline <span class="muted">— printed under the name on receipts</span></label>'+
   '<input class="f" id="bz-tag" value="'+esc(b.tagline||'')+'"></div>'+
 
@@ -9867,7 +9871,7 @@ async function saveBiz(){
  const m={open:+$('#bz-o').value||9,close:+$('#bz-c').value||20,
   biz:{...(D.meta.biz||{}),
    logo:imgValue('bz-logo',(D.meta.biz||{}).logo||''),
-   name:$('#bz-n').value,tagline:$('#bz-tag').value,
+   name:$('#bz-n').value,legalName:(($('#bz-ln')||{}).value||'').trim(),tagline:$('#bz-tag').value,
    address:$('#bz-a1').value,postcode:$('#bz-pc').value,city:$('#bz-city').value,state:$('#bz-state').value,
    phone:$('#bz-p').value,whatsapp:$('#bz-wa').value,email:$('#bz-em').value,
    instagram:$('#bz-ig').value,website:$('#bz-web').value,
@@ -13857,7 +13861,7 @@ function webLink(code){
 window.webFormSheet=async()=>{
  const b=D.meta.biz||{};
  /* the form cannot read the staff data, so it gets its own small public page of details */
- try{await setDoc(doc(db,'leadForms',ME.branchId),{bizName:b.name||'',branchName:branch().name||'',logo:b.logo||'',
+ try{await setDoc(doc(db,'leadForms',ME.branchId),{bizName:b.name||'',bizLegal:coPub(),branchName:branch().name||'',logo:b.logo||'',
   services:D.services.filter(s=>s.active!==false).map(s=>s.name).slice(0,40),active:true,updatedAt:new Date().toISOString()});}
  catch(e){toast(friendly(e));return;}
  const opts=CAMPAIGNS.filter(c=>c.active!==false);
@@ -13891,7 +13895,7 @@ async function leadFormPage(branchId,code){
   '<label>Rawatan yang diminati</label><select class="f" id="wl-i"><option value="">Belum pasti / nak nasihat</option>'+
    (f.services||[]).map(s=>'<option>'+esc(s)+'</option>').join('')+'</select>'+
   '<label>Masalah kulit / soalan</label><textarea class="f" id="wl-q" rows="3" placeholder="Contoh: jerawat, jeragat, kulit kusam"></textarea>'+
-  '<label class="row" style="gap:9px;align-items:flex-start"><input type="checkbox" id="wl-ok"> <span class="tiny">Saya bersetuju '+esc(f.bizName||'spa')+
+  '<label class="row" style="gap:9px;align-items:flex-start"><input type="checkbox" id="wl-ok"> <span class="tiny">Saya bersetuju '+esc((f.bizName||'spa')+(f.bizLegal?' ('+f.bizLegal+')':''))+
    ' menghubungi saya dan menyimpan maklumat ini (Akta Perlindungan Data Peribadi 2010).</span></label>'+
   '<div id="wl-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="wl-go">Hantar</button></div></div>';
@@ -14959,7 +14963,7 @@ function drawPayslip(d,P,first){
  const T=(s,xx,y,o)=>d.text(String(s==null?'':s),xx,y,o||{});
  d.setFillColor(20,18,15);d.rect(0,0,W,30,'F');
  d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(15);T(b.name||P.biz||'',M,14);
- d.setFont('helvetica','normal');d.setFontSize(8.5);T([b.ssm?'SSM '+b.ssm:'',b.phone||''].filter(Boolean).join(' · '),M,21);
+ d.setFont('helvetica','normal');d.setFontSize(8.5);T([coSame()?(b.ssm?'SSM '+b.ssm:''):coLine(),b.phone||''].filter(Boolean).join(' · '),M,21);
  d.setFont('helvetica','bold');d.setFontSize(12);T('SLIP GAJI / PAYSLIP',W-M,14,{align:'right'});
  d.setFont('helvetica','normal');d.setFontSize(9.5);T(mLabel(P.month),W-M,21,{align:'right'});
  d.setTextColor(20,18,15);
@@ -15990,8 +15994,8 @@ window.finPack=async()=>{
   const jsPDF=await loadJsPDF(),d=new jsPDF({unit:'mm',format:'a4'}),b=D.meta.biz||{},W=210,G=16;let y=0;
   const T=(s,x,yy,o)=>d.text(String(s==null?'':s),x,yy,o||{});
   const n=v=>(v<-0.004?'(':'')+Math.abs(r2(v)).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})+(v<-0.004?')':'');
-  const top=()=>{d.setFillColor(20,18,15);d.rect(0,0,W,26,'F');d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(14);T(b.name||'',G,12);
-   d.setFont('helvetica','normal');d.setFontSize(8.5);T([b.ssm?'SSM '+b.ssm:'',b.phone||''].filter(Boolean).join(' · '),G,19);
+  const top=()=>{d.setFillColor(20,18,15);d.rect(0,0,W,26,'F');d.setTextColor(255,255,255);d.setFont('helvetica','bold');d.setFontSize(14);T(coName(),G,12);
+   d.setFont('helvetica','normal');d.setFontSize(8.5);T([coSame()?'':'Trading as '+coBrand(),b.ssm?'SSM '+b.ssm:'',b.phone||''].filter(Boolean).join(' · '),G,19);
    d.setFont('helvetica','bold');d.setFontSize(11);T('MONTH-END PACK',W-G,12,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(9);T(mLabel(m),W-G,19,{align:'right'});
    d.setTextColor(20,18,15);y=36;};
   const need=h=>{if(y+h>280){d.addPage();top();}};
@@ -16364,16 +16368,16 @@ const DOCF={
 
 /* the words of each document, as blocks the PDF drawer lays out */
 function docBlocks(type,lang,x,biz){
- const B=[],bn=biz.name||'',en=lang==='en';
+ const B=[],bn=biz.name||'',en=lang==='en',cn=coName(),bnc=coFull();
  const letter=(title,addr=true)=>{B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]});
   if(addr)B.push({addr:[x.name,x.ic?LX(lang,'No. KP: ','IC no.: ')+x.ic:'',...String(x.address||'').split('\n')].filter(Boolean)});
   B.push({p:LX(lang,'Tuan/Puan,','Dear '+(x.name||'Sir/Madam')+',')},{title});};
  const yours=()=>{B.push({p:LX(lang,'Sekian, terima kasih.','Thank you.')},{p:LX(lang,'Yang benar,','Yours sincerely,')},
-  {sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+bn}]});};
+  {sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+cn}]});};
  if(type==='offer'){
   letter(LX(lang,'TAWARAN PEKERJAAN SEBAGAI ','OFFER OF EMPLOYMENT AS ')+String(x.position||'').toUpperCase());
-  B.push({p:LX(lang,'Dengan sukacitanya kami menawarkan anda jawatan '+x.position+' di '+bn+' tertakluk kepada terma dan syarat berikut:',
-   'We are pleased to offer you the position of '+x.position+' at '+bn+' on the following terms and conditions:')});
+  B.push({p:LX(lang,'Dengan sukacitanya kami menawarkan anda jawatan '+x.position+' di '+bnc+' tertakluk kepada terma dan syarat berikut:',
+   'We are pleased to offer you the position of '+x.position+' at '+bnc+' on the following terms and conditions:')});
   const prob=+x.prob>0;
   const C=[[LX(lang,'Jawatan dan tempat bertugas','Position and place of work'),LX(lang,'Anda akan bertugas sebagai '+x.position+' di '+x.branch+' dan melapor kepada '+x.reportTo+'. Syarikat boleh menempatkan anda di cawangan lain mengikut keperluan operasi dengan notis yang munasabah.',
     'You will work as '+x.position+' at '+x.branch+' and report to '+x.reportTo+'. The company may place you at another branch as operations require, with reasonable notice.')],
@@ -16418,8 +16422,8 @@ function docBlocks(type,lang,x,biz){
  }
  if(type==='nda'){
   B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{title:LX(lang,'PERJANJIAN KERAHSIAAN DAN TANPA PENDEDAHAN','CONFIDENTIALITY AND NON-DISCLOSURE AGREEMENT'),center:1});
-  B.push({p:LX(lang,'Perjanjian ini dibuat pada '+dLong(x.date,lang)+' antara '+bn+(biz.ssm?' (No. Pendaftaran: '+biz.ssm+')':'')+' ("Syarikat") dan '+x.name+' (No. KP: '+(x.ic||'..................')+') ("Pekerja").',
-   'This agreement is made on '+dLong(x.date,lang)+' between '+bn+(biz.ssm?' (Registration no.: '+biz.ssm+')':'')+' ("the Company") and '+x.name+' (IC no.: '+(x.ic||'..................')+') ("the Employee").')});
+  B.push({p:LX(lang,'Perjanjian ini dibuat pada '+dLong(x.date,lang)+' antara '+coTA('bm')+' ("Syarikat") dan '+x.name+' (No. KP: '+(x.ic||'..................')+') ("Pekerja").',
+   'This agreement is made on '+dLong(x.date,lang)+' between '+coTA('en')+' ("the Company") and '+x.name+' (IC no.: '+(x.ic||'..................')+') ("the Employee").')});
   const n=x.nonSol||12;
   [[LX(lang,'Maklumat Sulit','Confidential Information'),LX(lang,'Maklumat Sulit termasuk tetapi tidak terhad kepada: rekod dan data peribadi klien (nama, nombor telefon, alamat, gambar, sejarah rawatan, keadaan kulit dan maklumat kesihatan); senarai klien dan ahli; harga, promosi dan strategi pemasaran; prosedur rawatan, SOP dan formula; maklumat pembekal dan kos; maklumat kewangan dan jualan; maklumat pekerja lain; serta akaun, kata laluan dan kod akses sistem Syarikat.',
     'Confidential Information includes but is not limited to: client records and personal data (names, phone numbers, addresses, photos, treatment history, skin condition and health information); client and member lists; prices, promotions and marketing plans; treatment procedures, SOPs and formulas; supplier and cost information; financial and sales information; information about other employees; and the Company\'s system accounts, passwords and access codes.')],
@@ -16441,7 +16445,7 @@ function docBlocks(type,lang,x,biz){
    [LX(lang,'Undang-undang','Governing law'),LX(lang,'Perjanjian ini tertakluk kepada undang-undang Malaysia.','This agreement is governed by the laws of Malaysia.')]]
    .forEach((c,i)=>B.push({n:(i+1)+'.',h:c[0],p:c[1]}));
   B.push({p:LX(lang,'Ditandatangani oleh pihak-pihak pada tarikh di atas.','Signed by the parties on the date above.')},
-   {sign:[{who:'co',name:x.signName,sub:x.signTitle+LX(lang,', bagi pihak ',', for ')+bn},{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')}]});
+   {sign:[{who:'co',name:x.signName,sub:x.signTitle+LX(lang,', bagi pihak ',', for ')+cn},{who:'emp',name:x.name,sub:LX(lang,'Pekerja','Employee')}]});
  }
  if(type==='rules'){
   B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{title:LX(lang,'AKUAN PENERIMAAN PERATURAN SYARIKAT DAN SOP','ACKNOWLEDGEMENT OF COMPANY RULES AND SOP'),center:1});
@@ -16454,13 +16458,13 @@ function docBlocks(type,lang,x,biz){
  }
  if(type==='verify'){
   B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]},{addr:[x.addressee]},{title:LX(lang,'PENGESAHAN PEKERJAAN: ','EMPLOYMENT VERIFICATION: ')+String(x.name||'').toUpperCase()});
-  B.push({p:LX(lang,'Dengan ini disahkan bahawa '+x.name+' (No. KP: '+(x.ic||'—')+') adalah pekerja '+bn+(biz.ssm?' ('+biz.ssm+')':'')+' sejak '+dLong(x.joinDate,lang)+' dan kini memegang jawatan '+x.position+' secara '+empL(x.empType,lang)+' di '+x.branch+'.',
-   'This is to confirm that '+x.name+' (IC no.: '+(x.ic||'—')+') has been employed by '+bn+(biz.ssm?' ('+biz.ssm+')':'')+' since '+dLong(x.joinDate,lang)+' and currently holds the '+empL(x.empType,lang)+' position of '+x.position+' at '+x.branch+'.')});
+  B.push({p:LX(lang,'Dengan ini disahkan bahawa '+x.name+' (No. KP: '+(x.ic||'—')+') adalah pekerja '+coTA('bm')+' sejak '+dLong(x.joinDate,lang)+' dan kini memegang jawatan '+x.position+' secara '+empL(x.empType,lang)+' di '+x.branch+'.',
+   'This is to confirm that '+x.name+' (IC no.: '+(x.ic||'—')+') has been employed by '+coTA('en')+' since '+dLong(x.joinDate,lang)+' and currently holds the '+empL(x.empType,lang)+' position of '+x.position+' at '+x.branch+'.')});
   if(x.withSalary==='Yes')B.push({p:LX(lang,'Gaji pokok bulanan beliau ialah '+rmL(x.basic)+(+x.allowance?' dengan elaun tetap '+rmL(x.allowance)+' sebulan':'')+'.',
    'Their monthly basic salary is '+rmL(x.basic)+(+x.allowance?' with a fixed allowance of '+rmL(x.allowance)+' a month':'')+'.')});
   if(x.purpose)B.push({p:LX(lang,'Surat ini dikeluarkan atas permintaan beliau bagi tujuan '+x.purpose+'.','This letter is issued at their request for the purpose of '+x.purpose+'.')});
   B.push({p:LX(lang,'Sebarang pertanyaan boleh diajukan kepada kami'+(biz.phone?' di '+biz.phone:'')+(biz.email?' atau '+biz.email:'')+'.','For any enquiry please contact us'+(biz.phone?' at '+biz.phone:'')+(biz.email?' or '+biz.email:'')+'.')});
-  B.push({p:LX(lang,'Yang benar,','Yours faithfully,')},{sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+bn}]});
+  B.push({p:LX(lang,'Yang benar,','Yours faithfully,')},{sign:[{who:'co',name:x.signName,sub:x.signTitle+', '+cn}]});
  }
  if(type==='app'){
   B.push({title:'BORANG PERMOHONAN PEKERJAAN',sub:'JOB APPLICATION FORM',center:1});
@@ -16474,8 +16478,8 @@ function docBlocks(type,lang,x,biz){
   B.push({h:'F. Kemahiran / Skills'},{checks:['Facial','Urutan badan / Body massage','Mesin estetik / Aesthetic machines','Waxing / threading','Bulu mata & kening / Lash & brow','Kuku / Nails','Jualan & layanan / Sales & service','Media sosial / Social media','Bahasa Melayu','English','Mandarin','Tamil'],cols:3});
   B.push({h:'G. Rujukan / References'},{table:{head:['Nama / Name','Hubungan / Relationship','Telefon / Phone'],w:[.45,.3,.25],rows:2}});
   B.push({fields:[['Dari mana anda tahu tentang jawatan ini? / How did you hear about this job?']],cols:1});
-  B.push({h:'H. Akuan / Declaration'},{p:'Saya mengaku semua maklumat di atas adalah benar. Maklumat palsu boleh menyebabkan permohonan ditolak atau perkhidmatan ditamatkan. Saya bersetuju maklumat ini digunakan oleh '+bn+' bagi tujuan pengambilan pekerja selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
-   {p:'I declare that the information above is true. False information may lead to rejection or dismissal. I agree to '+bn+' using this information for recruitment in line with the Personal Data Protection Act 2010.',sz:8.6,it:1},
+  B.push({h:'H. Akuan / Declaration'},{p:'Saya mengaku semua maklumat di atas adalah benar. Maklumat palsu boleh menyebabkan permohonan ditolak atau perkhidmatan ditamatkan. Saya bersetuju maklumat ini digunakan oleh '+bnc+' bagi tujuan pengambilan pekerja selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
+   {p:'I declare that the information above is true. False information may lead to rejection or dismissal. I agree to '+bnc+' using this information for recruitment in line with the Personal Data Protection Act 2010.',sz:8.6,it:1},
    {sign:[{who:'emp',name:'',sub:'Tandatangan pemohon / Applicant\'s signature'}]});
   B.push({office:[['Ditemuduga oleh / Interviewed by'],['Tarikh / Date'],['Keputusan / Result'],['Gaji ditawarkan / Salary offered']]});
  }
@@ -16488,8 +16492,8 @@ function docBlocks(type,lang,x,biz){
   B.push({h:'C. Pekerjaan / Employment'},{fields:[['Jawatan / Position',x.position],['Cawangan / Branch',x.branch],['Jenis / Type',x.empType?empL(x.empType,'en'):''],['Tarikh mula / Date joined',dLong(x.joinDate,'en')],['Tarikh pengesahan / Confirmation',dLong(x.confirmOn,'en')]],cols:2});
   B.push({h:'D. Bank & berkanun / Bank & statutory'},{fields:[['Bank',x.bank],['No. akaun / Account no.',x.bankAcc],['No. KWSP / EPF no.',x.epf],['No. PERKESO / SOCSO no.',x.socso],['No. cukai pendapatan / Income tax no.',x.tax]],cols:2});
   B.push({h:'E. Keluarga (untuk PCB) / Family (for PCB)'},{fields:[['Status perkahwinan / Marital status',x.marital],['Pasangan bekerja? / Spouse working?',x.spouseWorks],['Bilangan anak / Number of children',x.children===''?'':String(x.children)]],cols:3});
-  B.push({h:'F. Akuan & persetujuan / Declaration & consent'},{p:'Saya mengaku maklumat di atas adalah benar dan akan memaklumkan syarikat jika berlaku perubahan. Saya bersetuju '+bn+' memproses maklumat ini bagi tujuan pekerjaan, gaji, caruman berkanun dan urusan berkaitan selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
-   {p:'I declare that the information above is true and will tell the company of any change. I consent to '+bn+' processing it for employment, payroll, statutory contributions and related purposes under the Personal Data Protection Act 2010.',sz:8.6,it:1},
+  B.push({h:'F. Akuan & persetujuan / Declaration & consent'},{p:'Saya mengaku maklumat di atas adalah benar dan akan memaklumkan syarikat jika berlaku perubahan. Saya bersetuju '+bnc+' memproses maklumat ini bagi tujuan pekerjaan, gaji, caruman berkanun dan urusan berkaitan selaras dengan Akta Perlindungan Data Peribadi 2010.',sz:8.6},
+   {p:'I declare that the information above is true and will tell the company of any change. I consent to '+bnc+' processing it for employment, payroll, statutory contributions and related purposes under the Personal Data Protection Act 2010.',sz:8.6,it:1},
    {sign:[{who:'emp',name:x.name,sub:'Tandatangan pekerja / Employee\'s signature'}]});
   B.push({office:[['Diterima oleh / Received by'],['Tarikh / Date'],['Dimasukkan ke sistem / Entered in system']]});
  }
@@ -17168,7 +17172,7 @@ function wbConfig(){
  const W=wbSet(),b=D.meta.biz||{},svs=wbSvcs(),td=today();
  const closed=String(W.closed||'').split(/[\s,]+/).filter(x=>/^\d{4}-\d{2}-\d{2}$/.test(x));
  if(W.hol)for(let i=0;i<120;i++){const d=ymd(addDays(new Date(),i));if(isHoliday(d))closed.push(d);}
- return {on:!!W.on,v:2,biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',whatsapp:b.whatsapp||b.phone||'',email:b.email||'',
+ return {on:!!W.on,v:2,biz:{name:b.name||'',legal:coPub(),tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',whatsapp:b.whatsapp||b.phone||'',email:b.email||'',
    address:[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', '),instagram:b.instagram||''},
   open:+D.meta.open||9,close:+D.meta.close||20,days:W.days,step:+W.step||30,lead:+W.lead||0,horizon:+W.horizon||30,cutoff:+W.cutoff||24,
   chooseStaff:!!W.chooseStaff,intro:String(W.intro||'').slice(0,400),policy:String(W.policy||'').slice(0,1200),closed:[...new Set(closed)].filter(d=>d>=td).sort(),
@@ -17297,7 +17301,7 @@ function wbPaint(){
    '<label>Nota untuk kami <span class="muted">(pilihan)</span></label><textarea class="f" id="wb-x" rows="2" placeholder="Contoh: kulit sensitif, kali pertama">'+esc(WB.x||'')+'</textarea>'+
    (c.ref||WB.r?'<label>Kod rujukan rakan <span class="muted">(jika ada)</span></label><input class="f" id="wb-r" autocomplete="off" autocapitalize="characters" maxlength="16" placeholder="Contoh: SITI-7KQ2" value="'+esc(WB.r||'')+'">':'')+
    (c.policy?'<details class="wbpol"><summary>Terma & polisi pembatalan</summary><p>'+esc(c.policy).replace(/\n/g,'<br>')+'</p></details>':'')+
-   '<label class="row" style="gap:9px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="wb-ok"> <span class="tiny">Saya bersetuju dengan terma tempahan dan '+esc(c.biz.name||'spa')+
+   '<label class="row" style="gap:9px;align-items:flex-start;margin-top:8px"><input type="checkbox" id="wb-ok"> <span class="tiny">Saya bersetuju dengan terma tempahan dan '+esc((c.biz.name||'spa')+(c.biz.legal?' ('+c.biz.legal+')':''))+
     ' menyimpan maklumat ini untuk urusan tempahan (Akta Perlindungan Data Peribadi 2010).</span></label>'+
    '<div class="wbsum"><div><small>Rawatan</small><b>'+esc(s.n)+'</b></div><div><small>Tarikh</small><b>'+new Date(WB.slot.st).toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',timeZone:WBZONE})+'</b></div>'+
     '<div><small>Masa</small><b>'+wbT(WB.slot.st)+' – '+wbT(WB.slot.en)+'</b></div><div><small>Harga</small><b>'+rm(s.p)+'</b></div></div>'+
@@ -19272,8 +19276,8 @@ function quoteText(q){const b=bizC();
   (q.discount?'\nDiskaun  −'+rm(q.discount):'')+(q.sst?'\nSST  '+rm(q.sst):'')+'\nJumlah: '+rm(q.total)+'\nSah sehingga '+dstr(q.validUntil)+(q.note?'\n\n'+q.note:'');}
 window.quoteShow=id=>{
  const q=(QUOTES||[]).find(x=>x.id===id);if(!q)return;const st=qState(q),b=bizC(),ph=waNum(q.phone);
- modal('Quotation '+q.no,'<div class="card rcpt"><div class="spread"><b>'+esc(b.legalName||b.name||'')+'</b><span class="pill '+st[0]+'">'+st[1]+'</span></div>'+
-  '<div class="tiny muted">'+esc(b.address||'')+(b.ssm?' · SSM '+esc(b.ssm):'')+'</div>'+
+ modal('Quotation '+q.no,'<div class="card rcpt"><div class="spread"><b>'+esc(coBrand())+'</b><span class="pill '+st[0]+'">'+st[1]+'</span></div>'+
+  '<div class="tiny muted">'+esc(coSame()?'':coName()+' · ')+esc(b.address||'')+(b.ssm?' · SSM '+esc(b.ssm):'')+'</div>'+
   '<h3 style="margin:10px 0 4px">Quotation '+esc(q.no)+'</h3><div class="tiny">For <b>'+esc(q.customerName)+'</b>'+(q.phone?' · '+esc(q.phone):'')+' · '+dstr(q.date)+' · valid until '+dstr(q.validUntil)+'</div>'+
   '<table style="margin-top:8px">'+q.items.map(i=>'<tr><td>'+i.qty+' × '+esc(i.name)+(i.pkgCustom?'<div class="tiny muted">'+esc(pkgItemsOf(i).map(z=>z.n+'× '+(svc(z.serviceId).name||'')).join(' + '))+'</div>':'')+'</td><td class="num">'+rm(r2(lineAmt(i)))+'</td></tr>').join('')+
    (q.discount?'<tr><td>Discount</td><td class="num">−'+rm(q.discount)+'</td></tr>':'')+(q.sst?'<tr><td>SST</td><td class="num">'+rm(q.sst)+'</td></tr>':'')+
@@ -19330,7 +19334,7 @@ window.stmtOpen=async cid=>{
   ...C.map(x=>({date:x.date,ref:x.no,what:'Refund · '+(x.invoiceNo||''),bill:0,paid:0,refund:+x.amount||0}))].sort((a,b)=>String(a.date).localeCompare(b.date));
  const tb=r2(rows.reduce((t,r)=>t+r.bill,0)),tp=r2(rows.reduce((t,r)=>t+r.paid,0)),tr=r2(rows.reduce((t,r)=>t+r.refund,0)),owed=r2(S.reduce((t,s)=>t+saleBalance(s),0));
  const b=document.getElementById('stmt');if(!b)return;const biz=bizC();
- b.innerHTML='<div class="rcpt"><b>'+esc(biz.legalName||biz.name||'')+'</b><div class="tiny muted">Statement of account · '+esc(c.name)+(idOf(c)?' ('+esc(idOf(c))+')':'')+' · '+dstr(today())+'</div>'+
+ b.innerHTML='<div class="rcpt"><b>'+esc(coBrand())+'</b><div class="tiny muted">'+esc(coSame()?'':coLine()+' · ')+'Statement of account · '+esc(c.name)+(idOf(c)?' ('+esc(idOf(c))+')':'')+' · '+dstr(today())+'</div>'+
   '<div class="aprsnap" style="margin:10px 0"><div><small>Billed</small><b>'+rm(tb)+'</b></div><div><small>Paid</small><b>'+rm(tp)+'</b></div><div><small>Refunded</small><b>'+rm(tr)+'</b></div><div><small>Still owed</small><b>'+rm(owed)+'</b></div></div>'+
   '<div class="scroll"><table><tr><th>Date</th><th>Ref</th><th class="num">Billed</th><th class="num">Paid</th><th class="num">Refund</th></tr>'+
   rows.map(r=>'<tr><td>'+dshort(r.date)+'</td><td>'+esc(r.ref)+'<div class="tiny muted">'+esc(r.what)+'</div></td><td class="num">'+(r.bill?rm(r.bill):'')+'</td><td class="num">'+(r.paid?rm(r.paid):'')+'</td><td class="num">'+(r.refund?'−'+rm(r.refund):'')+'</td></tr>').join('')+
@@ -22118,7 +22122,7 @@ function lpBuild(img){
  const FB=(FEEDBACK||[]).filter(f=>!f.hidden&&star(f.overall)),dist=[5,4,3,2,1].map(k=>FB.filter(f=>star(f.overall)===k).length);
  const rv=lpReviewPool(L).filter(r=>r.on).slice(0,12).map(r=>({n:r.n,s:r.s,t:r.t,svc:r.svc,d:r.d,src:r.src}));
  return {on:!!L.on,v:1,
-  biz:{name:b.name||'',tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||'',th:L.threads||''},gReviews:/^https:\/\//.test(L.gReviews||'')?String(L.gReviews).slice(0,300):'',
+  biz:{name:b.name||'',legal:coPub(),tagline:b.tagline||'',logo:b.logo||'',phone:b.phone||'',wa:b.whatsapp||b.phone||'',ig:b.instagram||'',tt:L.tiktok||'',fb:L.facebook||'',th:L.threads||''},gReviews:/^https:\/\//.test(L.gReviews||'')?String(L.gReviews).slice(0,300):'',
   hero:{t:String(L.headline||'').slice(0,120),s:String(L.sub||'').slice(0,240),ticks:(L.ticks||[]).filter(Boolean).slice(0,3),
    tEn:String(L.headlineEn||'').slice(0,120),sEn:String(L.subEn||'').slice(0,240),ticksEn:(L.ticksEn||[]).slice(0,3).map(x=>String(x||'').slice(0,40)),
    slides:(L.slides||[]).filter(x=>x&&x.id).slice(0,6).map(x=>({id:x.id,ih:x.ih||''})),img:(L.slides||[]).length?'':(img||'')},
@@ -23435,7 +23439,7 @@ function clKDeclare(){
   'I confirm the information I have given is true and complete. I will tell the spa if anything changes, especially pregnancy and medication.')+'</span></label>'+
   '<label>'+kL('Nama penuh','Full name')+'</label><input class="f" maxlength="80" value="'+esc(A.name)+'" oninput="clKS(\'name\',this.value)">';
 }
-const clFormText=(f,lang)=>String((lang==='en'?(f.bodyEn||f.body):(f.body||f.bodyEn))||'').replace(/\{biz\}/g,bizC().name||'Luuna Skin Spa');
+const clFormText=(f,lang)=>String((lang==='en'?(f.bodyEn||f.body):(f.body||f.bodyEn))||'').replace(/\{biz\}/g,coFull()||'Luuna Skin Spa');
 function clKRead(){
  const A=KS.a,f=A.f,c=cust(KS.cid)||{};
  const forms=clFormsLive();
@@ -26118,7 +26122,7 @@ window.kpiPDF=async()=>{
  const R=X.R,b=bizC(),[cf,ct,cl]=sdCmp(R),k=X.k,c=X.cur,C=X.cl,F=X.fun,U=k.util,M=k.mkt,I=k.items;
  const d=new jsPDF({unit:'mm',format:'a4'}),W=210,G=14;let y=0,pg=1;
  const T=(s,x,yy,o)=>d.text(pdfText(s),x,yy,o||{}),RM=v=>pdfRM(v).replace('.00','');
- const top=()=>{d.setFillColor(13,13,13);d.rect(0,0,W,24,'F');d.setTextColor(250,249,246);d.setFont('helvetica','bold');d.setFontSize(13);T(b.name||'',G,11);
+ const top=()=>{d.setFillColor(13,13,13);d.rect(0,0,W,24,'F');d.setTextColor(250,249,246);d.setFont('helvetica','bold');d.setFontSize(13);T(coBrand()+(coSame()?'':'  ·  '+coName()),G,11);
   d.setFont('helvetica','normal');d.setFontSize(8.5);d.setTextColor(215,197,170);T((SDF.br?kpiBrName(SDF.br):sdBr()?kpiBrName(sdBr()):'All branches')+' · '+R.label+' ('+dshort(R.from)+' - '+dshort(R.to)+')',G,18);
   d.setTextColor(250,249,246);d.setFont('helvetica','bold');d.setFontSize(11);T('BOARD REPORT',W-G,11,{align:'right'});d.setFont('helvetica','normal');d.setFontSize(8);T('vs '+cl,W-G,18,{align:'right'});
   d.setTextColor(13,13,13);y=33;};
@@ -27410,7 +27414,7 @@ window.rcJobSave=async id=>{
  const j={title:t.slice(0,60),branchId:br,branchName:hpBr(br),empType:g('type'),salaryMin:+g('smin')||0,salaryMax:+g('smax')||0,showSalary:$('#rj-ss').checked,
   about:g('about').trim().slice(0,600),duties:g('duties').trim().slice(0,1200),reqs:g('reqs').trim().slice(0,1200),benefits:g('ben').trim().slice(0,1200),
   minExp:g('exp'),closeAt:g('close'),skillsReq:[...document.querySelectorAll('.rj-sk:checked')].map(x=>x.value),transportReq:$('#rj-tr').checked,open:$('#rj-open').checked,
-  bizName:b.name,bizWa:b.whatsapp,bizAddress:b.address,updatedAt:now,updatedBy:UID};
+  bizName:b.name,bizLegal:coPub(),bizWa:b.whatsapp,bizAddress:b.address,updatedAt:now,updatedBy:UID};
  if(j.salaryMax&&j.salaryMin>j.salaryMax){e.textContent='The salary range is the wrong way round.';return;}
  $('#rj-go').disabled=true;
  try{if(id)await setDoc(doc(db,'recJobs',id),j,{merge:true});else{const r=await addDoc(collection(db,'recJobs'),{...j,createdAt:now,createdBy:UID});id=r.id;}
@@ -27530,7 +27534,7 @@ window.rcOfferIssue=async()=>{
   if(pdf.length>950000)throw new Error('The letter is too large to send online (the logo may be very big). Make the logo smaller in Settings, or print it to sign.');
   const r=await addDoc(collection(db,'hrDocs'),rec);if(HRDOCS)HRDOCS.unshift({id:r.id,...rec});
   const tok=rcTok(),b=rcBiz();
-  await setDoc(doc(db,'offerLinks',tok),{pdf,ref:rec.ref,name:x.name,first:rcFirst(x.name),position:x.position,branch:x.branch,start:x.start,acceptBy:x.acceptBy||'',lang,bizName:b.name,bizWa:b.whatsapp,status:'sent',docId:r.id,candId:a.id,at:now});
+  await setDoc(doc(db,'offerLinks',tok),{pdf,ref:rec.ref,name:x.name,first:rcFirst(x.name),position:x.position,branch:x.branch,start:x.start,acceptBy:x.acceptBy||'',lang,bizName:b.name,bizLegal:coPub(),bizWa:b.whatsapp,status:'sent',docId:r.id,candId:a.id,at:now});
   const off={docId:r.id,tok,ref:rec.ref,status:'sent',sentAt:now,acceptBy:x.acceptBy||''};
   await rcLog(a,'Offer letter issued ('+rec.ref+') — '+rm(+x.basic)+' basic',{offer:off,...(rcStI(a.stage)<rcStI('offer')?{stage:'offer',stageAt:now}:{})});
   await audit('Offer letter issued',x.name+' · '+rec.ref);window.closeModal();render();rcOfferShare(a.id);}
@@ -27582,7 +27586,7 @@ window.jobsPage=jobsPage;
 async function jobPage(id,src){
  document.title='Mohon jawatan';const root=document.getElementById('root');root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
  let j=null;try{const s=await getDoc(doc(db,'recJobs',id));if(s.exists())j={id:s.id,...s.data()};}catch(e){}
- const b0=await rcPubBiz(),b={...b0,name:b0.name||(j||{}).bizName||'',whatsapp:b0.whatsapp||(j||{}).bizWa||'',address:b0.address||(j||{}).bizAddress||''};
+ const b0=await rcPubBiz(),b={...b0,name:b0.name||(j||{}).bizName||'',legal:b0.legal||(j||{}).bizLegal||'',whatsapp:b0.whatsapp||(j||{}).bizWa||'',address:b0.address||(j||{}).bizAddress||''};
  if(!j||!j.open||(j.closeAt&&j.closeAt<rcToday())){root.innerHTML='<div class="fbpage rcpub">'+rcPubHead(b,'')+'<div class="fbbox" style="text-align:center"><p>Maaf, jawatan ini telah ditutup.</p><a class="btn ghost" style="text-decoration:none" href="?jobs=1">Lihat jawatan lain</a></div>'+rcPubFoot(b)+'</div>';return;}
  RCP={j,b,src:RC_SRC.some(s=>s[0]===src)?src:'',file:null};
  const ul=(h,s)=>{const L=rcLines(s);return L.length?'<h3>'+h+'</h3><ul>'+L.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'';};
@@ -27606,7 +27610,7 @@ async function jobPage(id,src){
   (RCP.src?'':'<label>Di mana anda lihat iklan ini?</label><select class="f" id="ap-src">'+RC_SRC.filter(s=>s[0]!=='pool').map(s=>'<option value="'+s[0]+'">'+s[1]+'</option>').join('')+'</select>')+
   '<label>Resume atau gambar sijil <span class="muted">(pilihan · PDF bawah 500KB atau gambar)</span></label><input class="f" id="ap-f" type="file" accept="application/pdf,image/*" onchange="apFile(this)"><div id="ap-fv" class="tiny muted"></div>'+
   '<input id="ap-hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">'+
-  '<label class="row" style="gap:9px;align-items:flex-start;margin-top:10px"><input type="checkbox" id="ap-ok"> <span class="tiny">Saya mengesahkan maklumat ini benar dan bersetuju '+esc(b.name||'syarikat')+' menyimpan dan menggunakannya untuk proses pengambilan pekerja (Akta Perlindungan Data Peribadi 2010).</span></label>'+
+  '<label class="row" style="gap:9px;align-items:flex-start;margin-top:10px"><input type="checkbox" id="ap-ok"> <span class="tiny">Saya mengesahkan maklumat ini benar dan bersetuju '+esc((b.name||'syarikat')+(b.legal?' ('+b.legal+')':''))+' menyimpan dan menggunakannya untuk proses pengambilan pekerja (Akta Perlindungan Data Peribadi 2010).</span></label>'+
   '<div id="ap-er" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="ap-go" onclick="apSend()">Hantar permohonan</button></div>'+rcPubFoot(b)+'</div>';
 }
@@ -27639,7 +27643,7 @@ let RCOL=null;
 async function offerPage(tok){
  document.title='Surat tawaran';const root=document.getElementById('root');root.innerHTML='<div class="fbpage"><div class="center"><div class="spin"></div></div></div>';
  let L=null;try{const s=await getDoc(doc(db,'offerLinks',tok));if(s.exists())L={id:s.id,...s.data()};}catch(e){}
- const b0=await rcPubBiz(),b={...b0,name:b0.name||(L||{}).bizName||'',whatsapp:b0.whatsapp||(L||{}).bizWa||''};RCOL={L,b};opPaint();
+ const b0=await rcPubBiz(),b={...b0,name:b0.name||(L||{}).bizName||'',legal:b0.legal||(L||{}).bizLegal||'',whatsapp:b0.whatsapp||(L||{}).bizWa||''};RCOL={L,b};opPaint();
 }
 window.offerPage=offerPage;
 function opPaint(){
@@ -28388,9 +28392,9 @@ window.prEA=async sid=>{
    row('1.','Nama Kumpulan Wang: KUMPULAN WANG SIMPANAN PEKERJA — amaun caruman yang wajib dibayar (bahagian pekerja)',r2(o.epf));
    row('2.','PERKESO: amaun caruman yang wajib dibayar (bahagian pekerja, termasuk SIP)',r2(o.socso));
    sec('F  JUMLAH ELAUN / PERKUISIT / PEMBERIAN / MANFAAT YANG DIKECUALIKAN CUKAI');row('','',0);
-   Y+=6;T('Nama pegawai: '+(P.signName||''),M,Y);T('Nama majikan: '+(b.name||''),M+95,Y);Y+=5.5;T('Jawatan: '+(P.signPos||''),M,Y);T('Alamat: '+String(b.address||'').slice(0,60),M+95,Y);Y+=5.5;
+   Y+=6;T('Nama pegawai: '+(P.signName||''),M,Y);T('Nama majikan: '+coName(),M+95,Y);Y+=5.5;T('Jawatan: '+(P.signPos||''),M,Y);T('Alamat: '+String(b.address||'').slice(0,60),M+95,Y);Y+=5.5;
    T('Tarikh: '+dstr(today()),M,Y);T('No. telefon majikan: '+(b.phone||''),M+95,Y);Y+=10;
-   d.setFontSize(7);d.setTextColor(140,133,119);T('Dijana oleh '+(b.name||'')+' dari rekod gaji yang dikunci untuk '+o.months.length+' bulan. Bandingkan susun atur dengan borang EA rasmi LHDN sebelum diberi kepada pekerja.',M,288);d.setTextColor(20,18,15);});
+   d.setFontSize(7);d.setTextColor(140,133,119);T('Dijana oleh '+coName()+' dari rekod gaji yang dikunci untuk '+o.months.length+' bulan. Bandingkan susun atur dengan borang EA rasmi LHDN sebelum diberi kepada pekerja.',M,288);d.setTextColor(20,18,15);});
   const name=(sid?'EA-'+y+'-'+String(L[0].L.name).replace(/[^A-Za-z0-9]+/g,'-'):'EA-'+y+'-all')+'.pdf';window.__lastPDF={kind:'ea',name,doc:d};d.save(name);await audit('EA forms generated',y+' · '+L.length);}
  catch(e){toast(friendly(e));}
 };
@@ -28401,7 +28405,7 @@ window.prFormE=async()=>{
   d.setFont('helvetica','bold');d.setFontSize(14);T('BORANG E '+y+' — LEMBARAN KERJA',M,Y);Y+=6;d.setFont('helvetica','normal');d.setFontSize(9);
   T('Untuk diisi dalam e-Filing (e-E) di MyTax sebelum 31 Mac '+(+y+1)+'. Bukan borang rasmi.',M,Y);Y+=10;
   const kv=(k,v)=>{T(k,M,Y);d.setFont('helvetica','bold');T(String(v),120,Y);d.setFont('helvetica','normal');Y+=6.5;};
-  kv('Nama majikan',b.name||'');kv('No. Majikan E',P.eNo||'—');kv('No. pendaftaran (SSM)',P.ssm||b.ssm||'—');kv('Alamat',String(b.address||'').slice(0,60));Y+=4;
+  kv('Nama majikan',coName());if(!coSame())kv('Nama perniagaan / jenama',coBrand());kv('No. Majikan E',P.eNo||'—');kv('No. pendaftaran (SSM)',P.ssm||b.ssm||'—');kv('Alamat',String(b.address||'').slice(0,60));Y+=4;
   d.setFont('helvetica','bold');T('BAHAGIAN A — Maklumat pekerja',M,Y);Y+=7;d.setFont('helvetica','normal');
   kv('Jumlah pekerja pada 31 Disember '+y,now.length);kv('Pekerja yang dikenakan PCB',L.filter(o=>o.pcb>0).length);kv('Pekerja baru dalam tahun '+y,joined);
   kv('Pekerja yang berhenti dalam tahun '+y,Math.max(0,L.length-now.filter(s=>L.some(o=>o.sid===s.id)).length));Y+=4;
@@ -28489,5 +28493,64 @@ window.ovlBatch=()=>{const xs=newPaperTodo().filter(c=>idOf(c)).sort((a,b)=>Stri
 window.ovlBatchGo=()=>{const ids=[...document.querySelectorAll('.ov-c:checked')].map(x=>x.value),o=ovlRead();if(!ids.length)return toast('Tick at least one client');
  const xs=newPaperTodo().filter(c=>ids.includes(c.id)).sort((a,b)=>String(a.createdAt||'').localeCompare(String(b.createdAt||'')));window.closeModal();ovlPDF(xs,o);};
 window.__ovl=()=>({OVL_POS,get:ovlGet});
+
+
+/* ============ The company and the brand ============ */
+/* The business is registered with SSM under one name (the company, e.g. RS Beauty Solution) and
+   trades under another (the brand, e.g. LUUNA Skin Spa). Clients see the brand on signage,
+   messages, the website and at the top of documents; the company is the legal party — it issues
+   receipts and invoices, employs the staff, sells the packages and keeps the client data — so its
+   registered name and SSM number go wherever the law or a contract needs them. */
+const CO_DEF={brand:'LUUNA Skin Spa',legal:'RS Beauty Solution',type:'sole'};
+function coBrand(){const b=D.meta.biz||{};return String(b.name||'').trim()||String(b.legalName||'').trim();}
+function coName(){const b=D.meta.biz||{};return String(b.legalName||'').trim()||String(b.name||'').trim();}
+const coSame=()=>coName().toLowerCase()===coBrand().toLowerCase();
+/* "RS Beauty Solution (SSM 202603123456)" — with the company number when there is one */
+function coLine(lang){const b=D.meta.biz||{},s=String(b.ssm||'').trim();
+ return coName()+(s?' ('+(lang==='bm'?'No. Pendaftaran: ':lang==='en'?'Registration no.: ':'SSM ')+s+')':'');}
+/* the legal party, as a contract should name it */
+function coTA(lang){return coLine(lang)+(coSame()?'':(lang==='en'?', trading as ':', yang menjalankan perniagaan sebagai ')+coBrand());}
+/* the brand with the company in brackets — for consents and short notices */
+function coFull(){return coBrand()+(coSame()?'':' ('+coName()+')');}
+/* what the public pages are given */
+function coPub(){return coSame()&&!(D.meta.biz||{}).ssm?'':coLine();}
+
+/* receipts, invoices, letters and proposals: the registration line names the company */
+bizLines=function(b,branchName){
+ const addr=[b.address,[b.postcode,b.city].filter(Boolean).join(' '),b.state].filter(Boolean).join(', ');
+ const contact=[b.phone&&'Tel '+b.phone,b.whatsapp&&'WA '+b.whatsapp,b.email,b.instagram,b.website].filter(Boolean).join(' · ');
+ const legal=String(b.legalName||'').trim(),same=!legal||legal.toLowerCase()===String(b.name||'').trim().toLowerCase();
+ const reg=[same?(b.ssm?'SSM '+b.ssm:''):legal+(b.ssm?' (SSM '+b.ssm+')':''),b.tin&&'TIN '+b.tin,b.sst&&b.sstNo&&'SST '+b.sstNo].filter(Boolean).join(' · ');
+ return{addr,contact,reg,branchName};
+};
+/* public pages: the company in the footer */
+{const _f=wbFoot;wbFoot=function(){const h=_f.apply(this,arguments),b=(WB&&WB.cfg&&WB.cfg.biz)||{};
+ return b.legal?h.replace(/<\/div>$/,'<div class="cofoot">© '+new Date().getFullYear()+' '+esc(b.legal)+(b.name?' · '+esc(b.name):'')+'</div></div>'):h;};}
+{const _f=rcPubFoot;rcPubFoot=function(b){const h=_f(b);return b&&b.legal?h.replace(/<\/div>$/,'<div class="cofoot">© '+new Date().getFullYear()+' '+esc(b.legal)+(b.name?' · '+esc(b.name):'')+'</div></div>'):h;};}
+
+/* ---------- setting it up ---------- */
+function coNeedsSetup(){const b=D.meta.biz||{};return isOwnerMe()&&!String(b.legalName||'').trim();}
+window.coSetup=()=>{const b=D.meta.biz||{},nm=String(b.name||'').trim();
+ const brand=/luuna/i.test(nm)||!nm?CO_DEF.brand:nm,legal=String(b.legalName||'').trim()||CO_DEF.legal;
+ modal('Company & brand','<div class="card"><p class="tiny muted" style="margin:0 0 10px">The <b>company</b> is the name registered with SSM — it issues receipts and invoices, employs the staff, sells the packages and looks after client data. The <b>brand</b> is what clients see.</p>'+
+  '<label>Brand <span class="muted">— shown to clients: signage, website, messages, top of receipts</span></label><input class="f" id="co-b" value="'+esc(brand)+'">'+
+  '<label>Registered company <span class="muted">— exactly as on the SSM certificate</span></label><input class="f" id="co-l" value="'+esc(legal)+'">'+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="co-t">'+ENT_T.map(x=>'<option value="'+x[0]+'"'+((b.entityType||CO_DEF.type)===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></div>'+
+  '<div><label>SSM registration no.</label><input class="f" id="co-s" value="'+esc(b.ssm||'')+'" placeholder="e.g. 202603123456 (JM0912345-X)"></div></div>'+
+  '<div class="coprev" id="co-pv"></div>'+
+  '<button class="btn" style="width:100%;justify-content:center;margin-top:10px" onclick="coSave()">'+ic('check',15)+'Save</button></div>',()=>{['co-b','co-l','co-s'].forEach(id=>{const e=document.getElementById(id);if(e)e.oninput=coPrev;});coPrev();});};
+function coPrev(){const pv=document.getElementById('co-pv');if(!pv)return;const br=($('#co-b').value||'').trim(),lg=($('#co-l').value||'').trim(),s=($('#co-s').value||'').trim();
+ pv.innerHTML='<small>How it reads</small><div><b>'+esc(br)+'</b><br><span class="tiny muted">'+esc(lg)+(s?' (SSM '+esc(s)+')':'')+'</span></div><div class="tiny" style="margin-top:6px">Contracts: "'+esc(lg)+(s?' (No. Pendaftaran: '+esc(s)+')':'')+(lg.toLowerCase()!==br.toLowerCase()?', yang menjalankan perniagaan sebagai '+esc(br):'')+'"</div>';}
+window.coSave=async()=>{const br=($('#co-b').value||'').trim(),lg=($('#co-l').value||'').trim(),s=($('#co-s').value||'').trim(),t=$('#co-t').value;
+ if(br.length<2||lg.length<2)return toast('Enter both the brand and the registered company');
+ const biz={...(D.meta.biz||{}),name:br,legalName:lg,entityType:t,ssm:s};
+ try{await setDoc(doc(db,'meta','settings'),{biz},{merge:true});D.meta.biz=biz;await audit('Company & brand set',lg+' · trading as '+br+(s?' · SSM '+s:''));
+  try{if(typeof wbPublish==='function')await wbPublish(true);}catch(e){console.warn(e);}
+  try{if(typeof lpPublish==='function')await lpPublish(true);}catch(e){console.warn(e);}
+  window.closeModal();render();toast('Saved — '+(s?'':'add the SSM number when you have it · ')+'publish the website again under Landing page so its footer shows the company');}
+ catch(e){toast(friendly(e));}};
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(coNeedsSetup())al.unshift({i:'idcard',t:'Set the registered company and the brand',d:'Receipts, letters, payslips and EA forms need the SSM company name — e.g. '+CO_DEF.legal+' trading as '+CO_DEF.brand,go:'coSetup()'});
+ else if(isOwnerMe()&&!String((D.meta.biz||{}).ssm||'').trim())al.push({i:'idcard',t:'Add the SSM registration number',d:coName()+' — printed on receipts, invoices and contracts',go:'coSetup()'});};}
+window.__co=()=>({brand:coBrand(),legal:coName(),line:coLine(),ta:coTA('bm'),taEn:coTA('en'),full:coFull(),pub:coPub()});
 
 </script>

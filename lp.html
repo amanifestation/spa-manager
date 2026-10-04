@@ -1309,7 +1309,7 @@ function formHTML(k,o){
   (brs.length>1&&!o.mini?'<label for="'+k+'-b">'+T('branch')+'</label><select class="f" id="'+k+'-b">'+brs.map(b=>'<option value="'+esc(b.id)+'"'+(o.br===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select>':'')+
   (o.mode==='wa'||o.mini?'':'<details class="fmore"><summary>'+TL('more')+'</summary><label>'+T('when')+'</label><div class="chips" id="'+k+'-t">'+TIMEKEYS.map((t,i)=>'<button type="button" data-t="'+t+'">'+T('times')[i]+'</button>').join('')+'</div>'+
    '<label for="'+k+'-q">'+T('concern')+' <span style="font-weight:400;color:var(--ink-3)">'+T('opt')+'</span></label><textarea class="f" id="'+k+'-q" rows="2" placeholder="'+T('concernP')+'"></textarea></details>')+(o.mode==='wa'?'':'<label class="consent optin"><input type="checkbox" id="'+k+'-oi"><span>'+esc(TL('optin'))+'</span></label>')+
-  '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>'+esc(T('agree')((P.biz||{}).name||'kami'))+'</span></label>'+
+  '<label class="consent"><input type="checkbox" id="'+k+'-ok"><span>'+esc(T('agree')(lpCoName(P.biz||{})))+'</span></label>'+
   '<div class="err" id="'+k+'-e" role="alert"></div>'+
   '<button class="btn '+(o.mode==='wa'?'wa':'pri')+'" type="submit" id="'+k+'-go">'+(o.btn?ic('arrow',18)+esc(o.btn):o.mode==='wa'?ic('wa',18)+T('toWa'):o.promo?ic('gift',18)+T('claimThis'):ic('arrow',18)+T('send'))+'</button></form>';
 }
@@ -1478,7 +1478,7 @@ function cartSheet(msg){
     '<label>'+TS('how')+'</label><div class="howr"><label><input type="radio" name="o-h" value="pickup" checked> '+TS('pickup')+'</label><label><input type="radio" name="o-h" value="post"> '+TS('post')+'</label></div>'+
     '<div id="o-ab" hidden><label>'+TS('addr')+'</label><textarea class="f" id="o-a" rows="2" maxlength="300"></textarea><p class="tiny">'+TS('postNote')+'</p></div>'+
     '<label>'+TS('note')+'</label><input class="f" id="o-x" maxlength="200">'+
-    '<label class="consent"><input type="checkbox" id="o-ok"> <span>'+esc(TS('consent',b.name||'Luuna'))+'</span></label><div class="err" id="o-e"></div>'+
+    '<label class="consent"><input type="checkbox" id="o-ok"> <span>'+esc(TS('consent',lpCoName(b)))+'</span></label><div class="err" id="o-e"></div>'+
     '<button class="btn pri" id="o-go" type="submit">'+ic('bag',18)+TS('send')+' · '+rm(tot)+'</button></form>'+
    '<button class="skip" data-x="1">'+TS('keep')+'</button>'
   :'<p class="lead">'+TS('empty')+'</p><button class="btn light" data-nav="shop" style="width:100%">'+TS('skin')+'</button>'));
@@ -1535,7 +1535,7 @@ function mnavSheet(){sheet('<h3>'+TS('menu')+'</h3><div class="lang mlang" role=
  '<button class="btn pri" data-go="book" style="width:100%;margin-top:14px">'+ic('cal',18)+TS('bookNow')+'</button>');}
 function footHTML(){const b=P.biz||{};
  return '<footer><div class="wrap"><div class="fcol"><b class="fbrand">'+esc(b.name||'Luuna')+'</b><nav class="fnav">'+navHTML()+'<a href="#lokasi" data-nav="lokasi">'+T('loc')+'</a><a href="#soalan" data-nav="soalan">'+T('faq')+'</a></nav>'+
-  '<span>© '+new Date().getFullYear()+' '+esc(b.name||'')+'</span></div><div class="soc">'+
+  '<span>© '+new Date().getFullYear()+' '+esc(b.name||'')+(b.legal?' · '+esc(b.legal):'')+'</span></div><div class="soc">'+
   (b.ig?'<a target="_blank" rel="noopener" aria-label="Instagram" href="https://instagram.com/'+esc(String(b.ig).replace(/^@|.*instagram\.com\//,''))+'">'+ic('ig',18)+'</a>':'')+
   (b.tt?'<a target="_blank" rel="noopener" aria-label="TikTok" href="https://www.tiktok.com/@'+esc(String(b.tt).replace(/^@|.*tiktok\.com\/@?/,''))+'">'+ic('tt',18)+'</a>':'')+
   (b.th?'<a target="_blank" rel="noopener" aria-label="Threads" href="https://www.threads.net/@'+esc(String(b.th).replace(/^@|.*threads\.(net|com)\/@?/,''))+'">'+ic('th',18)+'</a>':'')+
@@ -1724,7 +1724,7 @@ function gvSheet(){const G=P.gv;if(!G)return;const b=P.biz||{};let AMT=G.amts[1]
   (G.max>0?'<label>'+TO('gvOwn')+'</label><input class="f" id="gv-own" type="number" min="'+G.min+'" max="'+G.max+'" placeholder="'+G.min+' – '+G.max+'">':'')+
   '<label>'+TO('gvTo')+'</label><input class="f" id="gv-to" maxlength="60"><label>'+TO('gvFrom')+'</label><input class="f" id="gv-fr" maxlength="60"><label>'+TO('gvMsg')+'</label><input class="f" id="gv-m" maxlength="160">'+
   '<label>'+T('name')+'</label><input class="f" id="gv-n" maxlength="80" autocomplete="name"><label>'+T('wa')+'</label><input class="f" id="gv-p" type="tel" maxlength="20" placeholder="012-345 6789">'+
-  '<label class="consent"><input type="checkbox" id="gv-ok"> <span>'+esc(TS('consent',b.name||'Luuna'))+'</span></label><div class="err" id="gv-e"></div><button class="btn pri" id="gv-go" type="submit">'+ic('gift',18)+TO('gvSend')+'</button></form>');
+  '<label class="consent"><input type="checkbox" id="gv-ok"> <span>'+esc(TS('consent',lpCoName(b)))+'</span></label><div class="err" id="gv-e"></div><button class="btn pri" id="gv-go" type="submit">'+ic('gift',18)+TO('gvSend')+'</button></form>');
  const f=document.getElementById('gvf');f.querySelectorAll('[data-amt]').forEach(x=>x.onclick=()=>{AMT=+x.dataset.amt;f.querySelectorAll('[data-amt]').forEach(y=>y.classList.toggle('on',y===x));const o=document.getElementById('gv-own');if(o)o.value='';});
  f.onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('gv-e'),g=id=>document.getElementById(id),own=g('gv-own')&&+g('gv-own').value;
   const amt=own||AMT;if(own&&(own<G.min||own>G.max)){e.textContent=TO('gvRange',G.min,G.max);return;}
@@ -1978,6 +1978,8 @@ function revAuto(){
 window.__k29={vheroBuild,revAuto};
 document.addEventListener('click',e=>{if(e.target.closest('[data-revall]'))setTimeout(()=>{try{revAuto();}catch(x){}},60);});
 
+/* the brand clients know, with the registered company that keeps their data (29t) */
+function lpCoName(b){b=b||{};return (b.name||'Luuna')+(b.legal?' ('+b.legal+')':'');}
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();
