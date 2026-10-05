@@ -2474,6 +2474,106 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .cofoot{width:100%;text-align:center;font-size:11px;color:var(--ink-3);margin-top:6px;letter-spacing:.02em}
 .coprev{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--line-2);font-size:13px}
 .coprev small{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:4px}
+
+/* ===== settings: groups that open like a menu ===== */
+.stg{max-width:860px;margin:0 auto}
+.stg-me{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.stg-av{width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-weight:650;letter-spacing:.02em;flex:none}
+.stg-mi{flex:1;min-width:0}.stg-mi b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stg-bd{display:flex;align-items:center;gap:4px;margin-top:1px}
+.stg-ma{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.stg-ma select.f{margin:0;width:auto;min-width:130px;padding:7px 10px}
+.stg-ma .btn{margin:0}
+.stg-bar{display:flex;gap:8px;align-items:center;margin:0 0 12px}
+.stg-bar .btn{margin:0;white-space:nowrap}
+.stg-q{flex:1;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:0 12px;color:var(--ink-3)}
+.stg-q:focus-within{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}
+.stg-q input{flex:1;border:0;background:transparent;padding:10px 0;outline:none;min-width:0;color:var(--ink)}
+.stg-none{display:none;text-align:center;padding:18px}.stg-none.show{display:block}
+
+.stg-g{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+.stg-gh,.stg-ih{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.stg-gh{padding:14px 15px}
+.stg-gh:hover,.stg-ih:hover{background:var(--surface-2)}
+.stg-gh:focus-visible,.stg-ih:focus-visible{outline:2px solid var(--brass);outline-offset:-2px}
+.stg-gi{width:36px;height:36px;border-radius:11px;background:var(--brass-soft);color:var(--brass);display:grid;place-items:center;flex:none}
+.stg-tt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.stg-tt b{font-weight:620;font-size:14.5px;letter-spacing:-.01em}
+.stg-tt small{color:var(--ink-3);font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stg-n{font-size:11.5px;color:var(--ink-3);background:var(--line-2);border-radius:99px;padding:2px 8px;flex:none}
+.stg-pl{flex:none;display:flex;gap:4px}.stg-pl .pill{margin:0}
+.stg-gh>.ico:last-child,.stg-ih>.ico:last-child{color:var(--ink-3);transition:transform .2s var(--ease)}
+.stg-g.open>.stg-gh>.ico:last-child,.stg-it.open>.stg-ih>.ico:last-child{transform:rotate(180deg)}
+.stg-gb{display:none;border-top:1px solid var(--line-2)}
+.stg-g.open>.stg-gb{display:block;animation:stgIn .18s var(--ease)}
+@keyframes stgIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+
+.stg-it{border-bottom:1px solid var(--line-2)}.stg-it:last-child{border-bottom:0}
+.stg-ih{padding:12px 15px 12px 22px}
+.stg-ih>.ico:first-child{width:30px;height:30px;border-radius:9px;background:var(--surface-2);border:1px solid var(--line-2);display:grid;place-items:center;color:var(--ink-2)}
+.stg-ih .stg-tt b{font-size:13.5px;font-weight:600}
+.stg-ib{display:none;padding:0 15px 14px 15px}
+.stg-it.open>.stg-ib{display:block;animation:stgIn .18s var(--ease)}
+.stg-it.open>.stg-ih{background:var(--surface-2)}
+.stg-solo{padding:4px 15px 14px}
+.stg .stg-card{background:transparent;border:0;box-shadow:none;padding:12px 0 0;margin:0;border-radius:0;background-image:none}
+.stg-ib .stg-card{padding-top:12px}
+.stg .stg-card>.sec-h:empty{display:none}
+
+/* business details: each block opens on its own */
+.stg-fs{padding:0;overflow:hidden}
+.stg-fs>h3{margin:0;padding:11px 12px;cursor:pointer;user-select:none}
+.stg-fs>h3>.ico:last-child{margin-left:auto;color:var(--ink-3);transition:transform .2s var(--ease)}
+.stg-fs.open>h3>.ico:last-child{transform:rotate(180deg)}
+.stg-fs:not(.open)>:not(h3){display:none!important}
+.stg-fs.open{padding:0 12px 12px}.stg-fs.open>h3{margin:0 -12px 6px}
+
+/* finding a setting */
+.stg-searching .stg-g{display:none}
+.stg-searching .stg-g.hit{display:block}
+.stg-searching .stg-g.hit>.stg-gb{display:block}
+.stg-searching .stg-it{display:none}
+.stg-searching .stg-it.hit{display:block}
+.stg-searching .stg-it.hitb>.stg-ib{display:block}
+.stg-searching .stg-it.hit>.stg-ih{box-shadow:inset 3px 0 0 var(--brass)}
+
+@media (max-width:640px){
+ .stg-me{flex-wrap:wrap}.stg-ma{width:100%;justify-content:flex-start}
+ .stg-ma select.f{flex:1}
+ .stg-bar{flex-wrap:wrap}.stg-q{flex-basis:100%}
+ .stg-gh{padding:13px 12px;gap:10px}.stg-ih{padding:11px 12px 11px 14px;gap:10px}
+ .stg-ib,.stg-solo{padding-left:12px;padding-right:12px}
+ .stg-tt small{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+}
+
+/* ===== how clients found us ===== */
+.srclist{border:1px solid var(--line-2);border-radius:var(--r-md);overflow:hidden;margin-bottom:10px;background:var(--surface)}
+.srcrow{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--line-2)}
+.srcrow:last-of-type{border-bottom:0}
+.srcrow.off{background:var(--surface-2)}.srcrow.off .srcin,.srcrow.off .srcnm{opacity:.5;text-decoration:line-through}
+.srcno{width:20px;text-align:right;font-size:11.5px;color:var(--ink-3);flex:none}
+.srcin.f{flex:1;margin:0;padding:7px 10px;min-width:0}
+.srcnm{flex:1;padding:7px 10px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:var(--ink-2);min-width:0}
+.srcnm .ico{color:var(--ink-3)}.srcnm small{font-size:11px;color:var(--ink-3);width:100%}
+.srcwas,.srcnew{font-size:10.5px;border-radius:99px;padding:2px 7px;flex:none;white-space:nowrap}
+.srcwas{background:var(--amber-soft);color:var(--amber)}.srcnew{background:var(--jade-soft);color:var(--jade)}
+.srcbt{display:flex;gap:4px;flex:none}
+.srcbt .iconbtn{padding:6px;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--surface)}
+.srcbt .iconbtn:disabled{opacity:.3;cursor:default}
+.srcbt .iconbtn.dim{opacity:.4;border-style:dashed}
+.srcwarn{display:flex;gap:5px;align-items:center;padding:8px 10px;color:var(--amber);background:var(--amber-soft)}
+.srcadd{display:flex;gap:8px;align-items:center}.srcadd .f{margin:0;flex:1}.srcadd .btn{margin:0;flex:none}
+.srcsug{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:9px 0 4px}
+.srcchip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:3px;font-size:12px;padding:4px 10px;border:1px dashed var(--line);border-radius:99px;color:var(--ink-2);background:var(--surface)}
+.srcchip:hover{border-color:var(--brass);color:var(--brass)}
+.srcupd{gap:8px;margin:10px 0;font-size:12.5px;align-items:flex-start}
+.srcpv{background:var(--surface-2);border:1px solid var(--line-2);border-radius:var(--r-md);padding:9px 11px;margin-bottom:8px}
+.srcpv small{display:block;color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+.srcbx{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px}
+.srcbx span{display:inline-flex;align-items:center;gap:5px}
+.srcbx i{width:10px;height:10px;border:1.2px solid var(--ink-2);border-radius:2px;display:inline-block}
+.srcdirty{color:var(--amber);margin-left:auto}
+@media (max-width:640px){.srcrow{flex-wrap:wrap}.srcbt{margin-left:28px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2735,7 +2835,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-04t';
+const BUILD='2026-10-06u';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3844,7 +3944,7 @@ function custForm(id,opts){
 
   '<div class="fieldset"><h3>'+ic('spark',13)+'Relationship</h3>'+
   '<div class="grid g2"><div><label>How they found us</label><select class="f" id="c-src">'+
-   opt(SOURCES,c.source)+'</select><select class="f" id="c-srcm" aria-label="Paid ad or organic">'+[['','Paid ad or organic?'],['Ads','Paid ad'],['Organic','Organic post / profile'],['Other','Other']].map(o=>'<option value="'+o[0]+'"'+((c.srcMedium||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
+   opt(srcOpts(c.source),c.source)+'</select><select class="f" id="c-srcm" aria-label="Paid ad or organic">'+[['','Paid ad or organic?'],['Ads','Paid ad'],['Organic','Organic post / profile'],['Other','Other']].map(o=>'<option value="'+o[0]+'"'+((c.srcMedium||'')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div>'+
   '<div><label>Home branch</label><select class="f" id="c-br">'+D.branches.map(b=>'<option value="'+b.id+'"'+
    (c.branchId===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'</select></div></div>'+
   '<label>Referred by</label><div class="grid g2"><select class="f" id="c-ref" data-self="'+(id||'')+'"><option value="">— nobody —</option>'+
@@ -8823,14 +8923,13 @@ function drawConsult(P,c){
   doc.line(X(b[0]+1.6),Y(b[1]+4.2),X(b[0]+3.4),Y(b[1]+1.8));doc.line(X(b[0]+3.4),Y(b[1]+1.8),X(b[0]+7),Y(b[1]+7.2));};
  const today_=c?dstr(today()):'';
  /* page 1: the client, their skin concerns, screening, preferences */
- replay(CONSULT.p1);top();
+ try{srcPaper(doc);}catch(e){console.warn(e);}replay(CONSULT.p1);top();
  if(c){
   put('p1','Tarikh:',today_);put('p1','No. Pelanggan:',no);put('p1','Nama penuh:',c.name);
   put('p1','No. kad pengenalan:',c.idNo);put('p1','Telefon:',[c.phone,c.phone2].filter(Boolean).join(' / '));
   put('p1','Tarikh lahir:',c.dob?dstr(c.dob):'');put('p1','Pekerjaan:',c.occupation);put('p1','E-mel:',c.email);
   put('p1','Alamat ringkas:',[c.address,c.postcode,c.city,c.state].filter(Boolean).join(', '));
-  const src={'Instagram':'Instagram','Facebook':'Facebook','TikTok':'TikTok','Google Maps':'Google','Walk-in':'Lalu di sini',
-   'Friend referral':'Rakan / keluarga'}[c.source];
+  const src=srcPaperLabel(c.source);
   if(src)tick('p1',src);else if(c.source){tick('p1','Lain-lain:');put('p1','Lain-lain:',c.source);}
   const ref=c.referrerId&&cust(c.referrerId);if(ref)put('p1','Nama pemberi referal (jika ada):',ref.name);
  }
@@ -13348,7 +13447,7 @@ const myBranch=x=>!x.branchId||x.branchId===ME.branchId;
 const hrsAgo=t=>(Date.now()-new Date(t).getTime())/36e5;
 const agoTxt=t=>{const h=hrsAgo(t);return h<1?Math.max(1,Math.round(h*60))+' min ago':h<24?Math.round(h)+' h ago':Math.round(h/24)+' d ago';};
 const waNum=p=>{const d=digits(p);return d.startsWith('60')?d:d.startsWith('0')?'6'+d:d;};
-const srcToClient=s=>({Instagram:'Instagram',Facebook:'Facebook',TikTok:'TikTok',Google:'Google Maps','Walk-in':'Walk-in',Referral:'Friend referral'}[s]||'Other');
+const srcToClient=s=>srcOwn(s)||({Instagram:'Instagram',Facebook:'Facebook',TikTok:'TikTok',Google:'Google Maps','Walk-in':'Walk-in',Referral:'Friend referral'}[s]||'Other');
 
 /* ---------------- loading ---------------- */
 async function loadCrm(){
@@ -28552,5 +28651,332 @@ window.coSave=async()=>{const br=($('#co-b').value||'').trim(),lg=($('#co-l').va
 {const _ha=hrAlerts;hrAlerts=al=>{_ha(al);if(coNeedsSetup())al.unshift({i:'idcard',t:'Set the registered company and the brand',d:'Receipts, letters, payslips and EA forms need the SSM company name — e.g. '+CO_DEF.legal+' trading as '+CO_DEF.brand,go:'coSetup()'});
  else if(isOwnerMe()&&!String((D.meta.biz||{}).ssm||'').trim())al.push({i:'idcard',t:'Add the SSM registration number',d:coName()+' — printed on receipts, invoices and contracts',go:'coSetup()'});};}
 window.__co=()=>({brand:coBrand(),legal:coName(),line:coLine(),ta:coTA('bm'),taEn:coTA('en'),full:coFull(),pub:coPub()});
+
+
+/* ============ Settings, tidied: groups that open like a menu ============ */
+/* The settings page had grown into one long scroll of 17 cards. Each card is now a row inside a
+   group (This device · Business & company · Payments · Clients · Bookings · Marketing · Team · Data);
+   a group opens to show its rows and a row opens to show its form. Nothing inside the cards moves
+   or is renamed, so every field keeps its id and every Save button works as before. What is open
+   is remembered on this device, and a search box finds any setting by its words. */
+if(!ICONS.chevd)ICONS.chevd='M6 9.5l6 6 6-6';
+if(!ICONS.up)ICONS.up='M12 19V5M6 11l6-6 6 6';
+if(!ICONS.down)ICONS.down='M12 5v14M6 13l6 6 6-6';
+if(!ICONS.eye)ICONS.eye='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12zM12 9.2a2.8 2.8 0 100 5.6 2.8 2.8 0 000-5.6z';
+if(!ICONS.eyeoff)ICONS.eyeoff='M3.5 3.5l17 17M10.4 6.2A9 9 0 0112 6c6 0 9.5 6 9.5 6a15.6 15.6 0 01-3 3.6M6.8 6.9A15.8 15.8 0 002.5 12S6 18 12 18a9 9 0 004.2-1M9.9 9.9a3 3 0 004.2 4.2';
+if(!ICONS.lock)ICONS.lock='M6.5 10.5h11v9h-11zM8.5 10.5V8a3.5 3.5 0 017 0v2.5';
+
+const STG_GROUPS=[
+ {k:'dev', i:'phone',   t:'This device',          d:'The app on this phone or tablet, and what it notifies you about', m:/^(This app|Notifications)/},
+ {k:'biz', i:'home',    t:'Business & company',   d:'Brand, registered company, address, SSM & SST, opening hours, receipt wording', m:/^Business details/},
+ {k:'pay', i:'card',    t:'Payments & checkout',  d:'How clients can pay, and what staff may change at the counter', m:/^(Payment methods|Checkout)/},
+ {k:'cli', i:'users',   t:'Clients',              d:'How they found us, feedback & merit, paper records', m:/^(How clients found us|Client feedback|Paper records)/},
+ {k:'book',i:'calendar',t:'Bookings & packages',  d:'Online booking, deposits & reminders, package rules, credit & membership', m:/^(Online booking|Booking rules|Packages)/},
+ {k:'mkt', i:'gift',    t:'Marketing & rewards',  d:'Scratch & win, come-back vouchers, referrals, leads', m:/^(Scratch|Come-back|Referral|Leads)/},
+ {k:'team',i:'staff',   t:'Team',                 d:'Attendance by QR', m:/^Attendance/},
+ {k:'data',i:'shield',  t:'Data & audit trail',   d:'Demo data, backup, who changed what', m:/^(Data|Audit trail)$/},
+ {k:'more',i:'gear',    t:'More',                 d:'', m:/./}];
+const STG_DESC=[
+ [/^This app/,'Add to the home screen, updates and the stored copy'],
+ [/^Notifications/,'What buzzes this device, quiet hours, sound'],
+ [/^Business details/,'Logo, brand & company, address, SSM / TIN / SST, hours, receipt wording'],
+ [/^Payment methods/,'The buttons at checkout and for instalments'],
+ [/^Checkout/,'Price changes, discounts and commission by staff'],
+ [/^How clients found us/,'The "how they found us" list — add your own'],
+ [/^Client feedback/,'Feedback links, Google review, NPS, merit points'],
+ [/^Paper records/,'Folder boxes, next numbers, package policy wording'],
+ [/^Attendance/,'Clock in by scanning a QR on the counter'],
+ [/^Online booking/,'Booking page: days, times, treatments, terms'],
+ [/^Booking rules/,'Deposits, WhatsApp reminders, waitlist'],
+ [/^Packages/,'Transfer, share, freeze, top-up credit, membership'],
+ [/^Scratch/,'A prize card after each review'],
+ [/^Come-back/,'A voucher for the next visit, from the receipt'],
+ [/^Referral/,'Rewards for the client who refers and the friend'],
+ [/^Leads/,'Reply time, sharing out leads, what counts as converted'],
+ [/^Data$/,'Demo data, rebuild client search, backup file'],
+ [/^Audit trail/,'The last 40 changes and who made them']];
+const stgKey=t=>String(t).toLowerCase().replace(/&amp;|&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30);
+
+/* what is open, remembered on this device */
+const STG=(()=>{let o={};try{o=JSON.parse(localStorage.getItem('spSet')||'{}')||{};}catch(e){}
+ return{g:new Set(o.g||[]),i:new Set(o.i||[]),f:new Set(o.f||['biz-0'])};})();
+function stgKeep(){try{localStorage.setItem('spSet',JSON.stringify({g:[...STG.g],i:[...STG.i],f:[...STG.f]}));}catch(e){}}
+
+/* ---------- the page ---------- */
+{const _v=vSet;vSet=function(){
+ let h=_v.apply(this,arguments);
+ if(boss())h+=srcPanel();
+ return stgWrap(h);};}
+
+function stgMe(){
+ const nm=String(ME.name||'').trim(),ini=(nm.split(/\s+/).map(w=>w[0]).join('').slice(0,2)||'?').toUpperCase();
+ return '<div class="card stg-me"><div class="stg-av">'+esc(ini)+'</div><div class="stg-mi"><b>'+esc(nm)+'</b>'+
+  '<div class="tiny muted">'+esc(ROLE[ME.role]||ME.role)+' · '+esc(branch().name||'')+'</div>'+
+  '<div class="tiny muted stg-bd">'+ic('cloud',11)+' Build '+BUILD+'</div></div>'+
+  '<div class="stg-ma">'+(D.branches.length>1?'<select class="f" id="sw-b" aria-label="Switch branch">'+
+   D.branches.map(x=>'<option value="'+x.id+'"'+(ME.branchId===x.id?' selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select>':'')+
+  '<button class="btn ghost sm" id="signout">'+ic('out',14)+'Sign out</button></div></div>';}
+
+function stgWrap(html){
+ const t=document.createElement('template');t.innerHTML=html;
+ const cards=[...t.content.children];
+ const G=STG_GROUPS.map(g=>({...g,items:[]}));
+ cards.forEach((c,n)=>{
+  const h2=c.querySelector('h2');const title=h2?h2.textContent.trim():'';
+  if(n===0&&title==='You')return;
+  const g=G.find(x=>x.m.test(title))||G[G.length-1];
+  let icon='',pill='';
+  if(h2){const ico=h2.querySelector('.ico');if(ico)icon=ico.outerHTML;
+   const hd=h2.parentElement;
+   if(hd&&hd!==c&&hd.classList.contains('sec-h')){hd.querySelectorAll(':scope > .pill').forEach(p=>{pill+=p.outerHTML;p.remove();});}
+   h2.remove();
+   if(hd&&hd!==c&&!hd.children.length&&!hd.textContent.trim())hd.remove();}
+  if(g.k==='biz')c.querySelectorAll(':scope > .fieldset').forEach((fs,j)=>{const k='biz-'+j,h3=fs.querySelector(':scope > h3');if(!h3)return;
+   fs.classList.add('stg-fs');fs.dataset.k=k;if(STG.f.has(k))fs.classList.add('open');
+   h3.setAttribute('onclick','stgFs(this)');h3.setAttribute('role','button');h3.setAttribute('tabindex','0');h3.insertAdjacentHTML('beforeend',ic('chevd',14));});
+  c.classList.add('stg-card');
+  const d=(STG_DESC.find(x=>x[0].test(title))||[0,''])[1];
+  const fi=/^Paper/.test(title)?'folder':/^Data$/.test(title)?'download':/^Audit/.test(title)?'history':'gear';
+  g.items.push({k:stgKey(title)||'item'+n,title,icon:icon||ic(fi,16),pill,d,html:c.outerHTML});
+ });
+ const ord=t=>{const i=STG_DESC.findIndex(x=>x[0].test(t));return i<0?99:i;};
+ G.forEach(g=>g.items.sort((a,b)=>ord(a.title)-ord(b.title)));
+ const groups=G.filter(g=>g.items.length);
+ const one=groups.length===1;
+ const out=groups.map(g=>{
+  const open=one||STG.g.has(g.k);
+  const solo=g.items.length===1;
+  const body=solo?'<div class="stg-solo">'+g.items[0].html+'</div>':g.items.map(it=>{
+   const io=STG.i.has(it.k);
+   return '<div class="stg-it'+(io?' open':'')+'" data-k="'+it.k+'">'+
+    '<button type="button" class="stg-ih" onclick="stgItem(\''+it.k+'\')" aria-expanded="'+io+'">'+it.icon+
+    '<span class="stg-tt"><b>'+esc(it.title)+'</b>'+(it.d?'<small>'+esc(it.d)+'</small>':'')+'</span>'+
+    (it.pill?'<span class="stg-pl">'+it.pill+'</span>':'')+ic('chevd',16)+'</button>'+
+    '<div class="stg-ib">'+it.html+'</div></div>';}).join('');
+  const sub=g.d||g.items.map(x=>x.title).join(' · ');
+  return '<section class="stg-g'+(open?' open':'')+(solo?' solo':'')+'" data-g="'+g.k+'">'+
+   '<button type="button" class="stg-gh" onclick="stgGroup(\''+g.k+'\')" aria-expanded="'+open+'">'+
+   '<span class="stg-gi">'+ic(g.i,18)+'</span><span class="stg-tt"><b>'+esc(g.t)+'</b><small>'+esc(sub)+'</small></span>'+
+   (solo?(g.items[0].pill?'<span class="stg-pl">'+g.items[0].pill+'</span>':''):'<span class="stg-n">'+g.items.length+'</span>')+ic('chevd',18)+'</button>'+
+   '<div class="stg-gb">'+body+'</div></section>';}).join('');
+ return '<div class="stg">'+stgMe()+
+  '<div class="stg-bar"><div class="stg-q">'+ic('search',15)+'<input id="stg-q" type="search" placeholder="Find a setting — e.g. SST, deposit, logo" autocomplete="off" oninput="stgFind(this.value)"></div>'+
+  (one?'':'<button type="button" class="btn ghost sm" onclick="stgAll(1)">Open all</button><button type="button" class="btn ghost sm" onclick="stgAll(0)">Close all</button>')+'</div>'+
+  '<div class="stg-none tiny muted" id="stg-none">No setting matches that.</div>'+
+  '<div class="stg-list" id="stg-list">'+out+'</div></div>';}
+
+/* ---------- opening and closing ---------- */
+const stgEl=(sel)=>document.querySelector(sel);
+window.stgGroup=k=>{const s=stgEl('.stg-g[data-g="'+k+'"]');if(!s)return;const o=!s.classList.contains('open');
+ s.classList.toggle('open',o);s.querySelector('.stg-gh').setAttribute('aria-expanded',o);o?STG.g.add(k):STG.g.delete(k);stgKeep();
+ if(o)setTimeout(()=>{const r=s.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.6)s.scrollIntoView({block:'start',behavior:'smooth'});},30);};
+window.stgItem=k=>{const s=stgEl('.stg-it[data-k="'+k+'"]');if(!s)return;const o=!s.classList.contains('open');
+ s.classList.toggle('open',o);s.querySelector('.stg-ih').setAttribute('aria-expanded',o);o?STG.i.add(k):STG.i.delete(k);stgKeep();
+ if(o)setTimeout(()=>{const r=s.getBoundingClientRect();if(r.top<0||r.top>innerHeight*.55)s.scrollIntoView({block:'start',behavior:'smooth'});},30);};
+window.stgFs=h=>{const fs=h.closest('.stg-fs');if(!fs)return;const o=!fs.classList.contains('open');fs.classList.toggle('open',o);
+ o?STG.f.add(fs.dataset.k):STG.f.delete(fs.dataset.k);stgKeep();};
+window.stgAll=o=>{document.querySelectorAll('.stg-g').forEach(s=>{s.classList.toggle('open',!!o);o?STG.g.add(s.dataset.g):STG.g.delete(s.dataset.g);});
+ if(!o)document.querySelectorAll('.stg-it').forEach(s=>{s.classList.remove('open');STG.i.delete(s.dataset.k);});stgKeep();};
+/* open whatever holds this element and bring it into view */
+window.stgShow=sel=>{const e=typeof sel==='string'?document.querySelector(sel):sel;if(!e)return false;
+ const g=e.closest('.stg-g'),it=e.closest('.stg-it'),fs=e.closest('.stg-fs');
+ if(g&&!g.classList.contains('open')){g.classList.add('open');STG.g.add(g.dataset.g);}
+ if(it&&!it.classList.contains('open')){it.classList.add('open');STG.i.add(it.dataset.k);}
+ if(fs&&!fs.classList.contains('open')){fs.classList.add('open');STG.f.add(fs.dataset.k);}
+ stgKeep();try{e.scrollIntoView({block:'center'});}catch(x){}return true;};
+/* from elsewhere in the app: go to one setting */
+window.goSet=k=>{
+ window.go('set');setTimeout(()=>{const s=document.querySelector('.stg-it[data-k="'+k+'"]')||document.querySelector('.stg-g[data-g="'+k+'"]');
+  if(!s)return;if(s.classList.contains('stg-g')){if(!s.classList.contains('open'))window.stgGroup(k);s.scrollIntoView({block:'start'});}
+  else window.stgShow(s.querySelector('.stg-ib')||s);},60);};
+
+/* ---------- finding a setting ---------- */
+window.stgFind=q=>{q=String(q||'').trim().toLowerCase();const L=document.getElementById('stg-list');if(!L)return;
+ L.classList.toggle('stg-searching',!!q);let any=0;
+ L.querySelectorAll('.stg-g').forEach(g=>{
+  const items=[...g.querySelectorAll('.stg-it')];
+  const head=(g.querySelector('.stg-gh').textContent||'').toLowerCase();
+  let gh=0;
+  items.forEach(it=>{
+   const t=(it.querySelector('.stg-ih').textContent||'').toLowerCase(),b=stgText(it.querySelector('.stg-ib'));
+   const ht=!!q&&t.includes(q),hb=!!q&&!ht&&b.includes(q);
+   it.classList.toggle('hit',ht||hb);it.classList.toggle('hitb',hb);if(ht||hb)gh=1;});
+  /* only the group's own name matched: show all its rows */
+  if(!gh&&q&&items.length&&head.includes(q)){items.forEach(it=>{it.classList.add('hit');it.classList.remove('hitb');});gh=1;}
+  if(!items.length)gh=!!q&&(head.includes(q)||stgText(g.querySelector('.stg-gb')).includes(q));
+  g.classList.toggle('hit',!!gh);if(gh)any=1;});
+ const n=document.getElementById('stg-none');if(n)n.classList.toggle('show',!!q&&!any);};
+function stgText(el){if(!el)return '';let t=el.textContent||'';
+ el.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(i=>{t+=' '+i.placeholder;});
+ el.querySelectorAll('option').forEach(o=>{t+=' '+o.textContent;});return t.toLowerCase();}
+
+/* the notification button under the bell now opens that setting directly */
+{const _a=window.alertsSheet;if(_a)window.alertsSheet=function(){_a.apply(this,arguments);
+ const b=[...document.querySelectorAll('#modal button')].find(x=>/Notification settings/.test(x.textContent));
+ if(b)b.setAttribute('onclick',"closeModal();goSet('notifications-on-this-device')");};}
+
+/* =========================================================================
+   How clients found us — the owner keeps the list
+   ========================================================================= */
+/* The list lives in meta/settings.sources as [{n:'Instagram'},{n:'Old one',off:true}].
+   SOURCES (used by the client form, the quick new-client box, the paper consultation form and the
+   reports) is kept filled from it. "Friend referral" and "Other" stay, because the referral
+   programme and the lead → client step write those two names. A hidden source is not offered any
+   more but stays on clients who have it; renaming can carry the new name onto those clients. */
+const SRC_DEF=SOURCES.slice();
+const SRC_LOCK={'Friend referral':'Set by the referral programme','Other':'Catch-all for anything not listed'};
+const SRC_SUG=['Xiaohongshu','Threads','WhatsApp','Google search','Website','Influencer','Event / roadshow','Flyer / banner','Fave / Groupon','Corporate'];
+const SRC_MAX=40;
+let SRC_SIG='',SRC_LEADADD=[],SRCED=null;
+function srcAll(){
+ const raw=(D.meta&&Array.isArray(D.meta.sources)&&D.meta.sources.length)?D.meta.sources:SRC_DEF.map(n=>n==='Returning client'?{n,np:true}:{n});
+ const out=[],seen=new Set();
+ raw.forEach(x=>{const n=String((x&&(x.n||x.name))||(typeof x==='string'?x:'')).trim().slice(0,SRC_MAX);const k=n.toLowerCase();
+  if(!n||seen.has(k))return;seen.add(k);out.push({n,off:!!(x&&x.off)&&!SRC_LOCK[n],np:!!(x&&x.np)&&n!=='Other'});});
+ Object.keys(SRC_LOCK).forEach(n=>{if(!seen.has(n.toLowerCase()))out.push({n,off:false,np:false});});
+ return out;}
+function srcSync(){
+ if(!D||!D.meta)return;const all=srcAll(),sig=JSON.stringify(all);if(sig===SRC_SIG)return;SRC_SIG=sig;
+ SOURCES.length=0;all.filter(x=>!x.off).forEach(x=>SOURCES.push(x.n));
+ /* the CRM's "came from" list gets the owner's own sources too */
+ SRC_LEADADD.forEach(n=>{const i=LEAD_SOURCES.indexOf(n);if(i>=0)LEAD_SOURCES.splice(i,1);});SRC_LEADADD=[];
+ all.filter(x=>!x.off&&!SRC_DEF.includes(x.n)&&!LEAD_SOURCES.some(y=>y.toLowerCase()===x.n.toLowerCase())).forEach(x=>{
+  const i=LEAD_SOURCES.indexOf('Other');LEAD_SOURCES.splice(i<0?LEAD_SOURCES.length:i,0,x.n);SRC_LEADADD.push(x.n);});}
+/* the client form keeps a source that has since been hidden or removed */
+function srcOpts(v){return v&&!SOURCES.includes(v)?[...SOURCES,v]:SOURCES;}
+/* a lead's source that matches one of the owner's own goes across as it is */
+function srcOwn(s){if(!s||s==='Other')return '';const k=String(s).toLowerCase();return SOURCES.find(x=>x.toLowerCase()===k&&!SRC_DEF.includes(x))||'';}
+{const _r=render;render=function(){try{srcSync();}catch(e){console.warn(e);}if(TAB!=='set')SRCED=null;return _r.apply(this,arguments);};window.render=render;}
+
+function srcPanel(){
+ if(!SRCED)SRCED=srcAll().map(x=>({...x,was:x.n}));
+ const on=srcAll().filter(x=>!x.off).length;
+ return '<div class="card" id="srcbox"><div class="sec-h"><h2>'+ic('flag',16)+' How clients found us</h2><span class="pill">'+on+' shown</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">The choices under <b>How they found us</b> on a new client and in the client profile, and the tick boxes on the paper consultation form. '+ic('eye',11)+' hides a source — it is no longer offered but stays on the clients who have it and still counts in reports. '+ic('print',11)+' chooses whether it gets its own tick box on the paper form (anything else is written next to <i>Lain-lain</i>).</p>'+
+  '<div class="srclist" id="src-list">'+srcRows()+'</div>'+
+  '<div class="srcadd"><input class="f" id="src-new" maxlength="'+SRC_MAX+'" placeholder="Add a source — e.g. Xiaohongshu" onkeydown="if(event.key===\'Enter\'){event.preventDefault();srcAdd()}">'+
+  '<button type="button" class="btn sm" onclick="srcAdd()">'+ic('plus',14)+'Add</button></div>'+
+  '<div class="srcsug" id="src-sug">'+srcSug()+'</div>'+
+  '<label class="row srcupd"><input type="checkbox" id="src-upd" checked> When I rename a source, also change it on clients already saved with the old name</label>'+
+  '<div class="srcpv" id="src-pv">'+srcPv()+'</div>'+
+  '<div class="tiny" id="src-e" style="color:var(--rose);min-height:4px"></div>'+
+  '<div class="row wrap2"><button type="button" class="btn" id="src-go" onclick="srcSave()">'+ic('check',15)+'Save the list</button>'+
+  '<button type="button" class="btn ghost sm" onclick="srcReset()">'+ic('refresh',14)+'Standard list</button>'+
+  '<span class="tiny srcdirty" id="src-d">'+(srcDirty()?'Not saved yet':'')+'</span></div></div>';}
+function srcRows(){
+ const vis=SRCED.filter(x=>!x.off).length;
+ return SRCED.map((x,i)=>{const lk=SRC_LOCK[x.was];
+  return '<div class="srcrow'+(x.off?' off':'')+(lk?' lk':'')+'">'+
+   '<span class="srcno">'+(i+1)+'</span>'+
+   (lk?'<span class="srcnm" title="'+esc(lk)+'">'+esc(x.n)+' '+ic('lock',12)+'<small>'+esc(lk)+'</small></span>'
+     :'<input class="f srcin" value="'+esc(x.n)+'" maxlength="'+SRC_MAX+'" aria-label="Source name" oninput="srcName('+i+',this.value)">')+
+   (x.was&&x.was!==x.n?'<span class="srcwas">was '+esc(x.was)+'</span>':'')+
+   (!x.was?'<span class="srcnew">new</span>':'')+
+   '<span class="srcbt">'+
+   '<button type="button" class="iconbtn" title="Move up" aria-label="Move up" onclick="srcMove('+i+',-1)"'+(i?'':' disabled')+'>'+ic('up',14)+'</button>'+
+   '<button type="button" class="iconbtn" title="Move down" aria-label="Move down" onclick="srcMove('+i+',1)"'+(i<SRCED.length-1?'':' disabled')+'>'+ic('down',14)+'</button>'+
+   (x.was==='Other'||x.off?'':'<button type="button" class="iconbtn'+(x.np?' dim':'')+'" title="'+(x.np?'Not on the paper form — tap to give it a tick box':'Has a tick box on the paper form')+'" aria-label="'+(x.np?'Add to paper form':'Remove from paper form')+'" onclick="srcPaperTog('+i+')">'+ic('print',14)+'</button>')+
+   (lk?'':'<button type="button" class="iconbtn" title="'+(x.off?'Show it again':'Hide — stop offering it')+'" aria-label="'+(x.off?'Show':'Hide')+'" onclick="srcTog('+i+')">'+ic(x.off?'eyeoff':'eye',14)+'</button>'+
+    '<button type="button" class="iconbtn" title="Remove from the list" aria-label="Remove" onclick="srcDel('+i+')">'+ic('trash',14)+'</button>')+
+   '</span></div>';}).join('')+
+  (vis>14?'<div class="tiny srcwarn">'+ic('alert',12)+' '+vis+' shown — the paper form fits about 14 before it needs an extra line. Hide the ones you rarely use.</div>':'');}
+function srcSug(){const have=new Set(SRCED.map(x=>x.n.toLowerCase()));const s=SRC_SUG.filter(n=>!have.has(n.toLowerCase()));
+ return s.length?'<span class="tiny muted">Quick add:</span>'+s.map(n=>'<button type="button" class="srcchip" onclick="srcAdd(\''+esc(n).replace(/'/g,'&#39;')+'\')">'+ic('plus',11)+esc(n)+'</button>').join(''):'';}
+function srcPv(){const v=SRCED.filter(x=>!x.off&&x.n.trim()&&!x.np&&x.n.trim()!=='Other');
+ return '<small>On the paper consultation form</small><div class="srcbx">'+v.map(x=>'<span><i></i>'+esc(srcBM(x.n.trim()))+'</span>').join('')+'<span><i></i>Lain-lain: ________</span></div>';}
+function srcDirty(){if(!SRCED)return false;const a=srcAll();return JSON.stringify(a.map(x=>[x.n,!!x.off,!!x.np]))!==JSON.stringify(SRCED.map(x=>[x.n.trim(),!!x.off,!!x.np]));}
+function srcPaint(rows){if(rows!==false){const l=document.getElementById('src-list');if(l)l.innerHTML=srcRows();}
+ const s=document.getElementById('src-sug');if(s)s.innerHTML=srcSug();const p=document.getElementById('src-pv');if(p)p.innerHTML=srcPv();
+ const d=document.getElementById('src-d');if(d)d.textContent=srcDirty()?'Not saved yet':'';const e=document.getElementById('src-e');if(e)e.textContent='';}
+window.srcName=(i,v)=>{if(!SRCED[i])return;SRCED[i].n=String(v).slice(0,SRC_MAX);srcPaint(false);};
+window.srcMove=(i,d)=>{const j=i+d;if(j<0||j>=SRCED.length)return;[SRCED[i],SRCED[j]]=[SRCED[j],SRCED[i]];srcPaint();};
+window.srcTog=i=>{const x=SRCED[i];if(!x||SRC_LOCK[x.was])return;x.off=!x.off;srcPaint();};
+window.srcPaperTog=i=>{const x=SRCED[i];if(!x||x.was==='Other')return;x.np=!x.np;srcPaint();};
+window.srcDel=i=>{const x=SRCED[i];if(!x||SRC_LOCK[x.was])return;SRCED.splice(i,1);srcPaint();
+ if(x.was)toast('Removed from the list — clients who have "'+x.was+'" keep it');};
+window.srcAdd=name=>{const inp=document.getElementById('src-new');const v=String(name||(inp&&inp.value)||'').trim().replace(/\s+/g,' ').slice(0,SRC_MAX);
+ const e=document.getElementById('src-e');
+ if(v.length<2){if(e)e.textContent='Type the name of the source first';return;}
+ const ex=SRCED.find(x=>x.n.trim().toLowerCase()===v.toLowerCase());
+ if(ex){if(ex.off){ex.off=false;srcPaint();toast('"'+ex.n+'" is shown again');}else if(e)e.textContent='"'+ex.n+'" is already on the list';if(inp)inp.value='';return;}
+ const oi=SRCED.findIndex(x=>x.was==='Other');const at=oi===SRCED.length-1?oi:SRCED.length;
+ SRCED.splice(at,0,{n:v,off:false,np:false,was:''});if(inp&&!name)inp.value='';srcPaint();};
+window.srcReset=()=>{if(!confirm('Put back the standard list? Sources you added come off the list (clients keep them). Press Save to keep the change.'))return;
+ const cur=new Set(srcAll().map(x=>x.n));SRCED=SRC_DEF.map(n=>({n,off:false,np:n==='Returning client',was:cur.has(n)?n:''}));srcPaint();};
+window.srcSave=async()=>{
+ const e=document.getElementById('src-e'),bt=document.getElementById('src-go');const say=m=>{if(e)e.textContent=m;};
+ const L=SRCED.map(x=>({...x,n:x.n.trim().replace(/\s+/g,' ')}));
+ if(L.some(x=>x.n.length<2))return say('Give every source a name (at least 2 letters)');
+ const seen={};for(const x of L){const k=x.n.toLowerCase();if(seen[k])return say('"'+x.n+'" is on the list twice');seen[k]=1;}
+ if(L.filter(x=>!x.off).length<2)return say('Keep at least two sources shown');
+ const ren=L.filter(x=>x.was&&x.was!==x.n);const upd=(document.getElementById('src-upd')||{}).checked;
+ const list=L.map(x=>Object.assign({n:x.n},x.off?{off:true}:{},x.np&&x.n!=='Other'?{np:true}:{}));
+ if(bt)bt.disabled=true;
+ try{
+  await setDoc(doc(db,'meta','settings'),{sources:list},{merge:true});
+  D.meta={...D.meta,sources:list};
+  let moved=0;
+  if(upd&&ren.length)for(const r of ren){
+   const s=await getDocs(query(collection(db,'customers'),where('source','==',r.was),limit(500)));
+   let b=writeBatch(db),n=0;
+   for(const d of s.docs){b.update(doc(db,'customers',d.id),{source:r.n});n++;moved++;if(n===400){await b.commit();b=writeBatch(db);n=0;}}
+   if(n)await b.commit();
+   if(typeof CUSTS!=='undefined'&&Array.isArray(CUSTS))CUSTS.forEach(c=>{if(c.source===r.was)c.source=r.n;});}
+  const added=L.filter(x=>!x.was).map(x=>x.n),hid=L.filter(x=>x.off).map(x=>x.n);
+  await audit('Client sources updated',[L.filter(x=>!x.off).map(x=>x.n).join(', '),added.length?'added '+added.join(', '):'',
+   ren.length?'renamed '+ren.map(x=>x.was+' → '+x.n).join(', ')+(moved?' ('+moved+' clients)':''):'',hid.length?'hidden '+hid.join(', '):''].filter(Boolean).join(' · '));
+  SRCED=null;SRC_SIG='';STG.g.add('cli');STG.i.add('how-clients-found-us');stgKeep();
+  render();toast('Saved'+(moved?' · '+moved+' client'+(moved>1?'s':'')+' updated':''));}
+ catch(x){say(friendly(x));if(bt)bt.disabled=false;}};
+window.__src=()=>({sources:SOURCES.slice(),lead:LEAD_SOURCES.slice(),all:srcAll()});
+window.__srcTo=x=>srcToClient(x);
+
+/* ---------- the paper consultation form follows the list ----------
+   LUUNA's own form (drawConsult) prints six tick boxes under "Dari mana anda mengenali LUUNA?" and a
+   "Lain-lain: ____" line. With the standard sources it is drawn exactly as designed; when the owner
+   changes the list, the two rows are laid out again from the list (smaller type if needed), so the
+   blank form and the pre-filled one both match what staff pick in the app. */
+const SRC_BMAP={'Google Maps':'Google','Walk-in':'Lalu di sini','Friend referral':'Rakan / keluarga'};
+const srcBM=n=>SRC_BMAP[n]||n;
+const SRC_P1=(()=>{const ops=CONSULT.p1,a=ops.findIndex(o=>o[0]==='T'&&/^Dari mana anda mengenali/.test(o[5])),b=ops.findIndex(o=>o[0]==='T'&&/^Nama pemberi referal/.test(o[5]));
+ const keys=['Instagram','Facebook','TikTok','Google','Lalu di sini','Rakan / keluarga','Lain-lain:'];
+ return{a,b,mid:ops.slice(a+1,b-1),boxes:Object.fromEntries(keys.map(k=>[k,CONSULT.p1b[k]])),lain:CONSULT.p1f['Lain-lain:'],keys:keys.slice(),cur:keys.slice()};})();
+function srcPaperList(){return srcAll().filter(x=>!x.off&&!x.np&&x.n!=='Other').map(x=>srcBM(x.n));}
+/* the label printed for a client's source, or '' when it goes next to Lain-lain */
+function srcPaperLabel(v){if(!v)return '';const l=srcBM(v);return SRC_P1.cur.includes(l)&&l!=='Lain-lain:'?l:'';}
+function srcPaper(doc){
+ if(SRC_P1.a<0||SRC_P1.b<0)return;
+ const L=srcPaperList(),std=SRC_P1.keys.slice(0,6);
+ const ops=CONSULT.p1,ia=ops.findIndex(o=>o[0]==='T'&&/^Dari mana anda mengenali/.test(o[5])),ib=ops.findIndex(o=>o[0]==='T'&&/^Nama pemberi referal/.test(o[5]));
+ if(ia<0||ib<0)return;
+ const head=ops.slice(0,ia+1),tail=ops.slice(ib-1);try{doc.setFont('helvetica','normal');}catch(e){}
+ SRC_P1.cur.forEach(k=>{delete CONSULT.p1b[k];});
+ if(L.length===6&&std.every(x=>L.includes(x))){
+  CONSULT.p1=[...head,...SRC_P1.mid,...tail];Object.assign(CONSULT.p1b,SRC_P1.boxes);CONSULT.p1f['Lain-lain:']=SRC_P1.lain;SRC_P1.cur=SRC_P1.keys.slice();return;}
+ const X0=36,X1=559.28,R1=575.61,R2=559.59,LAIN='Lain-lain:',LMIN=110;
+ const tw=(t,fs)=>{try{return doc.getStringUnitWidth(pdfText(t))*fs;}catch(e){return String(t).length*fs*.5;}};
+ let plan=null;
+ for(const fs of [8.5,8,7.5,7]){
+  const it=L.map(t=>({t,w:14+tw(t,fs)}));const gap=fs>=8?18:12;
+  const rows=[[],[]];let x=X0,r=0,ok=true;
+  for(const i of it){
+   if(x+i.w>X1-(r?14+tw(LAIN,fs)+6+LMIN:0)){if(r===0){r=1;x=X0;}else{ok=false;break;}}
+   if(r===1&&x+i.w>X1-(14+tw(LAIN,fs)+6+LMIN)){ok=false;break;}
+   rows[r].push(i);x+=i.w+gap;}
+  plan={fs,gap,rows};if(ok)break;}
+ const {fs,gap,rows}=plan;const mid=[];const nb={};
+ const put=(x,y,t)=>{mid.push(['C',0.12,0.12,0.12],['w',0.65],['R',x,y,8,8],['c',0.08,0.08,0.08],['T',x+14,y+1,fs,0,t]);nb[t]=[x,y];};
+ /* first row spread across the width, like the printed form */
+ const r1=rows[0],sum=r1.reduce((a,i)=>a+i.w,0),sp=r1.length>1?Math.min(48,Math.max(gap,(X1-X0-sum)/(r1.length-1))):gap;
+ let x=X0;r1.forEach(i=>{put(x,R1,i.t);x+=i.w+sp;});
+ x=X0;rows[1].forEach(i=>{put(x,R2,i.t);x+=i.w+gap;});
+ put(x,R2,LAIN);const lx=x+14+tw(LAIN,fs)+6;
+ mid.push(['C',0.48,0.47,0.45],['w',0.45],['L',lx,R2-1.67,X1,R2-1.67]);
+ CONSULT.p1=[...head,...mid,...tail];Object.assign(CONSULT.p1b,nb);CONSULT.p1f['Lain-lain:']=[lx,R2-1.67,X1];SRC_P1.cur=Object.keys(nb);}
+window.__srcPaperBox=l=>!!CONSULT.p1b[l];
+/* open every group, row and block (tests and "Open all" from a link) */
+window.__stgOpen=()=>{document.querySelectorAll('.stg-g').forEach(e=>{e.classList.add('open');STG.g.add(e.dataset.g);});
+ document.querySelectorAll('.stg-it').forEach(e=>{e.classList.add('open');STG.i.add(e.dataset.k);});
+ document.querySelectorAll('.stg-fs').forEach(e=>{e.classList.add('open');STG.f.add(e.dataset.k);});stgKeep();};
 
 </script>
