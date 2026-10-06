@@ -2758,6 +2758,26 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .rldone b{display:block;color:var(--ink)}.rldone small{display:block;color:var(--ink-2);font-size:13px}
 .rlentry{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;border-top:1px solid var(--line-2);margin-top:12px;padding-top:12px}
 .rlentry>div{flex:1;min-width:200px}.rlentry b{display:flex;align-items:center;gap:5px;font-size:13.5px}.rlentry small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
+
+/* ===== HR templates ===== */
+.hrtrow{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;padding:9px 0;border-bottom:1px solid var(--line-2)}
+.hrtrow:last-child{border-bottom:0}.hrtrow>div:first-child{flex:1;min-width:200px}
+.hrtrow b{display:block;font-size:13.5px}.hrtrow small{display:block;font-size:12px;color:var(--ink-3)}
+.hrted{color:var(--brass);font-weight:600}
+.hrtsec{border:1px solid var(--line-2);border-radius:var(--r-md);padding:10px;margin-bottom:8px;background:var(--surface-2)}
+.hrtsh{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.hrtsh>span{width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--cream);display:grid;place-items:center;font-size:11px;flex:none}
+.hrtsh .f{margin:0}.hrtsh input.f{flex:1;min-width:0;font-weight:600}.hrtsh select.f{width:auto;flex:none}
+.hrtsh .iconbtn{padding:5px;backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--surface)}
+.hrtsh .iconbtn:disabled{opacity:.3}
+.hrtsec textarea.f{margin:0;font-size:13px;line-height:1.5}
+.hrtwarn{color:var(--amber);margin-top:4px;display:flex;gap:4px;align-items:center}
+.hrtread{max-width:720px}
+.hrtread section{margin-bottom:14px}
+.hrtread h4{margin:0 0 6px;font-size:14px;color:var(--brass)}
+.hrtread p,.hrtread li{font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+.hrtread ul,.hrtread ol{margin:0;padding-left:20px}.hrtread p{margin:0 0 6px}
+@media (max-width:560px){.hrtsh{flex-wrap:wrap}.hrtsh input.f{flex-basis:calc(100% - 30px)}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3019,7 +3039,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-06x';
+const BUILD='2026-10-06y';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -30176,5 +30196,611 @@ window.relinkRun=async again=>{const R=RL;if(!R)return;
  const c=document.querySelector('#modal .card');if(!c)return;
  c.insertAdjacentHTML('beforeend','<div class="rlentry"><div><b>'+ic('idcard',13)+' Login account</b><small>User ID <code>'+esc(id)+'</code>. Moving to a new login keeps all their records.</small></div><button type="button" class="btn sm ghost" onclick="relinkStart(\''+esc(id)+'\')">'+ic('refresh',13)+'Change login account</button></div>');};}
 window.__rl={scan:rlScan,deep:(v,o,n)=>{const h={n:0};return {v:rlDeep(v,o,n,rlMode(o),h),n:h.n};}};
+
+
+/* ============ Standard HR documents: job descriptions, contract of service, employee handbook ============ */
+/* Each document is a list of sections; each line is [Bahasa Malaysia, English]. Words in {curly brackets}
+   are filled in when the document is made ({brand}, {company}, {position}, {basic} …). A line that starts
+   with {?field} appears only when that field has a value (for example {?bondAmt} for a training bond).
+   The owner can change every word, add sections and add new job descriptions in HR → Documents →
+   Templates; the app keeps these standard versions to go back to. Written for Malaysia under the
+   Employment Act 1955 as amended in 2022 (in force 1 January 2023). Have a lawyer read them once. */
+const HRC_JD={
+ jd_therapist:{title:['Beauty Therapist','Beauty Therapist'],meta:{reportTo:['Pengurus Spa','the Spa Manager'],grade:'T1',prob:3,noticeProb:['2 minggu','2 weeks'],noticeConf:['1 bulan','1 month'],
+  match:/therap|terapis|beautician|juru ?rawat kecantikan/i},
+ sections:[
+ {h:['Ringkasan jawatan','Job summary'],st:'p',i:[
+  ['Beauty Therapist bertanggungjawab memberikan rawatan muka, badan dan kecantikan yang selamat, bersih dan berkesan kepada pelanggan {brand}, mengikut SOP syarikat, serta membina hubungan jangka panjang dengan pelanggan melalui layanan yang konsisten dan nasihat penjagaan kulit yang jujur.',
+   'The Beauty Therapist delivers safe, hygienic and effective facial, body and beauty treatments to {brand} clients according to company SOPs, and builds long-term client relationships through consistent service and honest skincare advice.']]},
+ {h:['Hubungan kerja','Reporting and working relationships'],st:'b',i:[
+  ['Melapor kepada: Pengurus Spa.','Reports to: Spa Manager.'],
+  ['Bekerjasama rapat dengan: Beauty Consultant, therapist lain dan kaunter hadapan.','Works closely with: Beauty Consultants, fellow therapists and the front desk.'],
+  ['Pelanggan: semua pelanggan yang ditempah kepada therapist ini.','Clients: everyone booked with this therapist.']]},
+ {h:['Tugas utama — rawatan','Key responsibilities — treatments'],st:'b',i:[
+  ['Melakukan rawatan muka, badan, urutan dan rawatan kecantikan lain yang tersenarai dalam menu, hanya selepas lulus penilaian (sign-off) bagi rawatan tersebut.','Perform facials, body treatments, massage and other menu treatments, only after passing the sign-off assessment for each treatment.'],
+  ['Menjalankan konsultasi dan analisa kulit sebelum setiap rawatan, menyemak borang konsultasi, alahan, ubat semasa dan kontraindikasi.','Carry out a consultation and skin analysis before every treatment, checking the consultation form, allergies, current medication and contraindications.'],
+  ['Memastikan borang persetujuan (consent) ditandatangani sebelum rawatan yang memerlukannya, dan menjalankan ujian tampalan (patch test) bila perlu.','Make sure consent is signed before treatments that require it, and carry out patch tests when needed.'],
+  ['Mengendalikan peralatan dan mesin rawatan mengikut arahan pengeluar dan SOP, dan melaporkan sebarang kerosakan dengan segera.','Operate treatment equipment and devices according to the manufacturer instructions and SOP, and report any fault immediately.'],
+  ['Tidak melakukan sebarang prosedur perubatan atau invasif (contohnya suntikan, laser perubatan) yang hanya boleh dilakukan oleh pengamal perubatan berdaftar.','Never perform medical or invasive procedures (for example injections or medical lasers) that only a registered medical practitioner may perform.'],
+  ['Merekod rawatan, produk yang digunakan, tetapan mesin, gambar sebelum/selepas (dengan persetujuan) dan nota dalam rekod pelanggan di aplikasi.','Record the treatment, products used, device settings, before/after photos (with consent) and notes in the client record in the app.']]},
+ {h:['Tugas utama — layanan & jualan','Key responsibilities — client care and sales'],st:'b',i:[
+  ['Menyambut pelanggan dengan mesra, menerangkan langkah rawatan dan menjaga privasi serta keselesaan pelanggan sepanjang rawatan.','Welcome clients warmly, explain each step of the treatment and protect their privacy and comfort throughout.'],
+  ['Memberi nasihat penjagaan selepas rawatan (aftercare) dan mencadangkan produk runcit atau pakej yang benar-benar sesuai dengan keperluan kulit pelanggan.','Give aftercare advice and recommend retail products or packages that genuinely suit the client skin needs.'],
+  ['Menggalakkan tempahan seterusnya (rebooking) sebelum pelanggan pulang.','Encourage the next booking before the client leaves.'],
+  ['Tidak membuat dakwaan palsu atau berlebihan tentang hasil rawatan atau produk.','Never make false or exaggerated claims about treatment or product results.'],
+  ['Mengendalikan aduan kecil dengan tenang dan melaporkan aduan, reaksi kulit atau kecederaan kepada pengurus pada hari yang sama.','Handle small complaints calmly and report complaints, skin reactions or injuries to the manager the same day.']]},
+ {h:['Tugas utama — kebersihan & bilik rawatan','Key responsibilities — hygiene and the treatment room'],st:'b',i:[
+  ['Menyediakan bilik rawatan sebelum setiap pelanggan: linen bersih, peralatan disanitasi, produk dan bahan pakai buang mencukupi.','Prepare the treatment room before every client: clean linen, sanitised tools, enough products and disposables.'],
+  ['Mematuhi SOP kebersihan dan sanitasi tanpa jalan pintas, termasuk cuci tangan, pensterilan alat dan pengurusan sisa.','Follow the hygiene and sanitation SOP without shortcuts, including hand washing, tool sterilisation and waste handling.'],
+  ['Mengemas dan membersihkan bilik selepas setiap rawatan dan pada penutupan hari.','Clean and reset the room after every treatment and at closing.'],
+  ['Merekod penggunaan stok rawatan dengan betul dan memaklumkan stok yang hampir habis.','Record treatment stock use correctly and flag items running low.']]},
+ {h:['Tugas utama — pentadbiran','Key responsibilities — administration'],st:'b',i:[
+  ['Punch in dan punch out dalam aplikasi setiap hari bekerja dan mengikut jadual giliran.','Punch in and out in the app every working day and follow the duty roster.'],
+  ['Memastikan jualan dan rawatan yang dilakukan dikreditkan dengan betul dalam sistem.','Make sure sales and treatments done are credited correctly in the system.'],
+  ['Menghadiri latihan, taklimat pagi dan mesyuarat pasukan.','Attend training, morning briefings and team meetings.'],
+  ['Melakukan tugas lain yang munasabah yang diarahkan oleh pengurus.','Carry out other reasonable duties given by the manager.']]},
+ {h:['Petunjuk prestasi (KPI)','Key performance indicators'],st:'b',i:[
+  ['Purata penarafan pelanggan 4.5★ ke atas.','Average client rating of 4.5★ or higher.'],
+  ['Kadar tempahan semula (rebooking) mengikut sasaran bulanan.','Rebooking rate at or above the monthly target.'],
+  ['Jualan runcit dan pakej mengikut sasaran bulanan.','Retail and package sales at or above the monthly target.'],
+  ['Pematuhan SOP kebersihan 100% dalam audit dalaman.','100% hygiene SOP compliance in internal audits.'],
+  ['Kehadiran dan ketepatan masa: tiada ketidakhadiran tanpa kebenaran.','Attendance and punctuality: no unauthorised absence.'],
+  ['Tiada aduan serius yang berpunca daripada kecuaian.','No serious complaints caused by negligence.']]},
+ {h:['Kelayakan','Qualifications'],st:'b',i:[
+  ['Sijil Kemahiran Malaysia (SKM) dalam terapi kecantikan / spa, CIDESCO, CIBTAC, ITEC atau setaraf — diutamakan.','Sijil Kemahiran Malaysia (SKM) in beauty or spa therapy, CIDESCO, CIBTAC, ITEC or equivalent — preferred.'],
+  ['Pengalaman 1 tahun sebagai therapist — diutamakan; calon baharu akan dilatih.','1 year as a therapist — preferred; new talent will be trained.'],
+  ['Sijil pertolongan cemas — kelebihan.','First aid certificate — an advantage.']]},
+ {h:['Kemahiran & sikap','Skills and attitude'],st:'b',i:[
+  ['Teknik rawatan yang teliti dan lembut.','Careful, gentle treatment technique.'],
+  ['Komunikasi yang baik dalam Bahasa Malaysia; Bahasa Inggeris atau bahasa lain adalah kelebihan.','Good communication in Bahasa Malaysia; English or other languages are an advantage.'],
+  ['Mementingkan kebersihan, kejujuran dan disiplin.','Strong on hygiene, honesty and discipline.'],
+  ['Mesra pelanggan dan boleh bekerja dalam pasukan.','Client-friendly and a good team player.'],
+  ['Mampu menggunakan aplikasi telefon pintar untuk kehadiran, rekod pelanggan dan komisen.','Able to use the smartphone app for attendance, client records and commission.']]},
+ {h:['Keadaan kerja','Working conditions'],st:'b',i:[
+  ['Bekerja mengikut jadual giliran termasuk hujung minggu dan cuti umum, dengan hari rehat dan cuti ganti mengikut undang-undang.','Shift work by roster including weekends and public holidays, with rest days and replacement holidays as the law requires.'],
+  ['Berdiri dan bekerja dengan tangan untuk tempoh yang lama; mengikut amalan ergonomik yang diajar.','Long periods standing and working with the hands; follow the ergonomic practices taught.'],
+  ['Pakaian seragam disediakan dan wajib dipakai.','Uniform provided and must be worn.']]},
+ {h:['Laluan kerjaya','Career path'],st:'b',i:[
+  ['Beauty Therapist → Senior Therapist → Lead Therapist / Trainer → Penolong Pengurus → Pengurus Spa.','Beauty Therapist → Senior Therapist → Lead Therapist / Trainer → Assistant Manager → Spa Manager.'],
+  ['Kenaikan berdasarkan prestasi, sign-off rawatan dan penilaian tahunan.','Promotion based on performance, treatment sign-offs and the annual appraisal.']]}]},
+ jd_consultant:{title:['Beauty Consultant','Beauty Consultant'],meta:{reportTo:['Pengurus Spa','the Spa Manager'],grade:'C1',prob:3,noticeProb:['2 minggu','2 weeks'],noticeConf:['1 bulan','1 month'],
+  match:/consult|perunding|front ?desk|kaunter|receptio|sales/i},
+ sections:[
+ {h:['Ringkasan jawatan','Job summary'],st:'p',i:[
+  ['Beauty Consultant ialah wajah pertama {brand}. Jawatan ini mengendalikan pertanyaan, konsultasi kulit, cadangan rawatan dan pakej, tempahan, bayaran dan susulan pelanggan — dengan cara yang jujur, beretika dan berorientasikan hasil untuk pelanggan.',
+   'The Beauty Consultant is the first face of {brand}. The role handles enquiries, skin consultations, treatment and package recommendations, bookings, payments and client follow-up — honestly, ethically and with the client results in mind.']]},
+ {h:['Hubungan kerja','Reporting and working relationships'],st:'b',i:[
+  ['Melapor kepada: Pengurus Spa.','Reports to: Spa Manager.'],
+  ['Bekerjasama rapat dengan: therapist, pemasaran dan pengurusan.','Works closely with: therapists, marketing and management.']]},
+ {h:['Tugas utama — konsultasi & jualan','Key responsibilities — consultation and sales'],st:'b',i:[
+  ['Menjalankan konsultasi dan analisa kulit bagi pelanggan baharu dan sedia ada, serta mencadangkan pelan rawatan yang sesuai.','Carry out consultations and skin analysis for new and existing clients, and recommend a suitable treatment plan.'],
+  ['Menerangkan harga, terma pakej, tempoh sah, polisi pembatalan dan bayaran ansuran dengan jelas sebelum pelanggan membeli.','Explain prices, package terms, validity, cancellation policy and instalments clearly before the client buys.'],
+  ['Menutup jualan pakej, keahlian dan produk runcit mengikut sasaran, tanpa tekanan melampau atau dakwaan palsu.','Close package, membership and retail sales towards target, without undue pressure or false claims.'],
+  ['Memastikan setiap jualan direkod di aplikasi dengan nama yang betul (termasuk jualan berkongsi) dan resit diberikan.','Make sure every sale is recorded in the app under the right name (including shared sales) and a receipt is given.']]},
+ {h:['Tugas utama — kaunter hadapan & tempahan','Key responsibilities — front desk and bookings'],st:'b',i:[
+  ['Menyambut pelanggan, mengurus tempahan dalam talian, WhatsApp dan telefon, serta menyusun jadual therapist dan bilik.','Welcome clients and manage online, WhatsApp and phone bookings, matching therapist and room schedules.'],
+  ['Mengutip bayaran, deposit dan ansuran mengikut prosedur juruwang, dan mengira tunai semasa buka dan tutup hari.','Collect payments, deposits and instalments by the cashier procedure, and count cash when the day opens and closes.'],
+  ['Memastikan borang konsultasi, PDPA dan persetujuan lengkap sebelum rawatan bermula.','Make sure consultation, PDPA and consent forms are complete before a treatment starts.'],
+  ['Menjaga kekemasan ruang menunggu dan kaunter.','Keep the waiting area and counter neat.']]},
+ {h:['Tugas utama — CRM & susulan','Key responsibilities — CRM and follow-up'],st:'b',i:[
+  ['Membalas lead baharu dengan pantas (sasaran dalam 15 minit pada waktu operasi) dan menyusul mengikut tugasan dalam aplikasi.','Reply to new leads quickly (target within 15 minutes during opening hours) and follow up by the tasks in the app.'],
+  ['Menghubungi pelanggan untuk peringatan tempahan, susulan selepas rawatan, ulang tahun, pakej hampir tamat dan pelanggan yang lama tidak datang.','Contact clients for booking reminders, after-treatment follow-up, birthdays, packages about to expire and lapsed clients.'],
+  ['Merekod maklum balas dan aduan, dan memaklumkan pengurus tentang aduan serius pada hari yang sama.','Record feedback and complaints, and tell the manager about serious complaints the same day.']]},
+ {h:['Petunjuk prestasi (KPI)','Key performance indicators'],st:'b',i:[
+  ['Jualan pakej dan runcit mengikut sasaran bulanan.','Package and retail sales at or above the monthly target.'],
+  ['Kadar penukaran lead → pelanggan dan konsultasi → pakej.','Lead-to-client and consultation-to-package conversion rates.'],
+  ['Masa membalas lead dan kadar susulan siap.','Lead reply time and follow-ups completed.'],
+  ['Ketepatan wang tunai: perbezaan kiraan tunai sifar.','Cash accuracy: zero cash count difference.'],
+  ['Penarafan pelanggan dan tiada aduan berkaitan maklumat yang mengelirukan.','Client rating, and no complaints about misleading information.']]},
+ {h:['Kelayakan','Qualifications'],st:'b',i:[
+  ['SPM ke atas; diploma dalam kecantikan, perniagaan atau pemasaran — kelebihan.','SPM or higher; a diploma in beauty, business or marketing — an advantage.'],
+  ['Pengalaman 1 tahun dalam jualan, khidmat pelanggan atau industri kecantikan — diutamakan.','1 year in sales, customer service or the beauty industry — preferred.']]},
+ {h:['Kemahiran & sikap','Skills and attitude'],st:'b',i:[
+  ['Komunikasi dan pujukan yang baik, beretika dan jujur.','Good, ethical and honest communication and persuasion.'],
+  ['Pengetahuan asas jenis kulit dan rawatan (latihan disediakan).','Basic knowledge of skin types and treatments (training provided).'],
+  ['Teliti dengan wang, angka dan rekod.','Careful with money, numbers and records.'],
+  ['Mahir menggunakan telefon pintar, WhatsApp dan aplikasi.','Comfortable with smartphones, WhatsApp and the app.'],
+  ['Penampilan kemas dan profesional.','Neat, professional appearance.']]},
+ {h:['Keadaan kerja','Working conditions'],st:'b',i:[
+  ['Bekerja mengikut jadual giliran termasuk hujung minggu dan cuti umum.','Shift work by roster including weekends and public holidays.'],
+  ['Mengendalikan wang tunai dan bertanggungjawab ke atas kiraan laci semasa syif.','Handles cash and is accountable for the drawer count on the shift.']]},
+ {h:['Laluan kerjaya','Career path'],st:'b',i:[
+  ['Beauty Consultant → Senior Consultant → Penyelia Kaunter / Sales Lead → Penolong Pengurus → Pengurus Spa.','Beauty Consultant → Senior Consultant → Front Desk Supervisor / Sales Lead → Assistant Manager → Spa Manager.']]}]},
+ jd_manager:{title:['Pengurus Spa','Spa Manager'],meta:{reportTo:['Pemilik / Pengarah','the Owner / Director'],grade:'M1',prob:3,noticeProb:['1 bulan','1 month'],noticeConf:['2 bulan','2 months'],
+  match:/manag|pengurus|supervis|penyelia/i},
+ sections:[
+ {h:['Ringkasan jawatan','Job summary'],st:'p',i:[
+  ['Pengurus Spa menerajui operasi harian cawangan {brand}: pasukan, pengalaman pelanggan, jualan, kewangan cawangan, stok, kebersihan dan pematuhan — untuk mencapai sasaran perniagaan sambil mengekalkan standard dan nilai syarikat.',
+   'The Spa Manager leads the daily operation of a {brand} branch: the team, the client experience, sales, branch finances, stock, hygiene and compliance — delivering the business targets while keeping the company standards and values.']]},
+ {h:['Hubungan kerja','Reporting and working relationships'],st:'b',i:[
+  ['Melapor kepada: Pemilik / Pengarah.','Reports to: Owner / Director.'],
+  ['Mengetuai: therapist, consultant dan staf kaunter di cawangan.','Leads: therapists, consultants and front desk staff at the branch.'],
+  ['Berhubung dengan: pembekal, akauntan, pihak berkuasa tempatan dan pakar luar.','Liaises with: suppliers, the accountant, local authorities and outside specialists.']]},
+ {h:['Tugas utama — pasukan','Key responsibilities — people'],st:'b',i:[
+  ['Menyediakan jadual giliran, meluluskan cuti, OT dan pertukaran syif, serta memantau kehadiran dalam aplikasi.','Plan the duty roster, approve leave, overtime and shift swaps, and monitor attendance in the app.'],
+  ['Merekrut, melatih, membimbing dan menilai staf; menjalankan penilaian sign-off rawatan dan penilaian prestasi.','Recruit, train, coach and appraise staff; run treatment sign-offs and performance reviews.'],
+  ['Mengendalikan taklimat harian, menetapkan sasaran individu dan memberi maklum balas berkala.','Hold daily briefings, set individual targets and give regular feedback.'],
+  ['Menguruskan isu tatatertib secara adil mengikut prosedur syarikat dan undang-undang.','Handle disciplinary matters fairly by company procedure and the law.']]},
+ {h:['Tugas utama — pelanggan & kualiti','Key responsibilities — clients and quality'],st:'b',i:[
+  ['Memastikan setiap pelanggan menerima pengalaman yang konsisten dan selamat mengikut SOP.','Make sure every client gets a consistent, safe experience according to the SOPs.'],
+  ['Mengendalikan aduan dan kes reaksi kulit, menyiasat punca dan mengambil tindakan pembetulan.','Handle complaints and skin-reaction cases, investigate causes and take corrective action.'],
+  ['Menjalankan audit kebersihan dan keselamatan berkala.','Run regular hygiene and safety audits.']]},
+ {h:['Tugas utama — jualan & kewangan','Key responsibilities — sales and finance'],st:'b',i:[
+  ['Mencapai sasaran jualan, pakej, runcit dan tempahan semula cawangan.','Deliver the branch sales, package, retail and rebooking targets.'],
+  ['Memantau laporan harian dan bulanan, kutipan ansuran tertunggak, perbelanjaan dan margin.','Monitor daily and monthly reports, outstanding instalments, expenses and margins.'],
+  ['Memastikan buka dan tutup hari, kiraan tunai dan semua transaksi dibuat dalam sistem dengan betul.','Make sure day opening and closing, cash counts and every transaction are done correctly in the system.'],
+  ['Merancang promosi dan acara bersama pemilik dan pemasaran.','Plan promotions and events with the owner and marketing.']]},
+ {h:['Tugas utama — operasi & pematuhan','Key responsibilities — operations and compliance'],st:'b',i:[
+  ['Menguruskan stok: pesanan, terimaan, kiraan dan pembaziran; memastikan produk tidak tamat tempoh.','Manage stock: ordering, receiving, counts and wastage; no expired products in use.'],
+  ['Menjaga premis, peralatan dan penyelenggaraan berjadual.','Look after the premises, equipment and scheduled maintenance.'],
+  ['Memastikan pematuhan lesen premis, PDPA, keselamatan dan kesihatan pekerjaan, serta peraturan pekerjaan.','Ensure compliance with premises licences, PDPA, occupational safety and health, and employment rules.'],
+  ['Menyediakan laporan bulanan kepada pemilik.','Prepare a monthly report for the owner.']]},
+ {h:['Petunjuk prestasi (KPI)','Key performance indicators'],st:'b',i:[
+  ['Hasil jualan dan keuntungan cawangan mengikut bajet.','Branch revenue and profit against budget.'],
+  ['Purata penarafan pelanggan dan NPS.','Average client rating and NPS.'],
+  ['Kadar tempahan semula dan pelanggan kembali.','Rebooking and returning-client rates.'],
+  ['Kadar penggunaan therapist (utilisation) dan kos tenaga kerja.','Therapist utilisation and labour cost.'],
+  ['Pusing ganti staf dan pematuhan latihan.','Staff turnover and training compliance.'],
+  ['Keputusan audit kebersihan dan stok.','Hygiene and stock audit results.']]},
+ {h:['Kelayakan','Qualifications'],st:'b',i:[
+  ['Diploma / ijazah dalam pengurusan, perniagaan, kecantikan atau berkaitan; atau pengalaman setara.','Diploma or degree in management, business, beauty or related; or equivalent experience.'],
+  ['Sekurang-kurangnya 3 tahun dalam industri spa / kecantikan, termasuk 1 tahun sebagai penyelia atau pengurus.','At least 3 years in the spa or beauty industry, including 1 year as a supervisor or manager.'],
+  ['Kemahiran terapi kecantikan — kelebihan besar.','Hands-on beauty therapy skills — a strong advantage.']]},
+ {h:['Kemahiran & sikap','Skills and attitude'],st:'b',i:[
+  ['Kepimpinan, membimbing dan menyelesaikan konflik.','Leadership, coaching and resolving conflict.'],
+  ['Memahami angka: jualan, margin, kos dan KPI.','Comfortable with numbers: sales, margins, costs and KPIs.'],
+  ['Integriti tinggi dalam pengurusan wang dan data pelanggan.','High integrity with money and client data.'],
+  ['Teratur, tegas dan adil.','Organised, firm and fair.']]},
+ {h:['Keadaan kerja','Working conditions'],st:'b',i:[
+  ['Bekerja mengikut jadual termasuk hujung minggu; mungkin perlu dihubungi di luar waktu kerja untuk hal kecemasan cawangan.','Works by roster including weekends; may be contacted outside working hours for branch emergencies.'],
+  ['Mungkin ditempatkan di cawangan lain atau membantu pembukaan cawangan baharu.','May be placed at another branch or help open a new branch.']]},
+ {h:['Laluan kerjaya','Career path'],st:'b',i:[
+  ['Pengurus Spa → Pengurus Kawasan / Operasi (bila cawangan bertambah).','Spa Manager → Area / Operations Manager (as branches grow).']]}]}};
+
+/* ---------------- the contract of service ---------------- */
+const HRC_CONTRACT={title:['Kontrak Perkhidmatan','Contract of Service'],sections:[
+ {h:['Pihak-pihak','Parties'],st:'p',i:[
+  ['Kontrak ini dibuat pada {dateL} antara {companyTA} ("Syarikat") dan {name}, No. KP {ic}, beralamat di {address1} ("Pekerja").','This contract is made on {dateL} between {companyTA} (the "Company") and {name}, IC no. {ic}, of {address1} (the "Employee").'],
+  ['Kontrak ini dibaca bersama surat tawaran, Huraian Tugas (Jadual A), Jadual Gaji (Jadual B) dan Buku Panduan Pekerja yang berkuat kuasa dari semasa ke semasa.','This contract is read together with the letter of offer, the Job Description (Schedule A), the Remuneration Schedule (Schedule B) and the Employee Handbook in force from time to time.']]},
+ {h:['Pelantikan dan jawatan','Appointment and position'],st:'n',i:[
+  ['Syarikat melantik Pekerja sebagai {position} secara {empTypeL}, melapor kepada {reportTo}.','The Company appoints the Employee as {position} on a {empTypeL} basis, reporting to {reportTo}.'],
+  ['Tugas Pekerja adalah seperti dalam Jadual A dan tugas lain yang munasabah berkaitan perniagaan Syarikat yang diarahkan dari semasa ke semasa.','The Employee duties are set out in Schedule A, together with other reasonable duties connected with the Company business that are assigned from time to time.'],
+  ['Tempat bertugas ialah {branch}. Syarikat boleh menempatkan Pekerja di cawangan lain dalam kawasan yang munasabah mengikut keperluan operasi, dengan notis yang munasabah.','The place of work is {branch}. The Company may place the Employee at another branch within a reasonable area as operations require, with reasonable notice.']]},
+ {h:['Tarikh mula dan tempoh','Commencement and term'],st:'n',i:[
+  ['Pekerjaan bermula pada {startL}.','Employment starts on {startL}.'],
+  ['{?endDate}Kontrak ini adalah untuk tempoh tetap dan tamat pada {endDateL}, kecuali dilanjutkan secara bertulis atau ditamatkan lebih awal mengikut Klausa Penamatan.','{?endDate}This is a fixed-term contract ending on {endDateL}, unless extended in writing or ended earlier under the Termination clause.']]},
+ {h:['Tempoh percubaan','Probation'],st:'n',cond:'prob',i:[
+  ['Pekerja menjalani tempoh percubaan selama {prob} bulan dari tarikh mula.','The Employee is on probation for {prob} months from the start date.'],
+  ['Prestasi, kehadiran, sikap dan sign-off rawatan dinilai sebelum tempoh percubaan tamat. Syarikat boleh mengesahkan jawatan, melanjutkan tempoh percubaan sehingga 3 bulan lagi, atau menamatkan pekerjaan dengan notis {noticeProb}.','Performance, attendance, conduct and treatment sign-offs are reviewed before probation ends. The Company may confirm the appointment, extend probation by up to 3 more months, or end employment with {noticeProb} notice.'],
+  ['Pengesahan jawatan dibuat secara bertulis.','Confirmation is given in writing.']]},
+ {h:['Waktu kerja','Hours of work'],st:'n',i:[
+  ['Waktu kerja biasa: {hours}','Normal hours of work: {hours}'],
+  ['Waktu kerja biasa tidak melebihi 8 jam sehari dan 45 jam seminggu, dengan sekurang-kurangnya 30 minit rehat bagi setiap 5 jam bekerja berterusan.','Normal hours do not exceed 8 hours a day or 45 hours a week, with at least a 30-minute break after every 5 consecutive hours of work.'],
+  ['Hari rehat: {rest}','Rest day: {rest}'],
+  ['Kerja lebih masa hanya dengan kelulusan terlebih dahulu melalui aplikasi, dibayar 1.5 kali kadar sejam pada hari biasa, 2 kali pada hari rehat dan 3 kali pada cuti umum, tertakluk kepada had 104 jam sebulan.','Overtime only with prior approval in the app, paid at 1.5 times the hourly rate on a normal day, 2 times on a rest day and 3 times on a public holiday, up to the legal limit of 104 hours a month.'],
+  ['Pekerja boleh memohon aturan kerja fleksibel secara bertulis; Syarikat akan memberi keputusan bertulis dalam 60 hari.','The Employee may apply in writing for a flexible working arrangement; the Company will reply in writing within 60 days.']]},
+ {h:['Gaji dan bayaran','Remuneration'],st:'n',i:[
+  ['Gaji pokok {basicL} sebulan, seperti dalam Jadual B.','Basic salary of {basicL} a month, as set out in Schedule B.'],
+  ['{?allowance}Elaun tetap {allowanceL} sebulan.','{?allowance}Fixed allowance of {allowanceL} a month.'],
+  ['Gaji dibayar ke akaun bank Pekerja selewat-lewatnya pada hari ke-{payday} bulan berikutnya, dan tidak lewat daripada 7 hari selepas tamat tempoh gaji.','Salary is paid into the Employee bank account by the {payday}th of the following month, and no later than 7 days after the end of the wage period.'],
+  ['Slip gaji disediakan dalam aplikasi setiap bulan.','A payslip is issued in the app every month.'],
+  ['Gaji disemak setiap tahun berdasarkan prestasi; kenaikan tidak dijamin.','Salary is reviewed yearly based on performance; increases are not guaranteed.']]},
+ {h:['Komisen, insentif dan tip','Commission, incentives and tips'],st:'n',i:[
+  ['{comm}','{comm}'],
+  ['Komisen bagi pakej yang dibayar secara ansuran dikira atas jumlah yang telah dikutip. Komisen ke atas jualan yang dipulangkan wang (refund) atau dibatalkan akan ditarik balik dalam bulan berkenaan.','Commission on packages paid in instalments is earned on the amount collected. Commission on sales that are refunded or cancelled is taken back in the month concerned.'],
+  ['Skim komisen, kadar berperingkat, insentif dan polisi tip boleh diubah oleh Syarikat dengan notis bertulis sekurang-kurangnya 30 hari; perubahan tidak menjejaskan komisen yang telah diperolehi.','The commission scheme, tiered rates, incentives and tips policy may be changed by the Company with at least 30 days written notice; changes do not affect commission already earned.'],
+  ['Pekerja boleh menyemak penyata komisen dalam aplikasi pada bila-bila masa dan mengemukakan pertanyaan melaluinya.','The Employee can check the commission statement in the app at any time and raise questions through it.']]},
+ {h:['Caruman berkanun','Statutory contributions'],st:'n',i:[
+  ['Syarikat dan Pekerja mencarum kepada KWSP, PERKESO (termasuk SIP) dan, jika berkaitan, membuat potongan cukai bulanan (PCB) mengikut kadar undang-undang yang berkuat kuasa.','The Company and the Employee contribute to KWSP, PERKESO (including SIP) and, where applicable, monthly tax deductions (PCB) at the rates required by law.'],
+  ['Potongan lain hanya dibuat jika dibenarkan oleh undang-undang atau dengan persetujuan bertulis Pekerja.','Other deductions are made only where the law allows or with the Employee written consent.']]},
+ {h:['Cuti','Leave'],st:'n',i:[
+  ['Cuti tahunan: {AL} hari setahun (sekurang-kurangnya 8 hari jika berkhidmat kurang 2 tahun, 12 hari bagi 2 hingga 5 tahun, 16 hari selepas 5 tahun), dikira secara pro-rata bagi tahun tidak penuh.','Annual leave: {AL} days a year (at least 8 days with under 2 years of service, 12 days for 2 to 5 years, 16 days after 5 years), pro-rated for part years.'],
+  ['Cuti sakit tanpa dimasukkan ke hospital: {MC} hari setahun (sekurang-kurangnya 14 / 18 / 22 hari mengikut tempoh perkhidmatan), dengan sijil daripada pengamal perubatan berdaftar dan dimaklumkan dalam 48 jam.','Sick leave without hospitalisation: {MC} days a year (at least 14 / 18 / 22 days by length of service), with a certificate from a registered medical practitioner and notice within 48 hours.'],
+  ['Cuti hospital: sehingga {HL} hari setahun, berasingan daripada cuti sakit.','Hospitalisation leave: up to {HL} days a year, separate from sick leave.'],
+  ['Cuti bersalin 98 hari berturut-turut dan cuti paterniti 7 hari berturut-turut, mengikut syarat Akta Kerja 1955.','Maternity leave of 98 consecutive days and paternity leave of 7 consecutive days, on the conditions of the Employment Act 1955.'],
+  ['Cuti umum bergaji: 11 hari setahun termasuk Hari Kebangsaan, Hari Keputeraan Yang di-Pertuan Agong, Hari Keputeraan Sultan / Hari Wilayah, Hari Pekerja dan Hari Malaysia. Pekerja yang bertugas pada cuti umum dibayar mengikut undang-undang atau diberi cuti ganti.','Paid public holidays: 11 a year including National Day, the Agong Birthday, the State Ruler Birthday / Federal Territory Day, Workers Day and Malaysia Day. Work on a public holiday is paid as the law requires or given a replacement day.'],
+  ['Semua cuti dipohon melalui aplikasi mengikut Buku Panduan Pekerja.','All leave is applied for in the app as set out in the Employee Handbook.']]},
+ {h:['Faedah','Benefits'],st:'n',i:[
+  ['{benefits}','{benefits}'],
+  ['Faedah tambahan yang tidak diwajibkan undang-undang diberikan mengikut budi bicara Syarikat dan boleh diubah dengan notis.','Benefits beyond those required by law are given at the Company discretion and may be changed with notice.']]},
+ {h:['Latihan','Training'],st:'n',i:[
+  ['Syarikat menyediakan latihan dalaman dan latihan luar yang diluluskan. Pekerja wajib menghadiri latihan yang diarahkan.','The Company provides in-house training and approved external training. The Employee must attend training as directed.'],
+  ['{?bondAmt}Bagi latihan luar bernilai {bondAmtL}, jika Pekerja meletak jawatan dalam tempoh {bondMonths} bulan selepas latihan tamat, Pekerja bersetuju membayar balik kos latihan secara pro-rata mengikut baki bulan yang belum dihabiskan.','{?bondAmt}For external training worth {bondAmtL}, if the Employee resigns within {bondMonths} months after the training ends, the Employee agrees to repay the training cost pro-rated by the months still remaining.']]},
+ {h:['Tanggungjawab dan tatakelakuan','Duties and conduct'],st:'n',i:[
+  ['Pekerja akan bekerja dengan jujur, tekun dan mengikut arahan yang sah, SOP, polisi dan Buku Panduan Pekerja.','The Employee will work honestly and diligently and follow lawful instructions, SOPs, policies and the Employee Handbook.'],
+  ['Pekerja tidak akan melakukan sebarang prosedur yang di luar kelayakan atau sign-off, atau sebarang prosedur perubatan.','The Employee will not perform any procedure beyond their qualifications or sign-offs, or any medical procedure.'],
+  ['Semua jualan, rawatan dan bayaran hendaklah direkod dalam sistem Syarikat. Pekerja tidak boleh menerima bayaran peribadi daripada pelanggan.','All sales, treatments and payments must be recorded in the Company system. The Employee must not accept personal payments from clients.'],
+  ['Pekerja tidak boleh bekerja dengan pihak lain atau menjalankan perniagaan kecantikan sendiri semasa tempoh pekerjaan tanpa kebenaran bertulis Syarikat.','The Employee must not work for another party or run their own beauty business during employment without the Company written permission.']]},
+ {h:['Kerahsiaan dan data peribadi','Confidentiality and personal data'],st:'n',i:[
+  ['Pekerja akan merahsiakan maklumat Syarikat termasuk data pelanggan, harga kos, pembekal, SOP, strategi pemasaran dan maklumat kewangan, semasa dan selepas pekerjaan.','The Employee will keep Company information confidential, including client data, cost prices, suppliers, SOPs, marketing plans and financial information, during and after employment.'],
+  ['Data peribadi pelanggan dan rakan sekerja dikendalikan mengikut Akta Perlindungan Data Peribadi 2010 dan polisi Syarikat. Data tidak boleh disalin, difoto atau disimpan dalam peranti peribadi.','Personal data of clients and colleagues is handled under the Personal Data Protection Act 2010 and Company policy. It must not be copied, photographed or kept on personal devices.'],
+  ['Gambar pelanggan hanya diambil dan digunakan dengan persetujuan bertulis pelanggan.','Client photos are taken and used only with the client written consent.']]},
+ {h:['Tidak memujuk pelanggan dan staf','Non-solicitation'],st:'n',i:[
+  ['Selama {nonSol} bulan selepas pekerjaan tamat, Pekerja tidak akan memujuk atau menghubungi pelanggan Syarikat yang pernah dilayani untuk mendapatkan perkhidmatan kecantikan daripada Pekerja atau pihak lain, dan tidak akan memujuk staf Syarikat untuk berhenti.','For {nonSol} months after employment ends, the Employee will not solicit or contact Company clients they served to obtain beauty services from the Employee or others, and will not entice Company staff to leave.'],
+  ['Klausa ini tidak menghalang Pekerja daripada bekerja dalam industri kecantikan.','This clause does not stop the Employee from working in the beauty industry.']]},
+ {h:['Harta syarikat','Company property'],st:'n',i:[
+  ['Pakaian seragam, peralatan, produk, kunci, kad akses dan akaun aplikasi adalah harta Syarikat dan dipulangkan dalam keadaan baik apabila diminta atau apabila pekerjaan tamat.','Uniforms, equipment, products, keys, access cards and app accounts are Company property and must be returned in good order on request or when employment ends.'],
+  ['Kerosakan atau kehilangan akibat kecuaian yang disengajakan boleh dipotong daripada gaji hanya dengan persetujuan bertulis Pekerja atau setakat yang dibenarkan undang-undang.','Damage or loss caused by wilful negligence may be deducted from wages only with the Employee written consent or as far as the law allows.']]},
+ {h:['Gangguan seksual dan diskriminasi','Sexual harassment and discrimination'],st:'n',i:[
+  ['Syarikat tidak bertolak ansur dengan gangguan seksual, buli atau diskriminasi. Aduan disiasat mengikut Akta Kerja 1955 dan prosedur dalam Buku Panduan Pekerja.','The Company has zero tolerance for sexual harassment, bullying or discrimination. Complaints are investigated under the Employment Act 1955 and the procedure in the Employee Handbook.']]},
+ {h:['Tatatertib','Discipline'],st:'n',i:[
+  ['Salah laku boleh membawa kepada amaran, penurunan pangkat atau pembuangan kerja selepas siasatan yang wajar.','Misconduct may lead to a warning, demotion or dismissal after due inquiry.'],
+  ['Semasa siasatan, Pekerja boleh digantung kerja sehingga 2 minggu dengan tidak kurang separuh gaji.','During an inquiry the Employee may be suspended for up to 2 weeks on not less than half pay.'],
+  ['Tidak hadir bekerja lebih daripada 2 hari berturut-turut tanpa kebenaran atau alasan munasabah dan tanpa memaklumkan Syarikat dianggap memecahkan kontrak.','Absence for more than 2 consecutive working days without leave or reasonable excuse and without informing the Company is treated as a breach of contract.']]},
+ {h:['Penamatan','Termination'],st:'n',i:[
+  ['Semasa percubaan, mana-mana pihak boleh menamatkan kontrak dengan notis {noticeProb} atau bayaran gaji sebagai ganti notis.','During probation, either party may end the contract with {noticeProb} notice or wages in lieu of notice.'],
+  ['Selepas pengesahan, notis ialah {noticeConf} bagi kedua-dua pihak, atau bayaran gaji sebagai ganti notis, dan tidak kurang daripada tempoh minimum dalam Akta Kerja 1955.','After confirmation, notice is {noticeConf} for both parties, or wages in lieu of notice, and not less than the minimum in the Employment Act 1955.'],
+  ['Syarikat boleh menamatkan pekerjaan tanpa notis atas salah laku serius selepas siasatan yang wajar.','The Company may end employment without notice for serious misconduct after due inquiry.'],
+  ['Faedah penamatan dibayar jika berkelayakan di bawah Peraturan-Peraturan Kerja (Faedah Penamatan dan Pemberhentian Sementara) 1980.','Termination benefits are paid where due under the Employment (Termination and Lay-Off Benefits) Regulations 1980.'],
+  ['Baki cuti tahunan dibayar atau dihabiskan semasa tempoh notis, mengikut persetujuan.','Unused annual leave is paid out or taken during the notice period, as agreed.']]},
+ {h:['Am','General'],st:'n',i:[
+  ['Kontrak ini ditadbir oleh undang-undang Malaysia. Jika mana-mana terma lebih rendah daripada hak minimum di bawah Akta Kerja 1955, hak minimum itu terpakai.','This contract is governed by the laws of Malaysia. If any term is less favourable than the minimum under the Employment Act 1955, the minimum applies.'],
+  ['Sebarang perubahan kepada kontrak ini dibuat secara bertulis.','Any change to this contract is made in writing.'],
+  ['Pekerja mengesahkan telah membaca dan memahami kontrak ini dan menandatanganinya secara sukarela.','The Employee confirms having read and understood this contract and signs it voluntarily.']]}]};
+
+/* ---------------- the employee handbook ---------------- */
+const HRC_HANDBOOK={title:['Buku Panduan Pekerja','Employee Handbook'],sections:[
+ {h:['Selamat datang ke {brand}','Welcome to {brand}'],st:'p',i:[
+  ['Terima kasih kerana menyertai {brand}. Buku panduan ini menerangkan cara kita bekerja, apa yang syarikat harapkan daripada anda dan apa yang anda boleh harapkan daripada syarikat. Bacalah dengan teliti dan simpan untuk rujukan.','Thank you for joining {brand}. This handbook explains how we work, what the company expects of you and what you can expect from the company. Read it carefully and keep it for reference.'],
+  ['{brand} dijalankan oleh {company}. Misi kita: memberi rawatan kecantikan yang selamat, jujur dan berkesan, dengan layanan yang membuatkan setiap pelanggan rasa dihargai.','{brand} is run by {company}. Our mission: safe, honest and effective beauty treatments, with care that makes every client feel valued.']]},
+ {h:['Nilai kita','Our values'],st:'b',i:[
+  ['Amanah — jujur dengan pelanggan, rakan sekerja dan syarikat.','Integrity — honest with clients, colleagues and the company.'],
+  ['Peduli — layan setiap pelanggan seperti keluarga sendiri.','Care — treat every client like family.'],
+  ['Cemerlang — ikut SOP, belajar setiap hari, buat yang terbaik setiap kali.','Excellence — follow the SOP, learn every day, do your best every time.'],
+  ['Kerja berpasukan — bantu-membantu dan hormat-menghormati.','Teamwork — help and respect each other.'],
+  ['Bersih — kebersihan ialah asas kepercayaan pelanggan.','Cleanliness — hygiene is the foundation of client trust.']]},
+ {h:['Tentang buku panduan ini','About this handbook'],st:'b',i:[
+  ['Buku panduan ini terpakai kepada semua pekerja {brand} di semua cawangan.','This handbook applies to all {brand} employees at every branch.'],
+  ['Ia bukan kontrak. Jika ada percanggahan, kontrak perkhidmatan atau surat tawaran anda terpakai, dan hak minimum di bawah undang-undang sentiasa dilindungi.','It is not a contract. Where they differ, your contract of service or letter of offer applies, and your minimum rights under the law are always protected.'],
+  ['Syarikat boleh mengemas kini buku panduan ini. Perubahan dimaklumkan melalui papan notis dalam aplikasi dan anda diminta membaca serta mengesahkannya.','The company may update this handbook. Changes are announced on the notice board in the app and you will be asked to read and confirm them.'],
+  ['Jika ada yang tidak jelas, tanya pengurus anda.','If anything is unclear, ask your manager.']]},
+ {h:['Pekerjaan, percubaan dan pengesahan','Employment, probation and confirmation'],st:'b',i:[
+  ['Kategori pekerjaan: tetap sepenuh masa, kontrak, separuh masa dan latihan industri. Terma anda tertera dalam surat tawaran dan kontrak.','Employment types: permanent full-time, contract, part-time and internship. Your terms are in your letter of offer and contract.'],
+  ['Pekerja baharu menjalani tempoh percubaan (biasanya 3 bulan). Prestasi, kehadiran, sikap dan sign-off rawatan dinilai sebelum pengesahan.','New staff serve a probation period (usually 3 months). Performance, attendance, conduct and treatment sign-offs are reviewed before confirmation.'],
+  ['Pada hari pertama, serahkan salinan KP, maklumat bank, KWSP, PERKESO, cukai dan kenalan kecemasan, dan lengkapkan maklumat dalam aplikasi.','On day one, hand in a copy of your IC, bank, KWSP, PERKESO and tax details and an emergency contact, and complete your details in the app.'],
+  ['Syarikat mengamalkan peluang sama rata. Keputusan pekerjaan dibuat berdasarkan kebolehan dan prestasi, bukan kaum, agama, jantina, umur, status perkahwinan, kehamilan atau kecacatan.','We are an equal-opportunity employer. Employment decisions are based on ability and performance, not race, religion, gender, age, marital status, pregnancy or disability.']]},
+ {h:['Waktu kerja, jadual dan kehadiran','Working hours, roster and attendance'],st:'b',i:[
+  ['Waktu kerja biasa tidak melebihi 45 jam seminggu, mengikut jadual giliran yang diterbitkan dalam aplikasi sekurang-kurangnya seminggu lebih awal.','Normal hours do not exceed 45 hours a week, by the duty roster published in the app at least a week ahead.'],
+  ['Datang 15 minit sebelum syif untuk bersiap. Punch in dan punch out sendiri melalui aplikasi; jangan sekali-kali punch untuk orang lain.','Arrive 15 minutes before your shift to get ready. Punch in and out yourself in the app; never punch for someone else.'],
+  ['Lewat lebih daripada 3 kali dalam sebulan akan menerima amaran bertulis.','Being late more than 3 times in a month leads to a written warning.'],
+  ['Jika sakit atau kecemasan, maklumkan pengurus sebelum syif bermula melalui telefon atau WhatsApp, dan mohon cuti dalam aplikasi.','If you are ill or have an emergency, tell your manager before the shift starts by phone or WhatsApp, and apply for leave in the app.'],
+  ['Tidak hadir lebih 2 hari bekerja berturut-turut tanpa kebenaran dan tanpa memaklumkan syarikat dianggap memecahkan kontrak.','Being absent more than 2 consecutive working days without leave and without informing the company is treated as a breach of contract.'],
+  ['Tukar syif melalui aplikasi: minta rakan, rakan bersetuju, pengurus meluluskan. Tukar syif tanpa kelulusan tidak dibenarkan.','Swap shifts in the app: ask a colleague, they agree, the manager approves. Unapproved swaps are not allowed.'],
+  ['Rehat makan 1 jam diambil mengikut giliran supaya kaunter dan bilik rawatan sentiasa berpengawal.','Take your 1-hour meal break by turns so the counter and rooms are always covered.'],
+  ['Anda diberi sekurang-kurangnya satu hari rehat setiap minggu mengikut jadual giliran. Hujung minggu dan musim perayaan ialah waktu sibuk, jadi hari rehat biasanya pada hari bekerja.','You get at least one rest day every week by the roster. Weekends and festive seasons are busy, so rest days are usually on weekdays.'],
+  ['Masa untuk solat diberi secara bergilir tanpa menjejaskan tempahan pelanggan.','Time for prayers is given by turns without affecting client bookings.']]},
+ {h:['Kerja lebih masa (OT)','Overtime'],st:'b',i:[
+  ['OT mesti diluluskan oleh pengurus — mohon dalam aplikasi pada hari yang sama atau esoknya.','Overtime must be approved by the manager — apply in the app the same day or the next.'],
+  ['Kadar: 1.5 kali kadar sejam pada hari biasa, 2 kali pada hari rehat, 3 kali pada cuti umum. Had OT ialah 104 jam sebulan.','Rates: 1.5 times the hourly rate on a normal day, 2 times on a rest day, 3 times on a public holiday. Overtime is capped at 104 hours a month.'],
+  ['OT yang diluluskan dibayar bersama gaji bulan berkenaan.','Approved overtime is paid with that month salary.']]},
+ {h:['Aturan kerja fleksibel','Flexible working arrangements'],st:'b',i:[
+  ['Anda boleh memohon secara bertulis untuk mengubah waktu kerja, hari bekerja atau tempat kerja (contohnya kerana tanggungjawab keluarga).','You may apply in writing to change your working hours, working days or place of work (for example for family responsibilities).'],
+  ['Syarikat akan menjawab secara bertulis dalam masa 60 hari. Jika ditolak, sebabnya akan dinyatakan.','The company will reply in writing within 60 days. If the request is refused, the reasons will be given.'],
+  ['Permohonan dipertimbangkan berdasarkan keperluan tempahan pelanggan dan pasukan di cawangan.','Requests are considered against client bookings and the needs of the branch team.']]},
+ {h:['Cuti','Leave'],st:'b',i:[
+  ['Cuti tahunan: 8 hari (kurang 2 tahun perkhidmatan), 12 hari (2–5 tahun), 16 hari (lebih 5 tahun), atau lebih jika dinyatakan dalam kontrak. Mohon sekurang-kurangnya 7 hari lebih awal.','Annual leave: 8 days (under 2 years of service), 12 days (2–5 years), 16 days (over 5 years), or more if your contract says so. Apply at least 7 days ahead.'],
+  ['Cuti sakit: 14 / 18 / 22 hari setahun mengikut tempoh perkhidmatan, dengan sijil cuti sakit daripada doktor berdaftar. Maklumkan pengurus dalam 48 jam dan muat naik sijil dalam aplikasi.','Sick leave: 14 / 18 / 22 days a year by length of service, with a medical certificate from a registered doctor. Tell your manager within 48 hours and upload the certificate in the app.'],
+  ['Cuti hospital: sehingga 60 hari setahun, berasingan daripada cuti sakit.','Hospitalisation leave: up to 60 days a year, separate from sick leave.'],
+  ['Cuti bersalin: 98 hari berturut-turut. Cuti paterniti: 7 hari berturut-turut bagi pekerja lelaki yang berkahwin dengan sekurang-kurangnya 12 bulan perkhidmatan (maklumkan 30 hari lebih awal jika boleh).','Maternity leave: 98 consecutive days. Paternity leave: 7 consecutive days for married male staff with at least 12 months of service (give 30 days notice where possible).'],
+  ['Cuti ihsan: 3 hari jika kematian ibu bapa, pasangan atau anak; 1 hari bagi datuk, nenek atau adik-beradik.','Compassionate leave: 3 days on the death of a parent, spouse or child; 1 day for a grandparent or sibling.'],
+  ['Cuti umum: 11 hari bergaji setahun mengikut senarai cawangan. Jika bertugas pada cuti umum, anda dibayar mengikut undang-undang atau diberi cuti ganti.','Public holidays: 11 paid days a year by the branch list. If you work on a public holiday you are paid as the law requires or given a replacement day.'],
+  ['Cuti tanpa gaji hanya dengan kelulusan pemilik.','Unpaid leave only with the owner approval.'],
+  ['Musim puncak (contohnya sebelum perayaan) mungkin dihadkan untuk cuti tahunan; pengurus akan memaklumkan awal.','Annual leave may be limited in peak seasons (for example before festivals); your manager will announce this early.']]},
+ {h:['Gaji, potongan dan slip gaji','Pay, deductions and payslips'],st:'b',i:[
+  ['Gaji dibayar ke akaun bank anda tidak lewat daripada 7 hari selepas akhir bulan.','Salary is paid into your bank account no later than 7 days after the month ends.'],
+  ['Slip gaji tersedia dalam aplikasi (HR saya → Slip gaji). Semak setiap bulan dan tanya dalam masa 7 hari jika ada kesilapan.','Payslips are in the app (My HR → Payslips). Check each month and ask within 7 days if something looks wrong.'],
+  ['Potongan wajib: KWSP, PERKESO, SIP dan PCB (jika berkaitan). Potongan lain hanya dengan persetujuan bertulis anda.','Statutory deductions: KWSP, PERKESO, SIP and PCB (where applicable). Other deductions only with your written consent.'],
+  ['Pendahuluan gaji boleh dipohon dalam keadaan kecemasan dan dipotong daripada gaji seterusnya.','Salary advances may be requested in emergencies and are deducted from the next salary.'],
+  ['Gaji disemak setahun sekali berdasarkan prestasi.','Salaries are reviewed once a year based on performance.']]},
+ {h:['Komisen, insentif dan tip','Commission, incentives and tips'],st:'b',i:[
+  ['Komisen jualan dan rawatan dikira terus daripada bil dalam sistem. Lihat anggaran anda setiap hari di Saya → Komisen.','Sales and treatment commission is worked out from the bills in the system. See your estimate every day under Me → Commission.'],
+  ['Pakej yang dibayar secara ansuran memberi komisen mengikut duit yang dikutip.','Packages paid in instalments earn commission as the money is collected.'],
+  ['Jualan berkongsi dibahagi mengikut peratus yang direkod pada bil. Pastikan nama yang betul dipilih semasa bayaran.','Shared sales are split by the percentage recorded on the bill. Make sure the right names are chosen at checkout.'],
+  ['Refund atau pembatalan menarik balik komisen yang berkaitan.','Refunds and cancellations take the related commission back.'],
+  ['Jika komisen nampak salah, tekan butang tanya pada baris berkenaan dalam aplikasi — jangan bertikai di depan pelanggan.','If commission looks wrong, tap the question button on that line in the app — never argue about it in front of clients.'],
+  ['Tip direkod dalam sistem dan diagihkan mengikut polisi tip syarikat. Wang tunai yang diberi terus kepada anda tetap direkod untuk ketelusan.','Tips are recorded in the system and shared by the company tips policy. Cash handed to you directly is still recorded for transparency.']]},
+ {h:['Faedah','Benefits'],st:'b',i:[
+  ['Rawatan staf pada kadar istimewa, tertakluk kepada slot kosong dan kelulusan pengurus.','Staff treatments at a special rate, subject to free slots and manager approval.'],
+  ['Pakaian seragam disediakan.','Uniforms are provided.'],
+  ['Latihan dalaman dan sijil rawatan; latihan luar yang diluluskan dibayar oleh syarikat (mungkin tertakluk kepada perjanjian latihan).','In-house training and treatment certification; approved external training paid by the company (may be subject to a training agreement).'],
+  ['Perlindungan PERKESO dan SIP; perlindungan perubatan tambahan jika dinyatakan dalam kontrak.','PERKESO and SIP cover; extra medical cover if stated in your contract.'],
+  ['Bonus, insentif dan hadiah perayaan mengikut prestasi syarikat dan budi bicara pemilik.','Bonuses, incentives and festive gifts based on company performance and at the owner discretion.']]},
+ {h:['Tuntutan perbelanjaan','Expense claims'],st:'b',i:[
+  ['Perbelanjaan kerja mesti diluluskan dahulu oleh pengurus.','Work expenses must be approved by the manager first.'],
+  ['Hantar tuntutan dalam aplikasi dengan gambar resit dalam masa 30 hari.','Submit claims in the app with a photo of the receipt within 30 days.'],
+  ['Tuntutan yang diluluskan dibayar bersama gaji.','Approved claims are paid with salary.']]},
+ {h:['Kod etika','Code of ethics'],st:'b',i:[
+  ['Jujur dalam semua urusan: rekod jualan, rawatan, stok, kehadiran dan tuntutan dengan betul.','Be honest in everything: record sales, treatments, stock, attendance and claims correctly.'],
+  ['Jangan membuat dakwaan palsu, menjanjikan hasil yang pasti atau menggunakan tekanan melampau untuk menjual.','Never make false claims, promise guaranteed results or use undue pressure to sell.'],
+  ['Hormat kepada pelanggan dan rakan sekerja tanpa mengira latar belakang.','Respect clients and colleagues whatever their background.'],
+  ['Elak konflik kepentingan. Maklumkan pengurus jika ahli keluarga atau rakan anda menjadi pelanggan atau pembekal.','Avoid conflicts of interest. Tell your manager if family or friends become clients or suppliers.'],
+  ['Tiada kerja sambilan dalam bidang kecantikan atau rawatan di rumah pelanggan tanpa kebenaran bertulis syarikat.','No side jobs in beauty or home-service treatments for clients without the company written permission.'],
+  ['Integriti dan anti-rasuah: jangan beri atau terima sebarang suapan. Syarikat boleh dipertanggungjawabkan di bawah Akta SPRM 2009.','Integrity and anti-bribery: never give or accept a bribe. The company can be held liable under the MACC Act 2009.']]},
+ {h:['Penampilan dan dandanan','Appearance and grooming'],st:'b',i:[
+  ['Pakai seragam yang bersih dan bergosok, tanda nama dan kasut tertutup.','Wear a clean, ironed uniform, your name tag and closed shoes.'],
+  ['Rambut kemas dan diikat (atau tudung kemas mengikut warna seragam).','Hair neat and tied back (or a neat tudung in the uniform colour).'],
+  ['Kuku pendek dan bersih, tanpa kuku palsu atau pewarna kuku bagi therapist.','Nails short and clean; no false nails or polish for therapists.'],
+  ['Barang kemas minimum; tiada gelang atau cincin besar semasa rawatan.','Minimal jewellery; no bracelets or large rings during treatments.'],
+  ['Kebersihan diri dijaga; elak minyak wangi yang kuat.','Good personal hygiene; avoid strong perfume.']]},
+ {h:['Kebersihan dan sanitasi','Hygiene and sanitation'],st:'b',i:[
+  ['Cuci tangan sebelum dan selepas setiap pelanggan.','Wash hands before and after every client.'],
+  ['Tukar linen dan bahan pakai buang bagi setiap pelanggan; jangan guna semula bahan pakai buang.','Change linen and disposables for every client; never reuse single-use items.'],
+  ['Sanitasi dan sterilkan peralatan mengikut SOP; rekod dalam log kebersihan.','Sanitise and sterilise tools by the SOP; record it in the cleaning log.'],
+  ['Simpan produk tertutup, berlabel dan tidak tamat tempoh. Jangan celup tangan ke dalam bekas produk.','Keep products closed, labelled and in date. Never dip fingers into product containers.'],
+  ['Bilik rawatan, tandas dan ruang menunggu sentiasa bersih dan kering.','Treatment rooms, toilets and the waiting area must always be clean and dry.']]},
+ {h:['Piawaian layanan pelanggan','Client service standards'],st:'b',i:[
+  ['Sambut setiap pelanggan dalam 10 saat dengan senyuman dan nama mereka jika dikenali.','Greet every client within 10 seconds with a smile, and by name if you know them.'],
+  ['Konsultasi, borang PDPA dan persetujuan mesti lengkap sebelum rawatan. Terangkan harga sebelum memulakan rawatan.','Consultation, PDPA and consent forms must be complete before treatment. Explain the price before starting.'],
+  ['Jaga privasi: tutup pintu, gunakan tuala penutup badan, dan minta izin sebelum menyentuh kawasan sensitif.','Protect privacy: close the door, drape properly and ask permission before touching sensitive areas.'],
+  ['Hentikan rawatan segera jika pelanggan sakit, tidak selesa atau mengalami reaksi, dan panggil pengurus.','Stop the treatment immediately if the client feels pain, discomfort or a reaction, and call the manager.'],
+  ['Beri nasihat penjagaan selepas rawatan dan tawarkan tempahan seterusnya.','Give aftercare advice and offer the next booking.'],
+  ['Aduan: dengar, mohon maaf atas pengalaman pelanggan, selesaikan atau bawa kepada pengurus, dan rekod dalam sistem.','Complaints: listen, apologise for their experience, solve it or take it to the manager, and record it in the system.']]},
+ {h:['Perkara yang perlu dan tidak boleh dilakukan','Do\'s and don\'ts'],st:'b',i:[
+  ['✓ BUAT: punch in tepat pada masanya, ikut SOP, rekod semuanya dalam sistem, jaga privasi pelanggan, tanya bila ragu-ragu.','✓ DO: punch in on time, follow the SOP, record everything in the system, protect client privacy, ask when in doubt.'],
+  ['✓ BUAT: laporkan kerosakan, kecederaan, aduan dan stok habis dengan segera.','✓ DO: report breakdowns, injuries, complaints and stock running out right away.'],
+  ['✓ BUAT: bantu rakan sekerja dan kekalkan suasana yang tenang dan profesional.','✓ DO: help colleagues and keep the atmosphere calm and professional.'],
+  ['✗ JANGAN: guna telefon peribadi semasa melayan pelanggan atau di bilik rawatan.','✗ DON\'T: use your personal phone while serving clients or in the treatment room.'],
+  ['✗ JANGAN: terima bayaran, pindahan wang atau hadiah wang ke akaun peribadi.','✗ DON\'T: accept payments, transfers or cash gifts into a personal account.'],
+  ['✗ JANGAN: beri diskaun, rawatan percuma atau produk tanpa kebenaran.','✗ DON\'T: give discounts, free treatments or products without approval.'],
+  ['✗ JANGAN: bincang hal peribadi, gaji, komisen atau gosip di hadapan pelanggan.','✗ DON\'T: discuss personal matters, salary, commission or gossip in front of clients.'],
+  ['✗ JANGAN: ambil gambar pelanggan atau rekod mereka dengan telefon sendiri.','✗ DON\'T: photograph clients or their records with your own phone.'],
+  ['✗ JANGAN: lakukan rawatan yang belum di-sign-off atau sebarang prosedur perubatan.','✗ DON\'T: perform treatments you are not signed off for, or any medical procedure.'],
+  ['✗ JANGAN: makan, merokok atau vape di bilik rawatan dan kaunter.','✗ DON\'T: eat, smoke or vape in treatment rooms or at the counter.']]},
+ {h:['Kerahsiaan dan data peribadi (PDPA)','Confidentiality and personal data (PDPA)'],st:'b',i:[
+  ['Maklumat pelanggan — nama, nombor telefon, kesihatan, gambar dan rekod rawatan — adalah sulit dan hanya digunakan untuk tujuan kerja.','Client information — names, phone numbers, health details, photos and treatment records — is confidential and used only for work.'],
+  ['Akses data hanya melalui aplikasi syarikat. Jangan salin, eksport, foto skrin atau kongsi data ke luar.','Access data only through the company app. Do not copy, export, screenshot or share it outside.'],
+  ['Gambar sebelum/selepas hanya diambil dengan persetujuan bertulis dan peranti syarikat.','Before/after photos are taken only with written consent and on a company device.'],
+  ['Kerahsiaan berterusan selepas anda meninggalkan syarikat.','Confidentiality continues after you leave the company.'],
+  ['Laporkan sebarang kebocoran data atau telefon / tablet syarikat yang hilang kepada pengurus segera.','Report any data leak or lost company phone or tablet to your manager at once.']]},
+ {h:['Media sosial dan telefon bimbit','Social media and mobile phones'],st:'b',i:[
+  ['Simpan telefon dalam loker atau poket semasa rawatan; guna di ruang rehat sahaja kecuali untuk aplikasi kerja.','Keep your phone in your locker or pocket during treatments; use it in the break area only, except for the work app.'],
+  ['Jangan siarkan gambar pelanggan, bilik rawatan semasa digunakan, harga kos atau maklumat dalaman.','Do not post client photos, rooms in use, cost prices or internal information.'],
+  ['Kandungan media sosial rasmi {brand} hanya oleh pasukan yang diberi kuasa.','Official {brand} social media content is posted only by the authorised team.'],
+  ['Jangan memburukkan syarikat, rakan sekerja atau pelanggan di media sosial.','Do not speak badly of the company, colleagues or clients on social media.']]},
+ {h:['Wang, hadiah dan integriti','Money, gifts and integrity'],st:'b',i:[
+  ['Semua bayaran mesti melalui kaunter dan direkod dalam sistem dengan resit.','All payments go through the counter and are recorded in the system with a receipt.'],
+  ['Wang tunai dikira semasa buka dan tutup hari; perbezaan mesti dijelaskan.','Cash is counted when the day opens and closes; differences must be explained.'],
+  ['Hadiah kecil bukan wang daripada pelanggan boleh diterima dan dimaklumkan kepada pengurus. Hadiah bernilai tinggi perlu ditolak dengan sopan.','Small non-cash gifts from clients may be accepted and reported to the manager. Valuable gifts should be politely declined.'],
+  ['Pengambilan produk, stok atau wang tanpa kebenaran ialah salah laku serius.','Taking products, stock or money without permission is serious misconduct.']]},
+ {h:['Gangguan seksual dan buli','Sexual harassment and bullying'],st:'b',i:[
+  ['Syarikat tidak bertolak ansur dengan gangguan seksual, buli, ugutan atau diskriminasi oleh sesiapa — staf, pengurus atau pelanggan.','The company has zero tolerance for sexual harassment, bullying, threats or discrimination by anyone — staff, managers or clients.'],
+  ['Gangguan seksual termasuk kata-kata, gurauan, mesej, gambar, sentuhan atau permintaan berunsur seksual yang tidak diingini.','Sexual harassment includes unwanted words, jokes, messages, images, touching or requests of a sexual nature.'],
+  ['Laporkan kepada pemilik atau pengurus secara lisan atau bertulis. Aduan disiasat secara sulit dan syarikat akan memulakan siasatan dalam masa 30 hari.','Report it to the owner or manager verbally or in writing. Complaints are handled in confidence and the company will start an inquiry within 30 days.'],
+  ['Anda juga berhak membuat aduan kepada Tribunal Anti Gangguan Seksual.','You also have the right to complain to the Anti-Sexual Harassment Tribunal.'],
+  ['Tiada tindakan balas terhadap sesiapa yang membuat aduan dengan niat baik.','No one who complains in good faith will face retaliation.'],
+  ['Pelanggan yang berkelakuan tidak sopan: hentikan rawatan, keluar dari bilik dan panggil pengurus.','A client behaving inappropriately: stop the treatment, leave the room and call the manager.']]},
+ {h:['Keselamatan dan kesihatan pekerjaan','Occupational safety and health'],st:'b',i:[
+  ['Ikut arahan keselamatan bagi mesin, elektrik, bahan kimia dan peralatan panas.','Follow the safety instructions for devices, electrics, chemicals and hot equipment.'],
+  ['Baca label dan Risalah Data Keselamatan (SDS) bagi produk kimia; pakai sarung tangan bila perlu.','Read labels and Safety Data Sheets (SDS) for chemical products; wear gloves when needed.'],
+  ['Laporkan semua kemalangan, kecederaan dan hampir-kemalangan kepada pengurus pada hari yang sama.','Report every accident, injury and near miss to your manager the same day.'],
+  ['Tahu lokasi peti pertolongan cemas, alat pemadam api dan laluan kecemasan.','Know where the first aid kit, fire extinguisher and emergency exits are.'],
+  ['Pekerja hamil perlu memaklumkan pengurus supaya tugas dan rawatan tertentu dapat disesuaikan.','Pregnant staff should tell their manager so certain duties and treatments can be adjusted.'],
+  ['Dadah, alkohol dan bekerja dalam keadaan mabuk adalah dilarang sama sekali.','Drugs, alcohol and working under their influence are strictly forbidden.']]},
+ {h:['Harta syarikat dan sistem','Company property and systems'],st:'b',i:[
+  ['Jaga peralatan, mesin, produk dan perabot; guna mengikut tujuannya sahaja.','Look after equipment, devices, products and furniture; use them only for their purpose.'],
+  ['Akaun aplikasi dan kod kehadiran adalah peribadi — jangan berkongsi kata laluan atau kod.','Your app account and attendance code are personal — never share your password or code.'],
+  ['Penggunaan stok rawatan direkod; pembaziran dilaporkan.','Treatment stock use is recorded; wastage is reported.'],
+  ['Pulangkan semua harta syarikat apabila diminta atau apabila berhenti.','Return all company property on request or when you leave.']]},
+ {h:['Prestasi, latihan dan kerjaya','Performance, training and career'],st:'b',i:[
+  ['Sasaran dan KPI anda dilihat dalam aplikasi. Penilaian prestasi dibuat sekurang-kurangnya setahun sekali.','Your targets and KPIs are in the app. Performance is appraised at least once a year.'],
+  ['Anda hanya boleh melakukan rawatan selepas lulus sign-off. Sijil yang tamat tempoh perlu diperbaharui.','You may perform a treatment only after passing its sign-off. Expired certificates must be renewed.'],
+  ['Laluan kerjaya dan kenaikan berdasarkan prestasi, kemahiran dan sikap.','Career progression and promotion are based on performance, skills and attitude.']]},
+ {h:['Rungutan dan aduan pekerja','Grievances'],st:'n',i:[
+  ['Bincang dahulu dengan pengurus anda.','Talk to your manager first.'],
+  ['Jika tidak selesai dalam 7 hari, kemukakan secara bertulis kepada pemilik.','If it is not resolved within 7 days, put it in writing to the owner.'],
+  ['Pemilik akan mendengar kedua-dua pihak dan memberi keputusan bertulis dalam 14 hari.','The owner will hear both sides and give a written decision within 14 days.'],
+  ['Anda juga boleh merujuk kepada Jabatan Tenaga Kerja jika perlu.','You may also refer the matter to the Labour Department if needed.']]},
+ {h:['Tatatertib dan salah laku','Discipline and misconduct'],st:'b',i:[
+  ['Salah laku kecil (contoh): lewat berulang, tidak memakai seragam, guna telefon semasa rawatan, kerja tidak kemas.','Minor misconduct (examples): repeated lateness, not in uniform, phone use during treatment, untidy work.'],
+  ['Salah laku serius (contoh): kecurian, menipu rekod atau tuntutan, menerima bayaran peribadi, membocorkan data pelanggan, gangguan seksual, ganas, dadah atau alkohol, melakukan prosedur di luar kelayakan, ingkar arahan yang sah.','Serious misconduct (examples): theft, falsifying records or claims, taking personal payments, leaking client data, sexual harassment, violence, drugs or alcohol, performing procedures beyond your qualification, refusing lawful instructions.'],
+  ['Langkah biasa: teguran lisan → amaran bertulis → amaran terakhir → surat tunjuk sebab → siasatan dalaman → hukuman.','Usual steps: verbal reminder → written warning → final warning → show-cause letter → domestic inquiry → penalty.'],
+  ['Hukuman selepas siasatan boleh termasuk pembuangan kerja, penurunan pangkat atau hukuman lain yang lebih ringan. Semasa siasatan anda boleh digantung sehingga 2 minggu dengan tidak kurang separuh gaji.','After an inquiry the penalty may be dismissal, demotion or a lesser penalty. During an inquiry you may be suspended for up to 2 weeks on not less than half pay.'],
+  ['Anda diberi peluang untuk menjelaskan sebelum sebarang keputusan dibuat.','You will be given the chance to explain before any decision is made.']]},
+ {h:['Peletakan jawatan dan penamatan','Resignation and leaving'],st:'b',i:[
+  ['Letak jawatan secara bertulis dengan notis mengikut kontrak anda.','Resign in writing with the notice in your contract.'],
+  ['Selesaikan tugasan, serah semula pelanggan dan rekod kepada pengurus, dan pulangkan harta syarikat sebelum hari terakhir.','Finish your tasks, hand clients and records over to your manager, and return company property before your last day.'],
+  ['Gaji terakhir, komisen yang telah diperolehi dan baki cuti diselesaikan pada hari gaji biasa berikutnya.','Final salary, earned commission and leave balance are settled on the next normal pay day.'],
+  ['Jika syarikat menamatkan perkhidmatan atas sebab selain salah laku, persaraan atau peletakan jawatan, pekerja yang layak dengan sekurang-kurangnya 12 bulan perkhidmatan menerima faedah penamatan mengikut Peraturan-Peraturan Kerja (Faedah Penamatan dan Pemberhentian Sementara) 1980: 10 hari gaji bagi setiap tahun (kurang 2 tahun), 15 hari (2 hingga 5 tahun), 20 hari (5 tahun dan ke atas).','If the company ends your employment for reasons other than misconduct, retirement or resignation, eligible staff with at least 12 months of service receive termination benefits under the Employment (Termination and Lay-Off Benefits) Regulations 1980: 10 days pay for each year (under 2 years), 15 days (2 to 5 years), 20 days (5 years or more).'],
+  ['Notis boleh diganti dengan bayaran gaji bagi tempoh notis yang tidak diberi, oleh mana-mana pihak.','Either side may pay salary in place of any notice not given.'],
+  ['Surat pengesahan bekerja boleh diminta selepas berhenti.','A service letter can be requested after you leave.']]},
+ {h:['Kebajikan dan sokongan','Wellbeing and support'],st:'b',i:[
+  ['Jika anda menghadapi masalah peribadi atau kesihatan yang menjejaskan kerja, bincang secara sulit dengan pemilik atau pengurus — kita akan cuba membantu, contohnya dengan menyesuaikan jadual.','If a personal or health problem is affecting your work, talk to the owner or manager in confidence — we will try to help, for example by adjusting your roster.'],
+  ['Ibu yang menyusukan anak boleh meminta ruang tertutup dan masa rehat tambahan yang munasabah.','Breastfeeding mothers may ask for a private space and reasonable extra breaks.'],
+  ['Kenalan kecemasan anda mesti sentiasa dikemas kini dalam aplikasi.','Keep your emergency contact up to date in the app.'],
+  ['Majlis pasukan, sambutan hari jadi dan aktiviti bersama diadakan dari semasa ke semasa — penyertaan digalakkan tetapi tidak wajib.','Team gatherings, birthdays and outings are held from time to time — joining in is encouraged but not compulsory.']]},
+ {h:['Pengakuan','Acknowledgement'],st:'p',i:[
+  ['Saya telah menerima, membaca dan memahami Buku Panduan Pekerja {brand}, dan bersetuju mematuhinya. Saya faham ia boleh dikemas kini dari semasa ke semasa.','I have received, read and understood the {brand} Employee Handbook and agree to follow it. I understand it may be updated from time to time.']]}]};
+
+
+/* ============ HR documents: job descriptions, contract of service, employee handbook ============ */
+/* Three new documents join the HR document set. They are built from templates (hrcontent.js) that
+   the owner can edit word by word in both languages, extend with new sections, or reset to the
+   standard text; new job descriptions can be added for other positions. Templates live in the
+   hrTpl collection; anything not edited keeps the standard version. Staff read the handbook and
+   their own job description in My HR, and sign them like any other HR document. */
+const HRT_STD={...HRC_JD,contract:{kind:'contract',...HRC_CONTRACT},handbook:{kind:'handbook',...HRC_HANDBOOK}};
+Object.keys(HRC_JD).forEach(k=>{HRT_STD[k].kind='jd';});
+let HRTPL=null;
+const hrtPair=v=>Array.isArray(v)?{bm:v[0]||'',en:v[1]||''}:(v&&typeof v==='object'?{bm:v.bm||'',en:v.en||''}:{bm:String(v||''),en:String(v||'')});
+function hrtNorm(key,raw){if(!raw)return null;
+ const meta={...(raw.meta||{})};['reportTo','noticeProb','noticeConf'].forEach(k=>{if(meta[k]!=null)meta[k]=hrtPair(meta[k]);});
+ return {key,kind:raw.kind||'jd',title:hrtPair(raw.title),meta,custom:!!raw.custom,
+  sections:(raw.sections||[]).map(s=>({h:hrtPair(s.h),st:s.st||'b',cond:s.cond||'',items:s.items?{bm:[...(s.items.bm||[])],en:[...(s.items.en||[])]}:{bm:(s.i||[]).map(p=>p[0]),en:(s.i||[]).map(p=>p[1])}}))};}
+async function hrtLoad(force){if(HRTPL&&!force)return HRTPL;
+ try{HRTPL={};(await getDocs(collection(db,'hrTpl'))).docs.forEach(d=>{HRTPL[d.id]=d.data();});}catch(e){HRTPL={};}
+ if(TAB==='hr')render();return HRTPL;}
+const hrtGet=key=>{const o=(HRTPL||{})[key];if(o&&!o.deleted)return hrtNorm(key,o);return hrtNorm(key,HRT_STD[key]);};
+const hrtEdited=key=>!!((HRTPL||{})[key]&&!(HRTPL||{})[key].deleted&&HRT_STD[key]);
+function hrtJDs(){const keys=Object.keys(HRT_STD).filter(k=>HRT_STD[k].kind==='jd');
+ Object.entries(HRTPL||{}).forEach(([k,v])=>{if(v&&v.kind==='jd'&&!v.deleted&&!keys.includes(k))keys.push(k);});
+ return keys.map(k=>hrtGet(k)).filter(Boolean);}
+function hrtMatchJD(position){const p=String(position||'');const L=hrtJDs();
+ const m=L.find(t=>p&&(t.title.en.toLowerCase()===p.toLowerCase().trim()||t.title.bm.toLowerCase()===p.toLowerCase().trim()))||L.find(t=>{const re=(HRT_STD[t.key]||{}).meta&&HRT_STD[t.key].meta.match;return re&&re.test(p);});
+ return (m||L[0]||{}).key||'jd_therapist';}
+const HOURS_OK={bm:'Tidak melebihi 45 jam seminggu, 6 hari seminggu mengikut jadual giliran (purata 7.5 jam bekerja sehari, tidak termasuk rehat makan 1 jam).',
+ en:'Not more than 45 hours a week, 6 days a week by the duty roster (an average of 7.5 working hours a day, excluding a 1-hour meal break).'};
+
+/* ---------------- filling in the words ---------------- */
+function hrtVars(x,lang){const L=lang==='en'?'en':'bm';
+ return {...x,brand:coBrand()||(D.meta.biz||{}).name||'',company:coName(),companyTA:coTA(L==='en'?'en':'bm'),
+  dateL:dLong(x.date,lang),startL:dLong(x.start,lang),endDateL:dLong(x.endDate,lang),basicL:rmL(x.basic),allowanceL:rmL(x.allowance),bondAmtL:rmL(x.bondAmt),
+  empTypeL:empL(x.empType||'Full-time',lang),address1:String(x.address||'').split('\n').map(s=>s.trim()).filter(Boolean).join(', ')};}
+const hrtHas=v=>v!==undefined&&v!==null&&String(v).trim()!==''&&String(v).trim()!=='0';
+function hrtFill(t,V){let s=String(t||'');const m=s.match(/^\{\?(\w+)\}/);if(m){if(!hrtHas(V[m[1]]))return null;s=s.slice(m[0].length);}
+ return s.replace(/\{(\w+)\}/g,(a,k)=>V[k]!==undefined&&V[k]!==null&&V[k]!==''?String(V[k]):'……………');}
+function hrtSecs(t,lang,V){const L=lang==='en'?'en':'bm';
+ return t.sections.filter(s=>!s.cond||hrtHas(V[s.cond])).map(s=>({h:hrtFill(s.h[L],V)||'',st:s.st,items:(s.items[L]||[]).map(i=>hrtFill(i,V)).filter(i=>i!==null&&i.trim()!=='')}));}
+
+/* ---------------- the three documents ---------------- */
+Object.assign(DOCT,{
+ jd:{bm:'Huraian Tugas',en:'Job Description',sign:1,code:'JD',d:'Beauty Therapist, Beauty Consultant, Spa Manager or your own — with acknowledgement',ic:'list'},
+ contract:{bm:'Kontrak Perkhidmatan',en:'Contract of Service',sign:1,code:'KTR',d:'Full contract for any position, with the job description and pay as schedules',ic:'signature'},
+ handbook:{bm:'Buku Panduan Pekerja',en:'Employee Handbook',sign:1,code:'EHB',d:'Rules, conduct, do\'s & don\'ts, pay, leave, benefits — with acknowledgement',ic:'note'}});
+const DF_JD=[['jdKey','Job description','sel:jd']];
+Object.assign(DOCF,{
+ jd:[...DF_PERSON,['date','Date','date'],...DF_JD,...DF_SIGN],
+ contract:[...DF_PERSON,['date','Contract date','date'],...DF_JD,['start','Start date','date'],['empType','Employment type','sel:Full-time,Part-time,Contract'],['endDate','Ends on (fixed-term contract only)','date'],
+  ['prob','Probation (months, 0 = none)','num'],['reportTo','Reports to','text'],['basic','Basic salary (RM / month)','num'],['allowance','Fixed allowance (RM / month)','num'],
+  ['comm','Commission','area'],['payday','Salary paid by day of the month','num'],['hours','Working hours','area'],['rest','Rest day','text'],
+  ['AL','Annual leave (days)','num'],['MC','Sick leave (days)','num'],['HL','Hospitalisation (days)','num'],['benefits','Other benefits','area'],
+  ['noticeProb','Notice during probation','text'],['noticeConf','Notice after confirmation','text'],['nonSol','No soliciting clients or staff for (months after leaving)','num'],
+  ['bondAmt','Training bond — cost of external training (RM, 0 = none)','num'],['bondMonths','Training bond — months to stay after training','num'],...DF_SIGN],
+ handbook:[['name','Employee name','text'],['ic','IC / passport no.','text'],['position','Position','text'],['branch','Branch','text'],['date','Date','date'],...DF_SIGN]});
+ONB.splice(ONB.findIndex(o=>o[0]==='nda')+1,0,['contract','Contract of service signed','doc:contract'],['jd','Job description acknowledged','doc:jd'],['handbook','Employee Handbook acknowledged','doc:handbook']);
+
+{const _d=docDefaults;docDefaults=function(type,sid,lang){const x=_d.apply(this,arguments),L=lang==='en'?'en':'bm';
+ const old6x9=/6 hari seminggu, 9 jam sehari|6 days a week, 9 hours a day/;if(!x.hours||old6x9.test(x.hours))x.hours=HOURS_OK[L];
+ if(['jd','contract','handbook'].includes(type)){const f=sid?((HRSTAFF||{})[sid]||{}):{};
+  x.jdKey=f.jdKey||hrtMatchJD(x.position);const t=hrtGet(x.jdKey)||{meta:{}},m=t.meta||{};
+  if(!x.position&&t.title)x.position=t.title[L];
+  if(type==='contract'){if(m.reportTo)x.reportTo=m.reportTo[L];if(m.noticeProb)x.noticeProb=m.noticeProb[L];if(m.noticeConf)x.noticeConf=m.noticeConf[L];if(m.prob!=null)x.prob=m.prob;
+   x.endDate='';x.bondAmt='';x.bondMonths=12;}}
+ return x;};}
+/* the job-description list in the form shows titles, and choosing one fills in its defaults */
+{const _f=docForm;docForm=function(type,sid,lang){_f.apply(this,arguments);const s=document.getElementById('df-jdKey');if(!s)return;const L=lang==='en'?'en':'bm',cur=(window.DOCDRAFT&&window.DOCDRAFT.base||{}).jdKey;
+ s.innerHTML=hrtJDs().map(t=>'<option value="'+esc(t.key)+'"'+(t.key===cur?' selected':'')+'>'+esc(t.title[L])+'</option>').join('');
+ s.onchange=()=>{const t=hrtGet(s.value);if(!t)return;const m=t.meta||{},set=(id,v)=>{const e=document.getElementById('df-'+id);if(e&&v!=null)e.value=v;};
+  set('position',t.title[L]);if(m.reportTo)set('reportTo',m.reportTo[L]);if(m.noticeProb)set('noticeProb',m.noticeProb[L]);if(m.noticeConf)set('noticeConf',m.noticeConf[L]);if(m.prob!=null)set('prob',m.prob);};};}
+
+{const _b=docBlocks;docBlocks=function(type,lang,x,biz){if(!['jd','contract','handbook'].includes(type))return _b.apply(this,arguments);return hrtBlocks(type,lang,x);};}
+function hrtSecBlocks(B,secs,num,o){o=o||{};
+ secs.forEach((s,i)=>{const n=num?(i+1)+'.':'';
+  if(o.bar)B.push({h:(num?n+'  ':'')+s.h});else B.push({n:n||' ',h:s.h});
+  s.items.forEach((t,j)=>{if(s.st==='p')B.push(o.bar?{p:t}:{n:' ',p:t,tight:j<s.items.length-1});
+   else if(s.st==='n')B.push({n:' ',p:(num?(i+1)+'.'+(j+1):(j+1)+'.')+'  '+t,tight:true});
+   else B.push({n:' ',p:'•  '+t,tight:true});});});}
+function hrtBlocks(type,lang,x){
+ const L=lang==='en'?'en':'bm',V=hrtVars(x,lang),B=[],co=coName();
+ const signs=[{who:'co',name:x.signName,sub:(x.signTitle||'')+', '+co},{who:'emp',name:x.name||'',sub:LX(lang,'Pekerja','Employee')+(x.ic?' · '+LX(lang,'No. KP ','IC ')+x.ic:'')}];
+ const ref=()=>B.push({meta:[[LX(lang,'Rujukan','Ref'),x.ref||'—'],[LX(lang,'Tarikh','Date'),dLong(x.date,lang)]]});
+ if(type==='jd'){const t=hrtGet(x.jdKey||hrtMatchJD(x.position));if(!t)return B;const m=t.meta||{};
+  ref();B.push({title:LX(lang,'HURAIAN TUGAS','JOB DESCRIPTION'),center:true,sub:t.title[L]});
+  B.push({fields:[[LX(lang,'Jawatan','Position'),t.title[L]],[LX(lang,'Melapor kepada','Reports to'),String(m.reportTo?m.reportTo[L]:x.reportTo||'').replace(/^the\s+/i,'').replace(/^./,c=>c.toUpperCase())],[LX(lang,'Pemegang jawatan','Job holder'),x.name||''],[LX(lang,'Cawangan','Branch'),x.branch||''],
+   ...(m.grade?[[LX(lang,'Gred','Grade'),m.grade]]:[]),[LX(lang,'Berkuat kuasa','Effective'),dLong(x.date,lang)]],cols:2});
+  hrtSecBlocks(B,hrtSecs(t,lang,V),false,{bar:true});
+  B.push({h:LX(lang,'Pengakuan','Acknowledgement')},{p:LX(lang,'Saya telah membaca dan memahami huraian tugas ini. Saya faham bahawa tugas boleh disemak dari semasa ke semasa mengikut keperluan perniagaan.','I have read and understood this job description. I understand that duties may be reviewed from time to time as the business requires.')},{sign:signs});
+  return B;}
+ if(type==='contract'){const t=hrtGet('contract'),jd=hrtGet(x.jdKey||hrtMatchJD(x.position));
+  ref();B.push({title:LX(lang,'KONTRAK PERKHIDMATAN','CONTRACT OF SERVICE'),center:true,sub:String(x.position||'').toUpperCase()});
+  hrtSecBlocks(B,hrtSecs(t,lang,V),true);
+  B.push({p:LX(lang,'Ditandatangani oleh pihak-pihak pada tarikh yang dinyatakan di atas.','Signed by the parties on the date first written above.')},{sign:signs});
+  B.push({h2:LX(lang,'JADUAL A — HURAIAN TUGAS: ','SCHEDULE A — JOB DESCRIPTION: ')+(jd?jd.title[L]:x.position||'')});
+  if(jd)hrtSecBlocks(B,hrtSecs(jd,lang,V),false,{bar:true});
+  B.push({h2:LX(lang,'JADUAL B — GAJI DAN FAEDAH','SCHEDULE B — REMUNERATION AND BENEFITS')});
+  B.push({n:' ',kv:[[LX(lang,'Gaji pokok','Basic salary'),rmL(x.basic)+LX(lang,' sebulan',' a month')],...(hrtHas(x.allowance)?[[LX(lang,'Elaun tetap','Fixed allowance'),rmL(x.allowance)+LX(lang,' sebulan',' a month')+(x.allowanceNote?' ('+x.allowanceNote+')':'')]]:[]),
+   [LX(lang,'Komisen','Commission'),x.comm||''],[LX(lang,'Hari gaji','Pay day'),LX(lang,'Selewat-lewatnya hari ke-','By the ')+(x.payday||7)+LX(lang,' bulan berikutnya','th of the following month')],
+   [LX(lang,'Cuti tahunan / sakit / hospital','Annual / sick / hospital leave'),(x.AL||8)+' / '+(x.MC||14)+' / '+(x.HL||60)+LX(lang,' hari',' days')],[LX(lang,'Faedah lain','Other benefits'),x.benefits||'—'],
+   ...(hrtHas(x.bondAmt)?[[LX(lang,'Perjanjian latihan','Training bond'),rmL(x.bondAmt)+' · '+(x.bondMonths||12)+LX(lang,' bulan',' months')]]:[])]});
+  B.push({note:LX(lang,'Terma ini dibaca bersama Buku Panduan Pekerja. Hak minimum di bawah Akta Kerja 1955 sentiasa terpakai.','Read with the Employee Handbook. Minimum rights under the Employment Act 1955 always apply.')});
+  return B;}
+ if(type==='handbook'){const t=hrtGet('handbook');
+  B.push({title:LX(lang,'BUKU PANDUAN PEKERJA','EMPLOYEE HANDBOOK'),center:true,sub:V.brand+(co&&co.toLowerCase()!==String(V.brand).toLowerCase()?' · '+co:'')});
+  B.push({p:LX(lang,'Versi ','Version ')+dLong(x.date,lang)+(x.name?LX(lang,' · Salinan untuk ',' · Copy for ')+x.name:''),it:true});
+  const secs=hrtSecs(t,lang,V);
+  B.push({h:LX(lang,'Kandungan','Contents')});secs.forEach((s,i)=>B.push({n:' ',p:(i+1)+'.  '+s.h,tight:true}));
+  hrtSecBlocks(B,secs,true,{bar:true});
+  B.push({sign:[{who:'emp',name:x.name||'',sub:LX(lang,'Pekerja','Employee')+(x.position?' · '+x.position:'')}]});
+  return B;}
+ return B;}
+
+/* ---------------- reading them in the app ---------------- */
+function hrtHTML(key,lang,x){const t=hrtGet(key);if(!t)return '';const V=hrtVars(x||{},lang);
+ return '<div class="hrtread">'+hrtSecs(t,lang,V).map((s,i)=>'<section><h4>'+(t.kind==='handbook'?(i+1)+'. ':'')+esc(s.h)+'</h4>'+
+  (s.st==='p'?s.items.map(p=>'<p>'+esc(p)+'</p>').join(''):'<'+(s.st==='n'?'ol':'ul')+'>'+s.items.map(p=>'<li>'+esc(p)+'</li>').join('')+'</'+(s.st==='n'?'ol':'ul')+'>')+'</section>').join('')+'</div>';}
+let HRTV={lang:''};
+window.hrtRead=(key,lang)=>{const s=hrWho()||{},f=((HRSTAFF||{})[s.id]||{});const L=lang||HRTV.lang||(typeof LANG!=='undefined'&&LANG==='en'?'en':'bm');HRTV.lang=L;
+ const t=hrtGet(key);if(!t)return;const x={name:f.fullName||s.name||'',position:f.position||s.position||'',branch:branch().name||'',date:today()};
+ modal(t.title[L==='en'?'en':'bm'],'<div class="card"><div class="spread" style="margin-bottom:8px"><div class="seg">'+[['bm','Bahasa Malaysia'],['en','English']].map(o=>'<button class="'+(L===o[0]?'on':'')+'" onclick="hrtRead(\''+key+'\',\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  '<button class="btn sm ghost" onclick="hrtPDF(\''+key+'\',\''+L+'\')">'+ic('download',13)+'PDF</button></div>'+hrtHTML(key,L,x)+'</div>');};
+window.hrtPDF=(key,lang,sample)=>{const t=hrtGet(key);if(!t)return;const s=hrWho()||{},f=((HRSTAFF||{})[s.id]||{});
+ const x=sample?{...docDefaults(t.kind==='jd'?'jd':t.kind,'',lang),jdKey:t.kind==='jd'?key:hrtMatchJD(''),name:'',ic:''}:{name:f.fullName||s.name||'',ic:f.ic||'',position:f.position||'',branch:branch().name||'',date:today(),jdKey:key,signName:'',signTitle:''};
+ if(t.kind==='jd')x.jdKey=key;
+ docDownload({type:t.kind==='jd'?'jd':t.kind,lang,data:x,ref:sample?LX(lang,'(contoh)','(sample)'):''});};
+function myHrDocsCard(sid){const f=(HRSTAFF||{})[sid]||{},s=stf(sid)||{};if(HRTPL===null)setTimeout(()=>hrtLoad(),0);
+ const jd=f.jdKey||hrtMatchJD(f.position||s.position||ROLE[s.role]||''),t=hrtGet(jd);
+ return '<div class="card"><h3 class="sdh">'+ic('note',15)+' Company documents</h3>'+
+  '<div class="hrrow"><div style="flex:1"><b>Employee Handbook</b><small>Rules, conduct, pay, leave and benefits · Buku Panduan Pekerja</small></div><button class="btn sm ghost" onclick="hrtRead(\'handbook\')">'+ic('note',13)+'Read</button></div>'+
+  (t?'<div class="hrrow"><div style="flex:1"><b>My job description</b><small>'+esc(t.title.en)+' · Huraian tugas saya</small></div><button class="btn sm ghost" onclick="hrtRead(\''+esc(jd)+'\')">'+ic('list',13)+'Read</button></div>':'')+'</div>';}
+{const _h=hrMe;hrMe=function(){const h=_h.apply(this,arguments);const s=hrWho();if(!s)return h;return h+myHrDocsCard(s.id);};}
+
+/* ---------------- templates: edit, add, reset (owner) ---------------- */
+function hrtCard(){if(HRTPL===null){setTimeout(()=>hrtLoad(),0);return '';}
+ const row=(t,sub)=>'<div class="hrtrow"><div><b>'+esc(t.title.en)+'</b><small>'+esc(t.title.bm)+' · '+sub+(hrtEdited(t.key)?' · <span class="hrted">edited</span>':t.custom?' · <span class="hrted">your own</span>':'')+'</small></div>'+
+  '<div class="row" style="gap:4px;flex-wrap:wrap"><button class="btn sm ghost" onclick="hrtEdit(\''+esc(t.key)+'\')">'+ic('edit',13)+'Edit</button><button class="btn sm ghost" onclick="hrtPDF(\''+esc(t.key)+'\',\'bm\',1)">PDF BM</button><button class="btn sm ghost" onclick="hrtPDF(\''+esc(t.key)+'\',\'en\',1)">PDF EN</button>'+
+  (hrtEdited(t.key)?'<button class="btn sm ghost" onclick="hrtReset(\''+esc(t.key)+'\')">'+ic('refresh',13)+'Standard</button>':t.custom?'<button class="btn sm ghost" onclick="hrtReset(\''+esc(t.key)+'\')">'+ic('trash',13)+'</button>':'')+'</div></div>';
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('edit',15)+' Templates</h3><button class="btn sm" onclick="hrtNewJD()">'+ic('plus',13)+'Job description</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">The words of the job descriptions, the contract of service and the employee handbook, in Bahasa Malaysia and English. Change any line, add sections or add a job description for another position — new documents use your version.</p>'+
+  hrtJDs().map(t=>row(t,'job description · '+t.sections.length+' sections')).join('')+row(hrtGet('contract'),'contract · '+hrtGet('contract').sections.length+' clauses')+row(hrtGet('handbook'),'handbook · '+hrtGet('handbook').sections.length+' sections')+'</div>';}
+{const _v=hrDocsView;hrDocsView=function(){const h=_v.apply(this,arguments);if(!isOwnerMe())return h;const k=h.indexOf('<div class="card"',10);return k>0?h.slice(0,k)+hrtCard()+h.slice(k):h+hrtCard();};}
+let HRTE=null;
+window.hrtEdit=key=>{if(!isOwnerMe())return;const t=hrtGet(key);if(!t)return;HRTE={key,lang:HRTE&&HRTE.key===key?HRTE.lang:'bm',t:JSON.parse(JSON.stringify(t))};hrtPaint();};
+function hrtCollect(){if(!HRTE)return;const L=HRTE.lang,t=HRTE.t,g=id=>{const e=document.getElementById(id);return e?e.value:null;};
+ ['bm','en'].forEach(l=>{const v=g('te-t-'+l);if(v!=null)t.title[l]=v.trim();});
+ if(t.kind==='jd'){t.meta=t.meta||{};t.meta.reportTo=t.meta.reportTo||{bm:'',en:''};const r=g('te-rt');if(r!=null)t.meta.reportTo[L]=r.trim();const gr=g('te-gr');if(gr!=null)t.meta.grade=gr.trim();}
+ t.sections.forEach((s,i)=>{const h=g('te-h-'+i),b=g('te-b-'+i),st=g('te-s-'+i);if(h!=null)s.h[L]=h.trim();if(b!=null)s.items[L]=b.split('\n').map(z=>z.trim()).filter(Boolean);if(st!=null)s.st=st;});}
+function hrtPaint(){const {t,lang:L}=HRTE,other=L==='bm'?'en':'bm';
+ const sec=(s,i)=>'<div class="hrtsec"><div class="hrtsh"><span>'+(i+1)+'</span><input class="f" id="te-h-'+i+'" value="'+esc(s.h[L])+'" placeholder="Heading">'+
+  '<select class="f" id="te-s-'+i+'" aria-label="Style">'+[['b','• Bullets'],['n','1. Numbered'],['p','¶ Paragraphs']].map(o=>'<option value="'+o[0]+'"'+(s.st===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'+
+  '<button class="iconbtn" aria-label="Move up" onclick="hrtMove('+i+',-1)"'+(i?'':' disabled')+'>'+ic('up',13)+'</button><button class="iconbtn" aria-label="Move down" onclick="hrtMove('+i+',1)"'+(i<t.sections.length-1?'':' disabled')+'>'+ic('down',13)+'</button><button class="iconbtn" aria-label="Remove section" onclick="hrtDelSec('+i+')">'+ic('trash',13)+'</button></div>'+
+  '<textarea class="f" id="te-b-'+i+'" rows="'+Math.min(12,Math.max(3,(s.items[L]||[]).length+1))+'" placeholder="One line per point">'+esc((s.items[L]||[]).join('\n'))+'</textarea>'+
+  ((s.items[other]||[]).length!==(s.items[L]||[]).length?'<div class="tiny hrtwarn">'+ic('alert',11)+' '+(s.items[L]||[]).length+' lines here, '+(s.items[other]||[]).length+' in '+(other==='en'?'English':'Bahasa Malaysia')+'</div>':'')+'</div>';
+ modal('Edit · '+t.title.en,'<div class="card">'+
+  '<div class="grid g2"><div><label>Title (Bahasa Malaysia)</label><input class="f" id="te-t-bm" value="'+esc(t.title.bm)+'"></div><div><label>Title (English)</label><input class="f" id="te-t-en" value="'+esc(t.title.en)+'"></div></div>'+
+  '<label>Editing the words in</label><div class="seg">'+[['bm','Bahasa Malaysia'],['en','English']].map(o=>'<button type="button" class="'+(L===o[0]?'on':'')+'" onclick="hrtLang(\''+o[0]+'\')">'+o[1]+'</button>').join('')+'</div>'+
+  (t.kind==='jd'?'<div class="grid g2"><div><label>Reports to</label><input class="f" id="te-rt" value="'+esc(((t.meta||{}).reportTo||{})[L]||'')+'"></div><div><label>Grade (optional)</label><input class="f" id="te-gr" value="'+esc((t.meta||{}).grade||'')+'"></div></div>':'')+
+  '<p class="tiny muted" style="margin:4px 0 10px">One line per point. Words in curly brackets are filled in for each person: {brand} {company} {position} {name} {branch}'+(t.kind==='contract'?' {startL} {basicL} {allowanceL} {comm} {payday} {hours} {rest} {AL} {MC} {HL} {prob} {noticeProb} {noticeConf} {reportTo} {nonSol} {benefits}. Start a line with {?bondAmt} (or another field) to show it only when that field is filled.':'.')+'</p>'+
+  t.sections.map(sec).join('')+
+  '<button class="btn sm ghost" onclick="hrtAddSec()">'+ic('plus',13)+'Section</button>'+
+  '<div id="te-e" class="tiny" style="color:var(--rose);margin:8px 0"></div>'+
+  '<div class="row wrap2"><button class="btn" id="te-go" onclick="hrtSave()">'+ic('check',15)+'Save</button><button class="btn ghost" onclick="hrtPrev()">'+ic('download',15)+'Preview PDF</button></div></div>');}
+window.hrtLang=l=>{hrtCollect();HRTE.lang=l;hrtPaint();};
+window.hrtMove=(i,d)=>{hrtCollect();const S=HRTE.t.sections,j=i+d;if(j<0||j>=S.length)return;[S[i],S[j]]=[S[j],S[i]];hrtPaint();};
+window.hrtDelSec=i=>{hrtCollect();if(!confirm('Remove this section in both languages?'))return;HRTE.t.sections.splice(i,1);hrtPaint();};
+window.hrtAddSec=()=>{hrtCollect();HRTE.t.sections.push({h:{bm:'Bahagian baharu',en:'New section'},st:'b',cond:'',items:{bm:[],en:[]}});hrtPaint();setTimeout(()=>{const e=document.getElementById('te-h-'+(HRTE.t.sections.length-1));if(e){e.focus();e.select();}},50);};
+window.hrtPrev=()=>{hrtCollect();const keep=(HRTPL||{})[HRTE.key];HRTPL=HRTPL||{};HRTPL[HRTE.key]=hrtStore(HRTE.t);try{hrtPDF(HRTE.key,HRTE.lang,1);}finally{setTimeout(()=>{if(keep)HRTPL[HRTE.key]=keep;else delete HRTPL[HRTE.key];},1500);}};
+function hrtStore(t){return {kind:t.kind,custom:!!t.custom||!HRT_STD[t.key||HRTE.key],title:{bm:t.title.bm,en:t.title.en},meta:{...(t.meta||{})},
+ sections:t.sections.map(s=>({h:{bm:s.h.bm,en:s.h.en},st:s.st,cond:s.cond||'',items:{bm:s.items.bm||[],en:s.items.en||[]}})),updatedAt:new Date().toISOString(),by:ME.name||''};}
+window.hrtSave=async()=>{hrtCollect();const {key,t}=HRTE,e=$('#te-e');
+ if(!t.title.bm||!t.title.en)return e.textContent='Give it a title in both languages.';
+ if(!t.sections.length)return e.textContent='Keep at least one section.';
+ const blank=t.sections.findIndex(s=>!s.h.bm||!s.h.en);if(blank>=0)return e.textContent='Section '+(blank+1)+' needs a heading in both languages.';
+ const rec=hrtStore(t);const m=rec.meta||{};delete m.match;rec.meta=m;
+ try{await setDoc(doc(db,'hrTpl',key),rec);HRTPL=HRTPL||{};HRTPL[key]=rec;await audit('HR template updated',t.title.en+' · '+t.sections.length+' sections');closeModal();render();toast('Saved — new documents use this version');}catch(err){e.textContent=friendly(err);}};
+window.hrtReset=async key=>{const t=hrtGet(key);if(!t)return;const std=!!HRT_STD[key];
+ if(!confirm(std?'Go back to the standard text of '+t.title.en+'? Your changes are removed.':'Delete the job description '+t.title.en+'? Documents already issued keep their text.'))return;
+ try{await setDoc(doc(db,'hrTpl',key),{deleted:true,kind:t.kind,at:new Date().toISOString(),by:ME.name||''});HRTPL[key]={deleted:true,kind:t.kind};await audit(std?'HR template reset':'Job description deleted',t.title.en);render();toast(std?'Standard text restored':'Deleted');}catch(e){toast(friendly(e));}};
+window.hrtNewJD=()=>{if(!isOwnerMe())return;const L=hrtJDs();
+ modal('New job description','<div class="card"><div class="grid g2"><div><label>Position (Bahasa Malaysia)</label><input class="f" id="nj-bm" placeholder="cth. Penyambut Tetamu"></div><div><label>Position (English)</label><input class="f" id="nj-en" placeholder="e.g. Receptionist"></div></div>'+
+  '<label>Start from</label><select class="f" id="nj-from"><option value="">A blank outline</option>'+L.map(t=>'<option value="'+esc(t.key)+'">'+esc(t.title.en)+' — copy its text</option>').join('')+'</select>'+
+  '<div id="nj-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="hrtNewGo()">'+ic('check',15)+'Create and edit</button></div>');};
+window.hrtNewGo=()=>{const bm=String(($('#nj-bm')||{}).value||'').trim(),en=String(($('#nj-en')||{}).value||'').trim(),from=($('#nj-from')||{}).value;
+ if(bm.length<2||en.length<2)return $('#nj-e').textContent='Enter the position in both languages.';
+ const key='jd_'+en.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'').slice(0,30);
+ if(hrtJDs().some(t=>t.key===key))return $('#nj-e').textContent='There is already a job description with that name.';
+ const base=from?JSON.parse(JSON.stringify(hrtGet(from))):{kind:'jd',meta:{reportTo:{bm:'Pengurus Spa',en:'the Spa Manager'}},sections:[['Ringkasan jawatan','Job summary','p'],['Tugas utama','Key responsibilities','b'],['Petunjuk prestasi (KPI)','Key performance indicators','b'],['Kelayakan','Qualifications','b'],['Kemahiran & sikap','Skills and attitude','b']].map(z=>({h:{bm:z[0],en:z[1]},st:z[2],cond:'',items:{bm:[],en:[]}}))};
+ if(from){const o=hrtGet(from).title,sw=(v,L)=>String(v).split(o[L]).join(L==='bm'?bm:en);
+  (base.sections||[]).forEach(sc=>{['bm','en'].forEach(L=>{if(sc.h&&sc.h[L]!=null)sc.h[L]=sw(sc.h[L],L);if(sc.items&&sc.items[L])sc.items[L]=sc.items[L].map(v=>sw(v,L));});});}
+ base.key=key;base.kind='jd';base.custom=true;base.title={bm,en};HRTE={key,lang:'bm',t:base};hrtPaint();};
+window.__hrt={get:hrtGet,jds:()=>hrtJDs().map(t=>t.key),match:hrtMatchJD,blocks:(type,lang,x)=>hrtBlocks(type,lang,x),std:HRT_STD};
 
 </script>
