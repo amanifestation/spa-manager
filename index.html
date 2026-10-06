@@ -2671,6 +2671,75 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .cmchips>span.neg{color:var(--cream)}
 .cmhome>.ico:last-child{margin-left:auto;align-self:center}
 @media (max-width:720px){.cmhome>.ico:last-child{order:2;align-self:flex-start}}
+
+/* ===== the Me tab (staff app) ===== */
+.mewrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.mewrap>.card{margin:0}
+.mehead{display:flex;align-items:center;gap:12px;padding:4px 2px}
+.mehead .avatar{width:46px;height:46px;font-size:16px;flex:none;display:grid;place-items:center;border-radius:50%;padding:0}
+.mehead>div:not(.melang){flex:1;min-width:0}
+.mehead small{display:block;font-size:12px;color:var(--ink-3)}
+.mehead b{display:block;font-size:20px;font-weight:660;letter-spacing:-.02em}
+.mehead span{display:block;font-size:12px;color:var(--ink-3)}
+.melang{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:2px;background:var(--surface);flex:none}
+.melang button{all:unset;cursor:pointer;font-size:12px;font-weight:620;padding:5px 11px;border-radius:99px;color:var(--ink-3)}
+.melang button.on{background:var(--ink);color:var(--cream)}
+.melang button:focus-visible{outline:2px solid var(--brass)}
+.melangrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line-2);font-size:13px;color:var(--ink-2)}
+.mepcard{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+.mepcard.on{border-color:var(--jade);background:linear-gradient(180deg,var(--jade-soft),var(--surface) 80px)}
+.mepst{display:flex;flex-direction:column;gap:3px;min-width:0}
+.mepst small{font-size:12px;color:var(--ink-3)}.mepst b{font-size:18px;font-weight:640}
+.mepst .pill{align-self:flex-start;margin:0}
+.btn.mepunch{font-size:16px;padding:14px 22px;border-radius:14px;margin:0;justify-content:center;min-width:150px}
+.btn.mepunch.out{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink)}
+.metiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metile{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px;display:flex;flex-direction:column;gap:3px;min-width:0;box-shadow:var(--shadow)}
+.metile>.ico{color:var(--brass);margin-bottom:4px}
+.metile b{font-size:13.5px;font-weight:620}.metile small{font-size:11.5px;color:var(--ink-3);line-height:1.3}
+.metile.hot{border-color:var(--amber);background:var(--amber-soft)}
+.metile:focus-visible{outline:2px solid var(--brass)}
+.metile:active{transform:scale(.97)}
+.menote{border:1px solid var(--line-2);border-radius:var(--r-md);padding:10px 12px;margin-top:8px;background:var(--surface-2)}
+.menote .pill{margin:0}.menote.done{background:transparent;padding:6px 10px}
+.meold summary{cursor:pointer;font-size:12.5px;color:var(--ink-3);margin-top:8px}
+.meweek{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.meday{border:1px solid var(--line-2);border-radius:var(--r-sm);padding:7px 5px;text-align:center;display:flex;flex-direction:column;gap:2px;align-items:center;min-width:0}
+.meday span{font-size:11px;color:var(--ink-3)}.meday b{font-size:12px;font-weight:620;line-height:1.25}
+.meday small{font-size:10px;color:var(--ink-3);line-height:1.2}
+.meday.now{border-color:var(--brass);background:var(--brass-soft)}
+.meday.off b{color:var(--ink-3);font-weight:500}
+.meday .lpx{font-size:11px;margin-top:2px}
+.mesw{color:var(--amber)!important}
+.mebal{display:flex;gap:10px;margin-bottom:6px}
+.mebal span{flex:1;background:var(--surface-2);border-radius:var(--r-sm);padding:8px 10px;font-size:12px;color:var(--ink-3)}
+.mebal b{font-size:18px;color:var(--ink)}.mebal small{display:block}
+.meinc{border-color:var(--amber)}
+.meinst summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px}
+.meinst ol{margin:6px 0 0;padding-left:18px;font-size:13px}.meinst .grid{margin-top:10px}
+.anrd{margin-top:6px;color:var(--ink-3)}.anrd.all{color:var(--jade)}
+@media (max-width:520px){.metiles{grid-template-columns:repeat(2,1fr)}.meweek{grid-template-columns:repeat(4,1fr)}.btn.mepunch{width:100%}}
+/* ===== Approvals & team live ===== */
+.mgrk{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.mgrk span{flex:1;min-width:80px;background:var(--surface-2);border-radius:var(--r-sm);padding:8px 10px;font-size:12px;color:var(--ink-3)}
+.mgrk b{display:block;font-size:20px;color:var(--ink)}
+.mgrk span.a{background:var(--amber-soft)}.mgrk span.r{background:var(--rose-soft)}
+.mgrrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line-2)}
+.mgrrow:last-child{border-bottom:0}
+.mgrrow>div{flex:1;min-width:0}.mgrrow b{display:block;font-size:13.5px}.mgrrow small{display:block;font-size:12px;color:var(--ink-3)}
+.mgrrow .pill{margin:0;white-space:nowrap}
+.avatar.sm{width:30px;height:30px;font-size:11px;flex:none}
+.mgrap{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-2);flex-wrap:wrap}
+.mgrap:last-child{border-bottom:0}
+.mgrap>div:nth-child(2){flex:1;min-width:180px}.mgrap b{display:block;font-size:13.5px}.mgrap small{display:block;font-size:12px;color:var(--ink-3)}
+.mgri{width:30px;height:30px;border-radius:9px;background:var(--brass-soft);color:var(--brass);display:grid;place-items:center;flex:none}
+/* ===== companies ===== */
+.entrow{display:flex;align-items:center;gap:10px;justify-content:space-between;border:1px solid var(--line-2);border-radius:var(--r-md);padding:9px 12px;margin-bottom:6px}
+.entrow b{display:block;font-size:13.5px}.entrow small{display:block;font-size:12px;color:var(--ink-3)}
+.entrow.main{background:var(--surface-2)}
+.entbr{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.entbr span{flex:1;min-width:0}.entbr b{display:block;font-size:13.5px}.entbr small{display:block;font-size:11.5px;color:var(--ink-3)}
+.entbr .f{margin:0;flex:1.4}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -2932,7 +3001,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-06v';
+const BUILD='2026-10-06w';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3325,7 +3394,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg,me:vMe};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -15806,7 +15875,7 @@ async function finJournalOf(m,br){
   if(P&&P.status==='final'){const t={sal:0,com:0,erE:0,erS:0,cl:0,net:0,epf:0,socso:0,eis:0,pcb:0,adv:0,oth:0};
    Object.values(P.lines||{}).forEach(L=>{const c=payCalc(L,m);if(!(c.gross>0))return;
     t.com+=c.comm;t.sal+=c.gross-c.comm;t.erE+=c.epfER;t.erS+=c.socsoER+c.eisER;t.cl+=+L.claims||0;t.net+=c.net;
-    t.epf+=c.epfEE+c.epfER;t.socso+=c.socsoEE+c.socsoER;t.eis+=c.eisEE+c.eisER;t.pcb+=c.pcb;t.adv+=+L.advance||0;t.oth+=+L.otherDed||0;});
+    t.epf+=c.epfEE+c.epfER;t.socso+=c.socsoEE+c.socsoER+(c.linEE||0);t.eis+=c.eisEE+c.eisER;t.pcb+=c.pcb;t.adv+=+L.advance||0;t.oth+=+L.otherDed||0;});
    add(mEnd(m),'PAYROLL-'+m,'payroll:'+m,'Payroll '+mLabel(m),[['5100',t.sal,0],['5110',t.com,0],['5120',t.erE,0],['5130',t.erS,0],['5140',t.cl,0],
     ['1010',0,t.net],['2300',0,t.epf],['2310',0,t.socso],['2320',0,t.eis],['2330',0,t.pcb],['1300',0,t.adv],['6190',0,t.oth]]);}}catch(e){console.warn('payroll journal',e);}}
  return J.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
@@ -26556,11 +26625,11 @@ vHR=function(){
  const pendC=(CLAIMS||[]).filter(c=>c.status==='pending'&&myBranch(c)).length;
  const td=today(),soon=ymd(addDays(new Date(),30)),certN=CERTS.filter(c=>c.expiry&&c.expiry<=soon&&(stf(c.staffId).branchId||ME.branchId)===ME.branchId).length;
  const tabs=[['me','My HR','user','']];if(typeof hrMyComm==='function'&&hrWho())tabs.push(['mc','My commission','wallet','']);
- if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
+ if(boss()&&typeof hrMgr==='function')tabs.push(['mgr','Approvals','check',(typeof mgrPending==='function'?mgrPending().n:0)||'']);if(boss())tabs.push(['leave','Leave','leave',pendL||''],['claims','Claims','receipt',pendC||''],['month','This month','chart','']);
  if(boss())tabs.push(['perf','Performance','star',''],['comm','Commission','wallet',typeof cmOpenQ==='function'?(cmOpenQ().length||''):''],['roster','Roster','calendar',''],['skills','Skills','award',certN||''],['hire','Hiring','users',rcBadge()||''],['onb','Onboarding','check',obBadge()||'']);
  if(isOwnerMe())tabs.push(['pay','Payroll','wallet',''],['staff','Staff files','idcard',''],['docs','Documents','note',(HRINFO||[]).filter(i=>i.status==='submitted').length||'']);
  if(!tabs.some(t=>t[0]===HRV))HRV=boss()?(pendL?'leave':pendC?'claims':'month'):'me';
- const V={mc:typeof hrMyComm==='function'?hrMyComm:hrMe,me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills,hire:hrHire,onb:hrOnb};
+ const V={mgr:typeof hrMgr==='function'?hrMgr:hrMe,mc:typeof hrMyComm==='function'?hrMyComm:hrMe,me:hrMe,leave:hrLeave,claims:hrClaims,month:hrMonth,staff:hrStaffView,pay:hrPayroll,perf:hrPerf,docs:hrDocsView,comm:hrCommTab,roster:hrRoster,skills:hrSkills,hire:hrHire,onb:hrOnb};
  return '<div class="crmtop"><div class="crmseg">'+tabs.map(t=>'<button class="'+(HRV===t[0]?'on':'')+'" onclick="hrTab(\''+t[0]+'\')">'+
   ic(t[2],16)+'<span>'+t[1]+'</span>'+(t[3]?'<i>'+t[3]+'</i>':'')+'</button>').join('')+'</div></div>'+V[HRV]();
 };
@@ -28265,7 +28334,8 @@ function mtdOf(L,m,c){
 /* ---------- one person, one month ---------- */
 payCalc=function(L,m){
  const R=rateFor(m),day=L.basic/PAYRATE.days,hour=day/PAYRATE.hrs;
- const otHours=L.otHours!=null&&L.otHours!==''?+L.otHours:0,otRest=+L.otRest||0,otPH=+L.otPH||0;
+ /* typed-in hours win; otherwise the overtime approved in the app */
+ const pk=(k,d)=>L[k]!=null&&L[k]!==''?+L[k]:(+L[d]||0);const otHours=pk('otHours','otReqH'),otRest=pk('otRest','otReqR'),otPH=pk('otPH','otReqP');
  const otPay=r2(otHours*hour*1.5+otRest*hour*2+otPH*hour*3);
  const unpaid=r2(day*(+L.unpaidDays||0));
  /* commission includes push incentives and target bonuses; tips are paid on top (no KWSP on tips) */
@@ -28385,7 +28455,7 @@ window.prEdit=sid=>{
   '<tr><td>Days worked · unpaid leave</td><td class="num">'+x.days+' · '+(x.unpaidDays||0)+'</td></tr><tr><td>Approved claims paid with salary</td><td class="num">'+rm(x.claims||0)+'</td></tr>'+
   '<tr><td>This year before '+mLabel(PAYM)+'</td><td class="num">gross '+rm(x.ytdY||0)+' · PCB '+rm(x.ytdX||0)+'</td></tr></table>'+
   '<h4 class="payh">Overtime (hourly rate = basic ÷ 26 ÷ 8 = '+rm(r2(x.basic/26/8))+')</h4><div class="grid g2">'+
-   f('otHours','Normal day — hours × 1.5','0',x.otSuggest?'Attendance shows about '+x.otSuggest+' h over '+PAYRATE.stdDay+' h days':'')+f('otRest','Rest day, beyond normal hours — × 2','0')+f('otPH','Public holiday, beyond normal hours — × 3','0')+'</div>'+
+   f('otHours','Normal day — hours × 1.5',String(x.otReqH||0),x.otReqN?'Approved in the app: '+(x.otReqH||0)+' h — leave blank to use it':x.otSuggest?'Attendance shows about '+x.otSuggest+' h over '+PAYRATE.stdDay+' h days':'')+f('otRest','Rest day, beyond normal hours — × 2',String(x.otReqR||0),x.otReqR?'Approved in the app: '+x.otReqR+' h':'')+f('otPH','Public holiday, beyond normal hours — × 3',String(x.otReqP||0),x.otReqP?'Approved in the app: '+x.otReqP+' h':'')+'</div>'+
   '<h4 class="payh">Additions</h4><div class="grid g2">'+
    f('kpiBonus','KPI bonus / incentive (RM)','0',x.kpiScore!=null?'KPI score '+x.kpiScore+'%':'')+f('bonus','Bonus (RM)','0','Additional pay for PCB; no PERKESO on an annual bonus')+f('otherAdd','Other addition (RM)','0')+
    '<div><label>What for</label><input class="f" id="pe-otherAddNote" value="'+esc(x.otherAddNote||'')+'"></div></div>'+
@@ -29617,5 +29687,352 @@ window.CMV=CMV;
 /* payslip and payroll editor show the new lines */
 window.__cm={load:cmLoad,calc:(sid,m)=>{const c=cmCalc(sid,m);if(!c)return null;const {P,sell,hands,events,...rest}=c;return JSON.parse(JSON.stringify({...rest,events:events.map(e=>({tag:e.tag,role:e.role,sid:e.sid,pct:e.pct,base:e.base,c:e.c,date:e.date,inv:e.inv,name:e.name,fr:e.fr}))}));},
  events:m=>(cmEvents(m)||[]).map(e=>({tag:e.tag,role:e.role,sid:e.sid,pct:e.pct,base:e.base,ho:e.ho,date:e.date,inv:e.inv})),tips:m=>JSON.parse(JSON.stringify(cmTips(m)||{})),pol:cmPol,D:CMD};
+
+
+/* ============ Staff app, manager app, companies & branches, BM / BI ============ */
+/* The same installable app now opens to a phone-first "Me" screen for each person: punch in and
+   out, this week's shifts, leave, payslips, commission and the notice board, in Bahasa Malaysia
+   or English. Staff can ask for overtime or a shift swap from it. Owners and managers get an
+   Approvals screen: leave, claims, overtime and shift swaps in one list, and who is in right now
+   against the roster. Approved overtime flows into payroll; an approved swap rewrites the roster.
+   A second branch can run under a different registered company: receipts, letters, payslips and
+   the statutory files then name that company. */
+
+/* ---------------- language ---------------- */
+let LANG=(()=>{try{return localStorage.getItem('spLang')==='ms'?'ms':'en';}catch(e){return 'en';}})();
+const tx=(en,ms)=>LANG==='ms'?ms:en;
+window.setLang=l=>{LANG=l==='ms'?'ms':'en';try{localStorage.setItem('spLang',LANG);}catch(e){}try{document.documentElement.lang=LANG;}catch(e){}render();setTimeout(i18nRun,0);};
+/* staff-facing words on the existing screens */
+const I18N={
+ 'Home':'Utama','Calendar':'Kalendar','Day':'Hari','Board':'Papan notis','Library':'Pustaka','Checkout':'Juruwang','Clients':'Pelanggan','More':'Lagi','Feedback':'Maklum balas',
+ 'HR':'HR','Me':'Saya','Settings':'Tetapan','Reports':'Laporan','Stock':'Stok','Team':'Pasukan','Catalogue':'Katalog','Packages':'Pakej','Loyalty':'Kesetiaan','Sales':'Jualan',
+ 'My HR':'HR saya','My commission':'Komisen saya','Leave':'Cuti','Claims':'Tuntutan','This month':'Bulan ini','Approvals':'Kelulusan','Payroll':'Gaji',
+ 'Apply for leave':'Mohon cuti','Submit a claim':'Hantar tuntutan','My leave':'Cuti saya','My claims':'Tuntutan saya','My payslips':'Slip gaji saya','No payslips yet.':'Belum ada slip gaji.',
+ 'Commission this month':'Komisen bulan ini','Days worked':'Hari bekerja','Annual leave left':'Baki cuti tahunan','Medical leave left':'Baki cuti sakit','days this year':'hari tahun ini',
+ 'Attendance this month':'Kehadiran bulan ini','No clock-ins this month yet.':'Belum ada rekod masuk bulan ini.','No leave applied yet.':'Belum ada permohonan cuti.','No claims yet.':'Belum ada tuntutan.',
+ 'Type':'Jenis','From':'Dari','To':'Hingga','Until':'Hingga','Half day?':'Separuh hari?','No — full day(s)':'Tidak — hari penuh','Morning only':'Pagi sahaja','Afternoon only':'Petang sahaja','Reason':'Sebab',
+ 'Annual leave':'Cuti tahunan','Medical leave':'Cuti sakit','Unpaid leave':'Cuti tanpa gaji','Emergency leave':'Cuti kecemasan','Maternity leave':'Cuti bersalin','Paternity leave':'Cuti paterniti','Compassionate leave':'Cuti ihsan','Hospitalisation leave':'Cuti hospital','Replacement leave':'Cuti ganti',
+ 'Waiting':'Menunggu','Approved':'Diluluskan','Rejected':'Ditolak','Cancelled':'Dibatalkan','Paid':'Dibayar','Answered':'Dijawab','Pending':'Menunggu',
+ 'Cancel':'Batal','Save':'Simpan','Close':'Tutup','Send':'Hantar','Review':'Semak','Back':'Kembali','Refresh':'Muat semula','Statement':'Penyata','Download PDF':'Muat turun PDF','PDF':'PDF',
+ 'Clock in':'Punch masuk','Clock out':'Punch keluar','Confirm clock in':'Sahkan punch masuk','Confirm clock out':'Sahkan punch keluar','Enter your personal code':'Masukkan kod peribadi anda','Not in':'Belum masuk','Shift closed':'Syif tamat',
+ 'Notice board':'Papan notis','Nothing posted yet.':'Belum ada notis.','Notice':'Notis','Good news':'Berita baik','Action needed':'Perlu tindakan','Urgent':'Segera','Open link':'Buka pautan','Tap the picture to see it full size':'Tekan gambar untuk saiz penuh',
+ 'Your commission so far this month':'Komisen anda setakat ini bulan ini','Today':'Hari ini','Line by line':'Baris demi baris','All':'Semua','Treatments':'Rawatan','Adjustments':'Pelarasan',
+ 'Treatments done':'Rawatan dibuat','Incentives':'Insentif','Tips':'Tip','Taken back':'Ditarik balik','How it is worked out':'Cara pengiraan','My questions':'Soalan saya','Coming when clients finish paying':'Akan masuk bila pelanggan habis bayar',
+ 'Sold':'Dijual','Sold · part paid':'Dijual · bayar sebahagian','Instalment collected':'Ansuran dikutip','Treatment done':'Rawatan dibuat','Refund — taken back':'Refund — ditarik balik','Bill voided — taken back':'Bil dibatalkan — ditarik balik','Push incentive':'Insentif tolakan','Target bonus':'Bonus sasaran','Tip':'Tip',
+ 'Ask about this line':'Tanya tentang baris ini','What looks wrong?':'Apa yang nampak salah?','Tell your manager more':'Terangkan kepada manager','Send to the manager':'Hantar kepada manager',
+ 'Wrong person credited':'Salah orang dikreditkan','I did this treatment':'Saya yang buat rawatan ini','Amount looks wrong':'Jumlah nampak salah','Missing from my list':'Tiada dalam senarai saya','Other':'Lain-lain',
+ 'My shifts · next 7 days':'Syif saya · 7 hari akan datang','My certificates':'Sijil saya','Off':'Cuti','Live · updates as bills are saved':'Langsung · dikemas kini setiap bil disimpan',
+ 'Notifications on this device':'Notifikasi pada peranti ini','This app':'Aplikasi ini','Sign out':'Log keluar','Find a setting — e.g. SST, deposit, logo':'Cari tetapan — cth. SST, deposit, logo',
+ 'Who are you?':'Siapa anda?','commission so far · today':'komisen setakat ini · hari ini','commission so far':'komisen setakat ini','Your shifts':'Syif anda','Target':'Sasaran','sold':'dijual','Open my HR':'Buka HR saya','Choose your name':'Pilih nama anda','Attendance code':'Kod kehadiran'};
+const I18R=[[/^(\d+) days?$/,(m,n)=>n+' hari'],[/^(\d+) treatments?$/,(m,n)=>n+' rawatan'],[/^(\d+) day\(s\) waiting approval$/,(m,n)=>n+' hari menunggu kelulusan'],
+ [/^Annual leave left: (.*)$/,(m,a)=>'Baki cuti tahunan: '+a],[/^(\d+) treatments? · (.+) sales$/,(m,n,v)=>n+' rawatan · jualan '+v],[/^(.+) this month$/,(m,a)=>a+' bulan ini'],[/^(.+) more to Tier (\d+)$/,(m,a,b)=>a+' lagi ke Tier '+b],[/^(\d+)% of target$/,(m,a)=>a+'% daripada sasaran'],[/^(.+) more → Tier (\d+)/,(m,a,b)=>a+' lagi → Tier '+b]];
+function i18nTxt(k){if(I18N[k])return I18N[k];for(const [re,f] of I18R){const m=k.match(re);if(m)return f(...m);}return null;}
+function i18nNode(root){
+ if(LANG!=='ms'||!root)return;
+ const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:n=>{const p=n.parentElement;if(!p||/^(SCRIPT|STYLE|TEXTAREA|OPTION)$/.test(p.tagName)||p.closest('[data-noi18n]'))return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT;}});
+ const L=[];while(w.nextNode())L.push(w.currentNode);
+ L.forEach(n=>{const t=n.nodeValue,k=t.trim();if(!k||k.length>90)return;const v=i18nTxt(k);if(v&&v!==k)n.nodeValue=t.replace(k,v);});
+ root.querySelectorAll('[placeholder],[title],[aria-label]').forEach(e=>['placeholder','title','aria-label'].forEach(a=>{const v=e.getAttribute(a);if(v){const t=i18nTxt(v.trim());if(t)e.setAttribute(a,t);}}));
+ root.querySelectorAll('select option').forEach(o=>{const t=i18nTxt(o.textContent.trim());if(t)o.textContent=t;});}
+let I18Q=0;function i18nRun(){I18Q=0;if(LANG!=='ms')return;i18nNode(document.getElementById('root'));i18nNode(document.getElementById('modal'));}
+try{new MutationObserver(()=>{if(LANG==='ms'&&!I18Q){I18Q=1;setTimeout(i18nRun,0);}}).observe(document.body,{childList:true,subtree:true});}catch(e){}
+try{document.documentElement.lang=LANG;}catch(e){}
+
+/* ---------------- the Me tab ---------------- */
+TABS.splice(1,0,{id:'me',ic:'user',label:'Me',perm:null,group:'Today',desc:'Punch in, shifts, leave, payslips, commission and notices'});
+BNAV.splice(1,0,'me');
+/* owners and managers keep their usual bottom bar; Me sits under More for them */
+{const _b=botTabs;botTabs=function(allowed){if(!boss())return _b(allowed);const i=BNAV.indexOf('me');if(i<0)return _b(allowed);BNAV.splice(i,1);try{return _b(allowed);}finally{BNAV.splice(i,0,'me');}};}
+let OTR=null,SWP=null,AREADS=null,MEBOOT=false,MGRSUB=null;
+function meBoot(){if(MEBOOT||!ME)return;MEBOOT=true;
+ const mine=!boss()&&!isBranch();
+ try{liveOn(mine?query(collection(db,'otReqs'),where('staffId','==',UID)):query(collection(db,'otReqs'),where('branchId','==',ME.branchId)),s=>{OTR=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));liveRender(['me','hr','home']);},'ot');}catch(e){OTR=[];}
+ try{liveOn(mine?query(collection(db,'shiftSwaps'),where('people','array-contains',UID)):query(collection(db,'shiftSwaps'),where('branchId','==',ME.branchId)),s=>{SWP=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.at).localeCompare(String(a.at)));liveRender(['me','hr','home']);},'swaps');}catch(e){SWP=[];}
+ try{liveOn(mine?query(collection(db,'annReads'),where('uid','==',UID)):query(collection(db,'annReads'),limit(800)),s=>{AREADS=s.docs.map(d=>({id:d.id,...d.data()}));liveRender(['me','board','hr']);},'reads');}catch(e){AREADS=[];}
+ if(CLAIMS===null)loadClaims().then(()=>liveRender(['me','hr']));}
+const meWho=()=>hrWho();
+function vMe(){
+ meBoot();
+ const s=meWho();
+ if(!s)return '<div class="mewrap">'+meLangBar()+hrMe()+'</div>';
+ const td=today();
+ let h='<div class="mewrap">'+meHead(s)+mePunch(s)+meTiles(s)+meNotices(s)+meIncoming(s)+meWeek(s)+meLeave(s)+meRequests(s)+meMoney(s)+meInstall()+'</div>';
+ return h;}
+function meLangBar(){return '<div class="melang" role="group" aria-label="Language"><button type="button" class="'+(LANG==='en'?'on':'')+'" onclick="setLang(\'en\')">EN</button><button type="button" class="'+(LANG==='ms'?'on':'')+'" onclick="setLang(\'ms\')">BM</button></div>';}
+function meHead(s){const hr=new Date().getHours(),g=hr<12?tx('Good morning','Selamat pagi'):hr<15?tx('Good afternoon','Selamat tengah hari'):hr<19?tx('Good evening','Selamat petang'):tx('Good night','Selamat malam');
+ return '<div class="mehead"><span class="avatar">'+esc(initials(s.name||''))+'</span><div><small>'+g+'</small><b data-noi18n>'+esc(String(s.name||'').split(' ')[0])+'</b><span>'+esc(new Date().toLocaleDateString(LANG==='ms'?'ms-MY':'en-MY',{weekday:'long',day:'numeric',month:'long'}))+' · '+esc(branch().name||'')+'</span></div>'+meLangBar()+'</div>';}
+/* punch in / out */
+function mePunch(s){
+ const td=today(),a=attToday(s.id),x=typeof dutyRaw==='function'&&ROST[s.id]?dutyRaw(s.id,td):null,lv=onLeave(s.id,td);
+ const shift=lv?tx('On leave today','Bercuti hari ini'):x?(x.on?tx('Shift ','Syif ')+x.s+'–'+x.e:tx('Day off','Hari cuti')):tx('No roster set','Tiada jadual');
+ const late=a&&x&&x.on&&a.clockIn?Math.round((new Date(a.clockIn)-new Date(td+'T'+x.s+':00'))/6e4):0;
+ const st=!a?tx('Not punched in yet','Belum punch masuk'):a.clockOut?tx('Done for today','Selesai hari ini')+' · '+worked(a):tx('In since ','Masuk sejak ')+hhmm(a.clockIn);
+ const btn=!a?'<button class="btn mepunch" onclick="mePunchGo(\'in\')">'+ic('login',18)+tx('Punch in','Punch masuk')+'</button>':
+  !a.clockOut?'<button class="btn mepunch out" onclick="mePunchGo(\'out\')">'+ic('out',18)+tx('Punch out','Punch keluar')+'</button>':'';
+ return '<div class="card mepcard'+(a&&!a.clockOut?' on':'')+'"><div class="mepst"><small>'+esc(shift)+'</small><b>'+esc(st)+'</b>'+(late>10?'<span class="pill a">'+tx('Late ','Lewat ')+late+tx(' min',' minit')+'</span>':'')+
+  (qrMode()&&!boss()&&!a?'<span class="tiny muted">'+tx('Scan the QR on the counter tablet with this phone','Imbas QR pada tablet kaunter dengan telefon ini')+'</span>':'')+'</div>'+btn+'</div>';}
+window.mePunchGo=dir=>{const s=meWho();if(!s)return;
+ if(qrMode()&&!boss()){if(typeof window.qrScanOpen==='function')window.qrScanOpen();return;}
+ window.clockPrompt(s.id,dir);};
+/* quick tiles */
+function meTiles(s){const q=lvQuota(s),u=lvUsed(s.id);const unread=meUnread(s).length,inc=meIncomingList(s).length;
+ let cm='';if(typeof cmReady==='function'){const m=today().slice(0,7);if(cmReady(m)){const c=cmCalc(s.id,m);if(c)cm=rm(c.total);}else if(!CMD[m])cmLoad(m).then(()=>liveRender(['me']));}
+ const T=[['leave',ic('leave',20),tx('Leave','Cuti'),(q.AL-u.AL)+' / '+q.AL+tx(' days left',' hari baki'),'leaveForm(\''+s.id+'\')'],
+  ['wallet',ic('wallet',20),tx('Commission','Komisen'),cm||'—','meCommission()'],
+  ['pay',ic('receipt',20),tx('Payslips','Slip gaji'),tx('Latest & past months','Terkini & bulan lepas'),'meGo(\'pay\')'],
+  ['notice',ic('mega',20),tx('Notices','Notis'),unread?unread+tx(' unread',' belum dibaca'):tx('All read','Semua dibaca'),'meGo(\'notice\')'],
+  ['ot',ic('clock',20),tx('Overtime','Kerja lebih masa'),tx('Ask for OT','Mohon OT'),'otForm()'],
+  ['swap',ic('refresh',20),tx('Swap a shift','Tukar syif'),inc?inc+tx(' asking you',' minta anda'):tx('Swap or cover','Tukar atau ganti'),'swapForm()']];
+ return '<div class="metiles">'+T.map(t=>'<button type="button" class="metile'+(t[0]==='notice'&&unread||t[0]==='swap'&&inc?' hot':'')+'" onclick="'+t[4]+'">'+t[1]+'<b>'+t[2]+'</b><small>'+t[3]+'</small></button>').join('')+'</div>';}
+window.meGo=k=>{const e=document.getElementById('me-'+k);if(e)e.scrollIntoView({behavior:'smooth',block:'start'});};
+window.meCommission=()=>{if(typeof CMV!=='undefined'){CMV.sid='';CMV.m='';}go('hr');window.hrTab('mc');};
+/* notices with "I have read this" */
+const meReadOf=(nid,uid)=>(AREADS||[]).find(r=>r.noteId===nid&&r.uid===uid);
+function meUnread(s){return NOTES.filter(noteLive).filter(n=>!meReadOf(n.id,s.id));}
+function meNotices(s){const live=NOTES.filter(noteLive);if(!live.length)return '<div id="me-notice"></div>';
+ const un=meUnread(s),rd=live.filter(n=>!un.includes(n));
+ return '<div class="card" id="me-notice"><div class="sec-h"><h3 style="margin:0">'+ic('mega',15)+' '+tx('Notices','Notis')+'</h3>'+(un.length?'<span class="pill a">'+un.length+tx(' unread',' belum dibaca')+'</span>':'<span class="pill g">'+tx('All read','Semua dibaca')+'</span>')+'</div>'+
+  un.map(n=>{const p=PRIO[n.priority||'normal']||PRIO.normal;return '<div class="menote"><div class="spread"><b data-noi18n>'+esc(n.title||'')+'</b><span class="pill '+p[1]+'">'+p[0]+'</span></div><div class="tiny" data-noi18n style="white-space:pre-wrap">'+esc(n.body||'')+'</div>'+
+   (n.image?'<img class="noteimg" src="'+n.image+'" alt="">':'')+'<div class="spread" style="margin-top:8px"><span class="tiny muted">'+esc(n.authorName||'')+' · '+dshort(n.createdAt)+'</span><button class="btn sm" onclick="annRead(\''+n.id+'\')">'+ic('check',13)+tx('I have read this','Saya sudah baca')+'</button></div></div>';}).join('')+
+  (rd.length?'<details class="meold"><summary>'+rd.length+tx(' read',' sudah dibaca')+'</summary>'+rd.map(n=>'<div class="menote done"><b data-noi18n>'+esc(n.title||'')+'</b><div class="tiny muted">'+tx('Read ','Dibaca ')+dshort((meReadOf(n.id,s.id)||{}).at)+'</div></div>').join('')+'</details>':'')+'</div>';}
+window.annRead=async nid=>{const s=meWho();if(!s)return;const id=nid+'_'+s.id;
+ const r={noteId:nid,uid:s.id,name:s.name||'',branchId:ME.branchId,at:new Date().toISOString(),by:UID};
+ try{await setDoc(doc(db,'annReads',id),r);(AREADS=AREADS||[]).push({id,...r});render();toast(tx('Marked as read','Ditanda sudah dibaca'));}catch(e){toast(friendly(e));}};
+/* the board: who has read each notice */
+{const _nc=noteCard;noteCard=function(n){const h=_nc(n);if(!boss()||AREADS===null)return h;
+ const ppl=hrPeople().filter(s=>!n.branchId||n.branchId==='all'||s.branchId===n.branchId),rd=ppl.filter(s=>meReadOf(n.id,s.id));
+ const tag='<div class="tiny anrd'+(rd.length===ppl.length?' all':'')+'">'+ic('check',11)+' '+tx('Read by ','Dibaca oleh ')+rd.length+' / '+ppl.length+(rd.length<ppl.length?' · '+tx('not yet: ','belum: ')+ppl.filter(s=>!rd.includes(s)).map(s=>esc(String(s.name).split(' ')[0])).join(', '):'')+'</div>';
+ return h.replace(/<\/div>$/,tag+'</div>');};}
+{const _vb=vBoard;vBoard=function(){meBoot();return _vb.apply(this,arguments);};}
+/* my week */
+function meWeek(s){const days=[...Array(7)].map((_,i)=>ymd(addDays(new Date(),i))),has=!!ROST[s.id];
+ return '<div class="card" id="me-week"><h3 class="sdh">'+ic('calendar',15)+' '+tx('My week','Minggu saya')+'</h3>'+
+  (has?'<div class="meweek">'+days.map(d=>{const lv=onLeave(s.id,d),x=dutyRaw(s.id,d);const sw=(SWP||[]).find(w=>w.date===d&&(w.from===s.id||w.to===s.id)&&['asked','agreed'].includes(w.status));
+   return '<div class="meday'+(d===today()?' now':'')+(lv||!x.on?' off':'')+'"><span>'+esc(new Date(d+'T00:00:00').toLocaleDateString(LANG==='ms'?'ms-MY':'en-MY',{weekday:'short',day:'numeric'}))+'</span>'+
+    '<b>'+(lv?tx('Leave','Cuti'):x.on?x.s+'–'+x.e:tx('Off','Cuti'))+'</b>'+(x.note?'<small data-noi18n>'+esc(x.note)+'</small>':'')+
+    (sw?'<small class="mesw">'+tx('Swap waiting','Tukar menunggu')+'</small>':!lv&&x.on&&d>=today()?'<button class="lpx" onclick="swapForm(\''+d+'\')">'+tx('Swap','Tukar')+'</button>':'')+'</div>';}).join('')+'</div>'
+  :'<div class="tiny muted">'+tx('Your manager has not set your roster yet.','Manager belum tetapkan jadual anda.')+'</div>')+'</div>';}
+/* leave */
+function meLeave(s){const q=lvQuota(s),u=lvUsed(s.id),L=LEAVES.filter(l=>l.staffId===s.id).slice(0,4);
+ return '<div class="card" id="me-leave"><div class="sec-h"><h3 style="margin:0">'+ic('leave',15)+' '+tx('Leave','Cuti')+'</h3><button class="btn sm" onclick="leaveForm(\''+s.id+'\')">'+ic('plus',13)+tx('Apply','Mohon')+'</button></div>'+
+  '<div class="mebal"><span><b>'+(q.AL-u.AL)+'</b>/'+q.AL+'<small>'+tx('annual','tahunan')+'</small></span><span><b>'+(q.MC-u.MC)+'</b>/'+q.MC+'<small>'+tx('medical','sakit')+'</small></span>'+(u.pendAL?'<span><b>'+u.pendAL+'</b><small>'+tx('waiting','menunggu')+'</small></span>':'')+'</div>'+
+  (L.length?L.map(l=>lvRow(l,true)).join(''):'')+'</div>';}
+/* overtime and swaps I asked for */
+const RQST={pending:[tx('Waiting','Menunggu'),'a'],asked:[tx('Waiting for colleague','Menunggu rakan'),'a'],agreed:[tx('Waiting for manager','Menunggu manager'),'a'],approved:[tx('Approved','Diluluskan'),'g'],rejected:[tx('Rejected','Ditolak'),'r'],declined:[tx('Declined','Ditolak rakan'),'r'],cancelled:[tx('Cancelled','Dibatalkan'),'']};
+const OT_K={normal:['Normal day','Hari biasa','× 1.5'],rest:['Rest day','Hari rehat','× 2'],ph:['Public holiday','Cuti umum','× 3']};
+function meRequests(s){
+ const O=(OTR||[]).filter(r=>r.staffId===s.id).slice(0,6),W=(SWP||[]).filter(w=>w.from===s.id).slice(0,6);
+ if(!O.length&&!W.length)return '';
+ return '<div class="card" id="me-req"><h3 class="sdh">'+ic('list',15)+' '+tx('My requests','Permohonan saya')+'</h3>'+
+  O.map(r=>{const st=RQST[r.status]||[r.status,''];return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+tx('Overtime','OT')+' · '+r.hours+' h · '+(LANG==='ms'?OT_K[r.kind][1]:OT_K[r.kind][0])+'</b><small>'+dshort(r.date)+(r.reason?' · <span data-noi18n>'+esc(r.reason)+'</span>':'')+(r.note?' · “'+esc(r.note)+'”':'')+'</small></div><span class="pill '+st[1]+'">'+st[0]+'</span>'+
+   (r.status==='pending'?'<button class="btn sm ghost" onclick="otCancel(\''+r.id+'\')">'+tx('Cancel','Batal')+'</button>':'')+'</div>';}).join('')+
+  W.map(w=>{const st=RQST[w.status]||[w.status,''];return '<div class="hrrow"><div style="flex:1;min-width:0"><b>'+(w.kind==='cover'?tx('Cover by ','Diganti oleh '):tx('Swap with ','Tukar dengan '))+'<span data-noi18n>'+esc(w.toName)+'</span></b><small>'+dshort(w.date)+' · '+esc(w.fromShift?w.fromShift.s+'–'+w.fromShift.e:'')+(w.note?' · “'+esc(w.note)+'”':'')+'</small></div><span class="pill '+st[1]+'">'+st[0]+'</span>'+
+   (['asked','agreed'].includes(w.status)?'<button class="btn sm ghost" onclick="swapCancel(\''+w.id+'\')">'+tx('Cancel','Batal')+'</button>':'')+'</div>';}).join('')+'</div>';}
+/* colleagues asking me to swap or cover */
+const meIncomingList=s=>(SWP||[]).filter(w=>w.to===s.id&&w.status==='asked');
+function meIncoming(s){const L=meIncomingList(s);if(!L.length)return '';
+ return '<div class="card meinc"><h3 class="sdh">'+ic('refresh',15)+' '+tx('A colleague is asking you','Rakan meminta anda')+'</h3>'+L.map(w=>'<div class="hrrow"><div style="flex:1;min-width:0"><b data-noi18n>'+esc(w.fromName)+'</b><small>'+
+  (w.kind==='cover'?tx('Can you work my shift on ','Boleh ganti syif saya pada ')+dshort(w.date)+' ('+w.fromShift.s+'–'+w.fromShift.e+')?':tx('Swap shifts on ','Tukar syif pada ')+dshort(w.date)+': '+tx('you take ','anda ambil ')+w.fromShift.s+'–'+w.fromShift.e+', '+tx('they take ','dia ambil ')+(w.toShift?w.toShift.s+'–'+w.toShift.e:''))+(w.reason?' · <span data-noi18n>'+esc(w.reason)+'</span>':'')+'</small></div>'+
+  '<button class="btn sm" onclick="swapAnswer(\''+w.id+'\',1)">'+tx('Agree','Setuju')+'</button><button class="btn sm ghost" onclick="swapAnswer(\''+w.id+'\',0)">'+tx('Decline','Tolak')+'</button></div>').join('')+
+  '<p class="tiny muted" style="margin:6px 0 0">'+tx('Your manager approves it after you agree.','Manager akan luluskan selepas anda setuju.')+'</p></div>';}
+/* payslips and commission */
+function meMoney(s){return '<div id="me-pay">'+myPayslipsCard(s.id)+'</div>';}
+/* putting the app on the phone */
+function meInstall(){
+ let standalone=false;try{standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}catch(e){}
+ if(standalone)return '';const ios=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
+ return '<details class="card meinst"><summary>'+ic('phone',15)+' '+tx('Put this app on your phone','Pasang aplikasi ini di telefon')+'</summary>'+
+  '<div class="grid g2"><div><b>Android</b><ol><li>'+tx('Open this page in Chrome.','Buka halaman ini dalam Chrome.')+'</li><li>'+tx('Tap ⋮ (top right) → <b>Install app</b> or <b>Add to Home screen</b>.','Tekan ⋮ (atas kanan) → <b>Install app</b> atau <b>Add to Home screen</b>.')+'</li><li>'+tx('Open Luuna from the home screen and allow notifications.','Buka Luuna dari skrin utama dan benarkan notifikasi.')+'</li></ol></div>'+
+  '<div><b>iPhone</b><ol><li>'+tx('Open this page in Safari.','Buka halaman ini dalam Safari.')+'</li><li>'+tx('Tap Share (□↑) → <b>Add to Home Screen</b>.','Tekan Share (□↑) → <b>Add to Home Screen</b>.')+'</li><li>'+tx('Open it from the home screen — notifications work only from there (iOS 16.4 or newer).','Buka dari skrin utama — notifikasi hanya berfungsi dari situ (iOS 16.4 ke atas).')+'</li></ol></div></div>'+
+  (ios?'':(typeof INSTALLP!=='undefined'&&INSTALLP?'<button class="btn sm" onclick="pwaInstall&&pwaInstall()">'+ic('download',13)+tx('Install now','Pasang sekarang')+'</button>':''))+'</details>';}
+
+/* ---------------- overtime requests ---------------- */
+window.otForm=(date)=>{const s=meWho();if(!s)return;const d=date||today();
+ const a=ATT.find(x=>x.staffId===s.id&&x.date===d&&x.clockIn&&x.clockOut),x=ROST[s.id]?dutyRaw(s.id,d):null;
+ let sug=0;if(a){const h=(new Date(a.clockOut)-new Date(a.clockIn))/36e5,base=x&&x.on?(hm(x.e)-hm(x.s))/60:PAYRATE.stdDay;sug=Math.max(0,Math.round((h-base)*2)/2);}
+ modal(tx('Ask for overtime','Mohon kerja lebih masa'),'<div class="card">'+
+  '<div class="grid g2"><div><label>'+tx('Date','Tarikh')+'</label><input class="f" type="date" id="ot-d" value="'+d+'" max="'+today()+'" onchange="otForm(this.value)"></div>'+
+  '<div><label>'+tx('Hours','Jam')+'</label><input class="f" type="number" min="0.5" max="12" step="0.5" id="ot-h" value="'+(sug||'')+'"></div></div>'+
+  (a?'<div class="tiny muted" style="margin:-4px 0 10px">'+tx('Clocked ','Rekod ')+hhmm(a.clockIn)+'–'+hhmm(a.clockOut)+(x&&x.on?' · '+tx('shift ','syif ')+x.s+'–'+x.e:'')+(sug?' → '+tx('about ','lebih kurang ')+sug+' h '+tx('over','lebih'):'')+'</div>':'')+
+  '<label>'+tx('Kind of day','Jenis hari')+'</label><div class="seg" id="ot-k">'+Object.entries(OT_K).map(([k,v],i)=>'<button type="button" data-k="'+k+'" class="'+(i?'':'on')+'" onclick="[...this.parentNode.children].forEach(b=>b.className=\'\');this.className=\'on\'">'+(LANG==='ms'?v[1]:v[0])+' '+v[2]+'</button>').join('')+'</div>'+
+  '<label>'+tx('What was it for?','Untuk apa?')+'</label><input class="f" id="ot-r" maxlength="160" placeholder="'+tx('e.g. last client ran late','cth. pelanggan terakhir lewat')+'">'+
+  '<div id="ot-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="ot-go" style="width:100%;justify-content:center" onclick="otSave()">'+ic('check',15)+tx('Send to the manager','Hantar kepada manager')+'</button></div>');};
+window.otSave=async()=>{const s=meWho(),e=$('#ot-e');const d=($('#ot-d')||{}).value,h=r2(+(($('#ot-h')||{}).value)||0),k=(document.querySelector('#ot-k .on')||{}).dataset?.k||'normal',why=String(($('#ot-r')||{}).value||'').trim();
+ if(!d||d>today())return e.textContent=tx('Choose a date up to today.','Pilih tarikh sehingga hari ini.');
+ if(!(h>=0.5&&h<=12))return e.textContent=tx('Hours must be between 0.5 and 12.','Jam mesti antara 0.5 dan 12.');
+ if(why.length<3)return e.textContent=tx('Say what the overtime was for.','Nyatakan sebab OT.');
+ if((OTR||[]).some(r=>r.staffId===s.id&&r.date===d&&r.kind===k&&['pending','approved'].includes(r.status)))return e.textContent=tx('There is already a request for that day.','Sudah ada permohonan untuk hari itu.');
+ const rec={staffId:s.id,staffName:s.name||'',branchId:ME.branchId,date:d,hours:h,kind:k,reason:why.slice(0,160),status:'pending',at:new Date().toISOString(),by:UID};
+ $('#ot-go').disabled=true;
+ try{const r=await addDoc(collection(db,'otReqs'),rec);(OTR=OTR||[]).unshift({id:r.id,...rec});
+  logEvent('hr','Overtime request · '+(s.name||''),h+' h on '+dshort(d),{refType:'ot',refId:r.id,forBoss:true});
+  closeModal();render();toast(tx('Sent to the manager','Dihantar kepada manager'));}catch(err){e.textContent=friendly(err);$('#ot-go').disabled=false;}};
+window.otCancel=async id=>{try{await updateDoc(doc(db,'otReqs',id),{status:'cancelled'});const r=(OTR||[]).find(x=>x.id===id);if(r)r.status='cancelled';render();}catch(e){toast(friendly(e));}};
+window.otDecide=async(id,ok)=>{const r=(OTR||[]).find(x=>x.id===id);if(!r||!boss())return;
+ let note='';if(!ok){note=prompt(tx('Why is it rejected? (the person sees this)','Kenapa ditolak? (staf akan nampak)'))||'';if(!note.trim())return;}
+ const p={status:ok?'approved':'rejected',decidedBy:ME.name||'',decidedAt:new Date().toISOString(),...(note?{note:note.trim().slice(0,160)}:{})};
+ try{await updateDoc(doc(db,'otReqs',id),p);Object.assign(r,p);
+  logEvent('hr',(ok?'Overtime approved':'Overtime not approved')+' · '+r.staffName,r.hours+' h · '+dshort(r.date),{refType:'ot',refId:id,toUid:r.staffId});
+  await audit(ok?'Overtime approved':'Overtime rejected',r.staffName+' · '+dshort(r.date)+' · '+r.hours+' h '+r.kind+(note?' · '+note:''));render();toast(ok?'Approved':'Rejected');}catch(e){toast(friendly(e));}};
+/* approved overtime goes to payroll as the default hours (anything typed in payroll still wins) */
+{const _pa=payAuto;payAuto=async function(m,sales){const L=await _pa(m,sales);let R=[];
+ try{R=(await getDocs(query(collection(db,'otReqs'),where('branchId','==',ME.branchId)))).docs.map(d=>d.data()).filter(r=>r.status==='approved'&&String(r.date).slice(0,7)===m);}catch(e){}
+ return L.map(l=>{const mine=R.filter(r=>r.staffId===l.staffId);if(!mine.length)return l;const sum=k=>r2(mine.filter(r=>r.kind===k).reduce((t,r)=>t+(+r.hours||0),0));
+  return {...l,otReqH:sum('normal'),otReqR:sum('rest'),otReqP:sum('ph'),otReqN:mine.length,otSuggest:0};});};}
+
+/* ---------------- shift swaps ---------------- */
+window.swapForm=(date)=>{const s=meWho();if(!s)return;
+ if(!rosterOn()||!ROST[s.id])return toast(tx('Shift swaps work once your manager has set the roster.','Tukar syif boleh dibuat selepas manager tetapkan jadual.'));
+ const d=date||ymd(addDays(new Date(),1)),x=dutyRaw(s.id,d);
+ const ppl=hrPeople().filter(p=>p.id!==s.id&&p.branchId===(s.branchId||ME.branchId));
+ modal(tx('Swap or cover a shift','Tukar atau ganti syif'),'<div class="card">'+
+  '<label>'+tx('Date','Tarikh')+'</label><input class="f" type="date" id="sw-d" value="'+d+'" min="'+today()+'" onchange="swapForm(this.value)">'+
+  (x&&x.on?'<div class="tiny muted" style="margin:-4px 0 10px">'+tx('Your shift: ','Syif anda: ')+x.s+'–'+x.e+'</div>':'<div class="tiny" style="color:var(--rose);margin:-4px 0 10px">'+tx('You are not working that day.','Anda tidak bekerja hari itu.')+'</div>')+
+  '<label>'+tx('Who','Siapa')+'</label><select class="f" id="sw-p" onchange="swapPrev()">'+ppl.map(p=>{const y=ROST[p.id]?dutyRaw(p.id,d):null;return '<option value="'+p.id+'">'+esc(p.name)+' — '+(onLeave(p.id,d)?tx('on leave','bercuti'):y?(y.on?y.s+'–'+y.e:tx('off','cuti')):tx('no roster','tiada jadual'))+'</option>';}).join('')+'</select>'+
+  '<div id="sw-pv" class="fieldset" style="margin:6px 0 10px"></div>'+
+  '<label>'+tx('Reason','Sebab')+'</label><input class="f" id="sw-r" maxlength="160" placeholder="'+tx('e.g. family event','cth. majlis keluarga')+'">'+
+  '<div id="sw-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+  '<button class="btn" id="sw-go" style="width:100%;justify-content:center" onclick="swapSave()"'+(x&&x.on?'':' disabled')+'>'+ic('msg',15)+tx('Ask them','Minta dia')+'</button></div>',()=>window.swapPrev());};
+window.swapPrev=()=>{const s=meWho(),d=($('#sw-d')||{}).value,pid=($('#sw-p')||{}).value,pv=$('#sw-pv');if(!pv||!pid)return;const p=stf(pid),y=ROST[pid]?dutyRaw(pid,d):null,x=dutyRaw(s.id,d);
+ pv.innerHTML=y&&y.on&&!onLeave(pid,d)?'<b>'+tx('Swap','Tukar')+'</b> — '+esc(p.name)+tx(' works your ',' bekerja syif anda ')+x.s+'–'+x.e+tx(', you work theirs ',', anda bekerja syif dia ')+y.s+'–'+y.e+'.':
+  '<b>'+tx('Cover','Ganti')+'</b> — '+esc(p.name)+tx(' works your shift ',' bekerja syif anda ')+x.s+'–'+x.e+tx(' and you are off that day.',' dan anda cuti hari itu.');};
+window.swapSave=async()=>{const s=meWho(),e=$('#sw-e'),d=($('#sw-d')||{}).value,pid=($('#sw-p')||{}).value,why=String(($('#sw-r')||{}).value||'').trim();
+ const x=dutyRaw(s.id,d),y=ROST[pid]?dutyRaw(pid,d):null;if(!x||!x.on)return e.textContent=tx('You are not working that day.','Anda tidak bekerja hari itu.');
+ if(onLeave(pid,d))return e.textContent=tx('They are on leave that day.','Dia bercuti hari itu.');
+ if((SWP||[]).some(w=>w.date===d&&w.from===s.id&&['asked','agreed'].includes(w.status)))return e.textContent=tx('You already asked someone for that day.','Anda sudah minta seseorang untuk hari itu.');
+ const p=stf(pid),kind=y&&y.on?'swap':'cover';
+ const rec={from:s.id,fromName:s.name||'',to:pid,toName:p.name||'',people:[s.id,pid],branchId:ME.branchId,date:d,kind,fromShift:{s:x.s,e:x.e},...(kind==='swap'?{toShift:{s:y.s,e:y.e}}:{}),reason:why.slice(0,160),status:'asked',at:new Date().toISOString(),by:UID};
+ $('#sw-go').disabled=true;
+ try{const r=await addDoc(collection(db,'shiftSwaps'),rec);(SWP=SWP||[]).unshift({id:r.id,...rec});
+  logEvent('hr',(kind==='swap'?'Shift swap asked':'Cover asked')+' · '+(s.name||''),dshort(d)+' · '+x.s+'–'+x.e,{refType:'swap',refId:r.id,toUid:pid});
+  closeModal();render();toast(tx('Asked ','Permintaan dihantar kepada ')+p.name);}catch(err){e.textContent=friendly(err);$('#sw-go').disabled=false;}};
+window.swapAnswer=async(id,yes)=>{const w=(SWP||[]).find(x=>x.id===id);if(!w)return;const p={status:yes?'agreed':'declined',answeredAt:new Date().toISOString()};
+ try{await updateDoc(doc(db,'shiftSwaps',id),p);Object.assign(w,p);
+  logEvent('hr',(yes?'Swap agreed':'Swap declined')+' · '+w.toName,dshort(w.date),{refType:'swap',refId:id,toUid:w.from,...(yes?{forBoss:true}:{})});
+  render();toast(yes?tx('Agreed — waiting for the manager','Setuju — menunggu manager'):tx('Declined','Ditolak'));}catch(e){toast(friendly(e));}};
+window.swapCancel=async id=>{try{await updateDoc(doc(db,'shiftSwaps',id),{status:'cancelled'});const w=(SWP||[]).find(x=>x.id===id);if(w)w.status='cancelled';render();}catch(e){toast(friendly(e));}};
+window.swapDecide=async(id,ok)=>{const w=(SWP||[]).find(x=>x.id===id);if(!w||!boss())return;
+ let note='';if(!ok){note=prompt('Why is it not approved? (both see this)')||'';if(!note.trim())return;}
+ try{if(ok){const nm=n=>String(n||'').split(' ')[0];
+   await rsPut(w.from,x=>{x.days[w.date]=w.kind==='swap'?{on:true,s:w.toShift.s,e:w.toShift.e,note:'Swapped with '+nm(w.toName)}:{on:false,note:'Covered by '+nm(w.toName)};});
+   await rsPut(w.to,x=>{x.days[w.date]={on:true,s:w.fromShift.s,e:w.fromShift.e,note:(w.kind==='swap'?'Swapped with ':'Covering ')+nm(w.fromName)};});}
+  const p={status:ok?'approved':'rejected',decidedBy:ME.name||'',decidedAt:new Date().toISOString(),...(note?{note:note.trim().slice(0,160)}:{})};
+  await updateDoc(doc(db,'shiftSwaps',id),p);Object.assign(w,p);
+  logEvent('hr',(ok?'Shift swap approved':'Shift swap not approved')+' · '+w.fromName+' ↔ '+w.toName,dshort(w.date),{refType:'swap',refId:id,toUid:w.from});
+  await audit(ok?'Shift swap approved':'Shift swap rejected',w.fromName+' / '+w.toName+' · '+w.date+' · '+w.kind+(note?' · '+note:''));render();toast(ok?'Approved — the roster is updated':'Not approved');}
+ catch(e){toast(friendly(e));}};
+
+/* ---------------- Approvals & team live (owner and managers) ---------------- */
+let MGRATT=null;
+function mgrWatch(){if(MGRSUB)return;try{MGRSUB=onSnapshot(query(collection(db,'attendance'),where('date','==',today())),s=>{MGRATT=s.docs.map(d=>({id:d.id,...d.data()})).filter(a=>(a.branchId||ME.branchId)===ME.branchId);if(TAB==='hr'&&HRV==='mgr'&&!$('#modal').innerHTML)render();},e=>console.warn('att live',e));}catch(e){}}
+function mgrUnwatch(){if(MGRSUB){try{MGRSUB();}catch(e){}}MGRSUB=null;}
+{const _t=window.hrTab;window.hrTab=v=>{if(v!=='mgr')mgrUnwatch();_t(v);};}
+{const _g=window.go;window.go=(t,...a)=>{if(t!=='hr')mgrUnwatch();return _g(t,...a);};}
+function mgrPending(){
+ const lv=LEAVES.filter(l=>l.status==='pending'&&hrPeople().some(s=>s.id===l.staffId)),cl=(CLAIMS||[]).filter(x=>x.status==='pending'&&(!x.branchId||x.branchId===ME.branchId)),
+  ot=(OTR||[]).filter(r=>r.status==='pending'),sw=(SWP||[]).filter(w=>['asked','agreed'].includes(w.status)),cq=typeof cmOpenQ==='function'?cmOpenQ():[];
+ return {lv,cl,ot,sw,cq,n:lv.length+cl.length+ot.length+sw.filter(w=>w.status==='agreed').length+cq.length};}
+function hrMgr(){
+ meBoot();mgrWatch();if(CLAIMS===null)setTimeout(()=>loadClaims().then(()=>render()),0);
+ const P=mgrPending(),td=today();
+ const A=MGRATT||ATT.filter(a=>a.date===td&&a.branchId===ME.branchId);
+ const ppl=hrPeople();
+ const rows=ppl.map(s=>{const a=A.find(x=>x.staffId===s.id&&x.clockIn),x=ROST[s.id]?dutyRaw(s.id,td):null,lv=onLeave(s.id,td);
+  const now=new Date(),startT=x&&x.on?new Date(td+'T'+x.s+':00'):null;
+  let st,cls;
+  if(lv){st=tx('On leave','Bercuti');cls='';}
+  else if(a&&a.clockOut){st=tx('Done · ','Selesai · ')+worked(a);cls='g';}
+  else if(a){const late=startT?Math.round((new Date(a.clockIn)-startT)/6e4):0;st=tx('In since ','Masuk sejak ')+hhmm(a.clockIn)+(late>10?' · '+late+tx(' min late',' minit lewat'):'');cls=late>10?'a':'g';}
+  else if(x&&!x.on){st=tx('Day off','Hari cuti');cls='';}
+  else if(startT&&now>startT){st=tx('Not in — shift started ','Belum masuk — syif bermula ')+x.s;cls='r';}
+  else st=x&&x.on?tx('Starts ','Mula ')+x.s:tx('No roster','Tiada jadual'),cls='';
+  return {s,a,x,lv,st,cls};});
+ const inNow=rows.filter(r=>r.a&&!r.a.clockOut).length,miss=rows.filter(r=>r.cls==='r').length,late=rows.filter(r=>r.cls==='a').length;
+ const live='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('clock',15)+' Team right now · '+esc(branch().name||'')+'</h3><span class="cmlive">'+ic('refresh',11)+' Live</span></div>'+
+  '<div class="mgrk"><span><b>'+inNow+'</b>in</span><span class="'+(late?'a':'')+'"><b>'+late+'</b>late</span><span class="'+(miss?'r':'')+'"><b>'+miss+'</b>not in yet</span><span><b>'+rows.filter(r=>r.lv).length+'</b>on leave</span></div>'+
+  rows.map(r=>'<div class="mgrrow"><span class="avatar sm">'+esc(initials(r.s.name))+'</span><div><b>'+esc(r.s.name)+'</b><small>'+(r.x?(r.x.on?r.x.s+'–'+r.x.e:'off')+(r.x.note?' · '+esc(r.x.note):''):'no roster')+'</small></div><span class="pill '+r.cls+'">'+esc(r.st)+'</span>'+
+   (r.a&&boss()?'<button class="iconbtn" aria-label="Adjust" title="Adjust" onclick="fixAtt(\''+r.a.id+'\')">'+ic('edit',13)+'</button>':'')+'</div>').join('')+'</div>';
+ const item=(icn,t,sub,btns)=>'<div class="mgrap"><span class="mgri">'+ic(icn,15)+'</span><div><b>'+t+'</b><small>'+sub+'</small></div><div class="row" style="gap:6px">'+btns+'</div></div>';
+ const ap=[
+  ...P.lv.map(l=>item('leave',esc(l.staffName||'')+' · '+esc(lvName(l.type)),dshort(l.from)+(l.to!==l.from?' – '+dshort(l.to):'')+' · '+lvDays(l)+' day'+(lvDays(l)!==1?'s':'')+(l.reason?' · '+esc(l.reason):''),'<button class="btn sm" onclick="leaveDecide(\''+l.id+'\')">Review</button>')),
+  ...P.ot.map(r=>item('clock',esc(r.staffName)+' · overtime '+r.hours+' h',dshort(r.date)+' · '+OT_K[r.kind][0]+' '+OT_K[r.kind][2]+' · '+esc(r.reason||'')+mgrOtCheck(r),'<button class="btn sm" onclick="otDecide(\''+r.id+'\',1)">Approve</button><button class="btn sm ghost" onclick="otDecide(\''+r.id+'\',0)">Reject</button>')),
+  ...P.sw.map(w=>item('refresh',esc(w.fromName)+(w.kind==='swap'?' ↔ ':' → ')+esc(w.toName),dshort(w.date)+' · '+(w.kind==='swap'?'swap '+w.fromShift.s+'–'+w.fromShift.e+' with '+w.toShift.s+'–'+w.toShift.e:'cover '+w.fromShift.s+'–'+w.fromShift.e)+(w.reason?' · '+esc(w.reason):'')+(w.status==='asked'?' · <span style="color:var(--amber)">waiting for '+esc(String(w.toName).split(' ')[0])+' to agree</span>':' · both agree'),
+   (w.status==='agreed'?'<button class="btn sm" onclick="swapDecide(\''+w.id+'\',1)">Approve</button>':'')+'<button class="btn sm ghost" onclick="swapDecide(\''+w.id+'\',0)">Reject</button>')),
+  ...P.cl.map(x=>item('receipt',esc(x.staffName||'')+' · claim '+rm(x.amount),esc(x.category||'')+' · '+dshort(x.date)+(x.note?' · '+esc(x.note):''),'<button class="btn sm" onclick="claimDecide(\''+x.id+'\')">Review</button>')),
+  ...(P.cq.length?[item('msg',P.cq.length+' commission question'+(P.cq.length>1?'s':''),'From '+[...new Set(P.cq.map(q=>q.staffName))].join(', '),'<button class="btn sm" onclick="hrTab(\'comm\')">Open</button>')]:[])];
+ const apc='<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('check',15)+' Waiting for you</h3><span class="pill '+(P.n?'a':'g')+'">'+(P.n?P.n+' to decide':'All clear')+'</span></div>'+(ap.length?ap.join(''):'<div class="tiny muted">Nothing to approve. Leave, claims, overtime and shift swaps from the team arrive here.</div>')+'</div>';
+ return apc+live+mgrBranches();}
+/* what attendance says about an overtime request */
+function mgrOtCheck(r){const a=ATT.find(x=>x.staffId===r.staffId&&x.date===r.date&&x.clockIn);if(!a)return ' · <span style="color:var(--amber)">no clock-in that day</span>';
+ if(!a.clockOut)return ' · clocked in '+hhmm(a.clockIn);const h=(new Date(a.clockOut)-new Date(a.clockIn))/36e5;return ' · clocked '+hhmm(a.clockIn)+'–'+hhmm(a.clockOut)+' ('+r2(h)+' h)';}
+/* other branches, for the owner */
+function mgrBranches(){if(!isOwnerMe()||D.branches.length<2)return '';
+ return '<div class="card"><h3 class="sdh">'+ic('home',15)+' All branches</h3><div class="scroll"><table class="mjt"><tr><th>Branch</th><th>Company</th><th class="num">Team</th><th class="num">Bookable</th></tr>'+
+  D.branches.map(b=>{const t=D.staff.filter(s=>s.branchId===b.id&&s.active!==false&&!['branch','accountant'].includes(s.role));const e=entOf(b.id);
+   return '<tr><td><b>'+esc(b.name)+'</b>'+(b.id===ME.branchId?' <span class="pill g">here</span>':'')+'</td><td>'+esc(e?e.legalName:coNameMain())+'</td><td class="num">'+t.length+'</td><td class="num">'+t.filter(s=>s.takes).length+'</td></tr>';}).join('')+'</table></div>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Each branch keeps its own roster, attendance, payroll and approvals — switch branch in Settings to manage another one.</p></div>';}
+
+/* ---------------- notifications: HR events reach only the people they are about ---------------- */
+ALERT_KINDS.hr={label:'Leave, overtime and shift swaps',icon:'hr',boss:true,staff:true};
+const hrEvFor=e=>e.kind!=='hr'||boss()&&e.forBoss||e.toUid===UID||(boss()&&!e.toUid);
+{const _a=alertOf;alertOf=function(e){if(!hrEvFor(e))return;return _a.apply(this,arguments);};}
+{const _r=alertRows;alertRows=function(){const keep=EVENTS;EVENTS=EVENTS.filter(hrEvFor);try{return _r.apply(this,arguments);}finally{EVENTS=keep;}};}
+
+/* ---------------- companies & branches ---------------- */
+const coNameMain=()=>String((D.meta.biz||{}).legalName||'').trim()||String((D.meta.biz||{}).name||'').trim();
+const ENTS=()=>Array.isArray((D.meta||{}).entities)?D.meta.entities:[];
+function entOf(brId){const b=D.branches.find(x=>x.id===(brId||ME.branchId))||{};if(!b.entityId||b.entityId==='main')return null;return ENTS().find(x=>x.id===b.entityId)||null;}
+{const _c=coName;coName=function(){const e=entOf();return e&&e.legalName?e.legalName:_c();};}
+{const _l=coLine;coLine=function(lang){const e=entOf();if(!e)return _l(lang);const s=String(e.ssm||'').trim();return e.legalName+(s?' ('+(lang==='bm'?'No. Pendaftaran: ':lang==='en'?'Registration no.: ':'SSM ')+s+')':'');};}
+{const _p=coPub;coPub=function(){const e=entOf();return e?coLine():_p();};}
+{const _b=bizLines;bizLines=function(b,branchName){const e=entOf();if(!e)return _b(b,branchName);return _b({...b,legalName:e.legalName,ssm:e.ssm||'',tin:e.tin||'',sstNo:e.sstNo||'',sst:e.sstNo?b.sst:0},branchName);};}
+/* the statutory files carry the employer numbers of the company that runs this branch */
+{const _f=window.prFile;if(_f)window.prFile=function(k){const e=entOf();if(!e)return _f.apply(this,arguments);const keep=PRC;
+ PRC={...(keep||{}),socsoCode:e.socsoCode||'',eNo:e.eNo||'',ssm:e.ssm||'',epfEr:e.epfEr||''};try{return _f.apply(this,arguments);}finally{PRC=keep;}};}
+function entPanel(){if(!isOwnerMe())return '';const E=ENTS();
+ return '<div class="card" id="entbox"><div class="sec-h"><h2>'+ic('idcard',16)+' Companies & branches</h2><span class="pill">'+(E.length+1)+' compan'+(E.length?'ies':'y')+' · '+D.branches.length+' branch'+(D.branches.length>1?'es':'')+'</span></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">If a branch is run by a different registered company (its own SSM number, employer numbers and bank), add the company here and pick it for that branch. Its receipts, letters, payslips, EA forms and statutory files then name that company. The brand stays the same.</p>'+
+  '<div class="entrow main"><div><b>'+esc(coNameMain()||'Main company')+'</b><small>Main company · SSM '+esc((D.meta.biz||{}).ssm||'—')+' · set under Business details</small></div></div>'+
+  E.map(e=>'<div class="entrow"><div><b>'+esc(e.legalName)+'</b><small>SSM '+esc(e.ssm||'—')+(e.eNo?' · E no. '+esc(e.eNo):'')+(e.socsoCode?' · PERKESO '+esc(e.socsoCode):'')+'</small></div><button class="btn sm ghost" onclick="entEdit(\''+e.id+'\')">'+ic('edit',13)+'Edit</button></div>').join('')+
+  '<button class="btn sm ghost" style="margin:6px 0 12px" onclick="entEdit()">'+ic('plus',13)+'Add a company</button>'+
+  '<h4 class="payh">Which company runs each branch</h4>'+D.branches.map(b=>'<div class="entbr"><span><b>'+esc(b.name)+'</b><small>'+esc(b.code||b.id)+'</small></span><select class="f" id="ent-b-'+esc(b.id)+'" onchange="entBranch(\''+esc(b.id)+'\',this.value)"><option value="main">'+esc(coNameMain()||'Main company')+'</option>'+
+   E.map(e=>'<option value="'+esc(e.id)+'"'+(b.entityId===e.id?' selected':'')+'>'+esc(e.legalName)+'</option>').join('')+'</select></div>').join('')+
+  '<button class="btn sm ghost" style="margin-top:8px" onclick="editBranch()">'+ic('plus',13)+'Add a branch</button></div>';}
+window.entEdit=id=>{if(!isOwnerMe())return;const e=id?ENTS().find(x=>x.id===id)||{}:{entityType:'sdnbhd'};
+ const f=(k,l,ph)=>'<label>'+l+'</label><input class="f" id="en-'+k+'" value="'+esc(e[k]||'')+'" placeholder="'+esc(ph||'')+'">';
+ modal(id?'Edit company':'Add a company','<div class="card">'+f('legalName','Registered name (exactly as on SSM)','e.g. RS Beauty Solution Sdn Bhd')+
+  '<div class="grid g2"><div><label>Type</label><select class="f" id="en-entityType">'+ENT_T.map(x=>'<option value="'+x[0]+'"'+(e.entityType===x[0]?' selected':'')+'>'+x[1]+'</option>').join('')+'</select></div><div>'+f('ssm','SSM registration no.','202601012345')+'</div></div>'+
+  '<div class="grid g2"><div>'+f('tin','Income tax no. (TIN)','C1234567890')+'</div><div>'+f('sstNo','SST no.','optional')+'</div></div>'+
+  '<h4 class="payh">Employer numbers for payroll</h4><div class="grid g2"><div>'+f('eNo','LHDN employer no. (E)','E 1234567-08')+'</div><div>'+f('socsoCode','PERKESO employer code','E12345678X')+'</div></div>'+f('epfEr','KWSP employer no.','12345678')+
+  f('address','Registered address','')+
+  '<div id="en-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="entSave(\''+(id||'')+'\')">'+ic('check',15)+'Save company</button></div>');};
+window.entSave=async id=>{const g=k=>String(($('#en-'+k)||{}).value||'').trim();const n=g('legalName');
+ if(n.length<3)return $('#en-e').textContent='Enter the registered name.';
+ const rec={id:id||'co'+Date.now().toString(36),legalName:n.slice(0,120),entityType:g('entityType')||'sdnbhd',ssm:g('ssm').slice(0,40),tin:g('tin').slice(0,30),sstNo:g('sstNo').slice(0,30),eNo:g('eNo').slice(0,30),socsoCode:g('socsoCode').slice(0,30),epfEr:g('epfEr').slice(0,30),address:g('address').slice(0,200)};
+ const L=ENTS().filter(x=>x.id!==rec.id).concat(rec);
+ try{await setDoc(doc(db,'meta','settings'),{entities:L},{merge:true});D.meta.entities=L;await audit(id?'Company updated':'Company added',rec.legalName+(rec.ssm?' · SSM '+rec.ssm:''));closeModal();render();toast('Saved — choose it for a branch below');}catch(e){$('#en-e').textContent=friendly(e);}};
+window.entBranch=async(bid,eid)=>{const b=D.branches.find(x=>x.id===bid);if(!b)return;
+ try{await updateDoc(doc(db,'branches',bid),{entityId:eid});b.entityId=eid;await audit('Branch company',b.name+' → '+(eid==='main'?coNameMain():(ENTS().find(x=>x.id===eid)||{}).legalName));render();toast(b.name+' — company saved');}catch(e){toast(friendly(e));}};
+{const _bp=bizPanel;bizPanel=function(){return _bp.apply(this,arguments)+entPanel();};}
+if(typeof STG_GROUPS!=='undefined'){const g=STG_GROUPS.find(x=>x.k==='biz');if(g)g.m=/^(Business details|Companies & branches)/;STG_DESC.push([/^Companies & branches/,'A second company for another branch, and which company runs each branch']);}
+
+/* ---------------- payroll → accounting ---------------- */
+window.payJournalCSV=()=>{if(!PAYDOC)return;const m=PAYM,L=Object.values(PAYDOC.lines||{});const t={sal:0,com:0,tips:0,erE:0,erS:0,cl:0,net:0,epf:0,socso:0,eis:0,pcb:0,adv:0,oth:0,hrd:0};
+ L.forEach(x=>{const c=payCalc(x,m);if(!(c.gross>0))return;t.com+=c.comm;t.tips+=c.tips||0;t.sal+=c.gross-c.comm-(c.tips||0);t.erE+=c.epfER;t.erS+=c.socsoER+c.eisER;t.cl+=+x.claims||0;t.net+=c.net;
+  t.epf+=c.epfEE+c.epfER;t.socso+=c.socsoEE+c.socsoER+(c.linEE||0);t.eis+=c.eisEE+c.eisER;t.pcb+=c.pcb;t.adv+=+x.advance||0;t.oth+=+x.otherDed||0;});
+ const br=branch().name||'',co=coName(),d=mEnd(m),ref='PAYROLL-'+m+'-'+(branch().code||ME.branchId);
+ const rows=[['5100','Salaries & wages',t.sal,0],['5110','Commission & incentives',t.com,0],['5100','Tips paid with salary',t.tips,0],['5120','KWSP — employer',t.erE,0],['5130','PERKESO & SIP — employer',t.erS,0],['5140','Staff claims paid with salary',t.cl,0],
+  ['1010','Bank — net salaries',0,t.net],['2300','KWSP payable',0,t.epf],['2310','PERKESO payable (incl. LINDUNG)',0,t.socso],['2320','SIP payable',0,t.eis],['2330','PCB payable',0,t.pcb],['1300','Salary advances recovered',0,t.adv],['6190','Other deductions',0,t.oth]].filter(r=>Math.abs(r[2])>0.004||Math.abs(r[3])>0.004);
+ const dr=r2(rows.reduce((a,r)=>a+r[2],0)),cr=r2(rows.reduce((a,r)=>a+r[3],0));
+ csvDownload('payroll-journal-'+m+'-'+(branch().code||ME.branchId)+'.csv',[['Date','Journal no.','Account code','Account','Description','Debit','Credit','Branch','Company'],
+  ...rows.map(r=>[d,ref,r[0],r[1],'Payroll '+mLabel(m),r2(r[2])||'',r2(r[3])||'',br,co]),[],['','','','','Total',dr,cr,'',Math.abs(dr-cr)<0.02?'balanced':'check: difference '+r2(dr-cr)]]);
+ toast('Journal downloaded — same account codes as Finance');};
+{const _hp=hrPayroll;hrPayroll=function(){const h=_hp.apply(this,arguments);if(!PAYDOC||PAYDOC.status!=='final')return h;
+ return h.replace('Payroll report (CSV)</button>','Payroll report (CSV)</button><button class="btn ghost" onclick="payJournalCSV()">'+ic('download',15)+'Journal for accounting (CSV)</button>');};}
+
+/* ---------------- Settings: language on this device ---------------- */
+{const _ap=appPanel;appPanel=function(){return _ap.apply(this,arguments).replace(/<\/div>$/,'<div class="melangrow"><span>'+ic('msg',13)+' Language on this device · Bahasa</span>'+meLangBar()+'</div></div>');};}
+window.__sa={tx,i18n:i18nTxt,lang:()=>LANG,OTR:()=>OTR,SWP:()=>SWP,ent:entOf,pending:()=>{const p=mgrPending();return {n:p.n,lv:p.lv.length,ot:p.ot.length,sw:p.sw.length,cl:p.cl.length};}};
 
 </script>
