@@ -2740,6 +2740,24 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .entbr{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .entbr span{flex:1;min-width:0}.entbr b{display:block;font-size:13.5px}.entbr small{display:block;font-size:11.5px;color:var(--ink-3)}
 .entbr .f{margin:0;flex:1.4}
+
+/* ===== changing a login account ===== */
+.rlwho{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rlwho .avatar{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;flex:none}
+.rlwho b{display:block}.rlwho small{display:block;font-size:12px;color:var(--ink-3)}
+.rlids{display:grid;gap:6px;margin-bottom:10px}
+.rlids small{display:block;font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.05em}
+.rlids code,.rlentry code{font-size:12px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;padding:2px 6px;word-break:break-all}
+.rlhow,.rlwhat{margin:0 0 10px;padding-left:18px;font-size:13px;color:var(--ink-2)}.rlhow li,.rlwhat li{margin:3px 0}
+.rlprog{display:flex;align-items:center;gap:12px;padding:12px 0}.rlprog .spin{flex:none}
+.rlprog b{display:block}.rlprog small{display:block;font-size:12px;color:var(--ink-3)}
+.rlsum{font-size:14px;margin-bottom:8px}.rlsum b{font-size:20px}
+.rltbl{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 14px;margin-bottom:10px;font-size:13px}
+.rltbl div{display:flex;justify-content:space-between;border-bottom:1px solid var(--line-2);padding:4px 0}
+.rldone{display:flex;gap:10px;align-items:flex-start;padding:8px 0 12px;color:var(--jade)}
+.rldone b{display:block;color:var(--ink)}.rldone small{display:block;color:var(--ink-2);font-size:13px}
+.rlentry{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;border-top:1px solid var(--line-2);margin-top:12px;padding-top:12px}
+.rlentry>div{flex:1;min-width:200px}.rlentry b{display:flex;align-items:center;gap:5px;font-size:13.5px}.rlentry small{display:block;font-size:12px;color:var(--ink-3);margin-top:2px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3001,7 +3019,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-06w';
+const BUILD='2026-10-06x';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -30034,5 +30052,129 @@ window.payJournalCSV=()=>{if(!PAYDOC)return;const m=PAYM,L=Object.values(PAYDOC.
 /* ---------------- Settings: language on this device ---------------- */
 {const _ap=appPanel;appPanel=function(){return _ap.apply(this,arguments).replace(/<\/div>$/,'<div class="melangrow"><span>'+ic('msg',13)+' Language on this device · Bahasa</span>'+meLangBar()+'</div></div>');};}
 window.__sa={tx,i18n:i18nTxt,lang:()=>LANG,OTR:()=>OTR,SWP:()=>SWP,ent:entOf,pending:()=>{const p=mgrPending();return {n:p.n,lv:p.lv.length,ot:p.ot.length,sw:p.sw.length,cl:p.cl.length};}};
+
+
+/* ============ Changing a staff member's login account ============ */
+/* A staff member's ID is the user ID of their Firebase Authentication login, and every record
+   they touch carries it: bills, commission, attendance, leave, roster, payroll, payslips, HR
+   files, notices read. When that login has to be replaced (the old account was deleted, a new
+   e-mail, a duplicate), the owner moves the person to the new login here:
+   1. Check — every collection is read and every place the old ID appears is counted, without
+      changing anything.
+   2. Change — a 30-minute window is opened (meta/relink, which the security rules recognise),
+      every record is rewritten from the old ID to the new one (inside fields, lists, map keys
+      and document names), the profile moves to the new login, and the old login is switched off.
+   It can be run again safely: a second run finds nothing left to move. Everything is written to
+   the audit trail. */
+const RL_COLS=['annReads','announcements','appointments','appraisals','apptLinks','assets','attTokens','attendance','audit','bankImports','bankLines','bankRecon','branches','busy','campaigns','certs',
+ 'claims','clientSeq','clinPhotos','commQueries','consentForms','consents','consults','creditNotes','crmTasks','custNotes','customerPackages','customers','events','expenses','fbRequests','feedback','finance',
+ 'giftCards','hrDocs','hrFiles','hrHist','hrInfo','hrReq','hrSelf','hrStaff','journals','kpiTargets','leadForms','leadHooks','leads','leaves','libReads','library','loyalty','machines','memberships','merits',
+ 'meta','offerLinks','onbConfig','onboard','otReqs','packages','payrollConfig','payrolls','payslips','pkgDeleted','products','programs','promos','public','quals','quotes','recApps','recEval','recFiles','recJobs',
+ 'recurring','redemptions','refInvites','referrals','rosters','sales','salesTargets','services','shiftSwaps','shifts','slotLocks','stock','stockCounts','stockMoves','tickets','tips','transfers','txPlans','txRecords',
+ 'vouchers','waitlist','walletTx','wallets','webOrders'];
+/* long random IDs are replaced wherever they appear; short ones (test data) only as whole words */
+const rlMode=o=>o.length>=16?'sub':'tok';
+function rlStr(s,o,n,m){if(s===o)return n;if(m==='sub')return s.includes(o)?s.split(o).join(n):s;
+ if(s.includes('_')){const p=s.split('_');if(p.includes(o))return p.map(x=>x===o?n:x).join('_');}return s;}
+function rlDeep(v,o,n,m,hit){
+ if(typeof v==='string'){const r=rlStr(v,o,n,m);if(r!==v)hit.n++;return r;}
+ if(Array.isArray(v))return v.map(x=>rlDeep(x,o,n,m,hit));
+ if(v&&typeof v==='object'&&Object.getPrototypeOf(v)===Object.prototype){const out={};
+  for(const k of Object.keys(v)){const k2=rlStr(k,o,n,m);if(k2!==k)hit.n++;out[k2]=rlDeep(v[k],o,n,m,hit);}return out;}
+ return v;}
+const RL_NAMES={sales:'Bills & commission lines',attendance:'Attendance',leaves:'Leave',claims:'Claims',payrolls:'Payroll months',payslips:'Payslips',hrStaff:'Staff file',hrFiles:'HR documents',hrHist:'HR history',
+ rosters:'Roster',appointments:'Bookings',events:'Alerts',audit:'Audit trail',customers:'Clients',kpiTargets:'Targets',feedback:'Client reviews',fbRequests:'Review links',merits:'Merit points',tips:'Tips',commQueries:'Commission questions',
+ otReqs:'Overtime',shiftSwaps:'Shift swaps',custNotes:'Client notes',hrSelf:'Personal details',hrReq:'HR requests',hrInfo:'Details sent by staff',annReads:'Notices read',libReads:'Guides read',onboard:'Onboarding',quals:'Treatment sign-offs',certs:'Certificates',appraisals:'Appraisals',redemptions:'Package sessions',
+ customerPackages:'Client packages',shifts:'Days opened & closed',stockMoves:'Stock movements',public:'Online booking',busy:'Busy times',slotLocks:'Booking locks',chats:'Team chat'};
+/* every document that mentions the old ID, and what it becomes */
+async function rlScan(o,n,onStep){
+ const m=rlMode(o),plan=[],count={},errs=[];
+ const scanCol=async(label,colRef,mk)=>{let docs=[];
+  try{docs=(await getDocs(colRef)).docs;}catch(e){errs.push(label);return;}
+  docs.forEach(d=>{if(label==='meta'&&d.id==='relink')return;if(label==='audit'&&(d.data()||{}).action==='Login account changed')return;const hit={n:0},data=rlDeep(d.data(),o,n,m,hit),nid=rlStr(d.id,o,n,m);
+   if(hit.n||nid!==d.id){plan.push({label,ref:mk(d.id),nref:nid!==d.id?mk(nid):null,id:d.id,nid,data,hits:hit.n+(nid!==d.id?1:0)});count[label]=(count[label]||0)+1;}});};
+ let i=0;
+ for(const c of RL_COLS){if(onStep)onStep(++i,RL_COLS.length+1,c);await scanCol(c,collection(db,c),id=>doc(db,c,id));}
+ for(const b of D.branches){if(onStep)onStep(RL_COLS.length+1,RL_COLS.length+1,'chats');const cc=collection(db,'chats',b.id,'msgs');await scanCol('chats',cc,id=>doc(cc,id));}
+ /* the profiles themselves are handled on their own */
+ let users=[];try{users=(await getDocs(collection(db,'users'))).docs.map(d=>({id:d.id,data:d.data()}));}catch(e){errs.push('users');}
+ users.filter(u=>u.id!==o&&u.id!==n).forEach(u=>{const hit={n:0},data=rlDeep(u.data,o,n,m,hit);if(hit.n){plan.push({label:'users',ref:doc(db,'users',u.id),nref:null,id:u.id,nid:u.id,data,hits:hit.n});count.users=(count.users||0)+1;}});
+ return {plan,count,errs,users,total:plan.length};}
+
+let RL=null;
+window.relinkStart=sid=>{
+ if(!isOwnerMe())return toast('Only the owner can change a login account');
+ const s=stf(sid);if(!s.id)return;
+ if(sid===UID)return toast('You are signed in with this account. Ask another owner login to change it, or sign in with the new login first and have this one changed from there.');
+ RL={sid,name:s.name,step:'ask'};rlPaint();};
+function rlPaint(){
+ const R=RL;if(!R)return;const s=stf(R.sid)||{};
+ let body='<div class="card rlcard"><div class="rlwho"><span class="avatar">'+esc(initials(R.name||''))+'</span><div><b>'+esc(R.name)+'</b><small>'+esc(ROLE[s.role]||s.role||'')+' · '+esc((D.branches.find(b=>b.id===s.branchId)||{}).name||'')+'</small></div></div>'+
+  '<div class="rlids"><div><small>Current login (user ID)</small><code>'+esc(R.sid)+'</code></div>'+(R.to?'<div><small>New login (user ID)</small><code>'+esc(R.to)+'</code></div>':'')+'</div>';
+ if(R.step==='ask')body+='<ol class="rlhow"><li>In the Firebase console → <b>Authentication</b> → <b>Add user</b>, create the new login (their e-mail and a password). Skip this if it already exists.</li><li>Copy its <b>User UID</b> and paste it below.</li><li>Tap <b>Check</b>. Nothing is changed until you confirm.</li></ol>'+
+  '<label>New user ID</label><input class="f" id="rl-to" autocomplete="off" spellcheck="false" placeholder="e.g. 7bQ2… (28 characters)" value="'+esc(R.to||'')+'">'+
+  '<div id="rl-e" class="tiny" style="color:var(--rose);margin:6px 0"></div><button class="btn" style="width:100%;justify-content:center" onclick="relinkCheck()">'+ic('search',15)+'Check</button>';
+ else if(R.step==='scan'||R.step==='run')body+='<div class="rlprog"><div class="spin"></div><div><b>'+(R.step==='scan'?'Checking every record…':'Moving the records…')+'</b><small id="rl-pr">'+esc(R.pr||'')+'</small></div></div>'+(R.step==='run'?'<p class="tiny muted">Keep this screen open until it finishes.</p>':'');
+ else if(R.step==='ready'){const S=R.scan,rows=Object.entries(S.count).sort((a,b)=>b[1]-a[1]);
+  body+='<div class="rlsum"><b>'+S.total+'</b> record'+(S.total!==1?'s':'')+' mention '+esc(String(R.name).split(' ')[0])+'\'s current login.</div>'+
+   (rows.length?'<div class="rltbl">'+rows.map(([k,v])=>'<div><span>'+esc(RL_NAMES[k]||k)+'</span><b>'+v+'</b></div>').join('')+'</div>':'')+
+   (S.errs.length?'<div class="warnbox">'+ic('alert',13)+' Not readable before the change: '+S.errs.map(esc).join(', ')+'. They are opened and moved during the change.</div>':'')+
+   (R.exists?'<div class="warnbox">'+ic('alert',13)+' The new login already has a profile in the app'+(R.exists.name?' ('+esc(R.exists.name)+')':'')+'. It will be replaced by '+esc(R.name)+'\'s.</div>':'')+
+   '<ul class="rlwhat"><li>Every record above moves to the new login — history, commission, payslips and roster stay with '+esc(String(R.name).split(' ')[0])+'.</li><li>The current login is switched off. '+esc(String(R.name).split(' ')[0])+' signs in with the new one from now on.</li><li>Locked bills and closed months are moved too, for this change only. It is written to the audit trail.</li></ul>'+
+   '<label>Type <b>'+esc(String(R.name).split(' ')[0])+'</b> to confirm</label><input class="f" id="rl-ok" autocomplete="off">'+
+   '<div id="rl-e" class="tiny" style="color:var(--rose);margin:6px 0"></div>'+
+   '<div class="row wrap2"><button class="btn warn" onclick="relinkRun()">'+ic('refresh',15)+'Move to the new login</button><button class="btn ghost" onclick="RL.step=\'ask\';rlPaint()">Back</button></div>';}
+ else if(R.step==='done'){const left=R.left||0;
+  body+='<div class="rldone">'+ic('check',22)+'<div><b>'+(left?'Mostly done':'Done')+'</b><small>'+R.moved+' record'+(R.moved!==1?'s':'')+' moved'+(R.renamed?' ('+R.renamed+' renamed)':'')+'.'+(left?' '+left+' still mention the old login — tap Run again to finish.':' '+esc(String(R.name).split(' ')[0])+' can now sign in with the new login.')+'</small></div></div>'+
+   (left?'<button class="btn" style="width:100%;justify-content:center" onclick="relinkRun(1)">'+ic('refresh',15)+'Run again</button>':'<button class="btn" style="width:100%;justify-content:center" onclick="closeModal()">Close</button>');}
+ else if(R.step==='fail')body+='<div class="warnbox">'+ic('alert',13)+' '+esc(R.err||'Something went wrong')+'</div><p class="tiny muted">Nothing is lost: run it again — records already moved are skipped. If it says "permission denied", publish the latest security rules first.</p><button class="btn" style="width:100%;justify-content:center" onclick="relinkRun(1)">'+ic('refresh',15)+'Run again</button>';
+ body+='</div>';
+ modal('Change login account',body);}
+window.relinkCheck=async()=>{const R=RL;const v=String(($('#rl-to')||{}).value||'').trim(),e=$('#rl-e');
+ if(!/^[A-Za-z0-9_-]{6,128}$/.test(v))return e.textContent='Paste the User UID exactly as Firebase shows it.';
+ if(v===R.sid)return e.textContent='That is the login they already have.';
+ R.to=v;R.exists=null;
+ try{const u=await getDoc(doc(db,'users',v));if(u.exists()){const x=u.data();if(x.active!==false)R.exists={name:x.name||''};}}catch(err){}
+ R.step='scan';R.pr='';rlPaint();
+ try{R.scan=await rlScan(R.sid,R.to,(i,n,c)=>{R.pr=i+' / '+n+' · '+(RL_NAMES[c]||c);const p=document.getElementById('rl-pr');if(p)p.textContent=R.pr;});R.step='ready';}
+ catch(err){R.step='fail';R.err=friendly(err);}
+ rlPaint();};
+window.relinkRun=async again=>{const R=RL;if(!R)return;
+ if(!again){const ok=String(($('#rl-ok')||{}).value||'').trim().toLowerCase();if(ok!==String(R.name).split(' ')[0].toLowerCase()){$('#rl-e').textContent='Type the first name to confirm.';return;}}
+ R.step='run';R.pr='Opening a 30-minute window…';rlPaint();
+ const say=t=>{R.pr=t;const p=document.getElementById('rl-pr');if(p)p.textContent=t;};
+ const lock=doc(db,'meta','relink');
+ try{
+  await setDoc(lock,{status:'running',from:R.sid,to:R.to,name:R.name,untilMs:Date.now()+30*60e3,by:UID,byName:ME.name||'',startedAt:new Date().toISOString()});
+  const S=await rlScan(R.sid,R.to,(i,n,c)=>say('Reading '+i+' / '+n+' · '+(RL_NAMES[c]||c)));
+  /* the profile: the new login takes everything; the old one is kept switched off, for history */
+  const ou=S.users.find(u=>u.id===R.sid);if(!ou)throw new Error('The current profile was not found.');
+  /* a second run: the profile has already moved — leave both profiles as they are */
+  const moved0=ou.data.relinkedTo===R.to;
+  if(ou.data.relinkedTo&&!moved0)throw new Error('This login was already moved to '+ou.data.relinkedTo+'.');
+  const hit={n:0},np={...rlDeep(ou.data,R.sid,R.to,rlMode(R.sid),hit),relinkedFrom:R.sid,relinkedAt:new Date().toISOString(),active:true};
+  let moved=0,renamed=0,b=writeBatch(db),k=0;
+  const flush=async()=>{if(k){await b.commit();b=writeBatch(db);k=0;}};
+  for(const x of S.plan){
+   if(x.nref){b.set(x.nref,x.data);b.delete(x.ref);k+=2;renamed++;}else{b.set(x.ref,x.data);k++;}
+   moved++;if(k>=400){await flush();say('Moved '+moved+' of '+S.plan.length);}}
+  await flush();
+  if(!moved0){b.set(doc(db,'users',R.to),np);b.set(doc(db,'users',R.sid),{name:ou.data.name||R.name,role:ou.data.role||'',branchId:ou.data.branchId||'',active:false,relinkedTo:R.to,relinkedAt:np.relinkedAt});k=2;await flush();}
+  say('Checking…');
+  const after=await rlScan(R.sid,R.to);
+  await audit('Login account changed',R.name+' · '+R.sid+' → '+R.to+' · '+moved+' records moved'+(after.total?' · '+after.total+' left':''));
+  await setDoc(lock,{status:after.total?'partial':'done',from:R.sid,to:R.to,name:R.name,untilMs:0,by:UID,byName:ME.name||'',finishedAt:new Date().toISOString(),moved,left:after.total});
+  R.moved=(R.moved||0)+moved;R.renamed=(R.renamed||0)+renamed;R.left=after.total;R.step='done';
+  try{await loadStatic();}catch(e){}
+  if(typeof HRSTAFF!=='undefined')HRSTAFF=null;
+  render();rlPaint();
+ }catch(err){try{await setDoc(lock,{status:'failed',from:R.sid,to:R.to,untilMs:0,error:String(err&&err.message||err).slice(0,200),at:new Date().toISOString()});}catch(e){}
+  R.step='fail';R.err=friendly(err);rlPaint();}};
+
+/* where the owner finds it: the team member's editor */
+{const _e=window.editStaff;if(_e)window.editStaff=function(id){_e.apply(this,arguments);if(!id||!isOwnerMe())return;
+ const c=document.querySelector('#modal .card');if(!c)return;
+ c.insertAdjacentHTML('beforeend','<div class="rlentry"><div><b>'+ic('idcard',13)+' Login account</b><small>User ID <code>'+esc(id)+'</code>. Moving to a new login keeps all their records.</small></div><button type="button" class="btn sm ghost" onclick="relinkStart(\''+esc(id)+'\')">'+ic('refresh',13)+'Change login account</button></div>');};}
+window.__rl={scan:rlScan,deep:(v,o,n)=>{const h={n:0};return {v:rlDeep(v,o,n,rlMode(o),h),n:h.n};}};
 
 </script>
