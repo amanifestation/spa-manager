@@ -2778,6 +2778,9 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 .hrtread p,.hrtread li{font-size:13.5px;line-height:1.6;color:var(--ink-2)}
 .hrtread ul,.hrtread ol{margin:0;padding-left:20px}.hrtread p{margin:0 0 6px}
 @media (max-width:560px){.hrtsh{flex-wrap:wrap}.hrtsh input.f{flex-basis:calc(100% - 30px)}}
+/* 29z claim forms */
+.clmine{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}
+@media(max-width:640px){.hrmeg{grid-template-columns:1fr}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3039,7 +3042,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-06y';
+const BUILD='2026-10-06z';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -14854,7 +14857,7 @@ window.claimSave=async sid=>{
  $('#cl-go').disabled=true;
  const rec={staffId:sid,staffName:s.name,branchId:s.branchId||ME.branchId,date:$('#cl-d').value||today(),amount:amt,category:$('#cl-c').value,
   note:note.slice(0,300),status:'pending',createdAt:new Date().toISOString(),submittedBy:UID,
-  submittedByName:(typeof actorName==='function'?actorName():ME.name),...(CLRCPT?{receipt:CLRCPT}:{})};
+  submittedByName:(typeof actorName==='function'?actorName():ME.name),...(CLRCPT?{receipt:CLRCPT}:{}),...(window.clExtra?window.clExtra():{})};
  try{const r=await addDoc(collection(db,'claims'),rec);(CLAIMS=CLAIMS||[]).unshift({id:r.id,...rec});
   logEvent('attendance','Claim · '+s.name,rec.category+' · '+rm(amt),{refType:'hr'});
   await audit('Claim submitted',s.name+' · '+rec.category+' · '+rm(amt));
@@ -16872,9 +16875,17 @@ async function docPDF(rec){
    d.setDrawColor(...LN);d.setLineWidth(0.25);
    for(let r=0;r<=t.rows;r++)d.line(M,y+7+r*rh,W-M,y+7+r*rh);
    cx=M;t.w.forEach(w=>{d.line(cx,y,cx,y+7+t.rows*rh);cx+=w*CW;});d.line(W-M,y,W-M,y+7+t.rows*rh);d.line(M,y,W-M,y);
+   if(t.data){t.data.forEach((row,r)=>{let cx2=M;const bo=(t.bold||[]).includes(r);row.forEach((v,i)=>{font(7.8,bo?'bold':'normal');const cw2=t.w[i]*CW,rt=(t.al||[])[i]==='r';
+     const ls=d.splitTextToSize(pdfText(String(v==null?'':v)),cw2-3).slice(0,2);ls.forEach((l,q)=>d.text(l,rt?cx2+cw2-1.5:cx2+1.5,y+7+r*rh+(ls.length>1?3.4:5.4)+q*3.3,rt?{align:'right'}:{}));cx2+=cw2;});});}
    y+=7+t.rows*rh+4;}
   else if(k.checks){const cols=k.cols||3,cw=CW/cols;for(let i=0;i<k.checks.length;i+=cols){need(6);k.checks.slice(i,i+cols).forEach((c,j)=>{const cx=M+j*cw;
     d.setDrawColor(...INK);d.setLineWidth(0.25);d.rect(cx,y-3,3.2,3.2);font(8.6,'normal');T(c,cx+5,y);});y+=5.6;}y+=2;}
+  else if(k.br){d.addPage();head(false);}
+  else if(k.keep!=null){if(k.keep)need(k.keep);}
+  else if(k.img){let pr=null;try{pr=d.getImageProperties(k.img);}catch(e){}
+   if(pr){let w=Math.min(CW*0.6,pr.width*0.25),h=w*pr.height/pr.width;if(h>115){h=115;w=h*pr.width/pr.height;}need(h+9);
+    if(k.cap){font(8,'bold',MUT);T(k.cap,M,y);y+=2.5;}try{d.addImage(k.img,/png/i.test(k.img.slice(0,30))?'PNG':'JPEG',M,y,w,h);}catch(e){}
+    d.setDrawColor(...LN);d.setLineWidth(0.25);d.rect(M,y,w,h);y+=h+7;}}
   else if(k.sign){y+=2;sigBlock(k.sign);}
  }
  const pages=d.getNumberOfPages();
@@ -30802,5 +30813,121 @@ window.hrtNewGo=()=>{const bm=String(($('#nj-bm')||{}).value||'').trim(),en=Stri
   (base.sections||[]).forEach(sc=>{['bm','en'].forEach(L=>{if(sc.h&&sc.h[L]!=null)sc.h[L]=sw(sc.h[L],L);if(sc.items&&sc.items[L])sc.items[L]=sc.items[L].map(v=>sw(v,L));});});}
  base.key=key;base.kind='jd';base.custom=true;base.title={bm,en};HRTE={key,lang:'bm',t:base};hrtPaint();};
 window.__hrt={get:hrtGet,jds:()=>hrtJDs().map(t=>t.key),match:hrtMatchJD,blocks:(type,lang,x)=>hrtBlocks(type,lang,x),std:HRT_STD};
+
+/* ============ 29z: Claim forms — a PDF for every claim, a month of claims per person, and a blank form for paper claims ============
+   The form is bilingual (BM / EN) like the other HR forms. A filled form carries the employee's details,
+   every claim line, the mileage log, who approved it and how it was paid, with the receipt photos
+   attached at the back. The blank form has the same layout with empty lines, for staff who claim on paper. */
+DOCT.claim={bm:'Borang Tuntutan Perbelanjaan Pekerja',en:'Employee Expense Claim Form',form:1,d:'Blank form for paper claims, or with one person’s details filled in',ic:'receipt'};
+const CL_BM={'Transport / parking':'Pengangkutan / parkir','Supplies':'Bekalan','Staff meal':'Makan staf','Training / course':'Latihan / kursus','Phone / internet':'Telefon / internet',
+ 'Medical':'Perubatan','Other':'Lain-lain','Mileage (own vehicle)':'Perbatuan (kenderaan sendiri)'};
+const clCat=c=>c==='Mileage (own vehicle)'?'Perbatuan / Mileage':CL_BM[c]?CL_BM[c]+' / '+c:(c||'');
+const CLSTB={pending:'Menunggu kelulusan / Pending',approved:'Diluluskan / Approved',paid:'Dibayar / Paid',rejected:'Ditolak / Rejected',cancelled:'Dibatalkan / Cancelled'};
+const clRef=x=>'CLM/'+String(x.date||today()).slice(2,7).replace('-','')+'/'+String(x.id||'').slice(-5).toUpperCase();
+const clMRef=(sid,m)=>'CLM/'+m.slice(2).replace('-','')+'/'+String(sid).slice(-4).toUpperCase()+'-M';
+const clKmOf=x=>{const m=/([\d.]+)\s*km/i.exec(x.note||'');return x.km||(m?+m[1]:0);};
+const clRate=()=>+((typeof PRC!=='undefined'&&PRC)||{}).kmRate||0.6;
+/* who the form is for: the owner's staff file, or the person's own details sent from My HR */
+function clPerson(sid){const s=stf(sid)||{},f=((HRSTAFF||{})[sid])||(sid===UID&&typeof MYINFO!=='undefined'&&MYINFO?MYINFO:{})||{};
+ const br=(D.branches||[]).find(b=>b.id===(s.branchId||f.branchId))||{};
+ return {name:f.fullName||s.name||'',ic:f.ic||'',position:f.position||s.position||(typeof ROLE!=='undefined'&&ROLE[s.role])||'',branch:br.name||'',
+  bank:f.bank||'',bankAcc:f.bankAcc||'',phone:f.phone||s.phone||'',staffNo:f.staffNo||''};}
+const clChunk=(a,n)=>{const o=[];for(let i=0;i<a.length;i+=n)o.push(a.slice(i,i+n));return o.length?o:[[]];};
+
+function clBlocks(x){const B=[],L=x.claims||[],blank=!L.length,P=x.person||{},bn=coName();
+ const kms=L.filter(c=>c.category==='Mileage (own vehicle)');
+ B.push({meta:[['No. rujukan / Ref',x.ref||'....................'],['Tarikh / Date',blank?'....................':dLong(x.date,'en')]]});
+ B.push({title:'BORANG TUNTUTAN PERBELANJAAN PEKERJA',sub:'EMPLOYEE EXPENSE CLAIM FORM',center:1});
+ if(x.period)B.push({note:'Tempoh tuntutan / Claim period: '+x.period});
+ B.push({h:'A. Maklumat pekerja / Employee details'},{fields:[['Nama penuh (seperti KP) / Full name (as in IC)',P.name]],cols:1},
+  {fields:[['No. KP / IC no.',P.ic],['No. pekerja / Staff no.',P.staffNo],['Jawatan / Position',P.position],['Cawangan / Branch',P.branch],
+   ['Bank (untuk bayaran balik) / Bank (for reimbursement)',P.bank],['No. akaun / Account no.',P.bankAcc]],cols:2});
+ B.push({h:'B. Butiran tuntutan / Claim details'},{note:'Satu baris bagi setiap resit. Lampirkan resit asal. / One line per receipt. Attach the original receipts.'});
+ const head=['Bil. / No.','Tarikh / Date','Kategori / Category','Butiran & tujuan / Description & purpose','No. resit / Receipt no.','Amaun / Amount (RM)'],w=[.07,.12,.2,.37,.12,.12];
+ if(blank){B.push({table:{head,w,rows:14,al:['','','','','','r']}});
+  B.push({fields:[['Jumlah dalam perkataan / Amount in words'],['Jumlah tuntutan / Total claimed (RM)']],cols:2});}
+ else{let n=0;const tot=r2(L.reduce((t,c)=>t+(+c.amount||0),0));const ch=clChunk(L,18);
+  ch.forEach((part,pi)=>{const data=part.map(c=>[String(++n),dLong(c.date,'en'),clCat(c.category),c.note||'',c.receiptNo||(c.receipt?'Foto / Photo':'—'),(+c.amount||0).toFixed(2)]);
+   const last=pi===ch.length-1;if(last)data.push(['','','','','JUMLAH / TOTAL',tot.toFixed(2)]);
+   B.push({table:{head,w,rows:data.length,data,al:['','','','','','r'],bold:last?[data.length-1]:[]}});});
+  B.push({p:'Jumlah dalam perkataan / Amount in words: '+clWords(tot),sz:8.6,it:1});}
+ if(blank)B.push({br:1});
+ if(blank||kms.length){B.push({h:'C. Log perbatuan (kenderaan sendiri) / Mileage log (own vehicle)'},
+   {p:'Kadar / Rate: RM '+clRate().toFixed(2)+' sekilometer / per km. Tol dan parkir dituntut berasingan dengan resit. / Toll and parking are claimed separately with receipts.',sz:7.8,it:1});
+  const mh=['Tarikh / Date','Dari - Ke / From - To','Tujuan / Purpose','Km','Amaun / Amount (RM)'],mw=[.14,.3,.34,.08,.14];
+  if(blank)B.push({table:{head:mh,w:mw,rows:6,al:['','','','r','r']}});
+  else B.push({table:{head:mh,w:mw,rows:kms.length,data:kms.map(c=>[dLong(c.date,'en'),c.route||'',c.note||'',String(clKmOf(c)||''),(+c.amount||0).toFixed(2)]),al:['','','','r','r']}});}
+ B.push({keep:blank?0:92},{h:(blank||kms.length?'D':'C')+'. Perakuan pekerja / Employee declaration'},
+  {p:'Saya mengaku bahawa perbelanjaan di atas telah dibuat untuk urusan rasmi '+bn+', jumlahnya benar, resit asal dilampirkan, dan tuntutan ini belum pernah dibuat atau dibayar sebelum ini. Saya faham tuntutan palsu ialah salah laku serius.',sz:8.6},
+  {p:'I declare that the expenses above were incurred on official business of '+bn+', the amounts are true, the original receipts are attached, and this claim has not been made or paid before. I understand that a false claim is serious misconduct.',sz:8.6,it:1});
+ const ap=L.find(c=>c.decidedByName)||{},paid=L.find(c=>c.paidAt)||{};
+ B.push({sign:[{who:'emp',name:P.name,sub:'Tandatangan pekerja / Claimant’s signature'},{who:'apv',name:blank?'':(ap.decidedByName||''),sub:'Disemak & diluluskan oleh / Checked & approved by'}]});
+ const sts=[...new Set(L.map(c=>c.status))];
+ B.push({office:[['Status',blank?'':sts.map(s=>CLSTB[s]||s).join(', ')],['Tarikh lulus / Date approved',ap.decidedAt?dLong(String(ap.decidedAt).slice(0,10),'en'):''],
+  ['Amaun diluluskan / Amount approved (RM)',blank?'':r2(L.filter(c=>['approved','paid'].includes(c.status)).reduce((t,c)=>t+(+c.amount||0),0)).toFixed(2)],['Dibayar melalui / Paid via',paid.paidHow||''],
+  ['Tarikh bayar / Date paid',paid.paidAt?dLong(String(paid.paidAt).slice(0,10),'en'):''],['Catatan / Remarks',(L.map(c=>c.decisionNote).filter(Boolean).join('; '))||'']]});
+ B.push({p:'Hantar dalam masa 30 hari dari tarikh resit. Tuntutan yang diluluskan dibayar bersama gaji. / Submit within 30 days of the receipt date. Approved claims are paid with salary.',sz:7.8,it:1});
+ const R=L.filter(c=>c.receipt);
+ if(R.length){B.push({br:1},{h:'Lampiran: resit / Attachment: receipts'});
+  R.forEach((c,i)=>B.push({img:c.receipt,cap:(i+1)+'. '+dLong(c.date,'en')+' · '+clCat(c.category)+' · RM '+(+c.amount||0).toFixed(2)}));}
+ const fx=v=>typeof v==='string'?v.replace(/\u2192/g,'->').replace(/[\u2018\u2019]/g,"'"):v;
+ B.forEach(k=>{if(k.table&&k.table.data)k.table.data=k.table.data.map(r=>r.map(fx));['p','note','cap'].forEach(f=>{if(k[f])k[f]=fx(k[f]);});});
+ return B;}
+/* RM amounts in words (English), as accounts forms usually have them */
+function clWords(v){const n=Math.round((+v||0)*100),rg=Math.floor(n/100),s=n%100;
+ const o=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'],
+  t=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+ const w=k=>{if(k<20)return o[k];if(k<100)return t[Math.floor(k/10)]+(k%10?'-'+o[k%10]:'');if(k<1000)return o[Math.floor(k/100)]+' hundred'+(k%100?' and '+w(k%100):'');
+  if(k<1e6)return w(Math.floor(k/1000))+' thousand'+(k%1000?(k%1000<100?' and ':' ')+w(k%1000):'');return String(k);};
+ const r=(rg?w(rg):'zero')+(s?' and cents '+w(s):'')+' only';return 'Ringgit Malaysia '+r.replace(/^./,c=>c.toUpperCase());}
+
+{const _b=docBlocks;docBlocks=function(type,lang,x,biz){if(type!=='claim')return _b.apply(this,arguments);return clBlocks(x);};}
+/* from the Documents tab: a blank form, or one with the person's details filled in, ready to fill by hand */
+{const _f=docForm;docForm=function(type,sid,lang){if(type!=='claim')return _f.apply(this,arguments);window.closeModal();claimBlank(sid||'');};}
+window.claimBlank=sid=>{const P=sid?clPerson(sid):{};docDownload({type:'claim',lang:'bm',data:{person:P,name:P.name||'',branch:P.branch||'',claims:[]},ref:''});};
+window.claimPDF=id=>{const c=(CLAIMS||[]).find(x=>x.id===id);if(!c)return;const P=clPerson(c.staffId);
+ docDownload({type:'claim',lang:'bm',data:{person:P,name:(P.name||c.staffName||'')+'-'+clRef(c).replace(/\//g,'-'),branch:P.branch,claims:[c],date:String(c.createdAt||c.date).slice(0,10)},ref:clRef(c)});};
+/* one form for a person's month — the usual way claims go to accounts */
+window.claimMonthPDF=(sid,m)=>{sid=sid||(($('#clm-s')||{}).value)||'';m=m||(($('#clm-m')||{}).value)||today().slice(0,7);
+ const e=$('#clm-e');if(!sid){if(e)e.textContent='Choose a person.';return;}
+ const L=(CLAIMS||[]).filter(c=>c.staffId===sid&&String(c.date).slice(0,7)===m&&!['cancelled','rejected'].includes(c.status)).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+ if(!L.length){if(e)e.textContent='No claims for '+mLabel(m)+'.';else toast('No claims for '+mLabel(m));return;}if(e)e.textContent='';
+ const P=clPerson(sid),[y,mm]=m.split('-'),end=ymd(new Date(+y,+mm,0));
+ docDownload({type:'claim',lang:'bm',data:{person:P,name:(P.name||'')+'-'+m,branch:P.branch,claims:L,date:today(),period:dLong(m+'-01','en')+' - '+dLong(end,'en')},ref:clMRef(sid,m)});};
+
+/* list rows get a PDF button */
+{const _r=clRow;clRow=function(x,own){const h=_r.apply(this,arguments);
+ return h.replace('<span class="pill','<button class="iconbtn" style="padding:4px" onclick="claimPDF(\''+x.id+'\')" title="Claim form (PDF)" data-clpdf="'+x.id+'">'+ic('download',14)+'</button><span class="pill');};}
+/* the review window gets one too */
+{const _d=window.claimDecide;window.claimDecide=id=>{_d(id);const c=document.querySelector('#modal .card');if(c)c.insertAdjacentHTML('beforeend','<button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px" onclick="claimPDF(\''+id+'\')">'+ic('download',13)+'Claim form (PDF)</button>');};}
+/* the Claims tab: monthly form per person and the blank form */
+function clFormsCard(){const P=hrPeople(),m=today().slice(0,7),ms=[0,1,2,3,4,5].map(i=>{const d=new Date(+m.slice(0,4),+m.slice(5)-1-i,1);return ymd(d).slice(0,7);});
+ return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('note',15)+' Claim forms</h3>'+
+  '<button class="btn sm ghost" onclick="claimBlank(\'\')">'+ic('print',13)+'Blank form</button></div>'+
+  '<p class="tiny muted" style="margin:4px 0 8px">One form per person per month with every claim, the approval and the receipts attached — for your records or your accountant. The blank form is for staff who claim on paper: key it in with <b>Submit a claim</b> once it is handed in.</p>'+
+  '<div class="grid g2"><div><label>Person</label><select class="f" id="clm-s"><option value="">Choose…</option>'+P.map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('')+'</select></div>'+
+  '<div><label>Month</label><select class="f" id="clm-m">'+ms.map(x=>'<option value="'+x+'">'+mLabel(x)+'</option>').join('')+'</select></div></div>'+
+  '<div id="clm-e" class="tiny" style="color:var(--rose);margin:4px 0"></div>'+
+  '<div class="grid g2"><button class="btn" style="justify-content:center" onclick="claimMonthPDF()">'+ic('download',14)+'Monthly claim form</button>'+
+  '<button class="btn ghost" style="justify-content:center" onclick="clmPaper()">'+ic('plus',14)+'Key in a paper claim</button></div></div>';}
+window.clmPaper=()=>{const s=($('#clm-s')||{}).value;const e=$('#clm-e');if(!s){if(e)e.textContent='Choose who the paper claim is from.';return;}window.claimForm(s);};
+{const _h=hrClaims;hrClaims=function(){const h=_h.apply(this,arguments);if(CLAIMS===null)return h;return h+clFormsCard();};}
+/* My HR: my month's form and a blank paper form */
+{const _m=hrMe;hrMe=function(){let h=_m.apply(this,arguments);const s=hrWho();if(!s)return h;const m=today().slice(0,7);
+ const k=h.indexOf(' My claims</h3>');if(k<0)return h;const a=h.lastIndexOf('<h3',k);
+ const g=h.lastIndexOf('<div class="grid g2" style="align-items:start">',a);
+ h=h.slice(0,a)+'<h3 style="margin:0 0 6px">'+ic('receipt',15)+' My claims</h3><div class="clmine">'+
+  '<button class="btn sm ghost" onclick="claimMonthPDF(\''+s.id+'\',\''+m+'\')" title="All my claims this month">'+ic('download',13)+'Claim form · '+mLabel(m)+'</button>'+
+  '<button class="btn sm ghost" onclick="claimBlank(\''+s.id+'\')">'+ic('print',13)+'Blank form</button></div>'+h.slice(k+' My claims</h3>'.length);
+ if(g>=0)h=h.slice(0,g)+'<div class="grid g2 hrmeg" style="align-items:start">'+h.slice(g+'<div class="grid g2" style="align-items:start">'.length);
+ return h;};}
+window.__clm={blocks:clBlocks,ref:clRef,words:clWords,person:clPerson};
+/* the claim window asks for the receipt number, and for mileage where the trip was from and to */
+{const _f=window.claimForm;window.claimForm=sid=>{_f(sid);const n=$('#cl-n');if(!n)return;
+ n.insertAdjacentHTML('afterend','<label>Receipt / invoice no. <span class="muted">— optional</span></label><input class="f" id="cl-rn" maxlength="40">');
+ const k=$('#cl-km');if(k)k.insertAdjacentHTML('afterbegin','<label>From \u2192 to</label><input class="f" id="cl-rt" maxlength="80" placeholder="e.g. Kulai \u2192 Johor Bahru (supplier)">');};}
+window.clExtra=()=>{const o={},rn=String(($('#cl-rn')||{}).value||'').trim(),c=($('#cl-c')||{}).value,rt=String(($('#cl-rt')||{}).value||'').trim();
+ if(rn)o.receiptNo=rn.slice(0,40);if(c==='Mileage (own vehicle)'){if(rt)o.route=rt.slice(0,80);const km=+(($('#cl-k')||{}).value)||0;if(km)o.km=km;}return o;};
+if(typeof I18N!=='undefined')Object.assign(I18N,{'Blank form':'Borang kosong','Claim form (PDF)':'Borang tuntutan (PDF)','Claim forms':'Borang tuntutan','Monthly claim form':'Borang tuntutan bulanan','Key in a paper claim':'Masukkan tuntutan kertas','Receipt / invoice no.':'No. resit / invois'});
 
 </script>
