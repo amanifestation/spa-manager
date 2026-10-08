@@ -2781,6 +2781,134 @@ html.pubbrand .fbmark{background:#0D0D0D;color:#D7C5AA}
 /* 29z claim forms */
 .clmine{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}
 @media(max-width:640px){.hrmeg{grid-template-columns:1fr}}
+/* ============ 30a games after payment ============ */
+/* receipt banner */
+.gmrc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0;padding:12px 14px;border-radius:16px;background:linear-gradient(120deg,var(--brass-soft),#fff);border:1px solid var(--brass)}
+.gmrc.off{border-style:dashed;background:var(--surface)}
+.gmrc-i{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--brass);color:#fff;flex:none}
+.gmrc-t{flex:1;min-width:160px}.gmrc-t b{display:block;font-size:14px}.gmrc-t small{color:var(--ink-2);font-size:12px}
+.gmrc-b{display:flex;gap:6px;flex-wrap:wrap}
+.gmqr{text-align:center}.gmqr-g{font-weight:700;color:var(--brass);display:flex;gap:6px;align-items:center;justify-content:center;margin-bottom:10px}
+.gmqr-c{display:inline-block;padding:12px;background:#fff;border-radius:18px;box-shadow:0 8px 26px rgba(20,18,15,.12)}
+.gmqr-c.noqr::after{content:'QR unavailable offline — use the link';font-size:12px;color:var(--ink-3)}
+.gmqr-h{font-size:18px;font-weight:800;margin:12px 0 2px}.gmqr-l{word-break:break-all;margin-bottom:12px}
+/* the owner's screen */
+.gmgames{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0}
+.gmgames.sm{grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:640px){.gmgames.sm{grid-template-columns:repeat(3,1fr)}}
+.gmgcard{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font:inherit;color:var(--ink)}
+.gmgcard span{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--brass-soft);color:var(--brass);margin-bottom:4px}
+.gmgcard b{font-size:13.5px}.gmgcard small{font-size:11.5px;color:var(--ink-3)}.gmgcard em{font-style:normal;font-size:11.5px;color:var(--ink-2);margin-top:4px}
+.gmgcard.on{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass) inset;background:var(--brass-soft)}
+.gmgcard.on span{background:var(--brass);color:#fff}
+.gmempty{text-align:center}.gmempty-i{width:62px;height:62px;border-radius:20px;margin:6px auto 8px;display:grid;place-items:center;background:var(--brass-soft);color:var(--brass)}
+.gmcc-h{display:flex;align-items:center;gap:10px}.gmcc-i{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--brass-soft);color:var(--brass);flex:none}
+.gmcc-t{flex:1;min-width:0}.gmcc-t b{display:block}.gmcc-t small{color:var(--ink-3);font-size:12px}
+.gmcc-p{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.gmchip{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--brass-soft);color:var(--ink)}.gmchip.lose{background:var(--line-2,#eee);color:var(--ink-3)}
+.gmcc-s{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-2);margin:4px 0 8px}.gmcc-s b{font-size:15px;color:var(--ink)}
+.gmcc-b{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.gmed h3{margin:16px 0 8px;font-size:14px;color:var(--brass)}.gmed h3:first-child{margin-top:0}
+.gmchk{display:flex;flex-wrap:wrap;gap:6px 16px;margin:4px 0 10px}.gmchk label{display:flex;gap:6px;align-items:center;font-size:13px;margin:0}
+.gmpr{border:1px solid var(--line);border-radius:14px;padding:8px;margin-bottom:8px;background:var(--surface)}
+.gmpr-a{display:grid;grid-template-columns:1.5fr 1fr 34px;gap:6px;align-items:center}
+.gmpr-b{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px;margin-top:6px}.gmpr-b.draw{grid-template-columns:1.5fr 1fr 1fr}
+.gmpr .f{margin:0;min-width:0}.gmfl{margin:0;display:flex;flex-direction:column;gap:2px}.gmfl small{font-size:10.5px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmna{display:block;padding:9px 4px;color:var(--ink-3)}
+@media(max-width:560px){.gmpr-a{grid-template-columns:1fr 34px}.gmpr-a select{grid-column:1/2}.gmpr-b,.gmpr-b.draw{grid-template-columns:1fr 1fr}}
+.gmodds{margin:8px 0 10px;color:var(--ink-2)}
+.gmsw{display:flex;gap:8px;margin-top:4px}.gmsw label{margin:0;cursor:pointer}.gmsw input{position:absolute;opacity:0;pointer-events:none}
+.gmsw span{display:block;width:30px;height:30px;border-radius:50%;border:2px solid transparent}.gmsw input:checked+span{border-color:var(--ink);transform:scale(1.08)}
+.gmchkres{margin-top:10px;padding:12px;border-radius:14px;background:var(--brass-soft);display:flex;flex-direction:column;gap:6px;align-items:flex-start}.gmchkres small{color:var(--ink-2)}
+.gmrank{width:26px;height:26px;border-radius:50%;background:var(--brass);color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+/* the overlay used to play on the counter screen or try a campaign */
+body.gmlock{overflow:hidden}
+.gmov{position:fixed;inset:0;z-index:9000;background:var(--bg,#FAF7F2);overflow:auto;-webkit-overflow-scrolling:touch}
+.gmov .gmpage{padding-top:64px}
+.gmov-x{position:fixed;top:12px;right:12px;z-index:2;width:42px;height:42px;border-radius:50%;border:0;background:rgba(20,18,15,.08);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+/* ---------- the client's page ---------- */
+.gmpage{--g1:#A67C3D;--g2:#F3E9D8;--g3:#14120F;min-height:100vh;max-width:520px;margin:0 auto;padding:18px 16px 40px;position:relative;overflow:hidden;
+ background:radial-gradient(120% 60% at 50% 0%,var(--g2),transparent 70%)}
+.gmprev{background:#fff4d6;color:#7a5a10;border-radius:10px;padding:7px 10px;font-size:12.5px;display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.gmhead{display:flex;align-items:center;gap:10px;margin:2px 0 14px}.gmhead img{max-height:44px;max-width:110px;object-fit:contain}
+.gmmark{width:40px;height:40px;border-radius:12px;background:var(--g1);color:#fff;display:grid;place-items:center}
+.gmbiz{flex:1;font-weight:800;font-size:15px;color:var(--g3)}
+.gmlang{display:flex;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:999px;padding:2px}
+.gmlang button{border:0;background:none;font:700 11.5px/1 inherit;padding:6px 10px;border-radius:999px;color:var(--ink-3);cursor:pointer}.gmlang button.on{background:var(--g1);color:#fff}
+.gmh1{font-size:26px;line-height:1.15;text-align:center;margin:6px 0 4px;color:var(--g3)}
+.gmsub{text-align:center;color:var(--ink-2);margin:0 0 14px;font-size:14.5px}
+.gmbox{background:var(--surface,#fff);border:1px solid var(--line);border-radius:24px;padding:20px 16px;box-shadow:0 14px 40px rgba(20,18,15,.08);text-align:center;position:relative}
+.gmgame{display:inline-flex;gap:6px;align-items:center;font-weight:800;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--g1);background:var(--g2);padding:6px 12px;border-radius:999px;margin-bottom:14px}
+.gmmsg{color:var(--ink-2);margin:8px 0}.gmhint{font-weight:700;margin:0 0 12px}
+/* wheel */
+.gmwheel{position:relative;width:min(84vw,330px);aspect-ratio:1;margin:6px auto 4px}
+.gmwrot{width:100%;height:100%;border-radius:50%;box-shadow:0 10px 30px rgba(20,18,15,.25)}
+.gmsvg{width:100%;height:100%;display:block}
+.gmptr{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--g3);z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
+.gmhub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:27%;aspect-ratio:1;border-radius:50%;border:4px solid #fff;background:var(--g1);color:#fff;font:800 15px/1 inherit;cursor:pointer;box-shadow:0 6px 18px rgba(20,18,15,.3);z-index:3;animation:gmpulse 1.6s ease-in-out infinite}
+.gmhub:disabled{animation:none;font-size:11px;opacity:.95}
+@keyframes gmpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.0),0 6px 18px rgba(20,18,15,.3)}50%{box-shadow:0 0 0 10px rgba(255,255,255,.35),0 6px 18px rgba(20,18,15,.3)}}
+/* gift boxes */
+.gmboxes,.gmcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px;margin:4px 0 6px}
+.gmgb{position:relative;height:104px;border:0;background:none;cursor:pointer;padding:0;animation:gmbob 2.4s ease-in-out infinite}
+.gmgb:nth-child(2n){animation-delay:.4s}.gmgb:nth-child(3n){animation-delay:.8s}
+@keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.gmbody{position:absolute;left:12%;right:12%;bottom:0;height:62%;border-radius:8px;background:var(--g1);box-shadow:inset 0 -8px 0 rgba(0,0,0,.12)}
+.gmlid{position:absolute;left:6%;right:6%;top:22%;height:20%;border-radius:7px;background:var(--g1);filter:brightness(1.12);z-index:2;transition:transform .7s cubic-bezier(.3,1.6,.5,1),opacity .7s}
+.gmrib{position:absolute;left:46%;width:8%;top:22%;bottom:0;background:var(--g2);z-index:3;transition:opacity .3s}
+.gmlid::before,.gmlid::after{content:'';position:absolute;top:-58%;width:34%;height:70%;border:5px solid var(--g2);border-radius:50% 50% 0 50%}
+.gmlid::before{left:16%;transform:rotate(-20deg)}.gmlid::after{right:16%;transform:rotate(20deg) scaleX(-1)}
+.gmin{position:absolute;left:4%;right:4%;bottom:10%;display:grid;place-items:center;opacity:0;transform:scale(.4);transition:all .5s .25s;z-index:4}
+.gmin b{background:#fff;color:var(--g3);font-size:12px;line-height:1.2;padding:6px 7px;border-radius:9px;box-shadow:0 6px 16px rgba(20,18,15,.18)}
+.gmgb.open{animation:none}.gmgb.open .gmlid{transform:translateY(-60px) rotate(-16deg);opacity:0}.gmgb.open .gmrib{opacity:0}.gmgb.open .gmin{opacity:1;transform:scale(1)}
+.gmgb.me .gmin b{background:var(--g3);color:#fff;font-size:13px}
+.gmgb.dim{opacity:.55}
+/* cards */
+.gmcard{position:relative;height:126px;border:0;background:none;padding:0;cursor:pointer;perspective:700px}
+.gmcf{position:absolute;inset:0;border-radius:14px;display:grid;place-items:center;backface-visibility:hidden;transition:transform .7s cubic-bezier(.3,1.3,.5,1);box-shadow:0 8px 20px rgba(20,18,15,.15)}
+.gmcb{background:repeating-linear-gradient(45deg,var(--g1) 0 8px,color-mix(in srgb,var(--g1) 80%,#fff) 8px 16px);color:#fff;border:4px solid #fff}
+.gmcb i{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.gmcx{background:#fff;transform:rotateY(180deg);border:2px solid var(--g2);padding:8px}.gmcx b{font-size:12.5px;color:var(--g3);line-height:1.2}
+.gmcard.open .gmcb{transform:rotateY(180deg)}.gmcard.open .gmcx{transform:rotateY(360deg)}
+.gmcard.me .gmcx{background:var(--g3)}.gmcard.me .gmcx b{color:#fff;font-size:13.5px}.gmcard.dim{opacity:.55}
+/* scratch */
+.gmscr{position:relative;width:100%;max-width:330px;aspect-ratio:600/320;margin:4px auto;border-radius:18px;overflow:hidden;box-shadow:0 10px 26px rgba(20,18,15,.18)}
+.gmscr-u{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;background:linear-gradient(135deg,var(--g2),#fff);padding:10px}
+.gmscr-u small{color:var(--g1);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:12px}.gmscr-u b{font-size:24px;color:var(--g3);line-height:1.15}
+.gmscr canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+.gmlink{border:0;background:none;color:var(--ink-3);text-decoration:underline;font:inherit;font-size:13px;margin-top:10px;cursor:pointer}
+/* result */
+.gmres{padding-top:26px}.gmres-i{width:58px;height:58px;border-radius:50%;margin:0 auto 8px;display:grid;place-items:center;background:var(--g1);color:#fff;box-shadow:0 0 0 8px var(--g2)}
+.gmres.lose .gmres-i{background:var(--ink-3)}
+.gmwon{font-weight:800;color:var(--g1);text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.gmprize{font-size:30px;line-height:1.1;margin:4px 0 6px;color:var(--g3)}
+.gmres h2{margin:4px 0}
+.gmcode{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px auto 10px;padding:12px;border:2px dashed var(--g1);border-radius:16px;background:var(--g2);max-width:320px}
+.gmcode small{width:100%;font-size:11.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+.gmcode b{font:800 24px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--g3)}
+.gmcode button{border:0;background:var(--g1);color:#fff;font:700 12px/1 inherit;padding:7px 10px;border-radius:9px;cursor:pointer}
+.gmrows{display:grid;gap:6px;max-width:320px;margin:0 auto}.gmrows div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}.gmrows span{color:var(--ink-3)}
+.gmhow{font-size:13.5px;color:var(--ink-2);margin:12px 0 4px}.gmerr{font-size:12.5px;color:#9a3b1b;background:#fdeee6;border-radius:10px;padding:8px}
+.gmbtns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.gmbtn{display:block;text-align:center;text-decoration:none;border:0;border-radius:14px;padding:13px;font:800 15px/1.1 inherit;background:var(--g1);color:#fff;cursor:pointer}
+.gmbtn.ghost{background:transparent;color:var(--g3);box-shadow:inset 0 0 0 1.5px var(--g3)}.gmbtn.big{width:100%;margin-top:14px;font-size:16px;padding:15px}
+.gmwhen{font-size:12px;color:var(--ink-3);margin-top:10px}
+.gmterms{margin:14px 4px 0;font-size:12.5px;color:var(--ink-2)}.gmterms summary{cursor:pointer;font-weight:700}.gmterms div{margin-top:6px;line-height:1.5}
+.gmfoot{text-align:center;color:var(--ink-3);font-size:11.5px;margin-top:16px}
+/* lucky draw ticket */
+.gmtix{display:flex;margin:4px auto 0;max-width:340px;border-radius:16px;overflow:hidden;box-shadow:0 10px 26px rgba(20,18,15,.16);text-align:left}
+.gmtix-a{flex:1.5;background:var(--g1);color:#fff;padding:14px;display:flex;flex-direction:column;gap:3px}
+.gmtix-a small,.gmtix-b small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;opacity:.85}.gmtix-a b{font-size:17px;line-height:1.15}.gmtix-a span{font-size:12px;opacity:.9}
+.gmtix-b{flex:1;background:var(--g2);color:var(--g3);padding:14px 12px;border-left:3px dashed #fff;display:flex;flex-direction:column;gap:3px;transition:transform .6s cubic-bezier(.5,-0.4,.6,1.4)}
+.gmtix-b b{font:800 17px/1.1 ui-monospace,Menlo,monospace}.gmtix-b span{font-size:12px}
+.gmtix.tearing .gmtix-b{transform:translateX(16px) rotate(8deg)}.gmtix.torn .gmtix-b{transform:translateX(10px) rotate(4deg)}
+.gmplist{margin:16px auto 0;max-width:340px;text-align:left}.gmplist small{display:block;font-weight:800;color:var(--g1);text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;margin-bottom:6px}
+.gmplist div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed var(--line)}.gmplist span{color:var(--ink-3)}
+/* confetti */
+.gmconf{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.gmconf i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;animation:gmfall linear forwards}
+@keyframes gmfall{to{top:105%;transform:rotate(720deg) translateX(30px)}}
+@media(prefers-reduced-motion:reduce){.gmgb,.gmhub{animation:none}.gmconf{display:none}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3042,7 +3170,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-06z';
+const BUILD='2026-10-09a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3435,7 +3563,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg,me:vMe};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg,me:vMe,games:vGames};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -5273,7 +5401,7 @@ function rvMessage(v){
 function rvTicket(v){
  const st=rvState(v);
  return '<div class="rvtix'+(st==='used'||st==='expired'?' dim':'')+'">'+
-  '<div class="rvtop"><span>'+ic(v.kind==='prize'?'gift':v.kind==='referral'?'users':'tag',13)+(v.kind==='prize'?' Scratch &amp; win prize':v.kind==='referral'?(v.role==='referrer'?' Referral thank-you':' Referral welcome gift'):' Next-visit voucher')+'</span>'+
+  '<div class="rvtop"><span>'+ic(v.kind==='prize'?'gift':v.kind==='referral'?'users':'tag',13)+(v.kind==='prize'?(v.gameName?' '+esc(v.gameName):' Scratch &amp; win prize'):v.kind==='referral'?(v.role==='referrer'?' Referral thank-you':' Referral welcome gift'):' Next-visit voucher')+'</span>'+
    '<span class="pill '+({ready:'g',waiting:'b',used:'',expired:'r'}[st])+'">'+
    ({ready:'Ready to use',waiting:'From '+dshort(v.validFrom),used:'Used',expired:'Expired'}[st])+'</span></div>'+
   '<div class="rvworth">'+((v.kind==='prize'||v.kind==='referral')&&v.label?esc(v.label):rvWorth(v))+'</div>'+
@@ -12595,7 +12723,7 @@ window.render=render;
   app=initializeApp(cfg);auth=getAuth(app);
   /* the staff app keeps a copy of its records on the device, so a dropped line does not
      stop the counter; the client's feedback page has nothing to keep, so it stays plain */
-  const pub=['fb','lead','book','job','jobs','offer'].some(k=>new URLSearchParams(location.search).has(k));
+  const pub=['fb','lead','book','job','jobs','offer','play'].some(k=>new URLSearchParams(location.search).has(k));
   if(pub)db=getFirestore(app);
   else{
    try{db=initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
@@ -12605,11 +12733,12 @@ window.render=render;
  }
  catch(e){setupScreen('Could not start Firebase: '+e.message);return;}
  pwaInit();
- {const q=new URLSearchParams(location.search);if(['fb','lead','pk','appt','book','job','jobs','offer'].some(k=>q.has(k)))pubBrand();}
+ {const q=new URLSearchParams(location.search);if(['fb','lead','pk','appt','book','job','jobs','offer','play'].some(k=>q.has(k)))pubBrand();}
  /* a client opening their feedback link sees only the rating page, never the login */
  const fbq=new URLSearchParams(location.search).get('fb');
  if(fbq){feedbackPage(fbq.replace(/[^a-z0-9]/gi,'').slice(0,40));return;}
  const lq=new URLSearchParams(location.search);
+ if(lq.has('play')){playPage(String(lq.get('play')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40));return;}
  if(lq.has('lead')){leadFormPage(String(lq.get('lead')||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,40),lq.get('c')||'');return;}
  if(lq.has('pk')){pkViewPage(String(lq.get('pk')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
  if(lq.has('appt')){apptLinkPage(String(lq.get('appt')||'').replace(/[^A-Za-z0-9]/g,'').slice(0,40));return;}
@@ -28892,7 +29021,7 @@ const STG_GROUPS=[
  {k:'pay', i:'card',    t:'Payments & checkout',  d:'How clients can pay, and what staff may change at the counter', m:/^(Payment methods|Checkout)/},
  {k:'cli', i:'users',   t:'Clients',              d:'How they found us, feedback & merit, paper records', m:/^(How clients found us|Client feedback|Paper records)/},
  {k:'book',i:'calendar',t:'Bookings & packages',  d:'Online booking, deposits & reminders, package rules, credit & membership', m:/^(Online booking|Booking rules|Packages)/},
- {k:'mkt', i:'gift',    t:'Marketing & rewards',  d:'Scratch & win, come-back vouchers, referrals, leads', m:/^(Scratch|Come-back|Referral|Leads)/},
+ {k:'mkt', i:'gift',    t:'Marketing & rewards',  d:'Games after payment, scratch & win, come-back vouchers, referrals, leads', m:/^(Scratch|Come-back|Referral|Leads|Games)/},
  {k:'team',i:'staff',   t:'Team',                 d:'Attendance by QR', m:/^Attendance/},
  {k:'data',i:'shield',  t:'Data & audit trail',   d:'Demo data, backup, who changed what', m:/^(Data|Audit trail)$/},
  {k:'more',i:'gear',    t:'More',                 d:'', m:/./}];
@@ -28909,6 +29038,7 @@ const STG_DESC=[
  [/^Online booking/,'Booking page: days, times, treatments, terms'],
  [/^Booking rules/,'Deposits, WhatsApp reminders, waitlist'],
  [/^Packages/,'Transfer, share, freeze, top-up credit, membership'],
+ [/^Games/,'Spin & win, mystery gifts and lucky draws after payment — set up in the Games screen'],
  [/^Scratch/,'A prize card after each review'],
  [/^Come-back/,'A voucher for the next visit, from the receipt'],
  [/^Referral/,'Rewards for the client who refers and the friend'],
@@ -28925,7 +29055,7 @@ function stgKeep(){try{localStorage.setItem('spSet',JSON.stringify({g:[...STG.g]
 /* ---------- the page ---------- */
 {const _v=vSet;vSet=function(){
  let h=_v.apply(this,arguments);
- if(boss())h+=srcPanel();
+ if(boss())h+=srcPanel()+(typeof gmSetCard==='function'?gmSetCard():'');
  return stgWrap(h);};}
 
 function stgMe(){
@@ -30098,7 +30228,7 @@ window.__sa={tx,i18n:i18nTxt,lang:()=>LANG,OTR:()=>OTR,SWP:()=>SWP,ent:entOf,pen
    It can be run again safely: a second run finds nothing left to move. Everything is written to
    the audit trail. */
 const RL_COLS=['annReads','announcements','appointments','appraisals','apptLinks','assets','attTokens','attendance','audit','bankImports','bankLines','bankRecon','branches','busy','campaigns','certs',
- 'claims','clientSeq','clinPhotos','commQueries','consentForms','consents','consults','creditNotes','crmTasks','custNotes','customerPackages','customers','events','expenses','fbRequests','feedback','finance',
+ 'claims','clientSeq','clinPhotos','commQueries','consentForms','consents','consults','creditNotes','crmTasks','custNotes','customerPackages','customers','events','expenses','fbRequests','feedback','finance','gameCamps','gamePlays',
  'giftCards','hrDocs','hrFiles','hrHist','hrInfo','hrReq','hrSelf','hrStaff','journals','kpiTargets','leadForms','leadHooks','leads','leaves','libReads','library','loyalty','machines','memberships','merits',
  'meta','offerLinks','onbConfig','onboard','otReqs','packages','payrollConfig','payrolls','payslips','pkgDeleted','products','programs','promos','public','quals','quotes','recApps','recEval','recFiles','recJobs',
  'recurring','redemptions','refInvites','referrals','rosters','sales','salesTargets','services','shiftSwaps','shifts','slotLocks','stock','stockCounts','stockMoves','tickets','tips','transfers','txPlans','txRecords',
@@ -30929,5 +31059,555 @@ window.__clm={blocks:clBlocks,ref:clRef,words:clWords,person:clPerson};
 window.clExtra=()=>{const o={},rn=String(($('#cl-rn')||{}).value||'').trim(),c=($('#cl-c')||{}).value,rt=String(($('#cl-rt')||{}).value||'').trim();
  if(rn)o.receiptNo=rn.slice(0,40);if(c==='Mileage (own vehicle)'){if(rt)o.route=rt.slice(0,80);const km=+(($('#cl-k')||{}).value)||0;if(km)o.km=km;}return o;};
 if(typeof I18N!=='undefined')Object.assign(I18N,{'Blank form':'Borang kosong','Claim form (PDF)':'Borang tuntutan (PDF)','Claim forms':'Borang tuntutan','Monthly claim form':'Borang tuntutan bulanan','Key in a paper claim':'Masukkan tuntutan kertas','Receipt / invoice no.':'No. resit / invois'});
+
+/* ============ 30a: Games after payment — Spin & Win, Blind Gift, Lucky Card, Scratch & Win, Lucky Draw ============
+   The owner sets up campaigns: which game, when it runs, which branches, who qualifies (minimum spend, what counts,
+   how often per client), the prizes with their chances and stock, how long the client has to play and how long a
+   prize stays valid, and how the page looks. When a qualifying bill is fully paid, the counter's app draws the prize
+   there and then — in a transaction that also counts the stock — and saves one ticket under the bill's id (one game
+   per bill). The client opens the link (QR on the counter screen, or WhatsApp) and plays; the game only reveals what
+   was already drawn, so a phone cannot choose its own prize, and the security rules check the ticket against the
+   campaign and the bill. Discount and free-treatment prizes become ordinary client vouchers that checkout already
+   knows; gifts are handed over at the counter against their code. A Lucky Draw ticket holds entries (more spend,
+   more entries) and the owner runs the draw on the day. */
+Object.assign(ICONS,{
+ wheel:'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4',
+ ticket:'M3.5 7.5h17v3a1.8 1.8 0 0 0 0 3.6v3h-17v-3a1.8 1.8 0 0 0 0-3.6zM14.5 7.5v10',
+ cards:'M9 4.5h10v14H9zM9 7.5l-4 .8 2.6 12.9 8.2-1.6'});
+const GM_G={
+ spin:{en:'Spin & Win',ms:'Putar & Menang',ic:'wheel',d:'A prize wheel — the client taps to spin it'},
+ gift:{en:'Blind Gift',ms:'Kotak Misteri',ic:'gift',d:'Six wrapped boxes — the client picks one'},
+ card:{en:'Lucky Card',ms:'Kad Bertuah',ic:'cards',d:'Face-down cards — the client flips one'},
+ scratch:{en:'Scratch & Win',ms:'Gores & Menang',ic:'spark',d:'A scratch card with the prize underneath'},
+ draw:{en:'Lucky Draw',ms:'Cabutan Bertuah',ic:'ticket',d:'Entries for a draw on a set date — more spend, more entries'}};
+const GM_TH={gold:['Brass gold','#A67C3D','#F3E9D8','#14120F'],rose:['Rose','#B5546B','#F8E3E8','#3B1520'],emerald:['Emerald','#2F7D62','#DFF1E9','#0E2A20'],
+ violet:['Violet','#6B4FA0','#ECE5F7','#22163A'],ocean:['Ocean','#2C6E9B','#E0EEF7','#0F2433']};
+const GM_PT={rm:'RM off next visit',pct:'% off next visit',free:'Free treatment',gift:'Gift at the counter',lose:'No prize (try again)'};
+const GM_KG={service:['service','addon','redeem'],product:['product'],package:['package','bundle','membership','credit']};
+const GM_MSG='Hi {name}! Terima kasih kerana datang ke {biz} \u{1F49B} Anda dapat satu peluang {game} — tekan link ni untuk main dan tuntut hadiah anda: {link} (sah sampai {date})';
+let GMC=null,GMT={},GMTK={},GMED=null,GMV='camps';
+const gmLink=t=>location.origin+location.pathname+'?play='+encodeURIComponent(t);
+const gmName=(g,l)=>(GM_G[g]||GM_G.spin)[l==='en'?'en':'ms'];
+const gmTh=c=>GM_TH[c]||GM_TH.gold;
+function gmCode(pre,n){const b=new Uint8Array(n);crypto.getRandomValues(b);return pre+Array.from(b,v=>RV_CHARS[v%32]).join('');}
+function gmRand(){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296;}
+function gmPLabel(p){return p.type==='rm'?'RM'+(+p.value||0)+' off':p.type==='pct'?(+p.value||0)+'% off':p.type==='free'?'Free '+(svc(p.serviceId).name||'treatment'):p.type==='gift'?(p.gift||'Gift'):'Try again';}
+function gmPrizeOk(p,draw){if(!p||!GM_PT[p.type])return false;if(draw&&p.type==='lose')return false;
+ if(p.type==='rm')return +p.value>0;if(p.type==='pct')return +p.value>0&&+p.value<=100;if(p.type==='free')return !!svc(p.serviceId).id;if(p.type==='gift')return !!String(p.gift||p.label||'').trim();return true;}
+function gmNew(game){const draw=game==='draw';return {name:'',game:game||'spin',on:false,from:today(),to:ymd(addDays(new Date(),30)),branches:[],minSpend:100,counts:[],perClient:0,mode:'auto',
+ playDays:7,validDays:30,startDays:0,drawDate:ymd(addDays(new Date(),31)),perRm:100,maxEntries:20,lang:'ms',msg:'',
+ prizes:draw?[{label:'Free facial',type:'free',value:100,serviceId:'',gift:'',min:0,weight:0,stock:1},{label:'RM50 voucher',type:'rm',value:50,serviceId:'',gift:'',min:100,weight:0,stock:3},{label:'Skincare hamper',type:'gift',value:0,serviceId:'',gift:'Skincare hamper',min:0,weight:0,stock:2}]
+ :[{label:'RM10 off',type:'rm',value:10,serviceId:'',gift:'',min:80,weight:35,stock:0},{label:'15% off',type:'pct',value:15,serviceId:'',gift:'',min:0,weight:15,stock:0},
+  {label:'Free serum sample',type:'gift',value:0,serviceId:'',gift:'Serum sample 5ml',min:0,weight:20,stock:50},{label:'Free facial',type:'free',value:100,serviceId:'',gift:'',min:0,weight:2,stock:5},
+  {label:'Try again',type:'lose',value:0,serviceId:'',gift:'',min:0,weight:28,stock:0}],
+ look:{title:'',sub:'',color:'gold',terms:''}};}
+
+/* ---------------- loading ---------------- */
+async function gmLoad(force){if(GMC&&!force)return GMC;
+ try{GMC=(await getDocs(collection(db,'gameCamps'))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(+a.order||0)-(+b.order||0));}
+ catch(e){console.warn('games',e);GMC=GMC||[];}
+ return GMC;}
+async function gmTickets(cid,force){if(GMTK[cid]&&!force)return GMTK[cid];
+ try{GMTK[cid]=(await getDocs(query(collection(db,'gamePlays'),where('campId','==',cid)))).docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+  GMTK[cid].forEach(t=>GMT[t.id]=t);}
+ catch(e){console.warn('game tickets',e);GMTK[cid]=GMTK[cid]||[];}
+ return GMTK[cid];}
+async function gmTicket(id){if(GMT[id])return GMT[id];
+ try{const s=await getDoc(doc(db,'gamePlays',id));if(s.exists())GMT[id]={id,...s.data()};}catch(e){}
+ return GMT[id]||null;}
+
+/* ---------------- who qualifies ---------------- */
+function gmStatus(c){const t=today();if(!c.on)return ['Off',''];if(t<c.from)return ['Starts '+dshort(c.from),'a'];
+ if(t>c.to)return c.game==='draw'&&!c.drawn?(t>=c.drawDate?['Draw due','r']:['Draw on '+dshort(c.drawDate),'a']):['Ended',''];
+ return ['Live','g'];}
+const gmLive=c=>c.on&&today()>=c.from&&today()<=c.to;
+function gmSpend(s,c){const tot=r2(+s.total||0);if(!c.counts||!c.counts.length)return tot;
+ const it=s.items||[],all=it.reduce((t,i)=>t+lineAmt(i),0);if(!all)return 0;
+ const mine=it.filter(i=>c.counts.some(k=>(GM_KG[k]||[k]).includes(i.kind))).reduce((t,i)=>t+lineAmt(i),0);
+ return r2(mine*tot/all);}
+function gmAvail(c,given){given=given||c.given||{};const draw=c.game==='draw';
+ return (c.prizes||[]).map((p,i)=>({p,i})).filter(({p,i})=>gmPrizeOk(p,draw)&&(draw||+p.weight>0)&&(draw||p.type==='lose'||!(+p.stock)||(+given[i]||0)<+p.stock));}
+function gmWhyNot(s,c){
+ if(!s)return 'Bill not found.';if(!s.customerId)return 'Choose the client on the bill — games need a client.';if(s.voided)return 'The bill is void.';
+ if(saleBalance(s)>0.004)return 'The bill is not fully paid yet.';if(!gmLive(c))return c.name+' is not running today.';
+ if((c.branches||[]).length&&!c.branches.includes(s.branchId||ME.branchId))return c.name+' does not run at this branch.';
+ const sp=gmSpend(s,c);if(sp<(+c.minSpend||0))return 'Spend '+rm(sp)+(c.counts&&c.counts.length?' on '+c.counts.join(' & '):'')+' — '+c.name+' needs '+rm(c.minSpend)+'.';
+ if(c.game!=='draw'&&!gmAvail(c).some(x=>x.p.type!=='lose'))return 'All the prizes in '+c.name+' have been given out.';
+ return '';}
+async function gmClientCount(cid,campId){try{return (await getDocs(query(collection(db,'gamePlays'),where('customerId','==',cid)))).docs.filter(d=>d.data().campId===campId).length;}catch(e){return 0;}}
+/* the campaign a bill gets: the first one in the owner's order that it qualifies for */
+async function gmPick(s,manual){await gmLoad();
+ for(const c of GMC){if(!manual&&c.mode==='manual')continue;if(gmWhyNot(s,c))continue;
+  if(+c.perClient>0&&await gmClientCount(s.customerId,c.id)>=+c.perClient)continue;return c;}
+ return null;}
+
+/* ---------------- drawing and saving the ticket ---------------- */
+function gmDraw(C,given){const L=gmAvail(C,given),tot=L.reduce((t,x)=>t+(+x.p.weight||0),0);if(!tot)return -1;
+ let x=gmRand()*tot;const h=L.find(o=>(x-=+o.p.weight)<0)||L[L.length-1];return h.i;}
+function gmPrize(C,k,name,from){const p=C.prizes[k],now=from?new Date(from):new Date(),free=p.type==='free';
+ const o={idx:k,kind:p.type,label:String(p.label||'').trim().slice(0,60)||gmPLabel(p),value:free?100:(+p.value||0),min:+p.min||0,serviceId:free?String(p.serviceId||''):'',
+  serviceName:free?(svc(p.serviceId).name||''):'',gift:p.type==='gift'?String(p.gift||p.label||'').slice(0,80):'',customerName:String(name||'')};
+ if(p.type==='lose')return o;
+ o.code=gmCode('WIN-',6);o.vtype=free?'pct':p.type;o.vvalue=free?100:(+p.value||0);
+ o.validFrom=ymd(addDays(now,Math.max(0,+C.startDays||0)));
+ o.expiry=ymd(addDays(now,(from?0:Math.max(1,+C.playDays||7))+Math.max(1,+C.validDays||30)));
+ return o;}
+function gmSegs(C){const draw=C.game==='draw';
+ return (C.prizes||[]).map((p,i)=>({l:String(p.label||'').trim().slice(0,40)||gmPLabel(p),k:p.type,i,n:draw?Math.max(1,+p.stock||1):0})).filter(x=>draw?gmPrizeOk(C.prizes[x.i],true):(+C.prizes[x.i].weight>0&&gmPrizeOk(C.prizes[x.i])));}
+function gmBook(){try{if(typeof wbSet==='function'&&wbSet().on&&typeof wbBookLink==='function')return wbBookLink();}catch(e){}return '';}
+async function gmIssue(s,c){
+ const ref=doc(db,'gamePlays',s.id),cref=doc(db,'gameCamps',c.id),b=D.meta.biz||{},cu=cust(s.customerId)||{};
+ const full=String(cu.name||s.customerName||'').trim(),spend=gmSpend(s,c),br=(D.branches.find(x=>x.id===(s.branchId||ME.branchId))||branch()||{});
+ const t=await runTransaction(db,async tx=>{
+  const ex=await tx.get(ref);if(ex.exists())return {id:s.id,...ex.data(),dup:true};
+  const cs=await tx.get(cref);if(!cs.exists())throw new Error('That campaign was removed.');
+  const C={id:c.id,...cs.data()},given={...(C.given||{})};
+  let prize=null,entries=0,entryNo='';
+  if(C.game==='draw'){entries=+C.perRm>0?Math.min(Math.max(1,+C.maxEntries||20),Math.max(1,Math.floor(spend/+C.perRm))):1;entryNo=gmCode('LD-',5);}
+  else{const k=gmDraw(C,given);if(k<0)throw new Error('All the prizes in '+C.name+' have been given out.');
+   prize=gmPrize(C,k,full);if(prize.kind!=='lose')given[k]=(+given[k]||0)+1;}
+  const days=Math.max(1,+C.playDays||7);
+  const exp=C.game==='draw'?new Date(String(C.drawDate||today())+'T23:59:59').getTime()+60*864e5:Date.now()+days*864e5;
+  const data={token:s.id,campId:C.id,campName:C.name,game:C.game,branchId:s.branchId||ME.branchId,branchName:br.name||'',bizName:b.name||'',logo:b.logo||'',
+   saleId:s.id,invoiceNo:s.invoiceNo||'',customerId:s.customerId,firstName:full.split(/\s+/)[0]||'',spend,segs:gmSegs(C),
+   look:{title:String((C.look||{}).title||''),sub:String((C.look||{}).sub||''),color:(C.look||{}).color||'gold',terms:String((C.look||{}).terms||'')},
+   prize,code:prize&&prize.code||'',pkind:prize?prize.kind:'',entries,entryNo,drawDate:C.game==='draw'?C.drawDate:'',
+   played:false,playedAt:'',choice:-1,lang:C.lang==='en'?'en':'ms',bookUrl:gmBook(),
+   createdAt:new Date().toISOString(),createdBy:UID,createdByName:ME.name||'',expiresMs:exp};
+  tx.update(cref,{given,issued:(+C.issued||0)+1});
+  tx.set(ref,data);
+  return {id:s.id,...data};});
+ GMT[s.id]=t;if(GMTK[c.id]&&!t.dup)GMTK[c.id].unshift(t);
+ const cc=GMC&&GMC.find(x=>x.id===c.id);if(cc&&!t.dup){cc.issued=(+cc.issued||0)+1;if(t.prize&&t.prize.kind!=='lose'){cc.given={...(cc.given||{})};cc.given[t.prize.idx]=(+cc.given[t.prize.idx]||0)+1;}}
+ if(!t.dup){try{await audit('Game given',(t.firstName||'')+' · '+t.campName+' · '+(t.invoiceNo||''));}catch(e){}}
+ return t;}
+/* after a bill is fully paid: the same moment referral rewards are recorded */
+{const _r=window.refAfterPay;window.refAfterPay=async id=>{const out=await _r(id);
+ try{const s=findSale(id);if(s&&s.customerId){await gmLoad();if(GMC.some(gmLive)){const c=await gmPick(s,false);
+  if(c){const t=await gmIssue(s,c);if(t&&!t.dup)setTimeout(()=>toast('\u{1F381} '+(t.firstName||'The client')+' gets '+gmName(t.game,'en')+' — show the QR on the receipt'),400);}}}}
+ catch(e){console.warn('game',e);}
+ return out;};}
+
+/* ---------------- on the receipt ---------------- */
+{const _s=window.showReceipt;window.showReceipt=function(id){_s.apply(this,arguments);gmSlot(id);};}
+async function gmSlot(id){const row=document.querySelector('#modal .fabrow.noprint');if(!row||document.getElementById('gmslot'))return;
+ const box=row.parentElement,sl=document.createElement('div');sl.id='gmslot';box.insertBefore(sl,box.children[1]||null);
+ const t=GMT[id]||(GMC&&!GMC.length?null:await gmTicket(id));const el=document.getElementById('gmslot');if(!el)return;
+ if(t){el.innerHTML=gmBanner(t);return;}
+ await gmLoad();const s=findSale(id);if(!s||!GMC.some(gmLive))return;
+ const ok=GMC.filter(c=>!gmWhyNot(s,c));
+ if(ok.length)el.innerHTML='<div class="gmrc off"><span class="gmrc-i">'+ic('gift',18)+'</span><div class="gmrc-t"><b>'+esc(ok[0].name)+'</b><small>'+esc(s.customerName||'This client')+' qualifies for '+esc(gmName(ok[0].game,'en'))+'</small></div>'+
+  '<div class="gmrc-b"><button class="btn sm" onclick="gmGive(\''+id+'\')">'+ic('gift',13)+'Give a game</button></div></div>';}
+function gmBanner(t){const g=GM_G[t.game]||GM_G.spin,won=t.played&&t.prize&&t.prize.kind!=='lose';
+ return '<div class="gmrc"><span class="gmrc-i">'+ic(g.ic,18)+'</span><div class="gmrc-t"><b>'+esc(g.en)+' · '+esc(t.campName||'')+'</b><small>'+
+  (t.game==='draw'?esc(t.firstName||'')+' · '+t.entries+' entr'+(t.entries>1?'ies':'y')+' for the draw on '+dshort(t.drawDate):
+   t.played?esc(t.firstName||'')+' played'+(won?' — won '+esc(t.prize.label):' — no prize this time'):esc(t.firstName||'The client')+' has a game to play')+'</small></div>'+
+  '<div class="gmrc-b"><button class="btn sm" onclick="gmQR(\''+t.id+'\')">'+ic('qr',13)+'QR</button>'+
+  (t.played?'':'<button class="btn sm ghost" onclick="gmHere(\''+t.id+'\')">'+ic('spark',13)+'Play here</button>')+
+  '<button class="btn sm ghost" onclick="gmSend(\''+t.id+'\')">'+ic('msg',13)+'WhatsApp</button></div></div>';}
+window.gmGive=async id=>{const s=findSale(id);await gmLoad();
+ const L=GMC.filter(c=>!gmWhyNot(s,c));if(!L.length){toast(GMC.map(c=>gmWhyNot(s,c)).find(Boolean)||'No campaign fits this bill.');return;}
+ const c=L[0];if(+c.perClient>0&&await gmClientCount(s.customerId,c.id)>=+c.perClient){toast((s.customerName||'This client')+' has already played '+c.name+' '+c.perClient+'×.');return;}
+ try{const t=await gmIssue(s,c);const el=document.getElementById('gmslot');if(el)el.innerHTML=gmBanner(t);gmQR(t.id);}catch(e){toast(friendly(e));}};
+function gmMsg(t){const c=(GMC||[]).find(x=>x.id===t.campId)||{},b=D.meta.biz||{};
+ return String(c.msg||GM_MSG).replace(/\{name\}/g,t.firstName||'').replace(/\{biz\}/g,b.name||t.bizName||'kami').replace(/\{game\}/g,gmName(t.game,t.lang))
+  .replace(/\{link\}/g,gmLink(t.id)).replace(/\{date\}/g,dLong(ymd(new Date(t.game==='draw'?new Date(t.drawDate+'T12:00:00'):t.expiresMs)),t.lang==='en'?'en':'bm'));}
+window.gmSend=async id=>{const t=GMT[id]||await gmTicket(id);if(!t)return;await gmLoad();
+ const c=cust(t.customerId)||{},ph=String(c.phone||'').replace(/\D/g,''),msg=gmMsg(t);
+ window.open(ph?'https://wa.me/'+(ph.startsWith('6')?'':'6')+ph+'?text='+encodeURIComponent(msg):'https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+ try{await updateDoc(doc(db,'gamePlays',id),{sentAt:new Date().toISOString(),sentBy:UID});t.sentAt=new Date().toISOString();}catch(e){}};
+window.gmQR=async id=>{const t=GMT[id]||await gmTicket(id);if(!t)return;const g=GM_G[t.game]||GM_G.spin,l=gmLink(t.id);
+ modal(g.en+' · '+(t.firstName||''),'<div class="card gmqr"><div class="gmqr-g">'+ic(g.ic,16)+' '+esc(g.ms)+' · '+esc(t.campName||'')+'</div>'+
+  '<div class="gmqr-c" data-qr="'+esc(l)+'" data-px="250"></div><div class="gmqr-h">Imbas untuk main · Scan to play</div>'+
+  '<div class="tiny muted gmqr-l">'+esc(l)+'</div>'+
+  '<div class="fabrow" style="justify-content:center">'+(t.played?'':'<button class="btn" onclick="gmHere(\''+t.id+'\')">'+ic('spark',15)+'Play on this screen</button>')+
+  '<button class="btn ghost" onclick="gmSend(\''+t.id+'\')">'+ic('msg',15)+'Send by WhatsApp</button>'+
+  '<button class="btn ghost" onclick="gmCopy(\''+t.id+'\')">'+ic('note',15)+'Copy link</button></div></div>');
+ paintQRs();};
+window.gmCopy=id=>{try{navigator.clipboard.writeText(gmLink(id)).then(()=>toast('Link copied'));}catch(e){toast(gmLink(id));}};
+window.gmHere=async id=>{const t=GMT[id]||await gmTicket(id);if(!t)return;window.closeModal();gmOverlay(t,{});};
+function gmOverlay(t,o){gmClose();document.body.insertAdjacentHTML('beforeend','<div class="gmov" id="gmov"><button class="gmov-x" onclick="gmClose()" aria-label="Close">'+ic('close',20)+'</button><div id="gmovroot"></div></div>');
+ document.body.classList.add('gmlock');gmMount(document.getElementById('gmovroot'),t,o);}
+window.gmClose=()=>{const e=document.getElementById('gmov');if(e)e.remove();document.body.classList.remove('gmlock');if(GP&&GP.o&&GP.o.after)try{GP.o.after();}catch(x){}};
+
+/* ================= the client's page ================= */
+const GM_TX={
+ ms:{hi:'Tahniah {n}!',sub0:'Terima kasih kerana berkunjung. Anda dapat satu peluang:',spin:'Putar',spinning:'Berputar…',pick:'Pilih satu kotak',pickc:'Pilih satu kad',
+  scratch:'Gores di sini',reveal:'Buka terus',win:'Anda menang!',lose:'Belum ada rezeki kali ini',loseSub:'Terima kasih kerana bersama kami — jumpa lagi!',
+  code:'Kod hadiah',valid:'Sah',from:'dari',until:'hingga',min:'Belanja minimum',how:'Tunjuk kod ini di kaunter semasa bayaran pada lawatan seterusnya.',
+  howGift:'Tunjuk skrin ini di kaunter untuk tuntut hadiah anda.',freeFor:'Rawatan',save:'Simpan di WhatsApp',book:'Tempah lawatan seterusnya',copy:'Salin',copied:'Disalin',
+  played:'Anda telah main pada',exp:'Maaf, tempoh untuk main telah tamat.',bad:'Link ini tidak sah.',err:'Tak dapat buka sekarang — cuba lagi sebentar.',terms:'Terma & syarat',
+  others:'Kotak lain berisi…',othersc:'Kad lain…',inv:'Resit',saveErr:'Tunjuk skrin ini di kaunter — kami akan rekodkan hadiah anda.',
+  tear:'Koyak tiket',drawT:'Tiket Cabutan Bertuah',entries:'penyertaan',entry1:'penyertaan',drawOn:'Cabutan pada',prizes:'Hadiah cabutan',luck:'Semoga berjaya! Kami akan maklumkan pemenang.',
+  drawWin:'Anda pemenang cabutan bertuah!',drawLose:'Bukan rezeki kali ini',drawLoseSub:'Terima kasih kerana menyertai cabutan bertuah kami.',noNo:'No. tiket',preview:'Pratonton — tiada apa disimpan',gift:'Hadiah',again:'Main sekali lagi (pratonton)'},
+ en:{hi:'Congratulations {n}!',sub0:'Thank you for visiting. You have one chance at:',spin:'Spin',spinning:'Spinning…',pick:'Pick a box',pickc:'Pick a card',
+  scratch:'Scratch here',reveal:'Reveal',win:'You won!',lose:'No prize this time',loseSub:'Thank you for being with us — see you again!',
+  code:'Prize code',valid:'Valid',from:'from',until:'until',min:'Minimum spend',how:'Show this code at the counter when you pay on your next visit.',
+  howGift:'Show this screen at the counter to collect your gift.',freeFor:'Treatment',save:'Save to WhatsApp',book:'Book your next visit',copy:'Copy',copied:'Copied',
+  played:'You played on',exp:'Sorry, the time to play has ended.',bad:'This link is not valid.',err:'Could not open it right now — try again shortly.',terms:'Terms & conditions',
+  others:'The other boxes held…',othersc:'The other cards…',inv:'Receipt',saveErr:'Show this screen at the counter — we will record your prize.',
+  tear:'Tear the ticket',drawT:'Lucky Draw Ticket',entries:'entries',entry1:'entry',drawOn:'Draw on',prizes:'Draw prizes',luck:'Good luck! We will announce the winners.',
+  drawWin:'You won the lucky draw!',drawLose:'Not this time',drawLoseSub:'Thank you for joining our lucky draw.',noNo:'Ticket no.',preview:'Preview — nothing is saved',gift:'Gift',again:'Play again (preview)'}};
+let GP=null;
+const gx=k=>(GM_TX[GP&&GP.lang==='en'?'en':'ms'])[k];
+const gmD=v=>dLong(v,GP&&GP.lang==='en'?'en':'bm');
+async function playPage(token){
+ await new Promise(r=>setTimeout(r,0));
+ const root=document.getElementById('root');document.title='🎁';
+ root.innerHTML='<div class="gmpage"><div class="center"><div class="spin"></div></div></div>';
+ try{const s=await getDoc(doc(db,'gamePlays',token));
+  if(!s.exists()){root.innerHTML='<div class="gmpage"><div class="gmbox"><p class="gmmsg">'+esc(GM_TX.ms.bad)+'<br><small>'+esc(GM_TX.en.bad)+'</small></p></div></div>';return;}
+  const t={id:token,...s.data()};document.title=(t.bizName?t.bizName+' · ':'')+gmName(t.game,t.lang);gmMount(root,t,{pub:true});}
+ catch(e){console.error(e);root.innerHTML='<div class="gmpage"><div class="gmbox"><p class="gmmsg">'+esc(GM_TX.ms.err)+'</p></div></div>';}}
+function gmMount(el,t,o){GP={el,t,o:o||{},lang:t.lang==='en'?'en':'ms',busy:false,done:!!t.played,choice:+t.choice};gmPaint();}
+window.gmLang=l=>{if(!GP)return;GP.lang=l;gmPaint();};
+function gmPaint(){const t=GP.t,th=gmTh(t.look&&t.look.color),g=GM_G[t.game]||GM_G.spin;
+ const head='<div class="gmhead">'+(t.logo?'<img src="'+t.logo+'" alt="">':'<div class="gmmark">'+ic('spark',20)+'</div>')+'<div class="gmbiz">'+esc(t.bizName||'')+'</div>'+
+  '<div class="gmlang"><button class="'+(GP.lang==='ms'?'on':'')+'" onclick="gmLang(\'ms\')">BM</button><button class="'+(GP.lang==='en'?'on':'')+'" onclick="gmLang(\'en\')">EN</button></div></div>';
+ const title=(t.look&&t.look.title)||gx('hi').replace('{n}',t.firstName||'');
+ const sub=(t.look&&t.look.sub)||gx('sub0');
+ let body='';
+ const expired=!t.played&&Date.now()>(+t.expiresMs||0)&&!GP.o.preview;
+ if(expired)body='<div class="gmbox"><p class="gmmsg">'+esc(gx('exp'))+'</p></div>';
+ else if(t.game==='draw')body=gmDrawView();
+ else if(GP.done)body=gmResult();
+ else body='<div class="gmbox gmstage"><div class="gmgame">'+ic(g.ic,16)+' '+esc(gmName(t.game,GP.lang))+'</div>'+gmStage()+'</div>';
+ GP.el.innerHTML='<div class="gmpage" style="--g1:'+th[1]+';--g2:'+th[2]+';--g3:'+th[3]+'">'+(GP.o.preview?'<div class="gmprev">'+ic('alert',13)+' '+esc(gx('preview'))+'</div>':'')+head+
+  '<h1 class="gmh1">'+esc(title)+'</h1><p class="gmsub">'+esc(sub)+'</p>'+body+
+  ((t.look&&t.look.terms)?'<details class="gmterms"><summary>'+esc(gx('terms'))+'</summary><div>'+esc(t.look.terms).replace(/\n/g,'<br>')+'</div></details>':'')+
+  '<div class="gmfoot">'+(t.invoiceNo?esc(gx('inv'))+' '+esc(t.invoiceNo)+' · ':'')+esc(t.branchName||'')+'</div></div>';
+ if(!GP.done&&!expired)setTimeout(gmBind,20);}
+/* every game uses the same list of prizes the campaign had when the ticket was made */
+function gmSegList(n){const s=(GP.t.segs||[]).slice(0,12);if(!s.length)return [{l:GP.t.prize?GP.t.prize.label:'?',k:'',i:0}];const o=[];while(o.length<n)o.push(...s);return o.slice(0,Math.max(n,s.length));}
+const gmIsMe=x=>GP.t.prize&&x.i===GP.t.prize.idx;
+function gmStage(){const t=GP.t;
+ if(t.game==='spin'){const S=gmSegList(Math.max(8,(t.segs||[]).length));GP.S=S;
+  return '<div class="gmwheel"><div class="gmptr"></div><div class="gmwrot" id="gmw">'+gmWheelSVG(S)+'</div><button class="gmhub" id="gmgo" onclick="gmSpin()">'+esc(gx('spin'))+'</button></div>';}
+ if(t.game==='gift'||t.game==='card'){const c=t.game==='card';
+  return '<p class="gmhint">'+esc(gx(c?'pickc':'pick'))+'</p><div class="'+(c?'gmcards':'gmboxes')+'">'+[0,1,2,3,4,5].map(i=>c?
+   '<button class="gmcard" data-i="'+i+'" onclick="gmPick('+i+')"><span class="gmcf gmcb"><i>'+ic('spark',22)+'</i></span><span class="gmcf gmcx"><b></b></span></button>':
+   '<button class="gmgb" data-i="'+i+'" onclick="gmPick('+i+')"><span class="gmlid"></span><span class="gmbody"></span><span class="gmrib"></span><span class="gmin"><b></b></span></button>').join('')+'</div>';}
+ if(t.game==='scratch')return '<div class="gmscr"><div class="gmscr-u"><small>'+esc(gx('win'))+'</small><b>'+esc(t.prize&&t.prize.kind!=='lose'?t.prize.label:gx('lose'))+'</b></div><canvas id="gmcv" width="600" height="320"></canvas></div>'+
+  '<button class="gmlink" onclick="gmScrAll()">'+esc(gx('reveal'))+'</button>';
+ return '';}
+function gmWheelSVG(S){const n=S.length,a=2*Math.PI/n,R=100;let p='';
+ const col=i=>i%2?'var(--g2)':'var(--g1)',tc=i=>i%2?'var(--g3)':'#fff';
+ S.forEach((x,i)=>{const a0=-Math.PI/2+i*a,a1=a0+a,x0=R*Math.cos(a0),y0=R*Math.sin(a0),x1=R*Math.cos(a1),y1=R*Math.sin(a1);
+  p+='<path d="M0 0L'+x0.toFixed(2)+' '+y0.toFixed(2)+'A'+R+' '+R+' 0 0 1 '+x1.toFixed(2)+' '+y1.toFixed(2)+'Z" fill="'+(x.k==='lose'?'#fff':col(i))+'" stroke="#fff" stroke-width="1.2"/>';
+  const am=(i+.5)*360/n,lab=x.l.length>13?x.l.slice(0,12).trim()+'…':x.l;
+  p+='<text transform="rotate('+am.toFixed(2)+') translate(0 -64) rotate(90)" text-anchor="middle" dominant-baseline="middle" font-size="'+(lab.length>10?7.2:lab.length>7?8.2:9.2)+'" font-weight="700" fill="'+(x.k==='lose'?'#8C8577':tc(i))+'">'+esc(lab)+'</text>';});
+ return '<svg viewBox="-104 -104 208 208" class="gmsvg"><circle r="103" fill="var(--g3)"/>'+p+'<circle r="22" fill="#fff"/></svg>';}
+function gmBind(){if(GP.t.game==='scratch')gmScrInit();}
+window.gmSpin=()=>{if(GP.busy||GP.done)return;GP.busy=true;const S=GP.S,n=S.length,a=360/n;
+ const hits=S.map((x,j)=>gmIsMe(x)?j:-1).filter(j=>j>=0);const j=hits.length?hits[Math.floor(gmRand()*hits.length)]:0;
+ const rot=360*6+(360-(j+.5)*a)+(gmRand()-.5)*a*.6;const w=document.getElementById('gmw'),b=document.getElementById('gmgo');
+ if(b){b.disabled=true;b.textContent=gx('spinning');}
+ if(w){w.style.transition='transform 5.2s cubic-bezier(.12,.68,.12,1)';requestAnimationFrame(()=>{w.style.transform='rotate('+rot+'deg)';});}
+ setTimeout(()=>gmFinish(j),5400);};
+window.gmPick=i=>{if(GP.busy||GP.done)return;GP.busy=true;const card=GP.t.game==='card';
+ const els=[...GP.el.querySelectorAll(card?'.gmcard':'.gmgb')],me=els[i];
+ const mine=GP.t.prize&&GP.t.prize.kind!=='lose'?GP.t.prize.label:gx('lose');
+ const pool=(GP.t.segs||[]).filter(x=>!gmIsMe(x)).map(x=>x.k==='lose'?gx('lose'):x.l);
+ me.querySelector('b').textContent=mine;me.classList.add('open','me');
+ setTimeout(()=>{els.forEach((e,k)=>{if(k===i)return;e.querySelector('b').textContent=pool.length?pool[Math.floor(gmRand()*pool.length)]:'—';e.classList.add('open','dim');});},1100);
+ setTimeout(()=>gmFinish(i),2600);};
+/* scratching: the top layer wipes away under a finger; past half, the rest goes */
+function gmScrInit(){const cv=document.getElementById('gmcv');if(!cv)return;const x=cv.getContext('2d'),W=cv.width,H=cv.height;
+ const g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#cfc6b6');g.addColorStop(.5,'#efe9dd');g.addColorStop(1,'#bdb3a1');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.fillStyle='rgba(20,18,15,.55)';x.font='700 38px system-ui,sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('✦ '+gx('scratch')+' ✦',W/2,H/2);
+ x.globalCompositeOperation='destination-out';let down=false,n=0;
+ const at=e=>{const r=cv.getBoundingClientRect(),p=e.touches?e.touches[0]:e;return [(p.clientX-r.left)*W/r.width,(p.clientY-r.top)*H/r.height];};
+ const rub=e=>{if(!down||GP.done)return;e.preventDefault();const [a,b]=at(e);x.beginPath();x.arc(a,b,34,0,7);x.fill();if(++n%12===0&&gmScrPct(x,W,H)>.5)gmScrAll();};
+ cv.addEventListener('pointerdown',e=>{down=true;GP.busy=true;rub(e);});cv.addEventListener('pointermove',rub);window.addEventListener('pointerup',()=>down=false);
+ cv.addEventListener('touchstart',e=>{down=true;rub(e);},{passive:false});cv.addEventListener('touchmove',rub,{passive:false});}
+function gmScrPct(x,W,H){try{const d=x.getImageData(0,0,W,H).data;let c=0,t=0;for(let i=3;i<d.length;i+=4*40){t++;if(d[i]===0)c++;}return c/t;}catch(e){return 1;}}
+window.gmScrAll=()=>{if(GP.done)return;const cv=document.getElementById('gmcv');if(cv){cv.style.transition='opacity .5s';cv.style.opacity='0';}GP.busy=true;setTimeout(()=>gmFinish(0),700);};
+/* the result is saved before it is shown; if the line drops the code still shows for the counter */
+async function gmFinish(choice){if(GP.done)return;GP.done=true;GP.choice=choice;const t=GP.t;let err='';
+ if(!GP.o.preview&&!t.played){try{await gmCommit(t,choice);}catch(e){console.warn(e);err=gx('saveErr');}}
+ t.played=true;t.playedAt=t.playedAt||new Date().toISOString();t.choice=choice;GP.err=err;gmPaint();
+ if(t.prize&&t.prize.kind!=='lose')gmConfetti();}
+async function gmCommit(t,choice){const p=t.prize,now=new Date().toISOString(),bt=writeBatch(db);
+ bt.update(doc(db,'gamePlays',t.id),{played:true,playedAt:now,choice:+choice||0,lang:GP.lang});
+ if(p&&['rm','pct','free'].includes(p.kind)&&p.code)bt.set(doc(db,'vouchers',p.code),{kind:'prize',type:p.vtype,value:p.vvalue,min:p.min,cap:1,used:0,firstOnly:false,ownerOnly:true,
+  validFrom:p.validFrom,expiry:p.expiry,customerId:t.customerId,customerName:p.customerName,label:p.label,serviceId:p.serviceId,serviceName:p.serviceName,
+  gpId:t.token,campId:t.campId,gameName:t.campName,branchId:t.branchId,issuedAt:now,issuedBy:'client'});
+ await bt.commit();if(GMT[t.id])Object.assign(GMT[t.id],{played:true,playedAt:now,choice});}
+function gmResult(p){const t=GP.t;p=p||t.prize;const win=p&&p.kind!=='lose';
+ if(!win)return '<div class="gmbox gmres lose"><div class="gmres-i">'+ic('star',26)+'</div><h2>'+esc(t.game==='draw'?gx('drawLose'):gx('lose'))+'</h2><p class="gmmsg">'+esc(t.game==='draw'?gx('drawLoseSub'):gx('loseSub'))+'</p>'+gmAfter()+'</div>';
+ const gift=p.kind==='gift';
+ return '<div class="gmbox gmres"><div class="gmres-i">'+ic('gift',26)+'</div><div class="gmwon">'+esc(t.game==='draw'?gx('drawWin'):gx('win'))+'</div><h2 class="gmprize">'+esc(p.label)+'</h2>'+
+  (p.kind==='free'&&p.serviceName&&p.label.indexOf(p.serviceName)<0?'<div class="gmmsg">'+esc(gx('freeFor'))+': '+esc(p.serviceName)+'</div>':'')+
+  (gift&&p.gift&&p.gift!==p.label?'<div class="gmmsg">'+esc(gx('gift'))+': '+esc(p.gift)+'</div>':'')+
+  '<div class="gmcode"><small>'+esc(gx('code'))+'</small><b id="gmcode">'+esc(p.code||'')+'</b><button onclick="gmCopyCode()">'+esc(gx('copy'))+'</button></div>'+
+  '<div class="gmrows"><div><span>'+esc(gx('valid'))+'</span><b>'+(p.validFrom&&p.validFrom>today()?esc(gx('from'))+' '+gmD(p.validFrom)+' ':'')+esc(gx('until'))+' '+gmD(p.expiry)+'</b></div>'+
+  (+p.min>0?'<div><span>'+esc(gx('min'))+'</span><b>RM'+(+p.min).toFixed(0)+'</b></div>':'')+'</div>'+
+  '<p class="gmhow">'+esc(gift?gx('howGift'):gx('how'))+'</p>'+(GP.err?'<p class="gmerr">'+esc(GP.err)+'</p>':'')+gmAfter(p)+'</div>';}
+function gmAfter(p){const t=GP.t;const msg=(t.bizName||'')+' · '+(p?p.label+' · '+p.code+' · '+gx('until')+' '+gmD(p.expiry):'')+' '+gmLink(t.id);
+ return '<div class="gmbtns">'+(p?'<a class="gmbtn" target="_blank" href="https://wa.me/?text='+encodeURIComponent(msg)+'">'+esc(gx('save'))+'</a>':'')+
+  (t.bookUrl?'<a class="gmbtn ghost" target="_blank" href="'+esc(t.bookUrl)+'">'+esc(gx('book'))+'</a>':'')+
+  (GP.o.preview?'<button class="gmbtn ghost" onclick="gmPrevAgain()">'+esc(gx('again'))+'</button>':'')+'</div>'+
+  (t.playedAt&&!GP.o.preview?'<div class="gmwhen">'+esc(gx('played'))+' '+gmD(String(t.playedAt).slice(0,10))+'</div>':'');}
+window.gmCopyCode=()=>{const c=(document.getElementById('gmcode')||{}).textContent||'';try{navigator.clipboard.writeText(c);}catch(e){}const b=document.querySelector('.gmcode button');if(b)b.textContent=gx('copied');};
+/* the lucky draw ticket: tear it to see the entry number; after the draw it shows the result */
+function gmDrawView(){const t=GP.t;
+ if(t.drawnAt)return gmResult(t.win||{kind:'lose'});
+ const L=(t.segs||[]);
+ const tix='<div class="gmtix'+(GP.done?' torn':'')+'"><div class="gmtix-a"><small>'+esc(gx('drawT'))+'</small><b>'+esc(t.campName||'')+'</b><span>'+esc(gx('drawOn'))+' '+gmD(t.drawDate)+'</span></div>'+
+  '<div class="gmtix-b"><small>'+esc(gx('noNo'))+'</small><b>'+(GP.done?esc(t.entryNo||''):'••••••')+'</b><span>× '+(+t.entries||1)+' '+esc(+t.entries>1?gx('entries'):gx('entry1'))+'</span></div></div>';
+ return '<div class="gmbox gmstage"><div class="gmgame">'+ic('ticket',16)+' '+esc(gmName('draw',GP.lang))+'</div>'+tix+
+  (GP.done?'<p class="gmhow">'+esc(gx('luck'))+'</p>':'<button class="gmbtn big" onclick="gmTear()">'+esc(gx('tear'))+'</button>')+
+  (L.length?'<div class="gmplist"><small>'+esc(gx('prizes'))+'</small>'+L.map(x=>'<div><b>'+esc(x.l)+'</b><span>× '+(x.n||1)+'</span></div>').join('')+'</div>':'')+
+  (GP.err?'<p class="gmerr">'+esc(GP.err)+'</p>':'')+'</div>';}
+window.gmTear=async()=>{if(GP.done||GP.busy)return;GP.busy=true;const e=GP.el.querySelector('.gmtix');if(e)e.classList.add('tearing');
+ setTimeout(async()=>{GP.done=true;const t=GP.t;if(!GP.o.preview&&!t.played){try{const now=new Date().toISOString();await updateDoc(doc(db,'gamePlays',t.id),{played:true,playedAt:now,choice:0,lang:GP.lang});t.played=true;t.playedAt=now;}catch(x){GP.err='';}}
+  gmPaint();gmConfetti(24);},650);};
+function gmConfetti(n){const box=GP.el.querySelector('.gmpage');if(!box)return;const cols=['var(--g1)','var(--g2)','#F2C14E','#E86A92','#56B4A0'];let h='';
+ for(let i=0;i<(n||46);i++)h+='<i style="left:'+(gmRand()*100).toFixed(1)+'%;background:'+cols[i%cols.length]+';animation-delay:'+(gmRand()*.6).toFixed(2)+'s;animation-duration:'+(1.6+gmRand()*1.4).toFixed(2)+'s;transform:rotate('+Math.floor(gmRand()*360)+'deg)"></i>';
+ box.insertAdjacentHTML('beforeend','<div class="gmconf" aria-hidden="true">'+h+'</div>');setTimeout(()=>{const c=box.querySelector('.gmconf');if(c)c.remove();},3600);}
+
+/* ================= the owner's Games screen ================= */
+TABS.splice(TABS.findIndex(t=>t.id==='crm')+1,0,{id:'games',ic:'gift',label:'Games',perm:null,group:'Clients',desc:'Spin & win, mystery gifts and lucky draws after payment'});
+function vGames(){if(GMC===null){gmLoad().then(()=>{if(TAB==='games'){render();gmLoadAll();}});return '<div class="card"><div class="center"><div class="spin"></div></div></div>';}
+ const B=boss();
+ const views=B?[['camps','Campaigns'],['prizes','Prizes & gifts'],['check','Check a code']]:[['check','Check a code'],['prizes','Gifts to hand over']];
+ if(!views.some(v=>v[0]===GMV))GMV=views[0][0];
+ return '<div class="sec-h"><h2>'+ic('gift',18)+' Games after payment</h2>'+(B?'<button class="btn" onclick="gmEdit()">'+ic('plus',15)+'New campaign</button>':'')+'</div>'+
+  '<div class="seg" style="margin-bottom:12px">'+views.map(v=>'<button class="'+(GMV===v[0]?'on':'')+'" onclick="gmView(\''+v[0]+'\')">'+v[1]+'</button>').join('')+'</div>'+
+  (GMV==='camps'?gmCampsView():GMV==='prizes'?gmPrizesView():gmCheckView());}
+window.gmView=v=>{GMV=v;render();if(v!=='check')gmLoadAll();};
+let GMALL=0;
+async function gmLoadAll(force){if(!GMC)return;if(GMALL&&!force)return;GMALL=1;await Promise.all(GMC.map(c=>gmTickets(c.id,force)));if(TAB==='games')render();}
+function gmStats(c){const L=GMTK[c.id];if(!L)return null;const pl=L.filter(t=>t.played),won=pl.filter(t=>(t.prize&&t.prize.kind!=='lose')||t.win);
+ const red=won.filter(t=>gmRedeemed(t));return {n:L.length,pl:pl.length,won:won.length,red:red.length,ent:L.reduce((a,t)=>a+(+t.entries||0),0)};}
+function gmP(t){return t.win||(t.prize&&t.prize.kind!=='lose'?t.prize:null);}
+function gmRedeemed(t){const p=gmP(t);if(!p)return false;if(p.kind==='gift')return !!t.collectedAt;const v=D.vouchers.find(x=>x.id===p.code);return !!(v&&+v.used>0);}
+function gmCampsView(){const L=GMC||[];
+ if(!L.length)return '<div class="card gmempty"><div class="gmempty-i">'+ic('gift',30)+'</div><h3>Reward clients with a game after they pay</h3>'+
+  '<p class="tiny muted">Pick a game — Spin & Win, Blind Gift, Lucky Card, Scratch & Win or a Lucky Draw — set who qualifies and the prizes. When a qualifying bill is paid, the receipt shows a QR the client scans to play.</p>'+
+  '<div class="gmgames">'+Object.entries(GM_G).map(([k,g])=>'<button class="gmgcard" onclick="gmEdit(\'\',\''+k+'\')"><span>'+ic(g.ic,20)+'</span><b>'+esc(g.en)+'</b><small>'+esc(g.ms)+'</small><em>'+esc(g.d)+'</em></button>').join('')+'</div></div>';
+ const live=L.filter(gmLive),all=Object.values(GMTK).flat(),m=today().slice(0,7),mon=all.filter(t=>String(t.createdAt).slice(0,7)===m);
+ return '<div class="crmkpis">'+kpi('Live campaigns',live.length,L.length+' in all','gift')+kpi('Games given this month',mon.length,mon.filter(t=>t.played).length+' played','spark')+
+  kpi('Prizes won',all.filter(t=>gmP(t)).length,'all campaigns','award')+kpi('Redeemed',all.filter(gmRedeemed).length,'vouchers used & gifts collected','check')+'</div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">A bill gets one game: the first campaign in this list that it qualifies for. Use the arrows to set the order.</p>'+
+  L.map((c,i)=>gmCampCard(c,i,L.length)).join('');}
+function gmCampCard(c,i,n){const g=GM_G[c.game]||GM_G.spin,st=gmStatus(c),S=gmStats(c),draw=c.game==='draw';
+ const pz=(c.prizes||[]).filter(p=>gmPrizeOk(p,draw)&&(draw||+p.weight>0));
+ const tot=pz.reduce((a,p)=>a+(+p.weight||0),0);
+ return '<div class="card gmcc" data-camp="'+esc(c.id)+'"><div class="gmcc-h"><span class="gmcc-i">'+ic(g.ic,20)+'</span><div class="gmcc-t"><b>'+esc(c.name)+'</b><small>'+esc(g.en)+' · '+dshort(c.from)+' – '+dshort(c.to)+
+  (draw?' · draw '+dshort(c.drawDate):'')+' · min spend '+rm(+c.minSpend||0)+(c.mode==='manual'?' · given by hand':'')+(+c.perClient?' · '+c.perClient+'× per client':'')+'</small></div>'+
+  '<span class="pill '+st[1]+'">'+esc(st[0])+'</span></div>'+
+  '<div class="gmcc-p">'+pz.map(p=>{const k=(c.prizes||[]).indexOf(p),gv=+((c.given||{})[k])||0;
+   return '<span class="gmchip'+(p.type==='lose'?' lose':'')+'">'+esc(p.label||gmPLabel(p))+(draw?' × '+(+p.stock||1):' · '+(tot?Math.round(+p.weight/tot*100):0)+'%'+(+p.stock?' · '+gv+'/'+p.stock+' given':''))+'</span>';}).join('')+'</div>'+
+  (S?'<div class="gmcc-s"><span><b>'+S.n+'</b> given</span><span><b>'+S.pl+'</b> played</span>'+(draw?'<span><b>'+S.ent+'</b> entries</span>':'<span><b>'+S.won+'</b> won</span>')+'<span><b>'+S.red+'</b> redeemed</span></div>':'')+
+  '<div class="gmcc-b"><button class="btn sm ghost" onclick="gmEdit(\''+c.id+'\')">'+ic('edit',13)+'Edit</button>'+
+  '<button class="btn sm ghost" onclick="gmPreview(\''+c.id+'\')">'+ic('spark',13)+'Preview</button>'+
+  '<button class="btn sm ghost" onclick="gmList(\''+c.id+'\')">'+ic('list',13)+'Tickets</button>'+
+  (draw&&!c.drawn&&today()>=c.drawDate?'<button class="btn sm" onclick="gmDrawAsk(\''+c.id+'\')">'+ic('ticket',13)+'Run the draw</button>':'')+
+  (draw&&c.drawn?'<button class="btn sm ghost" onclick="gmWinners(\''+c.id+'\')">'+ic('award',13)+'Winners</button>':'')+
+  '<button class="btn sm ghost" onclick="gmToggle(\''+c.id+'\')">'+(c.on?'Switch off':'Switch on')+'</button>'+
+  '<button class="btn sm ghost" onclick="gmDup(\''+c.id+'\')">'+ic('plus',13)+'Copy</button>'+
+  (i>0?'<button class="iconbtn" title="Higher" onclick="gmMove(\''+c.id+'\',-1)">'+ic('left',14,'transform:rotate(90deg)')+'</button>':'')+
+  (i<n-1?'<button class="iconbtn" title="Lower" onclick="gmMove(\''+c.id+'\',1)">'+ic('left',14,'transform:rotate(-90deg)')+'</button>':'')+
+  '<button class="iconbtn" title="Delete" onclick="gmDel(\''+c.id+'\')">'+ic('trash',14)+'</button></div></div>';}
+window.gmToggle=async id=>{const c=GMC.find(x=>x.id===id);if(!c)return;
+ if(!c.on){const why=gmCheckCamp(c);if(why){toast(why);gmEdit(id);return;}}
+ try{await updateDoc(doc(db,'gameCamps',id),{on:!c.on,updatedAt:new Date().toISOString()});c.on=!c.on;await audit('Game campaign '+(c.on?'on':'off'),c.name);render();}catch(e){toast(friendly(e));}};
+window.gmMove=async(id,d)=>{const L=GMC,i=L.findIndex(x=>x.id===id),j=i+d;if(i<0||j<0||j>=L.length)return;[L[i],L[j]]=[L[j],L[i]];
+ try{const bt=writeBatch(db);L.forEach((c,k)=>{c.order=k;bt.update(doc(db,'gameCamps',c.id),{order:k});});await bt.commit();render();}catch(e){toast(friendly(e));}};
+window.gmDel=async id=>{const c=GMC.find(x=>x.id===id);if(!c)return;const n=(GMTK[id]||[]).length;
+ if(!confirm('Delete '+c.name+'?'+(n?' The '+n+' ticket(s) already given keep working and their vouchers stay valid.':'')))return;
+ try{await deleteDoc(doc(db,'gameCamps',id));GMC=GMC.filter(x=>x.id!==id);await audit('Game campaign deleted',c.name);render();}catch(e){toast(friendly(e));}};
+window.gmDup=id=>{const c=GMC.find(x=>x.id===id);if(!c)return;const x=JSON.parse(JSON.stringify(c));delete x.id;delete x.given;delete x.issued;delete x.drawn;x.on=false;x.name=c.name+' (copy)';gmEdit('',x.game,x);};
+
+/* ---------------- the campaign editor ---------------- */
+window.gmEdit=(id,game,copy)=>{if(!boss())return;const c=id?GMC.find(x=>x.id===id):null;
+ const base=c?JSON.parse(JSON.stringify(c)):copy||gmNew(game||'spin');base.look={...gmNew().look,...(base.look||{})};
+ GMED={id:id||'',c:base};gmEdPaint();};
+function gmEdPaint(){const c=GMED.c,draw=c.game==='draw',br=D.branches||[],sv=(D.services||[]).filter(s=>s.active!==false);
+ const P=c.prizes||[],tot=P.filter(p=>gmPrizeOk(p)&&+p.weight>0).reduce((a,p)=>a+(+p.weight||0),0);
+ const row=(p,k)=>{const t=p.type,na='<span class="gmna">—</span>',fl=(l,h)=>'<label class="gmfl"><small>'+l+'</small>'+h+'</label>';
+  return '<div class="gmpr" data-k="'+k+'"><div class="gmpr-a"><input class="f" id="gp-l-'+k+'" value="'+esc(p.label||'')+'" placeholder="Prize name (what the client sees)">'+
+   '<select class="f" id="gp-t-'+k+'" onchange="gmEdRe()">'+Object.entries(GM_PT).filter(([v])=>!(draw&&v==='lose')).map(([v,l])=>'<option value="'+v+'"'+(t===v?' selected':'')+'>'+l+'</option>').join('')+'</select>'+
+   '<button class="iconbtn" onclick="gmEdDel('+k+')" title="Remove">'+ic('trash',14)+'</button></div><div class="gmpr-b'+(draw?' draw':'')+'">'+
+   fl(t==='rm'?'Amount (RM)':t==='pct'?'Percent off':t==='free'?'Treatment':t==='gift'?'What is handed over':'Value',
+    t==='rm'||t==='pct'?'<input class="f" type="number" min="0" step="1" id="gp-v-'+k+'" value="'+esc(p.value||'')+'">':
+    t==='free'?'<select class="f" id="gp-s-'+k+'"><option value="">Choose…</option>'+sv.map(s=>'<option value="'+s.id+'"'+(s.id===p.serviceId?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>':
+    t==='gift'?'<input class="f" id="gp-g-'+k+'" value="'+esc(p.gift||'')+'" placeholder="e.g. Serum sample 5ml">':na)+
+   fl('Min spend to use',t==='lose'||t==='gift'?na:'<input class="f" type="number" min="0" step="1" id="gp-m-'+k+'" value="'+esc(+p.min||0)+'">')+
+   (draw?'':fl('Chance','<input class="f" type="number" min="0" step="1" id="gp-w-'+k+'" value="'+esc(+p.weight||0)+'" oninput="gmOdds()">'))+
+   fl(draw?'Winners':'Stock (0 = no limit)',t==='lose'?na:'<input class="f" type="number" min="0" step="1" id="gp-q-'+k+'" value="'+esc(+p.stock||(draw?1:0))+'">')+'</div></div>';};
+ const L=c.look||{};
+ modal(GMED.id?'Edit · '+(c.name||''):'New game campaign','<div class="card gmed">'+
+  '<h3>1 · The game</h3><div class="gmgames sm">'+Object.entries(GM_G).map(([k,g])=>'<button type="button" class="gmgcard'+(c.game===k?' on':'')+'" onclick="gmEdGame(\''+k+'\')"><span>'+ic(g.ic,18)+'</span><b>'+esc(g.en)+'</b><small>'+esc(g.ms)+'</small></button>').join('')+'</div>'+
+  '<div class="grid g2"><div><label>Campaign name</label><input class="f" id="ge-n" value="'+esc(c.name||'')+'" placeholder="e.g. Merdeka Spin & Win"></div>'+
+  '<div><label>Status</label><label class="row" style="gap:8px;margin-top:6px"><input type="checkbox" id="ge-on"'+(c.on?' checked':'')+'> Running (clients get it when they qualify)</label></div>'+
+  '<div><label>Starts</label><input class="f" type="date" id="ge-f" value="'+esc(c.from||'')+'"></div><div><label>Ends</label><input class="f" type="date" id="ge-t" value="'+esc(c.to||'')+'"></div></div>'+
+  (br.length>1?'<label>Branches <span class="muted">— none ticked = all</span></label><div class="gmchk">'+br.map(b=>'<label><input type="checkbox" class="ge-b" value="'+b.id+'"'+((c.branches||[]).includes(b.id)?' checked':'')+'> '+esc(b.name)+'</label>').join('')+'</div>':'')+
+  '<h3>2 · Who qualifies</h3><div class="grid g2"><div><label>Minimum spend on the bill (RM)</label><input class="f" type="number" min="0" step="1" id="ge-ms" value="'+esc(+c.minSpend||0)+'"></div>'+
+  '<div><label>Games per client</label><select class="f" id="ge-pc">'+[[0,'Every qualifying bill'],[1,'Once per campaign'],[2,'Up to 2 times'],[3,'Up to 3 times'],[5,'Up to 5 times']].map(o=>'<option value="'+o[0]+'"'+(+c.perClient===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></div></div>'+
+  '<label>What counts towards the spend <span class="muted">— none ticked = the whole bill</span></label><div class="gmchk">'+[['service','Treatments'],['product','Products'],['package','Packages & memberships']].map(o=>'<label><input type="checkbox" class="ge-k" value="'+o[0]+'"'+((c.counts||[]).includes(o[0])?' checked':'')+'> '+o[1]+'</label>').join('')+'</div>'+
+  '<div class="grid g2"><div><label>Give the game</label><select class="f" id="ge-mode"><option value="auto"'+(c.mode!=='manual'?' selected':'')+'>Automatically when the bill is fully paid</option><option value="manual"'+(c.mode==='manual'?' selected':'')+'>Only when staff tap "Give a game" on the receipt</option></select></div>'+
+  '<div><label>Client has to play within (days)</label><input class="f" type="number" min="1" id="ge-pd" value="'+esc(+c.playDays||7)+'"'+(draw?' disabled':'')+'></div></div>'+
+  (draw?'<h3>3 · The draw</h3><div class="grid g3"><div><label>Draw date</label><input class="f" type="date" id="ge-dd" value="'+esc(c.drawDate||'')+'"></div>'+
+   '<div><label>One entry for every (RM)</label><input class="f" type="number" min="0" id="ge-pr" value="'+esc(+c.perRm||0)+'" title="0 = one entry per bill"></div>'+
+   '<div><label>Most entries per bill</label><input class="f" type="number" min="1" id="ge-mx" value="'+esc(+c.maxEntries||20)+'"></div></div>'+
+   '<p class="tiny muted">Example: RM100 per entry — a RM450 bill gets 4 entries. More entries, better chance. Each ticket can win once.</p>':'')+
+  '<h3>'+(draw?'4':'3')+' · Prizes</h3>'+(draw?'':'<p class="tiny muted" style="margin:-4px 0 8px">Chance is relative: with 35 / 15 / 20 / 2 / 28 the first prize comes up 35% of the time. Stock stops a prize once that many are given.'+(c.game==='spin'?' Keep names short (about 12 letters) so they fit on the wheel.':'')+'</p>')+
+  '<div id="ge-pz" class="'+(draw?'draw':'')+'">'+P.map(row).join('')+'</div>'+
+  '<button type="button" class="btn sm ghost" onclick="gmEdAdd()">'+ic('plus',13)+'Add a prize</button><div class="tiny gmodds" id="ge-odds">'+gmOddsText(P,tot)+'</div>'+
+  '<div class="grid g2"><div><label>Prize valid for (days)</label><input class="f" type="number" min="1" id="ge-vd" value="'+esc(+c.validDays||30)+'"></div>'+
+  '<div><label>Usable from <span class="muted">— days after it is won</span></label><input class="f" type="number" min="0" id="ge-sd" value="'+esc(+c.startDays||0)+'"></div></div>'+
+  '<p class="tiny muted">Discount and free-treatment prizes become vouchers on the client\'s record — they show at checkout. Gifts are handed over at the counter against the prize code (Games → Check a code).</p>'+
+  '<h3>'+(draw?'5':'4')+' · How it looks</h3><div class="grid g2"><div><label>Headline <span class="muted">— blank = "Tahniah {name}!"</span></label><input class="f" id="ge-ti" value="'+esc(L.title||'')+'" maxlength="70"></div>'+
+  '<div><label>Line under it</label><input class="f" id="ge-su" value="'+esc(L.sub||'')+'" maxlength="120"></div>'+
+  '<div><label>Colours</label><div class="gmsw">'+Object.entries(GM_TH).map(([k,v])=>'<label title="'+v[0]+'"><input type="radio" name="ge-co" value="'+k+'"'+((L.color||'gold')===k?' checked':'')+'><span style="background:'+v[1]+';box-shadow:inset 0 0 0 6px '+v[2]+'"></span></label>').join('')+'</div></div>'+
+  '<div><label>Page language</label><select class="f" id="ge-lg"><option value="ms"'+(c.lang!=='en'?' selected':'')+'>Bahasa Malaysia</option><option value="en"'+(c.lang==='en'?' selected':'')+'>English</option></select></div></div>'+
+  '<label>Terms & conditions</label><textarea class="f" id="ge-tm" rows="3" placeholder="e.g. One prize per bill. Not exchangeable for cash. Valid at all branches.">'+esc(L.terms||'')+'</textarea>'+
+  '<label>WhatsApp message <span class="muted">— {name} {biz} {game} {link} {date}</span></label><textarea class="f" id="ge-wa" rows="3">'+esc(c.msg||GM_MSG)+'</textarea>'+
+  '<div id="ge-e" class="tiny" style="color:var(--rose);margin:8px 0"></div>'+
+  '<div class="grid g2"><button class="btn ghost" style="justify-content:center" onclick="gmEdPrev()">'+ic('spark',15)+'Try it</button>'+
+  '<button class="btn" style="justify-content:center" id="ge-go" onclick="gmSave()">'+ic('check',15)+'Save campaign</button></div></div>');}
+function gmOddsText(P,tot){if(GMED&&GMED.c.game==='draw')return '';if(!tot)return 'Give at least one prize a chance above 0.';
+ return 'Chances: '+P.filter(p=>gmPrizeOk(p)&&+p.weight>0).map(p=>esc(p.label||gmPLabel(p))+' '+Math.round(+p.weight/tot*100)+'%').join(' · ');}
+window.gmOdds=()=>{gmEdCollect();const P=GMED.c.prizes,t=P.filter(p=>gmPrizeOk(p)&&+p.weight>0).reduce((a,p)=>a+(+p.weight||0),0);const e=$('#ge-odds');if(e)e.innerHTML=gmOddsText(P,t);};
+function gmEdCollect(){const c=GMED.c,v=id=>{const e=$('#'+id);return e?e.value:undefined;},n=(id,d)=>{const x=v(id);return x===undefined||x===''?d:+x;};
+ if(!$('#ge-n'))return c;
+ c.name=String(v('ge-n')||'').trim();c.on=!!($('#ge-on')||{}).checked;c.from=v('ge-f')||c.from;c.to=v('ge-t')||c.to;
+ c.branches=[...document.querySelectorAll('.ge-b:checked')].map(x=>x.value);c.counts=[...document.querySelectorAll('.ge-k:checked')].map(x=>x.value);
+ c.minSpend=Math.max(0,n('ge-ms',0));c.perClient=n('ge-pc',0);c.mode=v('ge-mode')==='manual'?'manual':'auto';c.playDays=Math.max(1,n('ge-pd',7));
+ c.validDays=Math.max(1,n('ge-vd',30));c.startDays=Math.max(0,n('ge-sd',0));
+ if(c.game==='draw'){c.drawDate=v('ge-dd')||c.drawDate;c.perRm=Math.max(0,n('ge-pr',0));c.maxEntries=Math.max(1,Math.round(n('ge-mx',20)));}
+ c.prizes=(c.prizes||[]).map((p,k)=>{if(!$('#gp-t-'+k))return p;const t=v('gp-t-'+k);
+  return {label:String(v('gp-l-'+k)||'').trim().slice(0,60),type:t,value:t==='free'?100:(t==='rm'||t==='pct'?Math.max(0,n('gp-v-'+k,0)):0),serviceId:t==='free'?(v('gp-s-'+k)||''):'',
+   gift:t==='gift'?String(v('gp-g-'+k)||'').trim().slice(0,80):'',min:t==='lose'||t==='gift'?0:Math.max(0,n('gp-m-'+k,0)),weight:c.game==='draw'?0:Math.max(0,Math.round(n('gp-w-'+k,0))),stock:t==='lose'?0:Math.max(0,Math.round(n('gp-q-'+k,c.game==='draw'?1:0)))};});
+ c.look={title:String(v('ge-ti')||'').trim(),sub:String(v('ge-su')||'').trim(),color:(document.querySelector('input[name="ge-co"]:checked')||{}).value||'gold',terms:String(v('ge-tm')||'').trim().slice(0,1500)};
+ c.lang=v('ge-lg')==='en'?'en':'ms';c.msg=String(v('ge-wa')||'').trim().slice(0,600);return c;}
+window.gmEdRe=()=>{gmEdCollect();gmEdPaint();};
+window.gmEdGame=g=>{gmEdCollect();const c=GMED.c,was=c.game==='draw';c.game=g;
+ if((g==='draw')!==was){const d=gmNew(g);c.prizes=d.prizes;}gmEdPaint();};
+window.gmEdAdd=()=>{gmEdCollect();GMED.c.prizes.push({label:'',type:'rm',value:10,serviceId:'',gift:'',min:0,weight:GMED.c.game==='draw'?0:10,stock:GMED.c.game==='draw'?1:0});gmEdPaint();};
+window.gmEdDel=k=>{gmEdCollect();GMED.c.prizes.splice(k,1);gmEdPaint();};
+function gmCheckCamp(c){const draw=c.game==='draw';
+ if(String(c.name||'').trim().length<2)return 'Give the campaign a name.';
+ if(!c.from||!c.to||c.to<c.from)return 'The end date must be on or after the start date.';
+ const bad=(c.prizes||[]).find(p=>(draw||+p.weight>0)&&!gmPrizeOk(p,draw));
+ if(bad)return (bad.label||'A prize')+': '+(bad.type==='free'?'choose the treatment.':bad.type==='gift'?'say what the gift is.':bad.type==='pct'?'give a percentage from 1 to 100.':'give it a value.');
+ if(draw){if(!(c.prizes||[]).length)return 'Add at least one draw prize.';if(!c.drawDate||c.drawDate<c.to)return 'The draw date must be on or after the last day of the campaign.';}
+ else if(!(c.prizes||[]).some(p=>p.type!=='lose'&&+p.weight>0&&gmPrizeOk(p)))return 'Give at least one real prize a chance above 0.';
+ return '';}
+window.gmSave=async()=>{const c=gmEdCollect(),e=$('#ge-e'),why=gmCheckCamp(c);if(why){e.textContent=why;return;}
+ (c.prizes||[]).forEach(p=>{if(!p.label)p.label=gmPLabel(p);});
+ const data={name:c.name,game:c.game,on:c.on,from:c.from,to:c.to,branches:c.branches||[],minSpend:+c.minSpend||0,counts:c.counts||[],perClient:+c.perClient||0,mode:c.mode,
+  playDays:+c.playDays||7,validDays:+c.validDays||30,startDays:+c.startDays||0,drawDate:c.game==='draw'?c.drawDate:'',perRm:+c.perRm||0,maxEntries:+c.maxEntries||20,
+  prizes:c.prizes.map(p=>({label:p.label,type:p.type,value:+p.value||0,serviceId:p.serviceId||'',gift:p.gift||'',min:+p.min||0,weight:+p.weight||0,stock:+p.stock||0})),
+  look:c.look,lang:c.lang,msg:c.msg,updatedAt:new Date().toISOString(),updatedBy:UID};
+ $('#ge-go').disabled=true;
+ try{if(GMED.id){await updateDoc(doc(db,'gameCamps',GMED.id),data);Object.assign(GMC.find(x=>x.id===GMED.id),data);}
+  else{data.order=(GMC||[]).reduce((m,x)=>Math.max(m,(+x.order||0)+1),0);data.given={};data.issued=0;data.createdAt=data.updatedAt;
+   const r=await addDoc(collection(db,'gameCamps'),data);GMC.push({id:r.id,...data});GMTK[r.id]=[];}
+  await audit('Game campaign saved',c.name+' · '+gmName(c.game,'en')+' · '+(c.on?'on':'off'));window.closeModal();GMV='camps';render();toast('Saved');}
+ catch(err){e.textContent=friendly(err);$('#ge-go').disabled=false;}};
+/* trying a campaign: the client's page in an overlay, with a prize drawn from the odds, nothing saved */
+function gmSample(c){const C={...c,id:'preview'},draw=c.game==='draw',b=D.meta.biz||{};let prize=null;
+ if(!draw){const k=gmDraw(C,{});prize=k<0?{idx:-1,kind:'lose',label:'Try again'}:gmPrize(C,k,ME.name||'');if(prize.code)prize.code='WIN-PREVIEW';}
+ return {id:'preview',token:'preview',campId:'preview',campName:c.name||'Campaign',game:c.game,branchName:branch().name||'',bizName:b.name||'',logo:b.logo||'',invoiceNo:'',
+  firstName:String(ME.name||'').split(' ')[0],segs:gmSegs(C),look:c.look||{},prize,entries:draw?Math.max(1,Math.min(+c.maxEntries||20,+c.perRm>0?Math.floor(250/+c.perRm):1)):0,entryNo:'LD-PREVW',
+  drawDate:c.drawDate||'',played:false,lang:c.lang||'ms',bookUrl:gmBook(),expiresMs:Date.now()+864e5};}
+window.gmPreview=id=>{const c=GMC.find(x=>x.id===id);if(!c)return;GMPC=c;gmOverlay(gmSample(c),{preview:true});};
+let GMPC=null;
+window.gmEdPrev=()=>{const c=gmEdCollect();const why=gmCheckCamp({...c,name:c.name||'Preview'});if(why){$('#ge-e').textContent=why;return;}GMPC=JSON.parse(JSON.stringify(c));
+ gmOverlay(gmSample(GMPC),{preview:true});};
+window.gmPrevAgain=()=>{if(GMPC)gmOverlay(gmSample(GMPC),{preview:true});};
+
+/* ---------------- tickets of one campaign ---------------- */
+window.gmList=async id=>{const c=GMC.find(x=>x.id===id);if(!c)return;modal(c.name+' · tickets','<div class="card"><div class="center"><div class="spin"></div></div></div>');
+ const L=await gmTickets(id,true);const draw=c.game==='draw';
+ modal(c.name+' · tickets','<div class="card">'+(L.length?'<div class="tiny muted" style="margin-bottom:6px">'+L.length+' given · '+L.filter(t=>t.played).length+' played'+(draw?' · '+L.reduce((a,t)=>a+(+t.entries||0),0)+' entries':'')+'</div>'+
+  L.slice(0,250).map(t=>gmRow(t,true)).join(''):'<div class="empty">'+ic('gift',22)+'<div>No tickets yet. They appear when qualifying bills are paid.</div></div>')+'</div>');};
+function gmRow(t,full){const p=gmP(t),v=p&&p.kind!=='gift'?D.vouchers.find(x=>x.id===p.code):null,exp=p&&p.expiry&&p.expiry<today();
+ const st=!t.played?(Date.now()>(+t.expiresMs||0)?['not played · expired','']:['not played yet','a']):p?(gmRedeemed(t)?[p.kind==='gift'?'gift collected':'voucher used','g']:exp?['prize expired','']:['to redeem','a']):t.game==='draw'&&!t.drawnAt?['in the draw','a']:['no prize',''];
+ return '<div class="hrrow gmrow"><div style="flex:1;min-width:0"><b>'+esc(t.firstName||'')+' · '+esc(t.invoiceNo||'')+'</b><small>'+dshort(String(t.createdAt).slice(0,10))+
+  (t.game==='draw'?' · '+t.entries+' entr'+(+t.entries>1?'ies':'y')+' · '+esc(t.entryNo||''):'')+(p&&(t.played||!full||boss())&&(t.played||t.win)?' · '+esc(p.label)+' · '+esc(p.code||''):'')+'</small></div>'+
+  '<span class="pill '+st[1]+'">'+st[0]+'</span>'+
+  (p&&p.kind==='gift'&&t.played&&!t.collectedAt&&!exp?'<button class="btn sm" onclick="gmCollect(\''+t.id+'\')">'+ic('check',13)+'Hand over</button>':'')+
+  (boss()&&p&&p.kind!=='gift'&&t.played&&!v&&p.code?'<button class="btn sm ghost" onclick="gmFixV(\''+t.id+'\')" title="The client\'s phone did not save the voucher">Add voucher</button>':'')+
+  (!t.played?'<button class="iconbtn" style="padding:4px" title="QR" onclick="gmQR(\''+t.id+'\')">'+ic('qr',14)+'</button>':'')+
+  '<button class="iconbtn" style="padding:4px" title="WhatsApp" onclick="gmSend(\''+t.id+'\')">'+ic('msg',14)+'</button></div>';}
+window.gmCollect=async id=>{const t=GMT[id]||await gmTicket(id);if(!t)return;const p=gmP(t);if(!confirm('Hand over "'+(p.gift||p.label)+'" to '+(t.firstName||'the client')+'?'))return;
+ const d={collectedAt:new Date().toISOString(),collectedBy:UID,collectedByName:ME.name||''};
+ try{await updateDoc(doc(db,'gamePlays',id),d);Object.assign(t,d);await audit('Game gift handed over',(t.firstName||'')+' · '+(p.gift||p.label)+' · '+(p.code||''));
+  if($('#gmchk'))gmCheckGo();else{window.closeModal();render();}toast('Recorded — gift handed over');}catch(e){toast(friendly(e));}};
+window.gmFixV=async id=>{const t=GMT[id];if(!t)return;const p=gmP(t);
+ const v={kind:'prize',type:p.vtype,value:p.vvalue,min:p.min,cap:1,used:0,firstOnly:false,ownerOnly:true,validFrom:p.validFrom,expiry:p.expiry,customerId:t.customerId,customerName:p.customerName||'',
+  label:p.label,serviceId:p.serviceId||'',serviceName:p.serviceName||'',gpId:t.token||t.id,campId:t.campId,gameName:t.campName,branchId:t.branchId,issuedAt:new Date().toISOString(),issuedBy:UID};
+ try{await setDoc(doc(db,'vouchers',p.code),v);if(!D.vouchers.some(x=>x.id===p.code))D.vouchers.push({id:p.code,...v});toast('Voucher '+p.code+' added');gmList(t.campId);}catch(e){toast(friendly(e));}};
+
+/* ---------------- prizes & gifts, and checking a code at the counter ---------------- */
+function gmPrizesView(){const all=Object.values(GMTK).flat().filter(t=>gmP(t)&&(t.played||t.win));
+ if(!GMALL)gmLoadAll();
+ const gifts=all.filter(t=>gmP(t).kind==='gift'&&!t.collectedAt&&!(gmP(t).expiry<today()));
+ const B=boss();
+ return '<div class="card"><h3 style="margin:0 0 8px">'+ic('gift',15)+' Gifts to hand over</h3>'+(gifts.length?gifts.map(t=>gmRow(t)).join(''):'<div class="tiny muted">None waiting.</div>')+'</div>'+
+  (B?'<div class="card"><h3 style="margin:0 0 8px">'+ic('award',15)+' Prizes won</h3>'+(all.length?all.sort((a,b)=>String(b.playedAt||b.drawnAt).localeCompare(String(a.playedAt||a.drawnAt))).slice(0,120).map(t=>gmRow(t)).join(''):'<div class="tiny muted">None yet.</div>')+'</div>':'');}
+function gmCheckView(){return '<div class="card"><h3 style="margin:0 0 6px">'+ic('search',15)+' Check a prize code</h3><p class="tiny muted" style="margin:0 0 8px">Type the code from the client\'s phone (WIN-…).</p>'+
+ '<div class="row" style="gap:8px"><input class="f" id="gmchk" placeholder="WIN-XXXXXX" autocapitalize="characters" style="flex:1" onkeydown="if(event.key===\'Enter\')gmCheckGo()"><button class="btn" onclick="gmCheckGo()">Check</button></div><div id="gmchk-o"></div></div>';}
+window.gmCheckGo=async()=>{const code=String(($('#gmchk')||{}).value||'').trim().toUpperCase().replace(/\s/g,''),o=$('#gmchk-o');if(!o)return;
+ if(code.length<5){o.innerHTML='<p class="tiny" style="color:var(--rose)">Type the full code.</p>';return;}
+ o.innerHTML='<div class="center"><div class="spin"></div></div>';
+ let t=Object.values(GMT).find(x=>x.code===code);
+ if(!t){try{const q=await getDocs(query(collection(db,'gamePlays'),where('code','==',code)));if(q.docs.length){t={id:q.docs[0].id,...q.docs[0].data()};GMT[t.id]=t;}}catch(e){}}
+ if(!t){o.innerHTML='<p class="tiny" style="color:var(--rose)">No prize with code '+esc(code)+'.</p>';return;}
+ const p=gmP(t);if(!p||!t.played&&!t.win){o.innerHTML='<p class="tiny" style="color:var(--rose)">'+esc(code)+' has not been played yet.</p>';return;}
+ const exp=p.expiry<today(),early=p.validFrom>today();
+ o.innerHTML='<div class="gmchkres"><b>'+esc(p.label)+'</b><small>'+esc(p.customerName||t.firstName||'')+' · '+esc(t.campName||'')+' · valid '+(early?'from '+dshort(p.validFrom)+' ':'')+'until '+dshort(p.expiry)+(+p.min?' · min spend '+rm(p.min):'')+'</small>'+
+  (p.kind==='gift'?(t.collectedAt?'<div class="pill g">Handed over '+dshort(String(t.collectedAt).slice(0,10))+' by '+esc(t.collectedByName||'')+'</div>':exp?'<div class="pill r">Expired</div>':early?'<div class="pill a">Not yet — from '+dshort(p.validFrom)+'</div>':
+   '<button class="btn" onclick="gmCollect(\''+t.id+'\')">'+ic('check',15)+'Hand over '+esc(p.gift||p.label)+'</button>'):
+   '<div class="tiny">'+(gmRedeemed(t)?'<span class="pill g">Already used</span>':exp?'<span class="pill r">Expired</span>':'It is a voucher on the client\'s record — at checkout choose the client, then <b>Apply voucher</b>.')+'</div>')+'</div>';};
+
+/* ---------------- the lucky draw ---------------- */
+window.gmDrawAsk=async id=>{const c=GMC.find(x=>x.id===id);if(!c)return;const L=(await gmTickets(id,true)).filter(t=>!t.void);
+ const ent=L.reduce((a,t)=>a+(+t.entries||0),0),pz=(c.prizes||[]).filter(p=>gmPrizeOk(p,true)),w=pz.reduce((a,p)=>a+Math.max(1,+p.stock||1),0);
+ modal('Run the draw · '+c.name,'<div class="card"><div class="crmkpis">'+kpi('Tickets',L.length,'clients','ticket')+kpi('Entries',ent,'more entries, better chance','star')+kpi('Prizes',w,pz.map(p=>(p.label||gmPLabel(p))+' ×'+Math.max(1,+p.stock||1)).join(' · '),'gift')+'</div>'+
+  '<p class="tiny muted">Winners are picked at random, weighted by entries; each ticket can win once. The result is saved, written to the audit trail, and every client sees it on their ticket link. This cannot be undone.</p>'+
+  (L.length?'<button class="btn" style="width:100%;justify-content:center" id="gd-go" onclick="gmRunDraw(\''+id+'\')">'+ic('ticket',15)+'Draw '+Math.min(w,L.length)+' winner'+(Math.min(w,L.length)>1?'s':'')+' now</button>':'<div class="empty">No tickets in this draw.</div>')+'</div>');};
+window.gmRunDraw=async id=>{const c=GMC.find(x=>x.id===id);if(!c||c.drawn)return;const btn=$('#gd-go');if(btn)btn.disabled=true;
+ const L=(await gmTickets(id,true)).filter(t=>!t.void),pool=L.map(t=>({t,w:Math.max(1,+t.entries||1)})),winners=[],now=new Date().toISOString();
+ for(const [k,p] of (c.prizes||[]).entries()){if(!gmPrizeOk(p,true))continue;for(let q=0;q<Math.max(1,+p.stock||1)&&pool.length;q++){
+  const tot=pool.reduce((a,x)=>a+x.w,0);let r=gmRand()*tot,j=pool.findIndex(x=>(r-=x.w)<0);if(j<0)j=pool.length-1;
+  const t=pool.splice(j,1)[0].t,cu=cust(t.customerId)||{};winners.push({t,win:gmPrize(c,k,cu.name||t.firstName,new Date())});}}
+ try{const ops=[];
+  winners.forEach(({t,win})=>{ops.push(['u',doc(db,'gamePlays',t.id),{win,code:win.code||'',pkind:win.kind,drawnAt:now}]);
+   if(['rm','pct','free'].includes(win.kind))ops.push(['s',doc(db,'vouchers',win.code),{kind:'prize',type:win.vtype,value:win.vvalue,min:win.min,cap:1,used:0,firstOnly:false,ownerOnly:true,validFrom:win.validFrom,expiry:win.expiry,
+    customerId:t.customerId,customerName:win.customerName||'',label:win.label,serviceId:win.serviceId||'',serviceName:win.serviceName||'',gpId:t.id,campId:c.id,gameName:c.name,branchId:t.branchId,issuedAt:now,issuedBy:UID}]);});
+  L.filter(t=>!winners.some(w=>w.t.id===t.id)).forEach(t=>ops.push(['u',doc(db,'gamePlays',t.id),{drawnAt:now}]));
+  const drawn={at:now,by:UID,byName:ME.name||'',tickets:L.length,entries:L.reduce((a,t)=>a+(+t.entries||0),0),winners:winners.map(({t,win})=>({token:t.id,name:win.customerName||t.firstName||'',label:win.label,code:win.code||'',entryNo:t.entryNo||''}))};
+  ops.push(['u',doc(db,'gameCamps',c.id),{drawn}]);
+  for(let i=0;i<ops.length;i+=400){const bt=writeBatch(db);ops.slice(i,i+400).forEach(([k,r,d])=>k==='s'?bt.set(r,d):bt.update(r,d));await bt.commit();}
+  winners.forEach(({t,win})=>{Object.assign(t,{win,code:win.code||'',pkind:win.kind,drawnAt:now});if(win.code&&['rm','pct','free'].includes(win.kind)&&!D.vouchers.some(x=>x.id===win.code))D.vouchers.push({id:win.code,kind:'prize',type:win.vtype,value:win.vvalue,min:win.min,cap:1,used:0,expiry:win.expiry,validFrom:win.validFrom,customerId:t.customerId,customerName:win.customerName,label:win.label,ownerOnly:true,gameName:c.name});});
+  L.forEach(t=>{if(!t.drawnAt)t.drawnAt=now;});c.drawn=drawn;
+  await audit('Lucky draw run',c.name+' · '+L.length+' tickets · winners: '+drawn.winners.map(w=>w.name+' ('+w.label+')').join(', '));
+  render();gmWinners(id);}
+ catch(e){toast(friendly(e));if(btn)btn.disabled=false;}};
+window.gmWinners=id=>{const c=GMC.find(x=>x.id===id);if(!c||!c.drawn)return;const d=c.drawn;
+ modal('Winners · '+c.name,'<div class="card"><p class="tiny muted" style="margin:0 0 8px">Drawn '+dstr(d.at)+' by '+esc(d.byName||'')+' · '+d.tickets+' tickets · '+d.entries+' entries</p>'+
+  (d.winners.length?d.winners.map((w,i)=>'<div class="hrrow"><span class="gmrank">'+(i+1)+'</span><div style="flex:1;min-width:0"><b>'+esc(w.name)+'</b><small>'+esc(w.label)+' · '+esc(w.entryNo||'')+(w.code?' · '+esc(w.code):'')+'</small></div>'+
+   '<button class="btn sm ghost" onclick="gmSendWin(\''+w.token+'\')">'+ic('msg',13)+'Tell them</button></div>').join(''):'<div class="empty">No winners.</div>')+'</div>');};
+window.gmSendWin=async tk=>{const t=GMT[tk]||await gmTicket(tk);if(!t)return;const c=cust(t.customerId)||{},ph=String(c.phone||'').replace(/\D/g,''),p=t.win||{},b=D.meta.biz||{};
+ const msg='Tahniah '+(t.firstName||'')+'! \u{1F389} Anda pemenang Cabutan Bertuah '+(t.campName||'')+' di '+(b.name||'')+': '+(p.label||'')+'. Lihat hadiah & kod anda di sini: '+gmLink(t.id);
+ window.open(ph?'https://wa.me/'+(ph.startsWith('6')?'':'6')+ph+'?text='+encodeURIComponent(msg):'https://wa.me/?text='+encodeURIComponent(msg),'_blank');};
+
+/* ---------------- checkout: fetch the client's newest vouchers, so a prize won on a phone shows at once ---------------- */
+async function gmVSync(cid){try{const q=await getDocs(query(collection(db,'vouchers'),where('customerId','==',cid)));
+ q.docs.forEach(d=>{const v={id:d.id,...d.data()},i=D.vouchers.findIndex(x=>x.id===d.id);if(i<0)D.vouchers.push(v);else D.vouchers[i]=v;});}catch(e){}}
+{const _a=window.applyVoucher;window.applyVoucher=async function(){const cid=typeof cart!=='undefined'&&cart?cart.customerId:'';if(cid)await gmVSync(cid);return _a.apply(this,arguments);};}
+{const _c=window.applyVoucherCode;if(_c)window.applyVoucherCode=async function(code){const k=String(code||(($('#vc')||{}).value)||'').trim().toUpperCase().replace(/\s/g,'');
+ if(k&&!findVoucher(k)){try{const s=await getDoc(doc(db,'vouchers',k));if(s.exists())D.vouchers.push({id:s.id,...s.data()});}catch(e){}}return _c.apply(this,arguments);};}
+
+/* ---------------- Settings: a short card pointing to the Games screen ---------------- */
+function gmSetCard(){const L=GMC||[];if(GMC===null)gmLoad();
+ return '<div class="card"><h2>'+ic('gift',16)+' Games after payment</h2><p class="tiny muted" style="margin:0 0 8px">Spin & Win, Blind Gift, Lucky Card, Scratch & Win and Lucky Draw — shown to clients after they pay. '+
+  (L.length?L.filter(gmLive).length+' live of '+L.length+' campaign'+(L.length>1?'s':'')+'.':'No campaigns yet.')+'</p><button class="btn sm" onclick="go(\'games\')">'+ic('gift',13)+'Open Games</button></div>';}
+window.__gm={issue:gmIssue,pick:gmPick,why:gmWhyNot,spend:gmSpend,draw:gmDraw,load:gmLoad,tickets:gmTickets,sample:gmSample,mount:gmMount,state:()=>GP};
 
 </script>
