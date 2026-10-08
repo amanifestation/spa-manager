@@ -2834,7 +2834,7 @@ body.gmlock{overflow:hidden}
 .gmmark{width:40px;height:40px;border-radius:12px;background:var(--g1);color:#fff;display:grid;place-items:center}
 .gmbiz{flex:1;font-weight:800;font-size:15px;color:var(--g3)}
 .gmlang{display:flex;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:999px;padding:2px}
-.gmlang button{border:0;background:none;font:700 11.5px/1 inherit;padding:6px 10px;border-radius:999px;color:var(--ink-3);cursor:pointer}.gmlang button.on{background:var(--g1);color:#fff}
+.gmlang button{border:0;background:none;font-weight:700;font-size:11.5px;line-height:1;font-family:inherit;padding:6px 10px;border-radius:999px;color:var(--ink-3);cursor:pointer}.gmlang button.on{background:var(--g1);color:#fff}
 .gmh1{font-size:26px;line-height:1.15;text-align:center;margin:6px 0 4px;color:var(--g3)}
 .gmsub{text-align:center;color:var(--ink-2);margin:0 0 14px;font-size:14.5px}
 .gmbox{background:var(--surface,#fff);border:1px solid var(--line);border-radius:24px;padding:20px 16px;box-shadow:0 14px 40px rgba(20,18,15,.08);text-align:center;position:relative}
@@ -2845,7 +2845,7 @@ body.gmlock{overflow:hidden}
 .gmwrot{width:100%;height:100%;border-radius:50%;box-shadow:0 10px 30px rgba(20,18,15,.25)}
 .gmsvg{width:100%;height:100%;display:block}
 .gmptr{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:28px solid var(--g3);z-index:2;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}
-.gmhub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:27%;aspect-ratio:1;border-radius:50%;border:4px solid #fff;background:var(--g1);color:#fff;font:800 15px/1 inherit;cursor:pointer;box-shadow:0 6px 18px rgba(20,18,15,.3);z-index:3;animation:gmpulse 1.6s ease-in-out infinite}
+.gmhub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:27%;aspect-ratio:1;border-radius:50%;border:4px solid #fff;background:var(--g1);color:#fff;font-weight:800;font-size:15px;line-height:1;font-family:inherit;cursor:pointer;box-shadow:0 6px 18px rgba(20,18,15,.3);z-index:3;animation:gmpulse 1.6s ease-in-out infinite}
 .gmhub:disabled{animation:none;font-size:11px;opacity:.95}
 @keyframes gmpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.0),0 6px 18px rgba(20,18,15,.3)}50%{box-shadow:0 0 0 10px rgba(255,255,255,.35),0 6px 18px rgba(20,18,15,.3)}}
 /* gift boxes */
@@ -2886,11 +2886,11 @@ body.gmlock{overflow:hidden}
 .gmcode{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px auto 10px;padding:12px;border:2px dashed var(--g1);border-radius:16px;background:var(--g2);max-width:320px}
 .gmcode small{width:100%;font-size:11.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
 .gmcode b{font:800 24px/1 ui-monospace,Menlo,monospace;letter-spacing:.08em;color:var(--g3)}
-.gmcode button{border:0;background:var(--g1);color:#fff;font:700 12px/1 inherit;padding:7px 10px;border-radius:9px;cursor:pointer}
+.gmcode button{border:0;background:var(--g1);color:#fff;font-weight:700;font-size:12px;line-height:1;font-family:inherit;padding:7px 10px;border-radius:9px;cursor:pointer}
 .gmrows{display:grid;gap:6px;max-width:320px;margin:0 auto}.gmrows div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}.gmrows span{color:var(--ink-3)}
 .gmhow{font-size:13.5px;color:var(--ink-2);margin:12px 0 4px}.gmerr{font-size:12.5px;color:#9a3b1b;background:#fdeee6;border-radius:10px;padding:8px}
 .gmbtns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.gmbtn{display:block;text-align:center;text-decoration:none;border:0;border-radius:14px;padding:13px;font:800 15px/1.1 inherit;background:var(--g1);color:#fff;cursor:pointer}
+.gmbtn{display:block;text-align:center;text-decoration:none;border:0;border-radius:14px;padding:13px;font-weight:800;font-size:15px;line-height:1.1;font-family:inherit;background:var(--g1);color:#fff;cursor:pointer}
 .gmbtn.ghost{background:transparent;color:var(--g3);box-shadow:inset 0 0 0 1.5px var(--g3)}.gmbtn.big{width:100%;margin-top:14px;font-size:16px;padding:15px}
 .gmwhen{font-size:12px;color:var(--ink-3);margin-top:10px}
 .gmterms{margin:14px 4px 0;font-size:12.5px;color:var(--ink-2)}.gmterms summary{cursor:pointer;font-weight:700}.gmterms div{margin-top:6px;line-height:1.5}
@@ -2909,6 +2909,27 @@ body.gmlock{overflow:hidden}
 .gmconf i{position:absolute;top:-12px;width:8px;height:12px;border-radius:2px;animation:gmfall linear forwards}
 @keyframes gmfall{to{top:105%;transform:rotate(720deg) translateX(30px)}}
 @media(prefers-reduced-motion:reduce){.gmgb,.gmhub{animation:none}.gmconf{display:none}}
+/* 30b client quick filters */
+.qfbar{display:flex;gap:6px;align-items:center;margin:0 0 8px}
+.qfbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font-weight:600;font-size:12.5px;line-height:1;font-family:inherit;cursor:pointer;white-space:nowrap}
+.qfbtn.on{border-color:var(--ink);background:var(--ink);color:#fff}.qfbtn b{background:var(--brass);color:#fff;border-radius:999px;padding:2px 6px;font-size:11px}
+.qfsel{margin:0;padding:6px 8px;font-size:12.5px;height:auto;flex:1;min-width:0;max-width:220px}
+.qfclr{border:0;background:none;color:var(--ink-3);text-decoration:underline;font:inherit;font-size:12px;cursor:pointer;padding:4px}
+.qfon{display:flex;gap:5px;flex-wrap:wrap;margin:0 0 8px}
+.qfpanel{max-height:46vh;overflow:auto;border:1px solid var(--line);border-radius:14px;padding:10px;margin:0 0 9px;background:var(--surface)}
+.qfchips{display:flex;flex-wrap:wrap;gap:6px}
+.qfchip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--cream,#FAF7F2);color:var(--ink-2);border-radius:999px;padding:6px 10px;font-weight:600;font-size:12px;line-height:1;font-family:inherit;cursor:pointer}
+.qfchip em{font-style:normal;font-size:11px;color:var(--ink-3);background:rgba(20,18,15,.06);border-radius:999px;padding:2px 6px}
+.qfchip.on{background:var(--brass);border-color:var(--brass);color:#fff}.qfchip.on em{background:rgba(255,255,255,.25);color:#fff}
+.qfchip.tag{border-style:dashed}
+.qfopts{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.qfopts .seg{margin:0}.qfopts .seg button{padding:6px 10px;font-size:12px}
+.qfdone{margin-left:auto;border:0;background:var(--ink);color:#fff;border-radius:10px;padding:7px 14px;font-weight:700;font-size:12.5px;line-height:1;font-family:inherit;cursor:pointer}
+.qfwhy{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.qfwhy .pill{font-size:10.5px}
+.qfgh{display:flex;align-items:center;gap:6px;width:100%;border:0;background:var(--brass-soft);color:var(--ink);font-weight:700;font-size:12px;line-height:1;font-family:inherit;padding:8px 10px;border-radius:10px;margin:8px 0 4px;cursor:pointer;position:sticky;top:0;z-index:1;text-align:left;justify-content:flex-start}
+.qfgh span{margin-left:auto;font-size:11px;background:#fff;border-radius:999px;padding:2px 7px;color:var(--ink-2)}
+.qfgh svg{transition:transform .2s;transform:rotate(90deg)}.qfgh.fold svg{transform:none}
+.qfgh .ico,.qfchip .ico,.qfbtn .ico{background:none;padding:0;box-shadow:none}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3170,7 +3191,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-09a';
+const BUILD='2026-10-09b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -31609,5 +31630,175 @@ function gmSetCard(){const L=GMC||[];if(GMC===null)gmLoad();
  return '<div class="card"><h2>'+ic('gift',16)+' Games after payment</h2><p class="tiny muted" style="margin:0 0 8px">Spin & Win, Blind Gift, Lucky Card, Scratch & Win and Lucky Draw — shown to clients after they pay. '+
   (L.length?L.filter(gmLive).length+' live of '+L.length+' campaign'+(L.length>1?'s':'')+'.':'No campaigns yet.')+'</p><button class="btn sm" onclick="go(\'games\')">'+ic('gift',13)+'Open Games</button></div>';}
 window.__gm={issue:gmIssue,pick:gmPick,why:gmWhyNot,spend:gmSpend,draw:gmDraw,load:gmLoad,tickets:gmTickets,sample:gmSample,mount:gmMount,state:()=>GP};
+
+/* ============ 30b: Clients — quick filters and grouping ============
+   Above the client list, a Filter button opens toggles for the groups the counter keeps asking about:
+   money owed, vouchers not yet used, birthdays this month or next, active packages and packages about to
+   expire, members, loyalty points, new clients, clients who have not been back, top spenders, appointments
+   this week, prospects, allergies, no-promo, referred by a friend, and every tag. Toggles combine (all of them,
+   or any of them), each shows how many clients it holds, and each client row says why it is there ("owes
+   RM120", "2 vouchers", "5 sessions left"). The list can also be grouped — by category, birthday month, last
+   visit, skin type, tag, how they found us or branch — with collapsible sections. The filtered list can be
+   copied as phone numbers or exported (owner). Turning a filter on loads every client once, with the year's
+   bills and the package balances; the plain list and search work as before when nothing is on. */
+const QF_K=[
+ ['owe','Outstanding','wallet','Bills not fully paid'],
+ ['vch','Unused voucher','tag','Vouchers and game prizes not yet redeemed'],
+ ['bday','Birthday this month','gift',''],
+ ['bdnx','Birthday next month','gift',''],
+ ['pkg','Active package','package','Sessions still left'],
+ ['pkgx','Package expiring','clock','Sessions left, expiring within 30 days'],
+ ['mem','Member','award',''],
+ ['pts','Loyalty points','star','Points to spend'],
+ ['appt','Appointment this week','calendar','Booked in the next 7 days'],
+ ['new','New this month','plus','Added this month'],
+ ['lapsed','Not back in 90 days','history','Visited before, nothing in 90 days'],
+ ['top','Top 10% spenders','money','Last 12 months'],
+ ['prospect','Prospect','user','No paid bill yet'],
+ ['allergy','Allergy noted','alert',''],
+ ['nopromo','No promotions','shield','Asked not to get marketing'],
+ ['ref','Referred by a friend','users','']];
+const QF_G=[['','No grouping'],['cat','By category'],['bmon','By birthday month'],['last','By last visit'],['skin','By skin type'],['tag','By tag'],['src','By how they found us'],['br','By branch']];
+const QF_MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let QF={on:[],mode:'all',group:'',sort:'name',open:false,fold:{}},QFD=null,QFL=0;
+try{const s=JSON.parse(localStorage.getItem('spQF')||'null');if(s)QF={...QF,...s,open:false};}catch(e){}
+const qfSave=()=>{try{localStorage.setItem('spQF',JSON.stringify({on:QF.on,mode:QF.mode,group:QF.group,sort:QF.sort,fold:QF.fold}));}catch(e){}};
+const qfActive=()=>QF.on.length>0||!!QF.group;
+/* everything the toggles need, loaded once (kept 5 minutes) */
+async function qfLoad(force){if(QFD&&!force&&Date.now()-QFD.at<3e5)return QFD;if(QFL)return QFL;
+ QFL=(async()=>{const from=ymd(addDays(new Date(),-400));
+  const [cs,ss,ps]=await Promise.all([getDocs(query(collection(db,'customers'),limit(5000))),
+   getDocs(query(collection(db,'sales'),where('date','>=',from),limit(8000))).catch(()=>({docs:[]})),
+   getDocs(query(collection(db,'customerPackages'),limit(5000))).catch(()=>({docs:[]}))]);
+  const all=cs.docs.map(d=>({id:d.id,...d.data()})),into={};all.forEach(c=>{if(c.mergedInto)into[c.id]=c.mergedInto;});
+  const by={};ss.docs.forEach(d=>{const s=d.data(),id=into[s.customerId]||s.customerId;if(id)(by[id]=by[id]||[]).push(s);});
+  const pk={};ps.docs.forEach(d=>{const p={id:d.id,...d.data()};if(p.customerId)(pk[p.customerId]=pk[p.customerId]||[]).push(p);});
+  const live=all.filter(c=>c.active!==false&&!c.mergedInto);
+  const seen=new Set(CUSTS.map(c=>c.id));live.forEach(c=>{if(!seen.has(c.id)){CUSTS.push(c);seen.add(c.id);}else Object.assign(CUSTS.find(x=>x.id===c.id),c);});
+  const y1=ymd(addDays(new Date(),-365)),val={};
+  live.forEach(c=>{const L=(by[c.id]||[]).filter(s=>!s.voided),y=L.filter(s=>String(s.date)>=y1);
+   const days=[...new Set(L.map(s=>s.date).filter(Boolean))].sort();
+   val[c.id]={last:days[days.length-1]||'',visits:days.length,spend:r2(y.reduce((a,s)=>a+Math.max(0,(+s.total||0)-(+s.refunded||0)),0))};});
+  const sp=Object.values(val).map(v=>v.spend).filter(x=>x>0).sort((a,b)=>b-a);
+  QFD={all:live,val,pk,top:sp.length?sp[Math.max(0,Math.ceil(sp.length*0.1)-1)]:Infinity,at:Date.now()};QFL=0;return QFD;})();
+ try{return await QFL;}catch(e){QFL=0;throw e;}}
+/* one client's facts for every toggle; the reason text is what the row shows */
+function qfFacts(c){const t=today(),m=t.slice(5,7),nm=String(new Date(+t.slice(0,4),+m,1).getMonth()+1).padStart(2,'0'),F={};
+ const owe=(OUTSTANDING||[]).filter(s=>s.customerId===c.id&&!s.voided&&saleBalance(s)>0.004),ow=r2(owe.reduce((a,s)=>a+saleBalance(s),0));
+ if(ow>0)F.owe='owes '+rm(ow);
+ const vs=(D.vouchers||[]).filter(v=>v.customerId===c.id&&typeof isClientV==='function'&&isClientV(v)&&['ready','waiting'].includes(rvState(v)));
+ if(vs.length)F.vch=vs.length===1?(vs[0].label||rvWorth(vs[0]))+' · until '+dshort(vs[0].expiry):vs.length+' vouchers';
+ const dob=String(c.dob||'');if(dob.length>=10){if(dob.slice(5,7)===m)F.bday='birthday '+(+dob.slice(8,10))+' '+QF_MON[+m-1].slice(0,3);if(dob.slice(5,7)===nm)F.bdnx='birthday '+(+dob.slice(8,10))+' '+QF_MON[+nm-1].slice(0,3);}
+ const P=((QFD&&QFD.pk[c.id])||[]).filter(p=>!p.voided&&p.status!=='void'&&(!p.expiry||p.expiry>=t)),left=p=>(p.balances||[]).reduce((a,b)=>a+Math.max(0,+b.left||0),0);
+ const act=P.filter(p=>left(p)>0);if(act.length){const n=act.reduce((a,p)=>a+left(p),0);F.pkg=n+' session'+(n>1?'s':'')+' left';
+  const soon=act.filter(p=>p.expiry&&p.expiry<=ymd(addDays(new Date(),30))).sort((a,b)=>String(a.expiry).localeCompare(b.expiry));if(soon.length)F.pkgx='package ends '+dshort(soon[0].expiry);}
+ if(c.memberNo)F.mem='member '+c.memberNo;
+ if(+c.points>0)F.pts=(+c.points)+' pts';
+ const ad=a=>String(a.date||'').slice(0,10),e7=ymd(addDays(new Date(),7));
+ const ap=(APPTS||[]).filter(a=>a.customerId===c.id&&!['cancel','cancelled','no','noshow','done','paid'].includes(a.status)&&ad(a)>=t&&ad(a)<=e7).sort((a,b)=>(ad(a)+(a.start||'')).localeCompare(ad(b)+(b.start||'')));
+ if(ap.length)F.appt='booked '+dshort(ad(ap[0]))+(ap[0].start&&String(ap[0].start).length<=5?' '+ap[0].start:'');
+ if(String(c.createdAt||'').slice(0,7)===t.slice(0,7))F.new='new '+dshort(String(c.createdAt).slice(0,10));
+ const v=QFD&&QFD.val[c.id];
+ if(v&&v.visits&&v.last&&daysBetween(v.last,t)>90)F.lapsed='last came '+dshort(v.last);
+ if(v&&v.spend>0&&v.spend>=QFD.top)F.top=rm(v.spend)+' in 12 months';
+ if(!c.clientNo&&!(v&&v.visits))F.prospect='no paid bill yet';
+ if(c.allergy)F.allergy=String(c.allergy).slice(0,30);
+ if(c.marketing===false)F.nopromo='no promotions';
+ if(c.referrerId)F.ref='referred';
+ (c.tags||[]).forEach(g=>{F['tag:'+g]=g;});
+ return F;}
+function qfRows(){const D2=QFD;if(!D2)return [];const q=String(custQ||'').trim().toLowerCase(),dq=digits(q);
+ let L=D2.all.map(c=>({c,f:qfFacts(c)}));
+ if(QF.on.length)L=L.filter(r=>QF.mode==='any'?QF.on.some(k=>r.f[k]):QF.on.every(k=>r.f[k]));
+ if(q)L=L.filter(r=>String(r.c.name||'').toLowerCase().includes(q)||(dq.length>=3&&digits(r.c.phone).includes(dq))||String(r.c.clientNo||'').toLowerCase()===q||String(r.c.memberNo||'').toLowerCase()===q);
+ const owe=r=>{const s=(OUTSTANDING||[]).filter(x=>x.customerId===r.c.id&&!x.voided);return s.reduce((a,x)=>a+saleBalance(x),0);};
+ const S={name:(a,b)=>String(a.c.name).localeCompare(String(b.c.name)),
+  owe:(a,b)=>owe(b)-owe(a),last:(a,b)=>String((D2.val[b.c.id]||{}).last||'').localeCompare(String((D2.val[a.c.id]||{}).last||'')),
+  spend:(a,b)=>((D2.val[b.c.id]||{}).spend||0)-((D2.val[a.c.id]||{}).spend||0),
+  bday:(a,b)=>String(a.c.dob||'9999').slice(5).localeCompare(String(b.c.dob||'9999').slice(5)),
+  newest:(a,b)=>String(b.c.createdAt||'').localeCompare(String(a.c.createdAt||''))}[QF.sort]||((a,b)=>0);
+ return L.sort(S);}
+function qfLab(k){if(k.startsWith('tag:'))return '#'+k.slice(4);const x=QF_K.find(z=>z[0]===k);return x?x[1]:k;}
+function qfWhy(r){const keys=QF.on.length?QF.on:QF_K.map(z=>z[0]).filter(k=>['owe','vch','bday','pkgx','appt'].includes(k));
+ const tone={owe:'r',vch:'g',bday:'a',bdnx:'a',pkgx:'a',appt:'b',allergy:'r'};
+ return keys.filter(k=>r.f[k]).slice(0,4).map(k=>'<span class="pill '+(tone[k]||'')+'">'+esc(r.f[k])+'</span>').join('');}
+function qfRow(r){const h=custRow(r.c),w=qfWhy(r);if(!w)return h;
+ const i=h.indexOf('<div class="tiny muted">');if(i<0)return h;const j=h.indexOf('</div>',i)+6;return h.slice(0,j)+'<div class="qfwhy">'+w+'</div>'+h.slice(j);}
+function qfGroups(L){const g=QF.group,D2=QFD,t=today(),out={},put=(k,lab,r)=>{(out[k]=out[k]||{lab,rows:[]}).rows.push(r);};
+ if(g==='cat'){const keys=QF.on.length?QF.on:[...QF_K.map(z=>z[0]),...[...new Set(D2.all.flatMap(c=>c.tags||[]))].sort().map(x=>'tag:'+x)];L.forEach(r=>{let hit=0;keys.forEach(k=>{if(r.f[k]){put(k,qfLab(k),r);hit=1;}});if(!hit)put('~','None of these',r);});
+  const o=[...keys,'~'];return o.filter(k=>out[k]).map(k=>({k,...out[k]}));}
+ if(g==='bmon'){L.forEach(r=>{const m=String(r.c.dob||'').slice(5,7);put(m||'99',m?QF_MON[+m-1]:'No birthday on file',r);});
+  const cm=t.slice(5,7);return Object.keys(out).sort((a,b)=>((+a-+cm+12)%12)-((+b-+cm+12)%12)).map(k=>({k,...out[k]}));}
+ if(g==='last'){const B=[['a','In the last 30 days',30],['b','31–90 days ago',90],['c','91–180 days ago',180],['d','More than 180 days ago',1e9]];
+  L.forEach(r=>{const v=D2.val[r.c.id]||{};if(!v.last){put('e','No paid visit yet',r);return;}const d=daysBetween(v.last,t),b=B.find(x=>d<=x[2]);put(b[0],b[1],r);});
+  return Object.keys(out).sort().map(k=>({k,...out[k]}));}
+ if(g==='skin'||g==='src'||g==='br'){L.forEach(r=>{const v=g==='skin'?r.c.skin:g==='src'?r.c.source:((D.branches.find(b=>b.id===r.c.branchId)||{}).name);put(v||'~',v||(g==='skin'?'Skin type not noted':g==='src'?'Not noted':'No branch'),r);});
+  return Object.keys(out).sort((a,b)=>a==='~'?1:b==='~'?-1:out[b].rows.length-out[a].rows.length).map(k=>({k,...out[k]}));}
+ if(g==='tag'){L.forEach(r=>{const T=r.c.tags||[];if(!T.length)put('~','No tag',r);T.forEach(x=>put('#'+x,'#'+x,r));});
+  return Object.keys(out).sort((a,b)=>a==='~'?1:b==='~'?-1:out[b].rows.length-out[a].rows.length).map(k=>({k,...out[k]}));}
+ return [{k:'',lab:'',rows:L}];}
+/* the bar above the list */
+function qfBar(){const n=QF.on.length,tags=QFD?[...new Set(QFD.all.flatMap(c=>c.tags||[]))].sort():[];
+ const cnt=k=>QFD?QFD.all.filter(c=>qfFacts(c)[k]).length:'';
+ let h='<div class="qfbar"><button class="qfbtn'+(n||QF.open?' on':'')+'" onclick="qfOpen()" aria-expanded="'+QF.open+'">'+ic('list',14)+'Filter'+(n?' <b>'+n+'</b>':'')+'</button>'+
+  '<select class="f qfsel" id="qf-g" onchange="qfGroup(this.value)" aria-label="Group clients">'+QF_G.filter(g=>g[0]!=='br'||D.branches.length>1).map(g=>'<option value="'+g[0]+'"'+(QF.group===g[0]?' selected':'')+'>'+g[1]+'</option>').join('')+'</select>'+
+  (qfActive()?'<button class="qfclr" onclick="qfClear()">Clear</button>':'')+'</div>';
+ if(n&&!QF.open)h+='<div class="qfon">'+QF.on.map(k=>'<button class="qfchip on" onclick="qfTog(\''+esc(k)+'\')">'+esc(qfLab(k))+' '+ic('close',11)+'</button>').join('')+'</div>';
+ if(QF.open){if(!QFD){setTimeout(()=>qfLoad().then(()=>{if(TAB==='cust')qfPaint();}).catch(e=>toast(friendly(e))),0);
+   h+='<div class="qfpanel"><div class="center" style="padding:10px"><div class="spin"></div></div></div>';}
+  else h+='<div class="qfpanel"><div class="qfchips">'+QF_K.map(([k,l,i,d])=>'<button class="qfchip'+(QF.on.includes(k)?' on':'')+'" onclick="qfTog(\''+k+'\')" title="'+esc(d||l)+'">'+ic(i,12)+esc(l)+'<em>'+cnt(k)+'</em></button>').join('')+
+   tags.map(g=>'<button class="qfchip tag'+(QF.on.includes('tag:'+g)?' on':'')+'" onclick="qfTog(\'tag:'+esc(g).replace(/'/g,'&#39;')+'\')">#'+esc(g)+'<em>'+cnt('tag:'+g)+'</em></button>').join('')+'</div>'+
+   '<div class="qfopts"><div class="seg sm"><button class="'+(QF.mode==='all'?'on':'')+'" onclick="qfMode(\'all\')">Match all</button><button class="'+(QF.mode==='any'?'on':'')+'" onclick="qfMode(\'any\')">Match any</button></div>'+
+   '<select class="f qfsel" onchange="qfSort(this.value)" aria-label="Sort">'+[['name','A–Z'],['owe','Most owed'],['last','Last visit'],['spend','Top spend'],['bday','Birthday date'],['newest','Newest']].map(o=>'<option value="'+o[0]+'"'+(QF.sort===o[0]?' selected':'')+'>Sort: '+o[1]+'</option>').join('')+'</select>'+
+   '<button class="qfdone" onclick="qfOpen()">Done</button></div></div>';}
+ return h;}
+function qfListHTML(){if(!QFD)return '<div class="center" style="padding:24px"><div class="spin"></div></div>';
+ const L=qfRows(),G=qfGroups(L),CAP=400;let shown=0;
+ const body=G.map(g=>{const rows=g.rows.slice(0,Math.max(0,CAP-shown));shown+=rows.length;const f=g.k&&QF.fold[QF.group+':'+g.k];
+  return (g.lab?'<button class="qfgh'+(f?' fold':'')+'" onclick="qfFold(\''+esc(String(g.k)).replace(/'/g,'&#39;')+'\')">'+ic('right',12)+esc(g.lab)+'<span>'+g.rows.length+'</span></button>':'')+
+   (f?'':rows.map(qfRow).join(''));}).join('');
+ return (L.length?body+(L.length>CAP?'<div class="tiny muted" style="padding:10px;text-align:center">Showing the first '+CAP+' — narrow it with search or another filter.</div>':'')
+  :'<div class="empty">'+ic('users',26)+'<div>No clients match these filters.</div></div>');}
+function qfSummary(){if(!QFD)return 'Loading every client…';const L=qfRows(),ow=r2(L.reduce((a,r)=>a+(OUTSTANDING||[]).filter(s=>s.customerId===r.c.id&&!s.voided).reduce((x,s)=>x+saleBalance(s),0),0));
+ return '<span>'+L.length+' client'+(L.length===1?'':'s')+(ow>0&&(QF.on.includes('owe')||QF.group==='cat')?' · '+rm(ow)+' owed':'')+'</span>'+
+  (L.length?'<span class="row" style="gap:10px"><button class="blankf" onclick="qfPhones()">'+ic('phone',12)+'Copy numbers</button>'+(boss()?'<button class="blankf" onclick="qfCSV()">'+ic('download',12)+'Export</button>':'')+'</span>':'');}
+{const _v=vCust;vCust=function(){let h=_v.apply(this,arguments);
+ const k=h.indexOf('<div class="tiny muted spread">');if(k<0)return h;
+ h=h.slice(0,k)+'<div id="qfbar">'+qfBar()+'</div>'+h.slice(k);
+ if(!qfActive())return h;
+ if(!QFD)setTimeout(()=>qfLoad().then(()=>{if(TAB==='cust')qfPaint();}).catch(e=>toast(friendly(e))),0);
+ const a=h.indexOf('<div class="tiny muted spread">');
+ const ae=h.indexOf('</span></div>',a)+'</span></div>'.length;
+ h=h.slice(0,a)+'<div class="tiny muted spread" id="qfsum">'+qfSummary()+'</div>'+h.slice(ae);
+ const s=h.indexOf('<div class="clscroll">'),e=h.lastIndexOf('</div></aside>');if(s<0||e<0)return h;
+ if(QFD&&typeof custWide==='function'&&custWide()){const R=qfRows();if(R.length&&!R.some(r=>r.c.id===CSEL))setTimeout(()=>window.pickCust(R[0].c.id),0);}
+ return h.slice(0,s)+'<div class="clscroll" id="qflist">'+qfListHTML()+h.slice(e);};}
+/* repaint only the list part so the search box keeps its focus */
+function qfPaint(){const b=document.getElementById('qfbar'),l=document.getElementById('qflist'),s=document.getElementById('qfsum');
+ if(!b||(qfActive()&&!l)||(!qfActive()&&l)){render();if(typeof bindCustSearch==='function')bindCustSearch();return;}
+ b.innerHTML=qfBar();if(l){l.innerHTML=qfListHTML();if(s)s.innerHTML=qfSummary();if(QFD&&custWide()){const R=qfRows();if(R.length&&!R.some(r=>r.c.id===CSEL))window.pickCust(R[0].c.id);}}}
+window.qfOpen=()=>{QF.open=!QF.open;qfPaint();};
+window.qfTog=k=>{const i=QF.on.indexOf(k);if(i<0)QF.on.push(k);else QF.on.splice(i,1);qfSave();qfPaint();};
+window.qfMode=m=>{QF.mode=m;qfSave();qfPaint();};
+window.qfSort=v=>{QF.sort=v;qfSave();qfPaint();};
+window.qfGroup=v=>{QF.group=v;qfSave();qfPaint();};
+window.qfFold=k=>{const key=QF.group+':'+k;QF.fold[key]=!QF.fold[key];qfSave();qfPaint();};
+window.qfClear=()=>{QF.on=[];QF.group='';QF.open=false;qfSave();qfPaint();};
+window.qfPhones=()=>{const L=qfRows().map(r=>r.c).filter(c=>c.phone&&(QF.on.includes('nopromo')||c.marketing!==false));
+ const t=L.map(c=>c.phone).join('\n');window.__qfPhones=t;try{navigator.clipboard.writeText(t).then(()=>toast(L.length+' numbers copied'+(qfRows().length>L.length?' — clients who said no to promotions left out':'')));}catch(e){toast(L.length+' numbers');}};
+window.qfCSV=()=>{if(!boss())return;const L=qfRows(),q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+ const keys=QF_K.map(z=>z[0]);
+ const lines=[['Name','Phone','Client no.','Member no.','Birthday','Last visit','Spend 12 months (RM)','Why'].map(q).join(',')].concat(L.map(r=>{const v=QFD.val[r.c.id]||{};
+  return [r.c.name,r.c.phone,r.c.clientNo||'',r.c.memberNo||'',r.c.dob||'',v.last||'',(v.spend||0).toFixed(2),(QF.on.length?QF.on:keys).filter(k=>r.f[k]).map(k=>qfLab(k)+': '+r.f[k]).join('; ')].map(q).join(',');}));
+ const blob=new Blob(['﻿'+lines.join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);
+ a.download='clients-'+(QF.on.map(k=>k.replace('tag:','')).join('-')||QF.group||'list')+'-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();
+ window.__qfCSV=lines.join('\n');audit('Client list exported',L.length+' clients · '+(QF.on.map(qfLab).join(', ')||QF.group)).catch(()=>{});};
+if(typeof I18N!=='undefined')Object.assign(I18N,{'Filter':'Tapis','No grouping':'Tiada kumpulan','By category':'Ikut kategori','By birthday month':'Ikut bulan lahir','By last visit':'Ikut lawatan terakhir',
+ 'By skin type':'Ikut jenis kulit','By tag':'Ikut tag','By how they found us':'Ikut sumber','By branch':'Ikut cawangan','Clear':'Kosongkan','Match all':'Semua syarat','Match any':'Mana-mana syarat','Done':'Siap',
+ 'Outstanding':'Ada hutang','Unused voucher':'Voucher belum tebus','Birthday this month':'Birthday bulan ni','Birthday next month':'Birthday bulan depan','Active package':'Ada pakej aktif',
+ 'Package expiring':'Pakej nak tamat','Member':'Ahli','Loyalty points':'Ada mata ganjaran','Appointment this week':'Ada temujanji minggu ni','New this month':'Baru bulan ni',
+ 'Not back in 90 days':'Lama tak datang (90+ hari)','Top 10% spenders':'Top 10% belanja','Prospect':'Prospek','Allergy noted':'Ada alahan','No promotions':'Tak nak promosi','Referred by a friend':'Dirujuk rakan',
+ 'Copy numbers':'Salin nombor','Export':'Eksport'});
+window.__qf={load:qfLoad,facts:qfFacts,rows:qfRows,state:()=>QF};
 
 </script>
