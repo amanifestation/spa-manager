@@ -2933,6 +2933,67 @@ body.gmlock{overflow:hidden}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
+<style>
+/* 30c: the opening screen — painted with the very first bytes, before the app's code arrives */
+.spl{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:radial-gradient(90% 60% at 50% 38%,#FFFFFF 0%,#F7F2E8 55%,#EFE6D6 100%);
+ transition:opacity .5s ease,visibility .5s ease;color:#14120F;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.spl.out{opacity:0;visibility:hidden;pointer-events:none}
+.spl.out .spl-in{transform:scale(1.04);transition:transform .5s ease}
+.spl-in{display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;text-align:center;animation:splIn .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes splIn{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
+.spl-mark{position:relative;width:96px;height:96px;display:grid;place-items:center}
+.spl-mark img{max-width:96px;max-height:96px;object-fit:contain;mix-blend-mode:multiply;position:relative;z-index:1;animation:splBreath 2.6s ease-in-out infinite}
+.spl-mark b{width:78px;height:78px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#B88B47,#8E6630);color:#fff;font:600 34px/1 'Cormorant Garamond',Georgia,'Times New Roman',serif;
+ letter-spacing:.02em;box-shadow:0 14px 30px rgba(142,102,48,.32);position:relative;z-index:1;animation:splBreath 2.6s ease-in-out infinite}
+.spl-ring{position:absolute;inset:-10px;border-radius:50%;border:1.5px solid rgba(166,124,61,.35);animation:splRing 2.6s ease-out infinite}
+.spl-ring+.spl-ring{animation-delay:1.3s}
+@keyframes splBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+@keyframes splRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+.spl-name{font:600 22px/1.15 'Cormorant Garamond',Georgia,'Times New Roman',serif;letter-spacing:.04em;min-height:1em;max-width:80vw}
+.spl-tag{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#8C8577;margin-top:-8px}
+.spl-bar{width:132px;height:3px;border-radius:3px;background:rgba(166,124,61,.18);overflow:hidden;margin-top:6px}
+.spl-bar i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,transparent,#A67C3D,transparent);animation:splRun 1.25s ease-in-out infinite}
+@keyframes splRun{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
+.spl-msg{font-size:12.5px;color:#8C8577;min-height:16px;transition:opacity .3s}
+.spl.pub .spl-name,.spl.pub .spl-tag{display:none}
+.spl.wide .spl-mark{width:auto;height:auto;padding:6px 0}.spl.wide .spl-mark img{max-width:min(250px,70vw);max-height:96px}.spl.wide .spl-ring,.spl.wide .spl-name{display:none}.spl.wide .spl-tag{margin-top:0}
+/* the app eases in underneath as the opening screen leaves */
+html.appin #root{animation:appIn .55s ease both}
+@keyframes appIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.spl-in,.spl-mark img,.spl-mark b,.spl-ring,.spl-bar i,html.appin #root{animation:none}.spl-ring{display:none}}
+@media print{.spl{display:none}}
+</style>
+<div id="splash" class="spl" role="status" aria-live="polite"><div class="spl-in">
+ <div class="spl-mark"><span class="spl-ring"></span><span class="spl-ring"></span><img id="spl-logo" alt="" hidden><b id="spl-ini">S</b></div>
+ <div class="spl-name" id="spl-name">Spatify</div><div class="spl-tag" id="spl-tag"></div>
+ <div class="spl-bar"><i></i></div><div class="spl-msg" id="spl-msg"></div>
+</div></div>
+<script>
+/* fills the opening screen with the spa's own logo and name (kept on this device from the last visit), moves the
+   message along while it waits, and leaves as soon as the app has drawn its first real screen */
+(function(){var S=document.getElementById('splash');if(!S)return;var t0=Date.now(),done=0;
+ var q;try{q=new URLSearchParams(location.search);}catch(e){q={has:function(){return false;}};}
+ var pub=['fb','lead','book','play','job','jobs','offer','pk','appt'].some(function(k){return q.has(k);});
+ var ms=false;try{ms=localStorage.getItem('spLang')==='ms';}catch(e){}
+ var M=ms?['Membuka…','Memuatkan data anda…','Hampir siap…','Sambungan perlahan — masih memuatkan…']:['Opening…','Loading your data…','Almost there…','Slow connection — still loading…'];
+ var c=null;try{c=JSON.parse(localStorage.getItem('spSplash')||'null');}catch(e){}
+ var nm=document.getElementById('spl-name'),ini=document.getElementById('spl-ini'),lg=document.getElementById('spl-logo'),tg=document.getElementById('spl-tag'),msg=document.getElementById('spl-msg');
+ if(pub){S.className+=' pub';}
+ else if(c&&c.n){nm.textContent=c.n;ini.textContent=(c.n.trim()[0]||'S').toUpperCase();if(c.t)tg.textContent=c.t;
+  if(c.l){lg.onload=function(){lg.hidden=false;ini.style.display='none';if(lg.naturalWidth>lg.naturalHeight*1.8)S.className+=' wide';};lg.src=c.l;}}
+ msg.textContent=M[0];
+ [[1300,1],[3500,2],[9000,3]].forEach(function(s){setTimeout(function(){if(!done){msg.style.opacity=0;setTimeout(function(){msg.textContent=M[s[1]];msg.style.opacity=1;},250);}},s[0]);});
+ function out(){if(done)return;done=1;var w=Math.max(0,650-(Date.now()-t0));
+  setTimeout(function(){S.className+=' out';document.documentElement.className+=' appin';setTimeout(function(){if(S.parentNode)S.parentNode.removeChild(S);},600);
+   setTimeout(function(){document.documentElement.className=document.documentElement.className.replace(/\s*appin/g,'');},1300);},w);}
+ window.__splashOut=out;
+ var R=document.getElementById('root');
+ function ready(){if(!R)return true;var f=R.firstElementChild;if(!f)return false;return !(R.children.length===1&&/\bcenter\b/.test(f.className)&&f.querySelector('.spin'));}
+ if(R&&window.MutationObserver){var mo=new MutationObserver(function(){if(ready()){mo.disconnect();out();}});mo.observe(R,{childList:true});}
+ setTimeout(out,15000);
+})();
+</script>
+
 <div id="modal"></div>
 <div id="albox" class="albox"></div>
 <div id="updbar" class="updbar"></div>
@@ -3191,7 +3252,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-09b';
+const BUILD='2026-10-09c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -31800,5 +31861,21 @@ if(typeof I18N!=='undefined')Object.assign(I18N,{'Filter':'Tapis','No grouping':
  'Not back in 90 days':'Lama tak datang (90+ hari)','Top 10% spenders':'Top 10% belanja','Prospect':'Prospek','Allergy noted':'Ada alahan','No promotions':'Tak nak promosi','Referred by a friend':'Dirujuk rakan',
  'Copy numbers':'Salin nombor','Export':'Eksport'});
 window.__qf={load:qfLoad,facts:qfFacts,rows:qfRows,state:()=>QF};
+
+/* 30c: remember the spa's logo and name on this device, so the next opening screen shows them at once.
+   A logo on a white box is cut out (near-white made see-through) so it sits cleanly on the cream screen. */
+function splCut(src){return new Promise(res=>{if(!src||!/^data:image|^https?:/.test(src))return res('');const im=new Image();im.crossOrigin='anonymous';
+ im.onload=()=>{try{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));
+  const g=c.getContext('2d');g.drawImage(im,0,0,c.width,c.height);const d=g.getImageData(0,0,c.width,c.height),p=d.data;
+  for(let i=0;i<p.length;i+=4){const m=Math.min(p[i],p[i+1],p[i+2]);if(m>=245)p[i+3]=0;else if(m>=225)p[i+3]=Math.min(p[i+3],Math.round((245-m)/20*255));}
+  g.putImageData(d,0,0);res(c.toDataURL('image/png'));}catch(e){res(src.length<180000?src:'');}};
+ im.onerror=()=>res('');im.src=src;});}
+{const _ls=loadStatic;loadStatic=async function(){const r=await _ls.apply(this,arguments);
+ try{const b=(D.meta&&D.meta.biz)||{},l=String(b.logo||''),base={n:String(b.name||'').slice(0,60),t:String(b.tagline||'').slice(0,60)};
+  let old=null;try{old=JSON.parse(localStorage.getItem('spSplash')||'null');}catch(e){}
+  const same=old&&old.src===l.length+':'+l.slice(-40);
+  localStorage.setItem('spSplash',JSON.stringify({...base,l:same?old.l:'',src:same?old.src:''}));
+  if(l&&!same)splCut(l).then(x=>{try{if(x.length<300000)localStorage.setItem('spSplash',JSON.stringify({...base,l:x,src:l.length+':'+l.slice(-40)}));}catch(e){}});}catch(e){}
+ return r;};}
 
 </script>
