@@ -2930,6 +2930,33 @@ body.gmlock{overflow:hidden}
 .qfgh span{margin-left:auto;font-size:11px;background:#fff;border-radius:999px;padding:2px 7px;color:var(--ink-2)}
 .qfgh svg{transition:transform .2s;transform:rotate(90deg)}.qfgh.fold svg{transform:none}
 .qfgh .ico,.qfchip .ico,.qfbtn .ico{background:none;padding:0;box-shadow:none}
+/* 30d bookings: online indicator, search, mix & match */
+.bndot.bkweb{background:#2C6E9B;box-shadow:0 0 0 0 rgba(44,110,155,.6);animation:bkwebPulse 1.8s ease-out infinite}
+@keyframes bkwebPulse{0%{box-shadow:0 0 0 0 rgba(44,110,155,.55)}100%{box-shadow:0 0 0 9px rgba(44,110,155,0)}}
+.webmark.new{background:#2C6E9B;color:#fff;animation:bkwebPulse 1.8s ease-out infinite}
+.bkweb{border:1.5px solid #2C6E9B;background:linear-gradient(120deg,#E0EEF7,#fff 60%)}
+.bkweb-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.bkweb-h b{font-size:14px}.bkweb-h small{color:var(--ink-3);flex:1;min-width:150px}
+.bkweb-dot{width:10px;height:10px;border-radius:50%;background:#2C6E9B;animation:bkwebPulse 1.8s ease-out infinite}
+.bkweb-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-top:10px}
+.bkweb-i{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid #BFD6E6;background:#fff;border-radius:12px;padding:9px 11px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.bkweb-i span{font-size:12.5px;color:var(--ink-2)}.bkweb-i em{font-style:normal;font-size:11.5px;color:#2C6E9B}
+.bkwebbtn{position:relative}.bkwebbtn b{background:#2C6E9B;color:#fff;border-radius:999px;font-size:10.5px;padding:1px 6px;margin-left:2px}
+.bkwebbtn.hot{border-color:#2C6E9B;color:#2C6E9B}
+.bkchan{font-size:12px;color:#2C6E9B;background:#E0EEF7;border-radius:10px;padding:7px 10px;margin-bottom:10px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bkf-q{position:relative}.bkf-q span{position:absolute;left:11px;top:10px;color:var(--ink-3)}.bkf-q .f{padding-left:38px!important}.bkf-q span{z-index:1;top:50%!important;transform:translateY(-50%);display:flex}
+.bkf-r{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.bkf-r button,.bkf-k button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:6px 10px;font-weight:600;font-size:12px;line-height:1;font-family:inherit;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.bkf-r button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.bkf-k{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}.bkf-k em{font-style:normal;font-size:11px;background:rgba(20,18,15,.06);border-radius:999px;padding:2px 6px}
+.bkf-k button.on{background:var(--brass);border-color:var(--brass);color:#fff}.bkf-k button.on em{background:rgba(255,255,255,.25)}.bkf-k button.zero{opacity:.5}
+.bkf-n{margin-bottom:8px}.linkbtn{border:0;background:none;color:var(--brass);text-decoration:underline;font:inherit;cursor:pointer;padding:0}
+.bkf-i{display:flex;gap:10px;width:100%;text-align:left;border:1px solid var(--line);border-left:4px solid var(--bk,var(--brass));background:var(--surface);border-radius:12px;padding:9px 11px;margin-bottom:7px;cursor:pointer;font-family:inherit;color:var(--ink)}
+.bkf-d{display:flex;flex-direction:column;min-width:58px}.bkf-d small{color:var(--ink-3);font-size:12px}
+.bkf-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.bkf-t{display:flex;flex-wrap:wrap;gap:4px}.bkf-t .pill{font-size:10.5px}
+.mixrow{border:1.5px dashed var(--brass);border-radius:14px;padding:10px;margin-bottom:8px;background:var(--brass-soft)}
+.mixrow-h{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}.mixrow-h .tiny{flex:1}.mixn{width:70px!important;margin:0!important}
+.mixpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 10px;max-height:180px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:6px}
+.mixpick label{margin:0;font-size:12.5px;display:flex;gap:6px;align-items:center}.mixpick small{color:var(--ink-3);margin-left:auto}
+.mixch-h{display:flex;flex-direction:column;margin:8px 0 2px}.mixch-h span{font-size:12px;color:var(--ink-3)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3252,7 +3279,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-09c';
+const BUILD='2026-10-10d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -3270,7 +3297,7 @@ let APPTS=[],CUSTS=[],SALES=[],unsub=[];
 let OFFLINE_DB=false;
 let TAB='home',calMode='day',calDate=today(),calBy='staff',calWin={from:'',to:''};
 const ROLE={owner:'Owner',manager:'Manager',therapist:'Therapist',frontdesk:'Front desk',doctor:'Doctor',branch:'Branch tablet',accountant:'Accountant (read-only)'};
-const svc=id=>D.services.find(s=>s.id===id)||{};
+const svc=id=>D.services.find(s=>s.id===id)||(typeof id==='string'&&id.startsWith('mix:')?mixSvc(id):{});
 const prod=sku=>D.products.find(p=>p.id===sku)||{};
 const stf=id=>D.staff.find(s=>s.id===id)||{};
 const room=id=>D.rooms.find(r=>r.id===id)||{};
@@ -4022,7 +4049,7 @@ function calMonthView(){
 window.newAppt=async(pre)=>{
  pre=pre||{};
  if(!CUSTS.length)await loadCustomers('');
- const ss=D.services.filter(s=>s.active!==false)
+ const ss=D.services.filter(s=>s.active!==false&&s.bookOff!==true)
   .map(s=>'<option value="'+s.id+'">'+esc(s.name)+' ('+s.dur+' min · '+rm(s.price)+')</option>').join('');
  const st=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes)
   .map(s=>'<option value="'+s.id+'">'+esc(s.name)+'</option>').join('');
@@ -6644,7 +6671,7 @@ window.setApptService=id=>{
  modal('Set treatment · '+(a.customerName||''),'<div class="card">'+
   (short.length?'<h3 style="margin:0 0 8px">Shortlisted</h3>'+short.map(s=>apptSvcRow(id,svc(s))).join(''):'')+
   '<h3 style="margin:12px 0 8px">'+((a.concerns||[]).length?'Also suitable':'All treatments')+'</h3>'+
-  (rest.length?rest:D.services.filter(s=>s.active!==false)).slice(0,20).map(s=>apptSvcRow(id,s)).join('')+'</div>');
+  (rest.length?rest:D.services.filter(s=>s.active!==false&&s.bookOff!==true)).slice(0,20).map(s=>apptSvcRow(id,s)).join('')+'</div>');
 };
 function apptSvcRow(id,s){
  return '<button type="button" class="pkrow" data-a="'+esc(id)+'" data-s="'+esc(s.id)+
@@ -10743,7 +10770,7 @@ function vCat(){
   ({services:catServices,products:catProducts,packages:catPackages,sets:catSets,addons:catAddons,rooms:catRooms,
     branches:catBranches,vouchers:catVouchers}[catTab])()+'</div>';
  return h;}
-const offTag=x=>x.active===false?' <span class="pill">hidden</span>':'';
+const offTag=x=>x.active===false?' <span class="pill">hidden</span>':(x.bookOff?' <span class="pill">not in booking</span>':'')+(x.posOff?' <span class="pill">not in checkout</span>':'');
 
 function catServices(){
  return '<div class="sec-h"><h2>Treatments</h2><button class="btn sm" onclick="editService()">'+
@@ -10798,8 +10825,11 @@ window.editService=id=>{
   '<label>Backbar used per session <span class="muted">— deducted automatically when the treatment is completed</span></label>'+
   '<div id="sv-use"></div>'+
   '<button class="btn ghost sm" id="sv-add" style="margin-bottom:10px">'+ic('plus',14)+'Add item</button>'+
-  '<label class="row" style="gap:8px;margin-bottom:10px"><input type="checkbox" id="sv-a"'+
-   (s.active===false?'':' checked')+'> Available for booking and checkout</label>'+
+  '<div class="fieldset"><h3>'+ic('eye'in ICONS?'eye':'list',13)+'Where it shows</h3>'+
+  '<label class="row" style="gap:8px;margin:0 0 6px"><input type="checkbox" id="sv-a"'+(s.active===false?'':' checked')+'> <b>Active</b> <span class="tiny muted">— switch off to hide it everywhere</span></label>'+
+  '<label class="row" style="gap:8px;margin:0 0 6px"><input type="checkbox" id="sv-bk"'+(s.bookOff?'':' checked')+'> Show in <b>bookings</b> <span class="tiny muted">— the calendar and the online booking page</span></label>'+
+  '<label class="row" style="gap:8px;margin:0"><input type="checkbox" id="sv-po"'+(s.posOff?'':' checked')+'> Show in <b>checkout</b> <span class="tiny muted">— the treatment list when billing</span></label>'+
+  '<p class="tiny muted" style="margin:6px 0 0">Example: a consultation that is booked but never charged — bookings on, checkout off. An add-on charged at the counter but never booked on its own — bookings off, checkout on. Package sessions can always be redeemed.</p></div>'+
   '<div id="cat-err" class="tiny" style="color:var(--rose);margin-bottom:8px"></div>'+
   '<button class="btn" style="width:100%;justify-content:center" id="sv-go">Save treatment</button>'+
   (id?'<button class="btn warn sm" style="width:100%;justify-content:center;margin-top:8px" '+
@@ -10830,7 +10860,7 @@ window.editService=id=>{
     catRemember('service',$('#sv-cat').value);
     catSave('services',id,{name,tax:($('#sv-tax')||{}).value||'SV',cat:$('#sv-cat').value==='__new'?'':$('#sv-cat').value.trim(),price:+$('#sv-p').value||0,
      dur:+$('#sv-d').value||30,buffer:+$('#sv-b').value||0,comm:+$('#sv-c').value||0,
-     room:$('#sv-r').value,use,active:$('#sv-a').checked,
+     room:$('#sv-r').value,use,active:$('#sv-a').checked,bookOff:!($('#sv-bk')||{checked:true}).checked,posOff:!($('#sv-po')||{checked:true}).checked,
      machine:(($('#sv-mach')||{}).value||''),staffOnly:chipVals('sv-who'),concerns:chipVals('sv-con'),skins:chipVals('sv-skin'),avoid:chipVals('sv-avoid'),
      intervalDays:+$('#sv-int').value||14,courseSessions:+$('#sv-crs').value||4,
      intensity:$('#sv-ity').value,
@@ -13576,7 +13606,7 @@ function paintPkgEd(){
    '<label>Treatment</label><select class="f" id="pk-s" onchange="pkdSet(\'serviceId\',this.value)">'+svcOpts(P.serviceId)+'</select>'+
    '<div class="grid g2"><div><label>Buy (paid sessions)</label><input class="f" id="pk-b" type="number" min="1" value="'+P.buy+'" oninput="pkdSet(\'buy\',this.value,1)"></div>'+
    '<div><label>Free sessions</label><input class="f" id="pk-f" type="number" min="1" value="'+P.free+'" oninput="pkdSet(\'free\',this.value,1)"></div></div>'
-  :'<label>Sessions included</label><div id="pk-items">'+P.items.map((i,k)=>'<div class="row" style="margin-bottom:6px">'+
+  :'<label>Sessions included</label><div id="pk-items">'+P.items.map((i,k)=>String(i.serviceId).startsWith('mix:')?mixRow(i,k):'<div class="row" style="margin-bottom:6px">'+
     '<select class="f" style="margin:0;flex:1" onchange="pkdItem('+k+',\'serviceId\',this.value)">'+svcOpts(i.serviceId)+'</select>'+
     '<input class="f" style="margin:0;width:74px" type="number" min="1" value="'+i.n+'" oninput="pkdItem('+k+',\'n\',this.value,1)">'+
     '<button type="button" class="iconbtn" onclick="pkdDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>').join('')+'</div>'+
@@ -17683,7 +17713,7 @@ function attQrAlerts(al){
 const WBTZ='+08:00',WBZONE='Asia/Kuala_Lumpur';
 const WB_DEF={on:false,days:[0,1,2,3,4,5,6],step:30,lead:2,horizon:30,cutoff:24,chooseStaff:true,services:null,approval:[],hol:false,closed:'',intro:'',policy:''};
 const wbSet=()=>({...WB_DEF,...((D.meta||{}).webBook||{})});
-const wbSvcs=()=>{const W=wbSet();return D.services.filter(s=>s.active!==false&&s.id&&s.dur&&(W.services?W.services.includes(s.id):true));};
+const wbSvcs=()=>{const W=wbSet();return D.services.filter(s=>s.active!==false&&s.bookOff!==true&&s.id&&s.dur&&(W.services?W.services.includes(s.id):true));};
 const wbEpoch=(d,min)=>Date.parse(d+'T'+String(Math.floor(min/60)).padStart(2,'0')+':'+String(min%60).padStart(2,'0')+':00'+WBTZ);
 const wbHM=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:WBZONE});
 const wbT=ms=>new Date(ms).toLocaleTimeString('en-MY',{hour:'numeric',minute:'2-digit',timeZone:WBZONE});
@@ -17926,7 +17956,7 @@ window.wbCancel=async id=>{
 };
 
 /* ---------------- in the app: online bookings on the calendar ---------------- */
-const webMark=a=>a.source==='web'?'<span class="webmark'+(a.webPending?' pend':'')+'" title="'+(a.webPending?'Online request — needs approval':'Booked online')+'">'+(a.webPending?'?':'WEB')+'</span>':'';
+const webMark=a=>a.source==='web'?'<span class="webmark'+(a.webPending?' pend':'')+(!a.webSeenAt&&a.status!=='cancel'?' new':'')+'" title="'+(a.webPending?'Online request — needs approval':'Booked online')+'">'+(a.webPending?'?':'WEB')+'</span>':'';
 function wbFind(id){return APPTS.find(x=>x.id===id)||WBAPPTS.find(x=>x.id===id);}
 {const _oa=window.openAppt;window.openAppt=id=>{
  if(!APPTS.find(x=>x.id===id)){const w=WBAPPTS.find(x=>x.id===id);if(w)APPTS.push({...w});}
@@ -21596,7 +21626,7 @@ function calList(){
   if(a.status==='in')acts.push('<button class="btn sm" onclick="event.stopPropagation();checkoutFromAppt(\''+a.id+'\')">'+ic('card',13)+'Checkout</button>');
   return head+'<div class="bkcard'+(['done','no','cancel'].includes(a.status)?' dim':'')+'" onclick="openAppt(\''+a.id+'\')" style="--bk:'+P.bg+'">'+
    '<div class="bkt"><b>'+tstr(a.start)+'</b><small>'+tstr(a.finish)+'</small><small>'+(a.duration||0)+' min</small></div>'+
-   '<div class="bkb"><div class="spread"><b>'+esc(a.customerName||'')+'</b><span class="pill '+st[1]+'">'+st[0]+(a.saleId?' · paid':'')+'</span></div>'+
+   '<div class="bkb"><div class="spread"><b>'+webMark(a)+esc(a.customerName||'')+'</b><span class="pill '+st[1]+'">'+st[0]+(a.saleId?' · paid':'')+'</span></div>'+
     '<div class="tiny">'+esc(a.serviceName||'')+(a.undecided?' <span class="muted">(to decide)</span>':'')+'</div>'+
     '<div class="tiny muted">'+ic('user',11)+' '+esc(a.staffName||'—')+' · '+ic('room',11)+' '+esc(room(a.roomId).name||'—')+
      ((visitOf(a.visitType)||{}).label?' · '+visitOf(a.visitType).label:'')+(a.deposit?' · deposit '+rm(a.deposit):'')+(c&&c.allergies?' · <span class="odue">allergy</span>':'')+'</div>'+
@@ -21719,7 +21749,7 @@ function wzClientStep(){
 }
 /* 2 · treatment */
 function wzSvcStep(){
- const q=String(WZ.q||'').toLowerCase(),list=D.services.filter(s=>s.active!==false&&(!q||String(s.name).toLowerCase().includes(q)));
+ const q=String(WZ.q||'').toLowerCase(),list=D.services.filter(s=>s.active!==false&&s.bookOff!==true&&(!q||String(s.name).toLowerCase().includes(q)));
  const groups=catGroup('service',list,s=>s.cat||'Treatments'),cats=groups.map(g=>g[0]);
  const G=WZ.cat&&cats.includes(WZ.cat)?groups.filter(g=>g[0]===WZ.cat):groups;
  const card=s=>{const left=WZ.cid?wzPkgLeft(s.id):0,pt=typeof promoTag==='function'?promoTag('service',s):'',on=WZ.und?WZ.undShort.includes(s.id):WZ.sid===s.id;
@@ -31877,5 +31907,179 @@ function splCut(src){return new Promise(res=>{if(!src||!/^data:image|^https?:/.t
   localStorage.setItem('spSplash',JSON.stringify({...base,l:same?old.l:'',src:same?old.src:''}));
   if(l&&!same)splCut(l).then(x=>{try{if(x.length<300000)localStorage.setItem('spSplash',JSON.stringify({...base,l:x,src:l.length+':'+l.slice(-40)}));}catch(e){}});}catch(e){}
  return r;};}
+
+/* ============ 30d: online-booking indicator & booking search · booking/checkout visibility · mix & match packages ============ */
+
+/* ---------------- 1a. online bookings: who has not looked at them yet ----------------
+   A booking a client made themselves (booking page, landing page, Instagram link — source 'web') stays marked
+   NEW until someone on the team opens it. The Bookings tab carries the count, the calendar card glows, and the
+   Bookings screen opens with a strip listing them, where the counter can open each one or mark them all seen. */
+const bkWebNew=()=>(typeof WBAPPTS!=='undefined'?WBAPPTS:[]).concat(APPTS.filter(a=>!(typeof WBAPPTS!=='undefined'&&WBAPPTS.some(w=>w.id===a.id))))
+ .filter(a=>a.source==='web'&&!a.webSeenAt&&a.status!=='cancel'&&a.branchId===ME.branchId&&String(a.date||'')>=today()&&Date.now()-Date.parse(a.createdAt||0)<14*864e5)
+ .sort((a,b)=>String(b.createdAt).localeCompare(String(a.createdAt)));
+function bkChan(a){if(a.source!=='web')return '';const s=a.lpSrc||'';return 'Online'+(s?' · '+s+(a.lpMed==='Paid'?' ads':''):'')+(a.lpCamp?' · '+a.lpCamp:'');}
+{const _tb=tileBadge;tileBadge=function(t){if(t&&t.id==='book'){const n=bkWebNew().length;if(n)return n+' new online';}return _tb.apply(this,arguments);};}
+{const _bn=botNavHTML;botNavHTML=function(){const h=_bn.apply(this,arguments);if(!bkWebNew().length)return h;
+ const i=h.indexOf("onclick=\"go('book')\"");if(i<0)return h;const j=h.indexOf('class="bndot"',i),e=h.indexOf('</button>',i);if(j<0||j>e)return h;
+ return h.slice(0,j)+'class="bndot bkweb"'+h.slice(j+'class="bndot"'.length);};}
+async function bkSeen(ids){const now=new Date().toISOString(),L=ids.filter(Boolean);if(!L.length)return;
+ try{const bt=writeBatch(db);L.forEach(id=>bt.update(doc(db,'appointments',id),{webSeenAt:now,webSeenBy:UID,webSeenByName:ME.name||''}));await bt.commit();}catch(e){console.warn('seen',e);}
+ [APPTS,typeof WBAPPTS!=='undefined'?WBAPPTS:[]].forEach(A=>A.forEach(a=>{if(L.includes(a.id))Object.assign(a,{webSeenAt:now,webSeenBy:UID});}));}
+{const _oa=window.openAppt;window.openAppt=function(id){const r=_oa.apply(this,arguments);
+ const a=APPTS.find(x=>x.id===id)||(typeof WBAPPTS!=='undefined'?WBAPPTS.find(x=>x.id===id):null);
+ if(a&&a.source==='web'){const box=document.querySelector('#modal .card');if(box&&!box.querySelector('.bkchan'))box.insertAdjacentHTML('afterbegin','<div class="bkchan">'+ic('cloud',13)+' Booked by the client · '+esc(bkChan(a))+(a.webRef?' · ref '+esc(a.webRef):'')+(a.createdAt?' · '+dshort(String(a.createdAt).slice(0,10))+' '+tstr(a.createdAt):'')+'</div>');
+  if(!a.webSeenAt)bkSeen([a.id]).then(()=>{if(TAB==='book'||TAB==='home'){const p=document.getElementById('bkweb');if(p)p.outerHTML=bkWebStrip();}});}
+ return r;};}
+window.bkSeenAll=async()=>{await bkSeen(bkWebNew().map(a=>a.id));render();toast('Marked as seen');};
+function bkWebStrip(){const L=bkWebNew();if(!L.length)return '<div id="bkweb"></div>';
+ return '<div class="card bkweb" id="bkweb"><div class="bkweb-h"><span class="bkweb-dot"></span><b>'+L.length+' new online booking'+(L.length>1?'s':'')+'</b><small>made by clients themselves — tap to open</small>'+
+  '<button class="btn sm ghost" onclick="bkSeenAll()">'+ic('check',13)+'Mark all seen</button></div>'+
+  '<div class="bkweb-l">'+L.slice(0,6).map(a=>'<button class="bkweb-i" onclick="openAppt(\''+a.id+'\')"><b>'+esc(a.customerName||'')+'</b><span>'+dshort(a.date)+' '+tstr(a.start)+' · '+esc(a.serviceName||'')+'</span><em>'+esc(bkChan(a))+(a.webPending?' · needs approval':'')+(!a.customerId?' · new client?':'')+'</em></button>').join('')+'</div></div>';}
+{const _vb=vBook;vBook=function(){return bkWebStrip()+_vb.apply(this,arguments);};}
+{const _ha=hrAlerts;hrAlerts=al=>{_ha(al);try{const n=bkWebNew();if(n.length&&(can('booking')||boss()))al.unshift({i:'cloud',t:n.length+' new online booking'+(n.length>1?'s':''),d:n.slice(0,3).map(a=>String(a.customerName||'').split(' ')[0]+' '+dshort(a.date)+' '+tstr(a.start)).join(', '),go:"go('book')"});}catch(e){}};}
+
+/* ---------------- 1b. finding bookings by kind ---------------- */
+const BKF_K=[['web','Online booking','cloud'],['pend','Needs approval','alert'],['new','First-time client','star'],['followup','Follow-up','refresh'],['return','Returning','users'],
+ ['consult','Consultation','note'],['vip','VIP','award'],['package','Package session','package'],['und','Treatment to decide','spark'],['dep','Deposit taken','wallet'],
+ ['booked','Not confirmed yet','clock'],['confirm','Confirmed','check'],['done','Completed','check'],['no','No-show','alert'],['cancel','Cancelled','close'],['ccx','Cancelled by client','close']];
+const BKF_R=[['up','Next 30 days'],['today','Today'],['week','This week'],['past','Past 30 days'],['wide','90 days either side'],['custom','Pick dates']];
+let BKF={k:[],r:'up',from:'',to:'',q:'',staff:'',svc:'',L:null,key:''};
+function bkfRange(){const t=today(),d=n=>ymd(addDays(new Date(),n));
+ if(BKF.r==='today')return [t,t];if(BKF.r==='week'){const b=new Date(),m=addDays(b,-((b.getDay()+6)%7));return [ymd(m),ymd(addDays(m,6))];}
+ if(BKF.r==='past')return [d(-30),t];if(BKF.r==='wide')return [d(-90),d(90)];if(BKF.r==='custom')return [BKF.from||t,BKF.to||BKF.from||t];return [t,d(30)];}
+function bkfIs(a,k){const c=cust(a.customerId);
+ if(k==='web')return a.source==='web';if(k==='pend')return !!a.webPending&&a.status!=='cancel';
+ if(k==='new')return a.visitType==='new'||(a.source==='web'&&!a.customerId)||(!!c&&!c.clientNo&&a.status!=='cancel');
+ if(['followup','return','consult','vip','package'].includes(k))return a.visitType===k;
+ if(k==='und')return !!a.undecided;if(k==='dep')return +a.deposit>0;if(k==='ccx')return a.status==='cancel'&&a.cancelledBy==='client';
+ return a.status===k;}
+async function bkfLoad(){const [f,t]=bkfRange(),key=f+'|'+t;if(BKF.L&&BKF.key===key)return BKF.L;
+ BKF.L=null;BKF.key=key;
+ try{const s=await getDocs(query(collection(db,'appointments'),where('date','>=',f),where('date','<=',t)));
+  BKF.L=s.docs.map(d=>({id:d.id,...d.data()}));BKF.L.forEach(a=>{if(!APPTS.some(x=>x.id===a.id)&&a.date>=calWin.from&&a.date<=calWin.to)APPTS.push(a);});}
+ catch(e){BKF.L=[];toast(friendly(e));}return BKF.L;}
+function bkfRows(){const q=String(BKF.q||'').trim().toLowerCase(),dq=digits(q);
+ return (BKF.L||[]).filter(a=>(a.branchId||ME.branchId)===ME.branchId&&(!BKF.staff||a.staffId===BKF.staff)&&(!BKF.svc||a.serviceId===BKF.svc)&&
+  (!BKF.k.length||BKF.k.some(k=>bkfIs(a,k)))&&
+  (!q||String(a.customerName||'').toLowerCase().includes(q)||String(a.serviceName||'').toLowerCase().includes(q)||String(a.webRef||'').toLowerCase()===q||(dq.length>=3&&digits(a.phone||(cust(a.customerId)||{}).phone).includes(dq))))
+  .sort((a,b)=>BKF.r==='past'?String(b.start).localeCompare(String(a.start)):String(a.start).localeCompare(String(b.start)));}
+window.bkFind=async()=>{modal('Find bookings','<div class="card bkf" id="bkf">'+bkfHead()+'<div id="bkf-o"><div class="center"><div class="spin"></div></div></div></div>');await bkfLoad();bkfPaint();};
+function bkfHead(){const svs=D.services.filter(s=>s.active!==false),st=D.staff.filter(s=>s.branchId===ME.branchId&&s.active!==false&&s.takes);
+ return '<div class="bkf-q"><span>'+ic('search',15)+'</span><input class="f" id="bkf-q" placeholder="Client name, phone, treatment or booking ref" value="'+esc(BKF.q)+'" oninput="bkfQ(this.value)"></div>'+
+  '<div class="bkf-r">'+BKF_R.map(r=>'<button class="'+(BKF.r===r[0]?'on':'')+'" onclick="bkfR(\''+r[0]+'\')">'+r[1]+'</button>').join('')+'</div>'+
+  (BKF.r==='custom'?'<div class="grid g2"><div><label>From</label><input class="f" type="date" id="bkf-f" value="'+esc(BKF.from||today())+'" onchange="bkfDates()"></div><div><label>To</label><input class="f" type="date" id="bkf-t" value="'+esc(BKF.to||BKF.from||today())+'" onchange="bkfDates()"></div></div>':'')+
+  '<div class="grid g2"><select class="f" onchange="bkfSet(\'staff\',this.value)"><option value="">All therapists</option>'+st.map(s=>'<option value="'+s.id+'"'+(BKF.staff===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+  '<select class="f" onchange="bkfSet(\'svc\',this.value)"><option value="">All treatments</option>'+svs.map(s=>'<option value="'+s.id+'"'+(BKF.svc===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></div>';}
+function bkfPaint(){const o=document.getElementById('bkf-o');if(!o)return;if(!BKF.L){o.innerHTML='<div class="center"><div class="spin"></div></div>';return;}
+ const base=(BKF.L||[]).filter(a=>(a.branchId||ME.branchId)===ME.branchId),R=bkfRows();
+ o.innerHTML='<div class="bkf-k">'+BKF_K.map(([k,l,i])=>{const n=base.filter(a=>bkfIs(a,k)).length;return '<button class="'+(BKF.k.includes(k)?'on':'')+(n?'':' zero')+'" onclick="bkfK(\''+k+'\')">'+ic(i,12)+esc(l)+'<em>'+n+'</em></button>';}).join('')+'</div>'+
+  '<div class="tiny muted bkf-n">'+R.length+' booking'+(R.length===1?'':'s')+(BKF.k.length?' · '+BKF.k.map(k=>BKF_K.find(z=>z[0]===k)[1]).join(' or '):'')+(BKF.k.length||BKF.q||BKF.staff||BKF.svc?' · <button class="linkbtn" onclick="bkfClear()">clear</button>':'')+'</div>'+
+  (R.length?R.slice(0,300).map(bkfRow).join(''):'<div class="empty">'+ic('calendar',22)+'<div>No bookings match.</div></div>');}
+function bkfRow(a){const st=STATUS[a.status]||['',''],v=visitOf(a.visitType),P=apptPal(a),tags=[];
+ if(a.source==='web')tags.push('<span class="pill b">'+ic('cloud',10)+' '+esc(bkChan(a))+'</span>');if(a.webPending&&a.status!=='cancel')tags.push('<span class="pill a">needs approval</span>');
+ if(bkfIs(a,'new'))tags.push('<span class="pill a">first time</span>');else if(v)tags.push('<span class="pill">'+esc(v.label)+'</span>');
+ if(+a.deposit>0)tags.push('<span class="pill g">deposit '+rm(a.deposit)+'</span>');if(a.undecided)tags.push('<span class="pill">to decide</span>');
+ return '<button class="bkf-i" style="--bk:'+P.bg+'" onclick="closeModal();bkfOpen(\''+a.id+'\',\''+a.date+'\')"><span class="bkf-d"><b>'+dshort(a.date)+'</b><small>'+tstr(a.start)+'</small></span>'+
+  '<span class="bkf-b"><span class="spread"><b>'+esc(a.customerName||'')+'</b><span class="pill '+st[1]+'">'+esc(st[0])+'</span></span><span class="tiny">'+esc(a.serviceName||'')+' · '+esc(a.staffName||'—')+'</span>'+
+  (tags.length?'<span class="bkf-t">'+tags.join('')+'</span>':'')+'</span></button>';}
+window.bkfOpen=(id,d)=>{if(!APPTS.some(x=>x.id===id)){const a=(BKF.L||[]).find(x=>x.id===id);if(a)APPTS.push(a);}window.openAppt(id);};
+window.bkfQ=v=>{BKF.q=v;bkfPaint();};
+window.bkfK=k=>{const i=BKF.k.indexOf(k);if(i<0)BKF.k.push(k);else BKF.k.splice(i,1);bkfPaint();};
+window.bkfSet=(k,v)=>{BKF[k]=v;bkfPaint();};
+window.bkfClear=()=>{BKF.k=[];BKF.q='';BKF.staff='';BKF.svc='';const i=document.getElementById('bkf-q');if(i)i.value='';bkfPaint();window.bkFind();};
+window.bkfR=async r=>{BKF.r=r;const c=document.getElementById('bkf');if(c)c.innerHTML=bkfHead()+'<div id="bkf-o"></div>';await bkfLoad();bkfPaint();};
+window.bkfDates=async()=>{BKF.from=($('#bkf-f')||{}).value||'';BKF.to=($('#bkf-t')||{}).value||BKF.from;if(BKF.to<BKF.from)BKF.to=BKF.from;await bkfLoad();bkfPaint();};
+window.bkFindKind=async k=>{BKF.k=[k];BKF.r=k==='web'||k==='pend'?'up':BKF.r;await window.bkFind();};
+{const _bh=bkHead;bkHead=function(){const h=_bh.apply(this,arguments);const n=bkWebNew().length;
+ return h.replace('<div class="bkacts">','<div class="bkacts"><button class="btn sm ghost" onclick="bkFind()" aria-label="Find bookings">'+ic('search',14)+'<span>Find</span></button>'+
+  '<button class="btn sm ghost bkwebbtn'+(n?' hot':'')+'" onclick="bkFindKind(\'web\')" title="Bookings clients made online">'+ic('cloud',14)+'<span>Online</span>'+(n?'<b>'+n+'</b>':'')+'</button>');};}
+
+/* ---------------- 2. treatment shows in booking, checkout, both or neither ---------------- */
+{const _pl=pickList;pickList=function(kind){const L=_pl.apply(this,arguments);return kind==='service'?L.filter(s=>s.posOff!==true):L;};}
+
+/* ---------------- 3. mix & match packages ----------------
+   A package line can be "N sessions of any treatment from a category" (or from a hand-picked list) instead of
+   one named treatment. Its id says what it allows — mix:c:<category>~<label> or mix:s:<id,id,…>~<label> — so the
+   client's balance carries the rule with it. At the visit, redeeming asks which treatment was actually done;
+   the bill, the redemption record, the hands-on commission and the stock all follow that real treatment. */
+function mixParse(id){if(typeof id!=='string'||!id.startsWith('mix:'))return null;const body=id.slice(4),t=body.indexOf('~'),main=t<0?body:body.slice(0,t),label=t<0?'':body.slice(t+1);
+ const k=main.slice(0,1),v=main.slice(2);return k==='c'?{type:'c',cat:v,label}:k==='s'?{type:'s',ids:v.split(',').filter(Boolean),label}:null;}
+function mixAllowed(id){const p=mixParse(id);if(!p)return [];return p.type==='c'?D.services.filter(s=>s.active!==false&&(s.cat||'Uncategorised')===p.cat):p.ids.map(x=>D.services.find(s=>s.id===x)).filter(s=>s&&s.active!==false);}
+function mixSvc(id){const p=mixParse(id);if(!p)return {};const L=mixAllowed(id),pr=L.length?r2(L.reduce((a,s)=>a+(+s.price||0),0)/L.length):0;
+ return {id,name:p.label||('Mix & match · '+(p.type==='c'?p.cat:L.length+' treatments')),price:pr,dur:L.length?Math.max(...L.map(s=>+s.dur||60)):60,mix:true,active:false,cat:p.type==='c'?p.cat:''};}
+function mixId(type,v,label){const lb=String(label||'').replace(/~/g,'-').trim().slice(0,40);return 'mix:'+type+':'+(type==='c'?String(v||'').replace(/~/g,'-'):(v||[]).join(','))+(lb?'~'+lb:'');}
+const isMix=id=>typeof id==='string'&&id.startsWith('mix:');
+/* the package editor: a mix row next to the usual treatment rows */
+function mixRow(i,k){const p=mixParse(i.serviceId)||{type:'c',cat:'',label:''},cats=[...new Set(D.services.filter(s=>s.active!==false).map(s=>s.cat||'Uncategorised'))].sort(),L=mixAllowed(i.serviceId);
+ return '<div class="mixrow"><div class="mixrow-h">'+ic('spark',13)+'<b>Mix &amp; match</b><span class="tiny muted">client chooses at each visit</span>'+
+  '<input class="f mixn" type="number" min="1" value="'+i.n+'" oninput="pkdItem('+k+',\'n\',this.value,1)" aria-label="Sessions"><span class="tiny">sessions</span>'+
+  '<button type="button" class="iconbtn" onclick="pkdDrop('+k+')" aria-label="Remove">'+ic('close',14)+'</button></div>'+
+  '<div class="grid g2"><div><label>Treatments allowed</label><select class="f" onchange="mixSet('+k+',\'type\',this.value)"><option value="c"'+(p.type==='c'?' selected':'')+'>Any treatment in a category</option><option value="s"'+(p.type==='s'?' selected':'')+'>Treatments I pick</option></select></div>'+
+  '<div><label>Name on the package <span class="muted">— optional</span></label><input class="f" value="'+esc(p.label||'')+'" placeholder="e.g. Glow facial of your choice" onchange="mixSet('+k+',\'label\',this.value)"></div></div>'+
+  (p.type==='c'?'<label>Category</label><select class="f" onchange="mixSet('+k+',\'cat\',this.value)">'+cats.map(c=>'<option'+(c===p.cat?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select>':
+   '<label>Pick the treatments</label><div class="mixpick">'+D.services.filter(s=>s.active!==false).map(s=>'<label><input type="checkbox"'+((p.ids||[]).includes(s.id)?' checked':'')+' onchange="mixTog('+k+',\''+s.id+'\',this.checked)"> '+esc(s.name)+' <small>'+rm(s.price)+'</small></label>').join('')+'</div>')+
+  '<div class="tiny muted">'+(L.length?L.length+' treatment'+(L.length>1?'s':'')+': '+L.slice(0,6).map(s=>esc(s.name)).join(', ')+(L.length>6?' …':'')+' · counted at '+rm(mixSvc(i.serviceId).price)+' a session (average)':'<span class="odue">No treatments in this group yet.</span>')+'</div></div>';}
+const mixTopCat=()=>{const m={};D.services.filter(s=>s.active!==false).forEach(s=>{const c=s.cat||'Uncategorised';m[c]=(m[c]||0)+1;});return Object.keys(m).sort((a,b)=>m[b]-m[a])[0]||'Uncategorised';};
+window.pkdAddMix=()=>{const c=mixTopCat();PKD.items.push({serviceId:mixId('c',c,''),n:4});paintPkgEd();};
+window.mixSet=(k,f,v)=>{const it=PKD.items[k];if(!it)return;const p=mixParse(it.serviceId)||{type:'c',cat:'',label:''};
+ if(f==='type'){it.serviceId=v==='c'?mixId('c',mixTopCat(),p.label):mixId('s',p.type==='c'?mixAllowed(it.serviceId).map(s=>s.id):p.ids,p.label);}
+ else if(f==='cat')it.serviceId=mixId('c',v,p.label);
+ else if(f==='label')it.serviceId=p.type==='c'?mixId('c',p.cat,v):mixId('s',p.ids,v);
+ paintPkgEd();};
+window.mixTog=(k,sid,on)=>{const it=PKD.items[k];const p=mixParse(it&&it.serviceId);if(!p||p.type!=='s')return;const s=new Set(p.ids);on?s.add(sid):s.delete(sid);
+ it.serviceId=mixId('s',D.services.filter(x=>s.has(x.id)).map(x=>x.id),p.label);const sum=document.getElementById('pk-sum');if(sum)sum.innerHTML=pkdSummary();};
+{const _pe=paintPkgEd;paintPkgEd=function(){_pe.apply(this,arguments);if(PKD.type==='bxgy')return;const b=[...document.querySelectorAll('#modal button')].find(x=>x.getAttribute('onclick')==='pkdAdd()');
+ if(b&&!document.getElementById('pk-mix'))b.insertAdjacentHTML('afterend','<button type="button" class="btn ghost sm" id="pk-mix" style="margin:0 0 10px 6px" onclick="pkdAddMix()">'+ic('spark',14)+'Add mix &amp; match sessions</button>');};}
+{const _ps=window.pkdSave;window.pkdSave=function(){const bad=(PKD.items||[]).find(i=>isMix(i.serviceId)&&!mixAllowed(i.serviceId).length);
+ if(bad&&PKD.type!=='bxgy'){toast('A mix & match line has no treatments to choose from — pick a category or treatments.');return;}return _ps.apply(this,arguments);};}
+/* checkout: redeeming a mix session asks which treatment was done today */
+let MIXPICK=null;
+{const _pr=pickRedeem;pickRedeem=function(key){const x=redeemLines(cart.customerId).find(l=>l.key===key);if(!x||!isMix(x.serviceId))return _pr.apply(this,arguments);
+ if(x.left-redeemInCart(x.cpId,x.line)<=0){toast('No sessions left on this line');return;}
+ if(x.expired&&!confirm(x.pkgName+' expired on '+dstr(x.expiry)+'. Redeem anyway?'))return;
+ MIXPICK=key;const b=document.getElementById('pk-grid')||document.getElementById('pk-list');if(b){b.innerHTML=mixChooser(x);b.scrollTop=0;}};}
+function mixChooser(x){const L=mixAllowed(x.serviceId),ap=typeof APPT_PICK!=='undefined'&&APPT_PICK?APPTS.find(a=>a.id===APPT_PICK):null;
+ const top=ap&&L.find(s=>s.id===ap.serviceId);const list=top?[top,...L.filter(s=>s!==top)]:L;
+ return '<div class="mixch"><button type="button" class="linkbtn" onclick="mixBack()">'+ic('left',12)+' Back</button><div class="mixch-h"><b>'+esc(x.name)+'</b><span>'+esc(x.pkgName)+' · '+(x.left-redeemInCart(x.cpId,x.line))+' left</span></div>'+
+  '<p class="tiny muted">Which treatment was done today? It is recorded as that treatment.</p>'+
+  list.map(s=>'<button type="button" class="pkrow" onclick="mixPick(\''+esc(x.key)+'\',\''+s.id+'\')"><span class="pkico">'+ic(s===top?'star':'spark',18)+'</span><span class="cpmeta"><b>'+esc(s.name)+'</b><span>'+(s===top?'Booked today · ':'')+(s.dur||0)+' min · normally '+rm(s.price)+'</span></span><span class="pkprice">Redeem</span></button>').join('')+'</div>';}
+window.mixBack=()=>{MIXPICK=null;const q=((document.getElementById('pk-q')||{}).value)||'',g=document.getElementById('pk-grid');if(g&&typeof pk2Grid==='function'){g.innerHTML=pk2Grid(q);return;}const b=document.getElementById('pk-list');if(b)b.innerHTML=pickRows(q);};
+window.mixPick=(key,sid)=>{const x=redeemLines(cart.customerId).find(l=>l.key===key),s=D.services.find(z=>z.id===sid);if(!x||!s)return;
+ if(!mixAllowed(x.serviceId).some(z=>z.id===sid)){toast(s.name+' is not part of '+x.name);return;}
+ if(x.left-redeemInCart(x.cpId,x.line)<=0){toast('No sessions left on this line');return;}
+ const staffId=((document.getElementById('pk-s')||{}).value)||PICKSTAFF||UID;
+ const same=cart.items.find(i=>i.kind==='redeem'&&i.cpId===x.cpId&&i.line===x.line&&i.id===sid&&i.staffId===staffId);
+ if(same){same.qty++;applyHandsOn(same);}
+ else cart.items.push(applyHandsOn({kind:'redeem',id:sid,cpId:x.cpId,line:x.line,name:s.name,pkgName:x.pkgName+' · '+x.name,price:0,qty:1,staffId,mixFrom:x.serviceId}));
+ MIXPICK=null;render();window.mixBack();const f=document.getElementById('pk-foot');if(f)f.innerHTML=pickFoot();const f2=document.getElementById('pk-foot2');if(f2&&typeof pk2Foot==='function')f2.innerHTML=pk2Foot();toast(s.name+' redeemed from '+x.pkgName);};
+/* the client's package screen: Redeem on a mix line asks the same question */
+{const _rd=window.redeem;window.redeem=async(id,i,sid)=>{const cp=HELD.find(x=>x.id===id),b=cp&&(cp.balances||[])[i];if(!b||!isMix(b.serviceId))return _rd(id,i);
+ if(!sid){const L=mixAllowed(b.serviceId);modal('Redeem · '+(svc(b.serviceId).name||''),'<div class="card"><p class="tiny muted" style="margin-top:0">'+esc(cp.customerName||'')+' · '+esc(cpName(cp))+' · '+b.left+' left. Which treatment was done?</p>'+
+  L.map(s=>'<button type="button" class="pkrow" onclick="redeem(\''+id+'\','+i+',\''+s.id+'\')"><span class="pkico">'+ic('spark',18)+'</span><span class="cpmeta"><b>'+esc(s.name)+'</b><span>'+(s.dur||0)+' min</span></span><span class="pkprice">Redeem</span></button>').join('')+'</div>');return;}
+ const s=D.services.find(z=>z.id===sid);if(!s||!mixAllowed(b.serviceId).some(z=>z.id===sid)){toast('That treatment is not part of this package line');return;}
+ if(new Date(cp.expiry)<new Date()&&!confirm('This package has expired. Redeem anyway?'))return;
+ try{await runTransaction(db,async tx=>{const ref=doc(db,'customerPackages',id),snap=await tx.get(ref);if(!snap.exists())throw new Error('Package not found.');
+   const bal=snap.data().balances.map(x=>({...x}));if(!(bal[i].left>0))throw new Error('No sessions left on this line.');bal[i].left-=1;
+   tx.update(ref,{balances:bal,lastRedeemedAt:new Date().toISOString(),lastRedeemedBy:UID});});
+  cp.balances[i].left-=1;
+  try{await addDoc(collection(db,'redemptions'),{customerId:cp.customerId,customerName:cp.customerName||'',customerPackageId:id,packageId:cp.packageId||'',serviceId:sid,serviceName:s.name,mixFrom:b.serviceId,
+   remaining:cp.balances[i].left,branchId:ME.branchId,staffId:UID,staffName:ME.name,at:new Date().toISOString(),date:today()});}catch(e){console.warn('redemption log',e);}
+  for(const u of (s.use||[])){const st=stockOf(u.sku);if(st){await updateDoc(doc(db,'stock',st.id),{qty:increment(-u.qty)});st.qty-=u.qty;}}
+  await audit('Package session redeemed',(cp.customerName||'')+' — '+s.name+' from '+(svc(b.serviceId).name||'mix & match')+' ('+cp.balances[i].left+' left)');
+  window.closeModal();render();toast('Redeemed '+s.name+'. '+cp.balances[i].left+' left');}
+ catch(e){toast(friendly(e));}};}
+window.__bk30d={webNew:bkWebNew,chan:bkChan,is:bkfIs,mixParse,mixAllowed,mixSvc,mixId,rows:bkfRows,state:()=>BKF};
+/* checking out a booking: if the client has mix & match sessions that cover the treatment, offer to use one */
+{const _co=window.checkoutFromAppt;window.checkoutFromAppt=async function(id){const r=await _co.apply(this,arguments);
+ try{const a=APPTS.find(x=>x.id===id);if(!a||!a.serviceId||a.saleId||!cart.customerId)return r;
+  const L=redeemLines(cart.customerId),exact=L.some(l=>l.serviceId===a.serviceId&&l.left-redeemInCart(l.cpId,l.line)>0&&!l.expired);
+  const m=L.find(l=>isMix(l.serviceId)&&!l.expired&&l.left-redeemInCart(l.cpId,l.line)>0&&mixAllowed(l.serviceId).some(s=>s.id===a.serviceId));
+  if(!exact&&m)modal('Use a package session?','<div class="card"><p style="margin-top:0"><b>'+esc((cust(cart.customerId)||{}).name||'The client')+'</b> has <b>'+(m.left-redeemInCart(m.cpId,m.line))+'</b> mix &amp; match session'+(m.left>1?'s':'')+' left — <b>'+esc(m.name)+'</b> ('+esc(m.pkgName)+') — that cover <b>'+esc(a.serviceName||'')+'</b>.</p>'+
+   '<div class="grid g2"><button class="btn" style="justify-content:center" onclick="mixSwap(\''+esc(m.key)+'\',\''+a.id+'\')">'+ic('package',15)+'Redeem from package</button><button class="btn ghost" style="justify-content:center" onclick="closeModal()">Charge normally</button></div></div>');}
+ catch(e){console.warn(e);}return r;};}
+window.mixSwap=(key,apptId)=>{const x=redeemLines(cart.customerId).find(l=>l.key===key),a=APPTS.find(z=>z.id===apptId);if(!x||!a)return;
+ const k=cart.items.findIndex(i=>i.kind==='service'&&i.apptId===apptId);const old=k>=0?cart.items[k]:null,s=svc(a.serviceId);
+ const it=applyHandsOn({kind:'redeem',id:a.serviceId,cpId:x.cpId,line:x.line,name:s.name||a.serviceName,pkgName:x.pkgName+' · '+x.name,price:0,qty:1,staffId:old?old.staffId:(a.staffId||UID),handsOnId:a.staffId||undefined,apptId:a.id,mixFrom:x.serviceId});
+ if(k>=0)cart.items.splice(k,1,it);else cart.items.push(it);window.closeModal();render();toast((s.name||'Treatment')+' redeemed from '+x.pkgName);};
 
 </script>
