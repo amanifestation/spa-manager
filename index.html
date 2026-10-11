@@ -2960,6 +2960,16 @@ html.rr #root .phase,html.rr #root .albanner,html.rr #root .stg-g.open>.stg-gb,h
 .mixpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px 10px;max-height:180px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:6px}
 .mixpick label{margin:0;font-size:12.5px;display:flex;gap:6px;align-items:center}.mixpick small{color:var(--ink-3);margin-left:auto}
 .mixch-h{display:flex;flex-direction:column;margin:8px 0 2px}.mixch-h span{font-size:12px;color:var(--ink-3)}
+/* 30f Segments: period picker, progress, error card */
+.segper{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 0 10px;padding-bottom:2px}.segper::-webkit-scrollbar{display:none}.segper>*{flex:none}
+.segper .tiny{margin-right:2px}
+.segper .chip.sm{padding:4px 10px;font-size:12px}
+.segload{padding:22px 16px}
+.segbar{width:min(260px,80%);height:4px;border-radius:4px;background:var(--line,#E7E1D6);overflow:hidden;margin:12px auto 0}
+.segbar i{display:block;height:100%;width:4%;border-radius:4px;background:var(--gold,#A67C3D);transition:width .35s ease}
+.segerr{text-align:center;padding:22px 16px}
+.segerr-i{width:44px;height:44px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:rgba(183,121,31,.12);color:#B7791F}
+.segload .segspin{margin:4px auto 12px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3290,7 +3300,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-11e';
+const BUILD='2026-10-12f';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -32094,5 +32104,94 @@ window.mixSwap=(key,apptId)=>{const x=redeemLines(cart.customerId).find(l=>l.key
  const k=cart.items.findIndex(i=>i.kind==='service'&&i.apptId===apptId);const old=k>=0?cart.items[k]:null,s=svc(a.serviceId);
  const it=applyHandsOn({kind:'redeem',id:a.serviceId,cpId:x.cpId,line:x.line,name:s.name||a.serviceName,pkgName:x.pkgName+' · '+x.name,price:0,qty:1,staffId:old?old.staffId:(a.staffId||UID),handsOnId:a.staffId||undefined,apptId:a.id,mixFrom:x.serviceId});
  if(k>=0)cart.items.splice(k,1,it);else cart.items.push(it);window.closeModal();render();toast((s.name||'Treatment')+' redeemed from '+x.pkgName);};
+
+/* 30f: Segments that always open.
+   Before: every client's bills for 3 years (up to 20,000) were read in one go. On a phone that could take minutes,
+   and if it failed (slow line, a hiccup, the daily read allowance) it quietly started again, forever — a spinner that
+   never ended, and every retry used up thousands more reads. Now: bills are read month by month with a live count,
+   for a period you choose (12 months unless you pick more), each step has a time limit, and a failure stops with a
+   clear message and a Try again button instead of looping. Odd old records (tags saved as text, dates as timestamps)
+   no longer trip it up. */
+const SEGPS=[[6,'6 months'],[12,'12 months'],[24,'2 years'],[36,'3 years']];
+let SEGP=(()=>{try{const n=+localStorage.getItem('spSegP');return SEGPS.some(p=>p[0]===n)?n:12;}catch(e){return 12;}})();
+let SEGST={gen:0,busy:false,err:null,code:'',m:0,mt:0,n:0,part:false,t0:0};
+const segMs=()=>typeof LANG!=='undefined'&&LANG==='ms';
+const segPL=n=>{const p=SEGPS.find(x=>x[0]===n);return p?p[1]:n+' months';};
+function segTO(pr,ms,what){let t;return Promise.race([pr,new Promise((_,j)=>{t=setTimeout(()=>{const e=new Error(what+' is taking too long');e.code='seg-timeout';j(e);},ms);})]).finally(()=>clearTimeout(t));}
+function segStr(x){return typeof x==='string'?x:x==null?'':(x&&typeof x.toDate==='function')?(()=>{try{return x.toDate().toISOString();}catch(e){return '';}})():String(x);}
+function segDay(s){const d=segStr(s.date);if(/^\d{4}-\d\d-\d\d/.test(d))return d.slice(0,10);const a=segStr(s.at);return /^\d{4}-\d\d-\d\d/.test(a)?a.slice(0,10):'';}
+function segProg(){const el=document.getElementById('seg-prog'),bar=document.getElementById('seg-bar');if(!el)return;
+ const S=SEGST,ms=segMs(),n=S.n.toLocaleString('en-MY');
+ el.textContent=!S.mt?(ms?'Membaca senarai pelanggan…':'Reading your client list…'):
+  (ms?'Membaca bil · '+S.m+' daripada '+S.mt+' bulan · '+n+' bil':'Reading bills · '+S.m+' of '+S.mt+' months · '+n+' bills');
+ if(bar)bar.style.width=Math.round(S.mt?8+92*S.m/S.mt:4)+'%';}
+segLoad=async function(){
+ const S=SEGST,g=++S.gen,mine=()=>g===SEGST.gen;let dead=false;S.busy=true;S.err=null;S.code='';S.m=0;S.mt=0;S.n=0;S.part=false;S.t0=Date.now();
+ try{
+  const cs=await segTO(getDocs(query(collection(db,'customers'),limit(5000))),60000,'Reading the client list');if(!mine())return;
+  /* month-by-month windows, newest first, a few at a time */
+  const now=new Date(),W=[];for(let i=0;i<SEGP;i++){const a=new Date(now.getFullYear(),now.getMonth()-i,1),b=new Date(now.getFullYear(),now.getMonth()-i+1,1);W.push([ymd(a),i?ymd(b):'9999-12-31']);}
+  const from=W[W.length-1][0];S.mt=W.length;segProg();
+  const all=cs.docs.map(d=>({id:d.id,...d.data()}));
+  const into={};all.forEach(c=>{if(c.mergedInto)into[c.id]=c.mergedInto;});
+  const by={};let q=0;
+  const one=async([a,b])=>{if(dead)return;const ss=await segTO(getDocs(query(collection(db,'sales'),where('date','>=',a),where('date','<',b),limit(4000))),45000,'Reading bills');
+   if(!mine()||dead)return;if(ss.docs.length>=4000)S.part=true;
+   ss.docs.forEach(d=>{const s=d.data(),id=into[s.customerId]||s.customerId;if(!id)return;s.date=segDay(s);(by[id]=by[id]||[]).push(s);});
+   S.m++;S.n+=ss.docs.length;segProg();};
+  const run=async()=>{while(q<W.length&&mine()&&!dead){const w=W[q++];await one(w);}};
+  await segTO(Promise.all([run(),run(),run()]),180000,'Working out the segments');if(!mine())return;
+  const d180=ymd(addDays(new Date(),-180));
+  const live=all.filter(c=>c.active!==false&&!c.mergedInto);
+  live.forEach(c=>{c.tags=Array.isArray(c.tags)?c.tags.filter(t=>typeof t==='string'&&t.trim()):(typeof c.tags==='string'&&c.tags.trim()?c.tags.split(',').map(t=>t.trim()).filter(Boolean):[]);
+   c.name=segStr(c.name)||'(no name)';c.phone=segStr(c.phone);c.dob=segStr(c.dob);c.createdAt=segStr(c.createdAt);});
+  const rows=live.map(c=>{const L=by[c.id]||[];let v;try{v=clValue(L);}catch(e){v={spend:0,visits:0,bills:0,avg:0,first:'',last:'',perMonth:0,gap:0};}
+   v.recent=new Set(L.filter(s=>!s.voided&&s.date>=d180).map(s=>s.date)).size;
+   /* a client on the books from before the period is not "new", even if their first bill in it is recent */
+   v.old=!!(c.createdAt&&c.createdAt.slice(0,10)<from);
+   return{c,v};});
+  const sp=rows.map(r=>r.v.spend).filter(x=>x>0).sort((a,b)=>b-a);
+  const top=sp.length?sp[Math.max(0,Math.ceil(sp.length*0.1)-1)]:Infinity;
+  const groups={};live.forEach(c=>{const k=phKey(c.phone);if(k.length>=9)(groups[k]=groups[k]||[]).push(c);});
+  SEGD={rows,top,dups:Object.values(groups).filter(g=>g.length>1),at:Date.now(),from,p:SEGP,bills:S.n,part:S.part,ms:Date.now()-S.t0};
+ }catch(e){dead=true;if(!mine())return;console.warn('segments',e);S.err=e;S.code=String((e&&e.code)||'');}
+ finally{if(mine()){S.busy=false;if(TAB==='seg')render();}}
+};
+{const _in=segIn;segIn=function(r,k){if(k==='new'&&r.v&&r.v.old)return false;return _in(r,k);};}
+window.segPeriod=n=>{n=+n;if(!SEGPS.some(p=>p[0]===n)||n===SEGP)return;SEGP=n;try{localStorage.setItem('spSegP',String(n));}catch(e){}SEGD=null;SEGST.err=null;SEGST.gen++;SEGST.busy=false;render();};
+window.segRefresh=()=>{SEGD=null;SEGST.err=null;SEGST.gen++;SEGST.busy=false;render();};
+window.segRetry=window.segRefresh;
+function segErrHTML(){const e=SEGST.err,c=SEGST.code,ms=segMs();
+ const why=c==='seg-timeout'?'The connection is slow, so reading the bills timed out.':
+  /resource-exhausted|quota/i.test(c+' '+(e&&e.message))?'Today\'s free database reads have run out (Spark plan). They reset every day at about 3–4pm Malaysia time.':
+  /permission/i.test(c)?'Your sign-in is not allowed to read every client\'s bills.':
+  /unavailable|network|offline/i.test(c+' '+(e&&e.message))?'No connection to the server right now.':
+  (typeof friendly==='function'?friendly(e):String(e&&e.message||e));
+ return '<div class="card segerr"><div class="segerr-i">'+ic('alert',22)+'</div><h3 style="margin:6px 0 4px">Couldn\'t open Segments</h3>'+
+  '<p class="tiny muted" style="margin:0 0 4px">'+esc(why)+'</p>'+(SEGST.n?'<p class="tiny muted" style="margin:0 0 4px">'+SEGST.n.toLocaleString('en-MY')+' bills read before it stopped.</p>':'')+
+  '<p class="tiny dim" style="margin:0 0 12px" data-noi18n>'+esc([...new Set([c,String(e&&e.message||'').slice(0,140)].filter(Boolean))].join(' · '))+'</p>'+
+  '<div class="row" style="gap:8px;justify-content:center;flex-wrap:wrap"><button type="button" class="btn" onclick="segRetry()">'+ic('refresh',14)+'Try again</button>'+
+  (SEGP>6?'<button type="button" class="btn ghost" onclick="segPeriod('+SEGPS[Math.max(0,SEGPS.findIndex(p=>p[0]===SEGP)-1)][0]+')">Use a shorter period</button>':'')+'</div></div>';}
+function segPerHTML(){return '<div class="segper"><span class="tiny muted">Period</span>'+SEGPS.map(p=>'<button type="button" class="chip sm'+(p[0]===SEGP?' on':'')+'" onclick="segPeriod('+p[0]+')">'+p[1]+'</button>').join('')+'</div>';}
+{const _v=vSeg;vSeg=function(){
+ if(!boss())return _v();
+ if(!SEGD){
+  if(SEGST.err&&!SEGST.busy)return segPerHTML()+segErrHTML();
+  if(!SEGST.busy){SEGST.busy=true;setTimeout(segLoad,0);}
+  setTimeout(segProg,0);
+  return segPerHTML()+'<div class="card segload"><div class="spin segspin"></div><p class="tiny muted" style="text-align:center;margin:0">Adding up every client\'s spend and visits…</p>'+
+   '<div class="segbar"><i id="seg-bar"></i></div><p class="tiny muted" id="seg-prog" style="text-align:center;margin:6px 0 0" data-noi18n></p>'+
+   (SEGP>12?'<p class="tiny dim" style="text-align:center;margin:6px 0 0">'+esc(segPL(SEGP))+' of bills takes longer. 12 months is quicker and uses fewer database reads.</p>':'')+'</div>';}
+ const lab=SEGS.find(s=>s[0]==='never');if(lab)lab[1]='No bill · last '+segPL(SEGD.p||SEGP);
+ let h;try{h=_v();}catch(e){console.error(e);SEGD=null;SEGST.err=e;SEGST.code='render';return segPerHTML()+segErrHTML();}
+ const mins=Math.round((Date.now()-SEGD.at)/60000);
+ h=h.replace(/Worked out from (\d+) clients and their bills\./,(m,n)=>'Worked out from '+n+' clients and '+(SEGD.bills||0).toLocaleString('en-MY')+' bills in the last '+segPL(SEGD.p||SEGP)+' · updated '+(mins<1?'just now':mins+' min ago')+'.');
+ if(SEGD.part)h=h.replace('</p></div><button','</p><p class="tiny" style="margin:4px 0 0;color:var(--amber,#B7791F)">A very busy month reached the reading limit, so a few bills may be missing.</p></div><button');
+ return segPerHTML()+h;};}
+if(typeof I18N!=='undefined')Object.assign(I18N,{'Period':'Tempoh','6 months':'6 bulan','12 months':'12 bulan','2 years':'2 tahun','3 years':'3 tahun',
+ 'Couldn\'t open Segments':'Segmen tidak dapat dibuka','Try again':'Cuba lagi','Use a shorter period':'Guna tempoh lebih pendek',
+ 'The connection is slow, so reading the bills timed out.':'Sambungan perlahan, jadi bacaan bil tamat masa.','No connection to the server right now.':'Tiada sambungan ke pelayan buat masa ini.',
+ 'Adding up every client\'s spend and visits…':'Mengira perbelanjaan dan lawatan setiap pelanggan…'});
+window.__segD=()=>SEGD;window.__segIn=(r,k)=>segIn(r,k);
 
 </script>
