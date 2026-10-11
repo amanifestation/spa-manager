@@ -2930,6 +2930,9 @@ body.gmlock{overflow:hidden}
 .qfgh span{margin-left:auto;font-size:11px;background:#fff;border-radius:999px;padding:2px 7px;color:var(--ink-2)}
 .qfgh svg{transition:transform .2s;transform:rotate(90deg)}.qfgh.fold svg{transform:none}
 .qfgh .ico,.qfchip .ico,.qfbtn .ico{background:none;padding:0;box-shadow:none}
+/* 30e: redraws of the same screen do not replay entrance animations (no flicker as data arrives) */
+html.rr #root .wrap>*,html.rr #root .anim,html.rr #root .tev,html.rr #root .chart .b,html.rr #root .blk,html.rr #root .tile,html.rr #root .noteimg,
+html.rr #root .phase,html.rr #root .albanner,html.rr #root .stg-g.open>.stg-gb,html.rr #root .stg-it.open>.stg-ib{animation:none!important}
 /* 30d bookings: online indicator, search, mix & match */
 .bndot.bkweb{background:#2C6E9B;box-shadow:0 0 0 0 rgba(44,110,155,.6);animation:bkwebPulse 1.8s ease-out infinite}
 @keyframes bkwebPulse{0%{box-shadow:0 0 0 0 rgba(44,110,155,.55)}100%{box-shadow:0 0 0 9px rgba(44,110,155,0)}}
@@ -2996,28 +2999,36 @@ html.appin #root{animation:appIn .55s ease both}
  <div class="spl-bar"><i></i></div><div class="spl-msg" id="spl-msg"></div>
 </div></div>
 <script>
-/* fills the opening screen with the spa's own logo and name (kept on this device from the last visit), moves the
-   message along while it waits, and leaves as soon as the app has drawn its first real screen */
-(function(){var S=document.getElementById('splash');if(!S)return;var t0=Date.now(),done=0;
+/* The opening screen: filled with the spa's own logo and name (kept on this device from the last visit), the message
+   moves along while it waits. It leaves only when the app has drawn its real screen AND the data arriving just after
+   has settled (no redraw for a moment), so the first redraws happen behind it instead of flickering in view. Whenever
+   the app goes back to its plain loading spinner — signing in, switching branch — the same screen covers it again. */
+(function(){var S0=document.getElementById('splash');if(!S0)return;var TPL=S0.outerHTML,R=document.getElementById('root');
  var q;try{q=new URLSearchParams(location.search);}catch(e){q={has:function(){return false;}};}
  var pub=['fb','lead','book','play','job','jobs','offer','pk','appt'].some(function(k){return q.has(k);});
  var ms=false;try{ms=localStorage.getItem('spLang')==='ms';}catch(e){}
  var M=ms?['Membuka…','Memuatkan data anda…','Hampir siap…','Sambungan perlahan — masih memuatkan…']:['Opening…','Loading your data…','Almost there…','Slow connection — still loading…'];
- var c=null;try{c=JSON.parse(localStorage.getItem('spSplash')||'null');}catch(e){}
- var nm=document.getElementById('spl-name'),ini=document.getElementById('spl-ini'),lg=document.getElementById('spl-logo'),tg=document.getElementById('spl-tag'),msg=document.getElementById('spl-msg');
- if(pub){S.className+=' pub';}
- else if(c&&c.n){nm.textContent=c.n;ini.textContent=(c.n.trim()[0]||'S').toUpperCase();if(c.t)tg.textContent=c.t;
-  if(c.l){lg.onload=function(){lg.hidden=false;ini.style.display='none';if(lg.naturalWidth>lg.naturalHeight*1.8)S.className+=' wide';};lg.src=c.l;}}
- msg.textContent=M[0];
- [[1300,1],[3500,2],[9000,3]].forEach(function(s){setTimeout(function(){if(!done){msg.style.opacity=0;setTimeout(function(){msg.textContent=M[s[1]];msg.style.opacity=1;},250);}},s[0]);});
- function out(){if(done)return;done=1;var w=Math.max(0,650-(Date.now()-t0));
-  setTimeout(function(){S.className+=' out';document.documentElement.className+=' appin';setTimeout(function(){if(S.parentNode)S.parentNode.removeChild(S);},600);
+ var S=null,t0=0,done=1,T=[],settle=0,cap=0,shown=0;
+ function fill(el){var c=null;try{c=JSON.parse(localStorage.getItem('spSplash')||'null');}catch(e){}
+  var g=function(id){return el.querySelector('#'+id);},nm=g('spl-name'),ini=g('spl-ini'),lg=g('spl-logo'),tg=g('spl-tag');
+  if(pub){el.className+=' pub';}
+  else if(c&&c.n){nm.textContent=c.n;ini.textContent=(c.n.trim()[0]||'S').toUpperCase();if(c.t)tg.textContent=c.t;
+   if(c.l){lg.onload=function(){lg.hidden=false;ini.style.display='none';if(lg.naturalWidth>lg.naturalHeight*1.8)el.className+=' wide';};lg.src=c.l;}}}
+ function say(k){var m=S&&S.querySelector('#spl-msg');if(!m)return;m.style.opacity=0;setTimeout(function(){m.textContent=M[k];m.style.opacity=1;},k?250:0);}
+ function start(el,again){S=el;done=0;shown++;t0=Date.now();T.forEach(clearTimeout);T=[];clearTimeout(settle);clearTimeout(cap);cap=0;
+  fill(el);var m=el.querySelector('#spl-msg');if(m)m.textContent=M[again?1:0];
+  [[1300,1],[3500,2],[9000,3]].forEach(function(s){T.push(setTimeout(function(){if(!done)say(s[1]);},s[0]));});
+  T.push(setTimeout(out,15000));}
+ function out(){if(done)return;done=1;T.forEach(clearTimeout);clearTimeout(settle);clearTimeout(cap);var el=S,w=Math.max(0,650-(Date.now()-t0));
+  setTimeout(function(){if(!el)return;el.className+=' out';document.documentElement.className+=' appin';setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},600);
    setTimeout(function(){document.documentElement.className=document.documentElement.className.replace(/\s*appin/g,'');},1300);},w);}
- window.__splashOut=out;
- var R=document.getElementById('root');
+ function again(){var d=document.createElement('div');d.innerHTML=TPL;var el=d.firstElementChild;el.className='spl';(R&&R.parentNode?R.parentNode:document.body).appendChild(el);start(el,true);}
  function ready(){if(!R)return true;var f=R.firstElementChild;if(!f)return false;return !(R.children.length===1&&/\bcenter\b/.test(f.className)&&f.querySelector('.spin'));}
- if(R&&window.MutationObserver){var mo=new MutationObserver(function(){if(ready()){mo.disconnect();out();}});mo.observe(R,{childList:true});}
- setTimeout(out,15000);
+ function quiet(){clearTimeout(settle);settle=setTimeout(out,pub?150:550);if(!cap)cap=setTimeout(out,pub?1500:5000);}
+ window.__splashOut=out;window.__splashState=function(){return {up:!done,shown:shown};};
+ start(S0,false);
+ if(R&&window.MutationObserver){new MutationObserver(function(){if(!done){if(ready())quiet();}else if(!pub&&!ready())again();}).observe(R,{childList:true});}
+ else setTimeout(out,1500);
 })();
 </script>
 
@@ -3279,7 +3290,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-10d';
+const BUILD='2026-10-11e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -31907,6 +31918,8 @@ function splCut(src){return new Promise(res=>{if(!src||!/^data:image|^https?:/.t
   localStorage.setItem('spSplash',JSON.stringify({...base,l:same?old.l:'',src:same?old.src:''}));
   if(l&&!same)splCut(l).then(x=>{try{if(x.length<300000)localStorage.setItem('spSplash',JSON.stringify({...base,l:x,src:l.length+':'+l.slice(-40)}));}catch(e){}});}catch(e){}
  return r;};}
+/* the entrance animation plays when you open a screen, not every time fresh data redraws the one you are on */
+{let LT=null;const _r=render;render=function(){const same=LT===TAB;LT=TAB;document.documentElement.classList.toggle('rr',same);return _r.apply(this,arguments);};window.render=render;}
 
 /* ============ 30d: online-booking indicator & booking search · booking/checkout visibility · mix & match packages ============ */
 
