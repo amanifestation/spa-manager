@@ -3300,7 +3300,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-12f';
+const BUILD='2026-10-12g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -22650,7 +22650,9 @@ const lpFaq0=()=>{const W=typeof wbSet==='function'?wbSet():{};return [
  {q:'Boleh tukar atau batal tempahan?',a:'Boleh. Guna pautan dalam pengesahan tempahan anda, atau WhatsApp kami sekurang-kurangnya '+(+W.cutoff||24)+' jam sebelum janji temu.'}];};
 const lpSet=()=>{const L={...LP_DEF,...((D.meta||{}).landing||{})};if(!L.faq)L.faq=lpFaq0();L.px={...LP_DEF.px,...(L.px||{})};L.branches=L.branches||{};L.rv={hide:[],manual:[],...(L.rv||{})};return L;};
 let LPTH={},LPTHQ=new Set(),LPUP=new Set(),LPPUB,LPIMG,LPD=null,LPSTATS=null,LPCAMP='',LPBUSY=false;
-const lpBase=()=>{let u='';try{u=location.origin+location.pathname.replace(/[^/]*$/,'');}catch(e){}return u+'lp.html';};
+/* 30g: on its own address the app's landing page is the website, luuna.my */
+const LP_SITE={'app.luuna.my':'https://luuna.my/'};
+const lpBase=()=>{try{if(LP_SITE[location.hostname])return LP_SITE[location.hostname];}catch(e){}let u='';try{u=location.origin+location.pathname.replace(/[^/]*$/,'');}catch(e){}return u+'lp.html';};
 const LP_BM_DAYS=['Ahad','Isnin','Selasa','Rabu','Khamis','Jumaat','Sabtu'];
 
 /* ---------- what the page is allowed to know ---------- */
@@ -23158,7 +23160,7 @@ function lpHeroCard(L,img){
     (L.slides||[]).map((x,i)=>'<input class="f" maxlength="50" value="'+esc(x.c||'')+'" placeholder="Photo '+(i+1)+'" oninput="lpCap('+i+',this.value)">').join('')+'</div>':'')+
    '<div class="grid g2"><div><label>Short video (MP4 link, plays silently)</label>'+tx('vid',L.vid,'https://…/luuna-hero.mp4',400)+'</div>'+
     '<div><label>or YouTube / Shorts link (plays when tapped)</label>'+tx('yt',L.yt,'https://youtube.com/shorts/…',200)+'</div></div>'+
-   '<p class="tiny muted" style="margin:0">Real photos of your room, team and clients (with their permission) beat stock photos. For the video, upload a 10–20 s MP4 (under 8 MB) next to lp.html in GitHub and paste its link.</p></div></div>'+
+   '<p class="tiny muted" style="margin:0">Real photos of your room, team and clients (with their permission) beat stock photos. For the video, upload a 10–20 s MP4 (under 8 MB) '+(typeof LP_SITE!=='undefined'&&LP_SITE[location.hostname]?'in the website repo (luuna-web) in GitHub, next to index.html,':'next to lp.html in GitHub')+' and paste its link.</p></div></div>'+
   /* 5. offer */
   '<div class="lphs"><span class="lphn">5</span><div><label style="margin-top:0">Main offer, shown right under the headline</label><select class="f" onchange="lpOff(\'mode\',this.value);render()">'+
     [['auto','The promotion ending soonest'],['promo','A promotion I choose'],['manual','My own words'],['off','None']].map(o=>'<option value="'+o[0]+'"'+(O.mode===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'+
@@ -26381,7 +26383,7 @@ function lpLeadCapCard(L){
    '<div class="lpsvb"><input class="f" maxlength="80" value="'+esc(m.t||'')+'" placeholder="Title" oninput="lcM('+i+',\'t\',this.value)"><input class="f" maxlength="200" value="'+esc(m.d||'')+'" placeholder="What is inside" oninput="lcM('+i+',\'d\',this.value)">'+
    '<input class="f" maxlength="400" value="'+esc(m.url||'')+'" placeholder="panduan.pdf or https://…" oninput="lcM('+i+',\'url\',this.value)"><button type="button" class="lpx" onclick="lcMagDel('+i+')">Remove</button></div></div>';}).join('')+
   ((C.mag||[]).length<3?'<button class="btn sm ghost" onclick="lcMagAdd()">'+ic('plus',13)+'Guide</button>':'')+
-  '<p class="tiny muted">Upload the PDF next to lp.html in GitHub and type its file name here (e.g. panduan-kulit-berminyak.pdf). The download shows only after they leave their name and WhatsApp.</p>'+
+  '<p class="tiny muted">Upload the PDF '+(typeof LP_SITE!=='undefined'&&LP_SITE[location.hostname]?'in the website repo (luuna-web) in GitHub, next to index.html,':'next to lp.html in GitHub')+' and type its file name here (e.g. panduan-kulit-berminyak.pdf). The download shows only after they leave their name and WhatsApp.</p>'+
   '<h4>WhatsApp list</h4><label class="row lptog"><input type="checkbox" '+(C.news!==false?'checked':'')+' onchange="lcF(\'news\',this.checked)"> "Tips kulit & tawaran eksklusif" sign-up above the footer</label>'+
   '<button class="btn sm" style="margin-top:8px" onclick="lcList()">'+ic('users',13)+'Broadcast list (opted in)</button></div>';
 }
@@ -32193,5 +32195,31 @@ if(typeof I18N!=='undefined')Object.assign(I18N,{'Period':'Tempoh','6 months':'6
  'The connection is slow, so reading the bills timed out.':'Sambungan perlahan, jadi bacaan bil tamat masa.','No connection to the server right now.':'Tiada sambungan ke pelayan buat masa ini.',
  'Adding up every client\'s spend and visits…':'Mengira perbelanjaan dan lawatan setiap pelanggan…'});
 window.__segD=()=>SEGD;window.__segIn=(r,k)=>segIn(r,k);
+
+/* 30g: the website on its own address (luuna.my), the app on app.luuna.my.
+   The booking page can no longer see the website's notes on this phone (different address), so the website puts
+   where the visitor came from — and an enquiry they already sent — into the booking link. Here they are taken in,
+   and a visit that simply came from our own website is not counted as "Other". */
+function lpHandoff(){
+ const q=new URLSearchParams(location.search),la=q.get('la'),ll=q.get('ll');if(!la&&!ll)return false;
+ const dec=x=>JSON.parse(decodeURIComponent(escape(atob(String(x).replace(/-/g,'+').replace(/_/g,'/')))));
+ const okT=t=>t&&typeof t==='object'&&typeof t.s==='string'&&t.s&&!isNaN(new Date(t.at))&&Date.now()-new Date(t.at)<30*864e5;
+ const cl=t=>({s:String(t.s).slice(0,20),m:String(t.m||'').slice(0,12),c:String(t.c||'').slice(0,24),a:String(t.a||'').slice(0,60),d:String(t.d||'').slice(0,80),l:String(t.l||'').slice(0,120),at:String(t.at)});
+ let took=false;
+ try{if(la){const h=dec(la),a=lpAttr();
+  if(okT(h.f)&&(!a.first||isNaN(new Date(a.first.at))||Date.now()-new Date(a.first.at)>30*864e5||new Date(h.f.at)<new Date(a.first.at)))a.first=cl(h.f);
+  if(okT(h.l))a.last=cl(h.l);
+  if(h.p&&!isNaN(new Date(h.p))&&(!a.lpAt||new Date(h.p)>new Date(a.lpAt)))a.lpAt=String(h.p);
+  a.seen=new Date().toISOString();localStorage.setItem('luunaAttr',JSON.stringify(a));took=true;}}catch(e){}
+ try{if(ll){const L=dec(ll);if(L&&typeof L.id==='string'&&/^[\w-]{1,60}$/.test(L.id)&&!isNaN(new Date(L.at)))localStorage.setItem('luunaLead',JSON.stringify({id:L.id,at:String(L.at)}));}}catch(e){}
+ /* tidy the address bar: keep the booking part only */
+ try{const u=new URL(location.href);u.searchParams.delete('la');u.searchParams.delete('ll');history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}
+ return took;}
+const lpOwnSite=h=>/^(www\.)?luuna\.my$/.test(h)||(typeof LP_SITE!=='undefined'&&Object.values(LP_SITE).some(u=>{try{return new URL(u).hostname===h;}catch(e){return false;}}));
+{const _c=lpCapture;lpCapture=function(){
+ if(lpHandoff())return;
+ let r='';try{r=document.referrer?new URL(document.referrer).hostname:'';}catch(e){}
+ if(r&&lpOwnSite(r)){const q=new URLSearchParams(location.search);if(!['src','utm_source','fbclid','gclid','ttclid'].some(k=>q.get(k)))return;}
+ return _c.apply(this,arguments);};}
 
 </script>

@@ -2,6 +2,8 @@
 <html lang="ms">
 <head>
 <meta charset="utf-8">
+<script>/* 30g: this page lives at luuna.my; an old link on the app address (app.luuna.my/lp.html) moves there, keeping its tags and the original referrer */
+(function(){try{if(location.hostname==='app.luuna.my'){var q=new URLSearchParams(location.search);if(document.referrer&&!q.has('_r'))q.set('_r',document.referrer);var s=q.toString();location.replace('https://luuna.my/'+(s?'?'+s:'')+location.hash);}}catch(e){}})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Luuna Skin Spa · Book rawatan kulit & wajah</title>
 <meta name="description" content="Rawatan wajah dan kulit di Luuna Skin Spa. Lihat senarai rawatan, harga dan promosi terkini, dan book slot anda secara online.">
@@ -9,7 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Luuna Skin Spa · Book rawatan kulit & wajah">
 <meta property="og:description" content="Senarai rawatan, promosi terkini dan booking online.">
-<meta property="og:image" content="icon-512.png">
+<meta property="og:image" content="https://luuna.my/icon-512.png">
 <link rel="icon" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://firestore.googleapis.com">
@@ -857,6 +859,9 @@ form .btn[type=submit]{white-space:normal;text-align:center;line-height:1.3;heig
 const KEY='AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM',PROJECT='spa-manager-c586b';
 const API='https://firestore.googleapis.com/v1/projects/'+PROJECT+'/databases/(default)/documents/';
 const Q=new URLSearchParams(location.search),PREVIEW=Q.has('preview');
+const RREF=Q.get('_r');if(RREF!==null){try{const u=new URL(location.href);u.searchParams.delete('_r');history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}}
+/* the booking pages are on the app: on the website (luuna.my) they open at app.luuna.my; anywhere else, next to this page as before */
+const APPBASE=/^(www\.)?luuna\.my$/.test(location.hostname)?'https://app.luuna.my/':new URL('./',location.href).href;
 let P=null,CAT='',SHOWALL=false,SELK=new Set(),SELS='',CATOPEN=new Set(),SHEET=null,REVALL=false,LANG='ms',SLIDE=0,SLTIMER=null,ABTIMER=null,POPT=null;
 try{LANG=(Q.get('lang')||localStorage.getItem('luunaLang')||'ms')==='en'?'en':'ms';}catch(e){}
 
@@ -971,7 +976,7 @@ const SRCMAP=[[/^(ig|insta|instagram)/,'Instagram'],[/^(fb|facebook|meta|msg|mes
 const REFMAP=[[/(^|\.)instagram\.com$/,'Instagram'],[/(^|\.)(facebook\.com|fb\.com|fb\.me|messenger\.com)$/,'Facebook'],[/(^|\.)tiktok\.com$/,'TikTok'],[/(^|\.)threads\.(net|com)$/,'Threads'],
  [/(^|\.)google\.[a-z.]+$/,'Google'],[/(^|\.)(wa\.me|whatsapp\.com)$/,'WhatsApp']];
 function detect(o){
- o=o||{};const q=new URLSearchParams(o.search!=null?o.search:location.search),ua=String(o.ua!=null?o.ua:navigator.userAgent||''),refUrl=String(o.ref!=null?o.ref:document.referrer||'');
+ o=o||{};const q=new URLSearchParams(o.search!=null?o.search:location.search),ua=String(o.ua!=null?o.ua:navigator.userAgent||''),refUrl=String(o.ref!=null?o.ref:(RREF!==null?RREF:document.referrer||''));
  let host='';try{host=refUrl?new URL(refUrl).hostname.replace(/^www\.|^m\.|^l\.|^lm\.|^web\./,''):'';}catch(e){}
  if(host&&typeof location!=='undefined'&&host===location.hostname)host='';
  const us=(q.get('utm_source')||'').toLowerCase().trim(),um=(q.get('utm_medium')||'').toLowerCase().trim(),src=(q.get('src')||'').toLowerCase().trim();
@@ -1366,7 +1371,12 @@ function claim(id){
 function offerSheet(){const O=(P.hero||{}).offer;if(!O)return;const t=pick(O.t,O.tEn);hit('promo');track('promo',{content_name:t});
  sheet('<h3>'+esc(t)+'</h3><p class="lead">'+(O.now?rm(O.now)+(O.was>O.now?' <s>'+rm(O.was)+'</s>':''):'')+(O.note?' · '+esc(O.note):'')+'</p><div class="form">'+formHTML('s',{promo:t})+'</div>');bindForm('s',{promo:t});}
 function ytSheet(id){if(!/^[\w-]{11}$/.test(id))return;sheet('<div class="ytw"><iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&playsinline=1&rel=0" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>');}
-function bookUrl(br,svc){const u=new URL('./',location.href);u.search='';const q=new URLSearchParams();q.set('book',br);if(svc)q.set('svc',svc);u.search=q.toString();return u.toString();}
+function bookUrl(br,svc){const u=new URL(APPBASE);u.search='';const q=new URLSearchParams();q.set('book',br);if(svc)q.set('svc',svc);
+ /* the app is on another address: its booking page cannot see this page's notes, so where the visitor came from (and an enquiry already sent) ride along in the link */
+ if(u.origin!==location.origin){try{const a=attrLoad(),b64=o=>btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  if(a.first||a.last)q.set('la',b64({f:a.first||null,l:a.last||null,p:a.lpAt||''}));
+  const L=JSON.parse(localStorage.getItem('luunaLead')||'null');if(L&&L.id)q.set('ll',b64(L));}catch(e){}}
+ u.search=q.toString();return u.toString();}
 function book(svc,brId){
  if(!P.bookOn||(svc&&svcOf(svc)&&svcOf(svc).b===false))return waSheet(svc&&svcOf(svc)?T('wantBook')(svcOf(svc).n):T('wantRes'));
  const brs=P.branches||[];
