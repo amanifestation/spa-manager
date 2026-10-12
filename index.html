@@ -2979,6 +2979,13 @@ html.rr #root .phase,html.rr #root .albanner,html.rr #root .stg-g.open>.stg-gb,h
 .wbpay .wbstripe-m{text-align:center;color:var(--ink-3,#8C8577);margin-bottom:6px}
 .wbor{display:flex;align-items:center;gap:10px;color:var(--ink-3,#8C8577);font-size:12px;margin:10px 0 8px}.wbor:before,.wbor:after{content:"";flex:1;height:1px;background:#E8D9B8}
 .okbox{margin:0 0 10px;background:var(--jade-soft,#E3F1EA);color:var(--jade,#2F7D62);border-radius:12px;padding:10px 12px;font-size:14px;display:flex;gap:8px;align-items:center}
+/* 30i · push even when closed, backups */
+.pushfs{border-color:var(--line);background:linear-gradient(180deg,rgba(0,0,0,.015),transparent)}
+.pushfs .spread .pill{flex:none}
+.pushfs code,#bkupbox code{font-size:11.5px;background:rgba(0,0,0,.05);padding:1px 5px;border-radius:5px}
+.pushspin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pushrot .7s linear infinite;vertical-align:-2px;margin-right:6px}
+#bkupbox>.pushspin{display:block;margin:8px auto;width:20px;height:20px;color:var(--ink-3,#888)}
+@keyframes pushrot{to{transform:rotate(360deg)}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3309,7 +3316,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-12h';
+const BUILD='2026-10-12i';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -32406,5 +32413,237 @@ if(typeof I18N!=='undefined')Object.assign(I18N,{'Online payment · Stripe':'Bay
 try{const g=STG_GROUPS.find(x=>x.k==='pay');if(g)g.m=/^(Payment methods|Checkout|Online payment)/;
  const i=STG_DESC.findIndex(x=>String(x[0])==='/^Payment methods/');STG_DESC.splice(i<0?STG_DESC.length:i+1,0,[/^Online payment/,'Card, FPX & GrabPay on the website and the booking page']);}catch(e){}
 window.__stpCart=()=>JSON.parse(JSON.stringify({items:cart.items,payments:cart.payments,customerId:cart.customerId,webPaid:cart.webPaid||''}));
+
+/* ============ 30i · the server working while the app is closed ============ */
+/* Three things that only a server can do, now that the project is on Blaze:
+   1. Notifications that reach a phone even when the app is closed (Web Push through the Luuna server).
+      Each phone signs itself up from Settings → Notifications; the choices on that card (what to tell me
+      about, quiet hours, my own actions) are sent to the server, so the server follows the same rules.
+   2. The scheduled jobs — new online bookings, cancellations, enquiries and website orders every two
+      minutes, deposits that never came released, the 8am brief and the 10pm summary — are on the server
+      and need nothing here except the choices.
+   3. Nightly database backups (kept 14 days): a card under Data shows the owner that they are there. */
+
+Object.assign(ALERT_KINDS,{
+ online:{label:'Website orders & online payments',icon:'card',boss:true,staff:false},
+ lead:  {label:'New enquiry from the website',    icon:'msg', boss:true,staff:false},
+ daily: {label:'8am brief & 10pm day summary',    icon:'chart',boss:true,staff:false}});
+
+/* a device that saved its choices before a kind existed gets that kind's default, not "off" */
+{const _np=notifPrefs;notifPrefs=function(){const p=_np.apply(this,arguments);
+ try{const b=boss();let ch=false;p.kinds=p.kinds||{};
+  Object.keys(ALERT_KINDS).forEach(k=>{if(typeof p.kinds[k]!=='boolean'){p.kinds[k]=!!(b?ALERT_KINDS[k].boss:ALERT_KINDS[k].staff);ch=true;}});
+  if(ch)saveNotifPrefs();}catch(e){}
+ return p;};}
+
+/* ---------- this phone's sign-up with the server ---------- */
+const PKEY='luunaPush';
+const pushGet=()=>{try{return JSON.parse(localStorage.getItem(PKEY)||'null')||{};}catch(e){return {};}};
+const pushSave=o=>{try{localStorage.setItem(PKEY,JSON.stringify(o));}catch(e){}};
+const PST={busy:false,err:'',srv:null,key:'',sub:null,checked:0};
+const pushUrl=()=>{try{const u=stpUrl(stpSet().url||'');return stpOkUrl(u)?u:'';}catch(e){return '';}};
+const pushCan=()=>typeof window!=='undefined'&&'serviceWorker' in navigator&&'PushManager' in window&&typeof Notification!=='undefined';
+const pushB64=s=>{const p='='.repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(b,c=>c.charCodeAt(0));};
+const pushSame=(sub,key)=>{try{const a=new Uint8Array(sub.options.applicationServerKey),b=pushB64(key);return a.length===b.length&&a.every((x,i)=>x===b[i]);}catch(e){return true;}};
+async function pushReg(){let r=SWREG;if(!r&&navigator.serviceWorker){r=await navigator.serviceWorker.ready;SWREG=r;}if(!r||!r.pushManager)throw new Error('The app service is not ready — reload the app once');return r;}
+async function pushToken(){if(DEMO)throw new Error('Not in demo mode');const u=auth&&auth.currentUser;if(!u)throw new Error('Sign in again first');return u.getIdToken();}
+async function pushApi(path,body,method){
+ const u=pushUrl();if(!u)throw new Error('The Luuna server is not set up');
+ const r=await fetch(u+path,{method:method||'POST',cache:'no-store',headers:{'content-type':'application/json',authorization:'Bearer '+await pushToken()},...(body?{body:JSON.stringify(body)}:{})});
+ let j={};try{j=await r.json();}catch(e){}
+ if(!r.ok)throw new Error(j.message||('Server said '+r.status));
+ return j;
+}
+async function pushHealth(force){
+ const u=pushUrl();if(!u){PST.srv=null;PST.key='';return null;}
+ if(!force&&PST.srv&&Date.now()-PST.checked<5*60e3)return PST.srv;
+ try{const r=await fetch(u+'/',{cache:'no-store'});const j=await r.json();PST.srv=j;PST.key=j.vapid||'';}
+ catch(e){PST.srv={ok:false,err:'Cannot reach the server'};PST.key='';}
+ PST.checked=Date.now();return PST.srv;
+}
+function pushBody(sub){
+ const p=notifPrefs();
+ return {sub:sub.toJSON(),kinds:{...p.kinds},quiet:{from:+p.quietFrom||0,to:+p.quietTo||0},mine:!!p.mine,
+  ua:(standalone()?'app · ':'browser · ')+String(navigator.userAgent||'').slice(0,100)};
+}
+async function pushRegister(sub){
+ await pushApi('/push/sub',pushBody(sub));
+ pushSave({on:true,ep:sub.endpoint,uid:UID,at:new Date().toISOString()});
+}
+window.pushOn=async()=>{
+ if(PST.busy)return;PST.busy=true;PST.err='';pushRepaint();
+ try{
+  if(!pushCan())throw new Error('This browser cannot do it');
+  const h=await pushHealth(true);
+  if(!h||!h.ok)throw new Error('Cannot reach the Luuna server');
+  if(!PST.key)throw new Error('The server needs one update first (bash setup.sh in Cloud Shell)');
+  const perm=Notification.permission==='granted'?'granted':await Notification.requestPermission();
+  if(perm!=='granted')throw new Error(perm==='denied'?'Notifications are blocked for this app in the phone settings':'Permission was not given');
+  const reg=await pushReg();
+  let sub=await reg.pushManager.getSubscription();
+  if(sub&&!pushSame(sub,PST.key)){try{await sub.unsubscribe();}catch(e){}sub=null;}
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushB64(PST.key)});
+  await pushRegister(sub);
+  PST.sub=sub;
+  /* the in-app buzz too, so the card reads "On" everywhere */
+  const p=notifPrefs();if(!p.on){p.on=true;saveNotifPrefs();}
+  toast('This phone will be notified even when the app is closed');
+  PST.busy=false;render();return;
+ }catch(e){PST.err=String(e&&e.message||e);toast(PST.err);}
+ PST.busy=false;pushRepaint();
+};
+window.pushOff=async()=>{
+ if(PST.busy)return;PST.busy=true;PST.err='';pushRepaint();
+ try{
+  const reg=await pushReg(),sub=await reg.pushManager.getSubscription();
+  if(sub){try{await pushApi('/push/unsub',{endpoint:sub.endpoint});}catch(e){console.warn('unsub',e);}await sub.unsubscribe();}
+  pushSave({on:false});PST.sub=null;toast('Off — this phone is only notified while the app is open');
+ }catch(e){PST.err=String(e&&e.message||e);toast(PST.err);}
+ PST.busy=false;pushRepaint();
+};
+window.pushTest=async()=>{
+ if(PST.busy)return;PST.busy=true;PST.err='';pushRepaint();
+ try{
+  const j=await pushApi('/push/test',{});
+  modal('Test sent','<div class="card"><div class="fbicon ok" style="margin-bottom:10px">'+ic('check',24)+'</div>'+
+   '<p style="text-align:center;margin:0 0 8px"><b>Sent to '+(+j.sent||0)+' device'+(+j.sent===1?'':'s')+' signed in as you.</b></p>'+
+   '<p class="tiny muted" style="text-align:center;margin:0 0 10px">It should appear in the notification tray within a few seconds. '+
+   'For the real test: close the app completely, then ask someone to make a booking on the booking page.</p>'+
+   (+j.sent?'':'<div class="warnbox">'+ic('alert',13)+' No device is signed up for you yet — tap <b>Turn on for this phone</b> first.</div>')+
+   '<button class="btn" style="width:100%;justify-content:center" onclick="closeModal()">Close</button></div>');
+ }catch(e){PST.err=String(e&&e.message||e);toast(PST.err);}
+ PST.busy=false;pushRepaint();
+};
+
+/* choices changed on the card → the server hears about them (once, after the last tap) */
+let PSYNC=0;
+function pushSyncSoon(){
+ if(!pushGet().on||!pushCan())return;
+ clearTimeout(PSYNC);
+ PSYNC=setTimeout(async()=>{try{const reg=await pushReg(),sub=await reg.pushManager.getSubscription();if(sub)await pushRegister(sub);}catch(e){console.warn('push sync',e);}},1500);
+}
+{const _k=window.notifyKind;window.notifyKind=function(){const r=_k.apply(this,arguments);pushSyncSoon();return r;};}
+{const _s=window.notifySet;window.notifySet=function(k){const r=_s.apply(this,arguments);if(['quietFrom','quietTo','mine'].includes(k))pushSyncSoon();return r;};}
+
+/* every time the app opens: the browser may have renewed the subscription, someone else may have
+   signed in on this phone, or the sign-up may have been lost — put it right quietly */
+let PBOOT=false;
+async function pushBoot(){
+ if(PBOOT||DEMO)return;PBOOT=true;
+ const st=pushGet();if(!st.on||!pushCan()||!pushUrl())return;
+ try{
+  if(Notification.permission!=='granted'){pushSave({on:false});return;}
+  await pushHealth(true);if(!PST.key)return;
+  const reg=await pushReg();let sub=await reg.pushManager.getSubscription();
+  if(sub&&!pushSame(sub,PST.key)){try{await sub.unsubscribe();}catch(e){}sub=null;}
+  if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushB64(PST.key)});
+  PST.sub=sub;
+  const day=String(st.at||'').slice(0,10);
+  if(sub.endpoint!==st.ep||st.uid!==UID||day!==today())await pushRegister(sub);
+ }catch(e){console.warn('push boot',e);}
+}
+{let n=0;const t=setInterval(()=>{n++;if(n>200)return clearInterval(t);
+ try{if(ME&&UID&&!DEMO&&auth&&auth.currentUser&&typeof D!=='undefined'&&D.meta){clearInterval(t);setTimeout(pushBoot,2500);}}catch(e){}},3000);}
+
+/* while the app is in front, the service worker hands a server notification to the page instead of the
+   tray: it lands under the bell and as a banner like any other alert */
+if(typeof navigator!=='undefined'&&navigator.serviceWorker)navigator.serviceWorker.addEventListener('message',e=>{
+ const d=e.data;if(d&&d.type==='PUSHRENEW'){PBOOT=false;setTimeout(pushBoot,500);return;}
+ if(!d||d.type!=='PUSH'||d.same||!ME)return;
+ const ev={id:'p'+String(d.tag||Date.now()),kind:d.kind||'note',title:String(d.title||'Luuna'),body:String(d.body||''),at:new Date().toISOString(),
+  date:today(),urgent:!!d.urgent,go:d.go||'home',branchId:ME.branchId,push:true};
+ if(EVIDS.has(ev.id))return;EVIDS.add(ev.id);EVENTS.unshift(ev);
+ alertBanner(ev);paintBell();
+ const p=notifPrefs();if(p.sound&&(!quietNow()||ev.urgent))beep(ev.urgent);
+});
+{const _o=window.openAlert;window.openAlert=function(id){const e=EVENTS.find(x=>x.id===id);
+ if(e&&e.push&&e.go){window.closeModal();return window.go(e.go);}return _o.apply(this,arguments);};}
+
+/* ---------- the card ---------- */
+function pushInner(){
+ const st=pushGet(),u=pushUrl(),H=PST.srv;
+ const iosNeedsApp=isIOS()&&!standalone();
+ const on=!!(st.on&&PST.sub&&PST.sub.endpoint===st.ep);
+ const pill=on?'<span class="pill g">'+ic('check',11)+' On</span>':'<span class="pill">Off</span>';
+ let body='';
+ if(DEMO)body='<p class="tiny muted">Not available in demo mode.</p>';
+ else if(iosNeedsApp)body='<div class="warnbox">'+ic('alert',13)+' On iPhone and iPad this only works in the installed app: in Safari tap <b>Share → Add to Home Screen</b>, open Luuna from the Home Screen, then come back here.</div>';
+ else if(!pushCan())body='<div class="warnbox">'+ic('alert',13)+' This browser cannot receive notifications while closed. Use Chrome on Android, or the installed app.</div>';
+ else if(!u)body='<div class="warnbox">'+ic('alert',13)+' Needs the Luuna server — the same one used for online payment. '+(boss()?'Paste its link in <b>Payments & checkout → Online payment · Stripe</b> first.':'Ask the owner to set it up.')+'</div>';
+ else if(H&&H.ok===false)body='<div class="warnbox">'+ic('alert',13)+' Cannot reach the Luuna server right now. Check the internet, then try again.</div>';
+ else if(H&&H.ok&&!H.vapid)body='<div class="warnbox">'+ic('alert',13)+' The server needs one update: in Google Cloud Shell run <code>bash setup.sh</code> (it keeps the Stripe keys).</div>';
+ else if(typeof Notification!=='undefined'&&Notification.permission==='denied')body='<div class="warnbox">'+ic('alert',13)+' Notifications are blocked for this app. Allow them in the phone settings, then come back.</div>';
+ else body=on?
+  '<p class="tiny" style="margin:0 0 8px">'+ic('check',12)+' This phone is signed up. It is told about the things ticked below even when the app is closed — '+
+   'changes to the ticks and quiet hours are sent to the server by themselves.</p>'+
+  '<div class="row wrap2"><button class="btn sm" onclick="pushTest()"'+(PST.busy?' disabled':'')+'>'+ic('bell',13)+'Send a test</button>'+
+  '<button class="btn sm ghost" onclick="pushOff()"'+(PST.busy?' disabled':'')+'>'+ic('close',13)+'Turn off</button></div>':
+  '<p class="tiny muted" style="margin:0 0 8px">Turn this on and the phone is buzzed for online bookings, cancellations, payments, enquiries, bills and reviews — '+
+   'even when the app is closed. Each phone turns it on for itself.</p>'+
+  '<button class="btn sm" onclick="pushOn()"'+(PST.busy?' disabled':'')+'>'+(PST.busy?'<span class="pushspin"></span>':ic('bell',13))+'Turn on for this phone</button>';
+ return '<div class="spread" style="margin-bottom:6px"><b class="tiny">'+ic('phone',13)+' Even when the app is closed</b>'+pill+'</div>'+body+
+  (PST.err?'<div class="warnbox" style="margin-top:8px">'+esc(PST.err)+'</div>':'')+
+  '<p class="tiny muted" style="margin:8px 0 0">From the server: online bookings and cancellations, payments made online, website orders and enquiries '+
+  '(within 2 minutes), the 8am brief and the 10pm summary. Bills, clock-ins, reviews and low stock come through too.</p>';
+}
+function pushRepaint(){const b=document.getElementById('pushbox');if(b)b.innerHTML=pushInner();}
+async function pushPaint(){
+ if(!document.getElementById('pushbox'))return;
+ try{if(pushCan()&&!DEMO){const reg=SWREG||(navigator.serviceWorker?await navigator.serviceWorker.getRegistration():null);
+  PST.sub=reg&&reg.pushManager?await reg.pushManager.getSubscription():null;}}catch(e){PST.sub=null;}
+ if(pushUrl()&&!DEMO)await pushHealth(false);
+ pushRepaint();
+}
+{const _n=notifyPanel;notifyPanel=function(){
+ const h=_n.apply(this,arguments);setTimeout(pushPaint,0);
+ const sec='<div class="fieldset pushfs" style="margin-top:0"><div id="pushbox">'+pushInner()+'</div></div>';
+ const at=h.indexOf('<div class="fieldset" style="margin-top:0"><h3>');
+ if(at>0)return h.slice(0,at)+sec+h.slice(at).replace('<div class="fieldset" style="margin-top:0"><h3>','<div class="fieldset"><h3>');
+ const i=h.lastIndexOf('</div>');return h.slice(0,i)+sec+h.slice(i);};}
+{const _h=notifyHelp;notifyHelp=function(){return _h.apply(this,arguments).replace(/<li>A buzz when the app is fully closed needs Firebase Cloud Messaging[^<]*<\/li>/,
+ '<li><b>Fully closed?</b> Turn on <b>Even when the app is closed</b> above — that one comes from the Luuna server.</li>');};}
+
+/* ---------- backups (owner and managers) ---------- */
+let BKUP=null,BKUPAT=0,BKUPBUSY=false;
+const bkFmtSize=b=>!(+b>0)?'':b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+const bkKeep=s=>{const n=parseInt(String(s||''),10);return n>0?Math.round(n/86400)+' days':'';};
+const bkWhen=iso=>{if(!iso)return '';const d=new Date(iso);return dstr(d)+', '+tstr(d);};
+function bkupInner(){
+ if(DEMO)return '<p class="tiny muted">Not available in demo mode.</p>';
+ if(!pushUrl())return '<div class="warnbox">'+ic('alert',13)+' Nightly backups are switched on by the Luuna server setup. Paste the server link in <b>Payments & checkout → Online payment · Stripe</b> to see them here.</div>';
+ if(BKUPBUSY&&!BKUP)return '<div class="pushspin"></div>';
+ const B=BKUP||{};
+ if(B.err)return '<div class="warnbox">'+ic('alert',13)+' '+esc(B.err)+'</div>'+bkupBtn();
+ if(!B.ok)return '<div class="warnbox">'+ic('alert',13)+' Could not read the backups: '+esc(B.error||'unknown')+'. Running <code>bash setup.sh</code> once in Cloud Shell gives the server permission.</div>'+bkupBtn();
+ const s=(B.schedules||[])[0],last=(B.backups||[])[0];
+ const row=(k,v,warn)=>'<div class="k">'+k+'</div><div class="v"'+(warn?' style="color:var(--amber)"':'')+'>'+v+'</div>';
+ const age=last?(Date.now()-Date.parse(last.at))/3600e3:999;
+ return '<div class="kv" style="margin:0 0 10px">'+
+  row(ic('clock',12)+' Schedule',s?(s.every==='daily'?'Every night':'Every week')+(bkKeep(s.keep)?' · each kept '+bkKeep(s.keep):''):'Not switched on — run <code>bash setup.sh</code>',!s)+
+  row(ic('shield',12)+' Latest',last?bkWhen(last.at)+(bkFmtSize(last.bytes)?' · '+bkFmtSize(last.bytes):'')+(last.state&&last.state!=='READY'?' · '+esc(String(last.state).toLowerCase()):''):'None yet — the first one runs tonight',!last||age>36)+
+  row(ic('history',12)+' Kept now',(+B.count||0)+' backup'+(+B.count===1?'':'s'))+
+  '</div>'+
+  (last&&age>36?'<div class="warnbox" style="margin-bottom:8px">'+ic('alert',13)+' The latest backup is more than a day old. Run <code>bash setup.sh status</code> in Cloud Shell and send the result.</div>':'')+
+  '<p class="tiny muted" style="margin:0 0 8px">Google keeps these copies inside your Firebase project, separate from the live data. If something is ever deleted by mistake, '+
+  'a backup can be restored as a copy of the database as it was that night — ask for help before restoring. The <b>Export backup JSON</b> button under Data is still there for a copy on this device.</p>'+bkupBtn();
+}
+const bkupBtn=()=>'<button class="btn sm ghost" onclick="bkupLoad(true)">'+ic('refresh',13)+'Check again</button>';
+window.bkupLoad=async force=>{
+ if(BKUPBUSY||DEMO||!pushUrl())return;
+ if(!force&&BKUP&&Date.now()-BKUPAT<5*60e3){const b=document.getElementById('bkupbox');if(b)b.innerHTML=bkupInner();return;}
+ BKUPBUSY=true;const b0=document.getElementById('bkupbox');if(b0&&!BKUP)b0.innerHTML=bkupInner();
+ try{BKUP=await pushApi('/backups',null,'GET');}catch(e){BKUP={err:String(e&&e.message||e)};}
+ BKUPAT=Date.now();BKUPBUSY=false;
+ const b=document.getElementById('bkupbox');if(b)b.innerHTML=bkupInner();
+};
+function bkupCard(){
+ if(!boss())return '';
+ setTimeout(()=>window.bkupLoad(false),0);
+ return '<div class="card"><h2>'+ic('shield',16)+' Backups</h2><div id="bkupbox">'+bkupInner()+'</div></div>';
+}
+{const _sw=swPanel;swPanel=function(){return _sw.apply(this,arguments)+bkupCard();};}
+try{const g=STG_GROUPS.find(x=>x.k==='data');if(g){g.m=/^(Data|Audit trail|Backups)$/;g.d='Nightly backups, demo data, who changed what';}
+ const i=STG_DESC.findIndex(x=>String(x[0])==='/^Data$/');STG_DESC.splice(i<0?STG_DESC.length:i,0,[/^Backups$/,'Nightly copies of the whole database, kept 14 days']);}catch(e){}
+window.__push={PST,pushGet,pushBody,pushB64};
 
 </script>

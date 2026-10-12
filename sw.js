@@ -2,7 +2,7 @@
    Keeps the app openable when the line drops, without ever holding back an update:
    the page itself is fetched from the network first and only falls back to the last
    good copy. Firestore traffic is never touched — that has its own offline cache. */
-const VERSION = '2026-10-12h';
+const VERSION = '2026-10-12i';
 const SHELL = 'luuna-shell-' + VERSION;
 const LIB = 'luuna-lib-v1';
 const SHELL_FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png',
@@ -32,6 +32,36 @@ self.addEventListener('activate', e => {
 self.addEventListener('message', e => {
   if (e.data === 'SKIP_WAITING' || (e.data && e.data.type === 'SKIP_WAITING')) self.skipWaiting();
   if (e.data === 'VERSION' && e.source) e.source.postMessage({ type: 'VERSION', version: VERSION });
+});
+
+/* a notification from the Luuna server — arrives even when the app is closed.
+   If the app is on screen it is handed to the page (bell + banner) instead of the tray;
+   iPhone insists on a visible notification every time, so there it always goes to the tray. */
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (err) { d = { body: e.data ? e.data.text() : '' }; }
+  const title = d.title || 'Luuna';
+  e.waitUntil((async () => {
+    const ios = /iPad|iPhone|iPod|Macintosh/.test(self.navigator && self.navigator.userAgent || '') && !/Chrome|Android/.test(self.navigator.userAgent || '');
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const front = all.filter(c => c.url.indexOf(self.registration.scope) === 0 && (c.focused || c.visibilityState === 'visible'));
+    if (front.length && !ios && d.tag !== 'test') {
+      front.forEach(c => { try { c.postMessage({ type: 'PUSH', ...d }); } catch (err) {} });
+      return;
+    }
+    /* the open app may already have shown this one (same tag): replace it quietly instead of buzzing twice */
+    let had = false;
+    try { had = d.same && d.tag ? (await self.registration.getNotifications({ tag: d.tag })).length > 0 : false; } catch (err) {}
+    return self.registration.showNotification(title, {
+      body: d.body || '', icon: './icon-192.png', badge: './favicon-32.png',
+      tag: d.tag || ('p' + Date.now()), renotify: !had, silent: had, requireInteraction: !!d.urgent,
+      vibrate: d.urgent ? [90, 60, 90] : [60], data: { go: d.go || 'home' } });
+  })());
+});
+
+/* the browser renewed the subscription: the app signs up again the next time it opens */
+self.addEventListener('pushsubscriptionchange', e => {
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(all => all.forEach(c => { try { c.postMessage({ type: 'PUSHRENEW' }); } catch (err) {} })));
 });
 
 /* tapping a notification brings the app forward on the right screen */
