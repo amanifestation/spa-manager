@@ -846,6 +846,7 @@ footer .wrap{align-items:flex-start}.fcol{display:flex;flex-direction:column;gap
 .rdots button.on{width:22px;opacity:1;background:var(--gbrush)}
 /* long submit labels wrap instead of being cut */
 form .btn[type=submit]{white-space:normal;text-align:center;line-height:1.3;height:auto;min-height:48px}
+.aklink{display:inline-flex;align-items:center;gap:5px}.aklink svg{flex:none}
 </style>
 </head>
 <body>
@@ -2001,7 +2002,7 @@ function lpCoName(b){b=b||{};return (b.name||'Luuna')+(b.legal?' ('+b.legal+')':
    When the spa has switched it on, the bag, the e-voucher form and the packages offer "Pay now": the order is sent as
    before, then the visitor goes to Stripe's page to pay, and comes back here to a confirmation (with their e-voucher
    code). "Send the order, pay later" stays available. Prices are checked again on the spa's own payment service. */
-Object.assign(IC,{card:'M3.5 6.5h17v11h-17zM3.5 10h17M7 14.5h3',lock:'M7 11V8a5 5 0 0110 0v3M5.5 11h13v9.5h-13z'});
+Object.assign(IC,{plus:'M12 5.5v13M5.5 12h13',card:'M3.5 6.5h17v11h-17zM3.5 10h17M7 14.5h3',lock:'M7 11V8a5 5 0 0110 0v3M5.5 11h13v9.5h-13z'});
 const PYT={ms:{payNow:t=>'Bayar sekarang · '+t,payLater:'Hantar tempahan, bayar kemudian',payWays:'Kad debit/kredit · FPX · GrabPay — selamat melalui Stripe',
   opening:'Membuka halaman bayaran…',payErr:'Halaman bayaran tidak dapat dibuka. Tempahan anda tetap diterima — kami akan hubungi anda di WhatsApp.',
   post:'Caj pos',postFree:'Pos percuma',postNo:'Untuk pos, caj pos dimaklumkan melalui WhatsApp — pilih "bayar kemudian".',postIs:(f,fr)=>'Caj pos '+f+(fr?' · percuma untuk pesanan '+fr+' ke atas':'')+'.',total:'Jumlah',
@@ -2113,6 +2114,13 @@ async function payReturn(){
  const pb=SHEET.querySelector('[data-pbook]');if(pb)pb.onclick=()=>{closeSheet();book();};
 }
 
+/* ---------- Akaun Saya (30j): the client's own account, in the menu while the spa has it open ---------- */
+if(!IC.user)IC.user='M12 12.2a4.1 4.1 0 100-8.2 4.1 4.1 0 000 8.2zM4.5 20.2c.9-3.5 4-5.6 7.5-5.6s6.6 2.1 7.5 5.6';
+{const _nh=navHTML;navHTML=function(){const h=_nh.apply(this,arguments);
+ try{if(P&&P.portal&&P.portal.on)return h+'<a class="aklink" href="'+APPBASE+'?akaun">'+ic('user',15)+(LANG==='en'?'My account':'Akaun Saya')+'</a>';}catch(e){}
+ return h;};}
+/* the client app's "Give an e-voucher" opens the voucher sheet here (luuna.my/#baucar) */
+window.addEventListener('load',()=>setTimeout(()=>{try{if(location.hash==='#baucar'&&P&&P.gv&&typeof gvSheet==='function')gvSheet();}catch(e){}},1200));
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();
