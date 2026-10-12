@@ -228,6 +228,13 @@ h2{font-family:var(--serif);font-size:clamp(26px,4.4vw,38px);font-weight:500}
 .done{text-align:center;padding:10px 0}.done .ok{width:62px;height:62px;border-radius:50%;background:var(--jade-soft);color:var(--jade);display:grid;place-items:center;margin:0 auto 12px}
 .done h3{font-family:var(--serif);font-size:24px;font-weight:500;margin-bottom:6px}.done p{color:var(--ink-2);margin:0 0 16px}
 .done .btn{margin:4px}
+.paysum{margin:4px 0 8px}.paysum div{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--ink-2);padding:2px 0}.paysum .pst{border-top:1px solid var(--line-2);margin-top:4px;padding-top:6px;color:var(--ink)}.paysum .pst b{font-family:var(--serif);font-size:22px}
+.paylater{width:100%;margin-top:8px}.payways{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--ink-3);margin:10px 0 0;text-align:center}
+.paylist{text-align:left;border:var(--hair);border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:14px}.paylist div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}.paylist .pst{border-top:1px solid var(--line-2);margin-top:4px;padding-top:6px}
+.paygv{display:flex;flex-direction:column;align-items:center;gap:4px;border:1.5px dashed var(--brass);border-radius:16px;padding:14px;margin:0 0 10px;background:var(--brass-soft)}.paygv small{color:var(--ink-3);font-size:12px;letter-spacing:.06em;text-transform:uppercase}.paygv b{font-size:26px;letter-spacing:.12em;font-family:ui-monospace,Menlo,Consolas,monospace}.paygv span{font-size:13px;color:var(--ink-2);margin-bottom:6px}
+.done .ok.paybad{background:#F6E3E1;color:#A2453B;border-color:#E8C4BF}
+.payspin{width:26px;height:26px;border-radius:50%;border:2.5px solid currentColor;border-right-color:transparent;animation:payrot .8s linear infinite;display:block}@keyframes payrot{to{transform:rotate(360deg)}}
+
 /* footer */
 footer{padding:40px 0 120px;color:var(--ink-3);font-size:13px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
@@ -1025,7 +1032,7 @@ function pixels(){
   window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',px.ga);}
 }
 function track(ev,extra){try{
- const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'InitiateCheckout'},TT={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'PlaceAnOrder'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion',view:'view_item',cart:'add_to_cart',order:'begin_checkout'};
+ const M={lead:'Lead',book:'Schedule',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'InitiateCheckout',paid:'Purchase'},TT={lead:'SubmitForm',book:'ClickButton',wa:'Contact',promo:'ViewContent',view:'ViewContent',cart:'AddToCart',order:'PlaceAnOrder',paid:'CompletePayment'},G={lead:'generate_lead',book:'book_click',wa:'whatsapp_click',promo:'view_promotion',view:'view_item',cart:'add_to_cart',order:'begin_checkout',paid:'purchase'};
  if(window.fbq&&M[ev])fbq('track',M[ev],extra||{});if(window.ttq&&TT[ev])ttq.track(TT[ev],extra||{});if(window.gtag&&G[ev])gtag('event',G[ev],extra||{});}catch(e){}}
 
 /* ---------- photos: one document each, loaded when needed ---------- */
@@ -1484,7 +1491,7 @@ function cartSheet(msg){
   (L.length?'<div class="cartl">'+L.map(x=>{const im=(x.p.ph[0]||{}).img;return '<div class="cartr"><div class="cartim"'+(im?' data-img="'+esc(im)+'"':'')+'></div><div class="cartn"><b>'+esc(x.p.n)+'</b><small>'+rm(x.p.p)+(x.p.sz?' · '+esc(x.p.sz):'')+'</small></div>'+
     '<div class="qty"><button type="button" data-cq="'+esc(x.id)+'" data-d="-1" aria-label="-">'+ic('minus',14)+'</button><span>'+x.q+'</span><button type="button" data-cq="'+esc(x.id)+'" data-d="1" aria-label="+">'+ic('plus',14)+'</button></div></div>';}).join('')+'</div>'+
    '<div class="carttot"><span>'+TS('sub')+'</span><b>'+rm(tot)+'</b></div>'+
-   '<form class="form" id="ofm" novalidate><label>'+T('name')+'</label><input class="f" id="o-n" maxlength="80" autocomplete="name"><label>'+T('phone')+'</label><input class="f" id="o-p" type="tel" maxlength="20" autocomplete="tel" placeholder="012-345 6789">'+
+   '<form class="form" id="ofm" novalidate><label>'+T('name')+'</label><input class="f" id="o-n" maxlength="80" autocomplete="name"><label>'+T('wa')+'</label><input class="f" id="o-p" type="tel" maxlength="20" autocomplete="tel" placeholder="012-345 6789">'+
     '<label>'+TS('how')+'</label><div class="howr"><label><input type="radio" name="o-h" value="pickup" checked> '+TS('pickup')+'</label><label><input type="radio" name="o-h" value="post"> '+TS('post')+'</label></div>'+
     '<div id="o-ab" hidden><label>'+TS('addr')+'</label><textarea class="f" id="o-a" rows="2" maxlength="300"></textarea><p class="tiny">'+TS('postNote')+'</p></div>'+
     '<label>'+TS('note')+'</label><input class="f" id="o-x" maxlength="200">'+
@@ -1990,6 +1997,122 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-revall]'))setTi
 
 /* the brand clients know, with the registered company that keeps their data (29t) */
 function lpCoName(b){b=b||{};return (b.name||'Luuna')+(b.legal?' ('+b.legal+')':'');}
+/* ================= 30h: pay online with Stripe (card, FPX, GrabPay) =================
+   When the spa has switched it on, the bag, the e-voucher form and the packages offer "Pay now": the order is sent as
+   before, then the visitor goes to Stripe's page to pay, and comes back here to a confirmation (with their e-voucher
+   code). "Send the order, pay later" stays available. Prices are checked again on the spa's own payment service. */
+Object.assign(IC,{card:'M3.5 6.5h17v11h-17zM3.5 10h17M7 14.5h3',lock:'M7 11V8a5 5 0 0110 0v3M5.5 11h13v9.5h-13z'});
+const PYT={ms:{payNow:t=>'Bayar sekarang · '+t,payLater:'Hantar tempahan, bayar kemudian',payWays:'Kad debit/kredit · FPX · GrabPay — selamat melalui Stripe',
+  opening:'Membuka halaman bayaran…',payErr:'Halaman bayaran tidak dapat dibuka. Tempahan anda tetap diterima — kami akan hubungi anda di WhatsApp.',
+  post:'Caj pos',postFree:'Pos percuma',postNo:'Untuk pos, caj pos dimaklumkan melalui WhatsApp — pilih "bayar kemudian".',postIs:(f,fr)=>'Caj pos '+f+(fr?' · percuma untuk pesanan '+fr+' ke atas':'')+'.',total:'Jumlah',
+  checking:'Mengesahkan pembayaran…',paidH:'Pembayaran diterima',paidP:(r,m)=>'Terima kasih! Rujukan '+r+(m?' · '+m:'')+'.',
+  paidShop:h=>h==='post'?'Kami akan pos pesanan anda dan kongsi nombor tracking di WhatsApp.':'Kami akan maklumkan di WhatsApp bila pesanan sedia untuk diambil di spa.',
+  paidPkg:'Pakej anda akan diaktifkan — terus book sesi pertama anda.',bookNow:'Book sesi pertama',
+  gvH:'E-voucher anda',gvSend:'Hantar e-voucher melalui WhatsApp',gvKeep:'Simpan kod ini. Tunjukkan semasa bayaran di spa.',valid:d=>'Sah sehingga '+d,
+  pendH:'Bayaran sedang diproses',pendP:'Bank anda masih mengesahkan bayaran. Kami akan WhatsApp anda sebaik ia diterima.',
+  failH:'Bayaran tidak berjaya',failP:'Tiada wang ditolak. Anda boleh cuba lagi.',cancH:'Bayaran dibatalkan',cancP:'Tempahan anda masih disimpan. Boleh cuba bayar semula, atau bayar kemudian.',
+  retry:'Cuba bayar semula',waUs:'WhatsApp kami',done:'Selesai',buyPkg:'Beli sekarang',buyPkgH:'Beli pakej',buyPkgP:'Bayar online sekarang; sesi masuk ke akaun anda dan boleh terus book.',
+  gvPay:'Bayar & dapatkan e-voucher',waPaid:(r,a)=>'Hi! Saya baru bayar online '+a+' (rujukan '+r+').',gvMsg:(c,a,d,to,fr,m,b)=>'🎁 E-Voucher '+b+'\n'+(to?'Untuk: '+to+'\n':'')+(fr?'Daripada: '+fr+'\n':'')+(m?'"'+m+'"\n':'')+'\nNilai: '+a+'\nKod: *'+c+'*\nSah sehingga: '+d+'\n\nTunjukkan kod ini semasa bayaran di '+b+'.'},
+ en:{payNow:t=>'Pay now · '+t,payLater:'Send the order, pay later',payWays:'Debit/credit card · FPX · GrabPay — secured by Stripe',
+  opening:'Opening the payment page…',payErr:'The payment page could not be opened. Your order is still received — we will contact you on WhatsApp.',
+  post:'Postage',postFree:'Free postage',postNo:'For posting, we will tell you the postage on WhatsApp — choose "pay later".',postIs:(f,fr)=>'Postage '+f+(fr?' · free on orders of '+fr+' and above':'')+'.',total:'Total',
+  checking:'Confirming your payment…',paidH:'Payment received',paidP:(r,m)=>'Thank you! Reference '+r+(m?' · '+m:'')+'.',
+  paidShop:h=>h==='post'?'We will post your order and share the tracking number on WhatsApp.':'We will let you know on WhatsApp when your order is ready to collect at the spa.',
+  paidPkg:'Your package will be activated — book your first session now.',bookNow:'Book your first session',
+  gvH:'Your e-voucher',gvSend:'Send the e-voucher on WhatsApp',gvKeep:'Keep this code. Show it when paying at the spa.',valid:d=>'Valid until '+d,
+  pendH:'Payment is processing',pendP:'Your bank is still confirming the payment. We will WhatsApp you as soon as it arrives.',
+  failH:'Payment not successful',failP:'No money was taken. You can try again.',cancH:'Payment cancelled',cancP:'Your order is still saved. You can try paying again, or pay later.',
+  retry:'Try paying again',waUs:'WhatsApp us',done:'Done',buyPkg:'Buy now',buyPkgH:'Buy package',buyPkgP:'Pay online now; the sessions go into your account and you can book straight away.',
+  gvPay:'Pay & get the e-voucher',waPaid:(r,a)=>'Hi! I just paid '+a+' online (reference '+r+').',gvMsg:(c,a,d,to,fr,m,b)=>'🎁 '+b+' E-Voucher\n'+(to?'For: '+to+'\n':'')+(fr?'From: '+fr+'\n':'')+(m?'"'+m+'"\n':'')+'\nValue: '+a+'\nCode: *'+c+'*\nValid until: '+d+'\n\nShow this code when paying at '+b+'.'}};
+const TY=(k,...a)=>{const v=(PYT[LANG]||PYT.ms)[k];return typeof v==='function'?v(...a):v;};
+const PAY=k=>!!(P&&P.pay&&P.pay.on&&/^https:\/\//.test(P.pay.url||'')&&(P.pay.k||[]).includes(k));
+const postFee=goods=>{const p=(P&&P.pay)||{};if(!(+p.post>0))return null;return +p.free>0&&goods>=+p.free?0:+p.post;};
+let PAYNEXT=null;const payNext=o=>{PAYNEXT=o?{...o,at:Date.now()}:null;};
+async function payGo(id,ref){
+ try{const r=await fetch(P.pay.url.replace(/\/+$/,'')+'/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({k:'order',id,back:location.origin+location.pathname})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.url)throw new Error(j.message||('HTTP '+r.status));
+  try{localStorage.setItem('luunaPay',JSON.stringify({t:j.t,id,ref:ref||'',at:new Date().toISOString()}));}catch(e){}
+  return j.url;}catch(e){console.warn('pay',e);return null;}}
+/* the order is sent exactly as before; when "Pay now" was chosen, it goes on to Stripe instead of the "sent" screen */
+{const _add=add;add=async function(col,data){const id=await _add(col,data);
+ if(col!=='webOrders'||!PAYNEXT||Date.now()-PAYNEXT.at>20000){PAYNEXT=null;return id;}const pn=PAYNEXT;PAYNEXT=null;
+ try{hit('order');track('order',{value:+data.total||0,currency:'MYR',num_items:(data.items||[]).length});}catch(e){}
+ const url=await payGo(id,data.ref);
+ if(url){if(pn.clear){CART=[];cartSave();}location.href=url;return new Promise(()=>{});}
+ setTimeout(()=>{const s=SHEET&&SHEET.querySelector('.done p');if(s)s.insertAdjacentHTML('afterend','<p class="err">'+esc(TY('payErr'))+'</p>');},50);
+ return id;};}
+/* the bag */
+{const _cs=cartSheet;cartSheet=function(msg){_cs(msg);const f=document.getElementById('ofm');if(!f||!PAY('shop'))return;
+ const go=document.getElementById('o-go'),L=cartLines(),goods=Math.round(L.reduce((a,x)=>a+x.p.p*x.q,0)*100)/100;
+ go.insertAdjacentHTML('beforebegin','<div class="paysum" id="o-ps"></div>');
+ go.insertAdjacentHTML('afterend','<button class="btn light paylater" id="o-later" type="button">'+esc(TY('payLater'))+'</button><p class="payways">'+ic('lock',13)+esc(TY('payWays'))+'</p>');
+ const how=()=>(f.querySelector('[name="o-h"]:checked')||{}).value||'pickup';
+ const note=f.querySelector('#o-ab .tiny'),note0=note?note.textContent:'',PP=P.pay||{};
+ const paint=()=>{const post=how()==='post',fee=post?postFee(goods):0,can=!post||fee!==null,tot=goods+(fee||0);
+  if(note)note.textContent=+PP.post>0?TY('postIs',rm(PP.post),+PP.free>0?rm(PP.free):''):note0;
+  document.getElementById('o-ps').innerHTML=post?(fee===null?'<p class="tiny">'+esc(TY('postNo'))+'</p>':'<div><span>'+(fee?TY('post'):TY('postFree'))+'</span><b>'+(fee?rm(fee):TY('postFree'))+'</b></div><div class="pst"><span>'+TY('total')+'</span><b>'+rm(tot)+'</b></div>'):'';
+  go.innerHTML=can?ic('card',18)+esc(TY('payNow',rm(tot))):ic('bag',18)+TS('send')+' · '+rm(goods);go.dataset.pay=can?'1':'';};
+ f.querySelectorAll('[name="o-h"]').forEach(r=>r.addEventListener('change',paint));paint();
+ go.addEventListener('click',()=>{payNext(go.dataset.pay?{clear:true}:null);},true);
+ document.getElementById('o-later').onclick=()=>{payNext(null);if(f.requestSubmit)f.requestSubmit();else go.click();};};}
+/* e-vouchers */
+{const _g=gvSheet;gvSheet=function(){_g();const f=document.getElementById('gvf');if(!f||!PAY('gv'))return;const go=document.getElementById('gv-go');
+ go.innerHTML=ic('card',18)+esc(TY('gvPay'));go.insertAdjacentHTML('afterend','<p class="payways">'+ic('lock',13)+esc(TY('payWays'))+'</p>');
+ go.addEventListener('click',()=>{payNext({});},true);};}
+/* packages: buy now */
+{const _pk=pkgCard;pkgCard=function(k,sid){const h=_pk(k,sid);if(!PAY('pkg'))return h;
+ return h.replace('<button class="btn light sm" data-askpkg=','<button class="btn pri sm" data-buypkg="'+esc(k.id)+'">'+ic('card',14)+esc(TY('buyPkg'))+'</button><button class="btn light sm" data-askpkg=');};}
+function buyPkgSheet(k){const b=P.biz||{};
+ sheet('<h3>'+ic('card',20)+' '+esc(TY('buyPkgH'))+'</h3><p class="lead"><b>'+esc(k.n)+'</b> · '+rm(k.p)+'<br>'+esc(TY('buyPkgP'))+'</p><form class="form" id="pkf" novalidate>'+
+  '<label>'+T('name')+'</label><input class="f" id="pk-n" maxlength="80" autocomplete="name"><label>'+T('wa')+'</label><input class="f" id="pk-p" type="tel" maxlength="20" placeholder="012-345 6789">'+
+  '<label class="consent"><input type="checkbox" id="pk-ok"> <span>'+esc(TS('consent',lpCoName(b)))+'</span></label><div class="err" id="pk-e"></div>'+
+  '<button class="btn pri" id="pk-go" type="submit">'+ic('card',18)+esc(TY('payNow',rm(k.p)))+'</button><p class="payways">'+ic('lock',13)+esc(TY('payWays'))+'</p></form>');
+ const f=document.getElementById('pkf');
+ f.onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('pk-e'),n=document.getElementById('pk-n').value.trim(),ph=document.getElementById('pk-p').value.trim();
+  if(n.length<2){e.textContent=T('eName');return;}if(digits(ph).length<9||digits(ph).length>15){e.textContent=T('ePhone');return;}if(!document.getElementById('pk-ok').checked){e.textContent=T('eOk');return;}
+  if(PREVIEW){e.textContent=T('pvNo');return;}
+  const go=document.getElementById('pk-go');go.disabled=true;go.textContent=TY('opening');e.textContent='';
+  const x=touch(),ref='P'+Date.now().toString(36).slice(-5).toUpperCase();
+  const d={ref,items:[{id:'pkg:'+String(k.id).slice(0,36),n:String(k.n).slice(0,80),q:1,p:k.p}],total:k.p,name:n.slice(0,80),phone:ph.slice(0,20),how:'pickup',note:'',branchId:((P.branches||[])[0]||{}).id||'',
+   createdAt:new Date().toISOString(),status:'new',consent:true,src:String(x.s||'').slice(0,20),med:String(x.m||'').slice(0,12),camp:String(x.c||'').slice(0,24),ad:String(x.a||'').slice(0,60),lang:LANG};
+  try{const id=await add('webOrders',d);hit('order');track('order',{value:k.p,currency:'MYR',content_name:k.n});
+   const url=await payGo(id,ref);if(url){location.href=url;return;}
+   sheet('<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+esc(TS('sent',ref))+'</h3><p class="err">'+esc(TY('payErr'))+'</p><button class="btn pri" data-pw="1">'+ic('wa',18)+TS('waConf')+'</button></div>');
+   SHEET.querySelector('[data-pw]').onclick=()=>openWa(k.n+' ('+ref+')',n);}
+  catch(err){console.warn(err);e.textContent=T('eSend');go.disabled=false;go.innerHTML=ic('card',18)+esc(TY('payNow',rm(k.p)));}};}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-buypkg]');if(!t||!P)return;e.preventDefault();const k=(P.pkgs||[]).find(x=>x.id===t.dataset.buypkg);if(k)buyPkgSheet(k);});
+/* back from Stripe */
+async function payReturn(){
+ const q=new URLSearchParams(location.search),st=q.get('bayar'),t=q.get('t');if(!st||!P||!P.pay||!P.pay.url)return;
+ try{const u=new URL(location.href);u.searchParams.delete('bayar');u.searchParams.delete('t');history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}
+ let last={};try{last=JSON.parse(localStorage.getItem('luunaPay')||'{}')||{};}catch(e){}
+ const base=P.pay.url.replace(/\/+$/,''),b=P.biz||{};
+ const retry=async btn=>{if(!last.id)return;btn.disabled=true;btn.textContent=TY('opening');const url=await payGo(last.id,last.ref);if(url)location.href=url;else{btn.disabled=false;btn.textContent=TY('retry');}};
+ const fail=(h,p)=>{sheet('<div class="done"><div class="ok paybad">'+ic('x',30)+'</div><h3>'+esc(h)+'</h3><p>'+esc(p)+'</p>'+(last.id?'<button class="btn pri" data-retry="1">'+ic('card',18)+esc(TY('retry'))+'</button>':'')+
+  '<button class="btn light" data-wus="1">'+ic('wa',18)+esc(TY('waUs'))+'</button></div>');const r=SHEET.querySelector('[data-retry]');if(r)r.onclick=()=>retry(r);SHEET.querySelector('[data-wus]').onclick=()=>openWa((last.ref?last.ref+' — ':'')+h,'');};
+ if(st==='batal'){fail(TY('cancH'),TY('cancP'));return;}
+ sheet('<div class="done"><div class="ok"><span class="payspin"></span></div><h3>'+esc(TY('checking'))+'</h3></div>');
+ let j=null;
+ for(let i=0;i<16;i++){try{const r=await fetch(base+'/status?t='+encodeURIComponent(t||last.t||''),{cache:'no-store'});j=await r.json();}catch(e){j=null;}
+  if(j&&(j.st==='paid'||j.st==='failed'))break;await new Promise(r=>setTimeout(r,i<4?1500:3000));}
+ if(!j||j.st==='open'||j.st==='pending'){sheet('<div class="done"><div class="ok">'+ic('clock',30)+'</div><h3>'+esc(TY('pendH'))+'</h3><p>'+esc(TY('pendP'))+'</p><button class="btn light" data-wus="1">'+ic('wa',18)+esc(TY('waUs'))+'</button></div>');
+  SHEET.querySelector('[data-wus]').onclick=()=>openWa(TY('waPaid',(j&&j.ref)||last.ref||'',rm(j&&j.total)),'');return;}
+ if(j.st==='failed'){fail(TY('failH'),TY('failP'));return;}
+ try{localStorage.removeItem('luunaPay');}catch(e){}
+ track('paid',{value:j.total,currency:'MYR'});
+ const gift=(j.gift||[]),pkg=(j.items||[]).some(i=>i.k==='pkg')&&!gift.length;
+ sheet('<div class="done"><div class="ok">'+ic('check',30)+'</div><h3>'+esc(TY('paidH'))+'</h3><p>'+esc(TY('paidP',j.ref,j.method))+'</p>'+
+  '<div class="paylist">'+(j.items||[]).map(i=>'<div><span>'+esc(i.q+'× '+i.n)+'</span></div>').join('')+(+j.fee>0?'<div><span>'+esc(TY('post'))+'</span><b>'+rm(j.fee)+'</b></div>':'')+'<div class="pst"><span>'+esc(TY('total'))+'</span><b>'+rm(j.total)+'</b></div></div>'+
+  (gift.length?gift.map((g,i)=>'<div class="paygv"><small>'+esc(TY('gvH'))+(g.to?' · '+esc(g.to):'')+'</small><b>'+esc(g.code)+'</b><span>'+rm(g.amt)+' · '+esc(TY('valid',dshort(g.exp)))+'</span>'+
+    '<button class="btn pri" data-gvs="'+i+'">'+ic('wa',18)+esc(TY('gvSend'))+'</button></div>').join('')+'<p class="tiny">'+esc(TY('gvKeep'))+'</p>'
+   :'<p>'+esc(pkg?TY('paidPkg'):TY('paidShop',j.how))+'</p>'+(pkg&&P.bookOn?'<button class="btn pri" data-pbook="1">'+ic('cal',18)+esc(TY('bookNow'))+'</button>':''))+
+  '<button class="btn light" data-wus="1">'+ic('wa',18)+esc(TY('waUs'))+'</button></div>');
+ SHEET.querySelectorAll('[data-gvs]').forEach(x=>x.onclick=()=>{const g=gift[+x.dataset.gvs];
+  location.href='https://wa.me/?text='+encodeURIComponent(TY('gvMsg',g.code,rm(g.amt),dshort(g.exp),g.to,g.from,g.msg,b.name||'Luuna'));});
+ SHEET.querySelector('[data-wus]').onclick=()=>openWa(TY('waPaid',j.ref,rm(j.total)),'');
+ const pb=SHEET.querySelector('[data-pbook]');if(pb)pb.onclick=()=>{closeSheet();book();};
+}
+
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();
@@ -1997,7 +2120,7 @@ capture();
  try{P=await getPub();}catch(e){console.warn(e);P=null;}
  if(!P||(!P.on&&!PREVIEW)){
   $('#app').innerHTML='<div class="skel"><div style="text-align:center;padding:30px;max-width:420px"><h2 style="margin-bottom:10px">'+T('updating')+'</h2><p style="color:#4E4944">'+T('tryLater')+'</p></div></div>';return;}
- render();hit('view');pixels();
+ render();hit('view');pixels();payReturn();
 })();
 })();
 </script>

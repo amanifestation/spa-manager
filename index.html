@@ -2970,6 +2970,15 @@ html.rr #root .phase,html.rr #root .albanner,html.rr #root .stg-g.open>.stg-gb,h
 .segerr{text-align:center;padding:22px 16px}
 .segerr-i{width:44px;height:44px;border-radius:50%;margin:0 auto;display:grid;place-items:center;background:rgba(183,121,31,.12);color:#B7791F}
 .segload .segspin{margin:4px auto 12px}
+/* 30h online payment */
+.stpc .stptog{gap:8px;margin:0;align-items:center}
+.stpk{display:grid;gap:6px;margin:4px 0 8px}.stpk label{gap:8px;margin:0;align-items:flex-start}.stpk small{font-weight:400}
+.stpw{background:var(--amber-soft);border:1px solid #E8D9B8;border-radius:10px;padding:8px 10px;font-size:12.5px;display:grid;gap:4px;margin:6px 0}
+.skord.stpdue{border-color:var(--jade,#2F7D62);box-shadow:0 0 0 2px rgba(47,125,98,.12)}
+.wbpay .wbstripe{width:100%;justify-content:center;margin:0 0 6px}
+.wbpay .wbstripe-m{text-align:center;color:var(--ink-3,#8C8577);margin-bottom:6px}
+.wbor{display:flex;align-items:center;gap:10px;color:var(--ink-3,#8C8577);font-size:12px;margin:10px 0 8px}.wbor:before,.wbor:after{content:"";flex:1;height:1px;background:#E8D9B8}
+.okbox{margin:0 0 10px;background:var(--jade-soft,#E3F1EA);color:var(--jade,#2F7D62);border-radius:12px;padding:10px 12px;font-size:14px;display:flex;gap:8px;align-items:center}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3300,7 +3309,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-12g';
+const BUILD='2026-10-12h';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -32221,5 +32230,181 @@ const lpOwnSite=h=>/^(www\.)?luuna\.my$/.test(h)||(typeof LP_SITE!=='undefined'&
  let r='';try{r=document.referrer?new URL(document.referrer).hostname:'';}catch(e){}
  if(r&&lpOwnSite(r)){const q=new URLSearchParams(location.search);if(!['src','utm_source','fbclid','gclid','ttclid'].some(k=>q.get(k)))return;}
  return _c.apply(this,arguments);};}
+
+/* 30h: paying online with Stripe — skincare, packages and e-vouchers on the website, and booking deposits.
+   The payment itself runs on a small service of our own (luuna-pay, on Google Cloud) that opens Stripe's page and
+   hears back from Stripe when the money is in. Here: the owner's settings, what the website and the booking page are
+   told, and the staff side — orders paid online waiting to be recorded, with the payment already on the bill. */
+const STP_DEF={on:false,url:'',k:['shop','pkg','gv','dep'],postId:'',free:0};
+const stpSet=()=>({...STP_DEF,...((D.meta||{}).stripePay||{})});
+const stpUrl=u=>String(u||'').trim().replace(/\/+$/,'');
+const stpOkUrl=u=>/^https:\/\/[a-z0-9.-]+\.(run\.app|cloudfunctions\.net)$/i.test(stpUrl(u));
+const STP_M='Stripe (online)';
+const stpPostItem=()=>{const S=stpSet();return S.postId?D.products.find(p=>p.id===S.postId&&p.active!==false)||null:null;};
+const stpLive=()=>{const S=stpSet();return !!(S.on&&stpOkUrl(S.url));};
+let STPDRAFT=null,STPHEALTH=null;
+
+/* ---------- Settings → Payment methods: the Stripe card ---------- */
+function stpCard(){
+ if(!boss())return '';
+ const S=STPDRAFT||(STPDRAFT={...stpSet(),k:[...stpSet().k]}),H=STPHEALTH;
+ const prods=D.products.filter(p=>p.active!==false).sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+ const pi=S.postId?D.products.find(p=>p.id===S.postId):null,L=typeof lpSet==='function'?lpSet():{},O=typeof ofR==='function'?ofR(L):{gv:{}};
+ const K=[['shop','Skincare from the website','skincare products in the website bag'],['pkg','Packages','packages shown on the website'],['gv','E-vouchers','made and sent at once when paid'],['dep','Booking deposits','on the online booking page']];
+ const warn=[];
+ if(S.k.includes('gv')&&!(O.gv&&O.gv.on))warn.push('E-vouchers are not switched on for the website yet (Landing page → Packages & e-vouchers).');
+ if(S.k.includes('dep')&&!((typeof bkR==='function'?bkR():{}).dep||{}).on)warn.push('Booking deposits are off (Settings → Booking rules), so there is nothing to pay on the booking page.');
+ return '<div class="card stpc" id="stp"><div class="sec-h"><h2>'+ic('card',16)+' Online payment · Stripe</h2>'+
+  '<label class="row stptog"><input type="checkbox" '+(S.on?'checked':'')+' onchange="stpF(\'on\',this.checked)"> <b>Take payment online</b></label></div>'+
+  '<p class="tiny muted" style="margin:0 0 10px">Clients pay by card, FPX online banking or GrabPay on Stripe\'s page. The money goes to your Stripe account and is paid out to your bank. Each payment is marked paid here by itself.</p>'+
+  '<label>Payment link <span class="muted">— shown at the end of the setup on Google Cloud</span></label>'+
+  '<div class="row" style="gap:8px"><input class="f" id="stp-url" style="margin:0;flex:1" placeholder="https://luuna-pay-123456789.asia-southeast1.run.app" value="'+esc(S.url||'')+'" oninput="stpF(\'url\',this.value,1)">'+
+  '<button type="button" class="btn sm ghost" onclick="stpTest()">'+ic('refresh',13)+'Test</button></div>'+
+  '<div id="stp-h" class="tiny" style="margin:6px 0 0">'+stpHealthHTML(H)+'</div>'+
+  '<label style="margin-top:12px">What clients can pay for online</label><div class="stpk">'+K.map(([k,t,d])=>'<label class="row"><input type="checkbox" '+(S.k.includes(k)?'checked':'')+' onchange="stpK(\''+k+'\',this.checked)"> <span><b>'+t+'</b> <small class="muted">— '+d+'</small></span></label>').join('')+'</div>'+
+  (warn.length?'<div class="stpw">'+warn.map(w=>'<div>'+ic('alert',12)+' '+esc(w)+'</div>').join('')+'</div>':'')+
+  '<div class="grid g2" style="margin-top:6px"><div><label>Posting skincare: the postage item</label><select class="f" onchange="stpF(\'postId\',this.value)"><option value="">No posting with online payment</option>'+
+   prods.map(p=>'<option value="'+esc(p.id)+'"'+(p.id===S.postId?' selected':'')+'>'+esc(p.name)+' · '+rm(p.price)+'</option>').join('')+'</select></div>'+
+   '<div><label>Free postage from (RM)</label><input class="f" type="number" min="0" step="1" value="'+(+S.free||'')+'" placeholder="e.g. 150" oninput="stpF(\'free\',+this.value||0,1)"></div></div>'+
+  '<p class="tiny muted" style="margin:0">Make a product "Caj Pos" in Catalogue at your postage price, with stock (e.g. 999), and choose it here. It goes on the bill of a posted order. Without it, posted orders are sent and paid later, as now.'+(pi?' Postage now: <b>'+rm(pi.price)+'</b>.':'')+'</p>'+
+  '<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" onclick="stpSave()">'+ic('check',14)+'Save & publish</button>'+
+  (S.on&&stpOkUrl(S.url)?'<span class="pill g">'+ic('check',11)+' On</span>':'<span class="pill">Off</span>')+'</div></div>';
+}
+function stpHealthHTML(H){
+ if(!H)return '';if(H.busy)return '<span class="muted">Checking…</span>';
+ if(H.err)return '<span style="color:var(--rose)">'+ic('alert',12)+' '+esc(H.err)+'</span>';
+ return '<span class="pill '+(H.mode==='live'?'g':'a')+'">'+(H.mode==='live'?'LIVE — real money':H.mode==='test'?'TEST mode — no real money':'No Stripe key')+'</span> '+
+  '<span class="pill '+(H.webhook?'g':'r')+'">'+(H.webhook?'Webhook set':'Webhook not set yet')+'</span>';}
+window.stpF=(k,v,quiet)=>{STPDRAFT=STPDRAFT||{...stpSet(),k:[...stpSet().k]};STPDRAFT[k]=v;if(!quiet)render();};
+window.stpK=(k,on)=>{STPDRAFT=STPDRAFT||{...stpSet(),k:[...stpSet().k]};const s=new Set(STPDRAFT.k);on?s.add(k):s.delete(k);STPDRAFT.k=['shop','pkg','gv','dep'].filter(x=>s.has(x));render();};
+window.stpTest=async()=>{
+ const u=stpUrl((document.getElementById('stp-url')||{}).value||(STPDRAFT||stpSet()).url);
+ const el=()=>document.getElementById('stp-h');
+ if(!stpOkUrl(u)){STPHEALTH={err:'This does not look like the link from the setup (it ends in .run.app).'};if(el())el().innerHTML=stpHealthHTML(STPHEALTH);return;}
+ STPHEALTH={busy:true};if(el())el().innerHTML=stpHealthHTML(STPHEALTH);
+ try{const r=await fetch(u+'/',{cache:'no-store'});const j=await r.json();if(!j||j.app!=='luuna-pay')throw new Error('That link is not the Luuna payment service.');STPHEALTH=j;}
+ catch(e){STPHEALTH={err:String(e&&e.message||e).replace(/^TypeError: /,'')+(/fetch/i.test(String(e))?' — could not reach it. Check the link.':'')};}
+ if(el())el().innerHTML=stpHealthHTML(STPHEALTH);
+};
+window.stpSave=async()=>{
+ const S={...(STPDRAFT||stpSet())};S.url=stpUrl(S.url);
+ if(S.on&&!stpOkUrl(S.url)){toast('Paste the payment link from the setup first');return;}
+ try{await lpMetaPut('stripePay',{on:!!S.on,url:S.url,k:S.k,postId:S.postId||'',free:+S.free||0});
+  /* the payment method the bills will carry */
+  if(S.on){const list=payMethods().map(m=>({...m}));if(!list.some(m=>m.name===STP_M)){list.push({id:'stripe',name:STP_M,cash:false,active:true,ref:true});
+   await setDoc(doc(db,'meta','settings'),{payMethods:list},{merge:true});D.meta.payMethods=list;}}
+  STPDRAFT=null;
+  try{if(typeof lpPublish==='function')await lpPublish(true);}catch(e){console.warn(e);}
+  try{if(typeof wbPublish==='function')await wbPublish(true);}catch(e){console.warn(e);}
+  await audit('Online payment settings',(S.on?'on':'off')+' · '+S.k.join(', '));render();toast(S.on?'Online payment is on — the website and booking page now offer it':'Online payment saved (off)');
+ }catch(e){toast(friendly(e));}
+};
+{const _p=payPanel;payPanel=function(){return _p.apply(this,arguments)+stpCard();};}
+
+/* ---------- what the website and the booking page are told ---------- */
+{const _b=lpBuild;lpBuild=function(img){const d=_b(img),S=stpSet();
+ if(stpLive()){const pi=stpPostItem();d.pay={on:true,url:stpUrl(S.url),k:S.k.filter(k=>k!=='dep'),post:pi?+pi.price||0:0,free:pi?+S.free||0:0};}
+ else d.pay={on:false};return d;};}
+{const _c=wbConfig;wbConfig=function(){const c=_c.apply(this,arguments),S=stpSet();c.pay=stpLive()&&S.k.includes('dep')?{on:true,url:stpUrl(S.url)}:{on:false};return c;};}
+
+/* ---------- staff: website orders, now some paid online ---------- */
+const stpPaidTag=o=>{const p=o.pay||{};
+ if(p.done)return '<span class="pill g">'+ic('check',11)+' Paid online'+(p.method?' · '+esc(p.method):'')+'</span>'+(p.live===false?' <span class="pill a">TEST</span>':'');
+ if(p.st==='pending')return '<span class="pill a">'+ic('clock',11)+' Payment on its way</span>';
+ if(p.st==='failed')return '<span class="pill r">Online payment failed</span>';
+ if(p.st==='open')return '<span class="pill">Went to pay online</span>';return '';};
+const SK_OST2={new:['New','a'],conf:['Confirmed','b'],paid:['Paid','g'],done:['Done','g'],cancel:['Cancelled','']};
+skOrdersHTML=function(){
+ let h=stpOrdersBase();
+ /* e-voucher orders not paid online keep "Take payment & issue" (offers.js) */
+ SKORD.filter(o=>o.gift&&!o.paidOnline&&o.status!=='done'&&o.status!=='cancel').forEach(o=>{
+  h=h.replace('onclick="skOrdPos(\''+o.id+'\')">'+ic('card',13)+'Ring up in Checkout</button>','onclick="gcFromOrder(\''+o.id+'\')">'+ic('gift',13)+'Take payment & issue</button>');
+  h=h.replace('<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b>','<b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b> <span class="pill b">E-voucher for '+esc(o.gift.to||'')+'</span>');});
+ return h;};
+function stpOrdersBase(){
+ const L=SKORD.slice(0,12),todo=SKORD.filter(o=>o.paidOnline&&!o.recorded&&o.status!=='cancel');
+ return '<h4 style="margin:16px 0 4px">Orders from the website</h4>'+
+  (todo.length?'<div class="stpw" style="margin:0 0 8px">'+ic('card',12)+' '+todo.length+' paid online — record '+(todo.length>1?'them':'it')+' in Checkout so stock and packages are updated.</div>':'')+
+  (L.length?L.map(o=>{const st=SK_OST2[o.status]||SK_OST2.new,p=o.pay||{},gift=(o.items||[]).every(i=>i.id==='gift'),isPkg=(o.items||[]).some(i=>String(i.id).startsWith('pkg:'));
+  const done=o.status==='done',codes=o.giftCodes||(o.giftCode?[o.giftCode]:[]);
+  return '<div class="skord'+(o.paidOnline&&!o.recorded&&!gift?' stpdue':'')+'"><div class="spread"><b>'+esc(o.name)+' · '+esc(o.ref||'')+'</b><span class="row" style="gap:4px;flex-wrap:wrap;justify-content:flex-end">'+stpPaidTag(o)+'<span class="pill '+st[1]+'">'+(gift&&done?'Voucher sent':o.how==='post'&&done?'Sent':done?'Collected':st[0])+'</span></span></div>'+
+   '<div class="tiny">'+(o.items||[]).map(i=>esc(i.q+'× '+i.n)).join(', ')+' · <b>'+rm(p.done?p.amt:o.total)+'</b>'+(p.done&&+p.fee>0?' <span class="muted">(incl. postage '+rm(p.fee)+')</span>':'')+'</div>'+
+   '<div class="tiny muted">'+esc(o.phone)+' · '+(gift?'E-voucher'+(o.gift&&o.gift.to?' for '+esc(o.gift.to):''):isPkg?'Package':o.how==='post'?'Post to: '+esc(o.addr||''):'Collect at the spa')+(o.note?' · '+esc(o.note):'')+' · '+dshort(o.createdAt)+' '+tstr(o.createdAt)+(o.src?' · from '+esc(o.src)+(o.camp?' / '+esc(o.camp):''):'')+'</div>'+
+   (codes.length?'<div class="tiny" style="margin-top:4px">Code'+(codes.length>1?'s':'')+': <b>'+codes.map(esc).join(', ')+'</b></div>':'')+
+   ((p.dups||[]).length?'<div class="stpw" style="margin-top:6px">'+ic('alert',12)+' Paid twice — refund '+esc(p.dups.join(', '))+' in Stripe (Payments → find it → Refund).</div>':'')+
+   '<div class="row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><a class="btn sm'+(o.paidOnline&&!o.recorded&&!gift?' ghost':'')+'" target="_blank" href="https://wa.me/'+waNum(o.phone)+'?text='+encodeURIComponent(stpOrdMsg(o))+'" onclick="skOrdSt(\''+o.id+'\',\'conf\',true)">'+ic('msg',13)+'WhatsApp</a>'+
+    (o.paidOnline&&!o.recorded&&!gift&&o.status!=='cancel'?'<button class="btn sm" onclick="stpRecord(\''+o.id+'\')">'+ic('card',13)+'Record the sale</button>':'')+
+    (!o.paidOnline&&o.status!=='paid'&&o.status!=='done'&&o.status!=='cancel'?'<button class="btn sm ghost" onclick="skOrdPos(\''+o.id+'\')">'+ic('card',13)+'Ring up in Checkout</button>':'')+
+    (o.status==='paid'&&(!o.paidOnline||o.recorded)&&!gift?'<button class="btn sm ghost" onclick="skOrdSt(\''+o.id+'\',\'done\')">'+ic('check',13)+(o.how==='post'?'Sent':'Collected')+'</button>':'')+
+    ((o.status==='new'||o.status==='conf')&&!o.paidOnline?'<button class="btn sm ghost" onclick="skOrdSt(\''+o.id+'\',\'cancel\')">Cancel</button>':'')+'</div></div>';}).join('')
+  :'<div class="tiny muted">No orders yet. Visitors add products to a bag on the website and send the order'+(stpLive()?' or pay online':'')+'; it shows up here and on Home.</div>');
+}
+function stpOrdMsg(o){const b=D.meta.biz||{},p=o.pay||{},f=String(o.name||'').split(' ')[0],codes=o.giftCodes||(o.giftCode?[o.giftCode]:[]);
+ if(!o.paidOnline)return skOrdMsg(o);
+ if(codes.length){const g=o.gift||{};return 'Hi '+f+', terima kasih! Bayaran '+rm(p.amt)+' untuk e-voucher '+(o.ref||'')+' diterima.\n'+codes.map(c=>'Kod: *'+c+'*').join('\n')+(g.to?'\nUntuk: '+g.to:'')+'\nTunjukkan kod semasa bayaran di '+(b.name||'spa')+'.';}
+ return 'Hi '+f+', terima kasih! Bayaran online '+rm(p.amt)+' untuk tempahan '+(o.ref||'')+' di '+(b.name||'Luuna')+' telah diterima:\n'+(o.items||[]).map(i=>'• '+i.q+'× '+i.n).join('\n')+
+  '\n'+((o.items||[]).some(i=>String(i.id).startsWith('pkg:'))?'Pakej akan diaktifkan dalam akaun anda — boleh terus book sesi pertama.':o.how==='post'?'Kami akan pos ke alamat yang diberi dan kongsi nombor tracking di sini.':'Boleh ambil di spa — kami maklumkan bila siap.');}
+/* record a paid-online order: the client, the items, and the Stripe payment already on the bill */
+window.stpRecord=async id=>{
+ const o=SKORD.find(x=>x.id===id);if(!o||!o.paidOnline)return;const p=o.pay||{};
+ let c=CUSTS.find(x=>x.active!==false&&!x.mergedInto&&typeof phKey==='function'&&phKey(x.phone)===phKey(o.phone));
+ if(!c){try{const data={name:o.name,nameLower:String(o.name).toLowerCase(),phone:o.phone,phoneDigits:digits(o.phone),keywords:kwFor(o.name,o.phone),source:o.src?srcToClient(o.src):'Other',branchId:ME.branchId,pdpa:true,marketing:false,tags:['Online order'],notes:'',active:true,wantNo:true,createdAt:new Date().toISOString(),createdBy:UID};
+  const r=await addDoc(collection(db,'customers'),data);c={id:r.id,...data};CUSTS.unshift(c);newClientNo(r.id);}catch(e){toast(friendly(e));return;}}
+ window.go('pos');await new Promise(r=>setTimeout(r,60));
+ try{window.cpPick('pos-c',c.id);}catch(e){}
+ for(const i of o.items||[]){const id2=String(i.id);if(id2==='gift')continue;
+  const kind=id2.startsWith('pkg:')?'package':'product',iid=id2.startsWith('pkg:')?id2.slice(4):id2;
+  for(let k=0;k<Math.min(20,+i.q||1);k++)window.pickAdd(kind,iid);}
+ if(+p.fee>0){const pi=stpPostItem();if(pi)window.pickAdd('product',pi.id);else toast('Postage '+rm(p.fee)+' was paid online — add your postage item to the bill');}
+ cart.payments=cart.payments.filter(x=>!x.stripe);
+ cart.payments.push({method:STP_M,amount:r2(+p.amt||0),ref:String(p.pi||'stripe'),stripe:true});
+ cart.webOrder=o.id;cart.webPaid=o.id;window.closeModal&&window.closeModal();render();
+ toast('Order '+(o.ref||'')+' is in Checkout with the online payment — check the items, then Complete');
+};
+/* once its bill is saved, the order is recorded */
+{const _co=window.checkout;if(_co)window.checkout=async function(){const wp=cart.webPaid;const r=await _co.apply(this,arguments);
+ if(wp&&!cart.items.length){try{await updateDoc(doc(db,'webOrders',wp),{recorded:true,recordedAt:new Date().toISOString(),recordedBy:UID});const o=SKORD.find(x=>x.id===wp);if(o)o.recorded=true;}catch(e){}}return r;};}
+/* a new online payment: tell whoever is at the counter */
+{let seen=null;setInterval(()=>{try{if(!SKOSUB)return;const now=new Set(SKORD.filter(o=>o.paidOnline).map(o=>o.id));
+ if(seen)SKORD.filter(o=>o.paidOnline&&!seen.has(o.id)).forEach(o=>{toast('Paid online: '+o.name+' · '+rm((o.pay||{}).amt||o.total));try{if(typeof chime==='function')chime();}catch(e){}});seen=now;}catch(e){}},2500);}
+{const _al=crmAlerts;crmAlerts=function(al){_al(al);const L=SKORD.filter(o=>o.paidOnline&&!o.recorded&&o.status!=='cancel'&&!(o.items||[]).every(i=>i.id==='gift'));
+ if(L.length&&(can('pos')||boss()))al.push({i:'card',t:L.length+' online payment'+(L.length>1?'s':'')+' to record',d:L.slice(0,3).map(o=>String(o.name).split(' ')[0]+' '+rm((o.pay||{}).amt)).join(', '),go:"go('lp')"});};}
+
+/* ---------- the booking page: pay the deposit now ---------- */
+window.wbStripeDep=async(id,btn)=>{
+ const P=(WB.cfg||{}).pay||{};if(!P.on||!P.url)return;const e=document.getElementById('wb-sterr');
+ if(btn){btn.disabled=true;btn.innerHTML='<span class="spin sm"></span> Membuka halaman bayaran…';}
+ try{const r=await fetch(P.url+'/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({k:'dep',id,back:location.origin+location.pathname})});
+  const j=await r.json();if(!r.ok||!j.url)throw new Error(j.message||('HTTP '+r.status));
+  try{localStorage.setItem('luunaDepPay',JSON.stringify({t:j.t,id,at:new Date().toISOString()}));}catch(x){}
+  location.href=j.url;}
+ catch(err){console.warn(err);if(btn){btn.disabled=false;btn.innerHTML=ic('card',16)+' Bayar deposit sekarang';}if(e)e.textContent='Bayaran online tidak dapat dibuka sekarang. Cuba lagi, atau bayar secara manual di bawah.';}
+};
+{const _pb=wbPayBox;wbPayBox=function(a){const h=_pb(a);const P=(WB.cfg||{}).pay||{};if(!h||!P.on||!P.url)return h;
+ return h.replace('<div class="wbpay">','<div class="wbpay"><button type="button" class="btn wbstripe" onclick="wbStripeDep(\''+a.id+'\',this)">'+ic('card',16)+' Bayar deposit sekarang · '+rm(a.depDue)+'</button>'+
+  '<div class="tiny wbstripe-m">Kad debit/kredit · FPX perbankan online · GrabPay — disahkan serta-merta.</div><div id="wb-sterr" class="tiny" style="color:var(--rose)"></div><div class="wbor"><span>atau bayar secara manual</span></div>');};}
+/* back from Stripe: wait for the confirmation, then show the booking confirmed */
+{const _m=wbManage;wbManage=async function(id){
+ const q=new URLSearchParams(location.search),st=q.get('bayar'),t=q.get('t');
+ if(st){try{const u=new URL(location.href);u.searchParams.delete('bayar');u.searchParams.delete('t');history.replaceState(history.state,'',u.pathname+u.search+u.hash);}catch(e){}}
+ await _m(id);
+ const box=()=>document.querySelector('.wbpage .fbbox'),a=()=>WB.last;
+ if(st==='batal'&&box()&&a()&&!(+a().deposit>0))box().insertAdjacentHTML('afterbegin','<div class="warnbox">'+ic('alert',14)+' Pembayaran dibatalkan. Slot anda masih disimpan buat sementara — boleh cuba bayar semula di bawah.</div>');
+ if(st==='ok'&&a()&&!(+a().deposit>0)){
+  const P=(WB.cfg||{}).pay||{};
+  if(box())box().insertAdjacentHTML('afterbegin','<div class="okbox" id="wb-stwait">'+ic('clock',14)+' Pembayaran diterima — sedang disahkan…</div>');
+  for(let i=0;i<16;i++){await new Promise(r=>setTimeout(r,i<4?1500:3000));
+   let done=false;try{if(P.url&&t){const r=await fetch(P.url+'/status?t='+encodeURIComponent(t),{cache:'no-store'});const j=await r.json();done=j.st==='paid';if(j.st==='failed'){const w=document.getElementById('wb-stwait');if(w)w.outerHTML='<div class="warnbox">'+ic('alert',14)+' Pembayaran tidak berjaya. Sila cuba lagi.</div>';return;}}}catch(e){}
+   if(done){await _m(id);const b=box();if(b)b.insertAdjacentHTML('afterbegin','<div class="okbox">'+ic('check',14)+' Deposit diterima melalui bayaran online. Tempahan anda disahkan — jumpa nanti!</div>');return;}}
+  const w=document.getElementById('wb-stwait');if(w)w.innerHTML=ic('clock',14)+' Bayaran sedang diproses oleh bank. Tempahan akan disahkan secara automatik sebaik ia diterima.';
+ }else if(st==='ok'&&a()&&+a().deposit>0&&box())box().insertAdjacentHTML('afterbegin','<div class="okbox">'+ic('check',14)+' Deposit diterima melalui bayaran online. Tempahan anda disahkan — jumpa nanti!</div>');
+};}
+
+if(typeof I18N!=='undefined')Object.assign(I18N,{'Online payment · Stripe':'Bayaran online · Stripe','Take payment online':'Terima bayaran online','What clients can pay for online':'Apa yang klien boleh bayar online',
+ 'Record the sale':'Rekod jualan','Paid online':'Dibayar online','Save & publish':'Simpan & terbitkan','Payment on its way':'Bayaran sedang diproses','Online payment failed':'Bayaran online gagal'});
+/* in Settings it sits under "Payments & checkout", right after Payment methods */
+try{const g=STG_GROUPS.find(x=>x.k==='pay');if(g)g.m=/^(Payment methods|Checkout|Online payment)/;
+ const i=STG_DESC.findIndex(x=>String(x[0])==='/^Payment methods/');STG_DESC.splice(i<0?STG_DESC.length:i+1,0,[/^Online payment/,'Card, FPX & GrabPay on the website and the booking page']);}catch(e){}
+window.__stpCart=()=>JSON.parse(JSON.stringify({items:cart.items,payments:cart.payments,customerId:cart.customerId,webPaid:cart.webPaid||''}));
 
 </script>
