@@ -896,6 +896,35 @@ html.hasann{scroll-padding-top:106px}
  .fbl{font-size:12px}.fbk{width:24px;height:24px}.fbc{box-shadow:0 0 0 3px rgba(255,255,255,.95),0 18px 30px -20px rgba(60,50,35,.65)}
  .fb.sel .fbc{box-shadow:0 0 0 3px #fff,0 0 0 5.5px var(--gbrush),0 18px 30px -18px rgba(131,110,74,.8)}}
 @media(prefers-reduced-motion:reduce){.fbc{animation:none}}
+/* ===== 30p: as seen on social — the clients' own photos and videos, sliding by themselves ===== */
+.ugsec{padding-top:0;overflow:hidden}
+.ugsec .sec-h{align-items:flex-end}
+.ugfol{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--jet);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;white-space:nowrap}
+.ugwrap{position:relative}
+.ugtr{display:flex;align-items:flex-start;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px 2px 6px;scroll-padding:0 2px;overscroll-behavior-x:contain}
+.ugtr::-webkit-scrollbar{display:none}
+.ugc{flex:0 0 clamp(250px,24vw,300px);scroll-snap-align:start;display:flex;flex-direction:column;background:var(--surface);border:var(--hair);border-radius:18px;overflow:hidden;box-shadow:0 22px 44px -34px rgba(13,13,13,.45)}
+.ugm{position:relative;display:block;width:100%;aspect-ratio:4/5;background:#1E1C1A center/cover no-repeat;overflow:hidden;border:0;padding:0;cursor:pointer;color:#fff}
+.ugm video,.ugm .ugi{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:center/cover no-repeat}
+.ugm.ba{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#fff}.ugm.ba .ugi{position:relative}
+.ugm.ba .ugl{position:absolute;bottom:10px;left:8px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:rgba(13,13,13,.6);color:#fff;padding:3px 8px;border-radius:99px;backdrop-filter:blur(6px)}
+.ugm::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,13,13,.35),rgba(13,13,13,0) 22%,rgba(13,13,13,0) 62%,rgba(13,13,13,.55));pointer-events:none}
+.ugm.ba::after{display:none}
+.ugh{position:absolute;z-index:1;left:10px;top:10px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.ugh .ico{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);display:grid;place-items:center}
+.ugq{position:absolute;z-index:1;left:12px;right:52px;bottom:12px;text-align:left;font-size:13px;line-height:1.4;font-weight:500;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.5);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.ugs{position:absolute;z-index:2;right:10px;bottom:10px;width:32px;height:32px;border-radius:50%;border:0;background:rgba(13,13,13,.75);color:#fff;display:grid;place-items:center;cursor:pointer}
+.ugp{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:76px;border-top:var(--hair);text-decoration:none;color:var(--jet);text-align:left;background:none;border-left:0;border-right:0;border-bottom:0;font:inherit;cursor:pointer;width:100%}
+.ugpi{flex:none;width:50px;height:50px;border-radius:10px;background:var(--surface-2) center/cover no-repeat;display:grid;place-items:center;color:var(--gbrush)}
+.ugpt{min-width:0;display:flex;flex-direction:column;gap:3px}.ugpt b{font-size:13.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ugpt u{font-size:13px;font-weight:700;text-underline-offset:3px}
+.ugnav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.ugdots{display:flex;gap:6px;flex-wrap:wrap}.ugdots i{width:7px;height:7px;border-radius:99px;background:rgba(13,13,13,.18);transition:width .3s var(--ease),background .3s}.ugdots i.on{width:22px;background:var(--jet)}
+.ugar{display:flex;gap:8px}.ugar button{width:42px;height:42px;border-radius:50%;border:var(--hair);background:var(--surface);display:grid;place-items:center;cursor:pointer;color:var(--jet)}
+.ugar button:hover{background:var(--jet);color:var(--porcelain)}
+.ugbig{width:100%;max-height:72vh;border-radius:16px;background:#000;display:block;object-fit:contain}
+.ugbigba{display:grid;grid-template-columns:1fr 1fr;gap:6px}.ugbigba div{aspect-ratio:4/5;border-radius:14px;background:center/cover no-repeat var(--surface-2);position:relative}
+@media(max-width:600px){.ugc{flex-basis:78%}.ugtr{margin:0 -20px;padding:4px 20px 6px;scroll-padding:0 20px;gap:12px}.ugar{display:none}.ugsec .sec-h{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -1204,7 +1233,7 @@ function render(){
  /* how it works */
  h+='<section class="sec" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('sEy')+'</span><h2>'+T('sH')+'</h2></div></div><div class="steps">'+
   T('steps')(P.bookOn).map((s,i)=>'<div class="step rv0" style="--d:'+i*0.1+'s"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+'</span></div>').join('')+'</div></div></section>';
- h+=reviewsHTML();h+=skinHomeHTML();h+=aboutHTML();h+=magHome();
+ h+=reviewsHTML();h+=ugcHTML();h+=skinHomeHTML();h+=aboutHTML();h+=magHome();
  /* location */
  h+='<section class="sec" id="lokasi" style="padding-top:0"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+T('lEy')+'</span><h2>'+T('lH')+'</h2></div></div><div class="locs'+((P.branches||[]).length===1?' one':'')+'">'+
   (P.branches||[]).map(x=>{const o=openNow(x),q=encodeURIComponent(x.mapsQ||x.addr||x.name||'');
@@ -2222,6 +2251,64 @@ function bubHTML(){const C=P.concerns||[],seed=+P.conSeed||0;
  BUB.querySelectorAll('.fb').forEach(b=>{const on=SELK.has(b.dataset.k);b.classList.toggle('sel',on);b.setAttribute('aria-pressed',String(on));});
  BUB.querySelectorAll('[data-img].w:not(.on)').forEach(e=>e.classList.remove('w'));
  const f=el.closest('.finder');if(f)f.classList.add('hasbub');watchImgs();};}
+/* ---------- 30p: as seen on social — clients' photos & videos in a carousel that slides by itself ---------- */
+Object.assign(IC,{vol:'M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11',mute:'M4 9.5h3.5L12 5.5v13l-4.5-4H4zM16 9.5l5 5M21 9.5l-5 5',quote:'M7 17c-1.7 0-3-1.3-3-3 0-3.3 2-6.2 5-7.5l.6 1.3C7.8 8.7 7 10 7 11h.2a3 3 0 010 6zm9 0c-1.7 0-3-1.3-3-3 0-3.3 2-6.2 5-7.5l.6 1.3C16.8 8.7 16 10 16 11h.2a3 3 0 010 6z'});
+const UGT={ms:{ey:'Dari pelanggan kami',h:'Seperti di media sosial',fol:'Ikuti kami',shop:'Beli sekarang',book:'Tempah sekarang',ask:'Tanya harga',bef:'Sebelum',aft:'Selepas',orig:'Lihat pos asal',prev:'Sebelumnya',next:'Seterusnya',snd:'Bunyi'},
+ en:{ey:'From our clients',h:'As seen on social',fol:'Follow us',shop:'Shop now',book:'Book now',ask:'Ask the price',bef:'Before',aft:'After',orig:'See the original post',prev:'Previous',next:'Next',snd:'Sound'}};
+const UGS=k=>UGT[LANG==='en'?'en':'ms'][k];
+const UGPF={ig:['ig','Instagram'],tt:['tt','TikTok'],fb:['fb','Facebook'],th:['th','Threads']};
+const ugItems=()=>{const U=P&&P.ugc;return U&&U.on?(U.items||[]).filter(x=>x&&(x.k==='vid'?x.vid:x.img)):[];};
+const ugVid=u=>esc(u)+(String(u).includes('#')?'':'#t=0.1');
+function ugGo(x){const g=x.go||{};
+ if(g.k==='prod'){const p=((P.skin||{}).products||[]).find(z=>z.id===g.id);if(!p)return '';const im=((p.ph||[])[0]||{}).img;
+  return '<a class="ugp" href="'+purl(p)+'" data-prod="'+esc(p.slug)+'"><span class="ugpi"'+(im?' data-img="'+esc(im)+'"':'')+'>'+(im?'':ic('drop',20))+'</span><span class="ugpt"><b>'+esc(p.n)+'</b><u>'+UGS('shop')+'</u></span></a>';}
+ if(g.k==='svc'){const s=svcOf(g.id);if(!s)return '';const C=(P.cats||[]).find(c=>c.n===s.c)||{},bk=P.bookOn&&s.b!==false;
+  return '<button type="button" class="ugp" '+(bk?'data-book':'data-ask')+'="'+esc(s.id)+'"><span class="ugpi"'+(C.img?' data-img="'+esc(C.img)+'"':'')+'>'+(C.img?'':ic('spark',20))+'</span><span class="ugpt"><b>'+esc(s.n)+'</b><u>'+UGS(bk?'book':'ask')+'</u></span></button>';}
+ return '';}
+function ugCard(x,i){const pf=UGPF[x.pf],cap=pick(x.c,x.cEn);
+ const top=(pf||x.h)?'<span class="ugh">'+(pf?ic(pf[0],14):'')+esc(x.h?(x.h.startsWith('@')?x.h:'@'+x.h):pf[1])+'</span>':'';
+ const m=x.k==='ba'?'<button type="button" class="ugm ba" data-ugo="'+i+'" aria-label="'+esc(cap||UGS('bef')+' / '+UGS('aft'))+'"><span class="ugi" data-img="'+esc(x.img)+'"><span class="ugl">'+UGS('bef')+'</span></span><span class="ugi" data-img="'+esc(x.img2||x.img)+'"><span class="ugl">'+UGS('aft')+'</span></span>'+top+'</button>'
+  :'<div class="ugm" data-ugo="'+i+'" role="button" tabindex="0" aria-label="'+esc(cap||(pf?pf[1]:'')||'')+'">'+(x.k==='vid'?'<video src="'+ugVid(x.vid)+'" muted loop playsinline preload="metadata"></video><button type="button" class="ugs" data-ugs="1" aria-label="'+UGS('snd')+'">'+ic('mute',16)+'</button>':'<span class="ugi" data-img="'+esc(x.img)+'"></span>')+
+   top+(cap?'<span class="ugq">'+esc(cap)+'</span>':'')+'</div>';
+ return '<article class="ugc">'+m+ugGo(x)+'</article>';}
+function ugcHTML(){const L=ugItems();if(!L.length)return '';const U=P.ugc,b=P.biz||{},fl=b.ig?'https://instagram.com/'+String(b.ig).replace(/^@|https?:\/\/(www\.)?instagram\.com\//g,'').replace(/\/.*$/,''):b.tt?'https://www.tiktok.com/@'+String(b.tt).replace(/^@/,''):'';
+ return '<section class="sec ugsec" id="sosial"><div class="wrap"><div class="sec-h"><div><span class="eyebrow">'+esc(pick(U.ey,U.eyEn)||UGS('ey'))+'</span><h2>'+esc(pick(U.t,U.tEn)||UGS('h'))+'</h2>'+(pick(U.s,U.sEn)?'<p>'+esc(pick(U.s,U.sEn))+'</p>':'')+'</div>'+
+  (fl?'<a class="ugfol" href="'+esc(fl)+'" target="_blank" rel="noopener">'+ic(b.ig?'ig':'tt',15)+UGS('fol')+'</a>':'')+'</div>'+
+  '<div class="ugwrap"><div class="ugtr" id="ugtr" data-sec="'+Math.min(20,Math.max(2,+U.sec||4))+'">'+L.map(ugCard).join('')+'</div>'+
+  (L.length>1?'<div class="ugnav"><div class="ugdots" id="ugdots">'+L.map((x,i)=>'<i'+(i?'':' class="on"')+'></i>').join('')+'</div><div class="ugar"><button type="button" data-ugn="-1" aria-label="'+UGS('prev')+'">'+ic('left',18)+'</button><button type="button" data-ugn="1" aria-label="'+UGS('next')+'">'+ic('right',18)+'</button></div></div>':'')+
+  '</div></div></section>';}
+/* the slide: one card every few seconds (the owner's setting), back to the start after the last;
+   it waits while someone touches, hovers or listens, and while the section is off screen */
+let UGTM=null,UGHOLD=0,UGIN=false,UGIO=null,UGVIO=null;
+function ugStep(tr){const c=tr.querySelector('.ugc');if(!c)return 0;return c.getBoundingClientRect().width+parseFloat(getComputedStyle(tr).columnGap||16);}
+function ugMove(tr,d){const st=ugStep(tr),max=tr.scrollWidth-tr.clientWidth;let x=Math.round(tr.scrollLeft/st)*st+d*st;
+ if(x>max+4)x=d>0&&tr.scrollLeft>=max-4?0:max;if(x<0)x=tr.scrollLeft<=4?max:0;tr.scrollTo({left:x,behavior:'smooth'});}
+function ugDots(tr){const d=document.getElementById('ugdots');if(!d)return;const st=ugStep(tr),max=tr.scrollWidth-tr.clientWidth,n=d.children.length;
+ let k=tr.scrollLeft>=max-4?n-1:Math.round(tr.scrollLeft/st);[...d.children].forEach((e,i)=>e.classList.toggle('on',i===Math.min(k,n-1)));}
+function ugStart(){clearInterval(UGTM);const tr=document.getElementById('ugtr');if(!tr)return;const sec=+tr.dataset.sec||4;
+ const hold=ms=>{UGHOLD=Math.max(UGHOLD,Date.now()+ms);};
+ ['pointerdown','touchstart','wheel','focusin'].forEach(ev=>tr.addEventListener(ev,()=>hold(8000),{passive:true}));
+ tr.addEventListener('mouseenter',()=>{tr.dataset.hov='1';});tr.addEventListener('mouseleave',()=>{tr.dataset.hov='';});
+ let sc=0;tr.addEventListener('scroll',()=>{cancelAnimationFrame(sc);sc=requestAnimationFrame(()=>ugDots(tr));},{passive:true});
+ if('IntersectionObserver' in window){UGIO&&UGIO.disconnect();UGIO=new IntersectionObserver(es=>es.forEach(e=>{UGIN=e.isIntersecting;}),{threshold:.25});UGIO.observe(tr);
+  UGVIO&&UGVIO.disconnect();UGVIO=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting&&e.intersectionRatio>.6){const p=v.play();if(p&&p.catch)p.catch(()=>{});}else v.pause();}),{threshold:[0,.6,1]});
+  tr.querySelectorAll('video').forEach(v=>UGVIO.observe(v));}else UGIN=true;
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches||tr.children.length<2)return;
+ UGTM=setInterval(()=>{if(!document.body.contains(tr)){clearInterval(UGTM);return;}
+  if(!UGIN||document.hidden||tr.dataset.hov||tr.dataset.snd||Date.now()<UGHOLD)return;ugMove(tr,1);},sec*1000);}
+function ugOpen(i){const x=ugItems()[i];if(!x)return;const cap=pick(x.c,x.cEn),pf=UGPF[x.pf];
+ const med=x.k==='vid'?'<video class="ugbig" src="'+esc(x.vid)+'" controls autoplay playsinline></video>':x.k==='ba'?'<div class="ugbigba"><div data-img="'+esc(x.img)+'"><span class="ugl" style="position:absolute;left:8px;bottom:8px">'+UGS('bef')+'</span></div><div data-img="'+esc(x.img2||x.img)+'"></div></div>':'<div class="ugbigba" style="grid-template-columns:1fr"><div data-img="'+esc(x.img)+'" style="aspect-ratio:auto;min-height:60vh;background-size:contain;background-color:#000"></div></div>';
+ sheet(med+(x.h||pf?'<p class="tiny" style="margin:12px 0 0;font-weight:600">'+(pf?ic(pf[0],14)+' ':'')+esc(x.h?(x.h.startsWith('@')?x.h:'@'+x.h):pf[1])+'</p>':'')+(cap?'<p style="margin:6px 0 0">'+esc(cap)+'</p>':'')+
+  ugGo(x)+(/^https:\/\//.test(x.url||'')?'<a class="btn light" style="width:100%;justify-content:center;margin-top:10px" href="'+esc(x.url)+'" target="_blank" rel="noopener">'+(pf?ic(pf[0],16):'')+UGS('orig')+'</a>':''));
+ watchImgs();}
+document.addEventListener('click',e=>{const s=e.target.closest('[data-ugs]');
+ if(s){e.preventDefault();e.stopPropagation();const v=s.parentElement.querySelector('video'),tr=document.getElementById('ugtr');if(!v)return;const on=v.muted;
+  if(tr)tr.querySelectorAll('video').forEach(o=>{if(o!==v){o.muted=true;const b=o.parentElement.querySelector('[data-ugs]');if(b)b.innerHTML=ic('mute',16);}});
+  v.muted=!on;s.innerHTML=ic(on?'vol':'mute',16);if(on){const p=v.play();if(p&&p.catch)p.catch(()=>{});}if(tr)tr.dataset.snd=on?'1':'';return;}
+ const n=e.target.closest('[data-ugn]');if(n){const tr=document.getElementById('ugtr');if(tr){UGHOLD=Date.now()+8000;ugMove(tr,+n.dataset.ugn);}return;}
+ const o=e.target.closest('[data-ugo]');if(o&&!e.target.closest('.ugp')){e.preventDefault();ugOpen(+o.dataset.ugo);}},true);
+addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&e.target.dataset&&e.target.dataset.ugo!==undefined)ugOpen(+e.target.dataset.ugo);});
+{const _r=render;render=function(){const x=_r.apply(this,arguments);try{ugStart();}catch(e){}return x;};}
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();

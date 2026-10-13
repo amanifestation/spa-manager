@@ -3289,6 +3289,10 @@ body.akno{overflow:hidden}
 .skphs .lpslide{width:104px;height:104px}
 button.lpsvimg[onclick^="skEdit"]{flex:0 0 76px;height:76px}
 .akshgal .akshimg{aspect-ratio:1}
+.ugrow{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.ugth{flex:none;width:72px;height:90px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2,#f3f0ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-3);cursor:pointer;overflow:hidden;padding:0;font:inherit}
+.ugth img{width:100%;height:100%;object-fit:cover}.ugth.none{border-style:dashed}.ugth small{font-size:10px}
+.ugvid{display:flex;gap:10px;align-items:flex-start}.ugvid video{flex:none;width:72px;height:90px;border-radius:10px;object-fit:cover;background:#111}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3619,7 +3623,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-13d';
+const BUILD='2026-10-13e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -34046,5 +34050,86 @@ function sqAsk(im){return new Promise(ok=>{const a=sqMake(im,'crop',420),b=sqMak
 async function sqFrom(f){const im=await sqImg(f);return sqIsSquare(im)?sqMake(im,'crop'):sqAsk(im);}
 window.skPhoto=k=>{skRead();const i=document.createElement('input');i.type='file';i.accept='image/*';
  i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{const img=await sqFrom(f);if(!img)return;await window.skPhotoSet(k,img);skPaint();toast('Square photo added — save the page to keep it');}catch(err){toast(friendly(err));}};i.click();};
+
+/* ============ 30p · website: "As seen on social" — clients' photos and videos in a carousel that slides by itself ============ */
+/* The owner adds posts (a photo, a video, or a before & after pair), with who posted it (@handle and where),
+   a short caption, the link to the original post, and the product or treatment it is about (a "Shop now" /
+   "Book now" strip under the card). The carousel moves on by one card every few seconds — the owner sets how many. */
+Object.assign(LP_DEF,{ugc:{on:false,sec:4,t:'',tEn:'',ey:'',eyEn:'',s:'',sEn:'',items:[]}});
+const UG_K=[['img','Photo'],['vid','Video'],['ba','Before & after']];
+const UG_PF=[['ig','Instagram'],['tt','TikTok'],['fb','Facebook'],['th','Threads'],['','Other / none']];
+const ugOf=L=>{const U={...LP_DEF.ugc,...((L||{}).ugc||{})};U.items=Array.isArray(U.items)?U.items:[];return U;};
+const ugSecs=v=>Math.min(20,Math.max(2,Math.round(+v||4)));
+let UGUP={};
+function ugClean(U){
+ const prods=new Set(skRetail().filter(p=>skW(p).on).map(p=>p.id)),svcs=new Set(D.services.filter(s=>s.active!==false).map(s=>s.id));
+ const s=(v,n)=>String(v||'').trim().slice(0,n);
+ const items=U.items.filter(x=>x&&(x.k==='vid'?/^https:\/\/\S+$/.test(x.vid||''):x.ih&&(x.k!=='ba'||x.ih2))).slice(0,12).map(x=>{const g=x.go||{};
+  return {id:x.id,k:x.k,...(x.k==='vid'?{vid:s(x.vid,400)}:{img:'ugc_'+x.id,ih:x.ih}),...(x.k==='ba'?{img2:'ugc_'+x.id+'_b',ih2:x.ih2}:{}),
+   ...(s(x.h,40)?{h:s(x.h,40)}:{}),...(UG_PF.some(p=>p[0]&&p[0]===x.pf)?{pf:x.pf}:{}),...(s(x.c,140)?{c:s(x.c,140)}:{}),...(s(x.cEn,140)?{cEn:s(x.cEn,140)}:{}),
+   ...(/^https:\/\/\S+$/.test(s(x.url,400))?{url:s(x.url,400)}:{}),
+   ...((g.k==='prod'&&prods.has(g.id))||(g.k==='svc'&&svcs.has(g.id))?{go:{k:g.k,id:g.id}}:{})};});
+ return {on:!!U.on&&items.length>0,sec:ugSecs(U.sec),t:s(U.t,60),tEn:s(U.tEn,60),ey:s(U.ey,40),eyEn:s(U.eyEn,40),s:s(U.s,160),sEn:s(U.sEn,160),items};}
+{const _b=lpBuild;lpBuild=function(){const d=_b.apply(this,arguments),U=ugClean(ugOf(lpSet()));d.ugc=U;
+ const im=U.items.flatMap(x=>[x.img,x.img2].filter(Boolean));if(im.length)d.imgs=[...new Set([...(d.imgs||[]),...im])];return d;};}
+
+function lpUgcCard(L){L=LPD||L;const U=ugOf(L),n=U.items.length;
+ const PR=skRetail().filter(p=>skW(p).on),SV=D.services.filter(s=>s.active!==false&&s.id);
+ const inp=(i,k,v,ph,max)=>'<input class="f" style="margin:0" maxlength="'+max+'" placeholder="'+esc(ph)+'" value="'+esc(v||'')+'" oninput="ugF('+i+',\''+k+'\',this.value)">';
+ const thumb=(x,b)=>{const id='ugc_'+x.id+(b?'_b':''),has=b?x.ih2:x.ih,im=has?(LPTH[id]!==undefined?LPTH[id]:lpThumb(id)):'';
+  return '<button type="button" class="ugth'+(has?'':' none')+'" onclick="ugPhoto('+U.items.indexOf(x)+','+(b?1:0)+')" title="'+(has?'Change':'Add')+' photo">'+(im?'<img src="'+im+'" alt="">':ic('image',16)+'<small>'+(x.k==='ba'?(b?'After':'Before'):'Photo')+'</small>')+'</button>';};
+ const row=(x,i)=>{const go=x.go||{},gv=go.k?go.k+':'+go.id:'';
+  const media=x.k==='vid'?'<div class="ugvid">'+(x.vid?'<video src="'+esc(x.vid)+'#t=0.1" muted playsinline preload="metadata"></video>':'<span class="ugth none">'+ic('play',16)+'<small>Video</small></span>')+
+    '<div style="flex:1;min-width:0"><label class="btn sm ghost" style="margin:0">'+ic('upload',13)+(x.vid?'Change video':'Upload a video')+'<input type="file" accept="video/mp4,video/webm,video/quicktime" hidden onchange="ugVidUp('+i+',this)"></label>'+
+    '<div class="tiny muted" id="ugup-'+i+'" style="margin:4px 0">'+esc(UGUP[x.id]||'Upright 4 : 5 or 9 : 16, 5–30 s, under 20 MB plays best.')+'</div>'+inp(i,'vid',x.vid,'…or paste a video link (https://…mp4)',400)+'</div></div>'
+   :'<div class="row" style="gap:8px">'+thumb(x,false)+(x.k==='ba'?thumb(x,true):'')+'<span class="tiny muted" style="align-self:center">'+(x.k==='ba'?'Before, then after — they show side by side.':'Upright (4 : 5) fills the card best.')+'</span></div>';
+  return '<div class="ugrow"><div class="row wrap2" style="gap:6px;align-items:center;margin-bottom:8px"><b class="tiny">'+(i+1)+'</b>'+
+    '<select class="f" style="margin:0;width:auto" onchange="ugF('+i+',\'k\',this.value);render()">'+UG_K.map(([k,t])=>'<option value="'+k+'"'+(x.k===k?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
+    '<select class="f" style="margin:0;width:auto" onchange="ugF('+i+',\'pf\',this.value)">'+UG_PF.map(([k,t])=>'<option value="'+k+'"'+((x.pf||'')===k?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
+    '<input class="f" style="margin:0;width:150px" maxlength="40" placeholder="@handle" value="'+esc(x.h||'')+'" oninput="ugF('+i+',\'h\',this.value)">'+
+    '<span class="row" style="margin-left:auto;gap:4px">'+(i?'<button type="button" class="btn sm ghost" title="Earlier" onclick="ugMv('+i+',-1)">'+ic('left',13)+'</button>':'')+(i<n-1?'<button type="button" class="btn sm ghost" title="Later" onclick="ugMv('+i+',1)">'+ic('right',13)+'</button>':'')+
+    '<button type="button" class="btn sm ghost" title="Remove" onclick="ugDel('+i+')">'+ic('trash',13)+'</button></span></div>'+media+
+   '<div class="grid g2" style="gap:6px;margin-top:8px">'+inp(i,'c',x.c,'Caption (BM, optional) — e.g. Kulit makin cerah lepas 3 sesi!',140)+inp(i,'cEn',x.cEn,'English (optional)',140)+'</div>'+
+   '<div class="grid g2" style="gap:6px;margin-top:6px">'+inp(i,'url',x.url,'Link to the original post (optional)',400)+
+    '<select class="f" style="margin:0" onchange="ugGo('+i+',this.value)"><option value="">Under the card: nothing</option>'+
+    (PR.length?'<optgroup label="Product — Shop now">'+PR.map(p=>'<option value="prod:'+p.id+'"'+(gv==='prod:'+p.id?' selected':'')+'>'+esc(p.name)+'</option>').join('')+'</optgroup>':'')+
+    '<optgroup label="Treatment — Book now">'+SV.map(s=>'<option value="svc:'+s.id+'"'+(gv==='svc:'+s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</optgroup></select></div></div>';};
+ return '<div class="card" id="lp-ugc"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' As seen on social</h3><span class="pill '+(U.on&&n?'g':'')+'">'+(U.on&&n?n+' post'+(n===1?'':'s'):'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 10px">Your clients\' own photos and videos from Instagram, TikTok and the rest, in a row that slides by itself. Under each one, the product or treatment it is about. Ask the client first before you use their post.</p>'+
+  '<label class="row" style="gap:8px;margin:0 0 10px"><input type="checkbox"'+(U.on?' checked':'')+' onchange="ugS(\'on\',this.checked);render()"> <b>Show this section on the website</b></label>'+
+  '<div class="grid g2" style="gap:6px"><div><label style="margin-top:0">Title</label><input class="f" maxlength="60" placeholder="Seperti di media sosial" value="'+esc(U.t)+'" oninput="ugS(\'t\',this.value)"></div>'+
+   '<div><label style="margin-top:0">Title in English</label><input class="f" maxlength="60" placeholder="As seen on social" value="'+esc(U.tEn)+'" oninput="ugS(\'tEn\',this.value)"></div>'+
+   '<div><label>Small line above it</label><input class="f" maxlength="40" placeholder="Dari pelanggan kami · #LuunaGlow" value="'+esc(U.ey)+'" oninput="ugS(\'ey\',this.value)"></div>'+
+   '<div><label>Line under it (optional)</label><input class="f" maxlength="160" placeholder="Hasil sebenar, dikongsi oleh pelanggan kami." value="'+esc(U.s)+'" oninput="ugS(\'s\',this.value)"></div></div>'+
+  '<div class="row" style="gap:8px;align-items:center;margin:10px 0 12px"><label style="margin:0">Slide every</label><input class="f" type="number" min="2" max="20" step="1" style="margin:0;width:76px" value="'+ugSecs(U.sec)+'" onchange="this.value=ugSecsSet(this.value)"><span class="tiny muted">seconds (2–20). It waits while someone is touching it or listening to a video.</span></div>'+
+  U.items.map(row).join('')+
+  (n<12?'<button type="button" class="btn sm ghost" onclick="ugAdd()">'+ic('plus',13)+'Add a post</button>':'<p class="tiny muted">12 posts is the most — remove one to add another.</p>')+
+  '<p class="tiny muted" style="margin:10px 0 0">Changes go live with Save & publish.</p></div>';
+}
+const ugW=()=>{LPD.ugc=ugOf(LPD);return LPD.ugc;};
+window.ugS=(k,v)=>{ugW()[k]=v;};
+window.ugSecsSet=v=>{const s=ugSecs(v);ugW().sec=s;return s;};
+window.ugF=(i,k,v)=>{const U=ugW();U.items=U.items.map((x,j)=>j===i?{...x,[k]:v}:x);};
+window.ugGo=(i,v)=>{const [k,id]=String(v).split(':');window.ugF(i,'go',k?{k,id}:null);};
+window.ugAdd=()=>{const U=ugW();if(U.items.length>=12)return;U.items=[...U.items,{id:'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),k:'img',pf:'ig'}];if(!U.on)U.on=true;render();};
+window.ugDel=i=>{const U=ugW(),x=U.items[i];U.items=U.items.filter((_,j)=>j!==i);
+ if(x&&x.vid&&x.__up)pushApi('/media/del',{url:x.vid}).catch(()=>{});render();};
+window.ugMv=(i,d)=>{const U=ugW(),a=[...U.items],j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];U.items=a;render();};
+window.ugPhoto=(i,b)=>{const x=ugW().items[i];if(!x)return;const f=document.createElement('input');f.type='file';f.accept='image/*';
+ f.onchange=async()=>{const fl=f.files&&f.files[0];if(!fl)return;try{const img=await lpShrink(fl),id='ugc_'+x.id+(b?'_b':'');
+  await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH[id]=img;LPUP.add(id);window.ugF(i,b?'ih2':'ih',wbHash(img));render();toast('Photo added — Save & publish to show it');}catch(e){toast(friendly(e));}};f.click();};
+window.ugVidUp=(i,inp)=>{const f=inp.files&&inp.files[0],x=ugW().items[i];if(!f||!x)return;
+ const say=t=>{UGUP[x.id]=t;const b=document.getElementById('ugup-'+i);if(b)b.textContent=t;};
+ if(!/^video\/(mp4|webm|quicktime)$/.test(f.type||'video/mp4')){say('Use an MP4 (or WebM / MOV) video.');return;}
+ if(f.size>60*1048576){say('That video is '+Math.round(f.size/1048576)+' MB — keep it under 60 MB (shorten it, or export at 720p).');return;}
+ (async()=>{try{say('Preparing…');const j=await pushApi('/media/start',{name:f.name,type:f.type||'video/mp4',size:f.size});
+  await new Promise((ok,no)=>{const r=new XMLHttpRequest();r.open('PUT',j.upload);r.setRequestHeader('Content-Type',f.type||'video/mp4');
+   r.upload.onprogress=e=>{if(e.lengthComputable)say('Uploading… '+Math.round(e.loaded/e.total*100)+'%');};
+   r.onload=()=>r.status>=200&&r.status<300?ok():no(new Error('Upload failed ('+r.status+')'));r.onerror=()=>no(new Error('Upload failed — check the internet, or try another device'));r.send(f);});
+  const U=ugW(),old=U.items[i]||{};if(old.vid&&old.__up)pushApi('/media/del',{url:old.vid}).catch(()=>{});
+  U.items=U.items.map((y,q)=>q===i?{...y,vid:j.url,__up:true}:y);
+  UGUP[x.id]='Uploaded — Save & publish to show it.';render();toast('Video uploaded');}
+ catch(e){say(/not set up|setup\.sh/.test(String(e&&e.message))?'The video store is not set up yet — run bash setup.sh once in Cloud Shell, or paste a link.':String(e&&e.message||e));}})();};
+{const _r=lpRevCard;lpRevCard=function(){return lpUgcCard(arguments[0])+_r.apply(this,arguments);};}
 
 </script>
