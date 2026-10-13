@@ -3257,6 +3257,8 @@ body.akno{overflow:hidden}
 .lptop.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}.lptop input{display:none}.lptop small{font-size:11.5px;color:var(--ink-3)}
 .lpwm{display:block;width:130px;height:38px;background:left center/contain no-repeat}
 .lpic{display:flex;align-items:center;gap:6px;height:38px}.lpic b{font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.lpvup{display:flex;gap:12px;align-items:center;margin-bottom:4px}
+.lpvup video,.lpvnone{width:72px;aspect-ratio:9/16;border-radius:10px;object-fit:cover;background:var(--surface-2,#f3f0ea);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3587,7 +3589,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-13a';
+const BUILD='2026-10-13b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -33857,5 +33859,36 @@ window.lpWm=async inp=>{const f=inp.files&&inp.files[0];if(!f)return;
  catch(e){toast(friendly(e));}};
 {const _h=lpHeroCard;lpHeroCard=function(L){const h=_h.apply(this,arguments),k='<div class="lphs"><span class="lphn">5</span>';
  const i=h.indexOf(k);return i<0?h:h.slice(0,i)+lpTopCard(L)+h.slice(i);};}
+
+/* ============ 30m · the website video, uploaded straight from here ============ */
+/* Same as the client-app banners: the owner picks the video on this device, it goes straight to the spa's own
+   storage through the Luuna server, and its link fills itself in. No GitHub. Pasting a link still works. */
+let LPVUP='';
+{const _h=lpHeroCard;lpHeroCard=function(L){let h=_h.apply(this,arguments);
+ const v=String((L&&L.vid)||''),lab='<label>Short video (MP4 link, plays silently)</label>';
+ const up='<label>Video at the top <span class="muted">— plays silently, fills a phone screen</span></label>'+
+  '<div class="lpvup">'+(v?'<video src="'+esc(v)+'" muted autoplay loop playsinline preload="metadata"></video>':'<span class="lpvnone">'+ic('play',18)+'</span>')+
+  '<div><label class="btn sm'+(v?' ghost':'')+'" style="margin:0">'+ic('upload',13)+(v?'Change video':'Upload a video')+'<input type="file" accept="video/mp4,video/webm,video/quicktime" hidden onchange="lpVidUp(this)"></label>'+
+  (v?' <button type="button" class="btn sm ghost" onclick="lpF(\'vid\',\'\');render()">'+ic('trash',13)+'Remove</button>':'')+
+  '<div id="lp-vup" class="tiny muted" style="margin-top:6px">'+esc(LPVUP)+'</div></div></div>'+
+  '<label class="tiny muted" style="margin-top:6px">…or paste a link</label>';
+ if(h.includes(lab))h=h.replace(lab,up);
+ h=h.replace(/For the video, upload a 10–20 s MP4 \(under 8 MB\)[^<]*<\/p>/,'For the video: upright 9 : 16 (1080 × 1920), 8–15 s, under 8 MB — it starts faster on a phone. Up to 60 MB is accepted.</p>');
+ return h;};}
+window.lpVidUp=inp=>{const f=inp.files&&inp.files[0];if(!f)return;
+ const say=t=>{LPVUP=t;const b=document.getElementById('lp-vup');if(b)b.textContent=t;};
+ if(!/^video\/(mp4|webm|quicktime)$/.test(f.type||'video/mp4')){say('Use an MP4 (or WebM / MOV) video.');return;}
+ if(f.size>60*1048576){say('That video is '+Math.round(f.size/1048576)+' MB — keep it under 60 MB (shorten it, or export at 720p).');return;}
+ const mb=Math.round(f.size/1048576*10)/10;
+ (async()=>{try{say('Preparing…');
+  const j=await pushApi('/media/start',{name:f.name,type:f.type||'video/mp4',size:f.size});
+  await new Promise((ok,no)=>{const x=new XMLHttpRequest();x.open('PUT',j.upload);x.setRequestHeader('Content-Type',f.type||'video/mp4');
+   x.upload.onprogress=e=>{if(e.lengthComputable)say('Uploading… '+Math.round(e.loaded/e.total*100)+'%');};
+   x.onload=()=>x.status>=200&&x.status<300?ok():no(new Error('Upload failed ('+x.status+')'));x.onerror=()=>no(new Error('Upload failed — check the internet'));x.send(f);});
+  LPD.vid=j.url;
+  LPVUP='Uploaded ('+mb+' MB).'+(mb>8?' It is on the big side — it may take a few seconds to start on mobile data.':'')+' Press Save & publish to put it on the website.';
+  render();toast('Video uploaded');}
+ catch(e){say(/not set up|setup\.sh/.test(String(e&&e.message))?'The video store is not set up yet — run bash setup.sh once in Cloud Shell (build 30k), or paste a link below.':String(e&&e.message||e));}})();
+};
 
 </script>
