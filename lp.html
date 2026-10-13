@@ -851,6 +851,51 @@ form .btn[type=submit]{white-space:normal;text-align:center;line-height:1.3;heig
 .brand.wm .wmk{width:clamp(112px,32vw,150px);height:clamp(33px,9.4vw,44px)}
 .fwmk{width:120px;height:35px;margin-bottom:6px;opacity:.85}
 .vhs.clean .vhsh{opacity:.25}
+/* ===== 30n: the moving announcement bar under the menu ===== */
+.annb{position:relative;overflow:hidden;height:34px;display:flex;align-items:center;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+.annb.s-dark{background:var(--jet);color:var(--porcelain)}
+.annb.s-gold{background:linear-gradient(90deg,#E6D9C5,#D7C5AA 50%,#E6D9C5);color:var(--jet)}
+.annb.s-light{background:#F2ECE3;color:var(--jet);box-shadow:inset 0 1px 0 rgba(13,13,13,.06)}
+.annt{display:flex;width:max-content;animation:annmv var(--dur,40s) linear infinite;will-change:transform}
+.anng{display:flex;align-items:center;flex:none}
+.anni{display:inline-flex;align-items:center;gap:7px;padding:0 2px;margin:0;border:0;background:none;color:inherit;font:inherit;font-size:11.5px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap;text-decoration:none;line-height:34px}
+button.anni,a.anni{cursor:pointer}button.anni:hover span,a.anni:hover span{text-decoration:underline;text-underline-offset:3px}
+.anni .ico{opacity:.75}.s-dark .anni .ico{color:var(--champagne);opacity:1}
+.annd{font-style:normal;margin:0 20px;font-size:9px;color:var(--champagne)}.s-gold .annd{color:var(--jet);opacity:.45}.s-light .annd{color:var(--gbrush)}
+.annb:hover .annt,.annb:focus-within .annt{animation-play-state:paused}
+@keyframes annmv{to{transform:translateX(-50%)}}
+html.hasann{scroll-padding-top:106px}
+@media(max-width:860px){html.hasann .vhs{min-height:calc(100vh - 98px)}@supports(height:100svh){html.hasann .vhs{min-height:calc(100svh - 98px)}}}
+@media(max-width:600px){.annb{height:32px}.anni{font-size:10.5px;letter-spacing:.11em;line-height:32px}.annd{margin:0 14px}}
+@media(prefers-reduced-motion:reduce){.annt{animation:none}.anng+.anng{display:none}.annb{overflow-x:auto;-webkit-mask-image:none;mask-image:none}}
+/* ===== 30n: skin concerns as picture circles ===== */
+.fbub{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:6px 16px;padding:4px 0 2px}
+.fb{--s:134px;position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;width:calc(var(--s) + 26px);margin-top:var(--y,0);transform:translateX(var(--x,0));
+ border:0;background:none;padding:6px 0;cursor:pointer;color:var(--jet);font:inherit;-webkit-tap-highlight-color:transparent}
+.fb-l{--s:168px}.fb-s{--s:106px}
+.fbc{position:relative;display:block;width:var(--s);height:var(--s);border-radius:50%;background-color:#EADFCF;background-position:center;background-size:cover;background-repeat:no-repeat;
+ box-shadow:0 0 0 4px rgba(255,255,255,.95),0 24px 40px -24px rgba(60,50,35,.65);animation:fbfl 6.5s ease-in-out infinite;animation-delay:var(--fd,0s);transition:box-shadow .35s var(--ease),filter .3s}
+.fbc.t0{background-image:radial-gradient(circle at 30% 25%,#FBF7F1,#E6D9C5 52%,#CDB894)}
+.fbc.t1{background-image:radial-gradient(circle at 30% 25%,#FBF5F1,#EAD9CF 52%,#CFB3A3)}
+.fbc.t2{background-image:radial-gradient(circle at 30% 25%,#F8F7F2,#E2E0D5 52%,#BDB8A6)}
+.fbc.t3{background-image:radial-gradient(circle at 30% 25%,#F9F6F2,#E7E0D6 52%,#C2B5A3)}
+.fbc::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(170deg,rgba(255,255,255,.22),rgba(255,255,255,0) 42%);pointer-events:none}
+.fbph{position:absolute;inset:0;display:grid;place-items:center;color:rgba(110,92,62,.5)}
+.fbc.on .fbph{display:none}
+.fbk{position:absolute;z-index:1;right:5%;bottom:5%;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--jet);color:var(--champagne);
+ box-shadow:0 0 0 3px #fff;transform:scale(0);transition:transform .35s var(--ease)}
+.fb.sel .fbk{transform:scale(1)}
+.fb.sel .fbc{box-shadow:0 0 0 4px #fff,0 0 0 6.5px var(--gbrush),0 26px 44px -22px rgba(131,110,74,.8)}
+.fb:hover .fbc{filter:brightness(1.05) saturate(1.05)}
+.fb:focus-visible{outline:none}.fb:focus-visible .fbc{box-shadow:0 0 0 4px #fff,0 0 0 6.5px var(--jet)}
+.fbl{font-size:13.5px;font-weight:600;line-height:1.3;text-align:center;max-width:100%;text-wrap:balance;transition:color .2s}
+.fb.sel .fbl{color:#836E4A}
+@keyframes fbfl{50%{transform:translateY(-7px)}}
+.finder.hasbub .fsk{justify-content:center;margin-top:20px}.finder.hasbub .fhint{justify-content:center;text-align:center}
+@media(max-width:600px){.fbox{padding:22px 14px}.fbub{gap:2px 6px}.fb{--s:88px;gap:9px;width:calc(var(--s) + 14px);min-width:84px}.fb-l{--s:106px}.fb-s{--s:72px}
+ .fbl{font-size:12px}.fbk{width:24px;height:24px}.fbc{box-shadow:0 0 0 3px rgba(255,255,255,.95),0 18px 30px -20px rgba(60,50,35,.65)}
+ .fb.sel .fbc{box-shadow:0 0 0 3px #fff,0 0 0 5.5px var(--gbrush),0 18px 30px -18px rgba(131,110,74,.8)}}
+@media(prefers-reduced-motion:reduce){.fbc{animation:none}}
 </style>
 </head>
 <body>
@@ -2131,6 +2176,52 @@ if(!IC.user)IC.user='M12 12.2a4.1 4.1 0 100-8.2 4.1 4.1 0 000 8.2zM4.5 20.2c.9-3
  return h;};}
 /* the client app's "Give an e-voucher" opens the voucher sheet here (luuna.my/#baucar) */
 window.addEventListener('load',()=>setTimeout(()=>{try{if(location.hash==='#baucar'&&P&&P.gv&&typeof gvSheet==='function')gvSheet();}catch(e){}},1200));
+/* ---------- 30n: a moving announcement bar under the menu, on every page ---------- */
+function annItems(){const A=P&&P.ann;if(!A||!A.on)return [];const td=klDate();
+ const L=(A.items||[]).filter(x=>x&&x.t&&(!x.until||x.until>=td)).map(x=>({t:pick(x.t,x.tEn),go:x.go||'',url:x.url||''}));
+ if(A.pr)livePromos().slice(0,4).forEach(p=>{const bd=pBadge(p);L.push({t:(bd?bd+' · ':'')+p.t,promo:p.id});});
+ return L;}
+function annA(x){const inner='<span>'+esc(x.t)+'</span>'+(x.go||x.promo?ic('arrow',12):'');
+ if(x.promo)return '<button type="button" class="anni" data-claim="'+esc(x.promo)+'">'+inner+'</button>';
+ if(x.go==='url')return /^https:\/\//.test(x.url)?'<a class="anni" href="'+esc(x.url)+'" target="_blank" rel="noopener">'+inner+'</a>':'<span class="anni">'+esc(x.t)+'</span>';
+ if(x.go)return '<button type="button" class="anni" data-ann="'+esc(x.go)+'">'+inner+'</button>';
+ return '<span class="anni">'+inner+'</span>';}
+function annHTML(){const L=annItems();document.documentElement.classList.toggle('hasann',!!L.length);if(!L.length)return '';
+ const A=P.ann,sty=['gold','light'].includes(A.sty)?A.sty:'dark',seq=L.map(x=>annA(x)+'<i class="annd" aria-hidden="true">✦</i>').join('');
+ setTimeout(annFit,0);
+ return '<div class="annb s-'+sty+'" id="annb" data-spd="'+esc(A.spd||'mid')+'" role="region" aria-label="'+(LANG==='en'?'Announcements':'Pengumuman')+'"><div class="annt"><div class="anng">'+seq+'</div><div class="anng" aria-hidden="true">'+seq+'</div></div></div>';}
+/* repeat the messages until they fill the screen, then set a steady reading speed */
+function annFit(){const b=document.getElementById('annb');if(!b)return;const t=b.querySelector('.annt'),g=t&&t.children;if(!g||g.length<2)return;
+ if(!b.dataset.base)b.dataset.base=g[0].innerHTML;const base=b.dataset.base;g[0].innerHTML=base;
+ const w=g[0].scrollWidth,vw=b.clientWidth||innerWidth;if(!w)return;
+ const k=Math.max(1,Math.ceil(vw/w));if(k>1)g[0].innerHTML=base.repeat(k);g[1].innerHTML=g[0].innerHTML;
+ g[1].querySelectorAll('a,button').forEach(e=>e.setAttribute('tabindex','-1'));
+ const pps={slow:28,mid:42,fast:64}[b.dataset.spd]||42;t.style.setProperty('--dur',Math.max(8,Math.round(w*k/pps))+'s');}
+{let rz=0;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(annFit,200);});}
+{const _hh=headHTML;headHTML=function(){const h=_hh.apply(this,arguments);let a='';try{a=annHTML();}catch(e){}
+ return a?h.replace(/<\/header>$/,a+'</header>'):h;};}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ann]');if(!t)return;e.preventDefault();const g=t.dataset.ann;
+ if(g==='book'){book();return;}if(g==='wa'){waSheet();return;}
+ const id={finder:'cari',svc:'rawatan',promo:'promo',loc:'lokasi',consult:'konsultasi',rev:'ulasan',faq:'soalan'}[g];if(!id)return;
+ const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth'});else location.href=homeUrl()+'#'+id;});
+
+/* ---------- 30n: skin concerns as picture circles of different sizes, scattered ---------- */
+const BUBSZ=['l','s','m','m','l','s','m','s','l','m','s','l'];
+const bubH=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;};
+let BUB=null;
+function bubHTML(){const C=P.concerns||[],seed=+P.conSeed||0;
+ return '<div class="fbub" role="group" aria-label="'+esc(T('concernsL'))+'">'+C.map((c,i)=>{const h=bubH(c.id+'|'+seed),sz=BUBSZ[(i+seed)%BUBSZ.length],tone=(h>>>9)%4;
+  return '<button type="button" class="fb fb-'+sz+'" data-k="'+esc(c.id)+'" aria-pressed="false" style="--y:'+((h%5)*8)+'px;--x:'+((((h>>>3)%5)-2)*3)+'px;--fd:-'+(((h>>>6)%40)/10)+'s">'+
+   '<span class="fbc t'+tone+'"'+(c.img?' data-img="'+esc(c.img)+'"':'')+'><span class="fbph">'+ic(['spark','drop','leaf','sun'][tone],sz==='s'?18:24)+'</span><i class="fbk">'+ic('check',13)+'</i></span>'+
+   '<span class="fbl">'+esc(pick(c.ms,c.en))+'</span></button>';}).join('')+'</div>';}
+{const _pf=paintFinder;paintFinder=function(){_pf.apply(this,arguments);const el=$('#finder');if(!el)return;
+ const ch=el.querySelector('.fchips:not(.sm)');if(!ch||!(P.concerns||[]).length)return;
+ const key=LANG+'|'+(+P.conSeed||0)+'|'+(P.concerns||[]).map(c=>c.id+':'+(c.img||'')+':'+pick(c.ms,c.en)).join(',');
+ if(!BUB||BUB.dataset.key!==key){const d=document.createElement('div');d.innerHTML=bubHTML();BUB=d.firstChild;BUB.dataset.key=key;}
+ ch.replaceWith(BUB);
+ BUB.querySelectorAll('.fb').forEach(b=>{const on=SELK.has(b.dataset.k);b.classList.toggle('sel',on);b.setAttribute('aria-pressed',String(on));});
+ BUB.querySelectorAll('[data-img].w:not(.on)').forEach(e=>e.classList.remove('w'));
+ const f=el.closest('.finder');if(f)f.classList.add('hasbub');watchImgs();};}
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();

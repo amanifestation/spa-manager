@@ -3259,6 +3259,25 @@ body.akno{overflow:hidden}
 .lpic{display:flex;align-items:center;gap:6px;height:38px}.lpic b{font-size:12px;letter-spacing:.2em;text-transform:uppercase}
 .lpvup{display:flex;gap:12px;align-items:center;margin-bottom:4px}
 .lpvup video,.lpvnone{width:72px;aspect-ratio:9/16;border-radius:10px;object-fit:cover;background:var(--surface-2,#f3f0ea);flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink-3)}
+.annpv{position:relative;overflow:hidden;height:30px;border-radius:8px;display:flex;align-items:center;padding:0 10px;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.annpv.s-dark{background:#0D0D0D;color:#FAF9F6}.annpv.s-gold{background:#D7C5AA;color:#0D0D0D}.annpv.s-light{background:#F2ECE3;color:#0D0D0D;border:1px solid var(--line)}
+.annpt{display:flex;width:max-content;animation:annpmv 26s linear infinite}.annpv.sp-slow .annpt{animation-duration:38s}.annpv.sp-fast .annpt{animation-duration:16s}
+.annpt>span{display:flex;align-items:center;flex:none}.annpv i{font-style:normal;margin:0 14px;font-size:8px;color:#B2996E}.annpi.muted2{opacity:.6}
+@keyframes annpmv{to{transform:translateX(-50%)}}
+.lpann{border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:8px}
+.annsw{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:5px 12px 5px 6px;font-size:12.5px;cursor:pointer;margin:0}
+.annsw input{display:none}.annsw::before{content:'';width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.annsw.s-dark::before{background:#0D0D0D}.annsw.s-gold::before{background:#D7C5AA}.annsw.s-light::before{background:#F2ECE3}
+.annsw.on{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.lpconpv{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:4px 10px;padding:12px 8px 6px;border-radius:14px;background:linear-gradient(135deg,#fff,#F6F1EA)}
+.lpcb{display:flex;flex-direction:column;align-items:center;gap:5px;width:78px}.lpcb small{font-size:10px;line-height:1.25;text-align:center;font-weight:600}
+.lpcbc{display:block;border-radius:50%;background:#EADFCF center/cover no-repeat;box-shadow:0 0 0 2px #fff,0 8px 16px -10px rgba(60,50,35,.6)}
+.lpcb-l .lpcbc{width:70px;height:70px}.lpcb-m .lpcbc{width:56px;height:56px}.lpcb-s .lpcbc{width:44px;height:44px}
+.lpcbc.t0{background-image:radial-gradient(circle at 30% 25%,#FBF7F1,#E6D9C5 52%,#CDB894)}.lpcbc.t1{background-image:radial-gradient(circle at 30% 25%,#FBF5F1,#EAD9CF 52%,#CFB3A3)}
+.lpcbc.t2{background-image:radial-gradient(circle at 30% 25%,#F8F7F2,#E2E0D5 52%,#BDB8A6)}.lpcbc.t3{background-image:radial-gradient(circle at 30% 25%,#F9F6F2,#E7E0D6 52%,#C2B5A3)}
+.lpconi{flex:none;width:64px;height:64px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2,#f3f0ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-3);cursor:pointer;overflow:hidden;padding:0}
+.lpconi img{width:100%;height:100%;object-fit:cover}.lpconi.none{border-style:dashed}.lpconi small{font-size:10px}
+.lpconr{align-items:center}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3589,7 +3608,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-13b';
+const BUILD='2026-10-13c';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -33890,5 +33909,103 @@ window.lpVidUp=inp=>{const f=inp.files&&inp.files[0];if(!f)return;
   render();toast('Video uploaded');}
  catch(e){say(/not set up|setup\.sh/.test(String(e&&e.message))?'The video store is not set up yet — run bash setup.sh once in Cloud Shell (build 30k), or paste a link below.':String(e&&e.message||e));}})();
 };
+
+/* ============ 30n · website: a moving announcement bar under the menu; skin concerns as picture circles ============ */
+/* · A thin bar under the menu, on every page of the website, runs the owner's short messages from right to left.
+     Each message can point somewhere (Book, WhatsApp, the finder, a web link…) and can stop on a date.
+     Live promotions can run in it too. Three looks (black, champagne, cream) and three speeds.
+   · "Apa yang anda mahu perbaiki?" shows each skin concern as a round picture with its label, in mixed sizes,
+     scattered. The owner adds a picture per concern (or keeps the soft placeholder), can rename the labels,
+     and can shuffle the layout. */
+Object.assign(LP_DEF,{ann:{on:false,items:[],sty:'dark',spd:'mid',pr:true},conImg:{},conLab:{},conSeed:0});
+const ANN_GO=[['','No link'],['book','Book'],['wa','WhatsApp'],['finder','Find by skin concern'],['svc','Treatments'],['promo','Promotions'],['consult','Consultation form'],['loc','Location'],['url','A web link…']];
+const ANN_STY=[['dark','Black'],['gold','Champagne'],['light','Cream']];
+const annOf=L=>{const A={...LP_DEF.ann,...((L||{}).ann||{})};A.items=Array.isArray(A.items)?A.items:[];return A;};
+const annClean=A=>({on:!!A.on,sty:ANN_STY.some(x=>x[0]===A.sty)?A.sty:'dark',spd:['slow','mid','fast'].includes(A.spd)?A.spd:'mid',pr:A.pr!==false,
+ items:(A.items||[]).filter(x=>x&&String(x.t||'').trim()).slice(0,8).map(x=>{const go=ANN_GO.some(g=>g[0]===x.go)?x.go:'',url=String(x.url||'').trim();
+  return {t:String(x.t).trim().slice(0,90),...(String(x.tEn||'').trim()?{tEn:String(x.tEn).trim().slice(0,90)}:{}),
+   go:go==='url'&&!/^https:\/\/\S+$/.test(url)?'':go,...(go==='url'&&/^https:\/\/\S+$/.test(url)?{url:url.slice(0,300)}:{}),
+   ...(/^\d{4}-\d{2}-\d{2}$/.test(x.until||'')?{until:x.until}:{})};})});
+{const _b=lpBuild;lpBuild=function(){const d=_b.apply(this,arguments),L=lpSet(),CI=L.conImg||{},CL=L.conLab||{};
+ d.ann=annClean(annOf(L));
+ d.concerns=(d.concerns||[]).map(c=>{const lb=CL[c.id]||{},ms=String(lb.ms||'').trim().slice(0,40),en=String(lb.en||'').trim().slice(0,40);
+  return {...c,...(ms?{ms}:{}),...(en?{en}:{}),...(CI[c.id]?{img:'con_'+c.id,ih:CI[c.id]}:{})};});
+ d.conSeed=(+L.conSeed||0)%12;
+ const ci=d.concerns.filter(c=>c.img).map(c=>c.img);if(ci.length)d.imgs=[...new Set([...(d.imgs||[]),...ci])];
+ return d;};}
+
+/* ---------- the bar ---------- */
+function annPvHTML(A){const L=A.items.filter(x=>String(x.t||'').trim());
+ const td=today(),live=L.filter(x=>!x.until||x.until>=td);
+ const seq=live.map(x=>'<span class="annpi">'+esc(x.t)+(x.go?' →':'')+'</span><i>✦</i>').join('')+(A.pr?'<span class="annpi muted2">+ live promotions</span><i>✦</i>':'');
+ if(!seq)return '<div class="annpv s-'+esc(A.sty)+'"><span class="annpi" style="opacity:.6">Your messages show here</span></div>';
+ return '<div class="annpv s-'+esc(A.sty)+' sp-'+esc(A.spd)+'"><div class="annpt"><span>'+seq+'</span><span>'+seq+'</span></div></div>';}
+function lpAnnCard(L){L=LPD||L;const A=annOf(L),td=today();
+ const row=(x,i)=>'<div class="lpann">'+
+  '<div class="grid g2" style="gap:6px"><input class="f" style="margin:0" maxlength="90" placeholder="Message (BM) — e.g. Rawatan muka serendah RM55" value="'+esc(x.t||'')+'" oninput="lpAnnI('+i+',\'t\',this.value)">'+
+  '<input class="f" style="margin:0" maxlength="90" placeholder="English (optional)" value="'+esc(x.tEn||'')+'" oninput="lpAnnI('+i+',\'tEn\',this.value)"></div>'+
+  '<div class="row wrap2" style="gap:6px;margin-top:6px;align-items:center"><select class="f" style="margin:0;width:auto" onchange="lpAnnI('+i+',\'go\',this.value);render()">'+
+   ANN_GO.map(([k,n])=>'<option value="'+k+'"'+((x.go||'')===k?' selected':'')+'>'+(k?'Tap → ':'')+n+'</option>').join('')+'</select>'+
+   (x.go==='url'?'<input class="f" style="margin:0;flex:1;min-width:180px" placeholder="https://…" value="'+esc(x.url||'')+'" oninput="lpAnnI('+i+',\'url\',this.value)">':'')+
+   '<label class="tiny muted row" style="gap:5px;margin:0">until <input type="date" class="f" style="margin:0;width:auto;padding:6px 8px" value="'+esc(x.until||'')+'" onchange="lpAnnI('+i+',\'until\',this.value);render()"></label>'+
+   (x.until&&x.until<td?'<span class="pill a">ended</span>':'')+
+   '<span style="margin-left:auto" class="row" >'+(i?'<button type="button" class="btn sm ghost" title="Earlier" onclick="lpAnnMv('+i+',-1)">'+ic('left',13)+'</button>':'')+
+   '<button type="button" class="btn sm ghost" title="Remove" onclick="lpAnnDel('+i+')">'+ic('trash',13)+'</button></span></div></div>';
+ return '<div class="card" id="lp-ann"><div class="sec-h"><h3 style="margin:0">'+ic('mega',15)+' Moving bar under the menu</h3><span class="pill '+(A.on?'g':'')+'">'+(A.on?'On':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 10px">A thin strip under the menu, on every page of the website, with your short messages running across it. Visitors can tap a message to go where it points. Keep each one short — 4 to 8 words.</p>'+
+  '<label class="row" style="gap:8px;margin:0 0 10px"><input type="checkbox"'+(A.on?' checked':'')+' onchange="lpAnnS(\'on\',this.checked);render()"> <b>Show the moving bar</b></label>'+
+  '<div id="lp-annpv">'+annPvHTML(A)+'</div>'+
+  '<div style="margin-top:10px">'+A.items.map(row).join('')+'</div>'+
+  (A.items.length<8?'<button type="button" class="btn sm ghost" onclick="lpAnnAdd()">'+ic('plus',13)+'Add a message</button>':'')+
+  '<label class="row" style="gap:8px;margin:12px 0 4px"><input type="checkbox"'+(A.pr?' checked':'')+' onchange="lpAnnS(\'pr\',this.checked)"> Also run the live promotions in it <span class="tiny muted">— tapping one opens the offer</span></label>'+
+  '<div class="row wrap2" style="gap:14px;margin-top:8px;align-items:center"><span class="tiny muted">Look</span>'+
+   ANN_STY.map(([k,n])=>'<label class="annsw s-'+k+(A.sty===k?' on':'')+'"><input type="radio" name="lp-annsty"'+(A.sty===k?' checked':'')+' onchange="lpAnnS(\'sty\',\''+k+'\');render()">'+n+'</label>').join('')+
+   '<span class="tiny muted" style="margin-left:8px">Speed</span><select class="f" style="margin:0;width:auto" onchange="lpAnnS(\'spd\',this.value)">'+
+   [['slow','Slow'],['mid','Normal'],['fast','Fast']].map(([k,n])=>'<option value="'+k+'"'+(A.spd===k?' selected':'')+'>'+n+'</option>').join('')+'</select></div>'+
+  '<p class="tiny muted" style="margin:10px 0 0">Changes go live with Save & publish.</p></div>';
+}
+const annW=()=>{LPD.ann=annOf(LPD);return LPD.ann;};
+const annPv=()=>{const b=document.getElementById('lp-annpv');if(b)b.innerHTML=annPvHTML(annOf(LPD));};
+window.lpAnnS=(k,v)=>{const A=annW();A[k]=v;if(k==='on'&&v&&!A.items.length)A.items.push({t:'',go:''});annPv();};
+window.lpAnnI=(i,k,v)=>{const A=annW();A.items=A.items.map((x,j)=>j===i?{...x,[k]:v}:x);annPv();};
+window.lpAnnAdd=()=>{const A=annW();if(A.items.length<8)A.items=[...A.items,{t:'',go:''}];render();};
+window.lpAnnDel=i=>{const A=annW();A.items=A.items.filter((x,j)=>j!==i);render();};
+window.lpAnnMv=(i,d)=>{const A=annW(),a=[...A.items],j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];A.items=a;render();};
+
+/* ---------- skin concerns as picture circles ---------- */
+const CONSZ=['l','s','m','m','l','s','m','s','l','m','s','l'];
+const conH=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;};
+function lpConList(L){const S=D.services.filter(s=>s.active!==false&&s.id&&(!L.svcs||L.svcs.includes(s.id)));return lpFinderOut(S,L).concerns;}
+function lpConCard(L){L=LPD||L;const C=lpConList(L),CI=L.conImg||{},CL=L.conLab||{},seed=(+L.conSeed||0)%12,n=C.filter(c=>CI[c.id]).length;
+ if(!C.length)return '<div class="card"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Skin concerns — picture circles</h3></div><p class="tiny muted" style="margin:6px 0 0">Tick the skin concerns each treatment helps with (in "Treatments on the page & booking" below). A circle shows for each concern your treatments cover — then add a picture to each here.</p></div>';
+ const pv='<div class="lpconpv">'+C.map((c,i)=>{const h=conH(c.id+'|'+seed),sz=CONSZ[(i+seed)%CONSZ.length],im=CI[c.id]?lpThumb('con_'+c.id):'';
+  return '<span class="lpcb lpcb-'+sz+'" style="margin-top:'+((h%5)*4)+'px"><span class="lpcbc t'+((h>>>9)%4)+'"'+(im?' style="background-image:url(\''+im+'\')"':'')+'></span><small>'+esc((CL[c.id]||{}).ms||c.ms)+'</small></span>';}).join('')+'</div>';
+ return '<div class="card" id="lp-con"><div class="sec-h"><h3 style="margin:0">'+ic('image',15)+' Skin concerns — picture circles</h3><span class="pill '+(n===C.length?'g':'a')+'">'+n+' of '+C.length+' with a picture</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 8px">The website\'s "Apa yang anda mahu perbaiki?" shows each skin concern as a round picture with its name under it, in mixed sizes. Add a picture that shows each concern — a close-up of skin works best (it is cut into a circle). Without one, a soft placeholder shows.</p>'+
+  pv+'<div class="row" style="justify-content:center;margin:2px 0 10px"><button type="button" class="btn sm ghost" onclick="lpConShuffle()">'+ic('refresh',13)+'Shuffle the circles</button></div>'+
+  C.map(c=>{const has=!!CI[c.id],im=has?lpThumb('con_'+c.id):'',lb=CL[c.id]||{};
+   return '<div class="lpsv lpconr"><button type="button" class="lpconi'+(has?'':' none')+'" title="'+(has?'Change':'Add')+' picture" onclick="lpConPhoto(\''+esc(c.id)+'\')">'+(im?'<img src="'+im+'" alt="">':ic('image',18)+'<small>'+(has?'':'Add')+'</small>')+'</button>'+
+    '<div class="lpsvb"><div class="grid g2" style="gap:6px"><input class="f" style="margin:0" maxlength="40" placeholder="'+esc(c.ms)+'" value="'+esc(lb.ms||'')+'" oninput="lpConL(\''+esc(c.id)+'\',\'ms\',this.value)">'+
+    '<input class="f" style="margin:0" maxlength="40" placeholder="'+esc(c.en)+'" value="'+esc(lb.en||'')+'" oninput="lpConL(\''+esc(c.id)+'\',\'en\',this.value)"></div>'+
+    '<div class="tiny muted" style="margin-top:4px">Label on the website — leave empty to keep "'+esc(c.ms)+'".'+(has?' <button type="button" class="lpx" onclick="lpConNo(\''+esc(c.id)+'\')">Remove picture</button>':'')+'</div></div></div>';}).join('')+
+  '<p class="tiny muted" style="margin:8px 0 0">Changes go live with Save & publish.</p></div>';
+}
+/* a square, centred crop — the website shows it as a circle */
+async function conShrink(f){
+ const url=await new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=no;r.readAsDataURL(f);});
+ const im=await new Promise((ok,no)=>{const m=new Image();m.onload=()=>ok(m);m.onerror=no;m.src=url;});
+ const s=Math.min(im.width,im.height),o=Math.min(640,s),c=document.createElement('canvas');c.width=c.height=o;
+ c.getContext('2d').drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,o,o);
+ let q=0.84,out=c.toDataURL('image/jpeg',q);while(out.length>220000&&q>0.4){q-=0.08;out=c.toDataURL('image/jpeg',q);}return out;}
+window.lpConImgSet=async(id,img)=>{await setDoc(doc(db,'lpImg','con_'+id),{img,h:wbHash(img),at:new Date().toISOString()});
+ LPTH['con_'+id]=img;LPUP.add('con_'+id);LPD.conImg={...(LPD.conImg||{}),[id]:wbHash(img)};render();};
+window.lpConPhoto=id=>{const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{await window.lpConImgSet(id,await conShrink(f));toast('Picture added — Save & publish to show it');}catch(e){toast(friendly(e));}};i.click();};
+window.lpConNo=id=>{const m={...(LPD.conImg||{})};delete m[id];LPD.conImg=m;render();};
+window.lpConL=(id,k,v)=>{LPD.conLab={...(LPD.conLab||{})};LPD.conLab[id]={...(LPD.conLab[id]||{}),[k]:v};};
+window.lpConShuffle=()=>{LPD.conSeed=((+LPD.conSeed||0)+1)%12;render();};
+
+{const _h=lpHeroCard;lpHeroCard=function(){return _h.apply(this,arguments)+lpAnnCard(arguments[0]);};}
+{const _c=lpCatCard;lpCatCard=function(){return lpConCard(arguments[0])+_c.apply(this,arguments);};}
 
 </script>
