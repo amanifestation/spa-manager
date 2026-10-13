@@ -3278,6 +3278,17 @@ body.akno{overflow:hidden}
 .lpconi{flex:none;width:64px;height:64px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2,#f3f0ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-3);cursor:pointer;overflow:hidden;padding:0}
 .lpconi img{width:100%;height:100%;object-fit:cover}.lpconi.none{border-style:dashed}.lpconi small{font-size:10px}
 .lpconr{align-items:center}
+.sqask{position:fixed;inset:0;z-index:9999;background:rgba(13,13,13,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.sqbox{background:var(--surface,#fff);border-radius:20px;padding:18px;width:min(520px,100%);box-shadow:0 30px 60px -20px rgba(0,0,0,.5);text-align:center}
+.sqbox h3{margin:0 0 4px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sqopts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.sqopts button{border:1px solid var(--line);border-radius:14px;background:var(--surface,#fff);padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font:inherit;color:inherit}
+.sqopts button:hover{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.sqopts img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--surface-2,#f3f0ea)}
+.sqopts small{font-size:11px;color:var(--ink-3)}
+.skphs .lpslide{width:104px;height:104px}
+button.lpsvimg[onclick^="skEdit"]{flex:0 0 76px;height:76px}
+.akshgal .akshimg{aspect-ratio:1}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3608,7 +3619,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-13c';
+const BUILD='2026-10-13d';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -26346,7 +26357,7 @@ function skPaint(){
   '<h4>Photos</h4><div class="skphs">'+SK_PH.map(([k,l])=>{const im=w.ph[k]?lpThumb('prod_'+p.id+'_'+k):'';
    return '<div class="skph"><button type="button" class="lpslide'+(im||w.ph[k]?'':' add')+'" onclick="skPhoto(\''+k+'\')">'+(im?'<img src="'+im+'" alt="">':w.ph[k]?ic('image',18):ic('plus',18)+'<small>Add</small>')+'</button><span>'+l+'</span>'+
     (w.ph[k]?'<button type="button" class="lpx" onclick="skNoPhoto(\''+k+'\')">Remove</button>':'')+'</div>';}).join('')+'</div>'+
-  '<p class="tiny muted" style="margin:4px 0 0">Flat lay on a clean surface, the bottle in a hand (for size), and a swatch of the texture. Soft daylight, no flash.</p>'+
+  '<p class="tiny muted" style="margin:4px 0 0">Square photos (1 : 1), e.g. 1080 × 1080 — the website and the app show every product photo as a square. Flat lay on a clean surface, the bottle in a hand (for size), and a swatch of the texture. Soft daylight, no flash.</p>'+
   '<h4>What it is</h4><label>One line</label><input class="f" id="sk-tag" maxlength="100" value="'+esc(w.tag||'')+'" placeholder="Pencuci lembut untuk kulit berjerawat & berminyak">'+
   '<label>Description</label><textarea class="f" id="sk-d" rows="3" maxlength="700" placeholder="Apa yang produk ini buat, untuk siapa, dan rasa apabila digunakan.">'+esc(w.d||'')+'</textarea>'+
   '<p class="tiny" style="color:var(--amber);margin:2px 0 0">'+ic('alert',12)+' Cosmetics may not claim to treat or cure (e.g. "merawat jerawat"). Write "membantu mengurangkan rupa jerawat", "membersihkan liang pori".</p>'+
@@ -34007,5 +34018,33 @@ window.lpConShuffle=()=>{LPD.conSeed=((+LPD.conSeed||0)+1)%12;render();};
 
 {const _h=lpHeroCard;lpHeroCard=function(){return _h.apply(this,arguments)+lpAnnCard(arguments[0]);};}
 {const _c=lpCatCard;lpCatCard=function(){return lpConCard(arguments[0])+_c.apply(this,arguments);};}
+
+/* ============ 30o · LUUNA Skincare: every product photo is square ============ */
+/* The owner's photo becomes a 1 : 1 square on upload. A photo that is already (nearly) square goes straight in;
+   any other shape asks once: crop the middle to fill the square, or fit the whole photo on a matching background.
+   The website and the client app then show every product picture as a square too. */
+const sqImg=f=>new Promise((ok,no)=>{const r=new FileReader();r.onerror=no;r.onload=()=>{const m=new Image();m.onload=()=>ok(m);m.onerror=no;m.src=r.result;};r.readAsDataURL(f);});
+/* the colour around the edge of the photo, to fill the empty sides when the whole photo is fitted */
+function sqEdge(im){const c=document.createElement('canvas');c.width=c.height=32;const g=c.getContext('2d');g.drawImage(im,0,0,32,32);
+ const d=g.getImageData(0,0,32,32).data;let r=0,gg=0,b=0,n=0;
+ for(let y=0;y<32;y++)for(let x=0;x<32;x++){if(x>1&&x<30&&y>1&&y<30)continue;const i=(y*32+x)*4;r+=d[i];gg+=d[i+1];b+=d[i+2];n++;}
+ return 'rgb('+Math.round(r/n)+','+Math.round(gg/n)+','+Math.round(b/n)+')';}
+function sqMake(im,mode,max){const W=im.naturalWidth||im.width,H=im.naturalHeight||im.height,c=document.createElement('canvas'),g=c.getContext('2d');
+ if(mode==='fit'){const L=Math.max(W,H),o=Math.min(max||1200,L),s=o/L;c.width=c.height=o;g.fillStyle=sqEdge(im);g.fillRect(0,0,o,o);g.drawImage(im,(o-W*s)/2,(o-H*s)/2,W*s,H*s);}
+ else{const s=Math.min(W,H),o=Math.min(max||1200,s);c.width=c.height=o;g.drawImage(im,(W-s)/2,(H-s)/2,s,s,0,0,o,o);}
+ let q=0.85,out=c.toDataURL('image/jpeg',q);while(out.length>300000&&q>0.4){q-=0.07;out=c.toDataURL('image/jpeg',q);}return out;}
+const sqIsSquare=im=>{const W=im.naturalWidth||im.width,H=im.naturalHeight||im.height;return Math.abs(W-H)/Math.max(W,H)<0.03;};
+/* ask how a photo that is not square should become square */
+function sqAsk(im){return new Promise(ok=>{const a=sqMake(im,'crop',420),b=sqMake(im,'fit',420),o=document.createElement('div');o.className='sqask';
+ o.innerHTML='<div class="sqbox" role="dialog" aria-label="Make the photo square"><h3>'+ic('image',16)+' Make it square</h3>'+
+  '<p class="tiny muted">Product photos show as squares (1 : 1) everywhere. This photo is '+(im.width>im.height?'wide':'tall')+' — pick how it should look:</p>'+
+  '<div class="sqopts"><button type="button" data-sq="crop"><img src="'+a+'" alt=""><b>Crop to fill</b><small>The middle of the photo</small></button>'+
+  '<button type="button" data-sq="fit"><img src="'+b+'" alt=""><b>Fit the whole photo</b><small>Nothing cut off</small></button></div>'+
+  '<button type="button" class="btn ghost sm" data-sq="">Cancel</button></div>';
+ o.addEventListener('click',e=>{const t=e.target.closest('[data-sq]');if(!t&&e.target!==o)return;const m=t?t.dataset.sq:'';o.remove();ok(m?sqMake(im,m):null);});
+ document.body.appendChild(o);});}
+async function sqFrom(f){const im=await sqImg(f);return sqIsSquare(im)?sqMake(im,'crop'):sqAsk(im);}
+window.skPhoto=k=>{skRead();const i=document.createElement('input');i.type='file';i.accept='image/*';
+ i.onchange=async()=>{const f=i.files&&i.files[0];if(!f)return;try{const img=await sqFrom(f);if(!img)return;await window.skPhotoSet(k,img);skPaint();toast('Square photo added — save the page to keep it');}catch(err){toast(friendly(err));}};i.click();};
 
 </script>
