@@ -3319,6 +3319,15 @@ button.lpsvimg[onclick^="skEdit"]{flex:0 0 76px;height:76px}
 .laymv{display:flex;gap:4px}.laymv button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface,#fff);display:grid;place-items:center;cursor:pointer;color:inherit}
 .laymv button[disabled]{opacity:.3;cursor:default}
 @media(max-width:600px){.layrow{flex-wrap:wrap}.layt{flex-basis:calc(100% - 40px)}.layrow .laysw{margin-left:34px}.layset{margin-left:auto}.lpacch{padding:12px}.lpaccb{padding:0 12px 14px}}
+.resrow{border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px}
+.resrow.notyet{border-style:dashed}
+.resph{flex:none;width:72px;height:90px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2,#f3f0ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-3);cursor:pointer;overflow:hidden;padding:0;font:inherit;position:relative}
+.resph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.resph small{position:relative;font-size:10px;font-weight:700;background:rgba(255,255,255,.85);border-radius:99px;padding:1px 6px;margin-top:auto;margin-bottom:4px}
+.resph.none{border-style:dashed}.resph.none small{margin:0;background:none}
+.resarr{align-self:center;color:var(--ink-3)}
+.resmore{margin-top:8px}.resmore summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.reskc{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0}.reskc label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;margin:0}
+.resokc{display:flex;align-items:center;gap:7px;margin:8px 0 0;font-size:12.5px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3649,7 +3658,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-14a';
+const BUILD='2026-10-14b';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -34238,5 +34247,83 @@ function lpAccWrap(html){
   c.appendChild(head);c.appendChild(body);c.classList.add('lpacc');if(open)c.classList.add('open');c.dataset.acc=key;c.dataset.title=title;});
  return t.innerHTML;}
 {const _v=vLanding;vLanding=function(){return lpAccWrap(_v.apply(this,arguments));};}
+
+/* ============ 30r · website: before & after — real clients, the "before" photo peels away like paper ============ */
+/* The owner adds each client's result: the before and after photos (cut to the same upright 4 : 5 so they line up),
+   the client's first name, age, work and home town, the treatment and how many sessions / how long, the skin
+   concerns, and a line in the client's own words. Only results marked "the client agreed" go on the website. */
+Object.assign(LP_DEF,{res:{on:false,t:'',tEn:'',ey:'',eyEn:'',s:'',sEn:'',disc:'',discEn:'',items:[]}});
+const resOf=L=>{const R={...LP_DEF.res,...((L||{}).res||{})};R.items=Array.isArray(R.items)?R.items:[];return R;};
+const resReady=x=>!!(x&&x.ib&&x.ia&&x.ok&&String(x.n||'').trim());
+function resClean(R){const s=(v,n)=>String(v||'').trim().slice(0,n),svcs=new Set(D.services.filter(z=>z.active!==false).map(z=>z.id));
+ const items=R.items.filter(resReady).slice(0,12).map(x=>({id:x.id,b:'res_'+x.id+'_b',bh:x.ib,a:'res_'+x.id+'_a',ah:x.ia,n:s(x.n,40),
+  ...(+x.age>0&&+x.age<100?{age:Math.round(+x.age)}:{}),...(s(x.job,40)?{job:s(x.job,40)}:{}),...(s(x.jobEn,40)?{jobEn:s(x.jobEn,40)}:{}),...(s(x.from,40)?{from:s(x.from,40)}:{}),
+  ...(svcs.has(x.svc)?{svc:x.svc}:{}),...(+x.ss>0?{ss:Math.min(99,Math.round(+x.ss))}:{}),...(s(x.wk,24)?{wk:s(x.wk,24)}:{}),...(s(x.wkEn,24)?{wkEn:s(x.wkEn,24)}:{}),
+  k:(x.k||[]).filter(k=>CONCERNS.some(c=>c.id===k)).slice(0,4).map(k=>({id:k,ms:LP_CONCERN_MS[k]||k,en:(CONCERNS.find(c=>c.id===k)||{}).label||k})),
+  ...(s(x.q,300)?{q:s(x.q,300)}:{}),...(s(x.qEn,300)?{qEn:s(x.qEn,300)}:{}),...(+x.st>=1&&+x.st<=5?{st:Math.round(+x.st)}:{})}));
+ return {on:!!R.on&&items.length>0,t:s(R.t,60),tEn:s(R.tEn,60),ey:s(R.ey,40),eyEn:s(R.eyEn,40),s:s(R.s,200),sEn:s(R.sEn,200),disc:s(R.disc,200),discEn:s(R.discEn,200),items};}
+{const _b=lpBuild;lpBuild=function(){const d=_b.apply(this,arguments),R=resClean(resOf(lpSet()));d.res=R;
+ const im=R.items.flatMap(x=>[x.b,x.a]);if(im.length)d.imgs=[...new Set([...(d.imgs||[]),...im])];return d;};}
+/* the two photos must line up: both cut to the same upright 4 : 5 from the middle */
+async function res45(f){const im=await sqImg(f),W=im.naturalWidth||im.width,H=im.naturalHeight||im.height;
+ let w=W,h=Math.round(W*1.25);if(h>H){h=H;w=Math.round(H*0.8);}const o=Math.min(1000,w),c=document.createElement('canvas');c.width=o;c.height=Math.round(o*1.25);
+ c.getContext('2d').drawImage(im,(W-w)/2,(H-h)/2,w,h,0,0,c.width,c.height);let q=0.85,out=c.toDataURL('image/jpeg',q);while(out.length>300000&&q>0.4){q-=0.07;out=c.toDataURL('image/jpeg',q);}return out;}
+
+function lpResCard(L){L=LPD||L;const R=resOf(L),n=R.items.length,live=R.items.filter(resReady).length;
+ const SV=D.services.filter(s=>s.active!==false&&s.id);
+ const inp=(i,k,v,ph,max,ty)=>'<input class="f" style="margin:0"'+(ty?' type="'+ty+'"':'')+' maxlength="'+max+'" placeholder="'+esc(ph)+'" value="'+esc(v||'')+'" oninput="resF('+i+',\''+k+'\',this.value)">';
+ const ph=(x,i,w)=>{const id='res_'+x.id+'_'+w,has=w==='b'?x.ib:x.ia,im=has?(LPTH[id]!==undefined?LPTH[id]:lpThumb(id)):'';
+  return '<button type="button" class="resph'+(has?'':' none')+'" onclick="resPhoto('+i+',\''+w+'\')">'+(im?'<img src="'+im+'" alt="">':ic('image',16))+'<small>'+(w==='b'?'Before':'After')+'</small></button>';};
+ const row=(x,i)=>{const K=x.k||[];
+  return '<div class="resrow'+(resReady(x)?'':' notyet')+'"><div class="row wrap2" style="gap:8px;align-items:flex-start">'+
+   '<div class="row" style="gap:6px">'+ph(x,i,'b')+'<span class="resarr">'+ic('right',14)+'</span>'+ph(x,i,'a')+'</div>'+
+   '<div style="flex:1;min-width:220px"><div class="grid g2" style="gap:6px">'+inp(i,'n',x.n,'First name — e.g. Aina',40)+inp(i,'age',x.age,'Age',2,'number')+
+    inp(i,'job',x.job,'Work — e.g. Jururawat',40)+inp(i,'from',x.from,'From — e.g. Kulai, Johor',40)+'</div>'+
+    '<div class="grid g3" style="gap:6px;margin-top:6px"><select class="f" style="margin:0" onchange="resF('+i+',\'svc\',this.value)"><option value="">Treatment…</option>'+SV.map(s=>'<option value="'+s.id+'"'+(x.svc===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select>'+
+    inp(i,'ss',x.ss,'Sessions',2,'number')+inp(i,'wk',x.wk,'How long — e.g. 6 minggu',24)+'</div></div>'+
+   '<span class="row" style="gap:4px">'+(i?'<button type="button" class="btn sm ghost" title="Earlier" onclick="resMv('+i+',-1)">'+ic('left',13)+'</button>':'')+(i<n-1?'<button type="button" class="btn sm ghost" title="Later" onclick="resMv('+i+',1)">'+ic('right',13)+'</button>':'')+
+    '<button type="button" class="btn sm ghost" title="Remove" onclick="resDel('+i+')">'+ic('trash',13)+'</button></span></div>'+
+   '<details class="resmore"><summary>Skin concerns, the client\'s words, English</summary>'+
+    '<div class="reskc">'+CONCERNS.map(c=>'<label><input type="checkbox"'+(K.includes(c.id)?' checked':'')+' onchange="resK('+i+',\''+c.id+'\',this.checked)">'+esc(LP_CONCERN_MS[c.id]||c.label)+'</label>').join('')+'</div>'+
+    '<textarea class="f" rows="2" maxlength="300" placeholder="In the client\'s words (BM) — e.g. Jerawat dah kurang, kulit rasa lebih licin!" oninput="resF('+i+',\'q\',this.value)">'+esc(x.q||'')+'</textarea>'+
+    '<div class="grid g3" style="gap:6px"><textarea class="f" rows="2" maxlength="300" placeholder="English (optional)" oninput="resF('+i+',\'qEn\',this.value)">'+esc(x.qEn||'')+'</textarea>'+
+     inp(i,'jobEn',x.jobEn,'Work in English (optional)',40)+inp(i,'wkEn',x.wkEn,'How long in English — e.g. 6 weeks',24)+'</div>'+
+    '<label class="row" style="gap:6px;margin:4px 0 0">Stars <select class="f" style="margin:0;width:auto" onchange="resF('+i+',\'st\',this.value)"><option value="">none</option>'+[5,4,3].map(v=>'<option value="'+v+'"'+(+x.st===v?' selected':'')+'>'+'★'.repeat(v)+'</option>').join('')+'</select></label></details>'+
+   '<label class="resokc"><input type="checkbox"'+(x.ok?' checked':'')+' onchange="resF('+i+',\'ok\',this.checked);render()"> <b>The client agreed</b> to these photos and details being shown on the website</label>'+
+   (resReady(x)?'':'<p class="tiny" style="color:var(--amber);margin:4px 0 0">'+ic('alert',12)+' Not on the website yet — needs '+[!x.ib&&'the before photo',!x.ia&&'the after photo',!String(x.n||'').trim()&&'a name',!x.ok&&'the client\'s agreement'].filter(Boolean).join(', ')+'.</p>')+'</div>';};
+ return '<div class="card" id="lp-res"><div class="sec-h"><h3 style="margin:0">'+ic('star',15)+' Before & after results</h3><span class="pill '+(R.on&&live?'g':'')+'">'+(R.on&&live?live+' on the website':'Off')+'</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 10px">Real clients\' results. On the website the before photo peels back like a page to show the after, with the client\'s details, the treatment, and a button to book the same one. Take both photos in the same light and angle — they are cut to the same upright 4 : 5 shape so they line up.</p>'+
+  '<label class="row" style="gap:8px;margin:0 0 10px"><input type="checkbox"'+(R.on?' checked':'')+' onchange="resS(\'on\',this.checked);render()"> <b>Show this section on the website</b></label>'+
+  '<div class="grid g2" style="gap:6px"><div><label style="margin-top:0">Title</label><input class="f" maxlength="60" placeholder="Sebelum & selepas" value="'+esc(R.t)+'" oninput="resS(\'t\',this.value)"></div>'+
+   '<div><label style="margin-top:0">Title in English</label><input class="f" maxlength="60" placeholder="Before & after" value="'+esc(R.tEn)+'" oninput="resS(\'tEn\',this.value)"></div>'+
+   '<div><label>Line under the title</label><input class="f" maxlength="200" placeholder="Pelanggan sebenar, gambar sebenar. Selak gambar untuk lihat perubahannya." value="'+esc(R.s)+'" oninput="resS(\'s\',this.value)"></div>'+
+   '<div><label>Small print</label><input class="f" maxlength="200" placeholder="Keputusan berbeza mengikut individu, jenis kulit dan penjagaan di rumah." value="'+esc(R.disc)+'" oninput="resS(\'disc\',this.value)"></div></div>'+
+  '<div style="margin-top:12px">'+R.items.map(row).join('')+'</div>'+
+  (n<12?'<button type="button" class="btn sm ghost" onclick="resAdd()">'+ic('plus',13)+'Add a client\'s result</button>':'<p class="tiny muted">12 results is the most — remove one to add another.</p>')+
+  '<p class="tiny muted" style="margin:10px 0 0">Use a first name or a nickname, not a full name. Changes go live with Save & publish.</p></div>';
+}
+const resW=()=>{LPD.res=resOf(LPD);return LPD.res;};
+window.resS=(k,v)=>{resW()[k]=v;};
+window.resF=(i,k,v)=>{const R=resW();R.items=R.items.map((x,j)=>j===i?{...x,[k]:v}:x);};
+window.resK=(i,k,on)=>{const x=resW().items[i];if(!x)return;let a=(x.k||[]).filter(z=>z!==k);if(on)a.push(k);window.resF(i,'k',a);};
+window.resAdd=()=>{const R=resW();if(R.items.length>=12)return;R.items=[...R.items,{id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}];if(!R.on)R.on=true;render();};
+window.resDel=i=>{const R=resW();R.items=R.items.filter((_,j)=>j!==i);render();};
+window.resMv=(i,d)=>{const R=resW(),a=[...R.items],j=i+d;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];R.items=a;render();};
+window.resPhoto=(i,w)=>{const x=resW().items[i];if(!x)return;const f=document.createElement('input');f.type='file';f.accept='image/*';
+ f.onchange=async()=>{const fl=f.files&&f.files[0];if(!fl)return;try{const img=await res45(fl),id='res_'+x.id+'_'+w;
+  await setDoc(doc(db,'lpImg',id),{img,h:wbHash(img),at:new Date().toISOString()});LPTH[id]=img;LPUP.add(id);window.resF(i,w==='b'?'ib':'ia',wbHash(img));render();toast((w==='b'?'Before':'After')+' photo added');}catch(e){toast(friendly(e));}};f.click();};
+{const _s=lpSvcCard;lpSvcCard=function(){return _s.apply(this,arguments)+lpResCard(LPD);};}
+/* the sections list knows this one too, right after the treatments */
+LAY_SECS.splice(LAY_SECS.findIndex(x=>x[0]==='svc')+1,0,['res','Before & after results','only with results added']);
+LAY_KEYS.splice(LAY_KEYS.indexOf('svc')+1,0,'res');
+Object.assign(LAY_LINK,{res:['res','on']});Object.assign(LAY_CARD,{res:/^Before & after/});Object.assign(LAY_HEAD,{res:1});
+/* photos of a result (or a social post) that is not on the website yet — no agreement ticked, a photo still missing —
+   are kept when the page publishes itself, so nothing the owner uploaded is lost before it is ready */
+function lpDraftImgs(){const L=LPD||lpSet(),out=[];
+ resOf(L).items.forEach(x=>{if(x.ib)out.push('res_'+x.id+'_b');if(x.ia)out.push('res_'+x.id+'_a');});
+ if(typeof ugOf==='function')ugOf(L).items.forEach(x=>{if(x.ih)out.push('ugc_'+x.id);if(x.ih2)out.push('ugc_'+x.id+'_b');});return out;}
+{const _s=lpSyncImgs;lpSyncImgs=function(d,old){return _s.call(this,{...d,imgs:[...new Set([...((d&&d.imgs)||[]),...lpDraftImgs()])]},old);};}
+{const _d=window.resDel;window.resDel=i=>{const x=resW().items[i];_d(i);
+ if(x&&!(LPPUB&&LPPUB.res&&(LPPUB.res.items||[]).some(y=>y.id===x.id)))['b','a'].forEach(w=>deleteDoc(doc(db,'lpImg','res_'+x.id+'_'+w)).catch(()=>{}));};}
 
 </script>
