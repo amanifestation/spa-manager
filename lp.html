@@ -2309,6 +2309,26 @@ document.addEventListener('click',e=>{const s=e.target.closest('[data-ugs]');
  const o=e.target.closest('[data-ugo]');if(o&&!e.target.closest('.ugp')){e.preventDefault();ugOpen(+o.dataset.ugo);}},true);
 addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target&&e.target.dataset&&e.target.dataset.ugo!==undefined)ugOpen(+e.target.dataset.ugo);});
 {const _r=render;render=function(){const x=_r.apply(this,arguments);try{ugStart();}catch(e){}return x;};}
+/* ---------- 30q: the owner chooses which sections show on the home page, and in what order ---------- */
+const LAY_DEF=['trust','usps','promo','offers','quiz','finder','svc','steps','rev','ugc','skin','about','mag','loc','faq','consult','news'];
+const LAY_NAV={svc:'rawatan',promo:'promo',offers:'pakej',about:'tentang'};
+/* a saved order with any newer sections slotted back where they normally sit */
+function layOrder(o){const a=(Array.isArray(o)?o:[]).filter((k,i,s)=>LAY_DEF.includes(k)&&s.indexOf(k)===i);
+ LAY_DEF.forEach((k,i)=>{if(a.includes(k))return;let j=-1;for(let x=i-1;x>=0;x--){j=a.indexOf(LAY_DEF[x]);if(j>=0)break;}a.splice(j+1,0,k);});return a;}
+const layOff=()=>new Set(((P&&P.lay)||{}).off||[]);
+function layEl(app,k){const q=s=>app.querySelector(':scope > '+s);
+ switch(k){case 'trust':return q('.tbar');case 'usps':return q('.uband');case 'promo':return q('#promo');case 'offers':return q('#pakej');case 'quiz':return q('#kuiz');
+  case 'finder':return q('#cari');case 'svc':return q('#rawatan');case 'steps':{const s=app.querySelector(':scope > section .steps');return s?s.closest('section'):null;}
+  case 'rev':return q('#ulasan');case 'ugc':return q('#sosial');case 'skin':return q('#skincare');case 'about':return q('#tentang');case 'mag':return q('#panduan');
+  case 'loc':return q('#lokasi');case 'faq':return q('#soalan');case 'consult':return q('#konsultasi');case 'news':return q('.newsb');}return null;}
+function layApply(){const app=document.getElementById('app'),Ly=P&&P.lay;if(!app||!Ly||route().k!=='home')return;
+ const off=layOff(),els=LAY_DEF.map(k=>[k,layEl(app,k)]).filter(x=>x[1]);if(!els.length)return;
+ let anchor=els.map(x=>x[1]).reduce((a,e)=>a&&(a.compareDocumentPosition(e)&Node.DOCUMENT_POSITION_PRECEDING)?e:a,els[0][1]).previousElementSibling;
+ const M=Object.fromEntries(els);
+ layOrder(Ly.order).forEach(k=>{const e=M[k];if(!e)return;if(off.has(k)){e.remove();return;}if(anchor)anchor.after(e);anchor=e;});
+ document.querySelectorAll('[data-nav]').forEach(a=>{const k=Object.keys(LAY_NAV).find(x=>LAY_NAV[x]===a.dataset.nav);if(k&&off.has(k))a.remove();});}
+{const _nh=navHTML;navHTML=function(){let h=_nh.apply(this,arguments);try{const off=layOff();Object.keys(LAY_NAV).forEach(k=>{if(off.has(k))h=h.replace(new RegExp('<a [^>]*data-nav="'+LAY_NAV[k]+'"[^>]*>[\\s\\S]*?</a>'),'');});}catch(e){}return h;};}
+{const _r=render;render=function(){const x=_r.apply(this,arguments);try{layApply();}catch(e){console.warn(e);}return x;};}
 /* ---------- start ---------- */
 window.__lp={detect,capture,touch,setLang,goSlide,get P(){return P;},get lang(){return LANG;}};
 capture();

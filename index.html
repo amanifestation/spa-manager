@@ -3293,6 +3293,32 @@ button.lpsvimg[onclick^="skEdit"]{flex:0 0 76px;height:76px}
 .ugth{flex:none;width:72px;height:90px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2,#f3f0ea);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:var(--ink-3);cursor:pointer;overflow:hidden;padding:0;font:inherit}
 .ugth img{width:100%;height:100%;object-fit:cover}.ugth.none{border-style:dashed}.ugth small{font-size:10px}
 .ugvid{display:flex;gap:10px;align-items:flex-start}.ugvid video{flex:none;width:72px;height:90px;border-radius:10px;object-fit:cover;background:#111}
+.lpaccbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 2px 10px}
+.card.lpacc{padding:0;overflow:hidden}
+.lpacch{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.lpacch:hover{background:var(--surface-2,#f6f3ee)}
+.lpacch:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.lpacct{flex:1;min-width:0;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lpacct .muted{font-weight:400;font-size:13px}
+.lpaccx{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.lpaccv{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2,#f3f0ea);transition:transform .25s}
+.lpacc.open .lpaccv{transform:rotate(90deg)}
+.lpaccb{padding:0 16px 16px}
+.lpacc:not(.open) > .lpaccb{display:none}
+.lpacc.open > .lpacch{border-bottom:1px solid var(--line)}.lpacc.open > .lpaccb{padding-top:12px}
+.laylist{display:flex;flex-direction:column;gap:6px}
+.layrow{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--surface,#fff)}
+.layrow.off{opacity:.6;background:var(--surface-2,#f6f3ee)}.layrow.off .layt b{text-decoration:line-through;text-decoration-thickness:1px}
+.layn{flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2,#f3f0ea);display:grid;place-items:center;font-size:11.5px;font-weight:700}
+.layt{flex:1;min-width:0;display:flex;flex-direction:column}.layt b{font-size:14px}.layt small{font-size:11.5px;color:var(--ink-3)}
+.laysw{display:inline-flex;align-items:center;gap:7px;cursor:pointer;margin:0;font-size:12.5px;font-weight:600;white-space:nowrap}
+.laysw input{display:none}.laysw i{position:relative;width:36px;height:21px;border-radius:99px;background:#cfc8bd;transition:background .2s;flex:none}
+.laysw i::after{content:'';position:absolute;left:3px;top:3px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.laysw input:checked+i{background:#2f7d4f}.laysw input:checked+i::after{transform:translateX(15px)}
+.laysw span{min-width:54px}.laysw.sm{font-size:11.5px}.laysw.sm span{min-width:0}
+.laymv{display:flex;gap:4px}.laymv button{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface,#fff);display:grid;place-items:center;cursor:pointer;color:inherit}
+.laymv button[disabled]{opacity:.3;cursor:default}
+@media(max-width:600px){.layrow{flex-wrap:wrap}.layt{flex-basis:calc(100% - 40px)}.layrow .laysw{margin-left:34px}.layset{margin-left:auto}.lpacch{padding:12px}.lpaccb{padding:0 12px 14px}}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3623,7 +3649,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-13e';
+const BUILD='2026-10-14a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -34131,5 +34157,86 @@ window.ugVidUp=(i,inp)=>{const f=inp.files&&inp.files[0],x=ugW().items[i];if(!f|
   UGUP[x.id]='Uploaded — Save & publish to show it.';render();toast('Video uploaded');}
  catch(e){say(/not set up|setup\.sh/.test(String(e&&e.message))?'The video store is not set up yet — run bash setup.sh once in Cloud Shell, or paste a link.':String(e&&e.message||e));}})();};
 {const _r=lpRevCard;lpRevCard=function(){return lpUgcCard(arguments[0])+_r.apply(this,arguments);};}
+
+/* ============ 30q · website settings: show / hide and reorder the home page sections; a tidier settings screen ============ */
+/* · "Sections on the website": every part of the home page in one list — switch each on or off, move it up or down.
+     Saved with Save & publish; the website lays itself out in that order.
+   · The settings screen folds into drop-downs: each card shows only its title (and whether it is on the website)
+     until it is opened. Expand all / Collapse all; what was open is remembered on this device. */
+const LAY_SECS=[['trust','Trust bar','rating, clients, location — under the top'],['usps','Highlights','the short points band'],['promo','Promotions','only while a promotion is running'],
+ ['offers','Packages, membership & vouchers','only when there are some'],['quiz','Skin quiz',''],['finder','Find by skin concern','the picture circles'],['svc','Treatments & prices',''],
+ ['steps','How it works','the 3 steps'],['rev','Client reviews',''],['ugc','As seen on social','only with posts added'],['skin','LUUNA Skincare','only with products on the website'],
+ ['about','About us','only when written'],['mag','Free guides','only with guides added'],['loc','Location & hours',''],['faq','Questions & answers','only with questions added'],
+ ['consult','Free consultation form',''],['news','WhatsApp list sign-up','']];
+const LAY_KEYS=LAY_SECS.map(x=>x[0]);
+const LAY_SV=d=>'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+d+'"/></svg>',LAY_UP=LAY_SV('M6 15l6-6 6 6'),LAY_DN=LAY_SV('M6 9l6 6 6-6');
+/* sections that already had their own on/off switch: the list and that switch are one and the same */
+const LAY_LINK={rev:['showReviews'],ugc:['ugc','on'],quiz:['lc','quiz'],news:['lc','news']};
+/* which settings card belongs to which section (for "Settings" and the switch on the card's title) */
+const LAY_CARD={trust:/^Top of the page/,usps:/^What the page says/,promo:/^Promotions on the page/,offers:/^Prices & offers/,quiz:/^Lead capture/,finder:/^Skin concerns/,
+ svc:/^Treatments on the page/,rev:/^Client reviews/,ugc:/^As seen on social/,skin:/^LUUNA Skincare/,about:/^About us/,mag:/^Lead capture/,loc:/^What the page says/,faq:/^What the page says/,news:/^Lead capture/};
+const LAY_HEAD={promo:1,offers:1,finder:1,svc:1,rev:1,ugc:1,skin:1,about:1};
+function layOrd(o){const a=(Array.isArray(o)?o:[]).filter((k,i,s)=>LAY_KEYS.includes(k)&&s.indexOf(k)===i);
+ LAY_KEYS.forEach((k,i)=>{if(a.includes(k))return;let j=-1;for(let x=i-1;x>=0;x--){j=a.indexOf(LAY_KEYS[x]);if(j>=0)break;}a.splice(j+1,0,k);});return a;}
+const layOf=L=>{const Y=(L||{}).lay||{};return {order:layOrd(Y.order),off:(Y.off||[]).filter(k=>LAY_KEYS.includes(k))};};
+function layOn(L,k){const Y=layOf(L),l=LAY_LINK[k];if(Y.off.includes(k))return false;
+ if(l){if(l.length===1)return L[l[0]]!==false;const o=L[l[0]]||(LP_DEF[l[0]]||{});return o[l[1]]!==false&&(k!=='ugc'||!!o.on);}return true;}
+{const _b=lpBuild;lpBuild=function(){const d=_b.apply(this,arguments),L=lpSet(),Y=layOf(L);
+ const off=LAY_KEYS.filter(k=>!layOn(L,k));d.lay={order:Y.order,off};return d;};}
+
+function lpLayCard(L){L=LPD||L;const Y=layOf(L),n=Y.order.filter(k=>layOn(L,k)).length;
+ return '<div class="card" id="lp-lay"><div class="sec-h"><h3 style="margin:0">'+ic('list',15)+' Sections on the website</h3><span class="pill g">'+n+' of '+Y.order.length+' shown</span></div>'+
+  '<p class="tiny muted" style="margin:6px 0 10px">The home page, top to bottom (the top with the video or photos always comes first). Switch a section off to hide it, or move it up or down. Some only appear when they have something to show — noted under the name.</p>'+
+  '<div class="laylist">'+Y.order.map((k,i)=>{const s=LAY_SECS.find(x=>x[0]===k),on=layOn(L,k),cardRe=LAY_CARD[k];
+   return '<div class="layrow'+(on?'':' off')+'" data-lay="'+k+'"><span class="layn">'+(i+1)+'</span><div class="layt"><b>'+esc(s[1])+'</b>'+(s[2]?'<small>'+esc(s[2])+'</small>':'')+'</div>'+
+    (cardRe?'<button type="button" class="btn sm ghost layset" onclick="layGo(\''+k+'\')" title="Its settings">Settings</button>':'')+
+    '<label class="laysw" title="'+(on?'Shown':'Hidden')+' on the website"><input type="checkbox"'+(on?' checked':'')+' onchange="laySet(\''+k+'\',this.checked)"><i></i><span>'+(on?'Shown':'Hidden')+'</span></label>'+
+    '<span class="laymv"><button type="button" title="Move up"'+(i?'':' disabled')+' onclick="layMv(\''+k+'\',-1)">'+LAY_UP+'</button><button type="button" title="Move down"'+(i<Y.order.length-1?'':' disabled')+' onclick="layMv(\''+k+'\',1)">'+LAY_DN+'</button></span></div>';}).join('')+'</div>'+
+  '<div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn" onclick="lpSave()">'+ic('upload',15)+'Save & publish</button><button type="button" class="btn ghost" onclick="layReset()">Back to the usual order</button></div></div>';
+}
+const layW=()=>{LPD.lay=layOf(LPD);return LPD.lay;};
+window.laySet=(k,on)=>{const Y=layW(),l=LAY_LINK[k];Y.off=Y.off.filter(x=>x!==k);if(!on)Y.off.push(k);
+ if(l){if(l.length===1)LPD[l[0]]=!!on;else{LPD[l[0]]={...(LP_DEF[l[0]]||{}),...(LPD[l[0]]||{}),[l[1]]:!!on};}}render();};
+window.layMv=(k,d)=>{const Y=layW(),a=[...Y.order],i=a.indexOf(k),j=i+d;if(i<0||j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];Y.order=a;render();
+ setTimeout(()=>{const r=document.querySelector('.layrow[data-lay="'+k+'"] .laymv button:not([disabled])');if(r)r.focus({preventScroll:true});},0);};
+window.layReset=()=>{const Y=layW();Y.order=[...LAY_KEYS];render();};
+
+/* ---------- the drop-downs ---------- */
+let LPACC=null;
+const accSlug=t=>String(t||'').toLowerCase().replace(/[—–-].*$/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40);
+function accGet(){if(LPACC===null){let v=null;try{v=localStorage.getItem('luunaLpAcc');}catch(e){}
+ if(v==='all')LPACC='all';else{try{LPACC=new Set(JSON.parse(v||'["sections-on-the-website"]'));}catch(e){LPACC=new Set(['sections-on-the-website']);}}}return LPACC;}
+function accKeep(){try{localStorage.setItem('luunaLpAcc',LPACC==='all'?'all':JSON.stringify([...LPACC]));}catch(e){}}
+const accIsOpen=k=>{const A=accGet();return A==='all'||A.has(k);};
+function accSet(k,open){let A=accGet();if(A==='all'){A=new Set([...document.querySelectorAll('.lpacc[data-acc]')].map(e=>e.dataset.acc));}
+ open?A.add(k):A.delete(k);LPACC=A;accKeep();const c=document.querySelector('.lpacc[data-acc="'+k+'"]');if(c){c.classList.toggle('open',open);const h=c.querySelector('.lpacch');if(h)h.setAttribute('aria-expanded',String(open));}}
+window.lpAccT=k=>accSet(k,!accIsOpen(k));
+window.lpAccAll=open=>{LPACC=open?'all':new Set();accKeep();document.querySelectorAll('.lpacc[data-acc]').forEach(c=>{c.classList.toggle('open',!!open);const h=c.querySelector('.lpacch');if(h)h.setAttribute('aria-expanded',String(!!open));});};
+window.layGo=k=>{const re=LAY_CARD[k];if(!re)return;const c=[...document.querySelectorAll('.lpacc[data-acc]')].find(e=>re.test(e.dataset.title||''));if(!c)return;
+ accSet(c.dataset.acc,true);c.scrollIntoView({behavior:'smooth',block:'start'});};
+function lpAccWrap(html){
+ if(typeof html!=='string'||!html.includes('lphero'))return html;
+ const t=document.createElement('template');t.innerHTML=html;const root=t.content,L=LPD||lpSet();
+ const st=[...root.children].find(e=>e.classList.contains('card')&&e.classList.contains('lphero'));if(!st)return html;
+ const lay=document.createElement('template');lay.innerHTML=lpLayCard(L);
+ const bar=document.createElement('div');bar.className='lpaccbar';
+ bar.innerHTML='<span class="tiny muted">Tap a heading to open its settings.</span><span class="row" style="gap:6px"><button type="button" class="btn sm ghost" onclick="lpAccAll(true)">Expand all</button><button type="button" class="btn sm ghost" onclick="lpAccAll(false)">Collapse all</button></span>';
+ st.after(bar);bar.after(lay.content);
+ [...root.children].forEach(c=>{if(!c.classList||!c.classList.contains('card')||c.classList.contains('lphero'))return;
+  const sh=c.querySelector(':scope > .sec-h'),h=sh?sh.querySelector('h3,h2'):c.querySelector(':scope > h3, :scope > h2');if(!h)return;
+  const title=h.textContent.trim(),key=accSlug(title)||('c'+[...root.children].indexOf(c));
+  const pills=sh?[...sh.querySelectorAll(':scope > .pill')]:[];
+  if(sh){h.remove();pills.forEach(p=>p.remove());if(!sh.children.length&&!sh.textContent.trim())sh.remove();}else h.remove();
+  const sec=Object.keys(LAY_HEAD).find(k=>LAY_CARD[k].test(title));
+  const head=document.createElement('div');head.className='lpacch';head.setAttribute('role','button');head.setAttribute('tabindex','0');
+  head.setAttribute('onclick',"lpAccT('"+key+"')");head.setAttribute('onkeydown',"if(event.key==='Enter'||event.key===' '){event.preventDefault();lpAccT('"+key+"')}");
+  const open=accIsOpen(key);head.setAttribute('aria-expanded',String(open));
+  head.innerHTML='<span class="lpacct">'+h.innerHTML+'</span><span class="lpaccx">'+pills.map(p=>p.outerHTML).join('')+
+   (sec?'<label class="laysw sm" onclick="event.stopPropagation()" title="Show this section on the website"><input type="checkbox"'+(layOn(L,sec)?' checked':'')+' onchange="laySet(\''+sec+'\',this.checked)"><i></i><span>'+(layOn(L,sec)?'On website':'Hidden')+'</span></label>':'')+
+   '</span><span class="lpaccv">'+ic('right',14)+'</span>';
+  const body=document.createElement('div');body.className='lpaccb';while(c.firstChild)body.appendChild(c.firstChild);
+  c.appendChild(head);c.appendChild(body);c.classList.add('lpacc');if(open)c.classList.add('open');c.dataset.acc=key;c.dataset.title=title;});
+ return t.innerHTML;}
+{const _v=vLanding;vLanding=function(){return lpAccWrap(_v.apply(this,arguments));};}
 
 </script>
