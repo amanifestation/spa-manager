@@ -3328,6 +3328,17 @@ button.lpsvimg[onclick^="skEdit"]{flex:0 0 76px;height:76px}
 .resmore{margin-top:8px}.resmore summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink-2)}
 .reskc{display:flex;flex-wrap:wrap;gap:4px 12px;margin:8px 0}.reskc label{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;margin:0}
 .resokc{display:flex;align-items:center;gap:7px;margin:8px 0 0;font-size:12.5px}
+.vdbox h4{margin:14px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.vdsum{display:flex;justify-content:space-between;align-items:center;gap:10px}.vdsum small{display:block;font-size:12px;color:var(--ink-3)}.vdtot{font-size:20px}
+.vdits{list-style:none;margin:10px 0 0;padding:8px 10px;border:1px solid var(--line);border-radius:10px;font-size:13px}
+.vdits li{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.vdfx{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.vdfx>li{display:flex;gap:8px;align-items:flex-start}.vdfx>li>.ico{margin-top:2px;flex:none}
+.vdpk{background:#EEF6F0;border:1px solid #CFE6D6;border-radius:12px;padding:10px}.vdpk>div{flex:1}
+.vdrow{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin-top:6px;font-size:13px}.vdrow small{color:var(--ink-3)}
+.vdrow>b{color:#2f7d4f}.vdrow em{grid-column:1/-1;font-style:normal;font-size:12px;color:var(--ink-2)}.vdrow .bad,.vdrow em.bad{color:var(--rose,#b5473a)}
+.vdwarn{background:#FFF6E8;border:1px solid #F1DDB8;border-radius:12px;padding:10px}
+.vdchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}
 </style>
 
 <div id="root"><div class="center"><div class="spin"></div></div></div>
@@ -3658,7 +3669,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-14b';
+const BUILD='2026-10-18a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -4926,7 +4937,7 @@ async function loadHistory(id){
  const [a,s,p,r]=await Promise.all([
   grab('appointments','customerId',id),grab('sales','customerId',id),
   grab('customerPackages','customerId',id),grab('redemptions','customerId',id)]);
- out.appts=a;out.sales=s;out.packages=p;out.redemptions=r;
+ out.appts=a;out.sales=s;out.packages=p;out.redemptions=r.filter(x=>!x.voided);
  return out;}
 function custHistory(c){
  const H=HIST||{appts:[],sales:[],packages:[],redemptions:[]};
@@ -4954,7 +4965,7 @@ function custHistory(c){
   title:'Instalment · '+(s.invoiceNo||''),amount:p.amount,
   meta:(p.byName?'Taken by '+p.byName:''),tag:p.method})));
  H.sales.filter(s=>s.voided).forEach(s=>events.push({at:s.voidedAt||s.at,kind:'no',icon:'close',
-  title:'Bill voided '+(s.invoiceNo||''),meta:s.voidReason||'',tag:'Voided'}));
+  title:'Bill voided '+(s.invoiceNo||''),meta:(s.voidReason||'')+((s.pkgBack||[]).length?' · '+s.pkgBack.reduce((a,b)=>a+(+b.qty||0),0)+' package session(s) returned':''),tag:'Voided'}));
  H.packages.forEach(p=>{
   events.push({at:p.soldAt,kind:'pkg',icon:'package',title:(p.prepaid?'Prepaid ':'Bought ')+cpName(p),
    amount:p.price,meta:'Valid until '+dstr(p.expiry),
@@ -10868,7 +10879,7 @@ function receiptHTML(s){
     '<tr class="grand"><td>Balance owing'+(s.dueDate?' · due '+dshort(s.dueDate):'')+
     '</td><td class="num">'+rm(saleBalance(s))+'</td></tr>':'')+
   '</table>'+
-  (s.voided?'<div class="rvoid">VOIDED — '+esc(s.voidReason||'')+'</div>':'')+
+  (s.voided?'<div class="rvoid">VOIDED — '+esc(s.voidReason||'')+((s.pkgBack||[]).length?'<br><small>'+s.pkgBack.map(b=>(+b.qty||0)+'× '+esc(b.name||'')).join(', ')+' returned to the package</small>':'')+'</div>':'')+
   (!s.voided&&saleBalance(s)>0?'<div class="rvoid" style="color:var(--amber);border-color:var(--amber)">'+
    'PART PAYMENT — '+rm(saleBalance(s))+' STILL OWING</div>':'')+
   '<div class="rdiv"></div>'+
@@ -10939,7 +10950,7 @@ window.redeemDetail=id=>{
 window.voidSale=async id=>{
  {const s0=findSale(id);if(s0&&isLocked(s0.date)){toast(lockMsg(s0.date)+' Give a refund instead.');return;}
   if(s0&&saleRefunded(s0)>0){toast('This bill has a refund recorded — it cannot be voided.');return;}}
- const why=prompt('Reason for voiding (required for the audit trail):');
+ const why=window.__voidWhy!==undefined?window.__voidWhy:prompt('Reason for voiding (required for the audit trail):');
  if(!why)return;
  try{await updateDoc(doc(db,'sales',id),{voided:true,voidReason:why,voidedBy:UID,voidedAt:new Date().toISOString(),...(String((findSale(id)||{}).date||'').slice(0,7)<today().slice(0,7)?{voidLate:true}:{})});
   const s=SALES.find(x=>x.id===id);if(s){s.voided=true;s.voidReason=why;}
@@ -16675,7 +16686,7 @@ async function finJournalB(m,add,br,tr){
  const from=m+'-01',to=mEnd(m),hi=to+'~',mine=x=>(x.branchId||br)===br;
  const grab=async(q,lab)=>{try{return (await getDocs(q)).docs.map(d=>({id:d.id,...d.data()})).filter(mine);}catch(e){console.warn(lab,e);return [];}};
  const [reds,exps,dels,appts]=await Promise.all([
-  grab(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)),'redemptions'),
+  grab(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)),'redemptions').then(a=>a.filter(x=>!x.voided)),
   pkgDefer()?grab(query(collection(db,'customerPackages'),where('expiry','>=',from),where('expiry','<=',to)),'expiring'):[],
   pkgDefer()?grab(query(collection(db,'pkgDeleted'),where('deletedAt','>=',from),where('deletedAt','<=',hi)),'pkgDeleted'):[],
   grab(query(collection(db,'appointments'),where('createdAt','>=',from),where('createdAt','<=',hi)),'deposits')]);
@@ -16980,7 +16991,7 @@ async function tpData(m){
  const [qs,qr]=await Promise.all([getDocs(query(collection(db,'sales'),where('date','>=',from),where('date','<=',to))),
   getDocs(query(collection(db,'redemptions'),where('date','>=',from),where('date','<=',to)))]);
  const sales=qs.docs.map(d=>({id:d.id,...d.data()})).filter(s=>!s.voided&&s.branchId===br);
- const reds=qr.docs.map(d=>({id:d.id,...d.data()})).filter(r=>(r.branchId||br)===br);
+ const reds=qr.docs.map(d=>({id:d.id,...d.data()})).filter(r=>(r.branchId||br)===br&&!r.voided);
  await Promise.all([...new Set(reds.map(r=>r.customerPackageId))].map(cpGet));
  const T={},P={};
  const tg=id=>T[id]=T[id]||{id,name:svc(id).name||id,n:0,nPkg:0,rev:0,cost:0,comm:0,mins:0};
@@ -22302,7 +22313,7 @@ async function sdLoad(force){
  const q=(c,...w)=>getDocs(w.length?query(collection(db,c),...w):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()}))).catch(e=>{console.warn('sales dashboard',c,e);return [];});
  try{
   const [sales,appts,custs,cps,reds,leads,camps,fb,att,tg,kt,exps]=await Promise.all([q('sales',where('date','>=',need)),q('appointments',where('date','>=',need)),q('customers',limit(8000)),
-   q('customerPackages',limit(5000)),q('redemptions',where('date','>=',need)),q('leads',where('createdAt','>=',need)),q('campaigns'),q('feedback',limit(4000)),
+   q('customerPackages',limit(5000)),q('redemptions',where('date','>=',need)).then(a=>a.filter(x=>!x.voided)),q('leads',where('createdAt','>=',need)),q('campaigns'),q('feedback',limit(4000)),
    q('attendance',where('date','>=',need)),q('salesTargets'),q('kpiTargets'),boss()?q('expenses',where('date','>=',need)):Promise.resolve([])]);
   const C={};custs.forEach(c=>{C[c.id]=c;});
   const first={},last={};
@@ -34325,5 +34336,78 @@ function lpDraftImgs(){const L=LPD||lpSet(),out=[];
 {const _s=lpSyncImgs;lpSyncImgs=function(d,old){return _s.call(this,{...d,imgs:[...new Set([...((d&&d.imgs)||[]),...lpDraftImgs()])]},old);};}
 {const _d=window.resDel;window.resDel=i=>{const x=resW().items[i];_d(i);
  if(x&&!(LPPUB&&LPPUB.res&&(LPPUB.res.items||[]).some(y=>y.id===x.id)))['b','a'].forEach(w=>deleteDoc(doc(db,'lpImg','res_'+x.id+'_'+w)).catch(()=>{}));};}
+
+/* ============ 30s · voiding a bill gives its package sessions back ============ */
+/* When a bill with package sessions on it is voided (a double entry, the wrong client, the wrong treatment),
+   each session goes back into the client's package, exactly where it came from. The redemption records of that
+   bill are marked voided, so the client's history, the package's count, the revenue earned from packages and the
+   treatment reports all leave them out. Voiding now opens a small window first: what the bill was, what voiding
+   it will do (sessions going back, with the balance before → after), and the reason. */
+const VOID_CORE=window.voidSale;
+const VOID_WHY=['Double entry','Wrong client','Wrong treatment / item','Wrong price','Test bill'];
+function voidReds(s){return (s.items||[]).filter(i=>i.kind==='redeem'&&i.cpId&&+i.qty>0);}
+/* one row per package line on the bill: which package, which treatment, how many go back */
+function voidGroups(s){const G={};voidReds(s).forEach(i=>{const k=i.cpId+'|'+i.line;G[k]=G[k]||{cpId:i.cpId,line:+i.line,name:i.name||'',pkg:String(i.pkgName||'').split(' · ')[0],qty:0,serviceId:i.mixFrom||i.id};G[k].qty+=(+i.qty||1);});return Object.values(G);}
+/* the package as it is now (fresh from the database; the copy on this device if offline) */
+async function voidCp(cpId){const h=(typeof HELD!=='undefined'&&HELD||[]).find(x=>x.id===cpId);
+ try{const d=await getDoc(doc(db,'customerPackages',cpId));return d.exists()?{id:d.id,...d.data()}:null;}catch(e){return h||null;}}
+window.voidSale=id=>{const s=findSale(id);if(!s){toast('Bill not found');return;}
+ if(s.voided){toast('This bill is already voided.');return;}
+ if(isLocked(s.date)){toast(lockMsg(s.date)+' Give a refund instead.');return;}
+ if(saleRefunded(s)>0){toast('This bill has a refund recorded — it cannot be voided.');return;}
+ const G=voidGroups(s),sold=(s.items||[]).filter(i=>i.kind==='package'),promo=(s.items||[]).some(i=>i.promoId);
+ modal('Void bill '+esc(s.invoiceNo||''),'<div class="card vdbox">'+
+  '<div class="vdsum"><div><b>'+esc(s.customerName||'Walk-in')+'</b><small>'+dstr(s.date)+(s.at?' · '+tstr(s.at):'')+' · by '+esc(s.cashierName||s.staffName||'')+'</small></div><b class="vdtot">'+rm(s.total)+'</b></div>'+
+  '<ul class="vdits">'+(s.items||[]).map(i=>'<li><span>'+esc((+i.qty||1)+'× '+(i.name||''))+(i.kind==='redeem'?' <span class="pill">package</span>':'')+'</span><span>'+(i.kind==='redeem'?'—':rm(lineAmt(i)))+'</span></li>').join('')+'</ul>'+
+  '<h4>Voiding this bill will</h4><ul class="vdfx">'+
+   '<li>'+ic('close',13)+'<span>Mark it <b>VOID</b> — it stays on record for the audit trail, but leaves sales, cash-up and reports.</span></li>'+
+   (G.length?'<li class="vdpk">'+ic('package',13)+'<div><b>Give '+G.reduce((a,g)=>a+g.qty,0)+' package session'+(G.reduce((a,g)=>a+g.qty,0)===1?'':'s')+' back to '+esc(s.customerName||'the client')+'</b><div id="vd-pk">'+
+     G.map(g=>'<div class="vdrow" data-cp="'+esc(g.cpId)+'" data-line="'+g.line+'"><span>'+esc(g.name)+(g.pkg?' <small>· '+esc(g.pkg)+'</small>':'')+'</span><b>+'+g.qty+'</b><em>checking…</em></div>').join('')+'</div></div></li>':'')+
+   (promo?'<li>'+ic('tag',13)+'<span>Give the promotion\'s place back, so another client can use it.</span></li>':'')+
+   (sold.length?'<li class="vdwarn">'+ic('alert',13)+'<div>This bill also <b>sold '+sold.map(i=>esc(i.name)).join(', ')+'</b>. Voiding does not remove the package from the client — if it was keyed by mistake, delete it from the client\'s packages too.</div></li>':'')+
+  '</ul><label>Reason <span class="muted">(required — kept in the audit trail)</span></label>'+
+  '<div class="vdchips">'+VOID_WHY.map(w=>'<button type="button" class="btn sm ghost" onclick="vdWhy(this)">'+esc(w)+'</button>').join('')+'</div>'+
+  '<textarea class="f" id="vd-why" rows="2" maxlength="200" placeholder="e.g. Double entry — the same bill was keyed twice (see '+esc(s.invoiceNo||'the other bill')+')"></textarea>'+
+  '<div class="err" id="vd-e"></div>'+
+  '<div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost" style="flex:1;justify-content:center" onclick="closeModal()">Keep the bill</button>'+
+  '<button class="btn warn" id="vd-go" style="flex:1;justify-content:center" onclick="voidSaleGo(\''+esc(id)+'\')">'+ic('close',15)+'Void bill</button></div></div>');
+ /* show each package balance now → after */
+ G.forEach(async g=>{const cp=await voidCp(g.cpId),r=document.querySelector('.vdrow[data-cp="'+g.cpId+'"][data-line="'+g.line+'"] em');if(!r)return;
+  if(!cp){r.textContent='package no longer exists — cannot go back';r.className='bad';return;}
+  const b=(cp.balances||[])[g.line];if(!b){r.textContent='line not found';r.className='bad';return;}
+  const to=b.total!=null?Math.min(+b.total,(+b.left||0)+g.qty):(+b.left||0)+g.qty;
+  r.innerHTML=(+b.left||0)+' left → <b>'+to+' left</b>'+(cp.expiry&&cp.expiry<today()?' · <span class="bad">package expired '+dstr(cp.expiry)+'</span>':'');});
+};
+window.vdWhy=b=>{const t=document.getElementById('vd-why');if(!t)return;t.value=b.textContent+(t.value&&!VOID_WHY.includes(t.value)?' — '+t.value:'');t.focus();};
+window.voidSaleGo=async id=>{const t=document.getElementById('vd-why'),e=document.getElementById('vd-e'),why=String(t&&t.value||'').trim();
+ if(why.length<3){if(e)e.textContent='Write the reason (or tap one above).';return;}
+ const btn=document.getElementById('vd-go');if(btn){btn.disabled=true;btn.textContent='Voiding…';}
+ const s0=findSale(id),was=s0&&s0.voided;
+ window.__voidWhy=why;try{await VOID_CORE(id);}finally{delete window.__voidWhy;}
+ const s=findSale(id);if(!s||!s.voided||was){if(btn){btn.disabled=false;btn.textContent='Void bill';}return;}
+ await voidGiveBack(s);};
+/* sessions go back in one go per package, never above what the package started with; done once per bill */
+async function voidGiveBack(s){const G=voidGroups(s);if(!G.length||s.pkgBack)return;
+ const back=[],miss=[];
+ for(const cpId of [...new Set(G.map(g=>g.cpId))]){const lines=G.filter(g=>g.cpId===cpId);let after=null;
+  try{await runTransaction(db,async tx=>{const ref=doc(db,'customerPackages',cpId),snap=await tx.get(ref);
+    if(!snap.exists()){lines.forEach(g=>miss.push(g.name+' (package removed)'));return;}
+    const bal=(snap.data().balances||[]).map(b=>({...b}));
+    lines.forEach(g=>{const b=bal[g.line];if(!b){miss.push(g.name);return;}const was=+b.left||0;
+     b.left=b.total!=null?Math.min(+b.total,was+g.qty):was+g.qty;back.push({cpId,line:g.line,name:g.name,pkg:g.pkg,qty:b.left-was,left:b.left});});
+    tx.update(ref,{balances:bal});after=bal;});
+   const h=(typeof HELD!=='undefined'&&HELD||[]).find(x=>x.id===cpId);if(h&&after)h.balances=after;}
+  catch(err){console.warn('give back',err);lines.forEach(g=>miss.push(g.name));}}
+ /* the bill's redemption records leave the history and reports */
+ let marked=true;
+ try{const r=await getDocs(query(collection(db,'redemptions'),where('saleId','==',s.id)));
+  for(const x of r.docs){if(x.data().voided)continue;await updateDoc(doc(db,'redemptions',x.id),{voided:true,voidedAt:new Date().toISOString(),voidedBy:UID});}}
+ catch(err){marked=false;console.warn('redemptions',err);}
+ try{await updateDoc(doc(db,'sales',s.id),{pkgBack:back.map(b=>({cpId:b.cpId,line:b.line,name:b.name,qty:b.qty}))});s.pkgBack=back;}catch(err){}
+ if(HIST&&HIST.redemptions)HIST.redemptions=HIST.redemptions.filter(x=>x.saleId!==s.id);
+ const n=back.reduce((a,b)=>a+b.qty,0);
+ if(n)await audit('Package sessions returned (bill voided)',(s.invoiceNo||'')+' — '+(s.customerName||'')+': '+back.map(b=>b.qty+'× '+b.name+' → '+b.left+' left').join(', '));
+ render();
+ toast(n?'Bill voided · '+n+' package session'+(n===1?'':'s')+' back with '+(s.customerName||'the client')+(miss.length?' (could not return: '+miss.join(', ')+')':'')+(marked?'':' — update the database rules (build 30s) so reports leave them out too'):'Bill voided and logged');}
 
 </script>
