@@ -3371,6 +3371,55 @@ html.appin #root{animation:appIn .55s ease both}
 @keyframes appIn{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.spl-in,.spl-mark img,.spl-mark b,.spl-ring,.spl-bar i,html.appin #root{animation:none}.spl-ring{display:none}}
 @media print{.spl{display:none}}
+/* 30t · Reports dashboard */
+.rphead{padding-bottom:12px}.rph1{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}.rph1 h2{margin:0;display:flex;align-items:center;gap:8px}.rph1 p{margin:2px 0 0}
+.rpchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px 0 10px;padding-bottom:2px}.rpchips::-webkit-scrollbar{display:none}
+.rpchips button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:8px 14px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-2)}
+.rpchips button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.rpcust{gap:8px;flex-wrap:wrap;align-items:flex-end;margin:0 0 8px}.rpcust label{margin:0;font-size:12px;display:flex;flex-direction:column;gap:3px}.rpcust .f{margin:0;width:auto}
+.rpper{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px}.rpper .f{margin:0;width:auto;padding:6px 10px;font-size:13px}.rpper>span{display:inline-flex;align-items:center;gap:6px}
+.rpk1,.rpk2{display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--ink);vertical-align:middle}.rpk2{background:none;border-top:2px dashed var(--brass,#A67C3D);height:0}
+.rptiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.rptile{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 14px 12px;box-shadow:var(--shadow);min-width:0}
+.rptl{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.rptv{font-size:24px;font-weight:700;letter-spacing:-.01em;margin:6px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rpts{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3);flex-wrap:wrap}
+.rpdl{font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 7px;background:var(--line-2);color:var(--ink-2)}.rpdl.up{background:#E4EEE8;color:#2E6B52}.rpdl.dn{background:#F6E5E3;color:#9B4A4A}
+.up{color:#2E6B52}.dn{color:#9B4A4A}
+.rpcard h3{margin:0 0 10px;display:flex;align-items:center;gap:7px;font-size:15px}.rpch{gap:10px;flex-wrap:wrap;margin-bottom:6px}.rpch h3{margin:0}
+.rpseg{display:inline-flex;background:var(--line-2);border-radius:10px;padding:3px;gap:2px}.rpseg button{border:0;background:none;border-radius:8px;padding:6px 11px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-2)}
+.rpseg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}.rpseg.sm button{padding:5px 9px;font-size:12px}
+.rplegend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:12.5px;margin:4px 0 6px}.rplegend span{display:inline-flex;align-items:center;gap:6px}
+.rpchw{position:relative}.rpsvg{width:100%;height:auto;display:block;touch-action:pan-y}
+.rpgl{stroke:var(--line-2);stroke-width:1}.rpax{font-size:11px;fill:var(--ink-3);font-family:inherit}
+.rpl1{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.rpl2{fill:none;stroke:#A67C3D;stroke-width:2;stroke-dasharray:6 5;stroke-linejoin:round}
+.rpd1 circle{fill:var(--ink)}.rpd2 circle{fill:#A67C3D}.rpcur{stroke:var(--ink-3);stroke-width:1;stroke-dasharray:3 3}
+.rptip{position:absolute;top:6px;display:none;pointer-events:none;background:var(--ink);color:#fff;border-radius:12px;padding:8px 11px;font-size:12px;line-height:1.5;box-shadow:0 10px 24px -10px rgba(0,0,0,.5);min-width:150px}
+.rptip div{display:flex;align-items:center;gap:6px;white-space:nowrap}.rptip .rpk1{background:#fff}.rptip small{font-weight:700}.rptip small.up{color:#9fe0b8}.rptip small.dn{color:#f3b2aa}
+.rpgrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rpgrid2>.card{margin:0 0 12px;min-width:0}
+.rpmeth{margin:0 0 11px}.rpmeth span{display:inline-flex;align-items:center;gap:7px;font-size:13.5px}.rpmeth span i{width:10px;height:10px;border-radius:3px;display:inline-block}.rpmeth small{font-size:11.5px;color:var(--ink-3);display:flex;gap:6px;align-items:center;margin-top:3px}
+.rpbar{height:7px;border-radius:99px;background:var(--line-2);overflow:hidden;margin-top:5px}.rpbar i{display:block;height:100%;border-radius:99px;background:var(--ink)}.rpbar.sm{height:4px;margin-top:4px;max-width:160px}
+.rpref{border-top:1px dashed var(--line);padding-top:8px;color:#9B4A4A}
+.rpdon{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}.rpdsvg{width:150px;height:150px}.rpdc1{font-size:17px;font-weight:700;fill:var(--ink)}.rpdc2{font-size:10px;fill:var(--ink-3)}
+.rpleg>div{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line-2);font-size:13px}.rpleg>div:last-child{border:0}
+.rpleg i{width:12px;height:12px;border-radius:4px}.rpleg small{display:block;font-size:11px;color:var(--ink-3);font-weight:400}.rpleg b{text-align:right}
+.rptabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:4px 0 10px}.rptabs::-webkit-scrollbar{display:none}
+.rptabs button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink-2);display:inline-flex;gap:6px;align-items:center}
+.rptabs button small{background:var(--line-2);border-radius:99px;padding:0 6px;font-size:11px}.rptabs button.on{border-color:var(--ink);color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.rptop{list-style:none;margin:0;padding:0}.rptop li{display:grid;grid-template-columns:28px 1fr 44px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)}.rptop li:last-child{border:0}
+.rprk{width:26px;height:26px;border-radius:50%;background:var(--line-2);display:grid;place-items:center;font-size:12px;font-weight:700}.rptop li:first-child .rprk{background:var(--ink);color:#fff}
+.rptn b{font-size:13.5px}.rptn small{font-size:11.5px;color:var(--ink-3)}.rpmv{text-align:right;font-size:11.5px;font-weight:700}.rpnew{color:#A67C3D}.rpsame{color:var(--ink-3)}
+.rpdt th,.rpdt td{white-space:nowrap}.rpdt td small{display:block;font-size:11px;color:var(--ink-3)}.rpdrow{cursor:pointer}.rpdrow:hover td{background:var(--surface-2)}.rpdrow.open td{background:var(--surface-2)}
+.rpdt tfoot td{border-top:2px solid var(--ink)}
+.rppays{display:flex;flex-direction:column;gap:2px;padding:4px 0}.rppays>div{display:grid;grid-template-columns:60px 120px 1fr 120px 90px;gap:8px;font-size:12.5px;padding:5px 6px;border-radius:8px;cursor:pointer}.rppays>div:hover{background:var(--line-2)}.rppays b{text-align:right}
+.rpstack{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--line-2)}.rpstack i{display:block;height:100%}
+.rpmixl{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:12px}.rpmixl>div{display:flex;align-items:center;gap:7px;font-size:13px}.rpmixl i{width:10px;height:10px;border-radius:3px}.rpmixl b{margin-left:auto}.rpmixl small{color:var(--ink-3);width:34px;text-align:right}
+.rpheat{border-collapse:separate;border-spacing:3px;font-size:11px}.rpheat th{color:var(--ink-3);font-weight:600;padding:0 2px}.rpheat td{width:30px;height:24px;border-radius:6px;text-align:center;color:#fff;font-weight:700;background:var(--line-2)}
+@media(max-width:860px){.rptiles{grid-template-columns:repeat(2,minmax(0,1fr))}.rpgrid2{grid-template-columns:1fr}.rptv{font-size:20px}.rppays>div{grid-template-columns:52px 1fr 90px;}.rppays>div span:nth-child(2),.rppays>div span:nth-child(4){display:none}}
+@media(max-width:600px){.rpmixl{grid-template-columns:1fr}}
+@media(max-width:420px){.rpdon{grid-template-columns:1fr;justify-items:center}.rpleg{width:100%}}
+@media print{.rpchips,.rpseg,.rptabs,.rpcust{display:none!important}.rptile,.rpcard{break-inside:avoid}}
+
 </style>
 <div id="splash" class="spl" role="status" aria-live="polite"><div class="spl-in">
  <div class="spl-mark"><span class="spl-ring"></span><span class="spl-ring"></span><img id="spl-logo" alt="" hidden><b id="spl-ini">S</b></div>
@@ -3669,7 +3718,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-18a';
+const BUILD='2026-10-21a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -34409,5 +34458,240 @@ async function voidGiveBack(s){const G=voidGroups(s);if(!G.length||s.pkgBack)ret
  if(n)await audit('Package sessions returned (bill voided)',(s.invoiceNo||'')+' — '+(s.customerName||'')+': '+back.map(b=>b.qty+'× '+b.name+' → '+b.left+' left').join(', '));
  render();
  toast(n?'Bill voided · '+n+' package session'+(n===1?'':'s')+' back with '+(s.customerName||'the client')+(miss.length?' (could not return: '+miss.join(', ')+')':'')+(marked?'':' — update the database rules (build 30s) so reports leave them out too'):'Bill voided and logged');}
+
+
+/* ============ 30t · Reports: an interactive dashboard ============ */
+/* · One period at a time: Today, Yesterday, This week, This month, Last month, This quarter, This year or Custom,
+     always compared with another period (the one before, the same dates last year, or any dates the owner picks).
+   · Headline tiles with the change against that period; a chart of the two periods side by side (sales, collection,
+     bills or clients); collection by payment method; collection by type of client (new, follow-up, returning,
+     walk-in & others); top treatments, products, packages, add-ons and package sessions; a day-by-day collection
+     list split by payment method (tap a day for its payments); the busiest days and hours; team performance;
+     branches. Everything comes from the bills themselves: voided bills are left out, refunds are shown apart. */
+let RP={k:'month',f:'',t:'',cmp:'prev',cf:'',ct:'',m:'sales',top:'svc',tq:'rev',day:'',br:'',cat:'coll'},RPD=null,RPBUSY=false,RPERR='';
+const RP_K=[['today','Today'],['yday','Yesterday'],['week','This week'],['month','This month'],['lmonth','Last month'],['quarter','This quarter'],['year','This year'],['custom','Custom']];
+const rpD=s=>new Date(s+'T00:00:00');
+const rpAdd=(s,n)=>ymd(addDays(rpD(s),n));
+const rpDays=(f,t)=>Math.round((rpD(t)-rpD(f))/864e5)+1;
+const rpAddM=(s,n)=>{const d=rpD(s),day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+n);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return ymd(d);};
+function rpRange(){const td=today(),d=rpD(td);
+ switch(RP.k){case 'today':return [td,td];case 'yday':{const y=rpAdd(td,-1);return [y,y];}
+  case 'week':{const w=(d.getDay()+6)%7;return [rpAdd(td,-w),td];}
+  case 'month':return [td.slice(0,8)+'01',td];
+  case 'lmonth':{const f=rpAddM(td.slice(0,8)+'01',-1);return [f,rpAdd(td.slice(0,8)+'01',-1)];}
+  case 'quarter':{const q=Math.floor(d.getMonth()/3)*3;return [d.getFullYear()+'-'+String(q+1).padStart(2,'0')+'-01',td];}
+  case 'year':return [td.slice(0,4)+'-01-01',td];
+  case 'custom':{let f=RP.f||rpAdd(td,-29),t=RP.t||td;if(t<f)[f,t]=[t,f];return [f,t];}}
+ return [td,td];}
+/* the period it is compared with */
+function rpCmp(){const [f,t]=rpRange(),n=rpDays(f,t);
+ if(RP.cmp==='year')return [rpAddM(f,-12),rpAddM(t,-12)];
+ if(RP.cmp==='custom'&&RP.cf&&RP.ct)return RP.cf<=RP.ct?[RP.cf,RP.ct]:[RP.ct,RP.cf];
+ if(['month','lmonth'].includes(RP.k))return [rpAddM(f,-1),RP.k==='lmonth'?rpAdd(f,-1):rpAddM(t,-1)];
+ if(RP.k==='quarter')return [rpAddM(f,-3),rpAddM(t,-3)];
+ if(RP.k==='year')return [rpAddM(f,-12),rpAddM(t,-12)];
+ return [rpAdd(f,-n),rpAdd(f,-1)];}
+const rpLabel=(f,t)=>f===t?dstr(f):(f.slice(0,4)===t.slice(0,4)?dshort(f):dstr(f))+' – '+dstr(t);
+const rpBr=()=>RP.br||ME.branchId;
+const rpBrOk=b=>rpBr()==='all'||(b||ME.branchId)===rpBr();
+
+/* ---------- loading: bills of both periods plus 6 months before (to know who is new), and their bookings ---------- */
+async function rpLoad(force){
+ const [f,t]=rpRange(),[cf,ct]=rpCmp(),lo=rpAdd(f<cf?f:cf,-180),hi=t>ct?t:ct,alo=f<cf?f:cf;
+ if(!force&&RPD&&RPD.lo<=lo&&RPD.hi>=hi)return;
+ if(RPBUSY)return;RPBUSY=true;RPERR='';
+ try{const [s,a]=await Promise.all([getDocs(query(collection(db,'sales'),where('date','>=',lo),where('date','<=',hi))),
+   getDocs(query(collection(db,'appointments'),where('date','>=',alo),where('date','<=',hi))).catch(()=>({docs:[]}))]);
+  const sales=s.docs.map(d=>({id:d.id,...d.data()})),A={};a.docs.forEach(d=>{A[d.id]=d.data();});
+  RPD={lo,hi,sales,appts:A,at:Date.now()};}
+ catch(e){RPERR=friendly(e);RPD=RPD||{lo:'9',hi:'0',sales:[],appts:{}};}
+ finally{RPBUSY=false;}
+ if(TAB==='rep')render();}
+buildReport=async function(){RPD=null;await rpLoad(true);};
+window.setRepDays=async()=>{await buildReport();};
+
+/* ---------- who a bill came from: new, follow-up, returning, or walk-in ---------- */
+const RP_CAT=[['new','New clients','#A67C3D'],['follow','Follow-up','#2E6B52'],['ret','Returning','#3E5C76'],['other','Walk-in & others','#B9B0A3']];
+function rpHist(){if(RPD.__h)return RPD.__h;const H={};
+ RPD.sales.forEach(s=>{if(s.voided||!s.customerId)return;(H[s.customerId]=H[s.customerId]||[]).push(s.date+'|'+(s.at||'')+'|'+s.id);});
+ Object.values(H).forEach(a=>a.sort());return RPD.__h=H;}
+function rpCatOf(s){if(s.__cat)return s.__cat;
+ if(!s.customerId)return s.__cat='other';
+ const ap=(s.items||[]).map(i=>i.apptId&&RPD.appts[i.apptId]).find(Boolean),vt=ap&&ap.visitType;
+ if(vt==='new'||vt==='consult')return s.__cat='new';if(vt==='followup')return s.__cat='follow';if(vt==='return'||vt==='vip'||vt==='package')return s.__cat='ret';
+ const me=s.date+'|'+(s.at||'')+'|'+s.id,L=rpHist()[s.customerId]||[],i=L.indexOf(me),prev=i>0?L[i-1].slice(0,10):'';
+ if(prev)return s.__cat=rpDays(prev,s.date)<=31?'follow':'ret';
+ const c=typeof cust==='function'?cust(s.customerId):null,since=c&&String(c.createdAt||'').slice(0,10);
+ return s.__cat=since&&since<RPD.lo?'ret':'new';}
+
+/* ---------- the numbers for one period ---------- */
+function rpCalc(f,t){
+ const bills=RPD.sales.filter(s=>!s.voided&&s.date>=f&&s.date<=t&&rpBrOk(s.branchId));
+ const X={f,t,bills,sales:0,coll:0,refund:0,collBy:{},catAmt:{new:0,follow:0,ret:0,other:0},catSales:{new:0,follow:0,ret:0,other:0},catN:{new:0,follow:0,ret:0,other:0},
+  clients:new Set(),fresh:new Set(),redeemed:0,owed:0,items:{svc:{},prod:{},pkg:{},addon:{},red:{}},daily:{},heat:{},pays:[]};
+ bills.forEach(s=>{X.sales+=+s.total||0;X.owed+=saleBalance(s);const c=rpCatOf(s);X.catSales[c]+=+s.total||0;X.catN[c]++;
+  if(s.customerId){X.clients.add(s.customerId);if(c==='new')X.fresh.add(s.customerId);}
+  const h=s.at?new Date(s.at):null;if(h&&!isNaN(h)){const k=((h.getDay()+6)%7)+'|'+h.getHours();X.heat[k]=(X.heat[k]||0)+1;}
+  (s.items||[]).forEach(i=>{const g=i.kind==='service'?'svc':i.kind==='addon'?'addon':retailKind(i.kind)?'prod':i.kind==='package'?'pkg':i.kind==='redeem'?'red':'';if(!g)return;
+   if(g==='red')X.redeemed+=(+i.qty||1);
+   const k=(i.name||i.id||'?'),o=X.items[g][k]=X.items[g][k]||{n:k,q:0,v:0};o.q+=(+i.qty||1);o.v+=g==='red'?0:lineAmt(i);});});
+ /* money in: every payment dated in the period, from any bill (a balance paid later counts on the day it is paid) */
+ RPD.sales.forEach(s=>{if(s.voided||!rpBrOk(s.branchId))return;
+  (s.payments||[]).forEach(p=>{const d=String(p.date||s.date||'').slice(0,10);if(d<f||d>t)return;const a=+p.amount||0;if(!a)return;
+   const m=p.method||'Other';X.coll+=a;X.collBy[m]=(X.collBy[m]||0)+a;X.catAmt[rpCatOf(s)]+=a;
+   const D0=X.daily[d]=X.daily[d]||{by:{},tot:0,ref:0,n:new Set()};D0.by[m]=(D0.by[m]||0)+a;D0.tot+=a;D0.n.add(s.id);
+   X.pays.push({d,at:p.at||s.at||'',inv:s.invoiceNo||'',cl:s.customerName||'Walk-in',m,a,id:s.id,late:s.date<d});});
+  (s.refundLog||[]).forEach(r=>{const d=String(r.date||'').slice(0,10);if(d<f||d>t)return;const a=(r.lines||[]).reduce((x,l)=>x+(+l.amount||0),0);X.refund+=a;
+   const D0=X.daily[d]=X.daily[d]||{by:{},tot:0,ref:0,n:new Set()};D0.ref+=a;});});
+ return X;}
+
+/* ---------- chart buckets: hours for one day, days up to two months, then weeks, then months ---------- */
+function rpGran(f,t){const n=rpDays(f,t);return n<=1?'h':n<=62?'d':n<=200?'w':'m';}
+function rpSeries(f,t,g,metric){const n=rpDays(f,t),B=[];
+ if(g==='h'){for(let h=0;h<24;h++)B.push({lab:String(h).padStart(2,'0')+':00',v:0,u:new Set()});}
+ else if(g==='d'){for(let i=0;i<n;i++){const d=rpAdd(f,i);B.push({lab:dshort(d),d,v:0,u:new Set()});}}
+ else if(g==='w'){for(let i=0;i<n;i+=7)B.push({lab:'Wk of '+dshort(rpAdd(f,i)),v:0,u:new Set()});}
+ else{let d=f.slice(0,8)+'01';while(d<=t){B.push({lab:rpD(d).toLocaleDateString('en-MY',{month:'short',year:'2-digit'}),m:d.slice(0,7),v:0,u:new Set()});d=rpAddM(d,1);}}
+ const idx=(d,at)=>{if(g==='h'){const h=at?new Date(at).getHours():12;return h;}if(g==='d')return rpDays(f,d)-1;if(g==='w')return Math.floor((rpDays(f,d)-1)/7);return B.findIndex(b=>b.m===d.slice(0,7));};
+ if(metric==='coll'){RPD.sales.forEach(s=>{if(s.voided||!rpBrOk(s.branchId))return;(s.payments||[]).forEach(p=>{const d=String(p.date||s.date||'').slice(0,10);if(d<f||d>t)return;const i=idx(d,p.at||s.at);if(B[i])B[i].v+=+p.amount||0;});});}
+ else RPD.sales.forEach(s=>{if(s.voided||s.date<f||s.date>t||!rpBrOk(s.branchId))return;const i=idx(s.date,s.at);if(!B[i])return;
+  if(metric==='sales')B[i].v+=+s.total||0;else if(metric==='bills')B[i].v++;else if(s.customerId)B[i].u.add(s.customerId);});
+ if(metric==='clients')B.forEach(b=>{b.v=b.u.size;});return B;}
+const rpRm=v=>v<-0.004?'−'+rm(-v):rm(v);
+const rpMoney=m=>m==='sales'||m==='coll';
+const rpShort=(v,money)=>{const a=Math.abs(v);const s=a>=1e6?(v/1e6).toFixed(1)+'m':a>=1e3?(v/1e3).toFixed(a>=1e4?0:1)+'k':String(Math.round(v*10)/10);return (money?'RM':'')+s;};
+function rpChart(A,Bc,money){
+ const W=760,H=270,L=54,R=14,T=16,Bt=34,n=Math.max(A.length,Bc.length),mx=Math.max(1,...A.map(x=>x.v),...Bc.map(x=>x.v));
+ const step=Math.pow(10,Math.floor(Math.log10(mx))),top=Math.ceil(mx/step*(mx/step<=2?4:2))/(mx/step<=2?4:2)*step||1;
+ const X=i=>L+(n<=1?(W-L-R)/2:(W-L-R)*i/(n-1)),Y=v=>T+(H-T-Bt)*(1-v/top);
+ const path=S=>S.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(x.v).toFixed(1)).join('');
+ const area=S=>S.length?path(S)+'L'+X(S.length-1).toFixed(1)+','+Y(0)+'L'+X(0).toFixed(1)+','+Y(0)+'Z':'';
+ const grid=[0,.25,.5,.75,1].map(k=>'<line x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(top*k)+'" y2="'+Y(top*k)+'" class="rpgl"/><text x="'+(L-8)+'" y="'+(Y(top*k)+4)+'" class="rpax" text-anchor="end">'+rpShort(top*k,money)+'</text>').join('');
+ const every=Math.max(1,Math.ceil(n/8)),xl=A.map((x,i)=>i%every&&i!==n-1?'':'<text x="'+X(i)+'" y="'+(H-12)+'" class="rpax" text-anchor="middle">'+esc(x.lab)+'</text>').join('');
+ const hit=Array.from({length:n},(_,i)=>{const w=n<=1?W-L-R:(W-L-R)/(n-1);return '<rect x="'+(X(i)-w/2)+'" y="'+T+'" width="'+w+'" height="'+(H-T-Bt)+'" fill="transparent" data-i="'+i+'"/>';}).join('');
+ const dots=S=>S.length<=40?S.map((x,i)=>'<circle cx="'+X(i)+'" cy="'+Y(x.v)+'" r="3"/>').join(''):'';
+ return '<svg class="rpsvg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Comparison chart" onmousemove="rpTip(event)" onclick="rpTip(event)" onmouseleave="rpTipX()">'+
+  '<defs><linearGradient id="rpg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14120F" stop-opacity=".16"/><stop offset="1" stop-color="#14120F" stop-opacity="0"/></linearGradient></defs>'+grid+xl+
+  '<path d="'+path(Bc)+'" class="rpl2"/><g class="rpd2">'+dots(Bc)+'</g><path d="'+area(A)+'" fill="url(#rpg1)"/><path d="'+path(A)+'" class="rpl1"/><g class="rpd1">'+dots(A)+'</g>'+
+  '<line class="rpcur" x1="0" x2="0" y1="'+T+'" y2="'+(H-Bt)+'" style="display:none"/>'+hit+'</svg>';}
+let RPTIP=null;
+window.rpTip=e=>{const r=e.target.closest&&e.target.closest('rect[data-i]');const box=document.getElementById('rp-tip'),svg=document.querySelector('.rpsvg');if(!r||!box||!RPTIP||!svg)return;
+ const i=+r.dataset.i,a=RPTIP.A[i],b=RPTIP.B[i],m=RPTIP.money,va=a?a.v:0,vb=b?b.v:0,ch=vb?Math.round((va/vb-1)*100):null;
+ box.innerHTML='<b>'+esc(a?a.lab:'')+'</b><div><i class="rpk1"></i>'+(m?rm(va):va)+'</div><div><i class="rpk2"></i>'+(b?esc(b.lab)+' · ':'')+(m?rm(vb):vb)+'</div>'+(ch!==null?'<small class="'+(ch>=0?'up':'dn')+'">'+(ch>=0?'▲':'▼')+' '+Math.abs(ch)+'%</small>':'');
+ const sr=svg.getBoundingClientRect(),rr=r.getBoundingClientRect(),x=rr.left+rr.width/2-sr.left;box.style.display='block';
+ box.style.left=Math.max(4,Math.min(sr.width-box.offsetWidth-4,x-box.offsetWidth/2))+'px';
+ const cur=svg.querySelector('.rpcur'),vx=+r.getAttribute('x')+(+r.getAttribute('width'))/2;cur.setAttribute('x1',vx);cur.setAttribute('x2',vx);cur.style.display='';};
+window.rpTipX=()=>{const b=document.getElementById('rp-tip');if(b)b.style.display='none';const c=document.querySelector('.rpsvg .rpcur');if(c)c.style.display='none';};
+
+/* ---------- pieces of the screen ---------- */
+const rpDelta=(a,b,inv)=>{if(!b&&!a)return '<span class="rpdl">—</span>';if(!b)return '<span class="rpdl up">new</span>';let p=Math.round((a/b-1)*1000)/10;if(Math.abs(p)>=100)p=Math.round(p);const good=inv?p<=0:p>=0;
+ return '<span class="rpdl '+(p===0?'':good?'up':'dn')+'">'+(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'%</span>';};
+function rpTile(lab,val,sub,dl,icn){return '<div class="rptile"><div class="rptl">'+ic(icn,14)+lab+'</div><div class="rptv">'+val+'</div><div class="rpts">'+dl+'<span>'+sub+'</span></div></div>';}
+function rpDonut(X){const tot=RP_CAT.reduce((a,[k])=>a+(RP.cat==='coll'?X.catAmt[k]:RP.cat==='sales'?X.catSales[k]:X.catN[k]),0);let acc=0;const C=2*Math.PI*52;
+ const val=k=>RP.cat==='coll'?X.catAmt[k]:RP.cat==='sales'?X.catSales[k]:X.catN[k];
+ const segs=RP_CAT.map(([k,,col])=>{const v=val(k);if(!tot||!v)return '';const len=v/tot*C,s='<circle r="52" cx="70" cy="70" fill="none" stroke="'+col+'" stroke-width="20" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-acc).toFixed(2)+'" transform="rotate(-90 70 70)"><title>'+esc(RP_CAT.find(x=>x[0]===k)[1])+'</title></circle>';acc+=len;return s;}).join('');
+ return '<div class="rpdon"><svg viewBox="0 0 140 140" class="rpdsvg"><circle r="52" cx="70" cy="70" fill="none" stroke="var(--line-2)" stroke-width="20"/>'+segs+
+  '<text x="70" y="66" text-anchor="middle" class="rpdc1">'+(RP.cat==='bills'?tot:rpShort(tot,true))+'</text><text x="70" y="84" text-anchor="middle" class="rpdc2">'+(RP.cat==='coll'?'collected':RP.cat==='sales'?'sales':'bills')+'</text></svg>'+
+  '<div class="rpleg">'+RP_CAT.map(([k,n,col])=>{const v=val(k);return '<div><i style="background:'+col+'"></i><span>'+n+'<small>'+X.catN[k]+' bill'+(X.catN[k]===1?'':'s')+'</small></span><b>'+(RP.cat==='bills'?v:rm(v))+'<small>'+(tot?Math.round(v/tot*100):0)+'%</small></b></div>';}).join('')+'</div></div>';}
+function rpTops(X,Y){const g=RP.top,L=Object.values(X.items[g]),P=Y.items[g],key=RP.tq==='qty'||g==='red'?'q':'v';
+ L.sort((a,b)=>b[key]-a[key]||b.q-a.q);const mx=Math.max(1,...L.map(x=>x[key])),tot=L.reduce((a,x)=>a+x[key],0);
+ const prevRank=Object.values(P).sort((a,b)=>b[key]-a[key]).map(x=>x.n);
+ if(!L.length)return '<div class="empty">Nothing sold in this group in this period.</div>';
+ return '<ol class="rptop">'+L.slice(0,10).map((x,i)=>{const pr=prevRank.indexOf(x.n),mv=pr<0?'<span class="rpnew">new</span>':pr>i?'<span class="up">▲'+(pr-i)+'</span>':pr<i?'<span class="dn">▼'+(i-pr)+'</span>':'<span class="rpsame">—</span>';
+  return '<li><span class="rprk">'+(i+1)+'</span><div class="rptn"><div class="spread"><b>'+esc(x.n)+'</b><span>'+(key==='v'?rm(x.v):x.q+'×')+'</span></div><div class="rpbar"><i style="width:'+(x[key]/mx*100).toFixed(1)+'%"></i></div>'+
+   '<small>'+(key==='v'?x.q+' sold':g==='red'?'sessions used':rm(x.v))+' · '+(tot?Math.round(x[key]/tot*100):0)+'% of the group</small></div><div class="rpmv">'+mv+'</div></li>';}).join('')+'</ol>';}
+function rpMethods(X,Y){const L=Object.entries(X.collBy).sort((a,b)=>b[1]-a[1]),tot=X.coll||1;
+ if(!L.length)return '<div class="empty">No money collected in this period.</div>';
+ return L.map(([m,v],i)=>'<div class="rpmeth"><div class="spread"><span><i style="background:'+['#14120F','#A67C3D','#2E6B52','#3E5C76','#9B4A4A','#7D756D','#C7B79B'][i%7]+'"></i>'+esc(m)+'</span><b>'+rm(v)+'</b></div>'+
+  '<div class="rpbar"><i style="width:'+(v/tot*100).toFixed(1)+'%;background:'+['#14120F','#A67C3D','#2E6B52','#3E5C76','#9B4A4A','#7D756D','#C7B79B'][i%7]+'"></i></div><small>'+Math.round(v/tot*100)+'% · '+rpDelta(v,Y.collBy[m]||0)+' vs compared</small></div>').join('')+
+  (X.refund?'<div class="rpmeth rpref"><div class="spread"><span>Refunds paid out</span><b>−'+rm(X.refund)+'</b></div></div>':'');}
+function rpDaily(X){const days=Object.keys(X.daily).sort().reverse();
+ if(!days.length)return '<div class="empty">No collection in this period.</div>';
+ const M=Object.entries(X.collBy).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+ const row=d=>{const r=X.daily[d],open=RP.day===d;
+  return '<tr class="rpdrow'+(open?' open':'')+'" onclick="rpDay(\''+d+'\')"><td><b>'+rpD(d).toLocaleDateString('en-MY',{weekday:'short',day:'numeric',month:'short'})+'</b><small>'+r.n.size+' bill'+(r.n.size===1?'':'s')+'</small></td>'+
+   M.map(m=>'<td class="num">'+(r.by[m]?rm(r.by[m]):'<span class="muted">—</span>')+'</td>').join('')+'<td class="num">'+(r.ref?'−'+rm(r.ref):'<span class="muted">—</span>')+'</td><td class="num"><b>'+rpRm(r.tot-r.ref)+'</b></td></tr>'+
+   (open?'<tr class="rpdet"><td colspan="'+(M.length+3)+'"><div class="rppays">'+X.pays.filter(p=>p.d===d).sort((a,b)=>String(a.at).localeCompare(String(b.at))).map(p=>
+    '<div onclick="event.stopPropagation();showReceipt(\''+esc(p.id)+'\')"><span>'+(p.at?tstr(p.at):'')+'</span><span>'+esc(p.inv)+'</span><span>'+esc(p.cl)+(p.late?' <span class="pill">balance</span>':'')+'</span><span>'+esc(p.m)+'</span><b>'+rm(p.a)+'</b></div>').join('')+'</div></td></tr>':'');};
+ return '<div class="scroll"><table class="rpdt"><thead><tr><th>Day</th>'+M.map(m=>'<th class="num">'+esc(m)+'</th>').join('')+'<th class="num">Refunds</th><th class="num">Net</th></tr></thead><tbody>'+days.map(row).join('')+'</tbody>'+
+  '<tfoot><tr><td><b>Total</b><small>'+days.length+' day'+(days.length===1?'':'s')+'</small></td>'+M.map(m=>'<td class="num"><b>'+rm(X.collBy[m])+'</b></td>').join('')+'<td class="num"><b>'+(X.refund?'−'+rm(X.refund):'—')+'</b></td><td class="num"><b>'+rpRm(X.coll-X.refund)+'</b></td></tr></tfoot></table></div>';}
+function rpHeat(X){const o=+D.meta.open||9,c=+D.meta.close||20,hrs=[];for(let h=o;h<c;h++)hrs.push(h);const mx=Math.max(1,...Object.values(X.heat));
+ const dn=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+ return '<div class="scroll"><table class="rpheat"><tr><th></th>'+hrs.map(h=>'<th>'+(h%12||12)+(h<12?'a':'p')+'</th>').join('')+'</tr>'+dn.map((d,i)=>'<tr><th>'+d+'</th>'+hrs.map(h=>{const v=X.heat[i+'|'+h]||0;
+  return '<td title="'+d+' '+h+':00 · '+v+' bill'+(v===1?'':'s')+'" style="background:rgba(166,124,61,'+(v?(.12+.88*v/mx).toFixed(2):0)+')">'+(v||'')+'</td>';}).join('')+'</tr>').join('')+'</table></div>';}
+function rpMix(X){const cat={Treatments:0,'Add-ons':0,Retail:0,Packages:0};
+ X.bills.forEach(s=>(s.items||[]).forEach(i=>{if(i.kind==='addon')cat['Add-ons']+=lineAmt(i);else if(i.kind==='service')cat.Treatments+=lineAmt(i);else if(retailKind(i.kind))cat.Retail+=lineAmt(i);else if(i.kind==='package')cat.Packages+=lineAmt(i);}));
+ const tot=Object.values(cat).reduce((a,b)=>a+b,0)||1,col=['#14120F','#A67C3D','#2E6B52','#3E5C76'];
+ return '<div class="rpstack">'+Object.keys(cat).map((k,i)=>cat[k]?'<i style="width:'+(cat[k]/tot*100)+'%;background:'+col[i]+'" title="'+k+'"></i>':'').join('')+'</div>'+
+  '<div class="rpmixl">'+Object.keys(cat).map((k,i)=>'<div><i style="background:'+col[i]+'"></i>'+k+'<b>'+rm(cat[k])+'</b><small>'+Math.round(cat[k]/tot*100)+'%</small></div>').join('')+'</div>'+
+  '<p class="tiny muted" style="margin:8px 0 0">Packages count when sold; sessions redeemed from them are not counted again.</p>';}
+function rpTeam(X){const comm={};
+ X.bills.forEach(s=>(s.items||[]).forEach(i=>{const who=i.staffId||s.staffId,u=stf(who);if(!u.id)return;const rate=salesRate(i,u);
+  comm[who]=comm[who]||{name:u.name,svc:0,prod:0,c:0,n:new Set()};comm[who].n.add(s.id);
+  if(i.kind==='service'||i.kind==='addon')comm[who].svc+=lineAmt(i);else if(retailKind(i.kind)||i.kind==='package')comm[who].prod+=lineAmt(i);comm[who].c+=lineComm(i,rate);}));
+ const hot=handsOnTotals(X.bills);Object.values(hot).forEach(o=>{comm[o.id]=comm[o.id]||{name:o.name,svc:0,prod:0,c:0,n:new Set()};comm[o.id].ho=o.comm;comm[o.id].hs=o.sessions;});
+ const L=Object.values(comm).sort((a,b)=>(b.svc+b.prod)-(a.svc+a.prod)),mx=Math.max(1,...L.map(x=>x.svc+x.prod));
+ return '<div class="scroll"><table><tr><th>Team member</th><th class="num">Treatments</th><th class="num">Retail & packages</th><th class="num">Bills</th><th class="num">Sales comm.</th><th class="num">Hands-on</th><th class="num">Total comm.</th></tr>'+
+  (L.map(x=>'<tr><td><b>'+esc(x.name)+'</b><div class="rpbar sm"><i style="width:'+((x.svc+x.prod)/mx*100).toFixed(1)+'%"></i></div></td><td class="num">'+rm(x.svc)+'</td><td class="num">'+rm(x.prod)+'</td><td class="num">'+x.n.size+'</td><td class="num">'+rm(x.c)+'</td><td class="num">'+rm(x.ho||0)+
+   (x.hs?'<div class="tiny muted">'+x.hs+' session'+(x.hs>1?'s':'')+'</div>':'')+'</td><td class="num"><b>'+rm(x.c+(x.ho||0))+'</b></td></tr>').join('')||'<tr><td colspan="7" class="muted">No sales in this period.</td></tr>')+'</table></div>';}
+function rpBranches(f,t){if(D.branches.length<2)return '';
+ const row=b=>{const x=RPD.sales.filter(s=>!s.voided&&s.date>=f&&s.date<=t&&(s.branchId||ME.branchId)===b.id),r=x.reduce((a,s)=>a+(+s.total||0),0);return '<tr><td>'+esc(b.name)+'</td><td class="num">'+rm(r)+'</td><td class="num">'+x.length+'</td><td class="num">'+rm(x.length?r/x.length:0)+'</td></tr>';};
+ return '<div class="card rpcard"><h3>'+ic('home',15)+' Branches</h3><div class="scroll"><table><tr><th>Branch</th><th class="num">Sales</th><th class="num">Bills</th><th class="num">Average</th></tr>'+D.branches.map(row).join('')+'</table></div></div>';}
+
+vRep=function(){
+ const [f,t]=rpRange(),[cf,ct]=rpCmp();
+ const bar='<div class="card rphead"><div class="rph1"><div><h2>'+ic('chart',18)+' Reports</h2><p class="tiny muted">'+esc((D.meta.biz||{}).name||'')+(rpBr()==='all'?' · all branches':' · '+esc((D.branches.find(b=>b.id===rpBr())||{}).name||''))+'</p></div>'+
+  '<div class="row noprint" style="gap:6px;flex-wrap:wrap">'+(D.branches.length>1?'<select class="f" style="margin:0;width:auto" onchange="rpBrSet(this.value)">'+D.branches.map(b=>'<option value="'+b.id+'"'+(rpBr()===b.id?' selected':'')+'>'+esc(b.name)+'</option>').join('')+'<option value="all"'+(rpBr()==='all'?' selected':'')+'>All branches</option></select>':'')+
+  '<button class="btn sm ghost" onclick="buildReport()" title="Reload">'+ic('refresh',14)+'</button><button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print / PDF</button><button class="btn sm ghost" onclick="csvSales()">'+ic('download',14)+'Bills CSV</button></div></div>'+
+  '<div class="rpchips noprint" role="tablist">'+RP_K.map(([k,n])=>'<button type="button" role="tab" class="'+(RP.k===k?'on':'')+'" onclick="rpK(\''+k+'\')">'+n+'</button>').join('')+'</div>'+
+  (RP.k==='custom'?'<div class="row rpcust noprint"><label>From <input type="date" class="f" id="rp-f" value="'+f+'" max="'+today()+'"></label><label>To <input type="date" class="f" id="rp-t" value="'+t+'" max="'+today()+'"></label><button class="btn sm" onclick="rpCustom()">Show</button></div>':'')+
+  '<div class="rpper"><span><i class="rpk1"></i><b>'+rpLabel(f,t)+'</b></span><span class="muted">compared with</span>'+
+   '<select class="f noprint" onchange="rpCmpSet(this.value)"><option value="prev"'+(RP.cmp==='prev'?' selected':'')+'>the period before</option><option value="year"'+(RP.cmp==='year'?' selected':'')+'>the same dates last year</option><option value="custom"'+(RP.cmp==='custom'?' selected':'')+'>dates I choose…</option></select>'+
+   '<span><i class="rpk2"></i><b>'+rpLabel(cf,ct)+'</b></span></div>'+
+  (RP.cmp==='custom'?'<div class="row rpcust noprint"><label>Compare from <input type="date" class="f" id="rp-cf" value="'+cf+'"></label><label>to <input type="date" class="f" id="rp-ct" value="'+ct+'"></label><button class="btn sm" onclick="rpCmpCustom()">Compare</button></div>':'')+'</div>';
+ const [lo]=[rpAdd(f<cf?f:cf,-180)],hi=t>ct?t:ct;
+ if(!RPD||RPD.lo>lo||RPD.hi<hi){rpLoad();return bar+'<div class="card"><div class="empty"><div class="spin"></div><div style="margin-top:8px">Loading the bills…</div></div></div>';}
+ if(!RPBUSY&&RPD.at&&Date.now()-RPD.at>120000)setTimeout(()=>rpLoad(true),0);   /* fresh bills when coming back to the screen */
+ const X=rpCalc(f,t),Y=rpCalc(cf,ct);REPSALES=RPD.sales.filter(s=>s.date>=f&&s.date<=t);
+ const n=X.bills.length,avg=n?X.sales/n:0,pn=Y.bills.length,pavg=pn?Y.sales/pn:0;
+ let h=bar+(RPERR?'<div class="warnbox">'+ic('alert',13)+' '+esc(RPERR)+'</div>':'');
+ h+='<div class="rptiles">'+rpTile('Sales',rm(X.sales),'vs '+rm(Y.sales),rpDelta(X.sales,Y.sales),'chart')+rpTile('Collection',rpRm(X.coll-X.refund),X.refund?'after '+rm(X.refund)+' refunds':'vs '+rpRm(Y.coll-Y.refund),rpDelta(X.coll-X.refund,Y.coll-Y.refund),'wallet')+
+  rpTile('Bills',n,'vs '+pn,rpDelta(n,pn),'receipt')+rpTile('Average bill',rm(avg),'vs '+rm(pavg),rpDelta(avg,pavg),'tag')+
+  rpTile('Clients',X.clients.size,'vs '+Y.clients.size,rpDelta(X.clients.size,Y.clients.size),'users')+rpTile('New clients',X.fresh.size,'vs '+Y.fresh.size,rpDelta(X.fresh.size,Y.fresh.size),'star')+
+  rpTile('Package sessions used',X.redeemed,'vs '+Y.redeemed,rpDelta(X.redeemed,Y.redeemed),'package')+rpTile('Still owed',rm(X.owed),'on bills in this period','<span class="rpdl'+(X.owed>0?' dn':'')+'">'+(X.owed>0?'to collect':'all paid')+'</span>','alert')+'</div>';
+ /* the comparison chart */
+ const g=rpGran(f,t),A=rpSeries(f,t,g,RP.m),B=rpSeries(cf,ct,g==='h'?'h':rpGran(cf,ct)===g?g:g,RP.m),money=rpMoney(RP.m);RPTIP={A,B,money};
+ const sa=A.reduce((a,x)=>a+x.v,0),sb=B.reduce((a,x)=>a+x.v,0);
+ h+='<div class="card rpcard"><div class="spread rpch"><h3>'+ic('chart',15)+' Compare the two periods</h3><div class="rpseg noprint">'+[['sales','Sales'],['coll','Collection'],['bills','Bills'],['clients','Clients']].map(([k,l])=>'<button type="button" class="'+(RP.m===k?'on':'')+'" onclick="rpM(\''+k+'\')">'+l+'</button>').join('')+'</div></div>'+
+  '<div class="rplegend"><span><i class="rpk1"></i>'+rpLabel(f,t)+' · <b>'+(money?rm(sa):sa)+'</b></span><span><i class="rpk2"></i>'+rpLabel(cf,ct)+' · <b>'+(money?rm(sb):sb)+'</b></span>'+rpDelta(sa,sb)+'<span class="muted tiny">'+({h:'by hour',d:'by day',w:'by week',m:'by month'}[g])+(RP.m==='clients'&&g!=='h'?' · clients counted once per '+({d:'day',w:'week',m:'month'}[g]):'')+'</span></div>'+
+  '<div class="rpchw">'+rpChart(A,B,money)+'<div class="rptip" id="rp-tip"></div></div></div>';
+ /* collection by method and by type of client */
+ h+='<div class="rpgrid2"><div class="card rpcard"><h3>'+ic('wallet',15)+' Collection by payment method</h3>'+rpMethods(X,Y)+'</div>'+
+  '<div class="card rpcard"><div class="spread"><h3>'+ic('users',15)+' By type of client</h3><div class="rpseg sm noprint">'+[['coll','Collection'],['sales','Sales'],['bills','Bills']].map(([k,l])=>'<button type="button" class="'+(RP.cat===k?'on':'')+'" onclick="rpCat(\''+k+'\')">'+l+'</button>').join('')+'</div></div>'+rpDonut(X)+
+  '<p class="tiny muted" style="margin:8px 0 0">From the visit type on the booking when there is one; otherwise new = first bill, follow-up = back within a month, returning = after longer. Walk-in & others = bills without a client.</p></div></div>';
+ /* top sellers */
+ h+='<div class="card rpcard"><div class="spread rpch"><h3>'+ic('award',15)+' Top sellers</h3><div class="rpseg sm noprint">'+[['rev','By sales'],['qty','By quantity']].map(([k,l])=>'<button type="button" class="'+(RP.tq===k?'on':'')+'" onclick="rpTq(\''+k+'\')">'+l+'</button>').join('')+'</div></div>'+
+  '<div class="rptabs noprint">'+[['svc','Treatments'],['prod','Products'],['pkg','Packages'],['addon','Add-ons'],['red','Package sessions used']].map(([k,l])=>'<button type="button" class="'+(RP.top===k?'on':'')+'" onclick="rpTop(\''+k+'\')">'+l+'<small>'+Object.values(X.items[k]).reduce((a,x)=>a+x.q,0)+'</small></button>').join('')+'</div>'+
+  rpTops(X,Y)+'<p class="tiny muted" style="margin:6px 0 0">▲▼ shows the move in ranking against the compared period.</p></div>';
+ /* day by day collection */
+ h+='<div class="card rpcard"><div class="spread rpch"><h3>'+ic('calendar',15)+' Daily collection</h3><button class="btn sm ghost noprint" onclick="rpCsvDaily()">'+ic('download',14)+'CSV</button></div>'+
+  '<p class="tiny muted" style="margin:0 0 8px">Money received each day, by payment method. A balance paid later counts on the day it was paid. Tap a day to see its payments.</p>'+rpDaily(X)+'</div>';
+ h+='<div class="rpgrid2"><div class="card rpcard"><h3>'+ic('grid',15)+' Sales mix</h3>'+rpMix(X)+'</div><div class="card rpcard"><h3>'+ic('clock',15)+' Busiest days & hours</h3>'+rpHeat(X)+'<p class="tiny muted" style="margin:6px 0 0">Number of bills by the time they were closed.</p></div></div>';
+ h+='<div class="card rpcard"><h3>'+ic('staff',15)+' Team</h3>'+rpTeam(X)+'<p class="tiny muted">Sales commission comes from each treatment and staff profile. Hands-on is what was recorded at checkout for whoever performed each treatment.</p></div>';
+ h+=rpBranches(f,t);
+ try{h+=smartReport(X.bills);}catch(e){}
+ return h;};
+window.rpK=k=>{RP.k=k;RP.day='';render();};
+window.rpCustom=()=>{RP.f=($('#rp-f')||{}).value||'';RP.t=($('#rp-t')||{}).value||'';render();};
+window.rpCmpSet=v=>{RP.cmp=v;if(v==='custom'&&!RP.cf){const [cf,ct]=(()=>{const o=RP.cmp;RP.cmp='prev';const r=rpCmp();RP.cmp=o;return r;})();RP.cf=cf;RP.ct=ct;}render();};
+window.rpCmpCustom=()=>{RP.cf=($('#rp-cf')||{}).value||'';RP.ct=($('#rp-ct')||{}).value||'';render();};
+window.rpM=m=>{RP.m=m;render();};window.rpTop=t=>{RP.top=t;render();};window.rpTq=q=>{RP.tq=q;render();};window.rpCat=c=>{RP.cat=c;render();};
+window.rpDay=d=>{RP.day=RP.day===d?'':d;render();};
+window.rpBrSet=b=>{RP.br=b;render();};
+window.rpCsvDaily=()=>{if(!RPD)return;const [f,t]=rpRange(),X=rpCalc(f,t),M=Object.keys(X.collBy).sort();
+ const rows=[['Date',...M,'Refunds','Net','Bills'],...Object.keys(X.daily).sort().map(d=>{const r=X.daily[d];return [d,...M.map(m=>(r.by[m]||0).toFixed(2)),r.ref.toFixed(2),(r.tot-r.ref).toFixed(2),r.n.size];}),
+  ['Total',...M.map(m=>X.collBy[m].toFixed(2)),X.refund.toFixed(2),(X.coll-X.refund).toFixed(2),'']];
+ const txt=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'),a=document.createElement('a');
+ a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('﻿'+txt);a.download='collection-'+f+'-to-'+t+'.csv';a.click();toast('CSV downloaded');};
 
 </script>
