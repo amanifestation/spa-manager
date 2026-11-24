@@ -3420,6 +3420,29 @@ html.appin #root{animation:appIn .55s ease both}
 @media(max-width:420px){.rpdon{grid-template-columns:1fr;justify-items:center}.rpleg{width:100%}}
 @media print{.rpchips,.rpseg,.rptabs,.rpcust{display:none!important}.rptile,.rpcard{break-inside:avoid}}
 
+/* 30u · glass icons */
+html.glass .glt{position:relative;isolation:isolate;background:transparent!important;border-color:transparent!important;box-shadow:none!important;overflow:visible!important;color:#fff!important}
+html.glass .glt::before{content:'';position:absolute;z-index:-2;inset:0;border-radius:inherit;background:linear-gradient(140deg,var(--g1),var(--g2));transform:translate(21%,-19%) scale(.78)}
+html.glass .glt::after{content:'';position:absolute;z-index:-1;inset:0;border-radius:inherit;
+ background:linear-gradient(155deg,color-mix(in srgb,var(--g1) 46%,rgba(255,255,255,.55)),color-mix(in srgb,var(--g2) 34%,rgba(255,255,255,.18)));
+ -webkit-backdrop-filter:blur(6px) saturate(1.5);backdrop-filter:blur(6px) saturate(1.5);
+ border:1px solid rgba(255,255,255,.75);box-shadow:inset 0 1px 1px rgba(255,255,255,.95),inset 0 -2px 4px color-mix(in srgb,var(--g2) 18%,transparent),0 10px 18px -10px var(--g2)}
+html.glass .glt .ico svg{stroke:#fff;stroke-width:2.1;filter:drop-shadow(0 1px 1.5px color-mix(in srgb,var(--g3) 70%,transparent))}
+/* the bottom bar: a small glass tile per tab, brighter when it is the open tab */
+html.glass .glnav{position:relative;isolation:isolate;width:30px;height:30px;display:grid;place-items:center;border-radius:10px;color:#fff!important;opacity:.82;transition:opacity .2s,transform .2s}
+html.glass .glnav::before{content:'';position:absolute;z-index:-2;inset:0;border-radius:inherit;background:linear-gradient(140deg,var(--g1),var(--g2));transform:translate(17%,-15%) scale(.74)}
+html.glass .glnav::after{content:'';position:absolute;z-index:-1;inset:0;border-radius:inherit;background:linear-gradient(155deg,color-mix(in srgb,var(--g1) 40%,rgba(255,255,255,.42)),color-mix(in srgb,var(--g2) 30%,rgba(255,255,255,.12)));
+ -webkit-backdrop-filter:blur(5px) saturate(1.5);backdrop-filter:blur(5px) saturate(1.5);border:1px solid rgba(255,255,255,.6);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 6px 12px -8px var(--g2)}
+html.glass .glnav svg{width:17px;height:17px;stroke:#fff;stroke-width:2.1;filter:drop-shadow(0 1px 1.5px color-mix(in srgb,var(--g3) 70%,transparent))}
+html.glass .on .glnav,html.glass [aria-current] .glnav,html.glass .active .glnav,html.glass .open .glnav{opacity:1;transform:translateY(-1px)}
+/* larger stand-alone icons: the same colour as a gradient line */
+html.glass .glg{opacity:1!important}
+html.glass .glg svg{filter:drop-shadow(0 4px 8px rgba(0,0,0,.06))}
+html.glass .bnic{width:30px;height:30px}
+html.glass .bnic>span{position:absolute;inset:0;display:grid;place-items:center}
+html.glass .bnic .glnav{opacity:1}
+html.glass .glt>.ico{background:none!important;box-shadow:none!important;border:0!important;width:auto!important;height:auto!important}
+
 </style>
 <div id="splash" class="spl" role="status" aria-live="polite"><div class="spl-in">
  <div class="spl-mark"><span class="spl-ring"></span><span class="spl-ring"></span><img id="spl-logo" alt="" hidden><b id="spl-ini">S</b></div>
@@ -3689,7 +3712,7 @@ const ICONS={
 const ic=(n,s,st)=>{
  const d=ICONS[n];
  if(!d)console.warn('icon not defined:',n);
- return '<span class="ico"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
+ return '<span class="ico" data-i="'+n+'"><svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" '+
   'stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"'+
   (st?' style="'+st+'"':'')+'><path d="'+(d||'M12 5.6a6.4 6.4 0 100 12.8 6.4 6.4 0 000-12.8')+
   '"/></svg></span>';};
@@ -3718,7 +3741,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-10-21a';
+const BUILD='2026-11-24a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -34693,5 +34716,55 @@ window.rpCsvDaily=()=>{if(!RPD)return;const [f,t]=rpRange(),X=rpCalc(f,t),M=Obje
   ['Total',...M.map(m=>X.collBy[m].toFixed(2)),X.refund.toFixed(2),(X.coll-X.refund).toFixed(2),'']];
  const txt=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n'),a=document.createElement('a');
  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent('﻿'+txt);a.download='collection-'+f+'-to-'+t+'.csv';a.click();toast('CSV downloaded');};
+
+
+/* ============ 30u · glass icons ============ */
+/* Every icon that sits on its own tile (card headings, settings groups, alerts, the bottom bar…) becomes a
+   glassmorphism icon: a soft coloured shape behind a frosted pane, the symbol on top. Each kind of icon keeps
+   its own soft colour everywhere (calendar rose, clients lavender, money mint…). Larger icons that stand alone
+   (empty pages, big tiles) take the same colour as a gradient. Small icons inside buttons and text stay plain
+   so buttons read calmly. Off switch: Settings → This app → "Glass icons". */
+const GL_HUE=[['#A9D2FF','#5E97F6','#2F66CB'],['#D3BCFF','#9878EF','#6544C6'],['#A6EBC6','#41BC83','#1F8758'],['#FFD0AC','#FF985E','#CF6426'],
+ ['#FFBAD0','#F36B94','#C43E69'],['#FFE6A2','#F4BE4A','#AF7F10'],['#A6ECE9','#3BBCC6','#1A8591'],['#F5C3F1','#CD7CDB','#9845A9']];
+const GL_MAP={home:0,calendar:4,users:1,user:1,staff:1,idcard:1,lock:1,grid:1,package:3,wallet:3,tag:3,room:3,stock:3,mega:3,work:3,
+ card:4,mail:4,flag:4,trash:4,close:4,pin:4,out:4,money:2,chart:2,shield:2,phone:2,check:2,login:2,spark:5,alert:5,bell:5,star:5,award:5,
+ msg:7,gift:7,palette:7,edit:7,signature:7,clock:6,history:6,plan:6,gear:6,transfer:6,tool:6,print:6,refresh:6,
+ search:0,note:0,receipt:0,list:0,image:0,cloud:0,download:0,upload:0,eye:0};
+const glHue=n=>{if(GL_MAP[n]!==undefined)return GL_MAP[n];let h=0;for(const c of String(n||''))h=(h*31+c.charCodeAt(0))>>>0;return h%8;};
+const glOn=()=>{try{return localStorage.getItem('spGlass')!=='0';}catch(e){return true;}};
+/* the gradients the larger stand-alone icons are drawn with */
+function glDefs(){if(document.getElementById('gl-defs'))return;const s=document.createElementNS('http://www.w3.org/2000/svg','svg');s.id='gl-defs';s.setAttribute('aria-hidden','true');
+ s.setAttribute('style','position:absolute;width:0;height:0;overflow:hidden');
+ s.innerHTML='<defs>'+GL_HUE.map((c,i)=>'<linearGradient id="gl-g'+i+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+c[1]+'"/><stop offset="1" stop-color="'+c[2]+'"/></linearGradient>').join('')+'</defs>';
+ document.body.appendChild(s);}
+const GL_NO='button,a,.btn,.iconbtn,label,input,select,textarea,.pill,.chip,.rpdl';
+function glSet(el,i){const c=GL_HUE[i];el.style.setProperty('--g1',c[0]);el.style.setProperty('--g2',c[1]);el.style.setProperty('--g3',c[2]);}
+/* a tile = an element that holds nothing but the icon, square-ish, 24–96px, painted or rounded */
+function glTile(p,r){if(!p||p===document.body||p.matches(GL_NO)||p.children.length!==1||String(p.textContent||'').trim())return false;
+ if(r.width<24||r.width>110||Math.abs(r.width-r.height)>6)return false;
+ const cs=getComputedStyle(p),bg=cs.backgroundColor,img=cs.backgroundImage;
+ return (bg&&bg!=='transparent'&&!/rgba\(\d+, \d+, \d+, 0\)/.test(bg))||(img&&img!=='none')||parseFloat(cs.borderRadius)>=6;}
+function glScan(root){if(!glOn())return;glDefs();
+ (root||document).querySelectorAll('.ico[data-i]:not([data-gl])').forEach(e=>{const n=e.dataset.i,h=glHue(n),p=e.parentElement;
+  if(p&&(p.classList.contains('bnitem')||p.closest('.bnrow'))){e.setAttribute('data-gl','1');e.classList.add('glnav');glSet(e,h);return;}
+  const r=p?p.getBoundingClientRect():{width:0};if(!r.width)return;   /* not on screen yet (a closed group): looked at again when it opens */
+  e.setAttribute('data-gl','1');
+  if(glTile(p,r)){p.classList.add('glt');glSet(p,h);return;}
+  const sv=e.querySelector('svg'),w=sv?sv.getBoundingClientRect().width:0;
+  if(!sv||p.matches(GL_NO)||e.closest('.btn,.iconbtn,.bnitem,.topbar,.chfab,button'))return;
+  if(w>=22||e.closest('h1,h2,h3,h4,.rptl,.kpi .lab,.kpil,.metile')){sv.setAttribute('stroke','url(#gl-g'+h+')');sv.setAttribute('stroke-width','1.8');e.classList.add('glg');}});}
+let GLRAF=0;
+const glKick=()=>{if(GLRAF)return;GLRAF=requestAnimationFrame(()=>{GLRAF=0;try{glScan();}catch(e){console.warn('glass',e);}});};
+new MutationObserver(glKick).observe(document.documentElement,{childList:true,subtree:true});
+['click','toggle','transitionend','resize'].forEach(ev=>addEventListener(ev,()=>setTimeout(glKick,30),true));
+document.documentElement.classList.toggle('glass',glOn());glKick();
+window.glToggle=on=>{try{localStorage.setItem('spGlass',on?'1':'0');}catch(e){}location.reload();};
+/* the switch, in Settings → This app */
+{const _w=stgWrap;stgWrap=function(html){
+ const card='<div class="card"><div class="sec-h"><h2>'+ic('palette',16)+' Glass icons</h2></div><label class="row" style="gap:10px;align-items:center;margin:0">'+
+  '<input type="checkbox"'+(glOn()?' checked':'')+' onchange="glToggle(this.checked)"> Soft coloured glass icons across the app <span class="tiny muted">(this device)</span></label></div>';
+ return _w.call(this,html+card);};}
+STG_DESC.push([/^Glass icons/,'Soft coloured glass icons, or the plain line icons']);
+STG_GROUPS[0].m=/^(This app|Notifications|Glass icons)/;
 
 </script>
