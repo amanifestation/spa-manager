@@ -3585,6 +3585,50 @@ html.ico3d .tile.nvx .tico::before,html.ico3d .tile.nvx .tico::after{content:non
 html.ico3d .tile .nvico{width:46px;height:46px}
 html.ico3d .tile:hover .nvimg{transform:translateY(-2px) scale(1.04);transition:transform .25s var(--ease)}
 
+/* ============ 30z · client card on Bookings ============ */
+.cfname{cursor:pointer;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:2px;text-decoration-thickness:1.5px;border-radius:4px;transition:background .15s,text-decoration-color .15s}
+.cfname:hover{text-decoration-color:currentColor;background:color-mix(in srgb,currentColor 9%,transparent)}
+.cfname.big{display:inline-flex;align-items:center;gap:6px;padding:1px 4px;margin-left:-4px}
+.cfnic{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+#cfwin{position:fixed;z-index:8800;top:84px;right:18px;width:400px;max-height:calc(100vh - 110px);display:none;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:20px;
+ box-shadow:0 24px 60px rgba(20,18,15,.28),0 3px 10px rgba(20,18,15,.10);overflow:hidden;color:var(--ink)}
+#cfwin.open{display:flex;animation:cfin .22s var(--ease)}@keyframes cfin{from{opacity:0;transform:translateY(10px) scale(.98)}}
+#cfwin.drag{user-select:none;box-shadow:0 30px 70px rgba(20,18,15,.34)}
+.cfh{display:flex;gap:11px;align-items:center;padding:14px 14px 12px;background:linear-gradient(135deg,#FFFDF8,#F4ECE0);border-bottom:1px solid var(--line-2);cursor:grab}
+@media(max-width:699px){.cfh{cursor:default}}
+.cfav{width:42px;height:42px;border-radius:14px;flex:none;display:grid;place-items:center;background:var(--ink);color:#E2C58F;font-weight:700;font-size:15px}
+.cfht{flex:1;min-width:0;display:flex;flex-direction:column}.cfht b{font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cfht .cno{margin-left:0;align-self:flex-start;margin-top:2px}
+.cfht small{color:var(--ink-3);font-size:12px;margin-top:2px}
+.cfx{width:34px;height:34px;border-radius:11px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;flex:none;color:var(--ink-2)}
+.cftabs{display:flex;gap:4px;padding:8px 10px 0;background:var(--surface)}
+.cftabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:0;background:none;padding:9px 6px;font:inherit;font-size:13px;font-weight:600;color:var(--ink-3);border-bottom:2px solid transparent;cursor:pointer}
+.cftabs button.on{color:var(--ink);border-bottom-color:var(--brass)}
+.cfbody{padding:12px 14px 14px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:120px}
+.cfbody h4{display:flex;align-items:center;gap:6px;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:14px 0 6px;font-weight:650}
+.cfwarn{display:flex;gap:9px;align-items:flex-start;background:var(--amber-soft);color:#6E4C0D;border-radius:12px;padding:9px 11px;font-size:13px;margin-bottom:8px}
+.cfwarn.r{background:#FBE3E5;color:#8E2A38}.cfwarn b{display:block;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:1px}
+.cfchips{display:flex;gap:5px;flex-wrap:wrap;margin:2px 0 4px}.cfchips span{font-size:11.5px;padding:3px 9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.cfstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:6px;margin-top:8px}
+.cfstats>div{background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:8px 9px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cfstats b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cfstats small{font-size:11px;color:var(--ink-3)}
+.cfstats .r b{color:#A93847}.cfstats .a b{color:#94650F}
+.cfrow{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line-2);padding:7px 2px;font:inherit;color:inherit;cursor:pointer}
+.cfrow.st{cursor:default}.cfrow:not(.st):hover{background:var(--surface-2)}
+.cfrow span{grid-row:span 2;font-size:12px;color:var(--ink-2);font-weight:600;white-space:nowrap;min-width:84px}.cfrow b{font-size:13px}.cfrow small{font-size:11.5px;color:var(--ink-3)}
+.cfmut{font-size:12.5px;color:var(--ink-3);margin:2px 0}
+.cfnotes{background:var(--surface-2);border-radius:10px;padding:8px 10px;font-size:13px;white-space:pre-wrap;margin-bottom:6px}.cfnotes small{display:block;font-size:11px;color:var(--ink-3);margin-bottom:2px}
+.cfnote{display:flex;gap:9px;align-items:flex-start;background:var(--surface-2);border-radius:12px;padding:10px 12px;font-size:13px}.cfnote small{display:block;color:var(--ink-3);margin-top:2px}
+.cfacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--line-2)}
+.cfform{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}.cff{min-width:0}.cff.w2,.cfchk.w2,.cfsec{grid-column:1/-1}
+.cff label{margin-top:8px}.cff .f{margin-bottom:0}
+.cfsec{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);font-weight:650;margin:14px 0 0;padding-top:10px;border-top:1px solid var(--line-2)}.cfsec:first-child{margin-top:0;padding-top:0;border:0}
+.cfchk{display:flex;gap:8px;align-items:center;font-size:13px;margin:8px 0 0}
+.cferr{color:#A93847;font-size:12.5px;min-height:18px;margin-top:8px}
+.cfsave{position:sticky;bottom:-14px;display:flex;gap:8px;justify-content:flex-end;background:var(--surface);padding:10px 0 2px;margin-top:2px;border-top:1px solid var(--line-2)}
+@media(max-width:699px){#cfwin{left:8px;right:8px;width:auto;top:auto;bottom:calc(84px + env(safe-area-inset-bottom));max-height:calc(100vh - 150px);border-radius:22px}
+ #cfwin .cfform{grid-template-columns:1fr}}
+@media print{#cfwin{display:none!important}}
+
 </style>
 <div id="splash" class="spl" role="status" aria-live="polite"><div class="spl-in">
  <div class="spl-mark"><span class="spl-ring"></span><span class="spl-ring"></span><img id="spl-logo" alt="" hidden><b id="spl-ini">S</b></div>
@@ -3883,7 +3927,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-11-25d';
+const BUILD='2026-11-25e';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -35459,5 +35503,152 @@ window.nvToggle=on=>{try{localStorage.setItem('spIcon3d',on?'1':'0');}catch(e){}
  return _w.call(this,html+card);};}
 STG_DESC.push([/^3D screen icons/,'The 3D icon set, or the line icons']);
 STG_GROUPS[0].m=/^(This app|Notifications|Glass icons|3D screen icons)/;
+
+
+
+/* ============ 30z · Client card on Bookings ============ */
+/* In Bookings, tap a client's name (on the calendar, in the list, on the appointment) and their file opens
+   in a small floating window beside the calendar — contact, safety warnings, visits and spend, upcoming
+   bookings, packages, recent treatments and notes — with a second tab to edit their personal details on
+   the spot. The calendar stays usable behind it; the window can be dragged (desktop) and tapping another
+   name switches it to that client. Nothing to open in Clients. */
+let CF={cid:'',apptId:'',tab:'file',H:null,dirty:false,busy:false,pos:null};
+const cfCanEdit=()=>boss()||can('customer');
+function cfEl(){let w=document.getElementById('cfwin');if(!w){w=document.createElement('div');w.id='cfwin';w.setAttribute('role','dialog');w.setAttribute('aria-label','Client file');document.body.appendChild(w);cfDrag(w);}return w;}
+window.cfOpen=async(cid,apptId)=>{
+ if(CF.dirty&&CF.cid&&CF.cid!==cid&&!confirm('Leave without saving the changes to '+((cust(CF.cid)||{}).name||'this client')+'?'))return;
+ const same=CF.cid===cid&&cid;CF={...CF,cid:cid||'',apptId:apptId||'',tab:same?CF.tab:'file',H:same?CF.H:null,dirty:false,busy:false};
+ const w=cfEl();w.classList.add('open');cfPaint();
+ if(!cid)return;
+ if(!cust(cid)){try{const d=await getDoc(doc(db,'customers',cid));if(d.exists()&&!cust(cid))CUSTS.push({id:cid,...d.data()});}catch(e){}cfPaint();}
+ if(!CF.H){try{const H=await loadHistory(cid);if(CF.cid===cid){CF.H=H;if(CF.tab==='file')cfPaint();}}catch(e){if(CF.cid===cid){CF.H={appts:[],sales:[],packages:[],redemptions:[],err:true};cfPaint();}}}
+ try{if(typeof scLoad==='function'){await scLoad(cid);if(CF.cid===cid&&CF.tab==='file')cfPaint();}}catch(e){}};
+window.cfClose=()=>{if(CF.dirty&&!confirm('Close without saving the changes?'))return;CF.dirty=false;CF.cid='';const w=document.getElementById('cfwin');if(w)w.classList.remove('open');};
+window.cfTab=t=>{if(t===CF.tab)return;if(CF.tab==='edit'&&CF.dirty&&!confirm('Leave without saving the changes?'))return;CF.dirty=false;CF.tab=t;cfPaint();};
+function cfPaint(){const w=cfEl(),c=cust(CF.cid),a=CF.apptId?APPTS.find(x=>x.id===CF.apptId):null;
+ const name=c?c.name:(a&&a.customerName)||'Client';
+ const head='<div class="cfh" data-drag="1"><div class="cfav">'+esc(initials(name))+'</div><div class="cfht"><b>'+esc(name)+'</b>'+(c?cnoTag(c):'')+
+  '<small>'+esc([c&&c.phone||a&&a.phone||'',cfAge(c),c&&c.gender||''].filter(Boolean).join(' · ')||'—')+'</small></div>'+
+  '<button class="cfx" onclick="cfClose()" aria-label="Close">'+ic('close',18)+'</button></div>';
+ if(!c){w.innerHTML=head+'<div class="cfbody"><div class="cfnote">'+ic('alert',15)+'<div><b>This booking is not linked to a client record yet.</b><small>'+(a&&a.source==='web'?'It came from the online booking page. ':'')+'Open the booking to link it to an existing client or register them.</small></div></div>'+
+   (a?'<div class="cfacts"><button class="btn sm" onclick="cfClose();openAppt(\''+a.id+'\')">'+ic('calendar',14)+'Open booking</button>'+(a.phone?'<a class="btn sm ghost" href="'+cfWa(a.phone)+'" target="_blank" rel="noopener">'+ic('msg',14)+'WhatsApp</a>':'')+'</div>':'')+'</div>';return;}
+ const tabs='<div class="cftabs"><button class="'+(CF.tab==='file'?'on':'')+'" onclick="cfTab(\'file\')">'+ic('folder',14)+'Client file</button><button class="'+(CF.tab==='edit'?'on':'')+'" onclick="cfTab(\'edit\')">'+ic('edit',14)+'Edit details</button></div>';
+ w.innerHTML=head+tabs+'<div class="cfbody" id="cfbody">'+(CF.tab==='edit'?cfEdit(c):cfFile(c))+'</div>';
+ if(CF.tab==='edit')cfBindEdit();}
+const cfAge=c=>{if(!c||!c.dob)return '';const y=Math.floor(daysBetween(c.dob,today())/365.25);return y>0&&y<120?y+' yrs':'';};
+const cfWa=p=>{const d=String(p||'').replace(/\D/g,'').replace(/^0/,'60');return 'https://wa.me/'+d;};
+function cfFile(c){const H=CF.H,t=today();
+ let h='';
+ if(c.allergy)h+='<div class="cfwarn r">'+ic('alert',14)+'<div><b>Allergy / contraindication</b>'+esc(c.allergy)+'</div></div>';
+ if(c.medical)h+='<div class="cfwarn">'+ic('shield',14)+'<div><b>Medical notes</b>'+esc(c.medical)+'</div></div>';
+ const chips=[c.skin?'Skin: '+c.skin:'',...(c.tags||[])].filter(Boolean);
+ if(chips.length)h+='<div class="cfchips">'+chips.map(x=>'<span>'+esc(x)+'</span>').join('')+'</div>';
+ /* numbers */
+ if(!H)h+='<div class="cfstats">'+[1,2,3].map(()=>'<div><div class="skel" style="height:18px;width:50%"></div><div class="skel" style="height:10px;width:70%"></div></div>').join('')+'</div>';
+ else{const paid=H.sales.filter(s=>!s.voided),spend=paid.reduce((a,s)=>a+(+s.total||0),0),owe=paid.reduce((a,s)=>a+(typeof saleBalance==='function'?saleBalance(s):0),0);
+  const done=H.appts.filter(a=>a.status==='done').sort((a,b)=>String(b.start).localeCompare(String(a.start))),no=H.appts.filter(a=>a.status==='no').length;
+  h+='<div class="cfstats"><div><b>'+done.length+'</b><small>visits</small></div><div><b>'+(done[0]?dshort(done[0].date||String(done[0].start).slice(0,10)):'—')+'</b><small>last visit</small></div>'+
+   '<div><b>'+rm(spend)+'</b><small>spent</small></div>'+(owe>0.01?'<div class="r"><b>'+rm(owe)+'</b><small>owing</small></div>':no?'<div class="a"><b>'+no+'</b><small>no-show'+(no>1?'s':'')+'</small></div>':'')+'</div>';
+  /* upcoming */
+  const up=[...new Map([...H.appts,...APPTS.filter(a=>a.customerId===c.id)].map(a=>[a.id,a])).values()].filter(a=>String(a.date||'')>=t&&!['cancel','no','done'].includes(a.status)).sort((a,b)=>String(a.start).localeCompare(String(b.start))).slice(0,3);
+  h+='<h4>'+ic('calendar',13)+' Upcoming</h4>'+(up.length?up.map(a=>'<button class="cfrow" onclick="openAppt(\''+a.id+'\')"><span>'+dshort(a.date)+' · '+tstr(a.start)+'</span><b>'+esc(a.serviceName||'')+'</b><small>'+esc(a.staffName||'')+(a.id===CF.apptId?' · this booking':'')+'</small></button>').join(''):'<p class="cfmut">No other bookings ahead.</p>');
+  /* packages */
+  const pk=H.packages.filter(p=>!p.cancelledBy&&(!p.expiry||p.expiry>=t)&&(p.balances||[]).some(b=>+b.left>0));
+  h+='<h4>'+ic('package',13)+' Packages</h4>'+(pk.length?pk.map(p=>{const L=(p.balances||[]).reduce((a,b)=>a+(+b.left||0),0),T=(p.balances||[]).reduce((a,b)=>a+(+b.total||0),0);
+   return '<div class="cfrow st"><span>'+L+(T?'/'+T:'')+' left</span><b>'+esc(cpName(p))+'</b><small>'+(p.frozen?'frozen · ':'')+(p.expiry?'until '+(String(p.expiry).slice(0,4)===today().slice(0,4)?dshort(p.expiry):dstr(p.expiry)):'no expiry')+'</small></div>';}).join(''):'<p class="cfmut">No active package.</p>');
+  /* recent treatments */
+  h+='<h4>'+ic('history',13)+' Recent treatments</h4>'+(done.length?done.slice(0,4).map(a=>'<div class="cfrow st"><span>'+dshort(a.date||String(a.start).slice(0,10))+'</span><b>'+esc(a.serviceName||'')+'</b><small>'+esc(a.staffName||'')+'</small></div>').join(''):'<p class="cfmut">No completed treatment yet.</p>');}
+ /* skin & notes */
+ const sk=(typeof SCH!=='undefined'&&SCH[c.id]||[]).slice(-1)[0];
+ if(sk&&sk.scores)h+='<h4>'+ic('scface',13)+' SkinCam</h4><div class="cfrow st"><span>'+dshort(sk.date)+'</span><b>Skin score '+sk.scores.overall+' · '+esc(sk.type||'')+'</b><small>'+esc((sk.concerns||[]).slice(0,3).map(k=>(CONCERNS.find(x=>x.id===k)||{label:k}).label).join(' · '))+'</small></div>';
+ const notes=[[c.note,'Internal note'],[c.notes,'Treatment notes']].filter(x=>String(x[0]||'').trim());
+ if(notes.length)h+='<h4>'+ic('note',13)+' Notes</h4>'+notes.map(([n,l])=>'<div class="cfnotes"><small>'+l+'</small>'+esc(String(n).slice(0,600))+'</div>').join('');
+ if(c.emergency)h+='<p class="cfmut" style="margin-top:8px">'+ic('phone',12)+' Emergency: '+esc(c.emergency)+'</p>';
+ h+='<div class="cfacts"><button class="btn sm" onclick="newAppt({customerId:\''+c.id+'\'})">'+ic('calendar',14)+'Book</button>'+
+  (c.phone?'<a class="btn sm ghost" href="'+cfWa(c.phone)+'" target="_blank" rel="noopener">'+ic('msg',14)+'WhatsApp</a><a class="btn sm ghost" href="tel:'+esc(String(c.phone).replace(/[^\d+]/g,''))+'">'+ic('phone',14)+'Call</a>':'')+
+  '<button class="btn sm ghost" onclick="cfFull()">'+ic('user',14)+'Full record</button></div>';
+ return h;}
+window.cfFull=()=>{const id=CF.cid;if(CF.dirty&&!confirm('Leave without saving the changes?'))return;CF.dirty=false;cfClose();openCust(id);};
+/* ---------- editing ---------- */
+function cfEdit(c){if(!cfCanEdit())return '<div class="cfnote">'+ic('lock',15)+'<div><b>View only</b><small>Your sign-in can see client files but not change them. Ask the owner or a manager.</small></div></div>';
+ const v=k=>esc(c[k]||''),o=(L,val)=>L.map(x=>'<option value="'+esc(x)+'"'+(val===x?' selected':'')+'>'+esc(x)+'</option>').join('');
+ const f=(id,l,inner,w)=>'<div class="cff'+(w?' '+w:'')+'"><label for="'+id+'">'+l+'</label>'+inner+'</div>';
+ return '<div class="cfform">'+
+  '<div class="cfsec">Personal</div>'+
+  f('cf-n','Full name *','<input class="f" id="cf-n" value="'+v('name')+'" autocomplete="off">','w2')+
+  f('cf-p','Mobile','<input class="f" id="cf-p" type="tel" value="'+v('phone')+'" placeholder="012-3456789">')+
+  f('cf-p2','Alternate phone','<input class="f" id="cf-p2" type="tel" value="'+v('phone2')+'">')+
+  f('cf-e','Email','<input class="f" id="cf-e" type="email" value="'+v('email')+'">','w2')+
+  f('cf-d','Date of birth','<input class="f" id="cf-d" type="date" value="'+v('dob')+'">')+
+  f('cf-g','Gender','<select class="f" id="cf-g"><option value="">—</option>'+o(GENDERS,c.gender)+'</select>')+
+  f('cf-ic','ID / passport no.','<input class="f" id="cf-ic" value="'+v('idNo')+'">')+
+  f('cf-occ','Occupation','<input class="f" id="cf-occ" value="'+v('occupation')+'">')+
+  '<div class="cfsec">Address</div>'+
+  f('cf-a1','Street address','<input class="f" id="cf-a1" value="'+v('address')+'">','w2')+
+  f('cf-pc','Postcode','<input class="f" id="cf-pc" value="'+v('postcode')+'" inputmode="numeric">')+
+  f('cf-city','City','<input class="f" id="cf-city" value="'+v('city')+'">')+
+  f('cf-st','State','<input class="f" id="cf-st" value="'+v('state')+'">','w2')+
+  '<div class="cfsec">Skin and safety</div>'+
+  f('cf-skin','Skin type','<select class="f" id="cf-skin"><option value="">—</option>'+o([...new Set([...SKINS,...(c.skin&&!SKINS.includes(c.skin)?[c.skin]:[])])],c.skin)+'</select>','w2')+
+  f('cf-al','Allergies / contraindications','<input class="f" id="cf-al" value="'+v('allergy')+'" placeholder="Shown in red on every booking">','w2')+
+  f('cf-med','Medical notes','<textarea class="f" id="cf-med" rows="2" placeholder="Conditions, medication, pregnancy">'+v('medical')+'</textarea>','w2')+
+  f('cf-em','Emergency contact','<input class="f" id="cf-em" value="'+v('emergency')+'" placeholder="Name and number">','w2')+
+  '<div class="cfsec">Notes and consent</div>'+
+  f('cf-tags','Tags','<input class="f" id="cf-tags" value="'+esc((c.tags||[]).join(', '))+'" placeholder="bridal, sensitive, VIP">','w2')+
+  f('cf-note','Internal note','<textarea class="f" id="cf-note" rows="2">'+v('note')+'</textarea>','w2')+
+  '<label class="cfchk w2"><input type="checkbox" id="cf-pdpa"'+(c.pdpa!==false?' checked':'')+'> Consents to us storing their data (PDPA)</label>'+
+  '<label class="cfchk w2"><input type="checkbox" id="cf-mkt"'+(c.marketing!==false?' checked':'')+'> Happy to receive promotions</label>'+
+  '</div><div class="cferr" id="cf-err"></div>'+
+  '<div class="cfsave"><button class="btn ghost sm" onclick="cfTab(\'file\')">Cancel</button><button class="btn" id="cf-go" onclick="cfSave()">'+ic('check',15)+'Save changes</button></div>';}
+function cfBindEdit(){const b=document.getElementById('cfbody');if(!b)return;b.addEventListener('input',()=>{CF.dirty=true;},{once:false});b.addEventListener('change',()=>{CF.dirty=true;});}
+window.cfSave=async()=>{const c=cust(CF.cid);if(!c||CF.busy||!cfCanEdit())return;const g=id=>document.getElementById(id),val=id=>String((g(id)||{}).value||'').trim(),err=g('cf-err');
+ const name=val('cf-n'),phone=val('cf-p'),em=val('cf-e');
+ if(name.length<2){err.textContent='Write the client\'s full name.';g('cf-n').focus();return;}
+ if(phone&&(digits(phone).length<9||digits(phone).length>15)){err.textContent='Check the mobile number.';g('cf-p').focus();return;}
+ if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){err.textContent='Check the email address.';g('cf-e').focus();return;}
+ const dup=phone&&CUSTS.find(x=>x.id!==c.id&&x.active!==false&&!x.mergedInto&&digits(x.phone)&&digits(x.phone)===digits(phone));
+ if(dup&&!confirm(dup.name+' already has the number '+phone+'. Save anyway?'))return;
+ const data={name,nameLower:name.toLowerCase(),phone,phoneDigits:digits(phone),keywords:kwFor(name,phone),phone2:val('cf-p2'),email:em,dob:val('cf-d'),gender:val('cf-g'),
+  idNo:val('cf-ic'),occupation:val('cf-occ'),address:val('cf-a1'),postcode:val('cf-pc'),city:val('cf-city'),state:val('cf-st'),skin:val('cf-skin'),allergy:val('cf-al'),
+  medical:val('cf-med'),emergency:val('cf-em'),tags:val('cf-tags').split(',').map(s=>s.trim()).filter(Boolean),note:val('cf-note'),pdpa:!!(g('cf-pdpa')||{}).checked,marketing:!!(g('cf-mkt')||{}).checked,
+  updatedAt:new Date().toISOString(),updatedBy:UID};
+ const changed=Object.keys(data).filter(k=>!['nameLower','phoneDigits','keywords','updatedAt','updatedBy'].includes(k)&&JSON.stringify(data[k]??'')!==JSON.stringify(c[k]??(k==='tags'?[]:k==='pdpa'||k==='marketing'?true:'')));
+ if(!changed.length){CF.dirty=false;CF.tab='file';cfPaint();toast('Nothing changed');return;}
+ CF.busy=true;const b=g('cf-go');if(b){b.disabled=true;b.textContent='Saving…';}err.textContent='';
+ try{await updateDoc(doc(db,'customers',c.id),data);Object.assign(c,data);
+  /* the client's name and phone on their bookings still to come */
+  if(changed.includes('name')||changed.includes('phone')){const t=today();
+   const L=APPTS.filter(a=>a.customerId===c.id&&String(a.date)>=t&&!['cancel','no','done'].includes(a.status)).slice(0,30);
+   for(const a of L){const up={customerName:name,...(a.phone!==undefined?{phone}:{})};try{await updateDoc(doc(db,'appointments',a.id),up);Object.assign(a,up);}catch(e){}}}
+  await audit('Client details updated',name+' · from Bookings · '+changed.join(', '));
+  CF.dirty=false;CF.busy=false;CF.tab='file';cfPaint();if(TAB==='book')render();toast('Saved — '+name);}
+ catch(e){CF.busy=false;if(b){b.disabled=false;b.innerHTML=ic('check',15)+'Save changes';}err.textContent=friendly(e);}};
+/* ---------- moving the window (desktop) ---------- */
+function cfDrag(w){let p=null;
+ w.addEventListener('pointerdown',e=>{const h=e.target.closest('[data-drag]');if(!h||e.target.closest('button,a,input')||innerWidth<700)return;const r=w.getBoundingClientRect();p={dx:e.clientX-r.left,dy:e.clientY-r.top};w.setPointerCapture(e.pointerId);w.classList.add('drag');});
+ w.addEventListener('pointermove',e=>{if(!p)return;const x=Math.max(6,Math.min(innerWidth-w.offsetWidth-6,e.clientX-p.dx)),y=Math.max(6,Math.min(innerHeight-60,e.clientY-p.dy));CF.pos={x,y};w.style.left=x+'px';w.style.top=y+'px';w.style.right='auto';});
+ w.addEventListener('pointerup',()=>{p=null;w.classList.remove('drag');});}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&CF.cid&&!document.querySelector('#modal .veil'))cfClose();});
+/* ---------- making names clickable ---------- */
+function cfMark(){
+ const roots=[];if(TAB==='book'){const app=document.getElementById('app');if(app)roots.push(app);}
+ const sh=document.querySelector('#modal .sheet');if(sh)roots.push(sh);
+ roots.forEach(root=>{root.querySelectorAll('[onclick*="openAppt("]').forEach(el=>{const m=/openAppt\('([^']+)'\)/.exec(el.getAttribute('onclick')||'');if(!m)return;
+  const a=APPTS.find(x=>x.id===m[1]);if(!a||!a.customerName)return;const full=String(a.customerName).trim(),first=full.split(/\s+/)[0];
+  el.querySelectorAll('b,strong,small,span,div').forEach(x=>{if(x.classList.contains('cfname')||x.childElementCount)return;const t=String(x.textContent||'').trim();
+   if(t.length>=2&&(t===full||t===first||(full.startsWith(t)&&t.length>=4))){x.classList.add('cfname');x.dataset.cfa=a.id;x.title='Open '+full+'\'s file';}});});});
+ /* the reminder / replies / deposits panel above the calendar: each row names its booking in its buttons */
+ if(TAB==='book')document.querySelectorAll('#app .bkprow').forEach(r=>{const b=r.querySelector('b');if(!b||b.classList.contains('cfname'))return;
+  const ids=[...r.innerHTML.matchAll(/\('([\w-]{2,})'/g)].map(m=>m[1]),a=ids.map(id=>APPTS.find(x=>x.id===id)).find(Boolean);
+  if(a&&a.customerName&&String(b.textContent).trim()===String(a.customerName).trim()){b.classList.add('cfname');b.dataset.cfa=a.id;b.title='Open '+a.customerName+'\'s file';}});
+ /* the appointment sheet: its heading is the client's name */
+ if(sh){const k=sh.querySelector('[id^="bkns-"]'),a=k&&APPTS.find(x=>x.id===k.id.slice(5));const h3=sh.querySelector('.card h3');
+  if(a&&h3&&!h3.querySelector('.cfname')){const tn=[...h3.childNodes].find(n=>n.nodeType===3&&String(n.textContent).trim());
+   if(tn&&a.customerName&&String(tn.textContent).trim()===String(a.customerName).trim()){const sp=document.createElement('span');sp.className='cfname big';sp.dataset.cfa=a.id;sp.title='Open the client file';sp.textContent=tn.textContent;tn.replaceWith(sp);
+    sp.insertAdjacentHTML('beforeend','<span class="cfnic">'+ic('folder',13)+'</span>');}}}}
+let CFRAF=0;new MutationObserver(()=>{if(CFRAF)return;CFRAF=requestAnimationFrame(()=>{CFRAF=0;try{cfMark();}catch(e){console.warn('client card',e);}});}).observe(document.documentElement,{childList:true,subtree:true});
+document.addEventListener('click',e=>{const n=e.target.closest&&e.target.closest('.cfname');if(!n)return;
+ e.stopPropagation();e.preventDefault();const a=APPTS.find(x=>x.id===n.dataset.cfa);if(!a)return;
+ cfOpen(a.customerId||'',a.id);},true);
 
 </script>
