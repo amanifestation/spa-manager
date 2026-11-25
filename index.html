@@ -3443,6 +3443,106 @@ html.glass .bnic>span{position:absolute;inset:0;display:grid;place-items:center}
 html.glass .bnic .glnav{opacity:1}
 html.glass .glt>.ico{background:none!important;box-shadow:none!important;border:0!important;width:auto!important;height:auto!important}
 
+/* ============ 30v · SkinCam ============ */
+.schero{background:linear-gradient(135deg,#FFFDF8 0%,#F6EEE1 55%,#EFE7F6 100%);border:1px solid var(--line)}
+.schi{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.schi h2{display:flex;align-items:center;gap:8px;font-size:19px}.schi p{margin:6px 0 0;max-width:560px}
+.scsteps{display:flex;gap:6px;flex-wrap:wrap}.scsteps span{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:99px;padding:5px 11px 5px 5px;font-size:12px;color:var(--ink-2)}
+.scsteps b{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font-size:11px}
+.screcent{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.screcent button{display:flex;gap:10px;align-items:center;text-align:left;background:var(--surface-2);border:1px solid var(--line-2);border-radius:12px;padding:6px 10px 6px 6px;cursor:pointer}
+.screcent button:hover{border-color:var(--brass)}.screcent img{width:38px;height:48px;object-fit:cover;border-radius:8px;flex:none}
+.screcent span{flex:1;min-width:0;display:flex;flex-direction:column}.screcent b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.screcent small{color:var(--ink-3);font-size:11.5px}
+.screcent em,.scli em{font-style:normal;font-weight:700;font-size:14px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex:none}
+em.g{background:#E2F3EA;color:#22744E}em.g2{background:#EEF5E1;color:#4F7A1F}em.a{background:#FCF0D9;color:#94650F}em.r{background:#FBE3E5;color:#A93847}
+.scgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;align-items:start}.scgrid>.card{min-width:0;margin:0}
+.scgrid+.card,.card+.scgrid,.scgrid+.scgrid{margin-top:14px}
+@media(max-width:820px){.scgrid{grid-template-columns:1fr}}
+/* camera */
+.sccamcard{padding:12px}
+.scstage{position:relative;aspect-ratio:3/4;width:min(100%,calc(60vh * .75));margin:0 auto;border-radius:16px;overflow:hidden;background:#15130F;touch-action:none;user-select:none}
+.scstage.up{cursor:grab}.scmedia{position:absolute;max-width:none;pointer-events:none}.scmedia.mir{transform:scaleX(-1)}
+.scov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.scoval{stroke:#fff;transition:stroke .3s}.scoval.g{stroke:#5BD69B}.scoval.a{stroke:#F4C152}.scoval.r{stroke:#FF7A86}
+.scstage.flash::after{content:'';position:absolute;inset:0;background:#fff;z-index:5;animation:scfl .35s ease-out forwards}@keyframes scfl{from{opacity:.9}to{opacity:0}}
+.sccount{position:absolute;inset:0;display:none;place-items:center;z-index:4;font-size:84px;font-weight:700;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.5)}
+.scerr{position:absolute;left:12px;right:12px;bottom:12px;z-index:3;background:rgba(20,18,15,.82);color:#fff;border-radius:12px;padding:10px 12px;font-size:12.5px;display:flex;gap:8px;align-items:flex-start}
+.scqrow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0 2px;min-height:26px}
+.scq{font-size:11.5px;padding:3px 9px;border-radius:99px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2)}
+.scq.g{background:#E2F3EA;color:#22744E;border-color:#C5E6D3}.scq.a{background:#FCF0D9;color:#94650F;border-color:#F1DDB2}.scq.r{background:#FBE3E5;color:#A93847;border-color:#F3C6CB}
+.sczoom{gap:10px;justify-content:center;margin:10px 0 2px}.sczoom input{width:170px}
+.sccontrols{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:10px}.sccontrols>:first-child{justify-self:start}.sccontrols>:last-child{justify-self:end;display:flex}
+.sccontrols .btn{white-space:nowrap}
+@media(max-width:600px){.scstage{width:min(100%,calc(47vh * .75))}.sccamcard{padding:10px}.sccontrols{grid-template-columns:auto auto;justify-content:space-between}.sccontrols>.sccap{grid-column:1/-1;justify-self:center;order:-1}}
+.sccap{width:66px;height:66px;border-radius:50%;border:4px solid var(--ink);background:#fff;padding:4px;cursor:pointer;box-shadow:var(--shadow)}
+.sccap i{display:block;width:100%;height:100%;border-radius:50%;background:linear-gradient(135deg,#F08AA0,#B07BE6)}.sccap:active i{transform:scale(.9)}
+.btn.on{background:var(--ink);color:#fff}
+.sctips ol{margin:6px 0 10px;padding-left:20px;display:grid;gap:7px;font-size:13px;color:var(--ink-2)}
+/* analysing */
+.scrun{display:flex;gap:20px;align-items:center;flex-wrap:wrap;justify-content:center;padding:10px 0}
+.scrunimg{position:relative;width:200px;aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:#000}.scrunimg img{width:100%;height:100%;object-fit:cover;filter:saturate(.8)}
+.scline{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#7FF0C3,transparent);box-shadow:0 0 18px 4px rgba(127,240,195,.6);animation:scsweep 1.3s ease-in-out infinite alternate}
+@keyframes scsweep{from{top:4%}to{top:94%}}
+.scgridfx{position:absolute;inset:0;background-image:linear-gradient(rgba(127,240,195,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(127,240,195,.18) 1px,transparent 1px);background-size:20px 20px;mix-blend-mode:screen}
+.scrun h3{display:flex;gap:6px;align-items:center;font-size:16px}.scrun p{max-width:300px}
+/* result */
+.scphoto{position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#000;max-width:440px;margin:0 auto}
+.scphoto canvas{position:absolute;inset:0;width:100%;height:100%;background:transparent!important;border:0!important;border-radius:0!important}
+.scovs{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.scovs button{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 11px;font-size:12px;cursor:pointer;color:var(--ink-2)}
+.scovs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.scsumtop{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.scsumtop h2{font-size:21px;margin:6px 0 8px}
+.scring .bg{fill:none;stroke:var(--line-2);stroke-width:9}.scring .fg{fill:none;stroke-width:9;stroke-linecap:round;transition:stroke-dasharray .8s var(--ease)}
+.scring.g .fg{stroke:#41BC83}.scring.g2 .fg{stroke:#8DC05A}.scring.a .fg{stroke:#F0B44C}.scring.r .fg{stroke:#E9707C}
+.scring .n{font-size:30px;font-weight:700;fill:var(--ink)}.scring .l{font-size:11px;fill:var(--ink-3)}
+.scring[width="56"] .bg,.scring[width="56"] .fg,.scring[width="64"] .bg,.scring[width="64"] .fg{stroke-width:6}
+.scgr{display:inline-block;font-size:11.5px;font-weight:650;padding:3px 10px;border-radius:99px}
+.scgr.g{background:#E2F3EA;color:#22744E}.scgr.g2{background:#EEF5E1;color:#4F7A1F}.scgr.a{background:#FCF0D9;color:#94650F}.scgr.r{background:#FBE3E5;color:#A93847}
+.sckv{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px}.sckv span{color:var(--ink-3)}
+.scconf.high{color:#22744E}.scconf.medium{color:#94650F}.scconf.low{color:#A93847}
+.scwarn{display:flex;gap:7px;align-items:flex-start;background:var(--amber-soft);color:#7A540E;border-radius:10px;padding:8px 11px;font-size:12.5px;margin:12px 0 4px}
+.scwarn.r{background:#FBE3E5;color:#9A2F3E}
+.scsum h4,.screc h4{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:16px 0 7px;font-weight:650}
+.scconc{display:flex;gap:6px;flex-wrap:wrap}.scconc span{background:var(--surface-2);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12.5px}
+.scconc span.top{background:var(--ink);color:#fff;border-color:var(--ink)}.scconc.sm span{font-size:11px;padding:2px 8px}
+.scsumtxt{font-size:13.5px;color:var(--ink-2);margin:12px 0 0;line-height:1.6}
+.scdl{font-size:11px;font-weight:650;margin-left:5px;color:var(--ink-3)}.scdl.up{color:#22844F}.scdl.dn{color:#C23D50}
+.scmet{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.scmc{border:1px solid var(--line-2);background:var(--surface-2);border-radius:13px;padding:11px 12px;cursor:pointer;transition:border-color .2s}.scmc:hover{border-color:var(--brass)}
+.scmi{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px}.scmic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line-2)}
+.scmc>.spread>b{font-size:19px}
+.scbar{height:6px;border-radius:9px;background:var(--line-2);margin:9px 0 7px;overflow:hidden}.scbar i{display:block;height:100%;border-radius:9px}
+.scbar.g i{background:#41BC83}.scbar.g2 i{background:#8DC05A}.scbar.a i{background:#F0B44C}.scbar.r i{background:#E9707C}
+.scmc small{font-size:11.5px;color:var(--ink-2);line-height:1.4}.scmc em{font-style:normal;font-size:11px;font-weight:650;white-space:nowrap}
+.scmc em.g,.scmc em.g2,.scmc em.a,.scmc em.r{background:none;width:auto;height:auto;display:inline}
+.scfacemap{display:flex;justify-content:center}.scfacemap text{font-size:13px;font-weight:700;fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.18);stroke-width:2px}
+.scztab{width:100%;border-collapse:collapse;font-size:13px}.scztab th,.scztab td{padding:7px 6px;border-bottom:1px solid var(--line-2);text-align:left}.scztab th{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.scztab .num{text-align:right}.scdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.scsv{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.scsvc{position:relative;border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:5px;background:var(--surface)}
+.scsvc.best{border-color:var(--brass);box-shadow:0 0 0 3px var(--brass-soft)}.scsvc small{color:var(--ink-3)}.scsvc .btn{margin-top:auto;align-self:flex-start}
+.scbest{position:absolute;top:-9px;right:10px;background:var(--brass);color:#fff;font-size:10.5px;font-weight:650;padding:2px 8px;border-radius:99px}
+.scchips{display:flex;gap:6px;flex-wrap:wrap}.scchips span{display:flex;align-items:center;gap:5px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:5px 10px;font-size:12.5px}
+.sctips2{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13px;color:var(--ink-2)}
+/* progress */
+.scprog{font-size:13.5px;color:var(--ink-2);margin:10px 0}
+.scch{width:100%;height:auto;max-height:320px;margin-top:6px}.scch .gl{stroke:var(--line-2)}.scch text{font-size:11px;fill:var(--ink-3)}.scch text.ss{font-size:9.5px}.scch text.pv{font-size:11px;font-weight:650;fill:var(--ink-2)}
+.scch .l1{fill:none;stroke:#9878EF;stroke-width:3;stroke-linejoin:round}.scch .l2{fill:none;stroke:#C9C2B5;stroke-width:2;stroke-dasharray:5 5}.scch .pt{fill:#fff;stroke:#9878EF;stroke-width:2.5}
+.sccmp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}@media(max-width:720px){.sccmp{grid-template-columns:1fr}}
+.sccmpv{position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#000;max-width:420px;width:100%;margin:0 auto}
+.sccmpv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.sccmpv img.b{clip-path:inset(0 0 0 var(--x))}
+.sccmpbar{position:absolute;top:0;bottom:0;left:var(--x);width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,.4);pointer-events:none}
+.sccmpbar::after{content:'‹ ›';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;font-weight:700;color:var(--ink)}
+.sccmpv .t{position:absolute;top:10px;background:rgba(20,18,15,.7);color:#fff;font-size:11.5px;padding:3px 9px;border-radius:99px;pointer-events:none}.sccmpv .t.a{left:10px}.sccmpv .t.b{right:10px}
+.sccmpv input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.sccmpt table{width:100%;border-collapse:collapse;font-size:13px}.sccmpt th,.sccmpt td{padding:6px;border-bottom:1px solid var(--line-2);text-align:left}.sccmpt th{font-size:11.5px;color:var(--ink-3);font-weight:600}
+.sccmpt .num{text-align:right}.sccmpt tr.tot td{font-weight:700;background:var(--surface-2)}
+.sclist{display:grid;gap:8px}.scli{display:flex;gap:12px;align-items:center;border:1px solid var(--line-2);border-radius:13px;padding:8px 10px 8px 8px;background:var(--surface-2)}
+.scli>img{width:48px;height:60px;object-fit:cover;border-radius:9px;cursor:pointer;flex:none}.scli>div{flex:1;min-width:0;display:flex;flex-direction:column;cursor:pointer}.scli small{font-size:11.5px;color:var(--ink-2)}
+/* on the client profile */
+.scpcb{display:flex;gap:12px;align-items:center;margin-top:10px}.scpcb>div{display:flex;flex-direction:column;gap:2px;min-width:0}.scpcb small{color:var(--ink-3);font-size:11.5px}
+@media print{.noprint,.scovs,.sccontrols{display:none!important}.scmc,.scsvc{break-inside:avoid}}
+
 </style>
 <div id="splash" class="spl" role="status" aria-live="polite"><div class="spl-in">
  <div class="spl-mark"><span class="spl-ring"></span><span class="spl-ring"></span><img id="spl-logo" alt="" hidden><b id="spl-ini">S</b></div>
@@ -3741,7 +3841,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-11-24a';
+const BUILD='2026-11-25a';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -4134,7 +4234,7 @@ function render(){
     '</div></header>'+
    '<div class="wrap" id="app"></div>'+
   '</div>'+botNavHTML(allowed);
- const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg,me:vMe,games:vGames};
+ const V={home:vHome,book:vBook,board:vBoard,cust:vCust,pkg:vPkg,pos:vPos,inv:vInv,rep:vRep,team:vTeam,cat:vCat,set:vSet,loy:vLoyalty,shift:vShift,prog:vProgram,lib:vLib,merit:vFeedback,crm:vCrm,demo:vDemo,hr:vHR,fin:vFin,promo:vPromo,sd:vSales,lp:vLanding,clin:vClin,seg:vSeg,me:vMe,games:vGames,skin:vSkinCam};
  try{$('#app').innerHTML=(V[TAB]||vHome)();}
  catch(e){$('#app').innerHTML='<div class="card"><h2>This screen hit an error</h2><p class="tiny dim">'+
   esc(e.message)+'</p><button class="btn" onclick="go(\'home\')">Back to overview</button></div>';console.error(e);}
@@ -34766,5 +34866,413 @@ window.glToggle=on=>{try{localStorage.setItem('spGlass',on?'1':'0');}catch(e){}l
  return _w.call(this,html+card);};}
 STG_DESC.push([/^Glass icons/,'Soft coloured glass icons, or the plain line icons']);
 STG_GROUPS[0].m=/^(This app|Notifications|Glass icons)/;
+
+
+/* ============ 30v · SkinCam — skin analysis from a camera photo ============ */
+/* The consultant frames the client's face in the oval (front or back camera, or a photo from the gallery).
+   The photo is analysed on this device, nothing is sent anywhere: nine indicators, each 0–100 (higher = better),
+   with where on the face it shows, an overall score, the likely skin type, the photo quality (so the result can be
+   trusted) and maps drawn over the photo. From the indicators come the main concerns, the treatments, packages and
+   homecare in the catalogue that answer them, a course plan and talking points. The scan is saved to the client's
+   record with the treatment of the session, so progress can be followed scan after scan and any two compared.
+   Indicative only, from a photo: not a medical diagnosis. */
+Object.assign(ICONS,{scface:'M4 8V5.5A1.5 1.5 0 015.5 4H8M16 4h2.5A1.5 1.5 0 0120 5.5V8M20 16v2.5a1.5 1.5 0 01-1.5 1.5H16M8 20H5.5A1.5 1.5 0 014 18.5V16M9.5 10v.5M14.5 10v.5M10 15c1.2 1 2.8 1 4 0',
+ sunI:'M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4',
+ poreI:'M7 7h.01M12 6h.01M17 7.5h.01M6 12h.01M11 11.5h.01M16.5 12.5h.01M8 17h.01M13 16.5h.01M18 17h.01',
+ lineI:'M3 9c3-2 6 2 9 0s6-2 9 0M3 15c3-2 6 2 9 0s6-2 9 0',moonI:'M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z',
+ blotI:'M12 3.5c2.5 3 5.5 6.2 5.5 9.5a5.5 5.5 0 01-11 0c0-3.3 3-6.5 5.5-9.5z',toneI:'M12 3a9 9 0 100 18V3z M12 3a9 9 0 010 18',
+ pigI:'M8 8.5h.01M15 7h.01M11 12h.01M16.5 13.5h.01M7.5 15.5h.01M12.5 17h.01',texI:'M4 6l4 3 4-3 4 3 4-3M4 12l4 3 4-3 4 3 4-3M4 18l4 3 4-3 4 3 4-3',
+ cmpI:'M12 3v18M5 7l-2 5 2 5M19 7l2 5-2 5'});
+const SC_W=640,SC_H=800;
+/* the nine indicators: key, name, icon, weight in the overall score, the concern it points to */
+const SC_M=[['spots','Pigmentation & spots','pigI',.14,'pigment'],['red','Redness & sensitivity','blotI',.12,'redness'],['acne','Acne & blemishes','spark',.14,'acne'],
+ ['pores','Pores','poreI',.10,'pores'],['tex','Texture & smoothness','texI',.12,'scarring'],['lines','Fine lines','lineI',.10,'lines'],['oil','Oil & shine','sunI',.08,'oily'],
+ ['even','Even tone & glow','toneI',.12,'dull'],['eyes','Under-eye','moonI',.08,'eyes']];
+const SC_MS={spots:'Pigmentasi & bintik',red:'Kemerahan',acne:'Jerawat',pores:'Liang pori',tex:'Tekstur kulit',lines:'Garis halus',oil:'Minyak',even:'Tona kulit',eyes:'Bawah mata'};
+const SC_ZONES=[['fh','Forehead',.28,.72,.10,.28],['nose','Nose',.43,.57,.40,.60],['lc','Right cheek',.13,.38,.50,.70],['rc','Left cheek',.62,.87,.50,.70],['chin','Chin',.38,.62,.82,.94],
+ ['ue','Under-eyes',.20,.42,.465,.53],['ue2','Under-eyes',.58,.80,.465,.53]];
+const scGrade=s=>s>=80?['Excellent','g']:s>=65?['Good','g2']:s>=50?['Fair','a']:['Needs care','r'];
+const scGradeMs=s=>s>=80?'Sangat baik':s>=65?'Baik':s>=50?'Sederhana':'Perlu perhatian';
+const scSc=(x,good,bad)=>Math.round(Math.max(0,Math.min(100,100*(x-bad)/(good-bad))));
+let SC=window.SC={step:'pick',cid:'',cam:'user',timer:0,ov:'none',note:'',svcId:'',upd:true,res:null,img:null,view:null,saved:'',hist:null,cmpA:'',cmpB:'',cmpM:'overall',cmpX:50,busy:'',recent:null},SCH={},SCIMG={},SCVID=null,SCSTREAM=null,SCQ=null,SCQT=0,SCUP=null;
+
+/* ---------- the analysis ---------- */
+const SC_LIN=(()=>{const t=new Float32Array(256);for(let i=0;i<256;i++){const c=i/255;t[i]=c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);}return t;})();
+function scLab(data,N){const L=new Float32Array(N),A=new Float32Array(N),B=new Float32Array(N);
+ const f=t=>t>.008856?Math.cbrt(t):7.787*t+16/116;
+ for(let i=0,j=0;i<N;i++,j+=4){const r=SC_LIN[data[j]],g=SC_LIN[data[j+1]],b=SC_LIN[data[j+2]];
+  const x=f((r*.4124+g*.3576+b*.1805)/.95047),y=f(r*.2126+g*.7152+b*.0722),z=f((r*.0193+g*.1192+b*.9505)/1.08883);
+  L[i]=116*y-16;A[i]=500*(x-y);B[i]=200*(y-z);}return {L,A,B};}
+/* box blur that only uses the skin pixels (so hair, eyes and background do not bleed in) */
+function scBlur(src,M,W,H,r){const N=W*H,num=new Float32Array(N),den=new Float32Array(N),tn=new Float32Array(N),td=new Float32Array(N),out=new Float32Array(N);
+ for(let i=0;i<N;i++){const m=M[i]?1:0;num[i]=src[i]*m;den[i]=m;}
+ for(let y=0;y<H;y++){let sn=0,sd=0;const o=y*W;for(let x=-r;x<W;x++){if(x+r<W){sn+=num[o+x+r];sd+=den[o+x+r];}if(x-r-1>=0){sn-=num[o+x-r-1];sd-=den[o+x-r-1];}if(x>=0){tn[o+x]=sn;td[o+x]=sd;}}}
+ for(let x=0;x<W;x++){let sn=0,sd=0;for(let y=-r;y<H;y++){if(y+r<H){sn+=tn[(y+r)*W+x];sd+=td[(y+r)*W+x];}if(y-r-1>=0){sn-=tn[(y-r-1)*W+x];sd-=td[(y-r-1)*W+x];}if(y>=0){const i=y*W+x;out[i]=sd>0?sn/sd:src[i];}}}
+ return out;}
+/* groups of touching pixels: how many, how big, where */
+function scBlobs(bin,W,H,amin,amax,round){const seen=new Uint8Array(W*H),out=[],st=[];
+ for(let i=0;i<W*H;i++){if(!bin[i]||seen[i])continue;let n=0,sx=0,sy=0,x0=1e9,x1=-1,y0=1e9,y1=-1;st.push(i);seen[i]=1;
+  while(st.length){const k=st.pop(),x=k%W,y=(k/W)|0;n++;sx+=x;sy+=y;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;
+   if(x>0&&bin[k-1]&&!seen[k-1]){seen[k-1]=1;st.push(k-1);}if(x<W-1&&bin[k+1]&&!seen[k+1]){seen[k+1]=1;st.push(k+1);}
+   if(y>0&&bin[k-W]&&!seen[k-W]){seen[k-W]=1;st.push(k-W);}if(y<H-1&&bin[k+W]&&!seen[k+W]){seen[k+W]=1;st.push(k+W);}}
+  const bw=x1-x0+1,bh=y1-y0+1;if(n>=amin&&n<=amax&&(!round||(bw<3*bh&&bh<3*bw&&n>.3*bw*bh)))out.push({x:sx/n,y:sy/n,n});}return out;}
+const scMed=(arr,M,step)=>{const v=[];for(let i=0;i<arr.length;i+=step||3)if(M[i])v.push(arr[i]);v.sort((a,b)=>a-b);return v.length?v[v.length>>1]:0;};
+function scAnalyse(id){const W=SC_W,H=SC_H,N=W*H,{L,A,B}=scLab(id.data,N);
+ /* where the face is: the oval, without the eyes and brows, the mouth and the nostrils */
+ const Z=new Uint8Array(N),E=new Uint8Array(N);
+ for(let y=0;y<H;y++){const v=y/H;for(let x=0;x<W;x++){const u=x/W,i=y*W+x,dx=(u-.5)/.47,dy=(v-.5)/.48;if(dx*dx+dy*dy>1)continue;
+  if(v>.31&&v<.46&&(u>.15&&u<.45||u>.55&&u<.85))continue;if(v>.66&&v<.82&&u>.30&&u<.70)continue;if(v>.575&&v<.65&&u>.38&&u<.62)continue;
+  E[i]=1;for(let z=0;z<SC_ZONES.length;z++){const q=SC_ZONES[z];if(u>=q[2]&&u<=q[3]&&v>=q[4]&&v<=q[5]){Z[i]=z+1;break;}}}}
+ const ref=new Uint8Array(N);for(let i=0;i<N;i++)ref[i]=E[i]&&Z[i]&&Z[i]<6?1:0;
+ const Lm=scMed(L,ref),Am=scMed(A,ref),Bm=scMed(B,ref);
+ const M=new Uint8Array(N);let skin=0,ell=0;
+ for(let i=0;i<N;i++){if(!E[i])continue;ell++;if(L[i]>Lm-28&&L[i]<Lm+34&&A[i]-Am>-18&&A[i]-Am<40&&Math.abs(B[i]-Bm)<26){M[i]=1;skin++;}}
+ const inZ=(i,...k)=>k.includes(Z[i]);
+ const Lb1=scBlur(L,M,W,H,1),Lb3=scBlur(L,M,W,H,3),Lb6=scBlur(L,M,W,H,6),Lb16=scBlur(L,M,W,H,16),Ab2=scBlur(A,M,W,H,2),Ab12=scBlur(A,M,W,H,12),Ab16=scBlur(A,M,W,H,16);
+ /* photo quality */
+ let lS=0,lN=0,rS=0,rN=0,hf=0,hfN=0;for(let y=0;y<H;y+=2)for(let x=0;x<W;x+=2){const i=y*W+x;if(!M[i])continue;if(x<W/2){lS+=L[i];lN++;}else{rS+=L[i];rN++;}hf+=Math.abs(L[i]-Lb3[i]);hfN++;}
+ const side=Math.abs((lN?lS/lN:0)-(rN?rS/rN:0)),sharp=hfN?hf/hfN:0,cover=ell?skin/ell:0;
+ const Q={light:Lm,side,sharp,cover,cast:Math.hypot(Am,Bm)};
+ const qs=[Lm>=38&&Lm<=82?2:Lm>=28&&Lm<=90?1:0,side<7?2:side<13?1:0,sharp>.7?2:sharp>.4?1:0,cover>.6?2:cover>.42?1:0];
+ Q.conf=qs.includes(0)?'low':qs.filter(x=>x===1).length>1?'medium':qs.includes(1)?'medium':'high';Q.parts=qs;
+ /* the maps */
+ const spot=new Uint8Array(N),red=new Uint8Array(N),acneB=new Uint8Array(N),pore=new Uint8Array(N),shine=new Uint8Array(N),line=new Uint8Array(N);
+ let nSpot=0,nRed=0,redEx=0;const chroma=new Float32Array(N);for(let i=0;i<N;i++)chroma[i]=Math.hypot(A[i],B[i]);const Cm=scMed(chroma,ref);
+ let sdL=0;{let s=0,s2=0,n=0;for(let i=0;i<N;i+=3)if(M[i]){s+=L[i];s2+=L[i]*L[i];n++;}sdL=n?Math.sqrt(Math.max(0,s2/n-(s/n)*(s/n))):0;}
+ let shT=0,shTn=0,shC=0,shCn=0;
+ for(let i=0;i<N;i++){if(!M[i])continue;
+  const dL=Lb16[i]-L[i],dA=A[i]-Ab16[i];
+  if(dL>6&&dA<6){spot[i]=1;nSpot++;}
+  const r=A[i]-Am;if(r>7){red[i]=Math.min(255,(r-7)*18+60);nRed++;redEx+=r-7;}
+  if(Ab2[i]-Ab12[i]>5&&L[i]-Lb6[i]<3)acneB[i]=1;
+  if(Lb6[i]-Lb1[i]>2.2&&inZ(i,2,3,4,5))pore[i]=1;
+  const sh=L[i]>Lm+Math.max(12,1.6*sdL)&&chroma[i]<Cm*.85;if(sh)shine[i]=1;
+  if(inZ(i,1,2,5)){shTn++;if(sh)shT++;}else if(inZ(i,3,4)){shCn++;if(sh)shC++;}}
+ const spots=scBlobs(spot,W,H,6,2500),acne=scBlobs(acneB,W,H,30,900,1),pores=scBlobs(pore,W,H,2,40);
+ let poreArea=0;for(let i=0;i<N;i++)if(M[i]&&inZ(i,2,3,4,5))poreArea++;
+ /* texture: fine detail left on the cheeks and forehead, leaving out spots and blemishes */
+ let tS=0,tS2=0,tN=0;for(let i=0;i<N;i++){if(!M[i]||spot[i]||acneB[i]||shine[i]||!inZ(i,1,3,4))continue;const d=L[i]-Lb3[i];tS+=d;tS2+=d*d;tN++;}
+ const tex=tN?Math.sqrt(Math.max(0,tS2/tN-(tS/tN)*(tS/tN))):0;
+ /* fine lines: long, level creases on the forehead and under the eyes (strong change up-down, little left-right) */
+ /* signed: random grain is as strong left-right as up-down and cancels out; a crease is not */
+ const D=new Float32Array(N);for(let i=0;i<N;i++)D[i]=Lb1[i]-Lb6[i];
+ let lnS=0,lnN=0;for(let y=2;y<H-2;y++)for(let x=2;x<W-2;x++){const i=y*W+x;if(!M[i]||!inZ(i,1,6,7))continue;
+  const gy=Math.abs(D[i+2*W]-D[i-2*W]),gx=Math.abs(D[i+2]-D[i-2]),v=gy-gx;lnS+=v;lnN++;if(v>3&&D[i]<-1.2)line[i]=1;}
+ const lineI=lnN?Math.max(0,lnS/lnN):0;
+ /* even tone: the face with the light's slope taken out */
+ const Lb12=scBlur(L,M,W,H,12),Bb12=scBlur(B,M,W,H,12);
+ let sx=0,sy=0,sxx=0,syy=0,sxy=0,sz=0,szx=0,szy=0,n=0;
+ for(let y=0;y<H;y+=4)for(let x=0;x<W;x+=4){const i=y*W+x;if(!M[i]||!inZ(i,1,3,4,5))continue;const u=x/W,v=y/H,z=Lb12[i];sx+=u;sy+=v;sxx+=u*u;syy+=v*v;sxy+=u*v;sz+=z;szx+=z*u;szy+=z*v;n++;}
+ let pa=0,pb=0,pc=Lm;if(n>30){const m=[[sxx,sxy,sx],[sxy,syy,sy],[sx,sy,n]],r=[szx,szy,sz];
+  const det=a=>a[0][0]*(a[1][1]*a[2][2]-a[1][2]*a[2][1])-a[0][1]*(a[1][0]*a[2][2]-a[1][2]*a[2][0])+a[0][2]*(a[1][0]*a[2][1]-a[1][1]*a[2][0]);
+  const d0=det(m);if(Math.abs(d0)>1e-9){const col=(k)=>m.map((row,ri)=>row.map((c,ci)=>ci===k?r[ri]:c));pa=det(col(0))/d0;pb=det(col(1))/d0;pc=det(col(2))/d0;}}
+ let eS=0,eS2=0,bS=0,bS2=0,eN=0;for(let y=0;y<H;y+=3)for(let x=0;x<W;x+=3){const i=y*W+x;if(!M[i]||!inZ(i,1,3,4,5))continue;const z=Lb12[i]-(pa*x/W+pb*y/H+pc);eS+=z;eS2+=z*z;bS+=Bb12[i];bS2+=Bb12[i]*Bb12[i];eN++;}
+ const evenI=eN?Math.sqrt(Math.max(0,eS2/eN-(eS/eN)**2))+.6*Math.sqrt(Math.max(0,bS2/eN-(bS/eN)**2)):0;
+ /* under-eyes: how much darker than the cheeks */
+ let uL=0,uN=0,cL=0,cN=0;for(let i=0;i<N;i++){if(!M[i])continue;if(inZ(i,6,7)){uL+=L[i];uN++;}else if(inZ(i,3,4)){cL+=L[i];cN++;}}
+ const eyeD=uN&&cN?cL/cN-uL/uN:0;
+ const pS=skin?nSpot/skin:0,pR=skin?nRed/skin:0,pD=poreArea?pores.length/poreArea*1e4:0,shTp=shTn?shT/shTn:0,shCp=shCn?shC/shCn:0;
+ const S={spots:scSc(pS,.012,.11),red:scSc(pR,.03,.30),acne:scSc(acne.length,0,15),pores:scSc(pD,6,48),tex:scSc(tex,1.1,4.2),lines:scSc(lineI,.12,1.1),
+  oil:scSc(shTp*.65+shCp*.35,.012,.12),even:scSc(evenI,2.4,8.5),eyes:scSc(eyeD,2.5,13)};
+ S.overall=Math.round(SC_M.reduce((a,m)=>a+S[m[0]]*m[3],0));
+ /* each zone, on the indicators that differ across the face */
+ const ZS={};SC_ZONES.forEach((q,zi)=>{const k=q[0]==='ue2'?'ue':q[0];const o=ZS[k]=ZS[k]||{n:0,sp:0,rd:0,sh:0,ac:0};});
+ for(let i=0;i<N;i++){if(!M[i]||!Z[i])continue;const k=SC_ZONES[Z[i]-1][0]==='ue2'?'ue':SC_ZONES[Z[i]-1][0],o=ZS[k];o.n++;if(spot[i])o.sp++;if(red[i])o.rd++;if(shine[i])o.sh++;}
+ acne.forEach(b=>{const u=b.x/W,v=b.y/H,q=SC_ZONES.find(q=>u>=q[2]&&u<=q[3]&&v>=q[4]&&v<=q[5]);if(q)ZS[q[0]==='ue2'?'ue':q[0]].ac++;});
+ const zones={};Object.entries(ZS).forEach(([k,o])=>{if(!o.n)return;zones[k]={spots:scSc(o.sp/o.n,.012,.11),red:scSc(o.rd/o.n,.03,.30),oil:scSc(o.sh/o.n,.012,.12),acne:o.ac};});
+ const raw={pS:+pS.toFixed(4),spots:spots.length,pR:+pR.toFixed(4),acne:acne.length,poreD:+pD.toFixed(1),tex:+tex.toFixed(2),lineI:+lineI.toFixed(2),shT:+shTp.toFixed(3),shC:+shCp.toFixed(3),even:+evenI.toFixed(2),eyeD:+eyeD.toFixed(1)};
+ /* the likely skin type */
+ const type=shTp>.07&&shCp>.035?'Oily':shTp>.05&&shCp<=.035?'Combination':shTp<.018&&S.tex<60?'Dry':'Normal';
+ const sens=S.red<55;
+ /* is there a face at all? the middle of the oval must be skin-coloured (any skin tone) and fill it */
+ const hue=Math.atan2(Bm,Am)*180/Math.PI,noface=!(Am>2&&Bm>4&&hue>12&&hue<88&&Math.hypot(Am,Bm)>6&&Lm>12&&Lm<96&&cover>.3);
+ return {S,raw,zones,Q,type,sens,noface,maps:{spot,red,acne,pores,shine,line,M},W,H};}
+
+/* ---------- what it means: concerns, treatments, products, plan ---------- */
+const SC_TIPS={pigment:['Daily SPF 30+ every morning and again at midday — the single biggest factor for pigmentation.','Brightening facials work best as a course of 6–8 sessions, every 2–3 weeks.','Avoid picking or squeezing — it leaves dark marks (PIH).'],
+ redness:['Keep products gentle: no scrubs, strong acids or hot water for now.','Calming, barrier-repair treatments first; stronger treatments once the redness settles.','If the redness burns, stings or comes with bumps that do not settle, suggest seeing a doctor.'],
+ acne:['Deep-cleansing / acne facials every 1–2 weeks until breakouts settle, then monthly.','Non-comedogenic moisturiser and SPF; change pillowcases often.','Many inflamed or painful cysts: refer to a doctor or dermatologist alongside the facials.'],
+ pores:['Regular extraction and pore-refining sessions, every 3–4 weeks.','A gentle BHA (salicylic) cleanser at home 2–3 times a week.'],
+ scarring:['Texture improves over a course: resurfacing / microneedling-type treatments every 4 weeks, 4–6 sessions.','Results build slowly — compare scans every 4 weeks.'],
+ lines:['Hydrating and collagen-support treatments as a monthly course.','Daily SPF and a night moisturiser; retinoid-type products only after a patch test.'],
+ oily:['Oil-control facials every 2–3 weeks; a light gel moisturiser — skipping moisturiser makes oil worse.','Blotting papers instead of washing often during the day.'],
+ dull:['Exfoliating and brightening facials every 2–3 weeks to bring back glow.','Drink water, sleep and a vitamin C serum in the morning help the tone stay even.'],
+ eyes:['Eye treatments / eye masks as an add-on; results show over several sessions.','Rest, less screen time at night and an eye cream with caffeine or peptides.'],
+ dehydrated:['Hydrating facials and a humectant serum (hyaluronic acid) under moisturiser.','Short lukewarm showers; avoid foaming cleansers that leave skin tight.']};
+function scConcerns(r){const out=SC_M.map(m=>({k:m[0],c:m[4],s:r.S[m[0]],w:Math.max(0,(72-r.S[m[0]])/72)})).filter(x=>x.w>0).sort((a,b)=>b.w-a.w);
+ if(r.type==='Dry')out.push({k:'dry',c:'dehydrated',s:55,w:.25});return out;}
+function scRecs(r){const C=scConcerns(r),W={};C.forEach(x=>{W[x.c]=(W[x.c]||0)+x.w;if(x.c==='acne'||x.c==='pores'||x.c==='oily')W.congestion=(W.congestion||0)+x.w*.5;});
+ const lab=k=>(CONCERNS.find(c=>c.id===k)||{label:k}).label;
+ const svcs=D.services.filter(s=>s.active!==false&&(s.concerns||[]).length).map(s=>{const hit=s.concerns.filter(k=>W[k]);return {s,hit,v:hit.reduce((a,k)=>a+W[k],0)};}).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,4);
+ const ids=new Set(svcs.map(x=>x.s.id));
+ const pkgs=(D.packages||[]).filter(p=>p.active!==false&&(p.items||[]).some(i=>ids.has(i.serviceId))).slice(0,3);
+ const prods=skRetail().map(p=>{const k=(skW(p).k||[]).filter(k=>W[k]);return {p,hit:k,v:k.reduce((a,x)=>a+W[x],0)};}).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,4);
+ return {C,W,svcs,pkgs,prods,lab,untagged:!D.services.some(s=>(s.concerns||[]).length)};}
+function scFinding(k,r){const R=r.raw,Z=r.zones||{},zn={fh:'forehead',nose:'nose',lc:'right cheek',rc:'left cheek',chin:'chin',ue:'under-eyes'};
+ const worst=key=>{const L=Object.entries(Z).filter(([z])=>z!=='ue').sort((a,b)=>key==='acne'?b[1].acne-a[1].acne:a[1][key]-b[1][key]);return L.length?zn[L[0][0]]:'';};
+ switch(k){case 'spots':return R.spots+' visible spot'+(R.spots===1?'':'s')+(R.spots?', most on the '+worst('spots'):'')+'.';
+  case 'red':return Math.round(R.pR*100)+'% of the skin redder than the client\'s own tone'+(R.pR>.04?', most on the '+worst('red'):'')+'.';
+  case 'acne':return R.acne?R.acne+' raised red blemish'+(R.acne===1?'':'es')+', most on the '+worst('acne')+'.':'No active blemishes seen.';
+  case 'pores':return R.poreD<12?'Fine, barely visible pores.':R.poreD<28?'Visible pores on the nose and cheeks.':'Enlarged pores, clearest on the nose and cheeks.';
+  case 'tex':return R.tex<1.6?'Smooth, even surface.':R.tex<2.6?'Some unevenness in the surface.':'Rough or bumpy texture (marks, scarring or dryness).';
+  case 'lines':return R.lineI<.3?'Few fine lines.':R.lineI<.7?'Fine lines on the forehead or under the eyes.':'Clear lines on the forehead and around the eyes.';
+  case 'oil':return 'Shine on '+Math.round(R.shT*100)+'% of the T-zone and '+Math.round(R.shC*100)+'% of the cheeks.';
+  case 'even':return R.even<3.5?'Even tone.':R.even<5.5?'Slightly uneven tone.':'Uneven tone and patches.';
+  case 'eyes':return R.eyeD<4?'Under-eyes close to the cheek tone.':R.eyeD<8?'Under-eyes a little darker than the cheeks.':'Clearly darker under-eyes.';}return '';}
+
+/* ---------- the camera ---------- */
+function scGeo(stage,vw,vh,view){const sw=stage.clientWidth,sh=stage.clientHeight,ow=sw*.64,oh=ow*1.25,ox=(sw-ow)/2,oy=(sh-oh)/2;
+ const v=view||{s:Math.max(sw/vw,sh/vh),mx:0,my:0};if(!view){v.mx=(sw-vw*v.s)/2;v.my=(sh-vh*v.s)/2;}return {sw,sh,ow,oh,ox,oy,...v};}
+function scOverlay(){return '<svg class="scov" viewBox="0 0 300 400" preserveAspectRatio="none"><path fill-rule="evenodd" d="M0 0H300V400H0Z M246 200 A96 120 0 1 0 54 200 A96 120 0 1 0 246 200Z" fill="rgba(10,9,8,.55)"/>'+
+ '<ellipse cx="150" cy="200" rx="96" ry="120" fill="none" class="scoval" stroke-width="2.5"/><path d="M96 168H204M120 224H180" stroke="rgba(255,255,255,.35)" stroke-width="1" stroke-dasharray="4 5"/></svg>';}
+async function scCamStart(){scCamStop();
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){SC.camErr='This browser cannot open the camera — use "Upload a photo".';render();return;}
+ try{SCSTREAM=await navigator.mediaDevices.getUserMedia({video:{facingMode:SC.cam,width:{ideal:1920},height:{ideal:1440}},audio:false});
+  SCVID=SCVID||Object.assign(document.createElement('video'),{muted:true,playsInline:true,autoplay:true});SCVID.setAttribute('playsinline','');
+  SCVID.srcObject=SCSTREAM;await SCVID.play().catch(()=>{});SC.camErr='';scAttach();scQLoop();}
+ catch(e){SC.camErr=/Permission|NotAllowed/i.test(e.name+e.message)?'Camera permission was refused — allow the camera for this site in the browser settings, or use "Upload a photo".':'Could not open the camera ('+(e.message||e.name)+'). Use "Upload a photo".';render();}}
+function scCamStop(){clearInterval(SCQT);SCQT=0;if(SCSTREAM){SCSTREAM.getTracks().forEach(t=>t.stop());SCSTREAM=null;}}
+function scAttach(){const st=document.getElementById('sc-stage');if(!st)return;
+ const media=SC.up?SCUP:SCVID;if(!media)return;if(media.parentElement!==st)st.insertBefore(media,st.firstChild);
+ media.className='scmedia'+(!SC.up&&SC.cam==='user'?' mir':'');
+ const vw=SC.up?media.naturalWidth:media.videoWidth,vh=SC.up?media.naturalHeight:media.videoHeight;if(!vw||!vh){setTimeout(scAttach,120);return;}
+ if(SC.up&&!SC.view){const g=scGeo(st,vw,vh);SC.view={s:g.s,mx:g.mx,my:g.my};}
+ const g=scGeo(st,vw,vh,SC.up?SC.view:null);Object.assign(media.style,{width:vw*g.s+'px',height:vh*g.s+'px',left:g.mx+'px',top:g.my+'px'});
+ if(!SC.up&&media.paused)media.play().catch(()=>{});}
+/* the crop under the oval, as the client really looks (not mirrored), drawn at 640 × 800 */
+function scGrab(){const st=document.getElementById('sc-stage'),media=SC.up?SCUP:SCVID;if(!st||!media)return null;
+ const vw=SC.up?media.naturalWidth:media.videoWidth,vh=SC.up?media.naturalHeight:media.videoHeight;if(!vw)return null;
+ const g=scGeo(st,vw,vh,SC.up?SC.view:null),mir=!SC.up&&SC.cam==='user';
+ const sx=mir?(g.mx+vw*g.s-(g.ox+g.ow))/g.s:(g.ox-g.mx)/g.s,sy=(g.oy-g.my)/g.s,sw=g.ow/g.s,sh=g.oh/g.s;
+ const c=document.createElement('canvas');c.width=SC_W;c.height=SC_H;const x=c.getContext('2d');x.fillStyle='#000';x.fillRect(0,0,SC_W,SC_H);
+ x.drawImage(media,sx,sy,sw,sh,0,0,SC_W,SC_H);return c;}
+/* live hints while framing: light, even light, steady, face filling the oval */
+function scQLoop(){clearInterval(SCQT);let prev=null;
+ SCQT=setInterval(()=>{if(TAB!=='skin'||SC.step!=='cam'){clearInterval(SCQT);SCQT=0;return;}const c=scGrab();if(!c)return;
+  const s=document.createElement('canvas');s.width=64;s.height=80;const x=s.getContext('2d',{willReadFrequently:true});x.drawImage(c,0,0,64,80);const d=x.getImageData(0,0,64,80).data;
+  let Ls=[],l=0,ln=0,r=0,rn=0,sk=0,el=0,mv=0;const g=new Float32Array(64*80);
+  for(let y=0;y<80;y++)for(let X=0;X<64;X++){const i=(y*64+X)*4,Y=.299*d[i]+.587*d[i+1]+.114*d[i+2];g[y*64+X]=Y;const dx=(X/64-.5)/.47,dy=(y/80-.5)/.48;if(dx*dx+dy*dy>1)continue;el++;
+   const cb=128-.169*d[i]-.331*d[i+1]+.5*d[i+2],cr=128+.5*d[i]-.419*d[i+1]-.081*d[i+2];if(cb>72&&cb<132&&cr>130&&cr<180){sk++;Ls.push(Y);if(X<32){l+=Y;ln++;}else{r+=Y;rn++;}}}
+  if(prev){for(let i=0;i<g.length;i+=3)mv+=Math.abs(g[i]-prev[i]);mv/=g.length/3;}prev=g;
+  Ls.sort((a,b)=>a-b);const med=Ls.length?Ls[Ls.length>>1]:0,side=ln&&rn?Math.abs(l/ln-r/rn):99,cov=el?sk/el:0;
+  SCQ={light:med<70?['Too dark','r']:med>215?['Too bright','r']:med<95?['A bit dark','a']:['Good light','g'],
+   even:side>28?['Light from one side','r']:side>16?['Light a bit uneven','a']:['Even light','g'],
+   still:mv>9?['Hold still','a']:['Steady','g'],fit:cov<.35?['Bring the face into the oval','r']:cov<.55?['Move a little closer','a']:['Face fits','g']};
+  const q=document.getElementById('sc-q');if(q)q.innerHTML=scQChips();const o=document.querySelector('#sc-stage .scoval');
+  if(o)o.setAttribute('class','scoval '+(Object.values(SCQ).some(v=>v[1]==='r')?'r':Object.values(SCQ).some(v=>v[1]==='a')?'a':'g'));},450);}
+const scQChips=()=>SCQ?Object.values(SCQ).map(([t,c])=>'<span class="scq '+c+'">'+(c==='g'?'✓ ':'• ')+t+'</span>').join(''):'<span class="scq">Checking the light…</span>';
+window.scCapture=async()=>{if(SC.busy)return;const st=document.getElementById('sc-stage');if(!st)return;
+ if(SC.timer&&!SC.up){SC.busy='count';for(let n=SC.timer;n>0;n--){const b=document.getElementById('sc-count');if(b){b.textContent=n;b.style.display='grid';}await new Promise(r=>setTimeout(r,1000));}
+  const b=document.getElementById('sc-count');if(b)b.style.display='none';}
+ const c=scGrab();if(!c){SC.busy='';toast('The camera is not ready yet');return;}
+ st.classList.add('flash');setTimeout(()=>st.classList.remove('flash'),350);
+ SC.busy='run';const url=c.toDataURL('image/jpeg',.86);scCamStop();
+ SC.step='run';SC.src=SC.up?'upload':SC.cam==='user'?'front':'back';SC.shot=url;render();
+ await scRun(url);};
+/* analyse exactly the pixels that will be saved (the JPEG), so a saved scan reads back the same */
+async function scRun(url,keep){const im=await new Promise((ok,no)=>{const m=new Image();m.onload=()=>ok(m);m.onerror=no;m.src=url;});
+ await new Promise(r=>setTimeout(r,60));
+ const c=document.createElement('canvas');c.width=SC_W;c.height=SC_H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,SC_W,SC_H);
+ const t0=performance.now();const r=scAnalyse(x.getImageData(0,0,SC_W,SC_H));
+ await new Promise(ok=>setTimeout(ok,Math.max(0,1400-(performance.now()-t0))));   /* the scan line runs at least a moment */
+ SC.img=im;SC.res=r;SC.busy='';if(!keep){SC.saved='';SC.note='';SC.ov='none';SC.step='res';SC.svcId=SC.svcId||scTodaySvc(SC.cid);}render();}
+window.scUpload=inp=>{const f=inp.files&&inp.files[0];if(!f)return;const rd=new FileReader();
+ rd.onload=()=>{const m=new Image();m.onload=()=>{scCamStop();SCUP=m;SC.up=true;SC.view=null;render();};m.src=rd.result;};rd.readAsDataURL(f);inp.value='';};
+window.scZoom=v=>{const st=document.getElementById('sc-stage');if(!st||!SCUP||!SC.view)return;const cx=st.clientWidth/2,cy=st.clientHeight/2,s0=SC.view.s,base=Math.max(st.clientWidth/SCUP.naturalWidth,st.clientHeight/SCUP.naturalHeight),s=base*(+v);
+ SC.view={s,mx:cx-(cx-SC.view.mx)*s/s0,my:cy-(cy-SC.view.my)*s/s0};scAttach();};
+function scDrag(){const st=document.getElementById('sc-stage');if(!st||st.__d||!SC.up)return;st.__d=1;let p=null;
+ st.addEventListener('pointerdown',e=>{if(!SC.up)return;p={x:e.clientX,y:e.clientY,mx:SC.view.mx,my:SC.view.my};st.setPointerCapture(e.pointerId);});
+ st.addEventListener('pointermove',e=>{if(!p)return;SC.view.mx=p.mx+e.clientX-p.x;SC.view.my=p.my+e.clientY-p.y;scAttach();});
+ st.addEventListener('pointerup',()=>{p=null;});}
+window.scFlip=()=>{SC.cam=SC.cam==='user'?'environment':'user';SC.up=false;scCamStart();render();};
+window.scLive=()=>{SC.up=false;SCUP=null;SC.view=null;scCamStart();render();};
+window.scTimer=()=>{SC.timer=SC.timer?0:3;render();};
+
+/* ---------- saving, loading ---------- */
+function scTodaySvc(cid){try{const a=(typeof APPTS!=='undefined'?APPTS:[]).find(x=>x.customerId===cid&&x.date===today()&&x.serviceId);return a?a.serviceId:'';}catch(e){return '';}}
+async function scLoad(cid,force){if(!force&&SCH[cid])return SCH[cid];
+ try{const q=await getDocs(query(collection(db,'skinScans'),where('customerId','==',cid)));SCH[cid]=q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.at).localeCompare(String(b.at)));}
+ catch(e){SCH[cid]=SCH[cid]||[];SC.loadErr=friendly(e);}return SCH[cid];}
+async function scImg(id){if(SCIMG[id])return SCIMG[id];try{const d=await getDoc(doc(db,'skinScanImg',id));if(d.exists())return SCIMG[id]=d.data().img;}catch(e){}return '';}
+function scThumb(im){const c=document.createElement('canvas');c.width=96;c.height=120;c.getContext('2d').drawImage(im,0,0,96,120);return c.toDataURL('image/jpeg',.72);}
+window.scSave=async()=>{const r=SC.res,c=cust(SC.cid);if(!r||!c||SC.busy||r.noface)return;SC.busy='save';render();
+ const prev=(SCH[c.id]||[]),rec=scRecs(r),sv=SC.svcId?svc(SC.svcId):null,sess=sv?prev.filter(x=>x.svcId===sv.id).length+1:0;
+ const meta={customerId:c.id,customerName:c.name,branchId:ME.branchId,date:today(),at:new Date().toISOString(),by:UID,byName:ME.name||'',
+  scores:r.S,raw:r.raw,zones:r.zones,type:r.type,sens:r.sens,conf:r.Q.conf,quality:{light:+r.Q.light.toFixed(1),side:+r.Q.side.toFixed(1),sharp:+r.Q.sharp.toFixed(2),cover:+r.Q.cover.toFixed(2)},
+  concerns:rec.C.slice(0,5).map(x=>x.c),recs:{svc:rec.svcs.map(x=>x.s.id),prod:rec.prods.map(x=>x.p.id)},note:String(SC.note||'').slice(0,1000),
+  svcId:sv?sv.id:'',svcName:sv?sv.name:'',sess,src:SC.src||'',th:scThumb(SC.img),v:1};
+ try{const ref=await addDoc(collection(db,'skinScans'),meta);await setDoc(doc(db,'skinScanImg',ref.id),{customerId:c.id,img:SC.shot});SCIMG[ref.id]=SC.shot;
+  (SCH[c.id]=SCH[c.id]||[]).push({id:ref.id,...meta});SC.saved=ref.id;
+  if(SC.upd&&r.type&&c.skin!==r.type+(r.sens?', sensitive':'')){try{const sk=r.type+(r.sens?', sensitive':'');await updateDoc(doc(db,'customers',c.id),{skin:sk});c.skin=sk;}catch(e){}}
+  await audit('SkinCam scan saved',c.name+' · score '+r.S.overall+(sv?' · '+sv.name+' #'+sess:''));toast('Saved to '+c.name+'\'s record');}
+ catch(e){toast(friendly(e)+' — if this says permission, add the SkinCam lines to the database rules (build 30v)');}
+ SC.busy='';render();};
+window.scDel=async id=>{if(!boss()||!confirm('Delete this scan for good?'))return;
+ try{await deleteDoc(doc(db,'skinScans',id));await deleteDoc(doc(db,'skinScanImg',id)).catch(()=>{});SCH[SC.cid]=(SCH[SC.cid]||[]).filter(x=>x.id!==id);
+  if(SC.cmpA===id)SC.cmpA='';if(SC.cmpB===id)SC.cmpB='';await audit('SkinCam scan deleted',(cust(SC.cid)||{}).name||'');render();}catch(e){toast(friendly(e));}};
+/* open a saved scan with its maps (the photo is analysed again: same pixels, same result) */
+window.scOpen=async id=>{const s=(SCH[SC.cid]||[]).find(x=>x.id===id);if(!s)return;SC.busy='open';render();const u=await scImg(id);SC.busy='';if(!u){toast('The photo of this scan could not be loaded');render();return;}
+ SC.shot=u;SC.saved=id;SC.svcId=s.svcId||'';SC.note=s.note||'';SC.step='run';render();await scRun(u,true);SC.step='res';SC.ov='none';SC.res.S=s.scores;SC.res.at=s.at;render();};
+
+/* ---------- screens ---------- */
+function scRing(v,sz,lab){const r=sz/2-7,C=2*Math.PI*r,g=scGrade(v);return '<svg class="scring '+g[1]+'" width="'+sz+'" height="'+sz+'" viewBox="0 0 '+sz+' '+sz+'"><circle cx="'+sz/2+'" cy="'+sz/2+'" r="'+r+'" class="bg"/>'+
+ '<circle cx="'+sz/2+'" cy="'+sz/2+'" r="'+r+'" class="fg" stroke-dasharray="'+(C*v/100).toFixed(1)+' '+C.toFixed(1)+'" transform="rotate(-90 '+sz/2+' '+sz/2+')"/>'+
+ '<text x="50%" y="'+(lab?'47%':'53%')+'" text-anchor="middle" class="n"'+(sz<100?' style="font-size:'+Math.round(sz*(v>99?.27:.32))+'px"':'')+'>'+v+'</text>'+(lab?'<text x="50%" y="66%" text-anchor="middle" class="l">'+lab+'</text>':'')+'</svg>';}
+function scPick(){
+ if(SC.recent===null){SC.recent=[];getDocs(query(collection(db,'skinScans'),orderBy('at','desc'),limit(12))).then(q=>{SC.recent=q.docs.map(d=>({id:d.id,...d.data()})).filter(x=>(x.branchId||ME.branchId)===ME.branchId);if(TAB==='skin')render();}).catch(()=>{});}
+ return '<div class="card schero"><div class="schi"><div><h2>'+ic('scface',20)+' SkinCam</h2><p class="muted">Take a photo of the client\'s face and get a full skin analysis — nine indicators, where they show on the face, the likely skin type, and the treatments in your menu that answer them. Saved to the client\'s record to follow progress session by session.</p></div>'+
+  '<div class="scsteps"><span><b>1</b>Choose the client</span><span><b>2</b>Frame the face</span><span><b>3</b>Read the analysis</span><span><b>4</b>Save & compare</span></div></div></div>'+
+  '<div class="card"><h3>'+ic('user',15)+' Client</h3>'+clientPicker('sc-c',SC.cid,{onPick:id=>{SC.cid=id;if(id)scLoad(id).then(()=>render());render();}})+
+  (SC.cid?'<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap"><button class="btn" onclick="scGo(\'cam\')">'+ic('camera',16)+'New scan</button>'+
+   ((SCH[SC.cid]||[]).length?'<button class="btn ghost" onclick="scGo(\'hist\')">'+ic('chart',16)+'Progress ('+SCH[SC.cid].length+' scan'+(SCH[SC.cid].length===1?'':'s')+')</button>':'')+'</div>':'')+'</div>'+
+  ((SC.recent||[]).length?'<div class="card"><h3>'+ic('history',15)+' Recent scans</h3><div class="screcent">'+SC.recent.map(s=>'<button type="button" onclick="scGoClient(\''+esc(s.customerId)+'\')"><img src="'+s.th+'" alt=""><span><b>'+esc(s.customerName||'')+'</b><small>'+dshort(s.date)+(s.svcName?' · '+esc(s.svcName):'')+'</small></span><em class="'+scGrade((s.scores||{}).overall||0)[1]+'">'+((s.scores||{}).overall||0)+'</em></button>').join('')+'</div></div>':'');}
+window.scGoClient=async id=>{SC.cid=id;await scLoad(id);SC.step='hist';SC.cmpA='';SC.cmpB='';render();};
+window.scGo=s=>{if(s!=='cam')scCamStop();SC.step=s;if(s==='cam'){SC.up=false;SCUP=null;SC.view=null;SCQ=null;scCamStart();}if(s==='hist'){scLoad(SC.cid).then(()=>render());}render();};
+function scCam(){const c=cust(SC.cid)||{};
+ return '<div class="card"><div class="spread"><h3 style="margin:0">'+ic('camera',15)+' '+esc(c.name||'')+'</h3><button class="btn sm ghost" onclick="scGo(\'pick\')">'+ic('close',13)+'Cancel</button></div></div>'+
+  '<div class="scgrid"><div class="card sccamcard"><div class="scstage'+(SC.up?' up':'')+'" id="sc-stage">'+scOverlay()+'<div class="sccount" id="sc-count"></div>'+(SC.camErr&&!SC.up?'<div class="scerr">'+ic('alert',18)+esc(SC.camErr)+'</div>':'')+'</div>'+
+   (SC.up?'<div class="row sczoom"><span class="tiny muted">Drag to move · zoom</span><input type="range" min="1" max="3" step=".02" value="'+(SC.view&&SCUP?(SC.view.s/Math.max(1,1)).toFixed(2):1)+'" oninput="scZoom(this.value)" id="sc-z"></div>':'<div class="scqrow" id="sc-q">'+scQChips()+'</div>')+
+   '<div class="sccontrols"><label class="btn ghost sm" title="Use a photo from the gallery">'+ic('image',15)+'Upload a photo<input type="file" accept="image/*" hidden onchange="scUpload(this)"></label>'+
+   '<button class="sccap" onclick="scCapture()" aria-label="'+(SC.up?'Analyse':'Capture')+'"><i></i></button>'+
+   (SC.up?'<button class="btn ghost sm" onclick="scLive()">'+ic('camera',15)+'Camera</button>':'<span class="row" style="gap:6px"><button class="btn ghost sm" onclick="scFlip()" title="Switch camera">'+ic('refresh',15)+(SC.cam==='user'?'Back cam':'Front cam')+'</button><button class="btn ghost sm'+(SC.timer?' on':'')+'" onclick="scTimer()" title="3-second timer">'+ic('clock',15)+(SC.timer?'3s':'Timer')+'</button></span>')+'</div></div>'+
+  '<div class="card sctips"><h3>'+ic('spark',15)+' For a fair result</h3><ol><li><b>Clean face</b>, no make-up, hair pulled back.</li><li><b>Soft, even light from the front</b> — face a window or a ring light; no light from one side or from above.</li>'+
+   '<li><b>Same spot, same light, same distance</b> each session, so scans compare fairly.</li><li>Face straight on, eyes open, neutral face; <b>fit the face in the oval</b> from hairline to chin.</li><li>Back camera of the tablet gives the sharpest photo.</li></ol>'+
+   '<p class="tiny muted">The photo is analysed on this device and saved only to the client\'s record.</p></div></div>';}
+function scRunView(){return '<div class="card"><div class="scrun"><div class="scrunimg"><img src="'+(SC.shot||'')+'" alt=""><i class="scline"></i><div class="scgridfx"></div></div><div><h3>'+ic('scface',16)+' Analysing the skin…</h3><p class="muted">Tone, spots, redness, blemishes, pores, texture, lines, shine and under-eyes, zone by zone.</p></div></div></div>';}
+function scRes(){if(SC.res.noface)return scNoFace();const r=SC.res,c=cust(SC.cid)||{},rec=scRecs(r),S=r.S,prev=(SCH[c.id]||[]).filter(x=>x.id!==SC.saved&&(!SC.saved||String(x.at)<String(((SCH[c.id]||[]).find(y=>y.id===SC.saved)||{}).at))).slice(-1)[0];
+ const g=scGrade(S.overall),qn={high:'High',medium:'Medium',low:'Low'}[r.Q.conf];
+ const qtips=[];if(r.Q.parts[0]<2)qtips.push(r.Q.light<38?'the photo is dark':'the photo is very bright');if(r.Q.parts[1]<2)qtips.push('the light comes from one side');if(r.Q.parts[2]<2)qtips.push('the photo is not sharp');if(r.Q.parts[3]<2)qtips.push('the face does not fill the oval');
+ const OV=[['none','Photo'],['zones','Zones'],['spots','Spots'],['red','Redness'],['acne','Blemishes'],['pores','Pores'],['shine','Shine'],['lines','Lines']];
+ const dl=k=>{if(!prev||!prev.scores||prev.scores[k]===undefined)return '';const d=S[k]-prev.scores[k];return '<span class="scdl '+(d>0?'up':d<0?'dn':'')+'">'+(d>0?'▲':d<0?'▼':'')+(d?Math.abs(d):'=')+'</span>';};
+ let h='<div class="card scresh"><div class="spread"><div><h3 style="margin:0">'+ic('scface',16)+' '+esc(c.name||'')+'</h3><p class="tiny muted" style="margin:2px 0 0">'+dstr(r.at||new Date())+(SC.saved?' · saved':' · not saved yet')+'</p></div>'+
+  '<div class="row noprint" style="gap:6px;flex-wrap:wrap"><button class="btn sm ghost" onclick="scGo(\'cam\')">'+ic('camera',14)+'New scan</button>'+((SCH[c.id]||[]).length?'<button class="btn sm ghost" onclick="scGo(\'hist\')">'+ic('chart',14)+'Progress</button>':'')+'<button class="btn sm ghost" onclick="window.print()">'+ic('print',14)+'Print</button></div></div></div>';
+ /* photo + summary */
+ h+='<div class="scgrid"><div class="card"><div class="scphoto" id="sc-ph"><canvas id="sc-cv" width="'+SC_W+'" height="'+SC_H+'"></canvas><canvas id="sc-ovc" width="'+SC_W+'" height="'+SC_H+'"></canvas></div>'+
+  '<div class="scovs noprint">'+OV.map(([k,l])=>'<button type="button" class="'+(SC.ov===k?'on':'')+'" onclick="scOv(\''+k+'\')">'+l+'</button>').join('')+'</div></div>'+
+  '<div class="card scsum"><div class="scsumtop">'+scRing(S.overall,150,'of 100')+'<div><span class="scgr '+g[1]+'">'+g[0]+'</span><h2>Skin score '+S.overall+(prev&&prev.scores?' '+dl('overall'):'')+'</h2>'+
+   '<div class="sckv"><span>Skin type</span><b>'+r.type+(r.sens?' · sensitive':'')+'</b><span>Confidence</span><b class="scconf '+r.Q.conf+'">'+qn+'</b>'+(prev?'<span>Last scan</span><b>'+dshort(prev.date)+' · '+(prev.scores||{}).overall+'</b>':'')+'</div></div></div>'+
+   (qtips.length?'<div class="scwarn">'+ic('alert',13)+' Read with care: '+qtips.join(', ')+'. Retake in soft front light for a more reliable result.</div>':'')+
+   '<h4>Main concerns</h4>'+(rec.C.length?'<div class="scconc">'+rec.C.slice(0,4).map((x,i)=>'<span class="'+(i===0?'top':'')+'">'+esc(rec.lab(x.c))+'</span>').join('')+'</div>':'<p class="muted">No marked concerns — maintenance care.</p>')+
+   '<p class="scsumtxt">'+scSummary(r,rec)+'</p></div></div>';
+ /* the nine indicators */
+ h+='<div class="card"><h3>'+ic('grid',15)+' The nine indicators</h3><p class="tiny muted" style="margin:-4px 0 10px">Each 0–100, higher is better.'+(prev?' ▲▼ against the scan of '+dstr(prev.date)+'.':'')+'</p><div class="scmet">'+
+  SC_M.map(([k,n,icn])=>{const v=S[k],gg=scGrade(v);return '<div class="scmc" onclick="scOv(\''+({spots:'spots',red:'red',acne:'acne',pores:'pores',oil:'shine',lines:'lines'}[k]||'zones')+'\')"><div class="spread"><span class="scmi"><span class="scmic">'+ic(icn,16)+'</span>'+n+'</span><b>'+v+dl(k)+'</b></div>'+
+   '<div class="scbar '+gg[1]+'"><i style="width:'+v+'%"></i></div><div class="spread"><small>'+esc(scFinding(k,r))+'</small><em class="'+gg[1]+'">'+gg[0]+'</em></div></div>';}).join('')+'</div></div>';
+ /* zones */
+ const ZN=[['fh','Forehead'],['nose','Nose'],['lc','Right cheek'],['rc','Left cheek'],['chin','Chin'],['ue','Under-eyes']],Zr=r.zones||{};
+ const zc=v=>v>=80?'#4FB386':v>=65?'#9BC86A':v>=50?'#F0B44C':'#E9707C';
+ h+='<div class="scgrid"><div class="card"><h3>'+ic('scface',15)+' Face map</h3><div class="scfacemap">'+scFaceSvg(Zr,zc)+'</div><p class="tiny muted" style="text-align:center;margin:4px 0 0">Each area coloured by its weakest indicator. Right / left as the client.</p></div>'+
+  '<div class="card"><h3>'+ic('list',15)+' Zone by zone</h3><div class="scroll"><table class="scztab"><tr><th>Area</th><th class="num">Spots</th><th class="num">Redness</th><th class="num">Shine</th><th class="num">Blemishes</th></tr>'+
+  ZN.filter(([k])=>Zr[k]).map(([k,n])=>{const z=Zr[k];return '<tr><td><b>'+n+'</b></td>'+['spots','red','oil'].map(m=>'<td class="num"><i class="scdot" style="background:'+zc(z[m])+'"></i>'+z[m]+'</td>').join('')+'<td class="num">'+(z.acne||0)+'</td></tr>';}).join('')+'</table></div></div></div>';
+ /* recommendations */
+ h+='<div class="card screc"><h3>'+ic('spark',15)+' Recommendation for the consultant</h3>';
+ if(c.allergy||c.medical)h+='<div class="scwarn">'+ic('shield',13)+' Check before treating: '+esc([c.allergy&&'allergy — '+c.allergy,c.medical&&'medical — '+c.medical].filter(Boolean).join(' · '))+'</div>';
+ if(r.raw.acne>=18||S.red<30)h+='<div class="scwarn r">'+ic('alert',13)+' Many inflamed blemishes or strong redness: suggest the client also sees a doctor or dermatologist.</div>';
+ h+='<h4>Treatments that answer these concerns</h4>'+(rec.svcs.length?'<div class="scsv">'+rec.svcs.map((x,i)=>'<div class="scsvc'+(i===0?' best':'')+'">'+(i===0?'<span class="scbest">Best match</span>':'')+'<b>'+esc(x.s.name)+'</b><small>'+rm(x.s.price)+' · '+(x.s.dur||'')+' min</small>'+
+   '<div class="scconc sm">'+x.hit.map(k=>'<span>'+esc(rec.lab(k))+'</span>').join('')+'</div><button class="btn sm noprint" onclick="newAppt({customerId:\''+esc(c.id)+'\'})">'+ic('calendar',13)+'Book</button></div>').join('')+'</div>'
+   :'<p class="muted">'+(rec.untagged?'Tag your treatments with the skin concerns they help (Catalogue → each treatment → Concerns) and the best matches will show here.':'No treatment in the menu is tagged for these concerns yet.')+'</p>');
+ if(rec.pkgs.length)h+='<h4>Packages</h4><div class="scchips">'+rec.pkgs.map(p=>'<span>'+ic('package',13)+esc(p.name)+' · '+rm(p.price)+'</span>').join('')+'</div>';
+ if(rec.prods.length)h+='<h4>Homecare</h4><div class="scchips">'+rec.prods.map(x=>'<span>'+ic('drop',13)+esc(x.p.name)+' · '+rm(x.p.price)+'</span>').join('')+'</div>';
+ const tips=[...new Set(rec.C.slice(0,3).flatMap(x=>(SC_TIPS[x.c]||[]).slice(0,2)))];
+ h+='<h4>Course plan & talking points</h4><ul class="sctips2">'+(tips.length?tips:['Maintenance facial monthly, daily SPF and a simple routine keep the skin where it is.']).map(t=>'<li>'+esc(t)+'</li>').join('')+
+  '<li>Scan again at the same spot and light after '+(rec.C.length?'3–4 sessions (about 4–6 weeks)':'2–3 months')+' to see the change.</li></ul></div>';
+ /* save */
+ const svs=D.services.filter(s=>s.active!==false);
+ h+='<div class="card noprint"><h3>'+ic('note',15)+' '+(SC.saved?'Saved to the client\'s record':'Save to the client\'s record')+'</h3>'+
+  '<div class="grid g2" style="gap:8px"><div><label style="margin-top:0">Treatment of this session</label><select class="f" onchange="SC.svcId=this.value"'+(SC.saved?' disabled':'')+'><option value="">— none / consultation —</option>'+svs.map(s=>'<option value="'+s.id+'"'+(SC.svcId===s.id?' selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></div>'+
+  '<div><label style="margin-top:0">Consultant\'s note</label><textarea class="f" rows="2" maxlength="1000" placeholder="What you saw, what you advised…" oninput="SC.note=this.value"'+(SC.saved?' disabled':'')+'>'+esc(SC.note||'')+'</textarea></div></div>'+
+  (!SC.saved?'<label class="row" style="gap:8px;margin:8px 0 0"><input type="checkbox"'+(SC.upd?' checked':'')+' onchange="SC.upd=this.checked"> Set the client\'s skin type to <b>'+r.type+(r.sens?', sensitive':'')+'</b>'+(c.skin?' <span class="muted">(now: '+esc(c.skin)+')</span>':'')+'</label>':'')+
+  '<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap">'+(SC.saved?'':'<button class="btn" onclick="scSave()"'+(SC.busy==='save'?' disabled':'')+'>'+ic('check',15)+(SC.busy==='save'?'Saving…':'Save scan')+'</button>')+
+  '<button class="btn ghost" onclick="scWa()">'+ic('msg',15)+'Send summary on WhatsApp</button>'+(SC.saved?'<button class="btn ghost" onclick="scGo(\'hist\')">'+ic('chart',15)+'See progress</button>':'')+'</div>'+
+  '<p class="tiny muted" style="margin:10px 0 0">Indicative, from a photo — not a medical diagnosis. Light, distance and make-up change the result, so compare scans taken the same way.</p></div>';
+ return h;}
+function scSummary(r,rec){const S=r.S,best=SC_M.slice().sort((a,b)=>S[b[0]]-S[a[0]]).slice(0,2).map(m=>m[1].toLowerCase()),C=rec.C.slice(0,2).map(x=>rec.lab(x.c).toLowerCase());
+ return (S.overall>=80?'Healthy-looking skin overall.':S.overall>=65?'Good skin overall with a few areas to work on.':S.overall>=50?'Several areas would benefit from a treatment course.':'The skin needs focused care across several areas.')+
+  ' Strongest: '+best.join(' and ')+'.'+(C.length?' Focus first on '+C.join(', then ')+'.':'')+(r.type?' Likely '+r.type.toLowerCase()+' skin'+(r.sens?' that reacts easily':'')+'.':'');}
+function scFaceSvg(Z,zc){const g=(k,m)=>Z[k]?zc(Math.min(Z[k].spots,Z[k].red,Z[k].oil,m==='ue'&&SC.res?SC.res.S.eyes:100)):'#E6E0D8',t=(k)=>Z[k]?Math.min(Z[k].spots,Z[k].red,Z[k].oil):'';
+ return '<svg viewBox="0 0 200 250" width="220"><ellipse cx="100" cy="125" rx="88" ry="115" fill="#F6EFE6" stroke="#E1D6C8"/>'+
+  '<rect x="52" y="26" width="96" height="44" rx="20" fill="'+g('fh')+'" opacity=".85"/><text x="100" y="53" text-anchor="middle">'+t('fh')+'</text>'+
+  '<rect x="88" y="92" width="24" height="52" rx="12" fill="'+g('nose')+'" opacity=".85"/><text x="100" y="123" text-anchor="middle">'+t('nose')+'</text>'+
+  '<ellipse cx="50" cy="146" rx="26" ry="24" fill="'+g('lc')+'" opacity=".85"/><text x="50" y="150" text-anchor="middle">'+t('lc')+'</text>'+
+  '<ellipse cx="150" cy="146" rx="26" ry="24" fill="'+g('rc')+'" opacity=".85"/><text x="150" y="150" text-anchor="middle">'+t('rc')+'</text>'+
+  '<rect x="76" y="204" width="48" height="26" rx="13" fill="'+g('chin')+'" opacity=".85"/><text x="100" y="221" text-anchor="middle">'+t('chin')+'</text>'+
+  '<path d="M44 102q16 9 34 0M122 102q16 9 34 0" stroke="'+g('ue','ue')+'" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>'+
+  '<path d="M44 88q16-10 34 0M122 88q16-10 34 0" stroke="#9C8F80" stroke-width="2" fill="none"/><path d="M82 180q18 10 36 0" stroke="#C49A8E" stroke-width="3" fill="none" stroke-linecap="round"/></svg>';}
+window.scOv=k=>{SC.ov=k;document.querySelectorAll('.scovs button').forEach(b=>b.classList.toggle('on',b.getAttribute('onclick').includes("'"+k+"'")));scDraw();
+ const p=document.getElementById('sc-ph');if(p&&p.getBoundingClientRect().top<0)p.scrollIntoView({behavior:'smooth',block:'start'});};
+function scDraw(){const cv=document.getElementById('sc-cv'),oc=document.getElementById('sc-ovc');if(!cv||!SC.img||!SC.res)return;
+ cv.getContext('2d').drawImage(SC.img,0,0,SC_W,SC_H);const x=oc.getContext('2d'),W=SC_W,H=SC_H,mp=SC.res.maps;x.clearRect(0,0,W,H);if(SC.ov==='none')return;
+ const paint=(bin,col)=>{const id=x.createImageData(W,H),d=id.data;for(let i=0;i<W*H;i++){const v=bin[i];if(!v)continue;const j=i*4;d[j]=col[0];d[j+1]=col[1];d[j+2]=col[2];d[j+3]=col[3]===undefined?Math.min(230,v>1?v:170):col[3];}x.putImageData(id,0,0);};
+ const ring=(L,col,rr)=>{x.strokeStyle=col;x.lineWidth=2.5;L.forEach(b=>{x.beginPath();x.arc(b.x,b.y,rr||Math.max(7,Math.sqrt(b.n)*.9),0,7);x.stroke();});};
+ if(SC.ov==='spots')paint(mp.spot,[166,92,20,190]);
+ else if(SC.ov==='red')paint(mp.red,[232,48,72]);
+ else if(SC.ov==='acne'){paint(mp.red,[232,48,72,60]);ring(mp.acne,'#FFE14D');}
+ else if(SC.ov==='pores'){x.fillStyle='rgba(64,170,255,.95)';mp.pores.forEach(b=>{x.beginPath();x.arc(b.x,b.y,2.2,0,7);x.fill();});}
+ else if(SC.ov==='shine')paint(mp.shine,[90,200,255,200]);
+ else if(SC.ov==='lines')paint(mp.line,[255,214,64,230]);
+ else if(SC.ov==='zones'){const Z=SC.res.zones||{},zc=v=>v>=80?'79,179,134':v>=65?'155,200,106':v>=50?'240,180,76':'233,112,124';
+  SC_ZONES.forEach(q=>{const k=q[0]==='ue2'?'ue':q[0],z=Z[k];if(!z)return;const v=k==='ue'?SC.res.S.eyes:Math.min(z.spots,z.red,z.oil);x.fillStyle='rgba('+zc(v)+',.38)';x.strokeStyle='rgba('+zc(v)+',.95)';x.lineWidth=3;
+   const X=q[2]*W,Y=q[4]*H,w=(q[3]-q[2])*W,h=(q[5]-q[4])*H;x.beginPath();x.roundRect?x.roundRect(X,Y,w,h,18):x.rect(X,Y,w,h);x.fill();x.stroke();
+   x.fillStyle='#fff';x.font='bold 22px system-ui';x.textAlign='center';x.fillText(String(v),X+w/2,Y+h/2+8);});}}
+window.scWa=()=>{const c=cust(SC.cid)||{},r=SC.res;if(!r)return;const rec=scRecs(r),S=r.S,biz=(D.meta.biz||{}).name||'Luuna';
+ const lines=['Hai '+(String(c.name||'').split(' ')[0]||'')+'! Ini ringkasan analisa kulit SkinCam anda di '+biz+' ('+dstr(today())+'):','',
+  'Skor kulit: *'+S.overall+'/100* ('+scGradeMs(S.overall)+')','Jenis kulit: '+({Oily:'Berminyak',Combination:'Kombinasi',Dry:'Kering',Normal:'Normal'}[r.type]||r.type)+(r.sens?', sensitif':''),'',
+  ...SC_M.map(m=>'• '+SC_MS[m[0]]+': '+S[m[0]]),'',
+  rec.C.length?'Fokus utama: '+rec.C.slice(0,3).map(x=>LP_CONCERN_MS[x.c]||rec.lab(x.c)).join(', '):'Kulit anda dalam keadaan baik — teruskan penjagaan.',
+  rec.svcs.length?'Cadangan rawatan: '+rec.svcs.slice(0,2).map(x=>x.s.name).join(', '):'','','Analisa ini berdasarkan gambar dan sebagai panduan sahaja. Jumpa lagi! 🌙'].filter((l,i,a)=>l!==''||a[i-1]!=='');
+ const ph=String(c.phone||'').replace(/\D/g,'').replace(/^0/,'60');window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(lines.join('\n')),'_blank');};
+/* ---------- progress & compare ---------- */
+function scHist(){const c=cust(SC.cid)||{},L=SCH[SC.cid];
+ const top='<div class="card"><div class="spread"><div><h3 style="margin:0">'+ic('chart',16)+' Progress · '+esc(c.name||'')+'</h3><p class="tiny muted" style="margin:2px 0 0">'+(L?L.length+' scan'+(L.length===1?'':'s'):'')+'</p></div>'+
+  '<div class="row noprint" style="gap:6px"><button class="btn sm" onclick="scGo(\'cam\')">'+ic('camera',14)+'New scan</button><button class="btn sm ghost" onclick="scGo(\'pick\')">'+ic('user',14)+'Other client</button></div></div></div>';
+ if(!L)return top+'<div class="card"><div class="skel"></div><div class="skel" style="width:60%"></div></div>';
+ if(!L.length)return top+'<div class="card"><div class="empty">'+ic('scface',28)+'<div>No scans yet for this client.</div></div></div>';
+ const f=L[0],l=L[L.length-1],mk=SC.cmpM;
+ /* the trend */
+ const ser=k=>L.map(s=>(s.scores||{})[k]||0),W=900,H=250,Lp=40,R=24,T=28,B=42,n=L.length,X=i=>Lp+(n<2?(W-Lp-R)/2:(W-Lp-R)*i/(n-1)),Y=v=>T+(H-T-B)*(1-v/100);
+ const path=a=>a.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+','+Y(v).toFixed(1)).join('');
+ const chart='<svg class="scch" viewBox="0 0 '+W+' '+H+'">'+[0,25,50,75,100].map(v=>'<line x1="'+Lp+'" x2="'+(W-R)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" class="gl"/><text x="'+(Lp-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>').join('')+
+  (mk!=='overall'?'<path d="'+path(ser('overall'))+'" class="l2"/>':'')+'<path d="'+path(ser(mk))+'" class="l1"/>'+ser(mk).map((v,i)=>'<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="4.5" class="pt"><title>'+dstr(L[i].date)+' · '+v+'</title></circle><text x="'+X(i)+'" y="'+(Y(v)-10)+'" text-anchor="middle" class="pv">'+v+'</text>').join('')+
+  L.map((s,i)=>n>10&&i%Math.ceil(n/8)&&i!==n-1?'':'<text x="'+X(i)+'" y="'+(H-20)+'" text-anchor="'+(n>1&&i===0?'start':n>1&&i===n-1?'end':'middle')+'">'+dshort(s.date)+'</text><text x="'+X(i)+'" y="'+(H-6)+'" text-anchor="'+(n>1&&i===0?'start':n>1&&i===n-1?'end':'middle')+'" class="ss">'+esc(s.svcName?(s.svcName.length>12?s.svcName.slice(0,11)+'…':s.svcName)+(s.sess?' #'+s.sess:''):'')+'</text>').join('')+'</svg>';
+ let h=top+'<div class="card"><div class="spread"><h3 style="margin:0">'+ic('chart',15)+' Trend</h3><select class="f" style="margin:0;width:auto" onchange="SC.cmpM=this.value;render()"><option value="overall">Skin score</option>'+SC_M.map(m=>'<option value="'+m[0]+'"'+(mk===m[0]?' selected':'')+'>'+m[1]+'</option>').join('')+'</select></div>'+
+  (n>1?'<p class="scprog">Since '+dstr(f.date)+' ('+n+' scans, '+daysBetween(f.date,l.date)+' days): skin score <b>'+f.scores.overall+' → '+l.scores.overall+'</b> '+scD(l.scores.overall-f.scores.overall)+'. '+scBestMoves(f,l)+'</p>':'<p class="tiny muted">One scan so far — the trend shows from the second scan.</p>')+chart+'</div>';
+ /* compare */
+ if(n>1){const A=L.find(s=>s.id===SC.cmpA)||f,Bs=L.find(s=>s.id===SC.cmpB)||l;
+  const opt=sel=>L.map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+dstr(s.date)+(s.svcName?' · '+esc(s.svcName)+(s.sess?' #'+s.sess:''):'')+' · '+s.scores.overall+'</option>').join('');
+  h+='<div class="card"><h3>'+ic('cmpI',15)+' Compare two scans</h3><div class="grid g2 noprint" style="gap:8px;margin-bottom:10px"><div><label style="margin-top:0">Before</label><select class="f" onchange="SC.cmpA=this.value;render()">'+opt(A.id)+'</select></div><div><label style="margin-top:0">After</label><select class="f" onchange="SC.cmpB=this.value;render()">'+opt(Bs.id)+'</select></div></div>'+
+   '<div class="sccmp"><div class="sccmpv" id="sc-cmp" style="--x:'+SC.cmpX+'%"><img id="sc-ia" src="'+(SCIMG[A.id]||A.th)+'" alt=""><img id="sc-ib" class="b" src="'+(SCIMG[Bs.id]||Bs.th)+'" alt=""><i class="sccmpbar"></i><span class="t a">'+dshort(A.date)+'</span><span class="t b">'+dshort(Bs.date)+'</span>'+
+   '<input type="range" min="0" max="100" value="'+SC.cmpX+'" oninput="SC.cmpX=+this.value;document.getElementById(\'sc-cmp\').style.setProperty(\'--x\',this.value+\'%\')" aria-label="Before / after"></div>'+
+   '<div class="sccmpt"><p class="tiny muted" style="margin:0 0 6px">'+daysBetween(A.date,Bs.date)+' days apart · drag across the photo</p><table><tr><th></th><th class="num">'+dshort(A.date)+'</th><th class="num">'+dshort(Bs.date)+'</th><th class="num">Change</th></tr>'+
+   [['overall','Skin score'],...SC_M.map(m=>[m[0],m[1]])].map(([k,nm])=>{const a=(A.scores||{})[k]||0,b=(Bs.scores||{})[k]||0;return '<tr'+(k==='overall'?' class="tot"':'')+'><td>'+nm+'</td><td class="num">'+a+'</td><td class="num">'+b+'</td><td class="num">'+scD(b-a)+'</td></tr>';}).join('')+'</table></div></div></div>';
+  setTimeout(()=>[A,Bs].forEach(async s=>{if(SCIMG[s.id])return;const u=await scImg(s.id);const im=document.getElementById(s===A?'sc-ia':'sc-ib');if(u&&im)im.src=u;}),0);}
+ /* every scan */
+ h+='<div class="card"><h3>'+ic('history',15)+' All scans</h3><div class="sclist">'+L.slice().reverse().map(s=>'<div class="scli"><img src="'+s.th+'" alt="" onclick="scOpen(\''+s.id+'\')"><div onclick="scOpen(\''+s.id+'\')"><b>'+dstr(s.date)+'</b><small>'+esc(s.svcName?s.svcName+(s.sess?' · session '+s.sess:''):'Consultation')+' · '+esc(s.type||'')+'</small><small>'+(s.concerns||[]).slice(0,3).map(k=>esc((CONCERNS.find(c=>c.id===k)||{label:k}).label)).join(' · ')+'</small>'+(s.note?'<small class="muted">“'+esc(s.note.slice(0,90))+'”</small>':'')+'</div>'+
+  scRing((s.scores||{}).overall||0,56)+(boss()?'<button class="iconbtn sm noprint" title="Delete" onclick="scDel(\''+s.id+'\')">'+ic('trash',13)+'</button>':'')+'</div>').join('')+'</div></div>';
+ return h;}
+const scD=d=>'<span class="scdl '+(d>0?'up':d<0?'dn':'')+'">'+(d>0?'▲ +':d<0?'▼ ':'')+(d||'±0')+'</span>';
+function scBestMoves(a,b){const L=SC_M.map(m=>[m[1],(b.scores[m[0]]||0)-(a.scores[m[0]]||0)]).sort((x,y)=>y[1]-x[1]),up=L.filter(x=>x[1]>=3).slice(0,2),dn=L.filter(x=>x[1]<=-5).slice(-1);
+ return (up.length?'Most improved: '+up.map(x=>x[0].toLowerCase()+' (+'+x[1]+')').join(', ')+'.':'')+(dn.length?' Watch: '+dn[0][0].toLowerCase()+' ('+dn[0][1]+').':'');}
+
+function scNoFace(){return '<div class="card"><div class="scrun"><div class="scrunimg"><img src="'+(SC.shot||'')+'" alt=""></div><div><h3>'+ic('alert',16)+' No face found in the oval</h3>'+
+ '<p class="muted">SkinCam could not find skin filling the oval, so there is nothing to score. Fit the face from hairline to chin inside the oval, in soft front light, and try again.</p>'+
+ '<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" onclick="scGo(\'cam\')">'+ic('camera',15)+'Retake</button><button class="btn ghost" onclick="scGo(\'pick\')">'+ic('close',15)+'Cancel</button></div></div></div></div>';}
+function vSkinCam(){if(SC.step!=='cam')scCamStop();
+ if(SC.step==='cam'&&SC.cid)return scCam();if(SC.step==='run')return scRunView();if(SC.step==='res'&&SC.res)return scRes();if(SC.step==='hist'&&SC.cid)return scHist();
+ SC.step='pick';return scPick();}
+/* after each screen refresh: the camera picture moves back into place, the result photo is drawn */
+{const _r=render;render=function(){const x=_r.apply(this,arguments);if(TAB==='skin'){if(SC.step==='cam'){scAttach();scDrag();}if(SC.step==='res')scDraw();}else scCamStop();return x;};}
+addEventListener('resize',()=>{if(TAB==='skin'&&SC.step==='cam')scAttach();});
+
+/* in the menu, next to Clinical */
+TABS.splice(TABS.findIndex(t=>t.id==='clin')+1,0,{id:'skin',ic:'scface',label:'SkinCam',perm:'customer',group:'Clients',desc:'Skin analysis from a photo, recommendations and progress'});
+/* on the client's profile: the latest scan, and the way in */
+window.scFor=(id,step)=>{SC.cid=id;SC.res=null;SC.cmpA='';SC.cmpB='';closeModal&&closeModal();go('skin');scGo(step||'cam');};
+{const _cp=custProfile;custProfile=function(c){const L=SCH[c.id];if(!L)scLoad(c.id).then(()=>{if(SCH[c.id].length)render();});
+ const s=L&&L[L.length-1],f=L&&L[0];
+ const card='<div class="card scpc"><div class="spread"><h3 style="margin:0">'+ic('scface',15)+' SkinCam</h3><span class="row" style="gap:6px"><button class="btn sm" onclick="scFor(\''+c.id+'\',\'cam\')">'+ic('camera',13)+'Scan</button>'+(s?'<button class="btn sm ghost" onclick="scFor(\''+c.id+'\',\'hist\')">'+ic('chart',13)+'Progress</button>':'')+'</span></div>'+
+  (s?'<div class="scpcb">'+scRing(s.scores.overall,64)+'<div><b>'+scGrade(s.scores.overall)[0]+' · '+esc(s.type||'')+'</b><small>Last scan '+dstr(s.date)+(L.length>1?' · '+L.length+' scans · '+(s.scores.overall-f.scores.overall>=0?'+':'')+(s.scores.overall-f.scores.overall)+' since '+dshort(f.date):'')+'</small>'+
+   '<div class="scconc sm">'+(s.concerns||[]).slice(0,3).map(k=>'<span>'+esc((CONCERNS.find(x=>x.id===k)||{label:k}).label)+'</span>').join('')+'</div></div></div>':'<p class="tiny muted" style="margin:8px 0 0">No skin scan yet — take one at the consultation to start tracking progress.</p>')+'</div>';
+ return card+_cp.apply(this,arguments);};}
+Object.assign(GL_MAP,{scface:7,camera:4,pigI:3,blotI:4,poreI:0,texI:6,lineI:1,sunI:5,toneI:3,moonI:1,cmpI:6});
 
 </script>
