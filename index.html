@@ -3703,6 +3703,9 @@ em.g{background:#E2F3EA;color:#22744E}em.g2{background:#EEF5E1;color:#4F7A1F}em.
  .skpw.cl .skexp,.skpw.cl .skdisc{break-inside:avoid}
 }
 
+.skdiag{margin-top:10px;font-size:12.5px}.skdiag summary{cursor:pointer;font-weight:600;color:var(--ink-2)}.skdiag .sckv{margin-top:6px;font-size:12.5px}
+.skerr{white-space:pre-wrap;font-size:11px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:8px;max-height:140px;overflow:auto}
+
 /* ============ 30x · 3D screen icons ============ */
 html.ico3d .nvico{display:grid!important;place-items:center;width:32px;height:32px;background:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;opacity:1!important;transform:none;color:inherit}
 html.ico3d .nvico::before,html.ico3d .nvico::after{content:none!important;display:none!important}
@@ -4059,7 +4062,7 @@ window.closeModal=()=>{$('#modal').innerHTML='';};
 /* This project's Firebase config is built in, so nobody has to paste anything.
    A Firebase web config is public by design — it identifies the project, it does not
    grant access. What actually protects the data is the security rules. */
-const BUILD='2026-11-25f';
+const BUILD='2026-11-25g';
 const BUILTIN_CFG={
   apiKey: "AIzaSyCtmaHs65dfTmxyl0qD4a0LWcWZOZDAvoM",
   authDomain: "spa-manager-c586b.firebaseapp.com",
@@ -35511,7 +35514,7 @@ function skAnalyse(id,K,ctx){const W=SK_W,H=SK_H,N=W*H,{L,A,B,Y}=skLab(id.data,N
 let SC=window.SC={step:'pick',cid:'',practice:false,intake:null,check:{},cam:'user',timer:0,angle:'front',shots:{},gate:null,res:null,shot:'',orig:'',sides:{},
  view:null,up:false,ov:'none',mode:'cons',lang:'ms',saved:'',plan:null,note:'',svcId:'',consent:{},sig:'',comp:{},busy:'',recent:null,hist:null,cmpA:'',cmpB:'',cmpX:50,trend:['overall','acne','spots','tex'],ai:null,aiSeq:0,cmpAi:{}};
 let SCH={},SCIMG={},SCVID=null,SCSTREAM=null,SCQ=null,SCQT=0,SCUP=null,SCLOCK=null,SCDET=null,SCDETBUSY=false;
-const skCfg=()=>({card:'optional',angles:true,light:'fixed',strict:'strict',bench:15,...((D.meta||{}).skinCfg||{})});
+const skCfg=()=>({card:'optional',angles:true,light:'fixed',strict:'strict',bench:15,lock:false,...((D.meta||{}).skinCfg||{})});
 const skDeviceKey=()=>{const ua=navigator.userAgent||'';const m=/\(([^)]+)\)/.exec(ua);const model=(navigator.userAgentData&&navigator.userAgentData.platform||'')+'|'+(m?m[1].split(';').slice(0,3).join(';'):ua.slice(0,60));
  let id='';try{id=localStorage.getItem('spSkDev')||'';if(!id){id='d'+Math.random().toString(36).slice(2,10);localStorage.setItem('spSkDev',id);}}catch(e){}return {key:id,model:model.slice(0,120),name:(()=>{try{return localStorage.getItem('spSkDevName')||'';}catch(e){return '';}})()};};
 
@@ -35567,15 +35570,28 @@ async function skCamStart(){skCamStop();
   skcAttach();skQLoop();skFace().catch(()=>{});}
  catch(e){SC.camErr=/Permission|NotAllowed/i.test(e.name+e.message)?'Camera permission was refused — allow the camera for this site in the browser settings.':'Could not open the camera ('+(e.message||e.name)+').';render();}}
 function skCamStop(){clearInterval(SCQT);SCQT=0;if(SCSTREAM){SCSTREAM.getTracks().forEach(t=>t.stop());SCSTREAM=null;}}
-/* exposure, white balance and focus held still for the shots (where the device lets a browser do it) */
-async function skLock(){const out={exposure:false,wb:false,focus:false,settings:{}};if(!SCSTREAM)return out;
- try{const t=SCSTREAM.getVideoTracks()[0],cp=t.getCapabilities?t.getCapabilities():{},st=t.getSettings?t.getSettings():{};out.settings={w:st.width,h:st.height,exposureTime:st.exposureTime,colorTemperature:st.colorTemperature,iso:st.iso,focusDistance:st.focusDistance};
-  const adv={};if((cp.exposureMode||[]).includes('manual')&&st.exposureTime){adv.exposureMode='manual';adv.exposureTime=st.exposureTime;out.exposure=true;}
+/* brightness of the middle of the picture (0–255) */
+function skLum(c){try{const W=c.width,H=c.height,d=c.getContext('2d',{willReadFrequently:true}).getImageData(Math.round(W*.25),Math.round(H*.2),Math.max(1,Math.round(W*.5)),Math.max(1,Math.round(H*.6))).data;
+ let s=0,n=0;for(let i=0;i<d.length;i+=16){s+=.299*d[i]+.587*d[i+1]+.114*d[i+2];n++;}return n?s/n:0;}catch(e){return 0;}}
+/* exposure, white balance and focus held still for the shots — only when switched on in the set-up, and undone
+   at once if the picture gets darker (some phones report the setting in other units and go almost black) */
+async function skLock(){const out={on:false,exposure:false,wb:false,focus:false,settings:{},undone:''};if(!SCSTREAM)return out;
+ let t;try{t=SCSTREAM.getVideoTracks()[0];const st=t.getSettings?t.getSettings():{};out.settings={w:st.width,h:st.height,exposureMode:st.exposureMode||'',exposureTime:st.exposureTime||0,whiteBalanceMode:st.whiteBalanceMode||'',colorTemperature:st.colorTemperature||0,iso:st.iso||0,focusMode:st.focusMode||''};}catch(e){return out;}
+ if(!skCfg().lock)return out;out.on=true;
+ const f0=skFrame(320),b0=f0?skLum(f0.c):0;
+ try{const cp=t.getCapabilities?t.getCapabilities():{},st=t.getSettings?t.getSettings():{},adv={};
+  if((cp.exposureMode||[]).includes('manual')&&st.exposureTime&&st.iso){adv.exposureMode='manual';adv.exposureTime=st.exposureTime;adv.iso=st.iso;out.exposure=true;}
   if((cp.whiteBalanceMode||[]).includes('manual')&&st.colorTemperature){adv.whiteBalanceMode='manual';adv.colorTemperature=st.colorTemperature;out.wb=true;}
-  if((cp.focusMode||[]).includes('manual')&&st.focusDistance){adv.focusMode='manual';adv.focusDistance=st.focusDistance;out.focus=true;}else if((cp.focusMode||[]).includes('single-shot')){adv.focusMode='single-shot';out.focus=true;}
-  if(Object.keys(adv).length){await t.applyConstraints({advanced:[adv]});await new Promise(r=>setTimeout(r,250));}}
- catch(e){out.exposure=out.wb=out.focus=false;}
+  if((cp.focusMode||[]).includes('single-shot')){adv.focusMode='single-shot';out.focus=true;}
+  if(Object.keys(adv).length){await t.applyConstraints({advanced:[adv]});await new Promise(r=>setTimeout(r,700));}}
+ catch(e){out.exposure=out.wb=out.focus=false;out.undone='not supported';}
+ const f1=skFrame(320),b1=f1?skLum(f1.c):0;
+ if((out.exposure||out.wb)&&(b1<40||b1<b0*.75)){out.undone='picture got darker ('+Math.round(b0)+' → '+Math.round(b1)+')';out.exposure=out.wb=false;
+  try{await t.applyConstraints({advanced:[{exposureMode:'continuous',whiteBalanceMode:'continuous',focusMode:'continuous'}]});}catch(e){}await new Promise(r=>setTimeout(r,800));}
  return out;}
+/* a frame that is not black: a camera that is restarting or paused gives black frames for a moment */
+async function skFrameOk(maxW){let fr=null;for(let i=0;i<8;i++){fr=skFrame(maxW);if(fr&&skLum(fr.c)>14)return fr;
+ if(!SC.up&&SCVID&&SCVID.paused)await SCVID.play().catch(()=>{});await new Promise(r=>setTimeout(r,250));}return fr;}
 function skcAttach(){const st=document.getElementById('sc-stage');if(!st)return;const media=SC.up?SCUP:SCVID;if(!media)return;if(media.parentElement!==st)st.insertBefore(media,st.firstChild);
  media.className='scmedia'+(!SC.up&&SC.cam==='user'?' mir':'');const vw=SC.up?media.naturalWidth:media.videoWidth,vh=SC.up?media.naturalHeight:media.videoHeight;if(!vw||!vh){setTimeout(skcAttach,120);return;}
  if(SC.up&&!SC.view){const g=skGeo(st,vw,vh);SC.view={s:g.s,mx:g.mx,my:g.my};}
@@ -35592,7 +35608,7 @@ function skCard(fr){const r=skStageToFrame(fr,SK_CARDBOX);if(!r||r.w<6)return nu
  const one=new Uint8ClampedArray(d.length);one.set(d);const LL=skLab(one,N).L;let s=0,s2=0;for(let i=0;i<N;i++){s+=LL[i];s2+=LL[i]*LL[i];}const sd=Math.sqrt(Math.max(0,s2/N-(s/N)**2));
  const L=lab.L[0],a=lab.A[0],b=lab.B[0],found=L>=SK_Q.cardL[0]&&L<=SK_Q.cardL[1]&&Math.abs(a)<SK_Q.cardAB&&Math.abs(b)<SK_Q.cardAB&&sd<SK_Q.cardSD;
  /* gains that bring the card to a neutral mid grey — same colour and brightness every session */
- const tgt=119,gains=found?m.map(v=>Math.max(.5,Math.min(2.2,tgt/Math.max(1,v)))):null;
+ const avg=(m[0]+m[1]+m[2])/3,bright=Math.max(.85,Math.min(1.2,119/Math.max(1,avg))),gains=found?m.map(v=>Math.max(.8,Math.min(1.25,avg/Math.max(1,v)*bright))):null;
  return {found,L:+L.toFixed(1),a:+a.toFixed(1),b:+b.toFixed(1),sd:+sd.toFixed(1),gains:gains&&gains.map(g=>+g.toFixed(3))};}
 /* live guidance while framing: light, even light, sharpness, angle, distance, card */
 function skQLoop(){clearInterval(SCQT);let prev=null,tick=0;
@@ -35617,7 +35633,7 @@ function skQLoop(){clearInterval(SCQT);let prev=null,tick=0;
     const rel=iod/(ov.w/W);Q.dist=rel<.42?['Come closer','r']:rel<.47?['A little closer','a']:rel>.66?['Move back','r']:rel>.6?['A little further','a']:['Good distance','g'];}
    else{const y=want==='left'?-p.yaw:p.yaw;Q.angle=y<22?['Turn the head more '+(want==='left'?'to the client\'s left':'to the client\'s right'),'r']:y>62?['Turn back a little','a']:['Good angle (~45°)','g'];}}
   else Q.angle=SKFA?['Looking for the face…','a']:[SKFAERR?'Face guide offline — fit the oval':'Loading the face guide…','a'];
-  if(skCfg().card!=='off'&&want==='front'){const cd=skCard(fr);Q.card=cd&&cd.found?['Card found','g']:[skCfg().card==='required'?'Hold the grey card in the box':'No card (optional)',skCfg().card==='required'?'r':'a'];}
+  if(skCfg().card!=='off'&&want==='front'){const cd=skCard(fr);SC.cardHits=cd&&cd.found?(SC.cardHits||0)+1:0;Q.card=cd&&cd.found?['Card found','g']:[skCfg().card==='required'?'Hold the grey card in the box':'No card (optional)',skCfg().card==='required'?'r':'a'];}
   SCQ=Q;const q=document.getElementById('sc-q');if(q)q.innerHTML=skQChips();const o=document.querySelector('#sc-stage .scoval');
   if(o)o.setAttribute('class','scoval '+(Object.values(Q).some(v=>v[1]==='r')?'r':Object.values(Q).some(v=>v[1]==='a')?'a':'g'));
   const cr=document.querySelector('#sc-stage .sccard');if(cr&&Q.card)cr.setAttribute('class','sccard '+Q.card[1]);},420);}
@@ -35652,12 +35668,13 @@ window.skCapture=async()=>{if(SC.busy)return;const st=document.getElementById('s
  if(SC.timer&&!SC.up){SC.busy='count';for(let n=SC.timer;n>0;n--){const b=document.getElementById('sc-count');if(b){b.textContent=n;b.style.display='grid';}await new Promise(r=>setTimeout(r,1000));}const b=document.getElementById('sc-count');if(b)b.style.display='none';}
  SC.busy='shot';
  if(SC.angle==='front'&&!SC.up)SC.locks=await skLock();
- const fr=skFrame(1920);if(!fr){SC.busy='';toast('The camera is not ready yet');return;}
+ const fr=await skFrameOk(1920);if(!fr){SC.busy='';toast('The camera is not ready yet');return;}const lum=skLum(fr.c);
  st.classList.add('flash');setTimeout(()=>st.classList.remove('flash'),350);
  const small=document.createElement('canvas'),k=Math.min(1,640/fr.c.width);small.width=Math.round(fr.c.width*k);small.height=Math.round(fr.c.height*k);small.getContext('2d').drawImage(fr.c,0,0,small.width,small.height);
  let det=null;try{await Promise.race([skFace(),new Promise((_,no)=>setTimeout(()=>no(new Error('slow')),9000))]);det=await skDetect(small,416);}catch(e){}
  const pts=det&&det.pts?det.pts.map(p=>[p[0]/k,p[1]/k]):null;
- const shot={fr,pts,card:SC.angle==='front'&&!SC.up&&skCfg().card!=='off'?skCard(fr):null,oval:pts?null:skOvalCrop(fr),at:new Date().toISOString()};
+ let card=SC.angle==='front'&&!SC.up&&skCfg().card!=='off'?skCard(fr):null;if(card&&card.found&&(SC.cardHits||0)<2)card={...card,found:false,why:'not steady in the live view'};
+ const shot={fr,pts,lum:Math.round(lum),det:det?'ok':SKFA?'no face':'face guide offline',card,oval:SC.angle==='front'||!pts?skOvalCrop(fr):null,at:new Date().toISOString()};
  SC.shots[SC.angle]=shot;SC.busy='';
  if(SC.angle==='front'&&skCfg().angles&&!SC.up){SC.angle='left';SCDET=null;render();return;}
  if(SC.angle==='left'){SC.angle='right';SCDET=null;render();return;}
@@ -35670,8 +35687,13 @@ function skAfterShots(){skCamStop();const f=SC.shots.front;if(!f)return;const fa
   if(rel<SK_Q.iodMin*.55)fails.push('Face too small in the frame — come closer');else if(rel>SK_Q.iodMax*1.5)fails.push('Face too close — move back');}
  else warns.push('Face landmarks not found — zones will be approximate'+(SKFAERR?' (face guide offline)':''));
  if(skCfg().card==='required'&&!(f.card&&f.card.found))fails.push('Grey reference card not found in the box');
+ if(f.lum<15)fails.push('The camera gave a black picture — wait a second and capture again');
+ else if(f.lum<55)fails.push('Too dark (brightness '+f.lum+' / 255) — add soft light from the front');
+ else if(f.lum>225)fails.push('Too bright (brightness '+f.lum+' / 255) — move away from the light');
+ else if(f.lum<80)warns.push('A little dark (brightness '+f.lum+' / 255)');
  SC.gate={fails,warns};if(fails.length&&skCfg().strict==='strict'){SC.step='gate';render();return;}SC.step='run';render();setTimeout(()=>skProcess(),30);}
-async function skProcess(){const f=SC.shots.front,c=cust(SC.cid);
+async function skProcess(){try{await skProcess0();}catch(e){console.error('SkinCam',e);SC.busy='';SC.err=(e&&e.stack||e&&e.message||String(e)).slice(0,600);SC.step='err';render();}}
+async function skProcess0(){const f=SC.shots.front,c=cust(SC.cid);
  let al,K,lm=false;
  if(f.pts){const K0=skKeys(f.pts);al=skAlign(f.fr.c,K0,f.card&&f.card.found?f.card.gains:null);K=al.K;lm=true;}
  else{al={canvas:f.oval};K=skTemplate();if(f.card&&f.card.found)skGain(al.canvas.getContext('2d'),f.card.gains);}
@@ -35685,8 +35707,11 @@ async function skProcess(){const f=SC.shots.front,c=cust(SC.cid);
   x.drawImage(s.fr.c,bx[0],bx[1],bx[2],bx[3],0,0,480,600);SC.sides[a]=cc.toDataURL('image/jpeg',.85);});
  const pose=f.pts?skPose(skKeys(f.pts)):null;
  SC.meta={at:f.at,device:skDeviceKey(),locks:SC.locks||null,card:f.card||null,lm,pose:pose&&{yaw:Math.round(pose.yaw),pitch:Math.round(pose.pitch),roll:Math.round(pose.roll)},
-  src:SC.up?'upload':SC.cam==='user'?'front cam':'back cam',frame:{w:f.fr.vw,h:f.fr.vh},angles:Object.keys(SC.sides),lightSetup:skCfg().light,check:{...SC.check},gate:SC.gate,algo:SK_ALGO};
- SC.K=K;SC.shot=url;await skRun(url,K,false);}
+  src:SC.up?'upload':SC.cam==='user'?'front cam':'back cam',frame:{w:f.fr.vw,h:f.fr.vh},lum:f.lum,det:f.det,angles:Object.keys(SC.sides),lightSetup:skCfg().light,check:{...SC.check},gate:SC.gate,algo:SK_ALGO};
+ SC.K=K;SC.shot=url;SC.fbPending=lm&&!!f.oval;const r1=await skRun(url,K,false);SC.fbPending=false;
+ /* landmarks found but the aligned photo is not skin (a bad fit): read the oval instead, marked approximate */
+ if(r1&&r1.noface&&lm&&f.oval){const oc=f.oval;if(f.card&&f.card.found)skGain(oc.getContext('2d'),f.card.gains);const u2=oc.toDataURL('image/jpeg',.9);
+  SC.meta.lm=false;SC.meta.det='landmarks did not fit — oval used';SC.gate.warns.push('Face landmarks did not fit — zones are approximate');SC.K=skTemplate();SC.shot=u2;await skRun(u2,SC.K,false);}}
 /* analyse exactly the pixels that are saved */
 async function skRun(url,K,keep){const im=await new Promise((ok,no)=>{const m=new Image();m.onload=()=>ok(m);m.onerror=no;m.src=url;});await new Promise(r=>setTimeout(r,40));
  const c=document.createElement('canvas');c.width=SK_W;c.height=SK_H;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(im,0,0,SK_W,SK_H);
@@ -35698,9 +35723,10 @@ async function skRun(url,K,keep){const im=await new Promise((ok,no)=>{const m=ne
  if(!r.noface&&!fitz&&r.itaFitz!=='IV'&&meta.card&&meta.card.found)r=skAnalyse(x.getImageData(0,0,SK_W,SK_H),K,{fitz:r.itaFitz,lm:!!meta.lm,intake:q,age,card:true,cardWanted:true,upload:meta.src==='upload'});
  if(!r.noface){r.fitzSrc=fitz?'reported'+(meta.card&&meta.card.found?' + photo':''):meta.card&&meta.card.found?'photo (card)':'assumed IV — ask the client';r.fitzUsed=r.fitz;}
  await new Promise(ok=>setTimeout(ok,Math.max(0,1100-(performance.now()-t0))));
+ if(r.noface&&SC.fbPending)return r;
  SC.img=im;SC.res=r;SC.busy='';
  if(!keep){SC.ai=null;SC.aiSeq++;SC.saved='';SC.note='';SC.ov='none';SC.mode='cons';SC.consent={};SC.sig='';SC.comp={};SC.svcId=SC.svcId||skTodaySvc(SC.cid);SC.plan=r.noface?null:skPlan(r,SC.intake,cu);SC.step='res';}
- render();if(!keep&&!r.noface&&scAiOn()&&SC.aiOk)scAi();}
+ render();if(!keep&&!r.noface&&scAiOn()&&SC.aiOk)scAi();return r;}
 function skTodaySvc(cid){try{const a=(typeof APPTS!=='undefined'?APPTS:[]).find(x=>x.customerId===cid&&x.date===today()&&x.serviceId);return a?a.serviceId:'';}catch(e){return '';}}
 
 
@@ -35867,6 +35893,7 @@ function skConsView(r,c){const top=skTop(r),L='en',q=SC.intake||{},prev=skPrevSc
  h+=scAiBox2(r);
  /* 11 · notes, consent, signature */
  h+=skFinish(r,c);
+ h+='<div class="card noprint">'+skDiag()+'</div>';
  return h;}
 function skZoneRows(r){const Z=r.zones||{},T=['fh','nose','chin'].filter(k=>Z[k]),row=(n,z)=>'<tr><td><b>'+n+'</b></td><td>'+skBandTag(z.spots,'en',true)+'</td><td>'+skLevel(z.red,'en')+'</td><td>'+skLevel(z.shine,'en')+'</td><td class="num">'+z.pores+'</td><td class="num">'+z.acne+'</td><td class="num">'+(z.fine+z.wrink)+'</td></tr>';
  const avg=(k)=>Math.round(T.reduce((a,z)=>a+Z[z][k],0)/Math.max(1,T.length)),sum=k=>T.reduce((a,z)=>a+Z[z][k],0);
@@ -35913,7 +35940,7 @@ function skExpect(P,lang){if(!P||!P.stages.length)return '';const en=lang==='en'
  return '<div class="card skexp"><h3>'+ic('calendar',15)+' '+(en?'What to expect':'Apa yang boleh dijangka')+'</h3><div class="sktl">'+['w4','w8','w12'].map((w,i)=>{const L=P.stages.map(s=>(en?SK_EXPECT:SK_EXPECT_MS)[s.stage][w]).filter(Boolean);
   return '<div><b>'+(en?'Week ':'Minggu ')+[4,8,12][i]+'</b>'+(L.length?'<ul>'+L.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>':'<p class="muted">—</p>')+'</div>';}).join('')+'</div>'+
   '<p class="skrescan">'+ic('refresh',14)+(en?' Next scan: ':' Scan semula: ')+'<b>'+dstr(P.rescan)+'</b>'+(en?' — same spot, same light, this device.':' — tempat, cahaya dan peranti yang sama.')+'</p></div>';}
-function skNoFace(){return '<div class="card"><div class="scrun"><div class="scrunimg"><img src="'+(SC.shot||'')+'" alt=""></div><div><h3>'+ic('alert',16)+' No face found</h3><p class="muted">SkinCam could not find skin filling the frame. Fit the face from hairline to chin in the oval, in soft front light, and try again.</p>'+
+function skNoFace(){return '<div class="card"><div class="scrun"><div class="scrunimg"><img src="'+(SC.shot||'')+'" alt=""></div><div><h3>'+ic('alert',16)+' No face found</h3><p class="muted">SkinCam could not find skin filling the frame. Fit the face from hairline to chin in the oval, in soft front light, and try again.</p>'+skDiag()+
  '<div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" onclick="skGo(\'cam\')">'+ic('camera',15)+'Retake</button><button class="btn ghost" onclick="skGo(\'pick\')">'+ic('close',15)+'Cancel</button></div></div></div></div>';}
 
 /* ---------- client view: one page, three screens at most ---------- */
@@ -36114,7 +36141,7 @@ Object.assign(GL_MAP,{scface:7,camera:4,sunI:5,moonI:1,cmpI:6,sparkle:5,share:2,
 /* ---------- moving between the steps ---------- */
 window.skGo=s=>{if(s!=='cam')skCamStop();
  if(s==='intake'){if(!SC.cid&&!SC.practice){toast('Choose the client first');return;}SC.intake=null;SC.res=null;SC.saved='';SC.gate=null;SC.plan=null;SC.ai=null;SC.aiRes=null;SC.shot='';}
- if(s==='cam'){if(!SC.intake){skGo('intake');return;}SC.shots={};SC.angle='front';SC.up=false;SCUP=null;SC.view=null;SCQ=null;SCDET=null;SC.camErr='';SC.shot='';SC.gate=null;SC.aiOk=!SC.practice&&!!(cust(SC.cid)||{}).aiOk;SC.step='cam';skCamStart();}
+ if(s==='cam'){if(!SC.intake){skGo('intake');return;}SC.shots={};SC.angle='front';SC.up=false;SCUP=null;SC.view=null;SCQ=null;SCDET=null;SC.camErr='';SC.shot='';SC.gate=null;SC.cardHits=0;SC.err='';SC.aiOk=!SC.practice&&!!(cust(SC.cid)||{}).aiOk;SC.step='cam';skCamStart();}
  if(s==='hist'||s==='intake')SC.hxCid='';
  if(s==='hist'){SC.cmpA='';SC.cmpB='';scLoad(SC.cid,true).then(()=>render());}
  if(s==='pick'){SC.res=null;}
@@ -36124,9 +36151,23 @@ function skHx(){if(SC.practice||!SC.cid||SC.hxCid===SC.cid)return;const cid=SC.c
  loadHistory(cid).then(x=>{if(SC.hxCid!==cid)return;SC.hx=x;SC.pk=x.packages;if(TAB==='skin')render();}).catch(()=>{SC.hx={appts:[],packages:[]};});}
 function skRunView(){return '<div class="card"><div class="scrun"><div class="scrunimg">'+(SC.shot?'<img src="'+SC.shot+'" alt="">':'<div class="skph0"></div>')+'<i class="scline"></i><div class="scgridfx"></div></div><div><h3>'+ic('scface',16)+' Analysing the skin…</h3>'+
  '<p class="muted">Aligning the face, correcting colour'+((SC.shots.front||{}).card&&SC.shots.front.card.found?' with the grey card':'')+', then 15 results zone by zone.</p></div></div></div>';}
+/* what happened at capture — so a bad photo can be explained, not guessed */
+function skDiag(){const m=SC.meta||{},f=(SC.shots||{}).front||{},lk=m.locks||SC.locks||{},cd=m.card||f.card,lum=m.lum!=null?m.lum:f.lum,st=lk.settings||{};
+ const row=(a,b)=>'<span>'+a+'</span><b>'+b+'</b>';
+ return '<details class="skdiag"><summary>Capture details</summary><div class="sckv">'+
+  row('Brightness',lum!=null?lum+' / 255 '+(lum<55?'(too dark)':lum>225?'(too bright)':'(ok)'):'—')+
+  row('Photo',esc((m.src||(SC.up?'upload':SC.cam==='user'?'front cam':'back cam'))+(m.frame?' · '+m.frame.w+'×'+m.frame.h:f.fr?' · '+f.fr.vw+'×'+f.fr.vh:'')))+
+  row('Face landmarks',esc(m.det||f.det||(m.lm?'ok':'—'))+(SKFAERR?' · guide: '+esc(SKFAERR):''))+
+  row('Exposure lock',!lk.on?'off (camera auto)':lk.undone?'undone — '+esc(lk.undone):[lk.exposure&&'exposure',lk.wb&&'white balance',lk.focus&&'focus'].filter(Boolean).join(', ')||'not supported')+
+  (st.exposureMode||st.iso?row('Camera',esc([st.exposureMode&&'exposure '+st.exposureMode,st.iso&&'ISO '+st.iso,st.colorTemperature&&st.colorTemperature+'K'].filter(Boolean).join(' · '))):'')+
+  row('Grey card',cd?(cd.found?'found · L* '+cd.L+' · gains '+(cd.gains||[]).join('/'):'not used'+(cd.why?' ('+esc(cd.why)+')':'')):'off')+
+  '</div></details>';}
+function skErrView(){return '<div class="card"><div class="scrun"><div class="scrunimg">'+(SC.shot?'<img src="'+SC.shot+'" alt="">':'<div class="skph0"></div>')+'</div><div style="max-width:520px"><h3>'+ic('alert',16)+' The analysis stopped</h3>'+
+ '<p class="muted">Something went wrong while reading this photo. Take it again; if it keeps happening, screenshot this box and send it.</p><pre class="skerr">'+esc(SC.err||'')+'</pre>'+skDiag()+
+ '<div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn" onclick="skGo(\'cam\')">'+ic('camera',15)+'Retake</button><button class="btn ghost" onclick="skGo(\'pick\')">'+ic('close',15)+'Cancel</button></div></div></div></div>';}
 function skGateView(){const g=SC.gate||{fails:[],warns:[]};return '<div class="card skhead"><h3 style="margin:0">'+ic('alert',16)+' The photo did not pass the quality check</h3></div><div class="card"><div class="skgate r">'+ic('alert',15)+'<div>'+g.fails.map(f=>'<span>• '+esc(f)+'</span>').join('')+'</div></div>'+
  (g.warns.length?'<div class="skgate">'+ic('alert',15)+'<div>'+g.warns.map(f=>'<span>• '+esc(f)+'</span>').join('')+'</div></div>':'')+
- '<p class="tiny muted">A photo outside these limits gives numbers that move with the photo, not the skin — so it cannot be used to show progress.</p><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" onclick="skGo(\'cam\')">'+ic('camera',15)+'Retake</button><button class="btn ghost" onclick="skUseAnyway()">Use it anyway (marked not comparable)</button></div></div>';}
+ skDiag()+'<p class="tiny muted">A photo outside these limits gives numbers that move with the photo, not the skin — so it cannot be used to show progress.</p><div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" onclick="skGo(\'cam\')">'+ic('camera',15)+'Retake</button><button class="btn ghost" onclick="skUseAnyway()">Use it anyway (marked not comparable)</button></div></div>';}
 
 /* ---------- start screen ---------- */
 function skPick(){
@@ -36154,6 +36195,7 @@ function skSetup(){const dev=skDeviceKey();let h='<details class="card sksetup">
   '<div class="skq"><label>Side views at 45°<small>Better for lines and texture</small></label>'+seg('angles',[[true,'On'],[false,'Front only']])+'</div>'+
   '<div class="skq"><label>Light set-up<small>Saved with each scan</small></label>'+seg('light',[['fixed','Fixed scan corner'],['ring','Ring light'],['room','Room light']])+'</div>'+
   '<div class="skq"><label>Quality gate<small>Strict: a failed photo must be retaken or marked not comparable</small></label>'+seg('strict',[['strict','Strict'],['standard','Warn only']])+'</div>'+
+  '<div class="skq"><label>Lock exposure & white balance<small>Off = camera decides (safest). On = held still for the 3 shots, undone if the photo gets darker</small></label>'+seg('lock',[[false,'Off'],[true,'On']])+'</div>'+
   '<div class="skq"><label>Age-group comparison<small>Shown once this many clients per group</small></label>'+seg('bench',[[15,'15'],[30,'30'],[50,'50']])+'</div></div>'+
   '<h4>Treatment map</h4><p class="tiny muted" style="margin:-4px 0 8px">Which kind of treatment each service is, and its usual course — the plan is built from this. Blank = guessed from the name.</p><div class="scroll"><table class="sktab"><tr><th>Service</th><th>Kind</th><th class="num">Sessions</th><th class="num">Every (days)</th></tr>'+
   D.services.filter(s=>s.active!==false).map(s=>{const m=M[s.id]||{},g=skSvcInfo(s);return '<tr><td>'+esc(s.name)+'</td><td><select class="f sm" data-sid="'+s.id+'" data-f="fam"><option value="">'+esc('auto: '+SK_FAM[g.fam].en)+'</option>'+Object.entries(SK_FAM).map(([k,f])=>'<option value="'+k+'"'+(m.fam===k?' selected':'')+'>'+esc(f.en)+'</option>').join('')+'</select></td>'+
@@ -36227,7 +36269,7 @@ window.skOpen=async id=>{const s=(SCH[SC.cid]||[]).find(x=>x.id===id);if(!s)retu
  if(!u){SC.busy='';SC.step='hist';toast('The photo of this scan could not be loaded');render();return;}
  SC.shot=u;SC.saved=id;SC.savedBy=s.byName||'';SC.savedBranch=s.branchId||'';SC.practice=false;SC.svcId=s.svcId||'';SC.note=s.note||'';SC.meta=s.meta||{};SC.gate=(s.meta||{}).gate||{fails:[],warns:[]};SC.intake=s.intake||{};
  SC.plan=s.plan||null;SC.consent=s.consent||{};SC.sig=s.sig||'';SC.comp=s.compliance||{};SC.aiRes=s.ai||null;SC.ai=s.ai?{done:true,model:s.aiModel||''}:null;SC.sides={left:im2.sideL||'',right:im2.sideR||''};if(!SC.sides.left)delete SC.sides.left;if(!SC.sides.right)delete SC.sides.right;
- SC.K=skKunpack(s.K)||skTemplate();await skRun(u,SC.K,true);SC.busy='';SC.step='res';SC.ov='none';SC.mode='cons';
+ SC.K=skKunpack(s.K)||skTemplate();try{await skRun(u,SC.K,true);}catch(e){SC.busy='';SC.err=(e&&e.message)||String(e);SC.step='err';render();return;}SC.busy='';SC.step='res';SC.ov='none';SC.mode='cons';
  if(SC.res&&!SC.res.noface&&s.algo!==SK_ALGO)toast('Saved with '+s.algo+' — shown with '+SK_ALGO);
  if(!SC.plan&&SC.res&&!SC.res.noface)SC.plan=skPlan(SC.res,SC.intake,cust(SC.cid)||{});
  audit('SkinCam report opened',(cust(SC.cid)||{}).name+' · '+s.date).catch(()=>{});render();};
@@ -36365,7 +36407,7 @@ function vSkinCam(){if(SC.step!=='cam')skCamStop();
  if(SC.practice&&!['pick','intake','check','cam','run','gate','res'].includes(SC.step))SC.step='pick';
  const ok=SC.cid||SC.practice;
  if(SC.step==='intake'&&ok)return skIntake();if(SC.step==='check'&&ok)return skChecklist();if(SC.step==='cam'&&ok)return skCam();
- if(SC.step==='gate')return skGateView();if(SC.step==='run')return skRunView();
+ if(SC.step==='gate')return skGateView();if(SC.step==='err')return skErrView();if(SC.step==='run')return skRunView();
  if(SC.step==='res'&&SC.res){skHx();if(SC.cid&&!SC.practice&&!SCH[SC.cid])scLoad(SC.cid).then(()=>render());return '<div class="skrep'+(SC.mode==='client'?' cl':'')+'">'+skRes()+'</div>';}
  if(SC.step==='hist'&&SC.cid)return skHist();
  SC.step='pick';return skPick();}
